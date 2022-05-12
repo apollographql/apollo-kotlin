@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.http.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
@@ -8,6 +9,7 @@ import com.apollographql.apollo3.cache.http.CachingHttpInterceptor
 import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +23,7 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
+@OptIn(ApolloExperimental::class)
 @Suppress("BlockingMethodInNonBlockingContext")
 class CachingHttpInterceptorTest {
   private lateinit var mockServer: MockServer
@@ -39,7 +42,7 @@ class CachingHttpInterceptorTest {
   @Test
   fun successResponsesAreCached() {
     val body = "success"
-    mockServer.enqueue(MockResponse(statusCode = 200, body = body))
+    mockServer.enqueue(body)
 
     runBlocking {
       val request = HttpRequest.Builder(
@@ -69,7 +72,7 @@ class CachingHttpInterceptorTest {
 
   @Test
   fun failureResponsesAreNotCached() {
-    mockServer.enqueue(MockResponse(statusCode = 500, body = "error"))
+    mockServer.enqueue(MockResponse.Builder().statusCode(500).body("error").build())
 
     runBlocking {
       val request = HttpRequest.Builder(
@@ -98,7 +101,7 @@ class CachingHttpInterceptorTest {
   @Test
   fun timeoutWorks() {
     val body = "success"
-    mockServer.enqueue(MockResponse(statusCode = 200, body = body))
+    mockServer.enqueue(body)
     runBlocking {
       val request = HttpRequest.Builder(
           method = HttpMethod.Get,
@@ -142,7 +145,7 @@ class CachingHttpInterceptorTest {
   fun cacheInParallel() {
     val concurrency = 2
     repeat(concurrency) {
-      mockServer.enqueue(MockResponse(statusCode = 200, body = "success"))
+      mockServer.enqueue("success")
     }
     val jobs = mutableListOf<Job>()
     runBlocking {

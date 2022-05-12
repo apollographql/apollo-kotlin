@@ -1,4 +1,5 @@
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
@@ -6,7 +7,6 @@ import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.cache.http.isFromHttpCache
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.exception.HttpCacheMissException
-import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.okHttpClient
@@ -24,6 +24,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
+@OptIn(ApolloExperimental::class)
 class HttpCacheTest {
   lateinit var mockServer: MockServer
   lateinit var apolloClient: ApolloClient
@@ -77,7 +78,7 @@ class HttpCacheTest {
   @Test
   fun NetworkOnly() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
-    mockServer.enqueue(MockResponse(statusCode = 500))
+    mockServer.enqueue(statusCode = 500)
 
     runBlocking {
       val response = apolloClient.query(GetRandomQuery()).execute()
@@ -95,7 +96,7 @@ class HttpCacheTest {
   @Test
   fun NetworkFirst() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue(response)
-    mockServer.enqueue(MockResponse(statusCode = 500))
+    mockServer.enqueue(statusCode = 500)
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery())
@@ -158,7 +159,7 @@ class HttpCacheTest {
     val okHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
     val mockServer = MockServer()
-    mockServer.enqueue(MockResponse())
+    mockServer.enqueue(statusCode = 200)
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .okHttpClient(okHttpClient)

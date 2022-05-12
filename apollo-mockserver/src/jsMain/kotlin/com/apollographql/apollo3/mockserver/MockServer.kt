@@ -1,13 +1,20 @@
 package com.apollographql.apollo3.mockserver
 
 import Buffer
-import http.ServerResponse
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.AddressInfo
-import okio.ByteString.Companion.toByteString
-import setTimeout
+import net.Socket
+import net.createServer
+import okio.Sink
+import okio.Timeout
+import okio.buffer
+import org.khronos.webgl.Int8Array
+import org.khronos.webgl.Uint8Array
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlin.js.Promise
 
 actual class MockServer actual constructor(override val mockServerHandler: MockServerHandler) : MockServerInterface {
 
@@ -15,23 +22,16 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
 
   private var url: String? = null
 
-  private val server = http.createServer { req, res ->
-    val requestBody = StringBuilder()
-    req.on("data") { chunk ->
+  @OptIn(DelicateCoroutinesApi::class)
+  private val server = createServer { socket ->
+    val requestBody = okio.Buffer()
+    socket.on("data") { chunk ->
       when (chunk) {
-        is String -> requestBody.append(chunk)
-        is Buffer -> requestBody.append(chunk.toString("utf8"))
-        else -> println("WTF")
+        is String -> requestBody.writeUtf8(chunk)
+        is Buffer -> requestBody.write(chunk.asByteArray())
+        else -> error("Unexpected chunk type: ${chunk::class}")
       }
-    }
-    req.on("end") { _ ->
-      val request = MockRequest(
-          req.method,
-          req.url,
-          req.httpVersion,
-          req.rawHeaders.toList().zipWithNext().toMap(),
-          requestBody.toString().encodeToByteArray().toByteString()
-      )
+      val request = readRequest(requestBody)!!
       requests.add(request)
 
       val mockResponse = try {
@@ -40,41 +40,13 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
         throw Exception("MockServerHandler.handle() threw an exception: ${e.message}", e)
       }
 
-      schedule(mockResponse.delayMillis) {
-        res.statusCode = mockResponse.statusCode
-        mockResponse.headers.forEach {
-          res.setHeader(it.key, it.value)
-        }
-        if (mockResponse.chunks.isNotEmpty()) {
-          sendChunksWithDelays(res, mockResponse.chunks)
-        } else {
-          res.end(mockResponse.body.utf8())
-        }
+      GlobalScope.launch {
+        delay(mockResponse.delayMillis)
+        writeResponse(SocketSink(socket).buffer(), mockResponse, request.version)
+        socket.end()
       }
     }
   }.listen()
-
-  private fun sendChunksWithDelays(res: ServerResponse, chunks: List<MockChunk>) {
-    val promises = mutableListOf<Promise<Unit>>()
-    var delayMillis = 0L
-    for (chunk in chunks) {
-      delayMillis += chunk.delayMillis
-      promises += schedule(delayMillis) {
-        res.write(chunk.body.utf8())
-      }
-    }
-    Promise.all(promises.toTypedArray()).then {
-      res.end()
-    }
-  }
-
-  private fun schedule(delayMillis: Long, block: () -> Unit) = Promise<Unit> { resolve, _ ->
-    setTimeout({
-      block()
-      resolve(Unit)
-    }, delayMillis)
-  }
-
 
   override suspend fun url() = url ?: suspendCoroutine { cont ->
     url = "http://localhost:${server.address().unsafeCast<AddressInfo>().port}/"
@@ -96,5 +68,19 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
     server.close {
       cont.resume(Unit)
     }
+  }
+
+  private fun Uint8Array.asByteArray(): ByteArray {
+    return Int8Array(buffer, byteOffset, length).unsafeCast<ByteArray>()
+  }
+
+  private class SocketSink(private val socket: Socket) : Sink {
+    override fun write(source: okio.Buffer, byteCount: Long) {
+      socket.write(source.readUtf8(byteCount))
+    }
+
+    override fun close() {}
+    override fun flush() {}
+    override fun timeout() = Timeout.NONE
   }
 }

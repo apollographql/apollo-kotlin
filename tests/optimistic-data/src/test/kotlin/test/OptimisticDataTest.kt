@@ -80,7 +80,7 @@ class OptimisticDataTest {
             assertEquals("Cat", it.species)
           }
 
-          server.enqueue(MockResponse(statusCode = 500, delayMillis = 400))
+          server.enqueue(MockResponse.Builder().statusCode(500).delayMillis(400).build())
           launch {
             val mutation = UpdateAnimalNameMutation(AnimalInput("Irrelevant"))
             try {
@@ -92,7 +92,7 @@ class OptimisticDataTest {
             }
           }
 
-          server.enqueue(MockResponse(statusCode = 501, delayMillis = 10_000))
+          server.enqueue(MockResponse.Builder().statusCode(501).delayMillis(10_000).build())
           val job = launch {
             delay(200)
             val mutation = UpdateAnimalSpeciesMutation(AnimalInput("Irrelevant"))

@@ -1,6 +1,11 @@
 package com.apollographql.apollo3.mockserver
 
-import kotlinx.coroutines.delay
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
+import com.apollographql.apollo3.annotations.ApolloInternal
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -27,70 +32,96 @@ class MockRequest(
 
 suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, version: String) {
   sink.writeUtf8("$version ${mockResponse.statusCode}\r\n")
-  val isChunked = mockResponse.chunks.isNotEmpty()
-
-  val headers = mockResponse.headers +
-      if (isChunked) {
-        mapOf("Transfer-Encoding" to "chunked")
-      } else {
-        mapOf("Content-Length" to mockResponse.body.size.toString())
-      } +
-      // We don't support 'Connection: Keep-Alive', so indicate it to the client
-      mapOf("Connection" to "close")
-
+  // We don't support 'Connection: Keep-Alive', so indicate it to the client
+  val headers = mockResponse.headers + mapOf("Connection" to "close")
   headers.forEach {
     sink.writeUtf8("${it.key}: ${it.value}\r\n")
   }
   sink.writeUtf8("\r\n")
   sink.flush()
 
-  if (isChunked) {
-    // Chunked format is a sequence of:
-    // - chunk-size (in hexadecimal) + CRLF
-    // - chunk-data + CRLF
-    // Ended with a chunk-size of 0 + CRLF + CRLF
-    for (chunk in mockResponse.chunks) {
-      delay(chunk.delayMillis)
-      sink.writeHexadecimalUnsignedLong(chunk.body.size.toLong())
-      sink.writeUtf8("\r\n")
-      sink.write(chunk.body)
-      sink.writeUtf8("\r\n")
-      sink.flush()
-    }
-    sink.writeUtf8("0\r\n\r\n")
-    sink.flush()
-  } else if (mockResponse.body.size > 0) {
-    sink.write(mockResponse.body)
+  mockResponse.body.collect {
+    sink.write(it)
     sink.flush()
   }
 }
 
-class MockResponse(
+class MockResponse
+@Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"))
+@ApolloDeprecatedSince(v3_3_1)
+constructor(
     val statusCode: Int = 200,
-    val body: ByteString = ByteString.EMPTY,
-    val chunks: List<MockChunk> = emptyList(),
-    val headers: Map<String, String> = emptyMap(),
+    val body: Flow<ByteString> = emptyFlow(),
+    val headers: Map<String, String> = mapOf("Content-Length" to "0"),
     val delayMillis: Long = 0,
 ) {
+  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"))
+  @ApolloDeprecatedSince(v3_3_1)
+  @Suppress("DEPRECATION")
   @JvmOverloads
   constructor(
       body: String,
-      chunks: List<MockChunk> = emptyList(),
       statusCode: Int = 200,
       headers: Map<String, String> = emptyMap(),
       delayMillis: Long = 0,
-  ) : this(statusCode, body.encodeUtf8(), chunks, headers, delayMillis)
-}
+  ) : this(
+      statusCode = statusCode,
+      body = flowOf(body.encodeUtf8()),
+      headers = headers + mapOf("Content-Length" to body.length.toString()),
+      delayMillis = delayMillis,
+  )
 
-class MockChunk(
-    val body: ByteString = ByteString.EMPTY,
-    val delayMillis: Long = 0,
-) {
-  @JvmOverloads
+  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).body(body).headers(headers).delayMillis(delayMillis).build()"))
+  @ApolloDeprecatedSince(v3_3_1)
+  @Suppress("DEPRECATION")
   constructor(
-      body: String,
+      body: ByteString,
+      statusCode: Int = 200,
+      headers: Map<String, String> = emptyMap(),
       delayMillis: Long = 0,
-  ) : this(body.encodeUtf8(), delayMillis)
+  ) : this(
+      statusCode = statusCode,
+      body = flowOf(body),
+      headers = headers + mapOf("Content-Length" to body.size.toString()),
+      delayMillis = delayMillis,
+  )
+
+  class Builder {
+    private var statusCode: Int = 200
+    private var body: Flow<ByteString> = emptyFlow()
+    private val headers = mutableMapOf<String, String>()
+    private var delayMillis: Long = 0
+    private var contentLength: Int? = null
+
+    fun statusCode(statusCode: Int) = apply { this.statusCode = statusCode }
+
+    fun body(body: Flow<ByteString>) = apply { this.body = body }
+
+    fun body(body: ByteString) = apply {
+      this.body = flowOf(body)
+      contentLength = body.size
+    }
+
+    fun body(body: String) = apply {
+      this.body = flowOf(body.encodeUtf8())
+      contentLength = body.length
+    }
+
+    fun headers(headers: Map<String, String>) = apply {
+      this.headers.clear()
+      this.headers += headers
+    }
+
+    fun addHeader(key: String, value: String) = apply { headers[key] = value }
+
+    fun delayMillis(delayMillis: Long) = apply { this.delayMillis = delayMillis }
+
+    fun build(): MockResponse {
+      val headersWithContentLength = if (contentLength == null) headers else headers + mapOf("Content-Length" to contentLength.toString())
+      @Suppress("DEPRECATION")
+      return MockResponse(statusCode = statusCode, body = body, headers = headersWithContentLength, delayMillis = delayMillis)
+    }
+  }
 }
 
 interface MockServerHandler {
@@ -102,6 +133,7 @@ interface MockServerHandler {
   fun handle(request: MockRequest): MockResponse
 }
 
+@OptIn(ApolloInternal::class)
 internal fun readRequest(source: BufferedSource): MockRequest? {
   var line = source.readUtf8Line()
   if (line == null) {
@@ -154,7 +186,8 @@ internal fun readRequest(source: BufferedSource): MockRequest? {
  * - chunk-size (in hexadecimal) + CRLF
  * - chunk-data + CRLF
  */
-private fun BufferedSource.readChunked(buffer: Buffer) {
+@ApolloInternal
+fun BufferedSource.readChunked(buffer: Buffer) {
   while (true) {
     val line = readUtf8Line()
     if (line.isNullOrBlank()) break

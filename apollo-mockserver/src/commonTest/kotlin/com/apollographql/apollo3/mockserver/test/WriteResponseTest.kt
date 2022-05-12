@@ -1,12 +1,14 @@
 package com.apollographql.apollo3.mockserver.test
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.mockserver.MockChunk
 import com.apollographql.apollo3.mockserver.MockResponse
+import com.apollographql.apollo3.mockserver.asChunked
 import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse
 import com.apollographql.apollo3.mockserver.writeResponse
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.flow.flowOf
 import okio.Buffer
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,11 +16,11 @@ import kotlin.test.assertEquals
 class WriteResponseTest {
   @Test
   fun writeResponse() = runTest {
-    val mockResponse = MockResponse(
-        statusCode = 404,
-        body = "I will not buy this record, it is scratched.",
-        headers = mapOf("X-Custom-Header" to "Custom-Value")
-    )
+    val mockResponse = MockResponse.Builder()
+        .statusCode(404)
+        .addHeader("X-Custom-Header", "Custom-Value")
+        .body("I will not buy this record, it is scratched.")
+        .build()
 
     val buffer = Buffer()
     writeResponse(buffer, mockResponse, "1.1")
@@ -35,11 +37,11 @@ class WriteResponseTest {
 
   @Test
   fun writeChunkedResponse() = runTest {
-    val mockResponse = MockResponse(
-        statusCode = 404,
-        chunks = listOf(MockChunk("I will not buy this record, "), MockChunk("it is scratched.")),
-        headers = mapOf("X-Custom-Header" to "Custom-Value")
-    )
+    val mockResponse = MockResponse.Builder()
+        .statusCode(404)
+        .headers(mapOf("X-Custom-Header" to "Custom-Value", "Transfer-Encoding" to "chunked"))
+        .body(flowOf("I will not buy this record, ".encodeUtf8(), "it is scratched.".encodeUtf8()).asChunked())
+        .build()
 
     val buffer = Buffer()
     writeResponse(buffer, mockResponse, "1.1")

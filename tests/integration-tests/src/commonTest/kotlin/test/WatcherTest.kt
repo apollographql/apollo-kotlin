@@ -32,7 +32,6 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onCompletion
@@ -547,7 +546,7 @@ class WatcherTest {
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     // Prepare next call to be a network error
-    mockServer.enqueue(MockResponse(delayMillis = Long.MAX_VALUE))
+    mockServer.enqueue(MockResponse.Builder().delayMillis(Long.MAX_VALUE).build())
 
     withTimeout(500) {
       // make sure we get the cache only result

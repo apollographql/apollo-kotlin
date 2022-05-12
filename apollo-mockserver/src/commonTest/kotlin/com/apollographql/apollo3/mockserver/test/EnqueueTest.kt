@@ -3,11 +3,13 @@ package com.apollographql.apollo3.mockserver.test
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
-import com.apollographql.apollo3.mockserver.MockChunk
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.asChunked
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.flow.flowOf
+import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 
 @OptIn(ApolloExperimental::class)
@@ -25,21 +27,22 @@ class EnqueueTest {
   @Test
   fun enqueue() = runTest(before = { setUp() }, after = { tearDown() }) {
     val mockResponses = listOf(
-        MockResponse(
-            body = "Hello, World! 000",
-            statusCode = 404,
-            headers = mapOf("Content-Type" to "text/plain"),
-        ),
-        MockResponse(
-            body = "Hello, World! 001",
-            statusCode = 200,
-            headers = mapOf("X-Test" to "true"),
-        ),
-        MockResponse(
-            chunks = listOf(MockChunk("First chunk\n"), MockChunk("Second chunk")),
-            statusCode = 200,
-            headers = mapOf("X-Test" to "false"),
-        ),
+        MockResponse.Builder()
+            .body("Hello, World! 000")
+            .statusCode(404)
+            .addHeader("Content-Type", "text/plain")
+            .build(),
+        MockResponse.Builder()
+            .body("Hello, World! 001")
+            .statusCode(200)
+            .addHeader("X-Test", "true")
+            .build(),
+        MockResponse.Builder()
+            .body(flowOf("First chunk\n".encodeUtf8(), "Second chunk".encodeUtf8()).asChunked())
+            .statusCode(200)
+            .addHeader("X-Test", "false")
+            .addHeader("Transfer-Encoding", "chunked")
+            .build(),
     )
     for (mockResponse in mockResponses) {
       mockServer.enqueue(mockResponse)
