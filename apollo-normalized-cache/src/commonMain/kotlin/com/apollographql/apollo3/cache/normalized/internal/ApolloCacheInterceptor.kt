@@ -78,7 +78,7 @@ internal class ApolloCacheInterceptor(
 
     maybeAsync(request) {
       val cacheKeys = if (response.data != null) {
-        store.writeOperation(request.operation, response.data!!, customScalarAdapters, request.cacheHeaders, publish = false)
+        store.writeOperation(request.operation, response.data!!, customScalarAdapters, request.cacheHeaders + response.cacheHeaders, publish = false)
       } else {
         emptySet()
       }
