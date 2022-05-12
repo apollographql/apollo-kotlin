@@ -576,3 +576,9 @@ internal fun <D : Operation.Data> ApolloRequest.Builder<D>.fetchFromCache(fetchF
 
 internal val <D : Operation.Data> ApolloRequest<D>.fetchFromCache
   get() = executionContext[FetchFromCacheContext]?.value ?: false
+
+fun <D : Operation.Data> ApolloResponse.Builder<D>.cacheHeaders(cacheHeaders: CacheHeaders) =
+    addExecutionContext( CacheHeadersContext(cacheHeaders))
+
+val <D: Operation.Data> ApolloResponse<D>.cacheHeaders
+    get() = executionContext[CacheHeadersContext]?.value ?: CacheHeaders.NONE
