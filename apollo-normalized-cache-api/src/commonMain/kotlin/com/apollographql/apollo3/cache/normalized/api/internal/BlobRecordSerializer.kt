@@ -151,15 +151,13 @@ object BlobRecordSerializer {
     }
   }
 
-  const val STRING = 0
-  const val INT = 1
-  const val LONG = 2
-  const val BOOLEAN = 3
-  const val DOUBLE = 4
-  const val LIST = 5
-  const val MAP = 6
-  const val CACHE_KEY = 7
-  const val NULL = 8
-
-
+  private const val STRING = 0
+  private const val INT = 1
+  private const val LONG = 2
+  private const val BOOLEAN = 3
+  private const val DOUBLE = 4
+  private const val LIST = 5
+  private const val MAP = 6
+  private const val CACHE_KEY = 7
+  private const val NULL = 8
 }
