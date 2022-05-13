@@ -55,7 +55,7 @@ class MaxAgeTest {
     }
 
     client.apolloStore.accessCache {
-      // store records in the past
+      // update records to be in the present
       it.merge(records, cacheHeaders(currentTimeMillis()/1000))
     }
 
