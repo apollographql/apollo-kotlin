@@ -52,6 +52,8 @@ jobs:
           ulimit -c unlimited
           # Workaround an issue where kotlinNpmInstall outputs
           # 'Resolving NPM dependencies using yarn' returns 137
+          echo "buildEnvironment"
+          ./gradlew -p build-logic dependencies
           echo "compileKotlinJsIr"
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy --stacktrace -i
           ./gradlew --stop
