@@ -6,12 +6,6 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import issue4010.ListQuery
-import schema.type.Animal
-import schema.type.Cat
-import schema.type.Crocodile
-import schema.type.Dog
-import schema.type.Pet
-import schema.type.__Schema
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
