@@ -52,9 +52,11 @@ jobs:
           ulimit -c unlimited
           # Workaround an issue where kotlinNpmInstall outputs
           # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew compileKotlinJsIr compileKotlinJsLegacy --stacktrace
+          echo "compileKotlinJsIr"
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy --stacktrace -i
           ./gradlew --stop
-          ./gradlew ciTestsNoGradle --stacktrace
+          echo "ciTestsNoGradle"
+          ./gradlew ciTestsNoGradle --stacktrace -i
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
