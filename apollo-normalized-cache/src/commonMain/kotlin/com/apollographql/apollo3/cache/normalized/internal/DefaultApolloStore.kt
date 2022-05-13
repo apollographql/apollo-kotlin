@@ -20,6 +20,7 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 
 internal class DefaultApolloStore(
@@ -210,10 +211,6 @@ internal class DefaultApolloStore(
     return records.values.toSet() to changedKeys
   }
 
-  @OptIn(ApolloExperimental::class)
-  private fun CacheHeaders.withDate(): CacheHeaders {
-    return newBuilder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis()/1000).toString()).build()
-  }
 
   override suspend fun <D : Operation.Data> writeOptimisticUpdates(
       operation: Operation<D>,
@@ -281,6 +278,13 @@ internal class DefaultApolloStore(
 
   override fun dispose() {
     cacheHolder.dispose()
+  }
+  
+  companion object {
+    @OptIn(ApolloExperimental::class)
+    private fun CacheHeaders.withDate(): CacheHeaders {
+      return newBuilder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis()/1000).toString()).build()
+    }
   }
 }
 
