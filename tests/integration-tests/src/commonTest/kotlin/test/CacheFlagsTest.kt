@@ -24,6 +24,7 @@ import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -115,7 +116,7 @@ class CacheFlagsTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     apolloClient = apolloClient.newBuilder().addInterceptor(object: ApolloInterceptor{
       override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-        return chain.proceed(request).onEach { response ->
+        return chain.proceed(request).map { response ->
           response.newBuilder().cacheHeaders(CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "").build()).build()
         }
       }
