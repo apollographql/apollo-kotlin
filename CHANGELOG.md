@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+# Version 3.3.1
+
+_TBD_
+
+This release starts tracking the MockServer public API. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
+
+
+
 # Version 3.3.0
 
 _2022-05-04_
