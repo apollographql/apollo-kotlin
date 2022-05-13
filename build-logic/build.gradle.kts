@@ -1,7 +1,5 @@
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-
 plugins {
-  kotlin("jvm")
+  `embedded-kotlin`
 }
 
 apply(from = "../gradle/dependencies.gradle")
@@ -16,6 +14,13 @@ group = "com.apollographql.apollo3"
 
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
+
+  // Pin the Kotlin stdlib to the version used by the embedded Kotlin plugin
+  implementation("org.jetbrains.kotlin:kotlin-stdlib") {
+    version {
+      strictly(groovy.util.Eval.x(project, "x.versions.gradleEmbeddedKotlin").toString())
+    }
+  }
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
 
@@ -37,12 +42,14 @@ dependencies {
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin
-  val kspPlugin = when (getKotlinPluginVersion()) {
-    "1.6.10" -> groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10")
-    "1.6.21" -> groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_21")
-    else -> error("Update KSP to work with Kotlin ${getKotlinPluginVersion()} (see https://github.com/google/ksp/releases)")
+  if (System.getProperty("idea.sync.active") == null) {
+    implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
+    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_7_0"))
+  } else {
+    implementation(groovy.util.Eval.x(project, "x.dep.kotlinPluginDuringIdeaSync"))
+    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10"))
   }
-  implementation(kspPlugin)
+
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
   implementation(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))
   // XXX: This is only needed for tests. We could have different build logic for different
@@ -58,8 +65,9 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
-}
+// Commented for now as we do have a warning related to gr8-plugin-0.4.jar: "Library has Kotlin runtime bundled into it"
+//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+//  kotlinOptions {
+//    allWarningsAsErrors = true
+//  }
+//}
