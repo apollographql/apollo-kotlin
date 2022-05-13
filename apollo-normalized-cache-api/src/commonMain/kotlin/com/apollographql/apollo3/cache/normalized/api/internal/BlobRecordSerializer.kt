@@ -130,7 +130,7 @@ object BlobRecordSerializer {
       INT -> readInt()
       LONG ->readLong()
       DOUBLE -> readString().toDouble()
-      BOOLEAN -> readInt() > 0
+      BOOLEAN -> readByte() > 0
       CACHE_KEY -> {
         CacheKey(readString())
       }
