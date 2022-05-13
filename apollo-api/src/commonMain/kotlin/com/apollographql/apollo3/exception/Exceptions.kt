@@ -95,7 +95,7 @@ class CacheMissException @ApolloInternal constructor(
   @ApolloExperimental
   val age: Long? = age
 
-  @ApolloInternal
+  @OptIn(ApolloInternal::class)
   constructor(key: String, fieldName: String?): this(key, fieldName, null)
 
   companion object {
