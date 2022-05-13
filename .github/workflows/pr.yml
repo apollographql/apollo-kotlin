@@ -54,7 +54,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
-          ./gradlew ciTestsNoGradle
+          ./gradlew ciTestsNoGradle --stacktrace
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
