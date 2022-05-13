@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -29,6 +30,7 @@ import okio.Buffer
  * This should be revisited/optimized
  */
 @ApolloInternal
+@OptIn(ApolloExperimental::class)
 object BlobRecordSerializer {
   fun serialize(record: Record): ByteArray  {
     val buffer = Buffer()
