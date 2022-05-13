@@ -8,7 +8,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSThread
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
-import kotlin.native.concurrent.ensureNeverFrozen
 import kotlin.native.concurrent.freeze
 
 /**
@@ -26,7 +25,8 @@ suspend fun <R> suspendAndResumeOnMain(block: (MainContinuation<R>, InvokeOnCanc
   assertMainThreadOnNative()
 
   return suspendCancellableCoroutine { continuation ->
-    continuation.ensureNeverFrozen()
+    // Don't do this, coroutines-mt actually freeze the continuation
+    // continuation.ensureNeverFrozen()
     block(MainContinuation(continuation)) { continuation.invokeOnCancellation(it) }
   }
 }
