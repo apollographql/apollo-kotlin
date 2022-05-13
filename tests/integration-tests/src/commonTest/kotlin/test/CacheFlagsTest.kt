@@ -116,8 +116,7 @@ class CacheFlagsTest {
     apolloClient = apolloClient.newBuilder().addInterceptor(object: ApolloInterceptor{
       override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
         return chain.proceed(request).onEach { response ->
-          val x = response.newBuilder().cacheHeaders(CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "").build()).build()
-          x
+          response.newBuilder().cacheHeaders(CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "").build()).build()
         }
       }
     }).build()
