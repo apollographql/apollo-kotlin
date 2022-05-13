@@ -32,6 +32,7 @@ class Record(
 
   @ApolloExperimental
   var lastUpdated: Map<String, Long?>? = null
+    private set
 
   @ApolloInternal
   constructor(
