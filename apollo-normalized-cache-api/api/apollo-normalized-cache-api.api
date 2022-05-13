@@ -190,7 +190,6 @@ public final class com/apollographql/apollo3/cache/normalized/api/Record : java/
 	public fun replace (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun replace (Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)Z
 	public fun replaceAll (Ljava/util/function/BiFunction;)V
-	public final fun setLastUpdated (Ljava/util/Map;)V
 	public final fun size ()I
 	public final fun values ()Ljava/util/Collection;
 }
