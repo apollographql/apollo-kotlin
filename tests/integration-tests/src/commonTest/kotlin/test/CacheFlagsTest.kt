@@ -2,7 +2,10 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
@@ -15,9 +18,13 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
+import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -100,5 +107,27 @@ class CacheFlagsTest {
 
     val response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
     assertNotNull(response.data)
+  }
+
+  @Test
+  fun doNotStoreWhenSetInResponse() = runTest(before = { setUp() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    apolloClient = apolloClient.newBuilder().addInterceptor(object: ApolloInterceptor{
+      override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+        return chain.proceed(request).onEach { response ->
+          val x = response.newBuilder().cacheHeaders(CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DO_NOT_STORE, "").build()).build()
+          x
+        }
+      }
+    }).build()
+    apolloClient.enqueueTestResponse(query, data)
+
+    apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst).execute()
+
+    // Since the previous request was not stored, this should fail
+    assertFailsWith(CacheMissException::class) {
+      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
+    }
   }
 }
