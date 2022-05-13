@@ -28,5 +28,8 @@ class EmptyListOfNonNull {
     val response = apolloClient.query(ListQuery()).execute()
 
     assertEquals(response.data?.list, emptyList())
+
+    mockServer.stop()
+    apolloClient.dispose()
   }
 }
