@@ -282,7 +282,7 @@ internal class DefaultApolloStore(
   override fun dispose() {
     cacheHolder.dispose()
   }
-  
+
   companion object {
     @OptIn(ApolloExperimental::class)
     private fun CacheHeaders.withDate(): CacheHeaders {
