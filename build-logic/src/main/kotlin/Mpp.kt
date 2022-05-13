@@ -120,7 +120,6 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
   }
 }
 
-
 fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
   sourceSets.getByName("commonTest") {
     it.dependencies {
