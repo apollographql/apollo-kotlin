@@ -105,7 +105,7 @@ object DefaultCacheResolver : CacheResolver {
 
 
 /**
- * A cache resolver that uses the parent to resolve fields and use a constant max A
+ * A cache resolver that uses the parent to resolve fields and use a constant max Age
  */
 @ApolloExperimental
 class MaxAgeCacheResolver(private val maxAge: Int) : CacheResolver {
