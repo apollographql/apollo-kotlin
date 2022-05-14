@@ -751,4 +751,17 @@ Because it is not possible to determine the Gradle current working directory rel
   --schema="app/src/main/graphql/com/example/schema.graphqls"
 ```
 
-If you configured the `introspection {}` or `registry {}` blocks in your Gradle scripts, you should now use `downloadServiceApolloSchemaFromIntrospection` or `downloadServiceApolloSchemaFromRegistry` 
+If you configured the `introspection {}` or `registry {}` blocks in your Gradle scripts, you should now use `downloadServiceApolloSchemaFromIntrospection` or `downloadServiceApolloSchemaFromRegistry`
+
+### OkHttp
+
+Because 3.x is multiplatform first, the runtime abstracts OkHttp behind the [HttpEngine API](https://www.apollographql.com/docs/kotlin/advanced/http-engine#the-httpengine-interface). If you were relying on `OkHttpExecutionContext`, you can now use `HttpInfo` to get access to the HTTP response code and headers:
+
+```kotlin
+// Replace
+response.executionContext[OkHttpExecutionContext].response.code
+
+// With
+response.executionContext[HttpInfo]?.statusCode
+```
+
