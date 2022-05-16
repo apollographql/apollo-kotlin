@@ -29,7 +29,8 @@ jobs:
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
           ./gradlew ciTestsGradle
-        cache-disabled: true
+        with:
+          cache-disabled: true
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
