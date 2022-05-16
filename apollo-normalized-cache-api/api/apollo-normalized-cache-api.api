@@ -12,8 +12,8 @@ public final class com/apollographql/apollo3/cache/normalized/api/CacheHeaders {
 	public static final fun builder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
 	public final fun hasHeader (Ljava/lang/String;)Z
 	public final fun headerValue (Ljava/lang/String;)Ljava/lang/String;
-	public final fun plus (Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
+	public final fun plus (Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;
 	public final fun toBuilder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
 }
 
