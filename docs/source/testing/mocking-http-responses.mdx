@@ -1,6 +1,8 @@
 ---
-title: Mocking HTTP responses
+title: Mocking HTTP responses (experimental)
 ---
+
+> ℹ️ `MockServer` is still experimental and most of the APIs are designed for Kotlin. `MockServer` is multiplatform but if you're using Java only, we recommend using [OkHttp MockWebServer](https://github.com/square/okhttp/tree/master/mockwebserver) which will provide idiomatic Java APIs.
 
 `MockServer` implements an HTTP server that you can use to mock responses. It's useful for testing specific server behaviors, such as error cases, HTTP headers, and timeouts. Using it requires minimal changes to your production code, because you only need to change your `serverUrl`.
 
