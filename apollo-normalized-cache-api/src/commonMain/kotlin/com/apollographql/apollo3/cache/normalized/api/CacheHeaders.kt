@@ -47,6 +47,6 @@ class CacheHeaders internal constructor(private val headerMap: Map<String, Strin
     val NONE = CacheHeaders(emptyMap())
   }
   operator fun plus(cacheHeaders: CacheHeaders): CacheHeaders {
-    return toBuilder().addHeaders(cacheHeaders.headerMap).build()
+    return newBuilder().addHeaders(cacheHeaders.headerMap).build()
   }
 }
