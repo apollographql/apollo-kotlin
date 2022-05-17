@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
 plugins {
   `embedded-kotlin`
 }
@@ -18,7 +20,7 @@ dependencies {
   // Pin the Kotlin stdlib to the version used by the embedded Kotlin plugin
   implementation("org.jetbrains.kotlin:kotlin-stdlib") {
     version {
-      strictly(groovy.util.Eval.x(project, "x.versions.gradleEmbeddedKotlin").toString())
+      strictly(getKotlinPluginVersion())
     }
   }
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
