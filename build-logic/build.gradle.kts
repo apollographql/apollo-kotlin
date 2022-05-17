@@ -17,12 +17,6 @@ group = "com.apollographql.apollo3"
 dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.gradleApi"))
 
-  // Pin the Kotlin stdlib to the version used by the embedded Kotlin plugin
-  implementation("org.jetbrains.kotlin:kotlin-stdlib") {
-    version {
-      strictly(getKotlinPluginVersion())
-    }
-  }
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
@@ -62,9 +56,8 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-// Commented for now as we do have a warning related to gr8-plugin-0.4.jar: "Library has Kotlin runtime bundled into it"
-//tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-//  kotlinOptions {
-//    allWarningsAsErrors = true
-//  }
-//}
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = true
+  }
+}
