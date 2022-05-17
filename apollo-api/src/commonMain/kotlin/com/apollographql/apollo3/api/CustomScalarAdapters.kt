@@ -3,7 +3,6 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
 
@@ -87,7 +86,6 @@ class CustomScalarAdapters private constructor(
     }
 
     @Suppress("DEPRECATION")
-    @OptIn(ApolloInternal::class)
     @Deprecated("Used for backward compatibility with 2.x")
     @ApolloDeprecatedSince(v3_0_0)
     fun <T> add(

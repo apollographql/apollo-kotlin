@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -13,7 +12,6 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class OkHttpClientTest {
-  @OptIn(ApolloExperimental::class)
   @Test
   fun okHttpInterceptors() {
     val interceptor = Interceptor {

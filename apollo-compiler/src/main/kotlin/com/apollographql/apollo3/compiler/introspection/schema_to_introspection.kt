@@ -1,11 +1,35 @@
 package com.apollographql.apollo3.compiler.introspection
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.ConversionException
+import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLEnumValue
+import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLFieldDefinition
+import com.apollographql.apollo3.ast.GQLFloatValue
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLInputValueDefinition
+import com.apollographql.apollo3.ast.GQLIntValue
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLNullValue
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.GQLValue
+import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.findDeprecationReason
+import com.apollographql.apollo3.ast.toUtf8
 
-@OptIn(ApolloExperimental::class)
 private class IntrospectionSchemaBuilder(private val schema: Schema) {
   private val typeDefinitions = schema.typeDefinitions
 

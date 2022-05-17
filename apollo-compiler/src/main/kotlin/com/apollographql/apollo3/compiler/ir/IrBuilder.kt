@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.ir
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.BLabel
 import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
@@ -60,7 +59,6 @@ import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.ScalarInfo
 
-@OptIn(ApolloExperimental::class)
 internal class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,

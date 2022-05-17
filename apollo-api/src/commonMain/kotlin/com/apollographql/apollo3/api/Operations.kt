@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,7 +20,6 @@ import kotlin.jvm.JvmOverloads
  * }
  * ```
  */
-@OptIn(ApolloInternal::class)
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.composeJsonRequest(
     jsonWriter: JsonWriter,
@@ -79,7 +77,6 @@ fun <D : Operation.Data> Operation<D>.composeJsonResponse(
     data: D,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ) {
-  @OptIn(ApolloInternal::class)
   jsonWriter.use {
     it.writeObject {
       name("data")

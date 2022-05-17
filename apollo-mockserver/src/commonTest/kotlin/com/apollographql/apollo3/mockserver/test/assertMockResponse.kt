@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.mockserver.test
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.readChunked
@@ -9,7 +8,6 @@ import okio.Buffer
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ApolloInternal::class)
 suspend fun assertMockResponse(
     mockResponse: MockResponse,
     httpResponse: HttpResponse,

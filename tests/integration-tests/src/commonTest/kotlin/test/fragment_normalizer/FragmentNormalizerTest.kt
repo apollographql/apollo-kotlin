@@ -2,7 +2,6 @@ package test.fragment_normalizer
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -16,7 +15,6 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class FragmentNormalizerTest{
   @Test
   fun test() = runTest {

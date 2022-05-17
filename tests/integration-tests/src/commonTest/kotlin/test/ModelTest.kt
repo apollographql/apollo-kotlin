@@ -1,12 +1,10 @@
 package test
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class ModelTest {
   @Test
   fun equalsAndHashCodeAreCorrect() = runTest {

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
@@ -27,7 +26,6 @@ internal fun GQLTypeDefinition.keyArgs(fieldName: String): Set<String> {
       throw SourceAwareException("Apollo: no keyArgs found or wrong keyArgs type", it.sourceLocation)
     }
 
-    @OptIn(ApolloExperimental::class)
     Buffer().writeUtf8(keyArgsValue.value)
         .parseAsGQLSelections()
         .value

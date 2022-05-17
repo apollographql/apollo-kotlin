@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.content
@@ -14,7 +13,6 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class JvmFileUploadTest {
   private val upload0: Upload = DefaultUpload.Builder()
       .content(File("src/jvmTest/resources/file0.txt"))

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.exception.ApolloException
@@ -16,7 +15,6 @@ import okio.BufferedSource
  * The [response] is automatically closed after the last emission.
  * Closing the individual parts in the Flow doesn't close the overall response.
  */
-@OptIn(ApolloInternal::class)
 internal fun multipartBodyFlow(response: HttpResponse): Flow<BufferedSource> {
   val worker = NonMainWorker()
   var multipartReader: MultipartReader? = null

@@ -2,14 +2,13 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
-import com.apollographql.apollo3.api.json.writeAny
 import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo3.api.json.writeAny
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -167,12 +166,10 @@ val BooleanAdapter = object  : Adapter<Boolean> {
 @JvmField
 val AnyAdapter = object : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
-    @OptIn(ApolloInternal::class)
     return reader.readAny()!!
   }
 
   fun toJson(writer: JsonWriter, value: Any) {
-    @OptIn(ApolloInternal::class)
     writer.writeAny(value)
   }
 
@@ -245,7 +242,6 @@ class ObjectAdapter<T>(
       /**
        * And write to the original writer
        */
-      @OptIn(ApolloInternal::class)
       writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()

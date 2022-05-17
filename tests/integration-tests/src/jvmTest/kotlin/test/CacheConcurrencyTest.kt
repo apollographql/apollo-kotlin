@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
@@ -9,14 +8,12 @@ import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import kotlin.test.Test
 
-@OptIn(ApolloExperimental::class)
 class CacheConcurrencyTest {
 
   @Test

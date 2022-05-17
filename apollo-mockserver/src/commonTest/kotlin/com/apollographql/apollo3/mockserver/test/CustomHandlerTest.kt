@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.mockserver.test
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.mockserver.MockRequest
@@ -11,7 +10,6 @@ import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 
-@OptIn(ApolloExperimental::class)
 class CustomHandlerTest {
   private lateinit var mockServer: MockServer
 

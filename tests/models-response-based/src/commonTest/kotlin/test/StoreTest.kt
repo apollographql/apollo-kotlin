@@ -9,7 +9,6 @@ import codegen.models.fragment.HeroWithFriendsFragment.Friend.Companion.humanWit
 import codegen.models.fragment.HeroWithFriendsFragmentImpl
 import codegen.models.fragment.HumanWithIdFragmentImpl
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -21,7 +20,6 @@ import testFixtureToUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class StoreTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.mockserver.test
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.asChunked
 import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse
@@ -12,7 +11,6 @@ import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class WriteResponseTest {
   @Test
   fun writeResponse() = runTest {

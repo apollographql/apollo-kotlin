@@ -2,7 +2,6 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions
@@ -150,7 +149,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
       override fun writeTo(bufferedSink: BufferedSink) {
         val writer = BufferedSinkJsonWriter(bufferedSink)
-        @OptIn(ApolloInternal::class)
         writer.writeArray {
           this as BufferedSinkJsonWriter
           allBodies.forEach { body ->
@@ -203,7 +201,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         if (it == null) {
           throw ApolloException("batched query response contains a null item")
         }
-        @OptIn(ApolloInternal::class)
         (buildJsonByteString {
           AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
         })

@@ -10,7 +10,6 @@ import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloInternal::class)
 class DeferJsonMergerTest {
   @Test
   @Suppress("UNCHECKED_CAST")

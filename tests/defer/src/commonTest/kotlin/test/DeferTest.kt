@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.mockserver.ChunkedResponse
@@ -23,7 +22,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class DeferTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

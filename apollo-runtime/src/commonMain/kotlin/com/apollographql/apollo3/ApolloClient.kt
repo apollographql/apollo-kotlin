@@ -3,7 +3,6 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -358,7 +357,6 @@ private constructor(
       customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
-    @OptIn(ApolloInternal::class)
     @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
     @ApolloDeprecatedSince(v3_0_0)
     fun <T> addCustomTypeAdapter(

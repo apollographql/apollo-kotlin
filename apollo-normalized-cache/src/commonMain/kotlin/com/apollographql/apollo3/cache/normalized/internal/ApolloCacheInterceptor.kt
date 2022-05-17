@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.ConcurrencyInfo
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -27,7 +26,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -44,7 +42,6 @@ internal class ApolloCacheInterceptor(
     // ensureNeverFrozen(store)
   }
 
-  @OptIn(ApolloExperimental::class)
   private suspend fun <D : Operation.Data> maybeAsync(request: ApolloRequest<D>, block: suspend () -> Unit) {
     if (request.writeToCacheAsynchronously) {
       val scope = request.executionContext[ConcurrencyInfo]!!.coroutineScope

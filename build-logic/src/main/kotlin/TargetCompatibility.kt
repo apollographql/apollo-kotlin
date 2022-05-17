@@ -11,7 +11,11 @@ fun Project.configureJavaAndKotlinCompilers() {
     // For Kotlin JVM projects
     tasks.withType(KotlinCompile::class.java) {
       it.kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-opt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs = freeCompilerArgs + listOf(
+            "-opt-in=kotlin.RequiresOptIn",
+            "-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental",
+            "-opt-in=com.apollographql.apollo3.annotations.ApolloInternal"
+        )
         if (getKotlinPluginVersion() == "1.6.10") {
           // This is a workaround for https://youtrack.jetbrains.com/issue/KT-47000 (fixed in Kotlin 1.6.20)
           // Since we don't use @JvmDefault anywhere, the option has no effect, but suppresses the bogus compiler error
@@ -29,6 +33,8 @@ fun Project.configureJavaAndKotlinCompilers() {
         as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.run {
       sourceSets.all {
         it.languageSettings.optIn("kotlin.RequiresOptIn")
+        it.languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloExperimental")
+        it.languageSettings.optIn("com.apollographql.apollo3.annotations.ApolloInternal")
       }
     }
 

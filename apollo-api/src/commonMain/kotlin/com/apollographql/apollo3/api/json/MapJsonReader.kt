@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.api.json
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.internal.toDoubleExact
@@ -404,7 +403,6 @@ constructor(
       val pathRoot = getPath()
 
       @Suppress("UNCHECKED_CAST")
-      @OptIn(ApolloInternal::class)
       val data = this.readAny() as Map<String, Any?>
       return MapJsonReader(root = data, pathRoot = pathRoot)
     }

@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -89,7 +88,6 @@ class ThreadTests {
 
   }
 
-  @OptIn(ApolloExperimental::class)
   @Test
   fun cacheIsNotReadFromTheMainThread() = runTest {
     if (platform() == Platform.Js) {

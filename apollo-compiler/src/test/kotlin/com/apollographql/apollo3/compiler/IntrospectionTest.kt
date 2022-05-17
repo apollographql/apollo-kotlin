@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.introspection.toSchemaGQLDocument
@@ -8,7 +7,6 @@ import org.junit.Test
 import java.io.File
 
 class IntrospectionTest {
-  @OptIn(ApolloExperimental::class)
   @Test
   fun parseSchema() {
     try {

@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
@@ -39,7 +38,6 @@ import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
-@OptIn(ApolloExperimental::class)
 class DeferNormalizedCacheTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

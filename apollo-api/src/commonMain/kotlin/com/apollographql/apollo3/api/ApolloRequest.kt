@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.benasher44.uuid.Uuid
@@ -10,7 +9,6 @@ import com.benasher44.uuid.uuid4
 /**
  * A GraphQL request to execute. Execution can be customized with [executionContext]
  */
-@OptIn(ApolloInternal::class)
 class ApolloRequest<D : Operation.Data>
 private constructor(
     val operation: Operation<D>,
@@ -24,7 +22,6 @@ private constructor(
     override val canBeBatched: Boolean?,
 ) : ExecutionOptions {
 
-  @OptIn(ApolloExperimental::class)
   fun newBuilder(): Builder<D> = newBuilder(operation)
 
   @ApolloExperimental

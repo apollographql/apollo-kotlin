@@ -133,7 +133,6 @@ interface MockServerHandler {
   fun handle(request: MockRequest): MockResponse
 }
 
-@OptIn(ApolloInternal::class)
 internal fun readRequest(source: BufferedSource): MockRequest? {
   var line = source.readUtf8Line()
   if (line == null) {

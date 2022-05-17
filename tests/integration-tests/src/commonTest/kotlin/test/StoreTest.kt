@@ -4,7 +4,6 @@ import IdCacheKeyGenerator
 import IdCacheResolver
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -28,7 +27,6 @@ import kotlin.test.fail
  *
  * XXX: Do we need a client and mockServer for these tests?
  */
-@OptIn(ApolloExperimental::class)
 class StoreTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore

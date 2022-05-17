@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLDirectiveDefinition
@@ -171,7 +170,6 @@ internal fun ValidationScope.validateDirective(
 /**
  * Extra Apollo-specific validation for @nonnull
  */
-@OptIn(ApolloExperimental::class)
 internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
   if (directiveContext is GQLField && (directive.arguments?.arguments?.size ?: 0) > 0) {
     registerIssue(
@@ -206,7 +204,6 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
 /**
  * Extra Apollo-specific validation for @typePolicy
  */
-@OptIn(ApolloExperimental::class)
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
   (directive.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().forEach {
     if (it !is GQLField) {

@@ -1,6 +1,5 @@
 package test
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCache
 import com.apollographql.apollo3.cache.normalized.api.Record
@@ -10,7 +9,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-@OptIn(ApolloExperimental::class)
 class MemoryCacheTest {
   @Test
   fun testDoesNotExpireBeforeMillis() = runTest {
