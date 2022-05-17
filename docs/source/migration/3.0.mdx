@@ -304,11 +304,15 @@ apolloClient.subscription(subscription).toFlow()
 
 Apollo Kotlin 3 ships an optional [apollo-adapters](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-adapters/com.apollographql.apollo3.adapter/index.html) artifact that includes adapters for common scalar types like:
 
-* `InstantAdapter` for `kotlinx.datetime.Instant` ISO8601 dates
-* `LocalDateAdapter` for `kotlinx.datetime.LocalDate` ISO8601 dates
+* `KotlinxInstantAdapter` for `kotlinx.datetime.Instant` ISO8601 dates
+* `JavaInstantAdapter` for `java.time.Instant` ISO8601 dates
+* `KotlinxLocalDateAdapter` for `kotlinx.datetime.LocalDate` ISO8601 dates
+* `JavaLocalDateAdapter` for `java.time.LocalDate` ISO8601 dates
+* `KotlinxLocalDateTimeAdapter` for `kotlinx.datetime.LocalDateTime` ISO8601 dates
+* `JavaLocalDateTimeAdapter` for `java.time.LocalDateTime` ISO8601 dates
+* `JavaOffsetDateTimeAdapter` for `java.time.OffsetDateTime` ISO8601 dates
 * `DateAdapter` for `java.util.Date` ISO8601 dates
-* `LongAdapter` for `java.lang.Long`
-* `BigDecimalAdapter` for a MPP `BigDecimal` class holding big decimal values
+* `BigDecimalAdapter` for multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values
 
 To include them, add this dependency to your gradle file:
 
@@ -764,4 +768,3 @@ response.executionContext[OkHttpExecutionContext].response.code
 // With
 response.executionContext[HttpInfo]?.statusCode
 ```
-
