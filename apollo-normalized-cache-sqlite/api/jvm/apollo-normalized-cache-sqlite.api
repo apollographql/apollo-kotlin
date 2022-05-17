@@ -10,19 +10,19 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 }
 
 public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory : com/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory {
-	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory$Companion;
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Properties;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Properties;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Properties;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;ZLjava/lang/String;)V
 	public synthetic fun create ()Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCache;
 	public fun create ()Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache;
 }
 
-public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory$Companion {
-}
-
-public final class com/apollographql/apollo3/cache/normalized/sql/_createSqlNormalizedCacheFactoryKt {
-	public static final fun createSqlNormalizedCacheFactory (Ljava/lang/String;Z)Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCacheFactory;
+public final class com/apollographql/apollo3/cache/normalized/sql/internal/FactoryImplementationsKt {
+	public static final fun createDriver (Ljava/lang/String;Ljava/lang/String;Lcom/squareup/sqldelight/db/SqlDriver$Schema;)Lcom/squareup/sqldelight/db/SqlDriver;
+	public static final fun createOrMigrateSchema (Lcom/squareup/sqldelight/db/SqlDriver;Lcom/squareup/sqldelight/db/SqlDriver$Schema;)V
 }
 

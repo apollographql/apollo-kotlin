@@ -4,14 +4,15 @@ import android.content.Context
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.internal.json.JsonDatabase
-import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
+import com.apollographql.apollo3.cache.normalized.sql.internal.createDriver
+import com.apollographql.apollo3.cache.normalized.sql.internal.createRecordDatabase
+import com.apollographql.apollo3.cache.normalized.sql.internal.getSchema
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 
-actual class SqlNormalizedCacheFactory internal actual constructor(
-    driver: SqlDriver,
-    withAge: Boolean,
+actual class SqlNormalizedCacheFactory internal constructor(
+    private val driver: SqlDriver,
+    private val withDates: Boolean,
 ) : NormalizedCacheFactory() {
 
   /**
@@ -25,22 +26,22 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
       name: String? = "apollo.db",
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
       useNoBackupDirectory: Boolean = false,
-      withAge: Boolean = false,
+      withDates: Boolean = false,
   ) : this(
       AndroidSqliteDriver(
-          getSchema(withAge),
+          getSchema(withDates),
           context.applicationContext,
           name,
           factory,
           useNoBackupDirectory = useNoBackupDirectory
-      )
+      ),
+      withDates
   )
 
-  private val driver = driver
-  private val withAge = withAge
+  actual constructor(name: String?, withDates: Boolean): this(createDriver(name, null, getSchema(withDates)), withDates)
 
   override fun create(): SqlNormalizedCache {
-    return SqlNormalizedCache(createRecordDatabase(driver, withAge))
+    return SqlNormalizedCache(createRecordDatabase(driver, withDates))
   }
 }
 

@@ -8,9 +8,13 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.internal.json.JsonDatabase
 import com.apollographql.apollo3.cache.internal.json.JsonQueries
 import com.apollographql.apollo3.cache.internal.json.RecordForKey
+import com.apollographql.apollo3.cache.internal.json.Records
+import com.apollographql.apollo3.cache.internal.json.RecordsForKeys
 import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.squareup.sqldelight.Query
+import com.squareup.sqldelight.TransactionWithReturn
+import com.squareup.sqldelight.TransactionWithoutReturn
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -20,7 +24,7 @@ import kotlin.test.assertTrue
 
 class SqlNormalizedCacheTest {
 
-  private val cache: NormalizedCache = SqlNormalizedCacheFactory(createDriver()).create()
+  private val cache: NormalizedCache = SqlNormalizedCacheFactory(null, false).create()
 
   @BeforeTest
   fun setUp() {
@@ -239,9 +243,65 @@ class SqlNormalizedCacheTest {
     assertEquals("bad cache", throwable!!.cause!!.message)
   }
 
-  private class BadCacheQueries(goodCacheQueries: JsonQueries = JsonDatabase(createDriver()).jsonQueries) : JsonQueries by goodCacheQueries {
+  private class BadCacheQueries : JsonQueries  {
+    override fun <T : Any> recordForKey(key: String, mapper: (key: String, record: String) -> T): Query<T> {
+      TODO("Not yet implemented")
+    }
+
     override fun recordForKey(key: String): Query<RecordForKey> {
       throw Exception("bad cache")
+    }
+
+    override fun <T : Any> recordsForKeys(key: Collection<String>, mapper: (key: String, record: String) -> T): Query<T> {
+      TODO("Not yet implemented")
+    }
+
+    override fun recordsForKeys(key: Collection<String>): Query<RecordsForKeys> {
+      TODO("Not yet implemented")
+    }
+
+    override fun <T : Any> selectRecords(mapper: (_id: Long, key: String, record: String) -> T): Query<T> {
+      TODO("Not yet implemented")
+    }
+
+    override fun selectRecords(): Query<Records> {
+      TODO("Not yet implemented")
+    }
+
+    override fun changes(): Query<Long> {
+      TODO("Not yet implemented")
+    }
+
+    override fun insert(key: String, record: String) {
+      TODO("Not yet implemented")
+    }
+
+    override fun update(record: String, key: String) {
+      TODO("Not yet implemented")
+    }
+
+    override fun delete(key: String) {
+      TODO("Not yet implemented")
+    }
+
+    override fun deleteRecords(key: Collection<String>) {
+      TODO("Not yet implemented")
+    }
+
+    override fun deleteRecordsWithKeyMatching(value: String, value_: String) {
+      TODO("Not yet implemented")
+    }
+
+    override fun deleteAll() {
+      TODO("Not yet implemented")
+    }
+
+    override fun transaction(noEnclosing: Boolean, body: TransactionWithoutReturn.() -> Unit) {
+      TODO("Not yet implemented")
+    }
+
+    override fun <R> transactionWithResult(noEnclosing: Boolean, bodyWithReturn: TransactionWithReturn<R>.() -> R): R {
+      TODO("Not yet implemented")
     }
   }
 

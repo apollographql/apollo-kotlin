@@ -34,6 +34,7 @@ ext.dep = [
         recyclerView          : "androidx.recyclerview:recyclerview:1.1.0",
         sqlite                : "androidx.sqlite:sqlite:${versions.androidxSqlite}",
         sqliteFramework       : "androidx.sqlite:sqlite-framework:${versions.androidxSqlite}",
+        startupRuntime        : "androidx.startup:startup-runtime:1.1.1",
     ],
     antlr                    : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",

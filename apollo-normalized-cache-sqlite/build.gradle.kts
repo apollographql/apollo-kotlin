@@ -9,11 +9,13 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
     packageName = "com.apollographql.apollo3.cache.internal.json"
     schemaOutputDirectory = file("sqldelight/json/schema")
     sourceFolders = listOf("sqldelight/json/")
+    dialect = "sqlite:3.18"
   }
   database("BlobDatabase") {
     packageName = "com.apollographql.apollo3.cache.internal.blob"
     schemaOutputDirectory = file("sqldelight/blob/schema")
     sourceFolders = listOf("sqldelight/blob/")
+    dialect = "sqlite:3.18"
   }
 }
 
@@ -62,6 +64,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
           api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
           implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
           implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
+          implementation(groovy.util.Eval.x(project, "x.dep.androidx.startupRuntime"))
         }
       }
       val androidTest by getting {
@@ -76,7 +79,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   }
 }
 
-if (System.getProperty("idea.sync.active") == null) {
+if (System.getProperty( "idea.sync.active") == null) {
   configure<com.android.build.gradle.LibraryExtension> {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 

@@ -1,13 +1,16 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.sql.internal.createDriver
+import com.apollographql.apollo3.cache.normalized.sql.internal.createRecordDatabase
+import com.apollographql.apollo3.cache.normalized.sql.internal.getSchema
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import java.util.Properties
 
-actual class SqlNormalizedCacheFactory internal actual constructor(
-    driver: SqlDriver,
-    withAge: Boolean,
+actual class SqlNormalizedCacheFactory internal constructor(
+    private val driver: SqlDriver,
+    private val withDates: Boolean,
 ) : NormalizedCacheFactory() {
   /**
    * @param url Database connection URL in the form of `jdbc:sqlite:path` where `path` is either blank
@@ -18,21 +21,14 @@ actual class SqlNormalizedCacheFactory internal actual constructor(
   constructor(
       url: String,
       properties: Properties = Properties(),
-      withAge: Boolean = false
-  ) : this(createDriverAndDatabase(url, properties, withAge), withAge)
+      withDates: Boolean = false,
+  ) : this(JdbcSqliteDriver(url, properties), withDates)
 
-  private val driver = driver
-  private val withAge = withAge
+  constructor(name: String?, withDates: Boolean, baseDir: String?) : this(createDriver(name, baseDir, getSchema(withDates)), withDates)
+  actual constructor(name: String?, withDates: Boolean) : this(name, withDates, null)
 
   override fun create(): SqlNormalizedCache {
-    return SqlNormalizedCache(createRecordDatabase(driver, withAge))
-  }
-
-  companion object {
-    private fun createDriverAndDatabase(url: String, properties: Properties, withAge: Boolean) =
-        JdbcSqliteDriver(url, properties).also {
-          getSchema(withAge = withAge).create(it)
-        }
+    return SqlNormalizedCache(createRecordDatabase(driver, withDates))
   }
 }
 
