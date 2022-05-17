@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-
 plugins {
   `embedded-kotlin`
 }
@@ -32,7 +30,7 @@ dependencies {
   // of the Gradle plugin
   if (System.getProperty("idea.sync.active") == null) {
     implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
-    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_7_0"))
+    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_21"))
   } else {
     implementation(groovy.util.Eval.x(project, "x.dep.kotlinPluginDuringIdeaSync"))
     runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10"))
