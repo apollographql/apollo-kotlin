@@ -124,9 +124,6 @@ ext.dep = [
     kotlinPluginDuringIdeaSync: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10",
     // The main kotlin version for build-logic and Gradle tests
     kotlinPlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.0-Beta",
-    // Used by the Apollo Gradle plugin because the Kotlin plugin is in the buildscript classpath already so there's no need to
-    // specify the version
-    kotlinPluginWithoutVersion: "org.jetbrains.kotlin:kotlin-gradle-plugin",
     turbine: "app.cash.turbine:turbine:0.7.0",
 ]
 ext.androidConfig = [
