@@ -25,22 +25,14 @@ dependencies {
   }
   implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-
-  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlin.reflect").toString()) {
-    because("AGP pulls kotlin-reflect with an older version and that triggers a warning in the Kotlin compiler.")
-  }
+  implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
   implementation(groovy.util.Eval.x(project, "x.dep.android.plugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleJapiCmpPlugin"))
   implementation(groovy.util.Eval.x(project, "x.dep.gradleMetalavaPlugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlinPluginWithoutVersion"))
-  implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
-  implementation(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
   implementation(groovy.util.Eval.x(project, "x.dep.vespene"))
-  implementation(groovy.util.Eval.x(project, "x.dep.gr8"))
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin
@@ -52,11 +44,14 @@ dependencies {
     runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10"))
   }
 
-  implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
-  implementation(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))
+  runtimeOnly(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
+  runtimeOnly(groovy.util.Eval.x(project, "x.dep.gradlePublishPlugin"))
+  runtimeOnly(groovy.util.Eval.x(project, "x.dep.benManesVersions"))
+  runtimeOnly(groovy.util.Eval.x(project, "x.dep.gr8"))
+  runtimeOnly(groovy.util.Eval.x(project, "x.dep.binaryCompatibilityValidator"))
   // XXX: This is only needed for tests. We could have different build logic for different
   // builds but this seems just overkill for now
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.allOpen"))
+  runtimeOnly(groovy.util.Eval.x(project, "x.dep.kotlin.allOpen"))
 }
 
 // This shuts down a warning in Kotlin 1.5.30:
