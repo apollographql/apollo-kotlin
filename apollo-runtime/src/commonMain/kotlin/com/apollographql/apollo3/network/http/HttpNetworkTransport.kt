@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.network.http
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -113,7 +112,6 @@ private constructor(
     return response.newBuilder().isLast(true).build()
   }
 
-  @OptIn(ApolloInternal::class)
   private suspend fun <D : Operation.Data> multipleResponses(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,

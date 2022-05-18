@@ -4,7 +4,6 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
 import okio.Buffer
@@ -52,7 +51,6 @@ class CompiledField internal constructor(
     return try {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
-      @OptIn(ApolloInternal::class)
       jsonWriter.writeAny(resolvedArguments, )
       jsonWriter.close()
       "${name}(${buffer.readUtf8()})"

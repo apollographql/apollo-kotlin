@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
@@ -17,7 +16,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class AutoPersistedQueriesTest {
   private lateinit var mockServer: MockServer
 

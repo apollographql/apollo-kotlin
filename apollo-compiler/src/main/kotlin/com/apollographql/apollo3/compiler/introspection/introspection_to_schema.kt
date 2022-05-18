@@ -33,7 +33,6 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
 import com.apollographql.apollo3.compiler.buffer
@@ -41,7 +40,6 @@ import okio.buffer
 import okio.source
 import java.io.File
 
-@OptIn(ApolloExperimental::class)
 private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionSchema, filePath: String?) {
   private val sourceLocation = SourceLocation(
       filePath = filePath,

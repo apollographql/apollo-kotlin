@@ -42,7 +42,6 @@ enum class Platform {
 expect fun platform(): Platform
 
 // Helpful for debugging, but not wanted in the final library - uncomment as needed
-//@OptIn(ApolloInternal::class)
 //fun log(message: String) {
 //  println("${currentTimeFormatted()} [${currentThreadName()}] $message")
 //}

@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.normalizedCache
@@ -16,7 +15,6 @@ import kotlinx.coroutines.launch
 import testFixtureToUtf8
 import kotlin.test.Test
 
-@OptIn(ApolloExperimental::class)
 class CancelTest {
   private lateinit var mockServer: MockServer
 

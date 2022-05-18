@@ -1,5 +1,4 @@
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpExpireTimeout
@@ -24,7 +23,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
-@OptIn(ApolloExperimental::class)
 class HttpCacheTest {
   lateinit var mockServer: MockServer
   lateinit var apolloClient: ApolloClient

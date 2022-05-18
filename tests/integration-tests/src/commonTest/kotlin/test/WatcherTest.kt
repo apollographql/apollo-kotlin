@@ -2,7 +2,6 @@ package test
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -44,7 +43,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.fail
 
-@OptIn(ApolloExperimental::class)
 class WatcherTest {
   private lateinit var apolloClient: ApolloClient
   private lateinit var store: ApolloStore

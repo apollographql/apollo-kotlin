@@ -1,18 +1,13 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.encodeToGraphQLSingleQuoted
-import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.google.common.truth.Truth
 import org.junit.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class StringEncodingTest {
   @Test
   fun `single_quotes quotes are escaped`() {

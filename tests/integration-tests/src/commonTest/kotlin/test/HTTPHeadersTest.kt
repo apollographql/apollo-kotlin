@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.api.json.buildJsonString
@@ -16,7 +15,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
-@OptIn(ApolloExperimental::class)
 class HTTPHeadersTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

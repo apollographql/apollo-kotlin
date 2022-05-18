@@ -1,12 +1,10 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo3.compiler.IncomingOptions
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -54,11 +52,9 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.kotlin.gradle.utils.`is`
 import javax.inject.Inject
 
 @CacheableTask
-@OptIn(ApolloExperimental::class)
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
   @get:Optional

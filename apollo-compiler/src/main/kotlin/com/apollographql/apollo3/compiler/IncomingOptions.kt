@@ -1,14 +1,11 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.apollographql.apollo3.compiler.introspection.toSchemaGQLDocument
 import java.io.File
 
@@ -22,7 +19,6 @@ class IncomingOptions(
     val schemaPackageName: String,
 ) {
   companion object {
-    @OptIn(ApolloExperimental::class)
     fun resolveSchema(schemaFiles: Collection<File>, rootFolders: List<String>): Pair<Schema, String> {
       check(schemaFiles.isNotEmpty()) {
         "No schema file found in:\n${rootFolders.joinToString("\n")}"

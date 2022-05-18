@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
@@ -30,7 +29,6 @@ object SchemaDownloader {
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
    */
-  @OptIn(ApolloExperimental::class)
   fun download(
       endpoint: String? = null,
       graph: String? = null,

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Error
@@ -30,7 +29,6 @@ internal object ResponseParser {
       var extensions: Map<String, Any?>? = null
       while (jsonReader.hasNext()) {
         @Suppress("UNCHECKED_CAST")
-        @OptIn(ApolloInternal::class)
         when (jsonReader.nextName()) {
           "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
           "errors" -> errors = jsonReader.readErrors()
@@ -85,13 +83,10 @@ internal object ResponseParser {
           path = readPath()
         }
         "extensions" -> {
-          @OptIn(ApolloInternal::class)
-
           extensions = readAny() as? Map<String, Any?>?
         }
         else -> {
           if (nonStandardFields == null) nonStandardFields = mutableMapOf()
-          @OptIn(ApolloInternal::class)
           nonStandardFields[name] = readAny()
         }
       }

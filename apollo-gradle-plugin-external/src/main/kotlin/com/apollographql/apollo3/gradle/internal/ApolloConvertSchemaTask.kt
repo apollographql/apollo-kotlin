@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
 import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
@@ -14,7 +13,6 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
 
-@OptIn(ApolloExperimental::class)
 abstract class ApolloConvertSchemaTask : DefaultTask() {
   @get:Input
   @get:Option(option = "from", description = "schema to convert from")

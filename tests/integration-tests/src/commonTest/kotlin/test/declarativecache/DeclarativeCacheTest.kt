@@ -1,7 +1,5 @@
 package test.declarativecache
 
-import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
@@ -10,8 +8,6 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.testing.runTest
 import declarativecache.GetAuthorQuery
 import declarativecache.GetBookQuery
@@ -24,7 +20,6 @@ import declarativecache.GetPromoLibraryQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class DeclarativeCacheTest {
 
   @Test

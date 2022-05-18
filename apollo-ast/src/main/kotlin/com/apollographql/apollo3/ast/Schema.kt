@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.buffer
 
 /**
@@ -170,7 +169,6 @@ class Schema(
     if (directives.isEmpty()) {
       return null
     }
-    @OptIn(ApolloExperimental::class)
     return directives.flatMap {
       (it.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
         // No need to check here, this should be done during validation

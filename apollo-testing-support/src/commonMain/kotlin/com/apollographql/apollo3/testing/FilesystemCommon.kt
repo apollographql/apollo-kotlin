@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.testing
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import okio.IOException
@@ -18,7 +17,6 @@ import kotlin.jvm.JvmName
  *
  * @param path: the path to the file, from the "tests" directory
  */
-@OptIn(ApolloExperimental::class)
 fun checkFile(actualText: String, path: String) {
   val updateTestFixtures = shouldUpdateTestFixtures()
   val expected = path.toTestsPath()
@@ -55,13 +53,11 @@ fun checkFile(actualText: String, path: String) {
   }
 }
 
-@OptIn(ApolloExperimental::class)
 private fun String.toTestsPath() = testsPath.toPath().resolve(this.toPath())
 
 /**
  * @param path: the path to the file, from the "tests" directory
  */
-@OptIn(ApolloExperimental::class)
 fun pathToUtf8(path: String): String {
   return HostFileSystem.openReadOnly(path.toTestsPath()).source().buffer().readUtf8()
 }
@@ -69,7 +65,6 @@ fun pathToUtf8(path: String): String {
 /**
  * @param path: the path to the file, from the "tests" directory
  */
-@OptIn(ApolloExperimental::class)
 fun pathToJsonReader(path: String): JsonReader {
   return HostFileSystem.openReadOnly(path.toTestsPath()).source().buffer().jsonReader()
 }

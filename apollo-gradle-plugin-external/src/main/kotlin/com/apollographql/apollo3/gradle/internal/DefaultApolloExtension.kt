@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -564,7 +563,6 @@ abstract class DefaultApolloExtension(
       task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)
-      @OptIn(ApolloExperimental::class)
       task.generateTestBuilders.set(service.generateTestBuilders)
       task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
       task.addJvmOverloads.set(service.addJvmOverloads)

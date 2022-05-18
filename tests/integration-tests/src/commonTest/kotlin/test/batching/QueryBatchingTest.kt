@@ -3,7 +3,6 @@ package test.batching
 import batching.GetLaunch2Query
 import batching.GetLaunchQuery
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
@@ -22,7 +21,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class QueryBatchingTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

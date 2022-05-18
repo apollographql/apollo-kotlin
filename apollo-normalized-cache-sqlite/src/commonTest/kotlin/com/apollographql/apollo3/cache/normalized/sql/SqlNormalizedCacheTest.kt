@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -208,7 +207,6 @@ class SqlNormalizedCacheTest {
     assertNull(cache.loadRecord("%1", CacheHeaders.NONE))
   }
 
-  @OptIn(ApolloExperimental::class)
   @Test
   fun exceptionCallsExceptionHandler() {
     val badCache = SqlNormalizedCache(BadCacheQueries())

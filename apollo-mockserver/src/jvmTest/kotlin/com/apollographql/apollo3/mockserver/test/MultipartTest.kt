@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.mockserver.test
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.mockserver.MockServer
@@ -11,7 +10,6 @@ import okhttp3.MultipartReader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class MultipartTest {
   private lateinit var mockServer: MockServer
 

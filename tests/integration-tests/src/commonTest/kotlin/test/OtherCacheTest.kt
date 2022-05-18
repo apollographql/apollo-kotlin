@@ -4,7 +4,6 @@ import IdCacheKeyGenerator
 import IdCacheResolver
 import assertEquals2
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -34,7 +33,6 @@ import kotlin.test.fail
 /**
  * Every other test that doesn't fit in the other files
  */
-@OptIn(ApolloExperimental::class)
 class OtherCacheTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

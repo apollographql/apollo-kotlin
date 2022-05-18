@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.http.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
@@ -23,7 +22,6 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-@OptIn(ApolloExperimental::class)
 @Suppress("BlockingMethodInNonBlockingContext")
 class CachingHttpInterceptorTest {
   private lateinit var mockServer: MockServer

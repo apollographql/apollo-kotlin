@@ -1,7 +1,6 @@
 package testnetworktransport
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
@@ -17,7 +16,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-@OptIn(ApolloExperimental::class)
 class CustomTestNetworkTransportHandlerTest {
   private lateinit var networkTransport: CustomTestNetworkTransport
   private lateinit var apolloClient: ApolloClient

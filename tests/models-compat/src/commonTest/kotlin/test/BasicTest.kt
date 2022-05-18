@@ -5,7 +5,6 @@ import codegen.models.HeroParentTypeDependentFieldQuery
 import codegen.models.MergedFieldWithSameShapeQuery
 import codegen.models.type.Episode
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -23,7 +22,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class BasicTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

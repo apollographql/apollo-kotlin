@@ -2,7 +2,6 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -242,7 +241,6 @@ private constructor(
     }
   }
 
-  @OptIn(ApolloInternal::class)
   override fun <D : Operation.Data> execute(
       request: ApolloRequest<D>,
   ): Flow<ApolloResponse<D>> {

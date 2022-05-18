@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
@@ -24,7 +23,6 @@ import java.io.File
  * better error messages
  */
 @JsonClass(generateAdapter = true)
-@OptIn(ApolloExperimental::class)
 data class ApolloMetadata(
     /**
      * Only non-null for the root module

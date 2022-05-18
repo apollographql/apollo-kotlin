@@ -2,7 +2,6 @@ package test
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
@@ -26,13 +25,11 @@ import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.testing.runTest
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import testFixtureToUtf8
 import kotlin.test.Test
 import assertEquals2 as assertEquals
 
-@OptIn(ApolloExperimental::class)
 class OptimisticCacheTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

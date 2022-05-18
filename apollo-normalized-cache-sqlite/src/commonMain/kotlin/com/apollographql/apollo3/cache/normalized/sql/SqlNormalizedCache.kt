@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -22,7 +21,6 @@ class SqlNormalizedCache internal constructor(
     private val cacheQueries: CacheQueries,
 ) : NormalizedCache() {
 
-  @OptIn(ApolloExperimental::class)
   override fun loadRecord(key: String, cacheHeaders: CacheHeaders): Record? {
     val record = try {
       cacheQueries.selectRecord(key)
@@ -43,7 +41,6 @@ class SqlNormalizedCache internal constructor(
     return nextCache?.loadRecord(key, cacheHeaders)
   }
 
-  @OptIn(ApolloExperimental::class)
   override fun loadRecords(keys: Collection<String>, cacheHeaders: CacheHeaders): Collection<Record> {
     val records = try {
       cacheQueries.selectRecords(keys)
@@ -82,7 +79,6 @@ class SqlNormalizedCache internal constructor(
     return selfRemoved + chainRemoved
   }
 
-  @OptIn(ApolloExperimental::class)
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
@@ -98,7 +94,6 @@ class SqlNormalizedCache internal constructor(
     }
   }
 
-  @OptIn(ApolloExperimental::class)
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()

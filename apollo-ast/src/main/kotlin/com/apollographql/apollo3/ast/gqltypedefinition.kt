@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.buffer
 
 // 5.5.2.3 Fragment spread is possible
@@ -25,7 +24,6 @@ fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean {
 
   val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
 
-  @OptIn(ApolloExperimental::class)
   val selections = stringValue.buffer().parseAsGQLSelections().valueAssertNoErrors()
 
   return selections.filterIsInstance<GQLField>()

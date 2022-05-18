@@ -1,7 +1,6 @@
 package test
 
 import codegen.models.AllPlanetsQuery
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.api.json.jsonReader
@@ -43,7 +42,6 @@ class ParseResponseBodyTest {
     assertEquals(firstPlanet?.filmConnection?.films?.get(0)?.filmFragment?.producers, listOf("Gary Kurtz", "Rick McCallum"))
   }
 
-  @OptIn(ApolloInternal::class)
   @Test
   @Throws(Exception::class)
   fun operationJsonWriter() {
@@ -61,9 +59,7 @@ class ParseResponseBodyTest {
      *
      * If this fails, you can update "OperationJsonWriter.json" in models-response-based
      */
-    @OptIn(ApolloInternal::class)
     val expectedMap = Buffer().writeUtf8(expected).jsonReader().readAny()
-    @OptIn(ApolloInternal::class)
     val actualMap = Buffer().writeUtf8(actual).jsonReader().readAny()
 
     assertEquals(expectedMap, actualMap)

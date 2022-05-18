@@ -1,6 +1,5 @@
 package test.nonnull
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.jsonReader
@@ -13,7 +12,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.fail
 
-@OptIn(ApolloExperimental::class)
 class NonNullTest {
   private val field1Response = """
       {

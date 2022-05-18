@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -44,7 +43,6 @@ object RecordFieldJsonAdapter {
   @Suppress("UNCHECKED_CAST")
   fun fromJson(jsonFieldSource: String): Map<String, Any?>? {
     val buffer = Buffer().write(jsonFieldSource.encodeUtf8())
-    @OptIn(ApolloInternal::class)
     return BufferedSourceJsonReader(buffer)
         .readAny()
         ?.deserializeCacheKeys() as Map<String, Any?>?

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.compiler.introspection.toGQLDocument
@@ -11,7 +10,6 @@ import org.junit.Test
 import java.io.File
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class SdlWritingTest {
 
   /**

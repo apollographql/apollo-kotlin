@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.graphql.ast.test
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.TransformResult
@@ -11,7 +10,6 @@ import com.apollographql.apollo3.ast.transform
 import org.junit.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class TransformTest {
   private val query = """
         query GetRepo {

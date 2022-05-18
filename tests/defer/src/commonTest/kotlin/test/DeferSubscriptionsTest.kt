@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.testing.runTest
 import defer.WithFragmentSpreadsSubscription
@@ -18,7 +17,6 @@ import kotlin.test.assertEquals
  * It can be manually tested by running the server from https://github.com/BoD/DeferDemo/tree/master/helix
  */
 @Ignore
-@OptIn(ApolloExperimental::class)
 class DeferSubscriptionsTest {
   private lateinit var apolloClient: ApolloClient
 

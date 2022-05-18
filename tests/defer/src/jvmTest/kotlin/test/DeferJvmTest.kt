@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.http.HttpFetchPolicy
 import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.httpFetchPolicy
@@ -20,7 +19,6 @@ import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-@OptIn(ApolloExperimental::class)
 class DeferJvmTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

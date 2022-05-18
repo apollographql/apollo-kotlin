@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlin.reflect.KClass
 
-@OptIn(ApolloInternal::class)
 internal class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheKeyGenerator: CacheKeyGenerator,

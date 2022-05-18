@@ -1,7 +1,6 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
@@ -22,7 +21,6 @@ import org.junit.Test
 import reserved.GetRandomQuery
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 @ApolloInternal
 class NoQueryDocumentTest {
   private val queryDocument = """

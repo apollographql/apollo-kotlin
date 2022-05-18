@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.introspection.toSchema
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import java.io.File
 
-@OptIn(ApolloExperimental::class)
 internal object TestUtils {
   internal fun shouldUpdateTestFixtures(): Boolean {
     if (System.getenv("updateTestFixtures") != null) {

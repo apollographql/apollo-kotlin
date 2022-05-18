@@ -2,7 +2,6 @@ package test
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -30,7 +29,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
-@OptIn(ApolloExperimental::class)
 class WatcherErrorHandlingTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient

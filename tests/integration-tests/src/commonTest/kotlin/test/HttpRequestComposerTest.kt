@@ -2,7 +2,6 @@ package test
 
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.integration.httpcache.AllPlanetsQuery
@@ -13,7 +12,6 @@ import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ApolloExperimental::class)
 class HttpRequestComposerTest {
   private lateinit var mockServer: MockServer
 

@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
@@ -150,7 +149,6 @@ class AppSyncWsProtocol(
             ))
 
     private fun Map<String, Any?>.base64Encode(): String {
-      @OptIn(ApolloInternal::class)
       return buildJsonByteString {
         writeAny(this@base64Encode)
       }.base64()
