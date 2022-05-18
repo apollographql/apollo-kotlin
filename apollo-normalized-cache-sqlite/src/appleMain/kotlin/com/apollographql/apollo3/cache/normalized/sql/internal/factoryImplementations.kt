@@ -6,9 +6,10 @@ import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 import com.squareup.sqldelight.drivers.native.wrapConnection
 
 
-actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
+internal actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
   val databaseConfiguration = DatabaseConfiguration(
-      name = name,
+      name = name ?: "memoryDb",
+      inMemory = name == null,
       version = schema.version,
       create = { connection ->
         wrapConnection(connection) { schema.create(it) }
@@ -23,6 +24,6 @@ actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schem
   return NativeSqliteDriver(databaseConfiguration, 1)
 }
 
-actual fun createOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
+internal actual fun maybeCreateOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
   // no op
 }

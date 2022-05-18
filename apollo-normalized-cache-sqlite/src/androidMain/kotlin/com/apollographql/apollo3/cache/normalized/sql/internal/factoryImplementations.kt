@@ -6,7 +6,7 @@ import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
 
 
-actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
+internal actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
   check(baseDir == null) {
     "Apollo: Android SqlNormalizedCacheFactory doesn't support 'baseDir'"
   }
@@ -18,6 +18,6 @@ actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schem
   )
 }
 
-actual fun createOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
+internal actual fun maybeCreateOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
   // no-op
 }

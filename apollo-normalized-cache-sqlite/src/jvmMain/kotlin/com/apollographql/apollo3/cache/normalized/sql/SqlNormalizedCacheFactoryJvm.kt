@@ -24,6 +24,13 @@ actual class SqlNormalizedCacheFactory internal constructor(
       withDates: Boolean = false,
   ) : this(JdbcSqliteDriver(url, properties), withDates)
 
+  /**
+   * @param name the name of the database or null for an in-memory database
+   * @param withDates whether to account for dates in the database.
+   * @param baseDir the baseDirectory where to store the database.
+   * If [baseDir] does not exist, it will be created
+   * If [baseDir] is a relative path, it will be interpreted relative to the current working directory
+   */
   constructor(name: String?, withDates: Boolean, baseDir: String?) : this(createDriver(name, baseDir, getSchema(withDates)), withDates)
   actual constructor(name: String?, withDates: Boolean) : this(name, withDates, null)
 

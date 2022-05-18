@@ -21,8 +21,3 @@ public final class com/apollographql/apollo3/cache/normalized/sql/SqlNormalizedC
 	public fun create ()Lcom/apollographql/apollo3/cache/normalized/sql/SqlNormalizedCache;
 }
 
-public final class com/apollographql/apollo3/cache/normalized/sql/internal/FactoryImplementationsKt {
-	public static final fun createDriver (Ljava/lang/String;Ljava/lang/String;Lcom/squareup/sqldelight/db/SqlDriver$Schema;)Lcom/squareup/sqldelight/db/SqlDriver;
-	public static final fun createOrMigrateSchema (Lcom/squareup/sqldelight/db/SqlDriver;Lcom/squareup/sqldelight/db/SqlDriver$Schema;)V
-}
-

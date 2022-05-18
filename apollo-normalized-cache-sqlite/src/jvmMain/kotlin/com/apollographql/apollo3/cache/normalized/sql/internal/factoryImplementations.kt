@@ -12,7 +12,7 @@ private fun String?.toUrl(baseDir: String?): String {
   } else {
     val dir = baseDir?.let { File(it) } ?: File(System.getProperty("user.home")).resolve(".apollo")
     dir.mkdirs()
-    "${JdbcSqliteDriver.IN_MEMORY}${dir.absolutePath}"
+    "${JdbcSqliteDriver.IN_MEMORY}${dir.resolve(this).absolutePath}"
   }
 }
 
@@ -22,11 +22,11 @@ internal fun createDriver(name: String?, baseDir: String?, properties: Propertie
   return JdbcSqliteDriver(name.toUrl(baseDir), properties)
 }
 
-actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
-  return createDriver(name.toUrl(baseDir), baseDir, Properties())
+internal actual fun createDriver(name: String?, baseDir: String?, schema: SqlDriver.Schema): SqlDriver {
+  return createDriver(name, baseDir, Properties())
 }
 
-actual fun createOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
+internal actual fun maybeCreateOrMigrateSchema(driver: SqlDriver, schema: SqlDriver.Schema) {
   val oldVersion = driver.executeQuery(null, "PRAGMA $versionPragma", 0).use { cursor ->
     if (cursor.next()) {
       cursor.getLong(0)?.toInt()

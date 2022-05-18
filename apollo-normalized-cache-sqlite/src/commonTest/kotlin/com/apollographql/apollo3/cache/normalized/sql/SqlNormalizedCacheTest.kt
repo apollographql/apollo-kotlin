@@ -297,11 +297,11 @@ class SqlNormalizedCacheTest {
     }
 
     override fun transaction(noEnclosing: Boolean, body: TransactionWithoutReturn.() -> Unit) {
-      TODO("Not yet implemented")
+      throw Exception("bad cache")
     }
 
     override fun <R> transactionWithResult(noEnclosing: Boolean, bodyWithReturn: TransactionWithReturn<R>.() -> R): R {
-      TODO("Not yet implemented")
+      throw Exception("bad cache")
     }
   }
 
