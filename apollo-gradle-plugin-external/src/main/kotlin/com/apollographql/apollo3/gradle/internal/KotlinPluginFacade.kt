@@ -21,13 +21,9 @@ fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLan
     "1.5" -> TargetLanguage.KOTLIN_1_5
     null -> {
       // User didn't specify a version: defaults to the Kotlin plugin's version
-      val majorMinor = project.getKotlinPluginVersion()!!.take(3)
-      if (majorMinor == "1.4") {
-        TargetLanguage.KOTLIN_1_4
-      } else {
-        // For "1.5" *and* unknown (must be higher) versions use "1.5"
-        TargetLanguage.KOTLIN_1_5
-      }
+      // Commented for now as the only possible outcome is to target 1.5
+      // val majorMinor = project.getKotlinPluginVersion()!!.take(3)
+      TargetLanguage.KOTLIN_1_5
     }
     else -> error("Apollo: languageVersion '$userSpecified' is not supported, must be either '1.4' or '1.5'")
   }
@@ -55,7 +51,7 @@ internal fun checkKotlinPluginVersion(project: Project) {
     else -> false
   }
   require(isKotlinSupported) {
-    "Apollo Kotlin requires Kotlin plugin version 1.4 or more (found '${project.getKotlinPluginVersion()}')"
+    "Apollo Kotlin requires Kotlin plugin version 1.5 or more (found '${project.getKotlinPluginVersion()}')"
   }
 }
 
