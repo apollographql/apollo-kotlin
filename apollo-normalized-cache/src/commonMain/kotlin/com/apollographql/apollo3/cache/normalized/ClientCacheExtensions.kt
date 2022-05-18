@@ -6,7 +6,6 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
@@ -311,6 +310,15 @@ fun <T> MutableExecutionOptions<T>.storePartialResponses(storePartialResponses: 
 )
 
 /**
+ * @param storeReceiveDate Whether to store the receive date.
+ *
+ * Default: false
+ */
+fun <T> MutableExecutionOptions<T>.storeReceiveDate(storeReceiveDate: Boolean) = addExecutionContext(
+    StoreReceiveDateContext(storeReceiveDate)
+)
+
+/**
  * @param cacheHeaders additional cache headers to be passed to your [com.apollographql.apollo3.cache.normalized.api.NormalizedCache]
  */
 fun <T> MutableExecutionOptions<T>.cacheHeaders(cacheHeaders: CacheHeaders) = addExecutionContext(
@@ -353,6 +361,9 @@ internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
 
 internal val <D : Operation.Data> ApolloRequest<D>.storePartialResponses
   get() = executionContext[StorePartialResponsesContext]?.value ?: false
+
+internal val <D : Operation.Data> ApolloRequest<D>.storeReceiveDate
+  get() = executionContext[StoreReceiveDateContext]?.value ?: false
 
 internal val <D : Operation.Data> ApolloRequest<D>.emitCacheMisses
   get() = executionContext[EmitCacheMissesContext]?.value ?: false
@@ -524,6 +535,14 @@ internal class StorePartialResponsesContext(val value: Boolean) : ExecutionConte
 
   companion object Key : ExecutionContext.Key<StorePartialResponsesContext>
 }
+
+internal class StoreReceiveDateContext(val value: Boolean) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<StoreReceiveDateContext>
+}
+
 
 internal class WriteToCacheAsynchronouslyContext(val value: Boolean) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>

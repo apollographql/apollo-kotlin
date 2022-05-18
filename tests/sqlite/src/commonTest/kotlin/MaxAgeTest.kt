@@ -14,6 +14,7 @@ import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.storeReceiveDate
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.runTest
@@ -22,19 +23,18 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-expect fun normalizedCacheFactory(): SqlNormalizedCacheFactory
-
 class MaxAgeTest {
   @Test
   fun expiredQueryThrows() = runTest {
     val maxAge = 10
     val client = ApolloClient.Builder()
         .normalizedCache(
-            normalizedCacheFactory(),
+            SqlNormalizedCacheFactory(null, true),
             TypePolicyCacheKeyGenerator,
             MaxAgeCacheResolver(maxAge)
         )
-        .serverUrl("")
+        .storeReceiveDate(true)
+        .serverUrl("unused")
         .build()
     val query = GetUserQuery()
     val data = GetUserQuery.Data(GetUserQuery.User("John", "john@doe.com"))

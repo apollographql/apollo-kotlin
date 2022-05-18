@@ -20,7 +20,6 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 
 internal class DefaultApolloStore(
@@ -174,7 +173,7 @@ internal class DefaultApolloStore(
           rootKey = cacheKey.key
       ).values
 
-      cache.merge(records, cacheHeaders.withDate())
+      cache.merge(records, cacheHeaders)
     }
 
     if (publish) {
@@ -202,7 +201,7 @@ internal class DefaultApolloStore(
           cacheKeyGenerator = objectIdGenerator
       )
 
-      records to cache.merge(records.values.toList(), cacheHeaders.withDate())
+      records to cache.merge(records.values.toList(), cacheHeaders)
     }
     if (publish) {
       publish(changedKeys)
@@ -278,12 +277,6 @@ internal class DefaultApolloStore(
 
   override fun dispose() {
     cacheHolder.dispose()
-  }
-
-  companion object {
-    private fun CacheHeaders.withDate(): CacheHeaders {
-      return newBuilder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis()/1000).toString()).build()
-    }
   }
 }
 
