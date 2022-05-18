@@ -27,6 +27,7 @@ import com.apollographql.apollo3.api.test.DefaultTestResolver
 import com.apollographql.apollo3.api.test.TestResolver
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.fail
@@ -62,7 +63,7 @@ class TestBuildersTest {
       HeroAndFriendsWithTypenameQuery.Data {}
       fail("An exception was expected")
     } catch (e: IllegalStateException) {
-      assertEquals("__typename is not known at compile-time for this type. Please specify it explicitely", e.message)
+      assertEquals("__typename is not known at compile-time for this type. Please specify it explicitly", e.message)
     }
   }
 
@@ -256,4 +257,33 @@ class TestBuildersTest {
     assertIs<StarshipType>(sealedClass)
   }
 
+
+  @Test
+  fun erroorIfForgotToAssignField() {
+    val e1 = assertFailsWith<IllegalStateException>() {
+      AllPlanetsQuery.Data {
+        /* allPlanets = */ allPlanets {
+          planets = listOf(
+              planet {
+                name = "Tatoine"
+              }
+          )
+        }
+      }
+    }
+    assertEquals("Builder function was called but its result was not assigned to the corresponding field `allPlanets` which is certainly a mistake", e1.message)
+
+    val e2 = assertFailsWith<IllegalStateException>() {
+      AllPlanetsQuery.Data {
+        allPlanets = allPlanets {
+          /* planets = listOf( */
+          planet {
+            name = "Tatoine"
+          }
+          /* ) */
+        }
+      }
+    }
+    assertEquals("Builder function was called but its result was not assigned to the corresponding field `planets` which is certainly a mistake", e2.message)
+  }
 }

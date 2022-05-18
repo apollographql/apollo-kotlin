@@ -42,7 +42,7 @@ class TestBuildersTest {
       HeroAndFriendsWithTypenameQuery.Data {}
       fail("An exception was expected")
     } catch (e: IllegalStateException) {
-      assertEquals("__typename is not known at compile-time for this type. Please specify it explicitely", e.message)
+      assertEquals("__typename is not known at compile-time for this type. Please specify it explicitly", e.message)
     }
   }
 

@@ -168,6 +168,7 @@ internal data class TProperty(
 
 internal data class TCtor(
     val kotlinName: String,
+    val responseName: String,
     val id: String,
 )
 
@@ -182,7 +183,13 @@ private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
   val ctors = if (leafType is IrModelType) {
     val leafPath = (leafType as? IrModelType)?.path
     val modelGroup = modelGroups.single { it.baseModelId == leafPath }
-    modelGroup.models.filter { !it.isInterface }.map { TCtor(it.modelName.decapitalizeFirstLetter(), it.id) }
+    modelGroup.models.filter { !it.isInterface }.map {
+      TCtor(
+          kotlinName = it.modelName.decapitalizeFirstLetter(),
+          responseName = info.responseName,
+          id = it.id
+      )
+    }
   } else {
     emptyList()
   }
