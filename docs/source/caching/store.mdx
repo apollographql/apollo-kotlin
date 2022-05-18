@@ -108,3 +108,7 @@ val data = apolloClient.apolloStore.readFragment(BookDetailsImpl(locale = "en-US
 
 println("Title=${data.title}")
 ```
+
+## Clearing the cache
+
+Call `apolloClient.apolloStore.clearAll()` to clear the cache of all entries.
