@@ -13,7 +13,9 @@ internal fun createRecordDatabase(driver: SqlDriver, withDates: Boolean): Record
   val tableNames = mutableListOf<String>()
 
   try {
-    driver.executeQuery(null, "SELECT name FROM sqlite_schema WHERE type='table' ORDER BY name;", 0).use { cursor ->
+    // https://sqlite.org/forum/info/d90adfbb0a6eea88
+    // The name is sqlite_schema these days but older versions use sqlite_master and sqlite_master is recognized everywhere so use that
+    driver.executeQuery(null, "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;", 0).use { cursor ->
       while (cursor.next()) {
         tableNames.add(cursor.getString(0) ?: "")
       }
