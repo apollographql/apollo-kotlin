@@ -442,13 +442,14 @@ val response = apolloClient.query(request)
 Watchers now default to a `CacheOnly` refetchPolicy instead `CACHE_FIRST`. To keep behaviour unchanged, set a `refetchPolicy` on your watchers:
 
 ```kotlin
-val response = apolloClient.subscribe(subscription)
+val response = apolloClient.query(query)
+                      .watcher()
                       .toFlow()
 
 // With
-val response = apolloClient.subscription(subscription)
+val response = apolloClient.query(query)
                       .refetchPolicy(CacheFirst)
-                      .toFlow()
+                      .watch()
 ```
 
 #### `CacheKeyResolver`
