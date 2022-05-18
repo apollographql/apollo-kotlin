@@ -30,4 +30,5 @@ apollo {
   generateTestBuilders.set(true)
   customScalarsMapping.put("Date", "kotlin.Long")
   codegenModels.set("responseBased")
+  sealedClassesForEnumsMatching.set(setOf("StarshipType"))
 }

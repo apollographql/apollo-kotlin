@@ -104,7 +104,7 @@ internal class TBuilderBuilder(
         .add("resolve(%S, %L", responseName, gqlType!!.codeBlock(context))
         .apply {
           if (enumName != null) {
-            add(", %M().map { it.name }", MemberName(context.resolver.resolveSchemaType(enumName).nestedClass("Companion"), "knownValues"))
+            add(", %M().map { it.rawValue }", MemberName(context.resolver.resolveSchemaType(enumName).nestedClass("Companion"), "knownValues"))
           } else {
             add(", emptyList()")
           }

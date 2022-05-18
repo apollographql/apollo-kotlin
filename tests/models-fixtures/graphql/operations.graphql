@@ -126,3 +126,11 @@ query HeroHumanOrDroid($episode: Episode) {
         }
     }
 }
+
+query Starship($id: ID!) {
+    starship(id: $id) {
+        id
+        name
+        starshipType
+    }
+}
