@@ -51,7 +51,7 @@ internal fun checkKotlinPluginVersion(project: Project) {
 
   val isKotlinSupported = when {
     version[0] > 1 -> true
-    version[0] == 1 -> version[1] >= 4
+    version[0] == 1 -> version[1] >= 5
     else -> false
   }
   require(isKotlinSupported) {
