@@ -1,6 +1,5 @@
 public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitializer : androidx/startup/Initializer {
 	public static final field Companion Lcom/apollographql/apollo3/cache/normalized/sql/ApolloInitializer$Companion;
-	public static field context Landroid/content/Context;
 	public fun <init> ()V
 	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
 	public fun create (Landroid/content/Context;)V
@@ -8,8 +7,6 @@ public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitiali
 }
 
 public final class com/apollographql/apollo3/cache/normalized/sql/ApolloInitializer$Companion {
-	public final fun getContext ()Landroid/content/Context;
-	public final fun setContext (Landroid/content/Context;)V
 }
 
 public final class com/apollographql/apollo3/cache/normalized/sql/BuildConfig {

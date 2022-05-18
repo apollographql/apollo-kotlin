@@ -79,7 +79,7 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   }
 }
 
-if (System.getProperty( "idea.sync.active") == null) {
+if (System.getProperty("idea.sync.active") == null) {
   configure<com.android.build.gradle.LibraryExtension> {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
@@ -92,7 +92,7 @@ if (System.getProperty( "idea.sync.active") == null) {
 
   tasks.named("lint") {
     /**
-     * lint fails with:
+     * lint warns with:
      *
      * ```
      * Could not load custom lint check jar file /Users/mbonnin/.gradle/caches/transforms-3/a58c406cc84b74815c738fa583c867e0/transformed/startup-runtime-1.1.1/jars/lint.jar

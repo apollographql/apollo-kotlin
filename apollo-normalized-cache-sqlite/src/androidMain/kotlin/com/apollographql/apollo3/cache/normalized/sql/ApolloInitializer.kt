@@ -14,6 +14,6 @@ class ApolloInitializer: Initializer<Unit> {
   }
 
   companion object {
-    lateinit var context: Context
+    internal lateinit var context: Context
   }
 }
