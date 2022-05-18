@@ -118,8 +118,8 @@ ext.dep = [
     graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:5.3.0",
     testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
     binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC",
-    // For Gradle integration tests to make sure we stay compatible with 1.4.0
-    kotlinPluginMin: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0",
+    // For Gradle integration tests to make sure we stay compatible with 1.5.0
+    kotlinPluginMin: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0",
     // See https://youtrack.jetbrains.com/issue/KTIJ-21583/HMPP:-1.6.20-breaks-autocomplete-in-multiplatform-composite-buil#focus=Comments-27-6022244.0-0
     kotlinPluginDuringIdeaSync: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10",
     // The main kotlin version for build-logic and Gradle tests

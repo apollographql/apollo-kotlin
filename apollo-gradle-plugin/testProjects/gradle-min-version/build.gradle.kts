@@ -16,7 +16,7 @@ buildscript {
   }
 }
 
-apply(plugin = "org.jetbrains.kotlin.jvm")
+apply(plugin = "java")
 apply(plugin = "com.apollographql.apollo3")
 
 repositories {

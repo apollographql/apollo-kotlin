@@ -378,8 +378,11 @@ interface Service {
   /**
    * Target language version for the generated code.
    *
-   * Only valid when [generateKotlinModels] is `true`
-   * Must be either "1.4" or "1.5"
+   * Only valid when [generateKotlinModels] is `true`.
+   *
+   * Must be either "1.4" or "1.5".
+   *
+   * Note: "1.4", while still supported, is not useful since Apollo Kotlin requires Kotlin 1.5+. It is considered deprecated.
    *
    * Using an higher languageVersion allows generated code to use more language features like
    * sealed interfaces in Kotlin 1.5 for an example.
