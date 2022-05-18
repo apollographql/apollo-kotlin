@@ -108,6 +108,7 @@ if (System.getProperty("idea.sync.active") == null) {
     if (name.endsWith("UnitTest")) {
       /**
        * Because there is no App Startup in Android unit tests, the Android tests
+       * fail at runtime so ignore them
        * We could make the Android unit tests use the Jdbc driver if we really wanted to
        */
       enabled = false
