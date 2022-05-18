@@ -5,13 +5,16 @@ import codegen.models.BirthdateQuery
 import codegen.models.EpisodeQuery
 import codegen.models.HeroAndFriendsWithTypenameQuery
 import codegen.models.MergedFieldWithSameShapeQuery
+import codegen.models.StarshipQuery
 import codegen.models.test.AllPlanetsQuery_TestBuilder.Data
 import codegen.models.test.BirthdateQuery_TestBuilder.Data
 import codegen.models.test.EpisodeQuery_TestBuilder.Data
 import codegen.models.test.HeroAndFriendsWithTypenameQuery_TestBuilder.Data
 import codegen.models.test.MergedFieldWithSameShapeQuery_TestBuilder.Data
+import codegen.models.test.StarshipQuery_TestBuilder.Data
 import codegen.models.type.Date
 import codegen.models.type.Episode
+import codegen.models.type.StarshipType
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
@@ -162,7 +165,12 @@ class TestBuildersTest {
     val defaultFloat = 7.0
 
     val myTestResolver = object : TestResolver {
-      override fun <T> resolve(responseName: String, compiledType: CompiledType, enumValues: List<String>, ctors: Array<out () -> Map<String, Any?>>?): T {
+      override fun <T> resolve(
+          responseName: String,
+          compiledType: CompiledType,
+          enumValues: List<String>,
+          ctors: Array<out () -> Map<String, Any?>>?,
+      ): T {
         return when (compiledType) {
           is CompiledNotNullType -> resolve(responseName, compiledType.ofType, enumValues, ctors)
           is CompiledListType -> listOf(resolve<Any>(responseName, compiledType.ofType, enumValues, ctors))
@@ -228,4 +236,24 @@ class TestBuildersTest {
       assertIs<Episode>(it)
     }
   }
+
+  @Test
+  fun enumAsSealedClass() {
+    val data = StarshipQuery.Data {
+      starship = starship {
+        starshipType = StarshipType.STAR_CRUISER.rawValue
+      }
+    }
+    assertEquals(StarshipType.STAR_CRUISER, data.starship?.starshipType)
+  }
+
+  @Test
+  fun enumAsSealedClassResolve() {
+    val data = StarshipQuery.Data {
+    }
+
+    val sealedClass = data.starship?.starshipType
+    assertIs<StarshipType>(sealedClass)
+  }
+
 }

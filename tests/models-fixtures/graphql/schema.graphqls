@@ -248,6 +248,14 @@ type Starship {
     length ( unit: LengthUnit = METER): Float
 
     coordinates: [[Float!]!]
+
+    starshipType: StarshipType
+}
+
+enum StarshipType {
+    BATTLE_CRUISER
+    COMBAT_CRUISER
+    STAR_CRUISER
 }
 
 """
