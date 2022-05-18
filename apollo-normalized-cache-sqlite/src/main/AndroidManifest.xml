@@ -6,7 +6,7 @@
         android:authorities="${applicationId}.androidx-startup"
         android:exported="false"
         tools:node="merge">
-      <!-- This entry makes ExampleLoggerInitializer discoverable. -->
+      <!-- This entry makes ApolloInitializer discoverable. -->
       <meta-data android:name="com.apollographql.apollo3.cache.normalized.sql.ApolloInitializer"
                  android:value="androidx.startup" />
     </provider>
