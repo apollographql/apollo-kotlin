@@ -281,7 +281,6 @@ internal class DefaultApolloStore(
   }
 
   companion object {
-    @OptIn(ApolloExperimental::class)
     private fun CacheHeaders.withDate(): CacheHeaders {
       return newBuilder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis()/1000).toString()).build()
     }

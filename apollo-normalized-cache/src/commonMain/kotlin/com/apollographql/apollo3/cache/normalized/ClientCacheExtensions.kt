@@ -385,7 +385,6 @@ class CacheInfo private constructor(
 ) : ExecutionContext.Element {
 
   @Deprecated("Use CacheInfo.Builder")
-  @OptIn(ApolloInternal::class)
   constructor(
       millisStart: Long,
       millisEnd: Long,

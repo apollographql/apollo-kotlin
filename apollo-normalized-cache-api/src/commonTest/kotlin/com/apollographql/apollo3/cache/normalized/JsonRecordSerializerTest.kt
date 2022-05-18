@@ -9,7 +9,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@OptIn(ApolloInternal::class)
 class JsonRecordSerializerTest {
 
   @Test

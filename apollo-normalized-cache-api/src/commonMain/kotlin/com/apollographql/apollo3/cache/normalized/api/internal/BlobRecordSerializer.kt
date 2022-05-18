@@ -30,7 +30,6 @@ import okio.Buffer
  * This should be revisited/optimized
  */
 @ApolloInternal
-@OptIn(ApolloExperimental::class)
 object BlobRecordSerializer {
   fun serialize(record: Record): ByteArray  {
     val buffer = Buffer()

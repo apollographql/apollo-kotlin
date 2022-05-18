@@ -7,7 +7,6 @@ import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.db.use
 
-@OptIn(ApolloExperimental::class)
 internal fun createRecordDatabase(driver: SqlDriver, withDates: Boolean): RecordDatabase {
   maybeCreateOrMigrateSchema(driver, getSchema(withDates))
 

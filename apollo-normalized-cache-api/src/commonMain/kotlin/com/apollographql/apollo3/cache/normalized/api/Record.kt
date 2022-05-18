@@ -11,7 +11,6 @@ import kotlin.jvm.JvmOverloads
  * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If
  * a field is a GraphQL Object a [CacheKey] will be stored instead.
  */
-@OptIn(ApolloExperimental::class)
 class Record(
     val key: String,
     /**
@@ -73,7 +72,6 @@ class Record(
       }
     }
 
-    @OptIn(ApolloInternal::class)
     return Record(
         key = key,
         fields = mergedFields,
@@ -82,7 +80,6 @@ class Record(
     ) to changedKeys
   }
 
-  @OptIn(ApolloExperimental::class)
   fun mergeWith(newRecord: Record): Pair<Record, Set<String>> {
     return mergeWith(newRecord, null)
   }

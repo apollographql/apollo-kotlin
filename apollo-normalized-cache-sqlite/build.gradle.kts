@@ -88,6 +88,31 @@ if (System.getProperty( "idea.sync.active") == null) {
       targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
     }
   }
+
+
+  tasks.named("lint") {
+    /**
+     * lint fails with:
+     *
+     * ```
+     * Could not load custom lint check jar file /Users/mbonnin/.gradle/caches/transforms-3/a58c406cc84b74815c738fa583c867e0/transformed/startup-runtime-1.1.1/jars/lint.jar
+     * java.lang.NoClassDefFoundError: com/android/tools/lint/client/api/Vendor
+     * ```
+     *
+     * In general, there is so little Android code here, it's not really worth running lint
+     */
+    enabled = false
+  }
+
+  tasks.configureEach {
+    if (name.endsWith("UnitTest")) {
+      /**
+       * Because there is no App Startup in Android unit tests, the Android tests
+       * We could make the Android unit tests use the Jdbc driver if we really wanted to
+       */
+      enabled = false
+    }
+  }
 }
 
 val jvmJar by tasks.getting(Jar::class) {
@@ -99,29 +124,5 @@ val jvmJar by tasks.getting(Jar::class) {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
   kotlinOptions {
     allWarningsAsErrors = true
-  }
-}
-
-tasks.named("lint") {
-  /**
-   * lint fails with:
-   *
-   * ```
-   * Could not load custom lint check jar file /Users/mbonnin/.gradle/caches/transforms-3/a58c406cc84b74815c738fa583c867e0/transformed/startup-runtime-1.1.1/jars/lint.jar
-   * java.lang.NoClassDefFoundError: com/android/tools/lint/client/api/Vendor
-   * ```
-   *
-   * In general, there is so little Android code here, it's not really worth running lint
-   */
-  enabled = false
-}
-
-tasks.configureEach {
-  if (name.endsWith("UnitTest")) {
-    /**
-     * Because there is no App Startup in Android unit tests, the Android tests
-     * We could make the Android unit tests use the Jdbc driver if we really wanted to
-     */
-    enabled = false
   }
 }

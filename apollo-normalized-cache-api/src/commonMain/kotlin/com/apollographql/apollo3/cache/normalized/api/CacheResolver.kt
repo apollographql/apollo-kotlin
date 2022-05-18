@@ -95,7 +95,6 @@ object DefaultCacheResolver : CacheResolver {
   ): Any? {
     val name = field.nameWithArguments(variables)
     if (!parent.containsKey(name)) {
-      @OptIn(ApolloInternal::class)
       throw CacheMissException(parentId, name)
     }
 
@@ -112,7 +111,6 @@ class MaxAgeCacheResolver(private val maxAge: Int) : CacheResolver {
   /**
    * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
    */
-  @OptIn(ApolloInternal::class)
   override fun resolveField(
       field: CompiledField,
       variables: Executable.Variables,

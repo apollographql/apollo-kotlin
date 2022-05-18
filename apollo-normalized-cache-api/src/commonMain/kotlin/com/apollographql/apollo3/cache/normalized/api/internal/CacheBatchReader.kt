@@ -102,7 +102,6 @@ internal class CacheBatchReader(
             // This happens the very first time we read the cache
             record = Record(pendingReference.key, emptyMap())
           } else {
-            @OptIn(ApolloInternal::class)
             throw CacheMissException(pendingReference.key)
           }
         }

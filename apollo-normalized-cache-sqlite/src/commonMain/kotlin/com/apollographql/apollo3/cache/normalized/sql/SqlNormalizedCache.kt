@@ -1,10 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
-<<<<<<< HEAD
-=======
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
->>>>>>> 868b3e84e (💧 first drop for a SQLite backend that stores when each field was last updated)
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders.EVICT_AFTER_READ
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -15,7 +10,6 @@ import com.apollographql.apollo3.cache.normalized.sql.internal.RecordDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import kotlin.reflect.KClass
 
-@OptIn(ApolloExperimental::class)
 class SqlNormalizedCache internal constructor(
     private val recordDatabase: RecordDatabase,
 ) : NormalizedCache() {
@@ -91,13 +85,10 @@ class SqlNormalizedCache internal constructor(
     }
   }
 
-<<<<<<< HEAD
-=======
   private fun CacheHeaders.date(): Long? {
     return headerValue(ApolloCacheHeaders.DATE)?.toLong()
   }
 
->>>>>>> 868b3e84e (💧 first drop for a SQLite backend that stores when each field was last updated)
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
@@ -166,7 +157,6 @@ class SqlNormalizedCache internal constructor(
     return updatedRecordKeys
   }
 
-  @OptIn(ApolloInternal::class)
   private fun Record.withDate(date: Long?): Record {
     if (date == null) {
       return this

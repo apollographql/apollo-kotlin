@@ -5,7 +5,6 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.BlobRecordSerializer
 import com.apollographql.apollo3.cache.internal.blob.BlobQueries
 
-@OptIn(ApolloInternal::class)
 internal class BlobRecordDatabase(private val blobQueries: BlobQueries): RecordDatabase {
   override fun select(key: String): Record? {
     return blobQueries.recordForKey(key).executeAsList()

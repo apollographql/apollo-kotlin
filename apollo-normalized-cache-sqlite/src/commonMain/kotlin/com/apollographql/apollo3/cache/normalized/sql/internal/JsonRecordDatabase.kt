@@ -5,7 +5,6 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.JsonRecordSerializer
 import com.apollographql.apollo3.cache.internal.json.JsonQueries
 
-@OptIn(ApolloInternal::class)
 internal class JsonRecordDatabase(private val jsonQueries: JsonQueries): RecordDatabase {
   override fun select(key: String): Record? {
     return jsonQueries.recordForKey(key).executeAsList()

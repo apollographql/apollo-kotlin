@@ -24,7 +24,6 @@ import kotlin.test.fail
 
 expect fun normalizedCacheFactory(): SqlNormalizedCacheFactory
 
-@OptIn(ApolloExperimental::class)
 class MaxAgeTest {
   @Test
   fun expiredQueryThrows() = runTest {
