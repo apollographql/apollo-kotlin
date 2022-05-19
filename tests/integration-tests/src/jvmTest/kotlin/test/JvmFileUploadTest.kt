@@ -7,11 +7,15 @@ import com.apollographql.apollo3.api.content
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.testing.runTest
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class JvmFileUploadTest {
   private val upload0: Upload = DefaultUpload.Builder()
@@ -64,6 +68,23 @@ class JvmFileUploadTest {
     assertMapPart(parts[1], "expectedMapPartBodyTwice.json")
     assertFileContentPart(parts[2], "0", "file0.txt", "plain/txt", File("src/jvmTest/resources/file0.txt"))
     assertFileContentPart(parts[3], "1", "file1.jpg", "image/jpeg", File("src/jvmTest/resources/file1.jpg"))
+  }
+
+  @Test
+  @Throws(Exception::class)
+  fun loggingBodyWithOkHttpDoesntConsumeTheFiles() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val fullLog = StringBuilder()
+    apolloClient = ApolloClient.Builder()
+        .okHttpClient(OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor { log ->
+              fullLog.appendLine(log)
+            }.setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build())
+        .serverUrl(mockServer.url())
+        .build()
+
+    apolloClient.mutation(mutationTwice).execute()
+    assertTrue(fullLog.toString().contains("(one-shot body omitted)"))
   }
 }
 

@@ -51,6 +51,8 @@ actual class DefaultHttpEngine constructor(
 
               override fun contentLength() = body.contentLength
 
+              override fun isOneShot() = body.isOneShot
+
               override fun writeTo(sink: BufferedSink) {
                 body.writeTo(sink)
               }

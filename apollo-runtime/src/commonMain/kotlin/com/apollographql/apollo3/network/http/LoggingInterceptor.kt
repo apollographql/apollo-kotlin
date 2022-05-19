@@ -31,7 +31,7 @@ class LoggingInterceptor(
     log("[end of headers]")
 
     val newRequest =
-        if (!logRequestBody) {
+        if (!logRequestBody || request.body?.isOneShot == true) {
           log("[request body omitted]")
           request
         } else {

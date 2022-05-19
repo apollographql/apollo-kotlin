@@ -759,6 +759,7 @@ public final class com/apollographql/apollo3/api/http/ByteStringHttpBody : com/a
 	public fun <init> (Ljava/lang/String;Lokio/ByteString;)V
 	public fun getContentLength ()J
 	public fun getContentType ()Ljava/lang/String;
+	public fun isOneShot ()Z
 	public fun writeTo (Lokio/BufferedSink;)V
 }
 
@@ -780,7 +781,12 @@ public final class com/apollographql/apollo3/api/http/DefaultHttpRequestComposer
 public abstract interface class com/apollographql/apollo3/api/http/HttpBody {
 	public abstract fun getContentLength ()J
 	public abstract fun getContentType ()Ljava/lang/String;
+	public abstract fun isOneShot ()Z
 	public abstract fun writeTo (Lokio/BufferedSink;)V
+}
+
+public final class com/apollographql/apollo3/api/http/HttpBody$DefaultImpls {
+	public static fun isOneShot (Lcom/apollographql/apollo3/api/http/HttpBody;)Z
 }
 
 public final class com/apollographql/apollo3/api/http/HttpHeader {
