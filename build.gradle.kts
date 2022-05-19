@@ -194,12 +194,13 @@ configure<kotlinx.validation.ApiValidationExtension> {
   ignoredPackages.addAll(
       listOf(
           /**
-           * We rely on annotations or "internal" visibility to hide the non-public APIs in general
+           * In general, we rely on annotations or "internal" visibility to hide the non-public APIs. But there are a few exceptions:
            *
-           * The Gradle plugin is an exception to this rule as tasks and other classes must be public in order for Gradle to instantiate
-           * and decorate them.
+           * Gradle plugin: tasks and other classes must be public in order for Gradle to instantiate and decorate them.
+           * SQLDelight generated sources are not generated as 'internal'.
            */
-          "com.apollographql.apollo3.gradle.internal"
+          "com.apollographql.apollo3.gradle.internal",
+          "com.apollographql.apollo3.cache.internal",
       )
   )
   ignoredProjects.addAll(

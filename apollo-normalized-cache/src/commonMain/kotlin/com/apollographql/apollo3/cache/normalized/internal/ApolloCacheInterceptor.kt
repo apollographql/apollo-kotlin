@@ -10,6 +10,8 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.CacheInfo
+import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.cacheInfo
 import com.apollographql.apollo3.cache.normalized.doNotStore
@@ -17,6 +19,7 @@ import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.fetchFromCache
 import com.apollographql.apollo3.cache.normalized.optimisticData
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
+import com.apollographql.apollo3.cache.normalized.storeReceiveDate
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
@@ -75,7 +78,11 @@ internal class ApolloCacheInterceptor(
 
     maybeAsync(request) {
       val cacheKeys = if (response.data != null) {
-        store.writeOperation(request.operation, response.data!!, customScalarAdapters, request.cacheHeaders + response.cacheHeaders, publish = false)
+        var cacheHeaders = request.cacheHeaders + response.cacheHeaders
+        if (request.storeReceiveDate) {
+          cacheHeaders += nowDateCacheHeaders()
+        }
+        store.writeOperation(request.operation, response.data!!, customScalarAdapters, cacheHeaders, publish = false)
       } else {
         emptySet()
       }
@@ -265,6 +272,12 @@ internal class ApolloCacheInterceptor(
                   .networkEndMillis(currentTimeMillis())
                   .build()
           ).build()
+    }
+  }
+
+  companion object {
+    private fun nowDateCacheHeaders(): CacheHeaders {
+      return CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis() /1000).toString()).build()
     }
   }
 }

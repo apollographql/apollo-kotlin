@@ -1,5 +1,3 @@
-@file:OptIn(ApolloExperimental::class, ApolloInternal::class)
-
 package test
 
 import checkTestFixture

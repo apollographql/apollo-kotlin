@@ -1,9 +1,12 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.resolveVariables
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlin.jvm.JvmSuppressWildcards
 
 /**
@@ -80,7 +83,7 @@ interface CacheResolver {
 /**
  * A cache resolver that uses the parent to resolve fields.
  */
-object DefaultCacheResolver: CacheResolver {
+object DefaultCacheResolver : CacheResolver {
   /**
    * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
    */
@@ -99,10 +102,44 @@ object DefaultCacheResolver: CacheResolver {
   }
 }
 
+
+/**
+ * A cache resolver that uses the parent to resolve fields and use a constant max Age
+ */
+@ApolloExperimental
+class MaxAgeCacheResolver(private val maxAge: Int) : CacheResolver {
+  /**
+   * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
+   */
+  override fun resolveField(
+      field: CompiledField,
+      variables: Executable.Variables,
+      parent: Map<String, @JvmSuppressWildcards Any?>,
+      parentId: String,
+  ): Any? {
+    val name = field.nameWithArguments(variables)
+    if (!parent.containsKey(name)) {
+      throw CacheMissException(parentId, name)
+    }
+
+    if (parent is Record) {
+      val lastUpdated = parent.lastUpdated?.get(name)
+      if (lastUpdated != null) {
+        val age = currentTimeMillis()/1000 - lastUpdated
+        if (age > maxAge) {
+          throw CacheMissException(parentId, name, age)
+        }
+      }
+    }
+
+    return parent[name]
+  }
+}
+
 /**
  * A [CacheResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [DefaultCacheResolver] else
  */
-object FieldPolicyCacheResolver: CacheResolver {
+object FieldPolicyCacheResolver : CacheResolver {
   override fun resolveField(
       field: CompiledField,
       variables: Executable.Variables,

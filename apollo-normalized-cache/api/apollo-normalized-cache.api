@@ -122,6 +122,7 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 	public static final fun store (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;Z)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static synthetic fun store$default (Lcom/apollographql/apollo3/ApolloClient$Builder;Lcom/apollographql/apollo3/cache/normalized/ApolloStore;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public static final fun storePartialResponses (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
+	public static final fun storeReceiveDate (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Lcom/apollographql/apollo3/api/Query$Data;Lkotlin/jvm/functions/Function3;)Lkotlinx/coroutines/flow/Flow;
 	public static final fun watch (Lcom/apollographql/apollo3/ApolloCall;Z)Lkotlinx/coroutines/flow/Flow;

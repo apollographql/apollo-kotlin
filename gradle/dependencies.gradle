@@ -34,6 +34,7 @@ ext.dep = [
         recyclerView          : "androidx.recyclerview:recyclerview:1.1.0",
         sqlite                : "androidx.sqlite:sqlite:${versions.androidxSqlite}",
         sqliteFramework       : "androidx.sqlite:sqlite-framework:${versions.androidxSqlite}",
+        startupRuntime        : "androidx.startup:startup-runtime:1.1.1",
     ],
     antlr                    : [
         antlr  : "org.antlr:antlr4:$versions.antlr4",
@@ -117,7 +118,7 @@ ext.dep = [
     minGradleApi             : "dev.gradleplugins:gradle-api:5.6",
     graphqlKotlin            : "com.expediagroup:graphql-kotlin-spring-server:5.3.0",
     testParameterInjector    : "com.google.testparameterinjector:test-parameter-injector:1.4",
-    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.8.0-RC",
+    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.9.0",
     // For Gradle integration tests to make sure we stay compatible with 1.5.0
     kotlinPluginMin: "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0",
     // See https://youtrack.jetbrains.com/issue/KTIJ-21583/HMPP:-1.6.20-breaks-autocomplete-in-multiplatform-composite-buil#focus=Comments-27-6022244.0-0

@@ -25,6 +25,8 @@ suspend fun <R> suspendAndResumeOnMain(block: (MainContinuation<R>, InvokeOnCanc
   assertMainThreadOnNative()
 
   return suspendCancellableCoroutine { continuation ->
+    // Don't do this, coroutines-mt actually freeze the continuation
+    // continuation.ensureNeverFrozen()
     block(MainContinuation(continuation)) { continuation.invokeOnCancellation(it) }
   }
 }

@@ -45,7 +45,6 @@ class WithExtensionsHttpRequestComposer(private val serverUrl: String) : HttpReq
   }
 }
 
-@OptIn(ApolloInternal::class, ApolloExperimental::class)
 class BodyExtensionsTest {
   @Test
   fun bodyExtensions() = runTest {

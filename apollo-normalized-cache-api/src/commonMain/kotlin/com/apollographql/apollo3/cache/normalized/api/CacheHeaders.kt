@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.Operation
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
@@ -28,7 +29,11 @@ class CacheHeaders internal constructor(private val headerMap: Map<String, Strin
   /**
    * @return A [CacheHeaders.Builder] with a copy of this [CacheHeaders] values.
    */
-  fun toBuilder(): Builder = builder().addHeaders(headerMap)
+  @Deprecated("Use newBuilder() instead", ReplaceWith("newBuilder()"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+  fun toBuilder(): Builder = newBuilder()
+
+  fun newBuilder(): Builder = builder().addHeaders(headerMap)
 
   fun headerValue(header: String): String? = headerMap[header]
 
@@ -42,6 +47,6 @@ class CacheHeaders internal constructor(private val headerMap: Map<String, Strin
     val NONE = CacheHeaders(emptyMap())
   }
   operator fun plus(cacheHeaders: CacheHeaders): CacheHeaders {
-    return toBuilder().addHeaders(cacheHeaders.headerMap).build()
+    return newBuilder().addHeaders(cacheHeaders.headerMap).build()
   }
 }

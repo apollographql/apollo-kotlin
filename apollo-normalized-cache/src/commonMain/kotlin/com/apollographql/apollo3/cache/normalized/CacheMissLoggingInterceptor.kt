@@ -13,13 +13,8 @@ import kotlinx.coroutines.flow.onEach
 class CacheMissLoggingInterceptor(private val log: (String) -> Unit) : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request).onEach {
-      if (it.cacheInfo?.cacheMissException != null) {
-        log(
-            CacheMissException.message(
-                it.cacheInfo?.cacheMissException?.key ,
-                it.cacheInfo?.cacheMissException?.fieldName
-            )
-        )
+      it.cacheInfo?.cacheMissException?.message?.let {
+        log(it)
       }
     }.catch { throwable ->
       if (throwable is CacheMissException) {
