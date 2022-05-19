@@ -25,3 +25,6 @@ fun Operation.Data.toJson(jsonWriter: JsonWriter, customScalarAdapters: CustomSc
   adapter().toJson(jsonWriter, customScalarAdapters, this)
 }
 
+fun Operation.Data.toJsonString(customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty, indent: String? = null): String {
+  return adapter().toJsonString(this, customScalarAdapters, indent)
+}
