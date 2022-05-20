@@ -131,7 +131,10 @@ internal class TBuilderBuilder(
                 .build()
         )
         .addCode(
-            CodeBlock.of("return %T().apply($block).build()", context.resolver.resolveTestBuilder(id))
+            CodeBlock.builder()
+                .add("__shouldBeAssignedFields.add(%S)\n", responseName)
+                .add("return %T().apply($block).build()", context.resolver.resolveTestBuilder(id))
+                .build()
         )
         .returns(anyMapClassName)
         .build()

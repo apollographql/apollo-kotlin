@@ -135,7 +135,7 @@ class Schema(
           if (kfs.isNotEmpty()) {
             check(kfs.size == 1) {
               val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
-              "Object '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitely"
+              "Object '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitly"
             }
           }
           kfs.singleOrNull()?.second ?: emptySet()
@@ -150,7 +150,7 @@ class Schema(
           if (kfs.isNotEmpty()) {
             check(kfs.size == 1) {
               val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
-              "Interface '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitely"
+              "Interface '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitly"
             }
           }
           kfs.singleOrNull()?.second ?: emptySet()
