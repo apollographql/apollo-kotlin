@@ -78,7 +78,7 @@ val apolloClient = ApolloClient.Builder()
 
 When using subscriptions over WebSockets, you might want to refresh your token. Because it was invalidated or simply because it expired.
 
-> Note: if your user logged out, you might want to consider creating a new `ApolloClient` to avoid sharing cache and/or other state between users.
+> Note: if your user logged out, you might want to consider creating a new `ApolloClient` instead to avoid sharing cache and/or other state between users.
 
 Sometimes the websocket will emit an error that you can use in `webSocketReopenWhen` to create a new WebSocket. Other times that information will come from elsewhere in your app and you will have to force disconnect the WebSocket.
 
