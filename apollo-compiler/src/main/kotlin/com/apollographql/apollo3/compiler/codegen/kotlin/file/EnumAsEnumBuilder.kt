@@ -97,7 +97,7 @@ class EnumAsEnumBuilder(
         .addParameter("rawValue", String::
         class)
         .returns(ClassName("", simpleName))
-        .addStatement("return values().find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
+        .addStatement("return·values().find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
         .build()
   }
 

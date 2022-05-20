@@ -81,7 +81,7 @@ internal class TBuilderBuilder(
     builder.addModifiers(KModifier.OVERRIDE)
     builder.addCode(
         CodeBlock.builder()
-            .add("return mapOf(\n")
+            .add("return·mapOf(\n")
             .indent()
             .apply {
               tbuilder.properties.forEach { tprop ->
@@ -133,7 +133,7 @@ internal class TBuilderBuilder(
         .addCode(
             CodeBlock.builder()
                 .add("__shouldBeAssignedFields.add(%S)\n", responseName)
-                .add("return %T().apply($block).build()", context.resolver.resolveTestBuilder(id))
+                .add("return·%T().apply($block).build()", context.resolver.resolveTestBuilder(id))
                 .build()
         )
         .returns(anyMapClassName)

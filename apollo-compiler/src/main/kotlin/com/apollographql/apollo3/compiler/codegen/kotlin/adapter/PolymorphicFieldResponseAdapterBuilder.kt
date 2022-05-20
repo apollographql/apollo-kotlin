@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
@@ -17,7 +16,6 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 class PolymorphicFieldResponseAdapterBuilder(
@@ -93,7 +91,7 @@ class PolymorphicFieldResponseAdapterBuilder(
 
     builder.add(typenameFromReaderCodeBlock())
 
-    builder.beginControlFlow("return when($__typename) {")
+    builder.beginControlFlow("return·when($__typename) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       if (!model.isFallback) {
         model.possibleTypes.forEach { possibleType ->

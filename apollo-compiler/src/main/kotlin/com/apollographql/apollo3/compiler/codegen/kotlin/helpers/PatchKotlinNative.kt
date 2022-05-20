@@ -32,7 +32,7 @@ internal fun TypeSpec.patchKotlinNativeOptionalArrayProperties(): TypeSpec {
         FunSpec
             .builder("${propertySpec.name}FilterNotNull")
             .returns(nonOptionalListType)
-            .addStatement("return %L%L.filterNotNull()", propertySpec.name, if (propertySpec.type.isNullable) "?" else "")
+            .addStatement("return·%L%L.filterNotNull()", propertySpec.name, if (propertySpec.type.isNullable) "?" else "")
             .build()
       }
   return toBuilder()

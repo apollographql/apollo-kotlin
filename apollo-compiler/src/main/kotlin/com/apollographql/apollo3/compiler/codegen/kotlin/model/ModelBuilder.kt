@@ -95,7 +95,7 @@ class ModelBuilder(
     val funSpecs = model.accessors.map { accessor ->
       FunSpec.builder(accessor.funName())
           .receiver(context.resolver.resolveModel(model.id))
-          .addCode("return this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
+          .addCode("return·this as? %T\n", context.resolver.resolveModel(accessor.returnedModelId))
           .build()
     }
     return TypeSpec.companionObjectBuilder()

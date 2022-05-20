@@ -21,7 +21,6 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -117,7 +116,7 @@ class OperationBuilder(
   private fun operationIdFunSpec() = FunSpec.builder(id)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.String)
-      .addStatement("return $OPERATION_ID")
+      .addStatement("return·$OPERATION_ID")
       .build()
 
   private fun queryDocumentFunSpec(generateQueryDocument: Boolean) = FunSpec.builder(document)
@@ -125,7 +124,7 @@ class OperationBuilder(
       .returns(KotlinSymbols.String)
       .apply {
         if (generateQueryDocument) {
-          addStatement("return $OPERATION_DOCUMENT")
+          addStatement("return·$OPERATION_DOCUMENT")
         } else {
           addStatement("error(\"The·query·document·was·removed·from·this·operation.·Use·generateQueryDocument.set(true)·if·you·need·it\")")
         }
@@ -135,7 +134,7 @@ class OperationBuilder(
   private fun nameFunSpec() = FunSpec.builder(name)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.String)
-      .addStatement("return OPERATION_NAME")
+      .addStatement("return·OPERATION_NAME")
       .build()
 
   private fun companionTypeSpec(): TypeSpec {
