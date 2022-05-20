@@ -20,11 +20,15 @@ class DefaultUpload internal constructor(
     override val contentLength: Long,
     override val fileName: String?,
 ) : Upload {
+  private var bufferedSourceConsumed = false
+
   override fun writeTo(sink: BufferedSink) {
     if (bufferedSource != null) {
+      check(!bufferedSourceConsumed) { "Upload.writeTo must be called only once" }
       bufferedSource.use {
         sink.writeAll(it)
       }
+      bufferedSourceConsumed = true
     } else if (byteString != null) {
       sink.write(byteString)
     } else {

@@ -23,6 +23,7 @@ import com.apollographql.apollo3.testing.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class FileUploadTest {
@@ -150,6 +151,14 @@ class FileUploadTest {
     assertOperationsPart(parts[0], "expectedOperationsPartBodyNested.json")
   }
 
+  @Test
+  fun defaultUploadDisallowMultipleWriteTo() {
+    val defaultUpload = DefaultUpload.Builder().content(Buffer()).build()
+    defaultUpload.writeTo(Buffer())
+    assertFailsWith<IllegalStateException> {
+      defaultUpload.writeTo(Buffer())
+    }
+  }
 }
 
 internal class Part(
