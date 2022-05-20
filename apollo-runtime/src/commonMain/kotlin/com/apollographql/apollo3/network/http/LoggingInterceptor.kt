@@ -3,13 +3,15 @@ package com.apollographql.apollo3.network.http
 import com.apollographql.apollo3.api.http.ByteStringHttpBody
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
 import okio.Buffer
 import kotlin.jvm.JvmOverloads
 
 /**
  * An interceptor that logs requests and responses.
  *
- * @param level the level of logging
+ * @param level the level of logging. Caution: when uploading files, setting this to [Level.BODY] will cause the files to
+ * be fully loaded into memory, which may cause OutOfMemoryErrors.
  */
 class LoggingInterceptor(
     private val level: Level,
@@ -45,24 +47,16 @@ class LoggingInterceptor(
     }
 
     val requestBody = request.body
-    val newRequest = when {
-      !logBody || requestBody == null -> request
-
-      logBody && requestBody.isOneShot -> {
-        log("[request body omitted]")
-        request
-      }
-
-      // logBody && !requestBody.isOneShot
-      else -> {
-        val buffer = Buffer()
-        requestBody.writeTo(buffer)
-        val bodyByteString = buffer.readByteString()
-        log(bodyByteString.utf8())
-        request.newBuilder()
-            .body(ByteStringHttpBody(contentType = requestBody.contentType, bodyByteString))
-            .build()
-      }
+    val newRequest = if (!logBody || requestBody == null) {
+      request
+    } else {
+      val buffer = Buffer()
+      requestBody.writeTo(buffer)
+      val bodyByteString = buffer.readByteString()
+      log(bodyByteString.utf8())
+      request.newBuilder()
+          .body(ByteStringHttpBody(contentType = requestBody.contentType, bodyByteString))
+          .build()
     }
 
     log("")

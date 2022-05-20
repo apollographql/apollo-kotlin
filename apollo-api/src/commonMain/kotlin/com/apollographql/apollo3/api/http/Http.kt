@@ -22,13 +22,6 @@ interface HttpBody {
    * This can be called several times
    */
   fun writeTo(bufferedSink: BufferedSink)
-
-  /**
-   * Returns true if this body expects at most one call to writeTo and can be transmitted at most once.
-   * This would be the case when reading the source of data consumes it, for instance when uploading files.
-   */
-  val isOneShot: Boolean
-    get() = false
 }
 
 /**
