@@ -9,62 +9,84 @@ import kotlin.jvm.JvmOverloads
 /**
  * An interceptor that logs requests and responses.
  *
- * @param logRequestBody whether to log the request body. Caution: when uploading files, setting this to `true` will cause the files to
- * be fully loaded into memory, which may cause OutOfMemoryErrors.
+ * @param level the level of logging
  */
 class LoggingInterceptor(
-    private val logRequestBody: Boolean,
+    private val level: Level,
     private val log: (String) -> Unit = { println(it) },
 ) : HttpInterceptor {
   @JvmOverloads
-  constructor(log: (String) -> Unit = { println(it) }) : this(true, log)
+  constructor(log: (String) -> Unit = { println(it) }) : this(level = Level.BODY, log = log)
+
+  enum class Level {
+    NONE,
+    BASIC,
+    HEADERS,
+    BODY,
+  }
 
   override suspend fun intercept(
       request: HttpRequest,
       chain: HttpInterceptorChain,
   ): HttpResponse {
+    if (level == Level.NONE) {
+      return chain.proceed(request)
+    }
+    val logHeaders = level == Level.HEADERS || level == Level.BODY
+    val logBody = level == Level.BODY
+
     log("${request.method.name} ${request.url}")
 
-    request.headers.forEach {
-      log("${it.name}: ${it.value}")
+    if (logHeaders) {
+      request.headers.forEach {
+        log("${it.name}: ${it.value}")
+      }
+      log("[end of headers]")
     }
-    log("[end of headers]")
 
-    val newRequest =
-        if (!logRequestBody || request.body?.isOneShot == true) {
-          log("[request body omitted]")
-          request
-        } else {
-          val buffer = Buffer()
-          request.body?.writeTo(buffer)
-          val bodyByteString = buffer.readByteString()
-          log(bodyByteString.utf8())
-          request.newBuilder()
-              .apply {
-                request.body?.let { originalBody ->
-                  body(ByteStringHttpBody(contentType = originalBody.contentType, bodyByteString))
-                }
-              }.build()
-        }
+    val requestBody = request.body
+    val newRequest = when {
+      !logBody || requestBody == null -> request
+
+      logBody && requestBody.isOneShot -> {
+        log("[request body omitted]")
+        request
+      }
+
+      // logBody && !requestBody.isOneShot
+      else -> {
+        val buffer = Buffer()
+        requestBody.writeTo(buffer)
+        val bodyByteString = buffer.readByteString()
+        log(bodyByteString.utf8())
+        request.newBuilder()
+            .body(ByteStringHttpBody(contentType = requestBody.contentType, bodyByteString))
+            .build()
+      }
+    }
 
     log("")
-
     val httpResponse = chain.proceed(newRequest)
+
     log("HTTP: ${httpResponse.statusCode}")
 
-    httpResponse.headers.forEach {
-      log("${it.name}: ${it.value}")
-    }
-    log("[end of headers]")
-
-    val body = httpResponse.body?.readByteString()
-    if (body != null) {
-      log(body.utf8())
+    if (logHeaders) {
+      httpResponse.headers.forEach {
+        log("${it.name}: ${it.value}")
+      }
+      log("[end of headers]")
     }
 
-    return HttpResponse.Builder(statusCode = httpResponse.statusCode)
-        .also { if (body != null) it.body(body) }
-        .addHeaders(httpResponse.headers)
-        .build()
+    val responseBody = httpResponse.body
+    return if (!logBody || responseBody == null) {
+      httpResponse
+    } else {
+      val bodyByteString = responseBody.readByteString()
+      log(bodyByteString.utf8())
+      HttpResponse.Builder(statusCode = httpResponse.statusCode)
+          .body(bodyByteString)
+          .addHeaders(httpResponse.headers)
+          .build()
+    }
   }
 }
