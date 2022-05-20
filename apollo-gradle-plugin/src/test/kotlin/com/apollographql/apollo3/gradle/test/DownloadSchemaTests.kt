@@ -27,6 +27,84 @@ class DownloadSchemaTests {
 
   private val schemaString2 = schemaString1.replace("foo", "bar")
 
+  private val schemaStringWithInterfaces = """
+  {
+    "__schema": {
+      "queryType": {
+        "name": "foo"
+      },
+      "types": [
+        {
+          "kind": "OBJECT",
+          "name": "UserInfo",
+          "description": null,
+          "fields": [
+            {
+              "name": "id",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "MyInterface",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "MyInterface",
+          "description": null,
+          "fields": [
+            {
+              "name": "id",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "UserInfo",
+              "ofType": null
+            }
+          ]
+        }
+      ]
+    }
+  }
+  """.trimIndent()
+
   private val apolloConfiguration = """
       apollo {
         service("mock") {
@@ -118,6 +196,30 @@ class DownloadSchemaTests {
           "--endpoint=${mockServer.url("/")}")
 
       assertEquals(schemaString1, schema.readText())
+    }
+  }
+
+  @Test
+  fun `manually downloading a schema keeps the interfaces field`() {
+    withSimpleProject(apolloConfiguration = "") { dir ->
+      val mockResponse = MockResponse().setBody(schemaStringWithInterfaces)
+      mockServer.enqueue(mockResponse)
+      val schema = File("build/testProject/schema.json")
+
+      TestUtils.executeGradle(dir, "downloadApolloSchema",
+          "--schema=${schema.absolutePath}",
+          "--endpoint=${mockServer.url("/")}")
+
+      // We can't compare 'verbatim' the original schema text to the created one because it is re-written
+      // but check if interfaces are present
+      assert(schema.readText().contains("""
+        |        "interfaces": [
+        |          {
+        |            "name": "MyInterface",
+        |            "kind": "INTERFACE"
+        |          }
+        |        ]
+        """.trimMargin()))
     }
   }
 

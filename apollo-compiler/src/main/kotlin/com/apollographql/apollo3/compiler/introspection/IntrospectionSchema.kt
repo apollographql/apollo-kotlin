@@ -49,6 +49,7 @@ data class IntrospectionSchema(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
+          val interfaces: List<Interface>?,
       ) : Type()
 
       @TypeLabel("INTERFACE")
@@ -56,6 +57,7 @@ data class IntrospectionSchema(
       data class Interface(
           override val name: String,
           override val description: String?,
+          val kind: String,
           val fields: List<Field>?,
           val possibleTypes: List<TypeRef>?,
       ) : Type()
