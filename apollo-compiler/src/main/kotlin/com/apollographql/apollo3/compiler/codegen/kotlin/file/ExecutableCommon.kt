@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.patchKotlinNativeOptionalArrayProperties
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.squareup.kotlinpoet.ClassName
@@ -69,7 +68,7 @@ fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClas
       .returns(KotlinSymbols.CompiledField)
       .addCode(
           CodeBlock.builder()
-              .add("return %T(\n", KotlinSymbols.CompiledFieldBuilder)
+              .add("return·%T(\n", KotlinSymbols.CompiledFieldBuilder)
               .indent()
               .add("name·=·%S,\n", Identifier.data)
               .add("type·=·%L\n", context.resolver.resolveCompiledType(typeInScope))

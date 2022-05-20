@@ -259,7 +259,7 @@ class TestBuildersTest {
 
 
   @Test
-  fun erroorIfForgotToAssignField() {
+  fun errorIfForgotToAssignField() {
     val e1 = assertFailsWith<IllegalStateException>() {
       AllPlanetsQuery.Data {
         /* allPlanets = */ allPlanets {

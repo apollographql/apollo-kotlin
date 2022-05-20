@@ -122,7 +122,7 @@ class TestBuildersBuilder(
 
     val builder = CodeBlock.builder()
 
-    builder.beginControlFlow("return %M(${testResolver})", KotlinMemberNames.withTestResolver)
+    builder.beginControlFlow("return·%M(${testResolver})", KotlinMemberNames.withTestResolver)
 
     builder.add(
         "%L.$fromJson(\n",

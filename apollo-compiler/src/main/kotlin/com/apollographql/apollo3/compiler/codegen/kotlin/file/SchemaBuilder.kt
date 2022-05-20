@@ -67,7 +67,7 @@ class SchemaBuilder(
 
     builder.addParameter("type", KotlinSymbols.CompiledNamedType)
     builder.returns(KotlinSymbols.List.parameterizedBy(KotlinSymbols.ObjectType))
-    builder.addCode("return %M(all, type)\n", MemberName("com.apollographql.apollo3.api", "possibleTypes"))
+    builder.addCode("return·%M(all, type)\n", MemberName("com.apollographql.apollo3.api", "possibleTypes"))
     return builder.build()
   }
 }
