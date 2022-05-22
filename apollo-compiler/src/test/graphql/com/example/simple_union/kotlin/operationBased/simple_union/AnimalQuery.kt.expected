@@ -86,8 +86,9 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
      *   woof
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query AnimalQuery { animal { __typename ...CatFragment ...DogFragment } }  fragment CatFragment on Cat { meow }  fragment DogFragment on Dog { woof }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query AnimalQuery { animal { __typename ...CatFragment ...DogFragment } }  fragment CatFragment on Cat { meow }  fragment DogFragment on Dog { woof }"
 
     public const val OPERATION_NAME: String = "AnimalQuery"
   }

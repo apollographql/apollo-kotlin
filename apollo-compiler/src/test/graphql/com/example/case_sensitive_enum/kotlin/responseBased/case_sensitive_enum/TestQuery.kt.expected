@@ -61,7 +61,8 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   enum
      * }
      */
-    public const val OPERATION_DOCUMENT: String = "query TestQuery { enum }"
+    public val OPERATION_DOCUMENT: String
+      get() = "query TestQuery { enum }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

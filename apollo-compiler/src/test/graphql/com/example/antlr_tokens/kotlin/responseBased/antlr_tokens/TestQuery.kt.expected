@@ -67,8 +67,9 @@ public data class TestQuery(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}operation: String) { typeWithGraphQLKeywords { on null(fragment: ${'$'}operation) alias: null(fragment: \"A string\\nwith a new line\") } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query TestQuery(${'$'}operation: String) { typeWithGraphQLKeywords { on null(fragment: ${'$'}operation) alias: null(fragment: \"A string\\nwith a new line\") } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

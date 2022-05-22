@@ -68,8 +68,9 @@ public data class TestQuery @JvmOverloads constructor(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query TestQuery(${'$'}episode: Episode! = JEDI ) { hero(episode: ${'$'}episode) { name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

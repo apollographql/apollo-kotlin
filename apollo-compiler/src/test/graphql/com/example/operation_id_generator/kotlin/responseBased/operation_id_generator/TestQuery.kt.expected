@@ -73,7 +73,8 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String = "query TestQuery { hero { id name } }"
+    public val OPERATION_DOCUMENT: String
+      get() = "query TestQuery { hero { id name } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

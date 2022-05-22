@@ -83,8 +83,9 @@ public data class TestQuery(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: ${'$'}includeName) friendsConnection @skip(if: ${'$'}skipFriends) { totalCount } } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query TestQuery(${'$'}includeName: Boolean!, ${'$'}skipFriends: Boolean!) @operationDirective(dummy: \"hello\") { hero { name @include(if: ${'$'}includeName) friendsConnection @skip(if: ${'$'}skipFriends) { totalCount } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

@@ -74,8 +74,8 @@ public data class TestQuery(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}id: ID!) { starship(id: ${'$'}id) { id name coordinates } }"
+    public val OPERATION_DOCUMENT: String
+      get() = "query TestQuery(${'$'}id: ID!) { starship(id: ${'$'}id) { id name coordinates } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }
