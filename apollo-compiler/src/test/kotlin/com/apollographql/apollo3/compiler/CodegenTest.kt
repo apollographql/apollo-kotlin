@@ -245,7 +245,7 @@ class CodegenTest {
         File("src/test/graphql/com/example/measurements").apply {
           writeText(
               String.format(
-                  "%-50s %-20s %20s %20s\n",
+                  "%-70s %-20s %20s %20s\n",
                   "Test:",
                   "Total LOC:",
                   "Codegen (ms):",
@@ -260,12 +260,19 @@ class CodegenTest {
           appendText(
               measurements.sortedByDescending { it.linesOfCode }
                   .joinToString("\n") { measurement ->
+                    // Disable machine-specific durations monitoring by default because they depend the developer machin
+                    // and will create conflicts
+                    // val codegenDuration = measurement.codegenDuration.toLong(DurationUnit.MILLISECONDS).toString()
+                    // val compileDuration = measurement.compileDuration.toString()
+                    val codegenDuration = ""
+                    val compileDuration = ""
+
                     String.format(
-                        "%-50s %20s %20s %20s",
+                        "%-70s %20s %20s %20s",
                         measurement.name,
                         measurement.linesOfCode.toString(),
-                        measurement.codegenDuration.toLong(DurationUnit.MILLISECONDS).toString(),
-                        measurement.compileDuration.toString(),
+                        codegenDuration,
+                        compileDuration
                     )
                   }
           )

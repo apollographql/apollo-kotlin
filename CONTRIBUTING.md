@@ -14,6 +14,29 @@ developer tools.
 To build the integration tests, use the `tests` build. It's a composite build that includes the main build so that it's
 possible to use `apollo-gradle-plugin` with dependency substitution.
 
+## Using a local version of Apollo Kotlin
+
+To test your changes in a local repo, you can publish a local version of `apollo-gradle-plugin` and other dependencies with:
+
+```
+./gradlew publishToMavenLocal
+```
+
+All dependencies will be published to your `~/.m2/repository` folder. You can then use them in other projects by adding `mavenLocal()`
+to your repositories in your build scripts:
+
+```kotlin
+repositories {
+  mavenCentral()
+  // other repositories...
+  mavenLocal()
+}
+```
+
+This will require that you call `./gradlew publishToMavenLocal` after every change you make in Apollo Kotlin but it's the 
+easiest way to try your changes. For tighter integration, you can also use Apollo Kotlin as an [included build](https://docs.gradle.org/current/userguide/composite_builds.html)
+like it is done for the integration-tests.
+
 ## DOs and DON'Ts
 
 ### DO:
