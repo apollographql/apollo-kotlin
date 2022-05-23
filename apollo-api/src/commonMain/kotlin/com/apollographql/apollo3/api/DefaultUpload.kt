@@ -20,11 +20,15 @@ class DefaultUpload internal constructor(
     override val contentLength: Long,
     override val fileName: String?,
 ) : Upload {
+  private var bufferedSourceConsumed = false
+
   override fun writeTo(sink: BufferedSink) {
     if (bufferedSource != null) {
+      check(!bufferedSourceConsumed) { "Apollo: DefaultUpload body can only be read once. If you want to read it several times for logging or other purposes, either buffer it in memory or use your own `Upload` implementation." }
       bufferedSource.use {
         sink.writeAll(it)
       }
+      bufferedSourceConsumed = true
     } else if (byteString != null) {
       sink.write(byteString)
     } else {

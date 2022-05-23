@@ -339,10 +339,21 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$E
 
 public final class com/apollographql/apollo3/network/http/LoggingInterceptor : com/apollographql/apollo3/network/http/HttpInterceptor {
 	public fun <init> ()V
+	public fun <init> (Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/network/http/LoggingInterceptor$Level : java/lang/Enum {
+	public static final field BASIC Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
+	public static final field BODY Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
+	public static final field HEADERS Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
+	public static final field NONE Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
+	public static fun values ()[Lcom/apollographql/apollo3/network/http/LoggingInterceptor$Level;
 }
 
 public abstract interface class com/apollographql/apollo3/network/http/TokenProvider {

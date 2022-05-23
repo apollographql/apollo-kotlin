@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.UploadsHttpBody
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.toOkHttpHeaders
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -50,6 +51,10 @@ actual class DefaultHttpEngine constructor(
               override fun contentType() = body.contentType.toMediaType()
 
               override fun contentLength() = body.contentLength
+
+              // This prevents OkHttp from reading the body several times (e.g. when using its logging interceptor)
+              // which could consume files when using Uploads
+              override fun isOneShot() = body is UploadsHttpBody
 
               override fun writeTo(sink: BufferedSink) {
                 body.writeTo(sink)
