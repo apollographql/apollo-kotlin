@@ -74,4 +74,50 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
+### Updating your WebSocket token
+
+When using authenticated subscriptions over WebSockets, you might want to refresh your authentication token because it was invalidated or simply because it expired.
+
+> Note: if your user logged out, you might want to consider creating a new `ApolloClient` instead. This will make sure that all other state besides the WebSocket, like cache for an example, is new and not shared amongst different users.
+
+Sometimes the websocket will emit an error that you can use in `webSocketReopenWhen` to create a new WebSocket. Other times that information will come from elsewhere in your app and you will have to force disconnect the WebSocket.
+
+First define your own Exception:
+
+```kotlin
+class WebSocketReconnectException: Exception("The WebSocket needs to be reopened")
+```
+
+```kotlin
+    val apolloClient = ApolloClient.Builder()
+        .httpServerUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .wsProtocol(
+            SubscriptionWsProtocol.Factory(
+                connectionPayload = {
+                  // the connection_init payload
+                  // This is an example. You will most likely have to tweak it for your backend
+                  mapOf("Authorization" to token)
+                }
+            )
+        )
+        .webSocketReopenWhen { e, attempt ->
+          if (e is WebSocketReconnectException) {
+            true
+          } else {
+            // Another WebSocket error happened, decide what to do with it
+            // Here we're trying to reconnect at most 3 times
+            attempt < 3
+          }
+        }
+        .build()
+```
+
+When you need to reopen the WebSocket, call `closeConnection`:
+
+```kotlin
+apolloClient.subscriptionNetworkTransport.closeConnection(WebSocketReconnectException())`
+```
+
+The WebSocket will close and reopen with a fresh new `connectionPayload`.
 
