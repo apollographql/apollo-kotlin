@@ -24,7 +24,7 @@ class DefaultUpload internal constructor(
 
   override fun writeTo(sink: BufferedSink) {
     if (bufferedSource != null) {
-      check(!bufferedSourceConsumed) { "Upload.writeTo must be called only once" }
+      check(!bufferedSourceConsumed) { "Apollo: DefaultUpload body can only be read once. If you want to read it several times for logging or other purposes, either buffer it in memory or use your own `Upload` implementation." }
       bufferedSource.use {
         sink.writeAll(it)
       }
