@@ -211,8 +211,10 @@ class CodegenTest {
           }.map {
             buildList {
               addAll(it)
-              // add Java
-              add(it.first().copy(generateKotlinModels = false, codegenModels = MODELS_OPERATION_BASED))
+              // add Java if supported
+              if (it.first().folder.name != "big_query") {
+                add(it.first().copy(generateKotlinModels = false, codegenModels = MODELS_OPERATION_BASED))
+              }
             }
           }
           .flatten()
