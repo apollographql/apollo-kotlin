@@ -229,12 +229,9 @@ class CodegenTest {
     private fun aggregate(name: String, filter: (Measurement) -> Boolean): String {
       val filtered = measurements.filter { filter(it) }
       return String.format(
-          "%-50s %-20s %20s %20s %20s\n",
-          "aggregate",
-          name,
+          "%-80s %20s\n",
+          "aggregate-$name",
           filtered.map { it.linesOfCode }.fold(0L) { acc, i -> acc + i }.toString(),
-          filtered.map { it.codegenDuration }.fold(Duration.ZERO) { acc, measurement -> acc + measurement }.toString(),
-          filtered.map { it.compileDuration }.fold(Duration.ZERO) { acc, measurement -> acc + measurement }.toString(),
       )
     }
 
@@ -243,36 +240,33 @@ class CodegenTest {
     fun dumpTimes() {
       if (shouldUpdateMeasurements()) {
         File("src/test/graphql/com/example/measurements").apply {
-          writeText(
+          writeText("""
+            // This file keeps track of the size of generated code to avoid blowing up the codegen size.
+            // If you updated the codegen and test fixtures, you should commit this file too.
+          """.trimIndent())
+
+          appendText("\n\n")
+
+          appendText(
               String.format(
-                  "%-70s %-20s %20s %20s\n",
+                  "%-80s %20s\n",
                   "Test:",
                   "Total LOC:",
-                  "Codegen (ms):",
-                  "Compilation (ms):",
               )
           )
           appendText(aggregate("all") { true })
-          appendText(aggregate("responseBased") { Regex(".*-responseBased-.*").matches(it.name) })
-          appendText(aggregate("operationBased") { Regex(".*-operationBased-.*").matches(it.name) })
-          appendText(aggregate("compat") { Regex(".*-compat-.*").matches(it.name) })
+          appendText(aggregate("kotlin-responseBased") { Regex(".*kotlin-responseBased-.*").matches(it.name) })
+          appendText(aggregate("kotlin-operationBased") { Regex(".*kotlin-operationBased-.*").matches(it.name) })
+          appendText(aggregate("kotlin-compat") { Regex(".*kotlin-compat-.*").matches(it.name) })
+          appendText(aggregate("java-operationBased") { Regex(".*java-operationBased-.*").matches(it.name) })
           appendText("\n")
           appendText(
               measurements.sortedByDescending { it.linesOfCode }
                   .joinToString("\n") { measurement ->
-                    // Disable machine-specific durations monitoring by default because they depend the developer machin
-                    // and will create conflicts
-                    // val codegenDuration = measurement.codegenDuration.toLong(DurationUnit.MILLISECONDS).toString()
-                    // val compileDuration = measurement.compileDuration.toString()
-                    val codegenDuration = ""
-                    val compileDuration = ""
-
                     String.format(
-                        "%-70s %20s %20s %20s",
+                        "%-80s %20s",
                         measurement.name,
                         measurement.linesOfCode.toString(),
-                        codegenDuration,
-                        compileDuration
                     )
                   }
           )

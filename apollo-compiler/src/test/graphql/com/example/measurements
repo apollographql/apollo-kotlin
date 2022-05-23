@@ -1,243 +1,247 @@
-Test:                                              Total LOC:                  Codegen (ms):    Compilation (ms):
-aggregate                                          all                                189197         2.722308363s     1m 25.146909122s
-aggregate                                          responseBased                       48615         984.453590ms        36.943411291s
-aggregate                                          operationBased                     105029         1.234080454s        27.837165709s
-aggregate                                          compat                              35553         503.774319ms        20.366332122s
+// This file keeps track of the size of generated code to avoid blowing up the codegen size.
+// If you updated the codegen and test fixtures, you should commit this file too.
 
-java-operationBased-fragments_with_defer_and_include_directives                 5395                   48         269.756989ms
-kotlin-compat-fragments_with_defer_and_include_directives                 3596                   66         1.480094863s
-kotlin-operationBased-fragments_with_defer_and_include_directives                 3403                   56         1.430492913s
-kotlin-responseBased-fragment_with_inline_fragment                 2373                   62         1.396034523s
-java-operationBased-nested_named_fragments                         1853                   11          92.568856ms
-java-operationBased-fragment_with_inline_fragment                  1850                   21         157.391780ms
-java-operationBased-union_inline_fragments                         1621                    9          87.612607ms
-java-operationBased-unique_type_name                               1601                    9          88.369121ms
-java-operationBased-inline_fragment_intersection                   1594                   12         113.156081ms
-kotlin-responseBased-nested_named_fragments                        1586                   28         653.586107ms
-java-operationBased-root_query_fragment_with_nested_fragments                 1552                    9          88.130084ms
-kotlin-compat-fragment_with_inline_fragment                        1481                   26         799.087431ms
-java-operationBased-named_fragment_delegate                        1451                    9          87.435763ms
-java-operationBased-mutation_create_review                         1449                    9         109.484040ms
-java-operationBased-__schema                                       1390                   60         688.232266ms
-kotlin-responseBased-named_fragment_delegate                       1335                   20         550.039015ms
-java-operationBased-named_fragment_with_variables                  1328                   10         118.511722ms
-kotlin-responseBased-unique_type_name                              1320                   20         567.648170ms
-kotlin-compat-nested_named_fragments                               1305                   14         510.869851ms
-java-operationBased-nested_conditional_inline                      1284                    9          95.327593ms
-java-operationBased-fragment_used_twice                            1261                   11         147.794915ms
-java-operationBased-input_object_type                              1259                    9         108.675401ms
-java-operationBased-multiple_fragments                             1251                    7          80.079613ms
-kotlin-operationBased-fragment_with_inline_fragment                 1244                   46         763.390702ms
-java-operationBased-mutation_create_review_semantic_naming                 1244                   10          92.052746ms
-java-operationBased-nested_field_with_multiple_fieldsets                 1244                    8          80.625864ms
-kotlin-responseBased-root_query_fragment_with_nested_fragments                 1226                   14         509.732031ms
-kotlin-operationBased-nested_named_fragments                       1220                   14         484.778188ms
-java-operationBased-two_heroes_with_friends                        1202                    7          77.230692ms
-java-operationBased-inline_fragment_merge_fields                   1199                    8          94.992795ms
-kotlin-responseBased-inline_fragment_intersection                  1184                   19         659.270283ms
-kotlin-compat-inline_fragment_intersection                         1171                   14         643.696065ms
-java-operationBased-named_fragment_inside_inline_fragment                 1145                    8          81.005311ms
-java-operationBased-fragments_with_type_condition                  1143                    8          97.153576ms
-kotlin-compat-unique_type_name                                     1120                   11         514.482523ms
-kotlin-operationBased-inline_fragment_intersection                 1107                   21         647.253180ms
-kotlin-operationBased-union_inline_fragments                       1106                   17         534.400053ms
-kotlin-responseBased-fragment_used_twice                           1105                   22         688.329724ms
-kotlin-responseBased-union_inline_fragments                        1094                   13         518.984998ms
-kotlin-responseBased-__schema                                      1087                  163         5.220966425s
-java-operationBased-root_query_inline_fragment                     1081                    7          77.611519ms
-kotlin-operationBased-unique_type_name                             1077                   13         498.627439ms
-kotlin-compat-root_query_fragment_with_nested_fragments                 1069                   13         439.480309ms
-kotlin-compat-union_inline_fragments                               1064                   10         502.129543ms
-kotlin-responseBased-fragments_with_type_condition                 1057                   16         538.903557ms
-java-operationBased-simple_fragment_with_inline_fragments                 1033                    6          73.653329ms
-kotlin-responseBased-multiple_fragments                            1025                   15         462.284168ms
-kotlin-responseBased-mutation_create_review                        1023                   16         575.986995ms
-java-operationBased-inline_fragments_with_friends                  1021                    8          97.403355ms
-java-operationBased-fragment_spread_with_nested_fields                 1019                   10         121.977123ms
-kotlin-responseBased-simple_fragment_with_inline_fragments                 1017                   13         465.606832ms
-kotlin-operationBased-root_query_fragment_with_nested_fragments                 1015                   11         463.025585ms
-java-operationBased-fragment_spread_with_include_directive                 1011                    9         122.948865ms
-kotlin-responseBased-nested_conditional_inline                     1005                   14         530.654585ms
-kotlin-compat-named_fragment_delegate                              1003                   11         435.833364ms
-kotlin-responseBased-named_fragment_with_variables                  997                   14         520.216117ms
-java-operationBased-simple_fragment                                 986                    6          69.991449ms
-kotlin-operationBased-named_fragment_delegate                       979                   12         495.400918ms
-kotlin-compat-fragment_used_twice                                   953                   13         624.223056ms
-kotlin-compat-nested_conditional_inline                             945                    9         523.423971ms
-java-operationBased-fragments_same_type_condition                   936                    7         103.513954ms
-java-operationBased-simple_union                                    936                    6          70.085430ms
-kotlin-compat-named_fragment_with_variables                         917                   18         452.416104ms
-java-operationBased-deprecated_merged_field                         916                   15         128.726260ms
-java-operationBased-hero_details                                    908                    6         102.822022ms
-java-operationBased-not_all_combinations_are_needed                  906                    5          71.381728ms
-java-operationBased-fieldset_with_multiple_super                    889                   13         113.927271ms
-java-operationBased-simple_inline_fragment                          889                    9          68.630585ms
-java-operationBased-inline_fragment_with_include_directive                  880                    6          76.631938ms
-kotlin-compat-multiple_fragments                                    880                   10         401.185654ms
-kotlin-responseBased-input_object_type                              879                   11         567.143011ms
-kotlin-operationBased-nested_conditional_inline                     879                   12         487.173179ms
-kotlin-responseBased-mutation_create_review_semantic_naming                  863                   14         481.492435ms
-kotlin-compat-fragments_with_type_condition                         860                   11         450.053521ms
-kotlin-operationBased-fragment_used_twice                           858                   13         574.160323ms
-kotlin-operationBased-named_fragment_with_variables                  856                   14         422.739985ms
-java-operationBased-test_inline                                     854                    5          68.870077ms
-java-operationBased-union_fragment                                  853                    5          70.967142ms
-kotlin-responseBased-fragment_spread_with_nested_fields                  852                   19         715.676437ms
-java-operationBased-inline_fragment_inside_inline_fragment                  845                    7          83.161680ms
-kotlin-responseBased-simple_fragment                                820                   10         373.617416ms
-kotlin-operationBased-multiple_fragments                            817                   11         385.469084ms
-kotlin-responseBased-nested_field_with_multiple_fieldsets                  817                   11         414.654081ms
-java-operationBased-named_fragment_without_implementation                  810                    5          77.447015ms
-kotlin-operationBased-fragments_with_type_condition                  799                   13         452.341611ms
-kotlin-operationBased-nested_field_with_multiple_fieldsets                  798                   13         446.463938ms
-kotlin-operationBased-inline_fragment_merge_fields                  782                   14         461.802536ms
-kotlin-responseBased-two_heroes_with_friends                        779                   11         389.687213ms
-java-operationBased-fragment_with_multiple_fieldsets                  773                    7         105.625642ms
-java-operationBased-hero_details_semantic_naming                    773                    5          74.260097ms
-kotlin-operationBased-named_fragment_inside_inline_fragment                  764                    9         389.673833ms
-kotlin-compat-simple_fragment_with_inline_fragments                  754                    8         373.368145ms
-kotlin-responseBased-inline_fragments_with_friends                  752                   12         460.277709ms
-kotlin-compat-named_fragment_inside_inline_fragment                  750                    9         424.625427ms
-java-operationBased-path_vs_flat_accessors                          750                    4          67.761991ms
-kotlin-operationBased-root_query_inline_fragment                    748                    9         425.266240ms
-kotlin-responseBased-deprecated_merged_field                        746                   21         838.991614ms
-kotlin-compat-simple_fragment                                       744                    7         336.900660ms
-kotlin-responseBased-named_fragment_inside_inline_fragment                  743                   10         462.585934ms
-kotlin-compat-inline_fragments_with_friends                         738                    9         458.332876ms
-kotlin-compat-nested_field_with_multiple_fieldsets                  737                    7         403.670642ms
-java-operationBased-reserved_keywords                               732                    4          81.778743ms
-kotlin-responseBased-simple_union                                   732                    8         403.831734ms
-java-operationBased-typename_always_first                           726                    4          65.024385ms
-kotlin-compat-fragment_spread_with_include_directive                  722                   14         591.125193ms
-kotlin-responseBased-root_query_inline_fragment                     722                   10         407.200726ms
-kotlin-compat-fragment_spread_with_nested_fields                    707                   10         609.243496ms
-kotlin-operationBased-inline_fragments_with_friends                  705                   14         477.263444ms
-kotlin-responseBased-fragments_same_type_condition                  704                   12         414.861681ms
-java-operationBased-interface_on_interface                          704                    4          71.873022ms
-java-operationBased-introspection_query                             703                    5          69.754771ms
-kotlin-compat-root_query_inline_fragment                            696                    7         396.837241ms
-kotlin-operationBased-simple_fragment_with_inline_fragments                  693                    7         347.162466ms
-kotlin-operationBased-fragment_spread_with_include_directive                  691                   14         596.775787ms
-java-operationBased-root_query_fragment                             686                    4          82.251905ms
-kotlin-operationBased-simple_fragment                               682                    9         377.358062ms
-kotlin-operationBased-fragment_spread_with_nested_fields                  680                   17         603.296262ms
-java-operationBased-input_object_variable_and_argument                  672                    5          79.510826ms
-kotlin-compat-fragments_same_type_condition                         670                   13         442.483078ms
-kotlin-compat-simple_union                                          668                    7         320.896879ms
-java-operationBased-monomorphic                                     661                    4          66.414202ms
-kotlin-compat-deprecated_merged_field                               660                   18         706.249657ms
-java-operationBased-interface_always_nested                         657                    5          77.995563ms
-kotlin-compat-inline_fragment_with_include_directive                  654                    8         391.793917ms
-kotlin-compat-not_all_combinations_are_needed                       651                    7         351.379716ms
-kotlin-compat-union_fragment                                        650                    8         326.384228ms
-java-operationBased-deprecation                                     647                    7         102.294176ms
-kotlin-compat-inline_fragment_inside_inline_fragment                  643                    8         407.206264ms
-kotlin-operationBased-fragments_same_type_condition                  639                   13         475.762008ms
-kotlin-operationBased-simple_union                                  637                    7         316.462610ms
-java-operationBased-recursive_selection                             635                    4          69.067193ms
-kotlin-responseBased-test_inline                                    632                    9         345.275260ms
-kotlin-responseBased-union_fragment                                 632                    7         312.020151ms
-kotlin-compat-fieldset_with_multiple_super                          630                   16         735.189053ms
-kotlin-responseBased-fragment_with_multiple_fieldsets                  627                   11         420.936004ms
-java-operationBased-hero_with_review                                626                    5          78.940539ms
-kotlin-compat-named_fragment_without_implementation                  622                    6         352.756980ms
-kotlin-responseBased-named_fragment_without_implementation                  618                    7         330.732003ms
-kotlin-operationBased-deprecated_merged_field                       617                   21         718.674481ms
-kotlin-responseBased-hero_details                                   613                   11         472.011573ms
-kotlin-operationBased-not_all_combinations_are_needed                  613                    7         331.884696ms
-kotlin-operationBased-inline_fragment_inside_inline_fragment                  611                    9         411.628205ms
-kotlin-operationBased-union_fragment                                608                    6         314.595061ms
-kotlin-responseBased-inline_fragment_merge_fields                   607                    9         359.263248ms
-java-operationBased-hero_name_query_long_name                       606                    5          75.128112ms
-kotlin-compat-inline_fragment_merge_fields                          605                    8         405.097114ms
-java-operationBased-field_with_include_directive                    604                    8         121.946890ms
-java-operationBased-custom_scalar_type                              603                    8         115.091046ms
-kotlin-operationBased-inline_fragment_with_include_directive                  603                    8         381.293620ms
-kotlin-operationBased-fieldset_with_multiple_super                  602                   18         718.216646ms
-java-operationBased-variable_default_value                          600                    4          93.155459ms
-java-operationBased-hero_name                                       598                    9          73.890828ms
-kotlin-responseBased-inline_fragment_inside_inline_fragment                  598                    8         361.795526ms
-kotlin-operationBased-simple_inline_fragment                        596                    7         337.138253ms
-kotlin-operationBased-named_fragment_without_implementation                  591                   15         359.679322ms
-kotlin-compat-test_inline                                           586                    6         338.981421ms
-kotlin-responseBased-simple_inline_fragment                         584                    6         328.028312ms
-kotlin-responseBased-fieldset_with_multiple_super                   583                   11         600.645454ms
-kotlin-responseBased-not_all_combinations_are_needed                  583                    7         316.331042ms
-java-operationBased-optional                                        576                    7          64.688809ms
-java-operationBased-inline_fragment_for_non_optional_field                  567                    5          77.047788ms
-kotlin-compat-simple_inline_fragment                                566                    5         324.139178ms
-kotlin-operationBased-test_inline                                   563                   10         332.731868ms
-java-operationBased-inline_fragment_type_coercion                   561                    4          71.380931ms
-kotlin-compat-fragment_with_multiple_fieldsets                      559                   12         412.104027ms
-kotlin-responseBased-reserved_keywords                              559                    6         321.777812ms
-java-operationBased-java8annotation                                 557                    4          66.352151ms
-java-operationBased-two_heroes_unique                               556                    3          64.574670ms
-java-operationBased-inline_fragment_simple                          545                    4          67.051539ms
-kotlin-compat-reserved_keywords                                     542                    5         322.904554ms
-kotlin-operationBased-reserved_keywords                             535                    6         325.367918ms
-kotlin-responseBased-path_vs_flat_accessors                         534                    6         310.057112ms
-kotlin-responseBased-hero_details_semantic_naming                   527                   12         417.912332ms
-kotlin-compat-path_vs_flat_accessors                                523                   10         343.457270ms
-kotlin-operationBased-fragment_with_multiple_fieldsets                  522                    8         448.653451ms
-kotlin-responseBased-root_query_fragment                            517                    6         311.570332ms
-kotlin-responseBased-input_object_variable_and_argument                  515                    7         463.624093ms
-kotlin-responseBased-typename_always_first                          514                    5         293.356825ms
-kotlin-responseBased-interface_on_interface                         510                    6         321.489389ms
-java-operationBased-starships                                       510                    3          63.582059ms
-kotlin-operationBased-path_vs_flat_accessors                        509                    6         325.839316ms
-kotlin-operationBased-typename_always_first                         507                    6         307.556852ms
-kotlin-compat-typename_always_first                                 507                    5         296.376274ms
-java-operationBased-antlr_tokens                                    499                   23         166.332671ms
-kotlin-compat-root_query_fragment                                   499                    5         284.822722ms
-kotlin-compat-interface_on_interface                                494                    5         313.685908ms
-java-operationBased-subscriptions                                   494                    3          62.743993ms
-kotlin-responseBased-hero_name                                      488                   10         388.881364ms
-kotlin-operationBased-interface_on_interface                        487                    7         332.769976ms
-kotlin-responseBased-hero_with_review                               480                    7         419.056040ms
-kotlin-responseBased-interface_always_nested                        479                    7         326.710347ms
-kotlin-responseBased-deprecation                                    478                   12         550.121538ms
-kotlin-responseBased-hero_name_query_long_name                      477                    6         343.820551ms
-java-operationBased-arguments_hardcoded                             472                    8         127.349730ms
-kotlin-responseBased-custom_scalar_type                             472                   12         604.267293ms
-kotlin-compat-interface_always_nested                               470                    5         400.374473ms
-kotlin-operationBased-root_query_fragment                           468                    8         322.730622ms
-kotlin-compat-hero_name                                             462                    6         329.653576ms
-kotlin-compat-monomorphic                                           457                    5         293.910725ms
-kotlin-operationBased-interface_always_nested                       456                    6         334.491399ms
-kotlin-responseBased-introspection_query                            451                    6         302.885050ms
-java-operationBased-merged_include                                  450                    3          60.089674ms
-kotlin-operationBased-monomorphic                                   450                    8         288.473331ms
-java-operationBased-operation_id_generator                          450                    3          61.509249ms
-kotlin-responseBased-monomorphic                                    446                    6         287.924425ms
-kotlin-responseBased-inline_fragment_for_non_optional_field                  445                    6         373.939194ms
-kotlin-responseBased-variable_default_value                         440                    5         305.159783ms
-java-operationBased-enum_field                                      437                    5          99.038615ms
-java-operationBased-case_sensitive_enum                             434                    5         100.420825ms
-java-operationBased-enums_as_sealed                                 434                    6          99.738780ms
-kotlin-operationBased-hero_name                                     434                    6         328.928182ms
-java-operationBased-nonnull                                         431                    3          59.468657ms
-kotlin-responseBased-field_with_include_directive                   429                   10         700.338076ms
-kotlin-responseBased-optional                                       428                    5         350.121031ms
-kotlin-responseBased-inline_fragment_type_coercion                  426                    7         309.794256ms
-kotlin-compat-inline_fragment_for_non_optional_field                  422                    6         312.260508ms
-kotlin-responseBased-recursive_selection                            420                    5         294.082186ms
-kotlin-responseBased-inline_fragment_simple                         409                    6         289.788861ms
-kotlin-compat-inline_fragment_type_coercion                         408                    5         296.263539ms
-kotlin-operationBased-inline_fragment_for_non_optional_field                  405                    6         317.222393ms
-kotlin-operationBased-inline_fragment_type_coercion                  394                    5         293.183042ms
-kotlin-compat-inline_fragment_simple                                393                    5         286.881126ms
-kotlin-responseBased-two_heroes_unique                              390                    4         260.004247ms
-kotlin-operationBased-inline_fragment_simple                        386                    6         353.532720ms
-kotlin-responseBased-starships                                      374                    4         258.537469ms
-kotlin-responseBased-java8annotation                                373                    5         265.534488ms
-kotlin-responseBased-antlr_tokens                                   372                   30         819.226944ms
-kotlin-responseBased-arguments_hardcoded                            363                   13         625.357792ms
-kotlin-responseBased-subscriptions                                  360                    4         248.978710ms
-kotlin-responseBased-enums_as_sealed                                340                   13         531.309166ms
-kotlin-responseBased-operation_id_generator                         325                    4         264.350661ms
-kotlin-responseBased-merged_include                                 323                    5         251.996617ms
-kotlin-responseBased-enum_field                                     316                    6         454.998707ms
-kotlin-responseBased-case_sensitive_enum                            315                    9         593.483360ms
-kotlin-responseBased-nonnull                                        309                    4         238.486736ms
-kotlin-responseBased-empty                                           91                    2         209.166410ms
-java-operationBased-empty                                            75                    1          57.559921ms
+Test:                                                                                      Total LOC:
+aggregate-all                                                                                  189197
+aggregate-kotlin-responseBased                                                                  48615
+aggregate-kotlin-operationBased                                                                 34136
+aggregate-kotlin-compat                                                                         35553
+aggregate-java-operationBased                                                                   70893
+
+java-operationBased-fragments_with_defer_and_include_directives                                  5395
+kotlin-compat-fragments_with_defer_and_include_directives                                        3596
+kotlin-operationBased-fragments_with_defer_and_include_directives                                3403
+kotlin-responseBased-fragment_with_inline_fragment                                               2373
+java-operationBased-nested_named_fragments                                                       1853
+java-operationBased-fragment_with_inline_fragment                                                1850
+java-operationBased-union_inline_fragments                                                       1621
+java-operationBased-unique_type_name                                                             1601
+java-operationBased-inline_fragment_intersection                                                 1594
+kotlin-responseBased-nested_named_fragments                                                      1586
+java-operationBased-root_query_fragment_with_nested_fragments                                    1552
+kotlin-compat-fragment_with_inline_fragment                                                      1481
+java-operationBased-named_fragment_delegate                                                      1451
+java-operationBased-mutation_create_review                                                       1449
+java-operationBased-__schema                                                                     1390
+kotlin-responseBased-named_fragment_delegate                                                     1335
+java-operationBased-named_fragment_with_variables                                                1328
+kotlin-responseBased-unique_type_name                                                            1320
+kotlin-compat-nested_named_fragments                                                             1305
+java-operationBased-nested_conditional_inline                                                    1284
+java-operationBased-fragment_used_twice                                                          1261
+java-operationBased-input_object_type                                                            1259
+java-operationBased-multiple_fragments                                                           1251
+kotlin-operationBased-fragment_with_inline_fragment                                              1244
+java-operationBased-mutation_create_review_semantic_naming                                       1244
+java-operationBased-nested_field_with_multiple_fieldsets                                         1244
+kotlin-responseBased-root_query_fragment_with_nested_fragments                                   1226
+kotlin-operationBased-nested_named_fragments                                                     1220
+java-operationBased-two_heroes_with_friends                                                      1202
+java-operationBased-inline_fragment_merge_fields                                                 1199
+kotlin-responseBased-inline_fragment_intersection                                                1184
+kotlin-compat-inline_fragment_intersection                                                       1171
+java-operationBased-named_fragment_inside_inline_fragment                                        1145
+java-operationBased-fragments_with_type_condition                                                1143
+kotlin-compat-unique_type_name                                                                   1120
+kotlin-operationBased-inline_fragment_intersection                                               1107
+kotlin-operationBased-union_inline_fragments                                                     1106
+kotlin-responseBased-fragment_used_twice                                                         1105
+kotlin-responseBased-union_inline_fragments                                                      1094
+kotlin-responseBased-__schema                                                                    1087
+java-operationBased-root_query_inline_fragment                                                   1081
+kotlin-operationBased-unique_type_name                                                           1077
+kotlin-compat-root_query_fragment_with_nested_fragments                                          1069
+kotlin-compat-union_inline_fragments                                                             1064
+kotlin-responseBased-fragments_with_type_condition                                               1057
+java-operationBased-simple_fragment_with_inline_fragments                                        1033
+kotlin-responseBased-multiple_fragments                                                          1025
+kotlin-responseBased-mutation_create_review                                                      1023
+java-operationBased-inline_fragments_with_friends                                                1021
+java-operationBased-fragment_spread_with_nested_fields                                           1019
+kotlin-responseBased-simple_fragment_with_inline_fragments                                       1017
+kotlin-operationBased-root_query_fragment_with_nested_fragments                                  1015
+java-operationBased-fragment_spread_with_include_directive                                       1011
+kotlin-responseBased-nested_conditional_inline                                                   1005
+kotlin-compat-named_fragment_delegate                                                            1003
+kotlin-responseBased-named_fragment_with_variables                                                997
+java-operationBased-simple_fragment                                                               986
+kotlin-operationBased-named_fragment_delegate                                                     979
+kotlin-compat-fragment_used_twice                                                                 953
+kotlin-compat-nested_conditional_inline                                                           945
+java-operationBased-fragments_same_type_condition                                                 936
+java-operationBased-simple_union                                                                  936
+kotlin-compat-named_fragment_with_variables                                                       917
+java-operationBased-deprecated_merged_field                                                       916
+java-operationBased-hero_details                                                                  908
+java-operationBased-not_all_combinations_are_needed                                               906
+java-operationBased-fieldset_with_multiple_super                                                  889
+java-operationBased-simple_inline_fragment                                                        889
+java-operationBased-inline_fragment_with_include_directive                                        880
+kotlin-compat-multiple_fragments                                                                  880
+kotlin-responseBased-input_object_type                                                            879
+kotlin-operationBased-nested_conditional_inline                                                   879
+kotlin-responseBased-mutation_create_review_semantic_naming                                       863
+kotlin-compat-fragments_with_type_condition                                                       860
+kotlin-operationBased-fragment_used_twice                                                         858
+kotlin-operationBased-named_fragment_with_variables                                               856
+java-operationBased-test_inline                                                                   854
+java-operationBased-union_fragment                                                                853
+kotlin-responseBased-fragment_spread_with_nested_fields                                           852
+java-operationBased-inline_fragment_inside_inline_fragment                                        845
+kotlin-responseBased-simple_fragment                                                              820
+kotlin-operationBased-multiple_fragments                                                          817
+kotlin-responseBased-nested_field_with_multiple_fieldsets                                         817
+java-operationBased-named_fragment_without_implementation                                         810
+kotlin-operationBased-fragments_with_type_condition                                               799
+kotlin-operationBased-nested_field_with_multiple_fieldsets                                        798
+kotlin-operationBased-inline_fragment_merge_fields                                                782
+kotlin-responseBased-two_heroes_with_friends                                                      779
+java-operationBased-fragment_with_multiple_fieldsets                                              773
+java-operationBased-hero_details_semantic_naming                                                  773
+kotlin-operationBased-named_fragment_inside_inline_fragment                                       764
+kotlin-compat-simple_fragment_with_inline_fragments                                               754
+kotlin-responseBased-inline_fragments_with_friends                                                752
+kotlin-compat-named_fragment_inside_inline_fragment                                               750
+java-operationBased-path_vs_flat_accessors                                                        750
+kotlin-operationBased-root_query_inline_fragment                                                  748
+kotlin-responseBased-deprecated_merged_field                                                      746
+kotlin-compat-simple_fragment                                                                     744
+kotlin-responseBased-named_fragment_inside_inline_fragment                                        743
+kotlin-compat-inline_fragments_with_friends                                                       738
+kotlin-compat-nested_field_with_multiple_fieldsets                                                737
+java-operationBased-reserved_keywords                                                             732
+kotlin-responseBased-simple_union                                                                 732
+java-operationBased-typename_always_first                                                         726
+kotlin-compat-fragment_spread_with_include_directive                                              722
+kotlin-responseBased-root_query_inline_fragment                                                   722
+kotlin-compat-fragment_spread_with_nested_fields                                                  707
+kotlin-operationBased-inline_fragments_with_friends                                               705
+kotlin-responseBased-fragments_same_type_condition                                                704
+java-operationBased-interface_on_interface                                                        704
+java-operationBased-introspection_query                                                           703
+kotlin-compat-root_query_inline_fragment                                                          696
+kotlin-operationBased-simple_fragment_with_inline_fragments                                       693
+kotlin-operationBased-fragment_spread_with_include_directive                                      691
+java-operationBased-root_query_fragment                                                           686
+kotlin-operationBased-simple_fragment                                                             682
+kotlin-operationBased-fragment_spread_with_nested_fields                                          680
+java-operationBased-input_object_variable_and_argument                                            672
+kotlin-compat-fragments_same_type_condition                                                       670
+kotlin-compat-simple_union                                                                        668
+java-operationBased-monomorphic                                                                   661
+kotlin-compat-deprecated_merged_field                                                             660
+java-operationBased-interface_always_nested                                                       657
+kotlin-compat-inline_fragment_with_include_directive                                              654
+kotlin-compat-not_all_combinations_are_needed                                                     651
+kotlin-compat-union_fragment                                                                      650
+java-operationBased-deprecation                                                                   647
+kotlin-compat-inline_fragment_inside_inline_fragment                                              643
+kotlin-operationBased-fragments_same_type_condition                                               639
+kotlin-operationBased-simple_union                                                                637
+java-operationBased-recursive_selection                                                           635
+kotlin-responseBased-test_inline                                                                  632
+kotlin-responseBased-union_fragment                                                               632
+kotlin-compat-fieldset_with_multiple_super                                                        630
+kotlin-responseBased-fragment_with_multiple_fieldsets                                             627
+java-operationBased-hero_with_review                                                              626
+kotlin-compat-named_fragment_without_implementation                                               622
+kotlin-responseBased-named_fragment_without_implementation                                        618
+kotlin-operationBased-deprecated_merged_field                                                     617
+kotlin-responseBased-hero_details                                                                 613
+kotlin-operationBased-not_all_combinations_are_needed                                             613
+kotlin-operationBased-inline_fragment_inside_inline_fragment                                      611
+kotlin-operationBased-union_fragment                                                              608
+kotlin-responseBased-inline_fragment_merge_fields                                                 607
+java-operationBased-hero_name_query_long_name                                                     606
+kotlin-compat-inline_fragment_merge_fields                                                        605
+java-operationBased-field_with_include_directive                                                  604
+java-operationBased-custom_scalar_type                                                            603
+kotlin-operationBased-inline_fragment_with_include_directive                                      603
+kotlin-operationBased-fieldset_with_multiple_super                                                602
+java-operationBased-variable_default_value                                                        600
+java-operationBased-hero_name                                                                     598
+kotlin-responseBased-inline_fragment_inside_inline_fragment                                       598
+kotlin-operationBased-simple_inline_fragment                                                      596
+kotlin-operationBased-named_fragment_without_implementation                                       591
+kotlin-compat-test_inline                                                                         586
+kotlin-responseBased-simple_inline_fragment                                                       584
+kotlin-responseBased-fieldset_with_multiple_super                                                 583
+kotlin-responseBased-not_all_combinations_are_needed                                              583
+java-operationBased-optional                                                                      576
+java-operationBased-inline_fragment_for_non_optional_field                                        567
+kotlin-compat-simple_inline_fragment                                                              566
+kotlin-operationBased-test_inline                                                                 563
+java-operationBased-inline_fragment_type_coercion                                                 561
+kotlin-compat-fragment_with_multiple_fieldsets                                                    559
+kotlin-responseBased-reserved_keywords                                                            559
+java-operationBased-java8annotation                                                               557
+java-operationBased-two_heroes_unique                                                             556
+java-operationBased-inline_fragment_simple                                                        545
+kotlin-compat-reserved_keywords                                                                   542
+kotlin-operationBased-reserved_keywords                                                           535
+kotlin-responseBased-path_vs_flat_accessors                                                       534
+kotlin-responseBased-hero_details_semantic_naming                                                 527
+kotlin-compat-path_vs_flat_accessors                                                              523
+kotlin-operationBased-fragment_with_multiple_fieldsets                                            522
+kotlin-responseBased-root_query_fragment                                                          517
+kotlin-responseBased-input_object_variable_and_argument                                           515
+kotlin-responseBased-typename_always_first                                                        514
+kotlin-responseBased-interface_on_interface                                                       510
+java-operationBased-starships                                                                     510
+kotlin-operationBased-path_vs_flat_accessors                                                      509
+kotlin-operationBased-typename_always_first                                                       507
+kotlin-compat-typename_always_first                                                               507
+java-operationBased-antlr_tokens                                                                  499
+kotlin-compat-root_query_fragment                                                                 499
+kotlin-compat-interface_on_interface                                                              494
+java-operationBased-subscriptions                                                                 494
+kotlin-responseBased-hero_name                                                                    488
+kotlin-operationBased-interface_on_interface                                                      487
+kotlin-responseBased-hero_with_review                                                             480
+kotlin-responseBased-interface_always_nested                                                      479
+kotlin-responseBased-deprecation                                                                  478
+kotlin-responseBased-hero_name_query_long_name                                                    477
+java-operationBased-arguments_hardcoded                                                           472
+kotlin-responseBased-custom_scalar_type                                                           472
+kotlin-compat-interface_always_nested                                                             470
+kotlin-operationBased-root_query_fragment                                                         468
+kotlin-compat-hero_name                                                                           462
+kotlin-compat-monomorphic                                                                         457
+kotlin-operationBased-interface_always_nested                                                     456
+kotlin-responseBased-introspection_query                                                          451
+java-operationBased-merged_include                                                                450
+kotlin-operationBased-monomorphic                                                                 450
+java-operationBased-operation_id_generator                                                        450
+kotlin-responseBased-monomorphic                                                                  446
+kotlin-responseBased-inline_fragment_for_non_optional_field                                       445
+kotlin-responseBased-variable_default_value                                                       440
+java-operationBased-enum_field                                                                    437
+java-operationBased-case_sensitive_enum                                                           434
+java-operationBased-enums_as_sealed                                                               434
+kotlin-operationBased-hero_name                                                                   434
+java-operationBased-nonnull                                                                       431
+kotlin-responseBased-field_with_include_directive                                                 429
+kotlin-responseBased-optional                                                                     428
+kotlin-responseBased-inline_fragment_type_coercion                                                426
+kotlin-compat-inline_fragment_for_non_optional_field                                              422
+kotlin-responseBased-recursive_selection                                                          420
+kotlin-responseBased-inline_fragment_simple                                                       409
+kotlin-compat-inline_fragment_type_coercion                                                       408
+kotlin-operationBased-inline_fragment_for_non_optional_field                                      405
+kotlin-operationBased-inline_fragment_type_coercion                                               394
+kotlin-compat-inline_fragment_simple                                                              393
+kotlin-responseBased-two_heroes_unique                                                            390
+kotlin-operationBased-inline_fragment_simple                                                      386
+kotlin-responseBased-starships                                                                    374
+kotlin-responseBased-java8annotation                                                              373
+kotlin-responseBased-antlr_tokens                                                                 372
+kotlin-responseBased-arguments_hardcoded                                                          363
+kotlin-responseBased-subscriptions                                                                360
+kotlin-responseBased-enums_as_sealed                                                              340
+kotlin-responseBased-operation_id_generator                                                       325
+kotlin-responseBased-merged_include                                                               323
+kotlin-responseBased-enum_field                                                                   316
+kotlin-responseBased-case_sensitive_enum                                                          315
+kotlin-responseBased-nonnull                                                                      309
+kotlin-responseBased-empty                                                                         91
+java-operationBased-empty                                                                          75
