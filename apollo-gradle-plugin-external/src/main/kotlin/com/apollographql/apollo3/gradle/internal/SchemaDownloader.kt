@@ -39,15 +39,17 @@ object SchemaDownloader {
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap()
   ) {
+    var introspectionSchemaJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
     var gqlSchema: GQLDocument? = null
     when {
       endpoint != null -> {
-        introspectionSchema = downloadIntrospection(
+        introspectionSchemaJson = downloadIntrospection(
             endpoint = endpoint,
             headers = headers,
             insecure = insecure,
-        ).toIntrospectionSchema()
+        )
+        introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
       }
       else -> {
         check(key != null) {
@@ -79,8 +81,10 @@ object SchemaDownloader {
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
         introspectionSchema = gqlSchema!!.validateAsSchema().valueAssertNoErrors().toIntrospectionSchema()
+        schema.writeText(introspectionSchema.toJson(indent = "  "))
+      } else {
+        schema.writeText(introspectionSchemaJson!!)
       }
-      schema.writeText(introspectionSchema.toJson(indent = "  "))
     } else {
       if (gqlSchema == null) {
         gqlSchema = introspectionSchema!!.toGQLDocument()
