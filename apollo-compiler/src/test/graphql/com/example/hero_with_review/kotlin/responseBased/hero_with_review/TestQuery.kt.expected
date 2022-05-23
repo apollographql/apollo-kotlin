@@ -82,8 +82,9 @@ public data class TestQuery(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "mutation TestQuery(${'$'}ep: Episode!) { createReview(episode: ${'$'}ep, review: { stars: 5 listOfEnums: [JEDI,EMPIRE,NEWHOPE] listOfStringNonOptional: [\"1\",\"2\",\"3\"] favoriteColor: { red: 1 blue: 1 }  } ) { stars commentary } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "mutation TestQuery(${'$'}ep: Episode!) { createReview(episode: ${'$'}ep, review: { stars: 5 listOfEnums: [JEDI,EMPIRE,NEWHOPE] listOfStringNonOptional: [\"1\",\"2\",\"3\"] favoriteColor: { red: 1 blue: 1 }  } ) { stars commentary } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

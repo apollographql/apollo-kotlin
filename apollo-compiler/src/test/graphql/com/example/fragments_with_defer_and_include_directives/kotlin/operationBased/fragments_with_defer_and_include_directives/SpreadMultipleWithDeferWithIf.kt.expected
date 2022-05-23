@@ -94,8 +94,9 @@ public data class SpreadMultipleWithDeferWithIf(
      *   birthDate
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @experimental_defer(label: \"c_first\", if: false) ...CharacterDetails2 @experimental_defer(label: \"c_second\", if: true) ...CharacterDetails3 @experimental_defer(label: \"c_third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query SpreadMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ...CharacterDetails @experimental_defer(label: \"c_first\", if: false) ...CharacterDetails2 @experimental_defer(label: \"c_second\", if: true) ...CharacterDetails3 @experimental_defer(label: \"c_third\", if: ${'$'}cond) } }  fragment CharacterDetails on Droid { name }  fragment CharacterDetails2 on Droid { id }  fragment CharacterDetails3 on Droid { birthDate }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDeferWithIf"
   }

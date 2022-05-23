@@ -92,8 +92,9 @@ internal class TestQuery() : Query<TestQuery.Data> {
      *   ...HumanDetails
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment HumanDetails on Human { __typename name }  fragment HeroDetails on Character { __typename ...HumanDetails }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment HumanDetails on Human { __typename name }  fragment HeroDetails on Character { __typename ...HumanDetails }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

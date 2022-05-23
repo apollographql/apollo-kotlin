@@ -109,8 +109,9 @@ public data class InlineMultipleWithDeferWithIf(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @experimental_defer(label: \"f_first\", if: false) { id } ... on Character @experimental_defer(label: \"f_second\", if: true) { name } ... on Character @experimental_defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @experimental_defer(label: \"f_first\", if: false) { id } ... on Character @experimental_defer(label: \"f_second\", if: true) { name } ... on Character @experimental_defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferWithIf"
   }

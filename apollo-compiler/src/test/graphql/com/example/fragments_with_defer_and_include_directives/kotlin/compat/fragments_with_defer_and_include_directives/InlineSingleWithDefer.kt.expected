@@ -81,8 +81,9 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query InlineSingleWithDefer { hero { __typename ... on Droid @experimental_defer { name } } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query InlineSingleWithDefer { hero { __typename ... on Droid @experimental_defer { name } } }"
 
     public const val OPERATION_NAME: String = "InlineSingleWithDefer"
   }

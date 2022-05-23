@@ -198,8 +198,9 @@ public data class TestQuery(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { __typename name ... on Human { friends { __typename name ... on Human { height(unit: FOOT) } } } ... on Droid { friends { __typename name ... on Human { height(unit: METER) } } } } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query TestQuery(${'$'}episode: Episode) { hero(episode: ${'$'}episode) { __typename name ... on Human { friends { __typename name ... on Human { height(unit: FOOT) } } } ... on Droid { friends { __typename name ... on Human { height(unit: METER) } } } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

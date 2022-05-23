@@ -83,8 +83,8 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { tree { name children { name } parent { name } } }"
+    public val OPERATION_DOCUMENT: String
+      get() = "query TestQuery { tree { name children { name } parent { name } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

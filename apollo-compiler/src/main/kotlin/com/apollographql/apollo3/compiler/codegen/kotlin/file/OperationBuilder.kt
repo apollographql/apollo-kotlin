@@ -146,8 +146,10 @@ class OperationBuilder(
         )
         .applyIf(generateQueryDocument) {
           addProperty(PropertySpec.builder(OPERATION_DOCUMENT, KotlinSymbols.String)
-              .addModifiers(KModifier.CONST)
-              .initializer("%S", QueryDocumentMinifier.minify(operation.sourceWithFragments))
+              .getter(FunSpec.getterBuilder()
+                  .addStatement("return·%S", QueryDocumentMinifier.minify(operation.sourceWithFragments))
+                  .build()
+              )
               .addKdoc("%L", """
                 The minimized GraphQL document being sent to the server to save a few bytes.
                 The un-minimized version is:

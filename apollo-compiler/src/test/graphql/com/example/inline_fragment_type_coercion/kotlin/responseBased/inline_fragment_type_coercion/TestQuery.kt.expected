@@ -90,8 +90,8 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query TestQuery { foo { __typename foo ... on Bar { bar } } }"
+    public val OPERATION_DOCUMENT: String
+      get() = "query TestQuery { foo { __typename foo ... on Bar { bar } } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

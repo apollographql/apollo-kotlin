@@ -75,8 +75,9 @@ public data class CreateReviewForEpisodeMutation(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
   }

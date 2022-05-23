@@ -83,8 +83,9 @@ public class SpreadSingleWithDefer() : Query<SpreadSingleWithDefer.Data> {
      *   name
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query SpreadSingleWithDefer { hero { __typename ...DroidDetails @experimental_defer } }  fragment DroidDetails on Droid { name }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query SpreadSingleWithDefer { hero { __typename ...DroidDetails @experimental_defer } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadSingleWithDefer"
   }

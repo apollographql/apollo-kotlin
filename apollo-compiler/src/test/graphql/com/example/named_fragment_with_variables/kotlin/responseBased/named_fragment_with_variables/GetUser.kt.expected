@@ -101,8 +101,9 @@ public data class GetUser(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "query GetUser(${'$'}organizationId: String!, ${'$'}query: UserQuery!, ${'$'}size: Int!) { __typename ...QueryFragment }  fragment UserFragment on User { firstName lastName avatar(size: ${'$'}size) }  fragment QueryFragment on Query { organization(id: ${'$'}organizationId) { id user(query: ${'$'}query) { __typename ...UserFragment } } }"
 
     public const val OPERATION_NAME: String = "GetUser"
   }

@@ -74,8 +74,9 @@ public data class TestSubscription(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "subscription TestSubscription(${'$'}repo: String!) { commentAdded(repoFullName: ${'$'}repo) { id content } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "subscription TestSubscription(${'$'}repo: String!) { commentAdded(repoFullName: ${'$'}repo) { id content } }"
 
     public const val OPERATION_NAME: String = "TestSubscription"
   }

@@ -105,8 +105,9 @@ internal data class CreateReviewForEpisode(
      *   }
      * }
      */
-    public const val OPERATION_DOCUMENT: String =
-        "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
+    public val OPERATION_DOCUMENT: String
+      get() =
+          "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
   }
