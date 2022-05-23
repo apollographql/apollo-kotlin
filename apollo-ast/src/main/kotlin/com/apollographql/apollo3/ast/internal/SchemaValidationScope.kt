@@ -97,7 +97,11 @@ internal fun SchemaValidationScope.validateDocumentAndMergeExtensions(): List<GQ
 
   val schemaDefinition = schemaDefinition ?: syntheticSchemaDefinition()
 
-  return mergeExtensions(listOf(schemaDefinition) + allDefinitions.filter { it !is GQLSchemaDefinition } )
+  val definitionsWithExtensions = mergeExtensions(listOf(schemaDefinition) + allDefinitions.filter { it !is GQLSchemaDefinition } )
+
+  validateKeyFields(definitionsWithExtensions)
+
+  return definitionsWithExtensions
 }
 
 internal fun SchemaValidationScope.validateRootOperationTypes() {
@@ -156,7 +160,7 @@ private fun ValidationScope.validateInterfaces() {
   }
 }
 
-private fun ValidationScope.validateObjects() {
+private fun SchemaValidationScope.validateObjects() {
   typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
     if (o.fields.isEmpty()) {
       registerIssue("Object must specify one or more fields", o.sourceLocation)
@@ -185,3 +189,25 @@ private fun SchemaValidationScope.validateNoIntrospectionNames() {
   }
 }
 
+/**
+ * To prevent surprising behaviour, objects that declare key fields that also implement interfaces that declare key fields are an error
+ *
+ * @see <a href="https://github.com/apollographql/apollo-kotlin/issues/3356#issuecomment-1134381986">Discussion</a>
+ */
+private fun SchemaValidationScope.validateKeyFields(mergedDefinitions: List<GQLDefinition>) {
+  val mergedTypeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name }
+  val keyFields = mergedTypeDefinitions.filterValues { it.canHaveKeyFields() }
+      .values.associate { it.name to it.keyFields(mergedTypeDefinitions) }
+
+  mergedTypeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
+    if (o.directives.any { it.name == Schema.TYPE_POLICY }) {
+      val interfacesWithKfs = o.implementsInterfaces.map { it to keyFields[it]!! }.filter { it.second.isNotEmpty() }.map { it.first }
+      if (interfacesWithKfs.isNotEmpty()) {
+        registerIssue(
+            "Type '${o.name}' cannot have key fields since it implements the following interfaces which also have key fields: $interfacesWithKfs",
+            sourceLocation = o.sourceLocation
+        )
+      }
+    }
+  }
+}

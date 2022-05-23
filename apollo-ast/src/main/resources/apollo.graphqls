@@ -13,7 +13,7 @@ directive @nonnull(fields: String! = "") on OBJECT | FIELD
 
 # Marks fields as key fields. Key fields are used to compute the cache key of an object
 # `keyFields` should contain a selection set. Composite fields are not supported yet.
-directive @typePolicy(keyFields: String!) on OBJECT
+directive @typePolicy(keyFields: String!) on OBJECT | INTERFACE | UNION
 
 # Indicates how to compute a key from a field arguments.
 # `keyArgs` should contain a selection set. Composite args are not supported yet.

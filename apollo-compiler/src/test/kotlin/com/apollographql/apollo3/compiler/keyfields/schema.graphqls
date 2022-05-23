@@ -1,12 +1,8 @@
 type Query {
-  node: Node
+  book: Book!
 }
 
-interface Node @typePolicy(keyFields: "id"){
-  id: String!
-}
-
-type Book implements Node @typePolicy(keyFields: "isbn") {
+type Book @typePolicy(keyFields: "id isbn") {
   id: String!
   isbn: String!
 }

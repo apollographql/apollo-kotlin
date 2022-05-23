@@ -1,0 +1,14 @@
+type Query {
+  node: Node
+}
+
+interface Node {
+  id: String!
+}
+
+extend interface Node @typePolicy(keyFields: "id")
+
+type Foo implements Node @typePolicy(keyFields: "x") {
+  id: String!
+  x: String!
+}

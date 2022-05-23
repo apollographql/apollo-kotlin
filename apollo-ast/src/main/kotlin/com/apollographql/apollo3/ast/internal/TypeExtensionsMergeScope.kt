@@ -88,6 +88,7 @@ private fun ValidationScope.merge(
 ): GQLInterfaceTypeDefinition = with(interfaceTypeDefinition) {
   return copy(
       fields = mergeUniquesOrThrow(fields, extension.fields),
+      directives = mergeDirectives(directives, extension.directives),
       implementsInterfaces = mergeUniqueInterfacesOrThrow(implementsInterfaces, extension.implementsInterfaces, extension.sourceLocation)
   )
 }
