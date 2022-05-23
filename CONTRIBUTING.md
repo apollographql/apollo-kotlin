@@ -26,11 +26,23 @@ All dependencies will be published to your `~/.m2/repository` folder. You can th
 to your repositories in your build scripts:
 
 ```kotlin
+// build.gradle.kts
 repositories {
+  mavenLocal()
   mavenCentral()
   // other repositories...
-  mavenLocal()
 }
+
+// settings.gradle.kts
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        mavenCentral()
+        // other repositories...
+    }
+}
+
 ```
 
 This will require that you call `./gradlew publishToMavenLocal` after every change you make in Apollo Kotlin but it's the 
