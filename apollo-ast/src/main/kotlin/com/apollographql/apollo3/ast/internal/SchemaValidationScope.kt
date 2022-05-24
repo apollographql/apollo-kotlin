@@ -8,6 +8,7 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
   override val issues = mutableListOf<Issue>()
 
   val documentDefinitions = document.definitions
+
   /**
    * The builtin definitions are required to validate directives amongst other
    * things so add them early in the validation proccess.
@@ -97,11 +98,7 @@ internal fun SchemaValidationScope.validateDocumentAndMergeExtensions(): List<GQ
 
   val schemaDefinition = schemaDefinition ?: syntheticSchemaDefinition()
 
-  val definitionsWithExtensions = mergeExtensions(listOf(schemaDefinition) + allDefinitions.filter { it !is GQLSchemaDefinition } )
-
-  validateKeyFields(definitionsWithExtensions)
-
-  return definitionsWithExtensions
+  return mergeExtensions(listOf(schemaDefinition) + allDefinitions.filter { it !is GQLSchemaDefinition })
 }
 
 internal fun SchemaValidationScope.validateRootOperationTypes() {
@@ -189,25 +186,79 @@ private fun SchemaValidationScope.validateNoIntrospectionNames() {
   }
 }
 
+private fun SchemaValidationScope.keyFields(
+    typeDefinition: GQLTypeDefinition,
+    allTypeDefinition: Map<String, GQLTypeDefinition>,
+    keyFieldsCache: MutableMap<String, Set<String>>,
+): Set<String> {
+  val cached = keyFieldsCache[typeDefinition.name]
+  if (cached != null) {
+    return cached
+  }
+
+  val (directives, interfaces) = when (typeDefinition) {
+    is GQLObjectTypeDefinition -> typeDefinition.directives to typeDefinition.implementsInterfaces
+    is GQLInterfaceTypeDefinition -> typeDefinition.directives to typeDefinition.implementsInterfaces
+    is GQLUnionTypeDefinition -> typeDefinition.directives to emptyList()
+    else -> error("Cannot get directives for $typeDefinition")
+  }
+
+  val interfacesKeyFields = interfaces.map { keyFields(allTypeDefinition[it]!!, allTypeDefinition, keyFieldsCache) }
+  val distinct = interfacesKeyFields.distinct()
+  if (distinct.size > 1) {
+    val extra = interfaces.indices.map {
+      "${interfaces[it]}: ${interfacesKeyFields[it]}"
+    }.joinToString("\n")
+    registerIssue(
+        message = "Apollo: Type '${typeDefinition.name}' cannot inherit different keys from different interfaces:\n$extra",
+        sourceLocation = typeDefinition.sourceLocation
+    )
+  }
+
+  val keyFields = directives.toKeyFields()
+  val ret = if (keyFields != null) {
+    if (!distinct.isEmpty()) {
+      val extra = interfaces.indices.map {
+        "${interfaces[it]}: ${interfacesKeyFields[it]}"
+      }.joinToString("\n")
+      registerIssue(
+          message = "Type '${typeDefinition.name}' cannot have key fields since it implements the following interfaces which also have key fields: $extra",
+          sourceLocation = typeDefinition.sourceLocation
+      )
+    }
+    keyFields
+  } else {
+    distinct.firstOrNull() ?: emptySet()
+  }
+
+  keyFieldsCache[typeDefinition.name] = ret
+
+  return ret
+}
+
+private fun List<GQLDirective>.toKeyFields(): Set<String>? {
+  val directives = filter { it.name == Schema.TYPE_POLICY }
+  if (directives.isEmpty()) {
+    return null
+  }
+  return directives.flatMap {
+    (it.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
+      // No need to check here, this should be done during validation
+      (gqlSelection as GQLField).name
+    }
+  }.toSet()
+}
+
 /**
  * To prevent surprising behaviour, objects that declare key fields that also implement interfaces that declare key fields are an error
  *
  * @see <a href="https://github.com/apollographql/apollo-kotlin/issues/3356#issuecomment-1134381986">Discussion</a>
  */
-private fun SchemaValidationScope.validateKeyFields(mergedDefinitions: List<GQLDefinition>) {
-  val mergedTypeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name }
-  val keyFields = mergedTypeDefinitions.filterValues { it.canHaveKeyFields() }
-      .values.associate { it.name to it.keyFields(mergedTypeDefinitions) }
-
-  mergedTypeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
-    if (o.directives.any { it.name == Schema.TYPE_POLICY }) {
-      val interfacesWithKfs = o.implementsInterfaces.map { it to keyFields[it]!! }.filter { it.second.isNotEmpty() }.map { it.first }
-      if (interfacesWithKfs.isNotEmpty()) {
-        registerIssue(
-            "Type '${o.name}' cannot have key fields since it implements the following interfaces which also have key fields: $interfacesWithKfs",
-            sourceLocation = o.sourceLocation
-        )
-      }
-    }
+internal fun SchemaValidationScope.validateKeyFields(mergedDefinitions: List<GQLDefinition>): Map<String, Set<String>> {
+  val keyFieldsCache = mutableMapOf<String, Set<String>>()
+  val typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().filter { it.canHaveKeyFields() }
+  typeDefinitions.forEach {
+    keyFields(it, typeDefinitions.associateBy { it.name }, keyFieldsCache)
   }
+  return keyFieldsCache
 }

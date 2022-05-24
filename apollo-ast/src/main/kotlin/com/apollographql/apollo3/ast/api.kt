@@ -9,6 +9,7 @@ import com.apollographql.apollo3.ast.internal.toGQLDocument
 import com.apollographql.apollo3.ast.internal.toGQLSelection
 import com.apollographql.apollo3.ast.internal.toGQLValue
 import com.apollographql.apollo3.ast.internal.validateDocumentAndMergeExtensions
+import com.apollographql.apollo3.ast.internal.validateKeyFields
 import okio.BufferedSource
 
 /**
@@ -83,7 +84,8 @@ fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
   val schema = if (scope.issues.containsError()) {
     null
   } else {
-    Schema(mergedDefinitions)
+    val keyFields = scope.validateKeyFields(mergedDefinitions)
+    Schema(mergedDefinitions, keyFields)
   }
   return GQLResult(schema, scope.issues)
 }

@@ -70,4 +70,21 @@ class KeyFieldsTest {
     assertContains(issue.message, "Node")
     assertEquals(11, issue.sourceLocation.line)
   }
+
+  @Test
+  fun testObjectInheritingTwoInterfacesWithDifferentKeyFields() {
+    val doc = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/objectInheritingTwoInterfaces.graphqls")
+        .toSchemaGQLDocument()
+        .withApolloDefinitions()
+    val issue = doc.validateAsSchema().issues.first()
+    assertEquals(
+        """
+          Apollo: Type 'Book' cannot inherit different keys from different interfaces:
+          Node: [id]
+          Product: [upc]
+        """.trimIndent(),
+        issue.message
+    )
+    assertEquals(13, issue.sourceLocation.line)
+  }
 }

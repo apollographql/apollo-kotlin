@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+
 /**
  * A wrapper around a schema GQLDocument that:
  * - always contain builtin types contrary to introspection that will not contain directives and SDL that will not contain
@@ -9,10 +11,16 @@ package com.apollographql.apollo3.ast
  * - has some helper functions to retrieve a type by name and/or possible types
  *
  * @param definitions a list of validated and merged definitions
+ * @param keyFields a Map containing the key fields for each type
  */
-class Schema(
+class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
+    private val keyFields: Map<String, Set<String>>
 ) {
+  @Deprecated("Use toSchema() to get a Schema")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+  constructor(definitions: List<GQLDefinition>): this(definitions, emptyMap())
+
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
       .filterIsInstance<GQLTypeDefinition>()
       .associateBy { it.name }
@@ -116,10 +124,9 @@ class Schema(
 
   /**
    *  Get the key fields for an object, interface or union type.
-   *  See [GQLTypeDefinition.keyFields]
    */
   fun keyFields(name: String): Set<String> {
-    return typeDefinitions[name]!!.keyFields(typeDefinitions)
+    return keyFields[name] ?: emptySet()
   }
 
   companion object {
