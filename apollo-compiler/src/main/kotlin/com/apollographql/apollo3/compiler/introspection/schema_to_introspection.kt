@@ -57,7 +57,8 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
     return IntrospectionSchema.Schema.Type.Object(
         name = name,
         description = description,
-        fields = fields.map { it.toSchemaField() }
+        fields = fields.map { it.toSchemaField() },
+        interfaces = implementsInterfaces.map { IntrospectionSchema.Schema.Type.Interface(kind = "INTERFACE", name = it, description = null, fields = null, possibleTypes = null) }.ifEmpty { null },
     )
   }
 
@@ -108,6 +109,7 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
 
   private fun GQLInterfaceTypeDefinition.toSchemaType(): IntrospectionSchema.Schema.Type.Interface {
     return IntrospectionSchema.Schema.Type.Interface(
+        kind = "INTERFACE",
         name = name,
         description = description,
         fields = fields.map { it.toSchemaField() },

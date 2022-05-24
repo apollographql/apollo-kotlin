@@ -15,15 +15,82 @@ import java.io.File
 class DownloadSchemaTests {
   private val mockServer = MockWebServer()
   private val schemaString1 = """
+  {
+    "__schema": {
+      "queryType": {
+        "name": "foo"
+      },
+      "types": [
         {
-          "__schema": {
-            "queryType": {
-              "name": "foo"
-            },
-            "types": []
-          }
+          "kind": "OBJECT",
+          "name": "UserInfo",
+          "description": null,
+          "fields": [
+            {
+              "name": "id",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "MyInterface",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INTERFACE",
+          "name": "MyInterface",
+          "description": null,
+          "fields": [
+            {
+              "name": "id",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": [
+            {
+              "kind": "OBJECT",
+              "name": "UserInfo",
+              "ofType": null
+            }
+          ]
         }
-      """.trimIndent()
+      ]
+    }
+  }
+  """.trimIndent()
 
   private val schemaString2 = schemaString1.replace("foo", "bar")
 
