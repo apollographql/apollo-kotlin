@@ -1,0 +1,40 @@
+name: Kotlin 1.7
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  build-kotlin-1-7:
+    runs-on: macos-11
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
+      - name: Build with Gradle
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew ciBuild
+          ./gradlew --stop
+          ./gradlew -p tests ciBuild
+          ./gradlew dokkaHtmlMultiModule
+        env:
+          COM_APOLLOGRAPHQL_VERSION_KOTLIN_PLUGIN: '1.7.0-Beta'
+          COM_APOLLOGRAPHQL_VERSION_KSP_GRADLE_PLUGIN: '1.7.0-Beta-1.0.5'
+          COM_APOLLOGRAPHQL_VERSION_KOTLINXDATETIME: '0.3.3'
+      - name: Collect Diagnostics
+        if: always()
+        run: ./scripts/collect-diagnostics.main.kts
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: build-kotlin-1-7.zip
+          path: diagnostics.zip

@@ -30,10 +30,10 @@ dependencies {
   // of the Gradle plugin
   if (System.getProperty("idea.sync.active") == null) {
     implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
-    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_21"))
+    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
   } else {
     implementation(groovy.util.Eval.x(project, "x.dep.kotlinPluginDuringIdeaSync"))
-    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin_1_6_10"))
+    runtimeOnly(groovy.util.Eval.x(project, "x.dep.kspGradlePluginDuringIdeaSync"))
   }
 
   runtimeOnly(groovy.util.Eval.x(project, "x.dep.sqldelight.plugin"))
