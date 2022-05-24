@@ -276,7 +276,7 @@ It also contains bugfixes around the `@include` directives, MemoryCache and Grap
 
 ## ⚙️ [breaking] Fragment package name and `useSchemaPackageNameForFragments` (#3775)
 
-If you're using `packageNameFromFilePath()`, the package name of generated fragment classes has changed. 
+If you're using `packageNamesFromFilePaths()`, the package name of generated fragment classes has changed. 
 
 Different generated types have different package names:
 

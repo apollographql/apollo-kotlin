@@ -284,6 +284,8 @@ interface Service {
    * - $packageName/type/SomeEnum.kt
    *
    * Default value: ""
+   *
+   * See also [packageNamesFromFilePaths]
    */
   val packageName: Property<String>
 
@@ -291,6 +293,8 @@ interface Service {
    * Use [packageNameGenerator] to customize how to generate package names from file paths.
    *
    * See [PackageNameGenerator] for more details
+   *
+   * See also [packageNamesFromFilePaths]
    */
   val packageNameGenerator: Property<PackageNameGenerator>
 
