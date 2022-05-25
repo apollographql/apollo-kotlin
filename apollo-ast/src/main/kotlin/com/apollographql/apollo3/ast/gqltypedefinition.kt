@@ -44,3 +44,13 @@ fun GQLTypeDefinition.implementsAbstractType(schema: Schema): Boolean {
     schema.typeDefinition(it).isAbstract()
   }
 }
+
+fun GQLTypeDefinition.canHaveKeyFields(): Boolean {
+  return when (this) {
+    is GQLObjectTypeDefinition,
+    is GQLInterfaceTypeDefinition,
+    is GQLUnionTypeDefinition
+    -> true
+    else -> false
+  }
+}

@@ -68,6 +68,7 @@ private class AntlrToGQLScope(val filePath: String?) {
         sourceLocation = sourceLocation(start),
         name = name().text,
         implementsInterfaces = implementsInterfaces().parse(),
+        directives = directives().parse(),
         fields = fieldsDefinition().parse()
     )
   }

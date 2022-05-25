@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.ast.internal.buffer
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 
 /**
  * A wrapper around a schema GQLDocument that:
@@ -11,10 +11,16 @@ import com.apollographql.apollo3.ast.internal.buffer
  * - has some helper functions to retrieve a type by name and/or possible types
  *
  * @param definitions a list of validated and merged definitions
+ * @param keyFields a Map containing the key fields for each type
  */
-class Schema(
+class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
+    private val keyFields: Map<String, Set<String>>
 ) {
+  @Deprecated("Use toSchema() to get a Schema")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+  constructor(definitions: List<GQLDefinition>): this(definitions, emptyMap())
+
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
       .filterIsInstance<GQLTypeDefinition>()
       .associateBy { it.name }
@@ -110,71 +116,17 @@ class Schema(
    * Returns whether the `typePolicy` directive is present on at least one object in the schema
    */
   fun hasTypeWithTypePolicy(): Boolean {
-    return typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().any { objectType ->
-      objectType.directives.any { it.name == TYPE_POLICY }
-    }
+    val directives = typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().flatMap { it.directives } +
+        typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().flatMap { it.directives } +
+        typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().flatMap { it.directives }
+    return directives.any { it.name == TYPE_POLICY }
   }
 
   /**
-   * Returns the key fields for the given type
-   *
-   * If this type has one or multiple @[TYPE_POLICY] annotation(s), they are used, else it recurses in implemented interfaces until it
-   * finds some.
-   *
-   * Returns the emptySet if this type has no key fields.
+   *  Get the key fields for an object, interface or union type.
    */
   fun keyFields(name: String): Set<String> {
-    val typeDefinition = typeDefinition(name)
-    return when (typeDefinition) {
-      is GQLObjectTypeDefinition -> {
-        val kf = typeDefinition.directives.toKeyFields()
-        if (kf != null) {
-          kf
-        } else {
-          val kfs = typeDefinition.implementsInterfaces.map { it to keyFields(it) }.filter { it.second.isNotEmpty() }
-          if (kfs.isNotEmpty()) {
-            check(kfs.size == 1) {
-              val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
-              "Object '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitly"
-            }
-          }
-          kfs.singleOrNull()?.second ?: emptySet()
-        }
-      }
-      is GQLInterfaceTypeDefinition -> {
-        val kf = typeDefinition.directives.toKeyFields()
-        if (kf != null) {
-          kf
-        } else {
-          val kfs = typeDefinition.implementsInterfaces.map { it to keyFields(it) }.filter { it.second.isNotEmpty() }
-          if (kfs.isNotEmpty()) {
-            check(kfs.size == 1) {
-              val candidates = kfs.map { "${it.first}: ${it.second}" }.joinToString("\n")
-              "Interface '$name' inherits different keys from different interfaces:\n$candidates\nSpecify @$TYPE_POLICY explicitly"
-            }
-          }
-          kfs.singleOrNull()?.second ?: emptySet()
-        }
-      }
-      is GQLUnionTypeDefinition -> typeDefinition.directives.toKeyFields() ?: emptySet()
-      else -> error("Type '$name' cannot have key fields")
-    }
-  }
-
-  /**
-   * Returns the key Fields or null if there's no directive
-   */
-  private fun List<GQLDirective>.toKeyFields(): Set<String>? {
-    val directives = filter { it.name == TYPE_POLICY }
-    if (directives.isEmpty()) {
-      return null
-    }
-    return directives.flatMap {
-      (it.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
-        // No need to check here, this should be done during validation
-        (gqlSelection as GQLField).name
-      }
-    }.toSet()
+    return keyFields[name] ?: emptySet()
   }
 
   companion object {

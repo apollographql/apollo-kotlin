@@ -1,0 +1,25 @@
+type Query {
+  node: Node
+}
+
+interface Node {
+  id: String!
+}
+
+extend interface Node @typePolicy(keyFields: "id")
+
+type Bar {
+  id: String!
+}
+
+extend type Bar implements Node
+
+union Foo = A | B
+type A {
+  x: String!
+}
+type B {
+  x: String!
+}
+
+extend union Foo @typePolicy(keyFields: "x")
