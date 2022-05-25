@@ -42,7 +42,7 @@ class SchemaBuilder(
     builder.add("listOf(\n")
     builder.indent()
     builder.add(
-        allTypenames.map {
+        allTypenames.sortedBy { it }.map {
           CodeBlock.of("%T.type", context.resolver.resolveSchemaType(it))
         }.joinToString(", ")
     )
