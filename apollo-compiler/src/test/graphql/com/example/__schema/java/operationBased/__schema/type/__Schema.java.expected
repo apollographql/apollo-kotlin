@@ -18,10 +18,10 @@ import java.util.List;
 public class __Schema {
   public static List<CompiledType> types = Arrays.asList(
     Bar.type,
-    Character.type,
-    Foo.type,
     BarObject.type,
+    Character.type,
     Droid.type,
+    Foo.type,
     FooBar.type,
     FooObject.type,
     FriendsConnection.type,
@@ -31,10 +31,10 @@ public class __Schema {
     PageInfo.type,
     Query.type,
     Review.type,
+    SearchResult.type,
     Starship.type,
     Tree.type,
-    TypeWithGraphQLKeywords.type,
-    SearchResult.type
+    TypeWithGraphQLKeywords.type
   );
 
   public static List<ObjectType> possibleTypes(CompiledNamedType type) {
