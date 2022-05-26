@@ -17,6 +17,7 @@ import org.junit.Test
 import java.io.File
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class KeyFieldsTest {
   @Test
@@ -86,5 +87,13 @@ class KeyFieldsTest {
         issue.message
     )
     assertEquals(13, issue.sourceLocation.line)
+  }
+
+  @Test
+  fun testInterfacesWithoutKeyFields() {
+    val doc = File("src/test/kotlin/com/apollographql/apollo3/compiler/keyfields/interfacesWithoutKeyFields.graphqls")
+        .toSchemaGQLDocument()
+        .withApolloDefinitions()
+    assertTrue(doc.validateAsSchema().issues.isEmpty())
   }
 }

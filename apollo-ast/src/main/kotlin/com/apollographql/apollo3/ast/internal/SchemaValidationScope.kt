@@ -204,6 +204,8 @@ private fun SchemaValidationScope.keyFields(
   }
 
   val interfacesKeyFields = interfaces.map { keyFields(allTypeDefinition[it]!!, allTypeDefinition, keyFieldsCache) }
+      .filter { it.isNotEmpty() }
+
   val distinct = interfacesKeyFields.distinct()
   if (distinct.size > 1) {
     val extra = interfaces.indices.map {
