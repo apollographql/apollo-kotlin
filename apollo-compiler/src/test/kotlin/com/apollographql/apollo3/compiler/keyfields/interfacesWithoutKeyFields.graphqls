@@ -1,0 +1,17 @@
+type Query {
+  book: Book!
+}
+
+interface Node @typePolicy(keyFields: "id") {
+  id: String!
+}
+
+interface Product {
+  upc: String!
+}
+
+type Book implements Node & Product{
+  id: String!
+  upc: String!
+  title: String!
+}
