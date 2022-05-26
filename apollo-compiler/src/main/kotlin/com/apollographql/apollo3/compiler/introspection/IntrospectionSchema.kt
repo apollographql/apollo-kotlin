@@ -59,6 +59,7 @@ data class IntrospectionSchema(
           override val description: String?,
           val kind: String,
           val fields: List<Field>?,
+          val interfaces: List<TypeRef>?,
           val possibleTypes: List<TypeRef>?,
       ) : Type()
 
