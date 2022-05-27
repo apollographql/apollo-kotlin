@@ -25,7 +25,7 @@ If you are new to GraphQL, check out [the tutorial](https://www.apollographql.co
 If you'd like to add Apollo Android to an existing project:
 
 * [Get started with Kotlin](https://www.apollographql.com/docs/android/essentials/get-started-kotlin) shows how to add Apollo Android to a Kotlin project.
-* [Get started with Java](https://www.apollographql.com/docs/android/essentials/get-started-java) shows how to add Apollo Android to a Java project.
+* [Get started with Java](https://www.apollographql.com/docs/kotlin/v2/essentials/get-started-java) shows how to add Apollo Android to a Java project.
 * [Get started with Multiplatform (Experimental)](https://www.apollographql.com/docs/android/essentials/get-started-multiplatform) shows how to add Apollo Android to a Multiplatform project. This is still under heavy development and APIs may change without warning.
 
 
