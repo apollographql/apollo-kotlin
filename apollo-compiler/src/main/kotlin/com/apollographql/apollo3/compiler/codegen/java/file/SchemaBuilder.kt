@@ -40,7 +40,7 @@ class SchemaBuilder(
 
   private fun typesFieldSpec(): FieldSpec {
     val allTypenames = interfaces.map { it.name } + objects.map { it.name } + unions.map { it.name }
-    val initilizer = allTypenames.map {
+    val initilizer = allTypenames.sortedBy { it }.map {
       CodeBlock.of("$T.type", context.resolver.resolveSchemaType(it))
     }.toListInitializerCodeblock(withNewLines = true)
 

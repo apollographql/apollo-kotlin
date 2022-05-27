@@ -2,8 +2,8 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  189197
-aggregate-kotlin-responseBased                                                                  48615
+aggregate-all                                                                                  189514
+aggregate-kotlin-responseBased                                                                  48932
 aggregate-kotlin-operationBased                                                                 34136
 aggregate-kotlin-compat                                                                         35553
 aggregate-java-operationBased                                                                   70893
@@ -240,6 +240,7 @@ kotlin-responseBased-subscriptions                                              
 kotlin-responseBased-enums_as_sealed                                                              340
 kotlin-responseBased-operation_id_generator                                                       325
 kotlin-responseBased-merged_include                                                               323
+kotlin-responseBased-big_query                                                                    317
 kotlin-responseBased-enum_field                                                                   316
 kotlin-responseBased-case_sensitive_enum                                                          315
 kotlin-responseBased-nonnull                                                                      309
