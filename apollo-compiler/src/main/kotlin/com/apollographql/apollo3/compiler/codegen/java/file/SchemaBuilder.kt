@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 
+import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.Identifier.types
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
@@ -41,7 +42,7 @@ class SchemaBuilder(
   private fun typesFieldSpec(): FieldSpec {
     val allTypenames = interfaces.map { it.name } + objects.map { it.name } + unions.map { it.name }
     val initilizer = allTypenames.sortedBy { it }.map {
-      CodeBlock.of("$T.type", context.resolver.resolveSchemaType(it))
+      CodeBlock.of("$T.$type", context.resolver.resolveSchemaType(it))
     }.toListInitializerCodeblock(withNewLines = true)
 
     return FieldSpec.builder(

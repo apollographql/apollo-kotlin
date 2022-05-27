@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
+import com.apollographql.apollo3.compiler.escapeJavaReservedEnumValueNames
 import com.apollographql.apollo3.compiler.escapeJavaReservedWord
 
 class JavaCodegenLayout(
@@ -21,5 +22,5 @@ class JavaCodegenLayout(
 
   // We used to write upper case enum values but the server can define different values with different cases
   // See https://github.com/apollographql/apollo-android/issues/3035
-  internal fun enumValueName(name: String) = regularIdentifier(name)
+  internal fun enumValueName(name: String) = name.escapeJavaReservedWord().escapeJavaReservedEnumValueNames()
 }
