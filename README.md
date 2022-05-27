@@ -178,13 +178,29 @@ dependencies {
 
 Latest development changes are available in Sonatype's snapshots repository:
 
-```kotlin:title=build.gradle.kts
+```kotlin
+// build.gradle.kts
 repositories {
-  maven { 
+  maven {
     url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+  }
+  mavenCentral()
+  // other repositories...
+}
+
+// settings.gradle.kts
+pluginManagement {
+  repositories {
+    maven {
+      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+    gradlePluginPortal()
+    mavenCentral()
+    // other repositories...
   }
 }
 ```
+And then use the `3.3.1-SNAPSHOT` version for the plugin and libraries.
 
 ## Requirements
 
