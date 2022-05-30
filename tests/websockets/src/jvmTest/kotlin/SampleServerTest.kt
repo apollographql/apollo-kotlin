@@ -1,6 +1,7 @@
 import com.apollographql.apollo.sample.server.DefaultApplication
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.network.ws.SubscriptionWsProtocolAdapter
 import com.apollographql.apollo3.network.ws.WebSocketConnection
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
@@ -177,10 +178,19 @@ class SampleServerTest {
             caught = it
           }
           .collect()
-      assertIs<ApolloNetworkException>(caught)
-      assertTrue(caught!!.message!!.contains("Woops"))
+      assertIs<SubscriptionOperationException>(caught)
+      val error = caught.cast<SubscriptionOperationException>().payload
+          .cast<Map<String, *>>()
+          .get("errors")
+          .cast<List<*>>()
+          .first()
+          .cast<Map<String, String>>()
+          .get("message")
+      assertEquals("Woops", error)
     }
   }
+
+  private inline fun <reified T> Any?.cast() = this as T
 
   private object AuthorizationException : Exception()
 

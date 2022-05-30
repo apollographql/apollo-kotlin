@@ -65,13 +65,20 @@ private constructor(
 ) : NetworkTransport {
 
   /**
+   * The message queue read by the supervisor.
+   *
+   * SubscriptionFlows write [Command]s
+   * The WebSocket coroutine writes [Event]s
+   *
    * Use unlimited buffers so that we never have to suspend when writing a command or an event,
    * and we avoid deadlocks. This might be overkill but is most likely never going to be a problem in practice.
    */
   private val messages = Channel<Message>(UNLIMITED)
 
   /**
-   * This takes messages from [messages] and broadcasts the [Event]s
+   * The SharedFlow read by SubscriptionFlows
+   *
+   * The Supervisor coroutine writes [Event]s
    */
   private val mutableEvents = MutableSharedFlow<Event>(0, Int.MAX_VALUE, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
@@ -169,8 +176,9 @@ private constructor(
           }
 
           if (protocol == null) {
-            if (message !is StartOperation<*>) {
+            if (message is StopOperation<*>) {
               // A stop was received, but we don't have a connection. Ignore it
+              activeMessages.remove(message.request.requestUuid)
               continue
             }
 
@@ -293,7 +301,7 @@ private constructor(
           }
           apolloResponse
         }
-        is OperationError -> throw SubscriptionOperationException("Operation error ${request.operation.name()}: ${response.payload}")
+        is OperationError -> throw SubscriptionOperationException(request.operation.name(), response.payload)
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
 
         // Cannot happen as these events are filtered out upstream

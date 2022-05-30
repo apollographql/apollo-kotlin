@@ -47,8 +47,7 @@
       "HTTP interceptors": "/advanced/interceptors-http",
       "Custom HTTP clients": "/advanced/http-engine",
       "Using the models without apollo-runtime": "/advanced/no-runtime",
-      "Authentication": "/advanced/authentication",
-      "WebSocket errors": "/advanced/websocket-errors"
+      "Authentication": "/advanced/authentication"
     },
     "Testing": {
       "Overview": "/testing/overview",
