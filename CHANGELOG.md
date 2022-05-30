@@ -7,6 +7,8 @@ _TBD_
 
 This release starts tracking the MockServer public API. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
 
+This release introduces SubscriptionOperationException. SubscriptionOperationException will be throw instead of the more generic `ApolloNetworkError` if a subscription fails
+
 
 
 # Version 3.3.0
