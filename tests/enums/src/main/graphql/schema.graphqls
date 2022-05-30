@@ -11,10 +11,12 @@ enum Direction {
   EAST,
   WEST,
 
+  # Clashes, must be renamed in extra.graphqls
+  type,
+
   # Value names should be escaped with _ suffixes when generating enums
   name,
   ordinal,
-  type,
 }
 
 enum Gravity {
@@ -31,7 +33,7 @@ enum Gravity {
   name,
   ordinal,
 
-  # Value name should be escaped with _ suffix when generating sealed classes
+  # Clashes, must be renamed in extra.graphqls
   type,
 }
 

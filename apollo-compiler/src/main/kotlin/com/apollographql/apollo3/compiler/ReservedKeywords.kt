@@ -18,26 +18,9 @@ fun String.escapeKotlinReservedWord() = this
 fun String.escapeKotlinReservedEnumValueNames(): String {
   return when {
     // https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
-    // We also add 'type' to this list as it clashes with the generated 'type: EnumType' property
-    "(?:name|ordinal|type)_*".toRegex().matches(this) -> "${this}_"
+    "(?:name|ordinal)_*".toRegex().matches(this) -> "${this}_"
     // "header" and "impl" are added to this list because of https://youtrack.jetbrains.com/issue/KT-52315
     this in arrayOf("header", "impl") -> "`${this}`"
-    else -> this
-  }
-}
-
-fun String.escapeJavaReservedEnumValueNames(): String {
-  return when {
-    // 'type' clashes with the generated 'type: EnumType' property
-    "(?:type)_*".toRegex().matches(this) -> "${this}_"
-    else -> this
-  }
-}
-
-fun String.escapeKotlinReservedSealedClassValueNames(): String {
-  return when {
-    // 'type' clashes with the generated 'type: EnumType' property
-    "(?:type)_*".toRegex().matches(this) -> "${this}_"
     else -> this
   }
 }

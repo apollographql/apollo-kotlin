@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.escapeKotlinReservedEnumValueNames
-import com.apollographql.apollo3.compiler.escapeKotlinReservedSealedClassValueNames
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 
 class KotlinCodegenLayout(
@@ -24,7 +23,7 @@ class KotlinCodegenLayout(
   /**
    * Enum value name to use when generating enums as sealed classes
    */
-  internal fun enumAsSealedClassValueName(name: String) = name.escapeKotlinReservedSealedClassValueNames()
+  internal fun enumAsSealedClassValueName(name: String) = regularIdentifier(name)
 
   /**
    * Enum value name to use when generating enums as enums
