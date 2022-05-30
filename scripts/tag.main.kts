@@ -39,7 +39,7 @@ while (true) {
 }
 
 setCurrentVersion(tagVersion)
-setVersionInDocs(tagVersion)
+setVersionInDocs(tagVersion, nextSnapshot)
 
 runCommand("git", "commit", "-a", "-m", "release $tagVersion")
 runCommand("git", "tag", "v$tagVersion")
@@ -140,7 +140,7 @@ fun getNextSnapshot(version: String): String {
   return components.joinToString(".") + "-SNAPSHOT"
 }
 
-fun setVersionInDocs(version: String) {
+fun setVersionInDocs(version: String, nextSnapshot: String) {
   for (file in File("docs/source").walk() + File("README.md")) {
     if (file.isDirectory || !(file.name.endsWith(".md") || file.name.endsWith(".mdx"))) continue
 
@@ -159,6 +159,10 @@ fun setVersionInDocs(version: String) {
         // Tutorial
         .replace(Regex("This tutorial uses `(.+)`")) {
           "This tutorial uses `$version`"
+        }
+        // Snapshots
+        .replace(Regex("And then use the `(.+)` version for the plugin and libraries.")) {
+          "And then use the `$nextSnapshot` version for the plugin and libraries."
         }
     file.writeText(content)
   }
