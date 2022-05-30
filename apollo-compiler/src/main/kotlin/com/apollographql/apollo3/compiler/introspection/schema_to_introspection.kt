@@ -58,7 +58,7 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         name = name,
         description = description,
         fields = fields.map { it.toSchemaField() },
-        interfaces = implementsInterfaces.map { IntrospectionSchema.Schema.Type.Interface(kind = "INTERFACE", name = it, description = null, fields = null, possibleTypes = null) }.ifEmpty { null },
+        interfaces = implementsInterfaces.map { IntrospectionSchema.Schema.Type.Interface(kind = "INTERFACE", name = it, description = null, fields = null, possibleTypes = null, interfaces = null) }.ifEmpty { null },
     )
   }
 
@@ -122,7 +122,13 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
                   kind = IntrospectionSchema.Schema.Kind.OBJECT,
                   name = typeDefinition.name
               )
-            }
+            },
+        interfaces = implementsInterfaces.map { interfaceName ->
+          IntrospectionSchema.Schema.TypeRef(
+              kind = IntrospectionSchema.Schema.Kind.INTERFACE,
+              name = interfaceName
+          )
+        }
     )
   }
 

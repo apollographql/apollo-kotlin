@@ -111,7 +111,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         name = name,
         description = description,
         fields = fields?.map { it.toGQLFieldDefinition() } ?: throw ConversionException("interface '$name' did not define any field"),
-        implementsInterfaces = emptyList(), // TODO
+        implementsInterfaces = interfaces?.mapNotNull { it.name } ?: emptyList(),
         directives = emptyList()
     )
   }
