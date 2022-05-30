@@ -59,7 +59,10 @@ class StubbedProperty<T>(private val map: MutableMap<String, Any?>, private val 
 }
 
 @ApolloExperimental
-class MandatoryTypenameProperty {
+class MandatoryTypenameProperty(
+    private val parentTypeName: String,
+    private val possibleTypes: List<String>,
+) {
   private var typename: String? = null
 
   operator fun getValue(
@@ -67,7 +70,7 @@ class MandatoryTypenameProperty {
       property: KProperty<*>,
   ): String {
     check(typename != null) {
-      "__typename is not known at compile-time for this type. Please specify it explicitly"
+      "$parentTypeName: __typename is not known at compile-time for this type. Please specify it explicitly (allowed values: ${possibleTypes.joinToString()})"
     }
     return typename!!
   }

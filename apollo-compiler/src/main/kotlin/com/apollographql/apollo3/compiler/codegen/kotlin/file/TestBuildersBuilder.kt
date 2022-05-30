@@ -146,6 +146,7 @@ class TestBuildersBuilder(
 
 internal data class TBuilder(
     val kotlinName: String,
+    val modelName: String,
     val id: String,
     val possibleTypes: PossibleTypes,
     val properties: List<TProperty>,
@@ -227,6 +228,7 @@ internal fun IrModel.toTBuilder(layout: KotlinCodegenLayout): TBuilder {
   val nestedBuilders = modelGroups.flatMap { it.toTBuilders(layout) }
   return TBuilder(
       kotlinName = layout.testBuilder(modelName),
+      modelName = modelName,
       properties = properties.map { it.tProperty(modelGroups) },
       id = id,
       nestedTBuilders = nestedBuilders,

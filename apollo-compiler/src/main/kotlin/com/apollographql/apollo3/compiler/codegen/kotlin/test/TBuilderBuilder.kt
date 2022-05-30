@@ -29,6 +29,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.joinToCode
 
 internal class TBuilderBuilder(
     private val context: KotlinContext,
@@ -62,7 +63,7 @@ internal class TBuilderBuilder(
         }
         .superclass(KotlinSymbols.MapBuilder)
         .addProperties(
-            tbuilder.properties.map { it.propertySpec(tbuilder.possibleTypes) }
+            tbuilder.properties.map { it.propertySpec(parentTypeName = tbuilder.modelName, possibleTypes = tbuilder.possibleTypes) }
         )
         .addFunctions(
             tbuilder.properties.flatMap { it.ctors.map { it.funSpec() } }
@@ -157,7 +158,7 @@ internal class TBuilderBuilder(
     }
   }
 
-  private fun TProperty.propertySpec(possibleTypes: PossibleTypes): PropertySpec {
+  private fun TProperty.propertySpec(parentTypeName: String, possibleTypes: PossibleTypes): PropertySpec {
     if (responseName == "__typename") {
       return if (possibleTypes.size == 1) {
         PropertySpec.builder(__typename, KotlinSymbols.String)
@@ -170,7 +171,7 @@ internal class TBuilderBuilder(
               The typename of this shape isn't known at compile time.
               Possible values: ${possibleTypes.joinToString(", ")}
             """.trimIndent()))
-            .delegate(CodeBlock.of("%T()", KotlinSymbols.MandatoryTypenameProperty))
+            .delegate(CodeBlock.of("%T(%S, listOf(%L))", KotlinSymbols.MandatoryTypenameProperty, parentTypeName, possibleTypes.map { CodeBlock.of("%S", it) }.joinToCode(", ")))
             .mutable(true)
             .build()
       }
