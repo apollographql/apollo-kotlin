@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.isDeferred
@@ -64,13 +65,20 @@ private constructor(
 ) : NetworkTransport {
 
   /**
+   * The message queue read by the supervisor.
+   *
+   * SubscriptionFlows write [Command]s
+   * The WebSocket coroutine writes [Event]s
+   *
    * Use unlimited buffers so that we never have to suspend when writing a command or an event,
    * and we avoid deadlocks. This might be overkill but is most likely never going to be a problem in practice.
    */
   private val messages = Channel<Message>(UNLIMITED)
 
   /**
-   * This takes messages from [messages] and broadcasts the [Event]s
+   * The SharedFlow read by SubscriptionFlows
+   *
+   * The Supervisor coroutine writes [Event]s
    */
   private val mutableEvents = MutableSharedFlow<Event>(0, Int.MAX_VALUE, BufferOverflow.SUSPEND)
   private val events = mutableEvents.asSharedFlow()
@@ -110,7 +118,7 @@ private constructor(
   }
 
   /**
-   * Long-running method that creates/handles the websocket lifecyle
+   * Long-running method that creates/handles the websocket lifecycle
    */
   private suspend fun supervise(scope: CoroutineScope) {
     /**
@@ -168,8 +176,9 @@ private constructor(
           }
 
           if (protocol == null) {
-            if (message !is StartOperation<*>) {
+            if (message is StopOperation<*>) {
               // A stop was received, but we don't have a connection. Ignore it
+              activeMessages.remove(message.request.requestUuid)
               continue
             }
 
@@ -184,7 +193,7 @@ private constructor(
               )
             } catch (e: Exception) {
               // Error opening the websocket
-              mutableEvents.emit(NetworkError(e))
+              messages.send(NetworkError(e))
               continue
             }
 
@@ -198,7 +207,7 @@ private constructor(
             } catch (e: Exception) {
               // Error initializing the connection
               protocol = null
-              mutableEvents.emit(NetworkError(e))
+              messages.send(NetworkError(e))
               continue
             }
 
@@ -292,7 +301,7 @@ private constructor(
           }
           apolloResponse
         }
-        is OperationError -> throw ApolloNetworkException("Operation error ${request.operation.name()}: ${response.payload}")
+        is OperationError -> throw SubscriptionOperationException(request.operation.name(), response.payload)
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
 
         // Cannot happen as these events are filtered out upstream
