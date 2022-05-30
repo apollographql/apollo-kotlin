@@ -3,6 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -39,6 +40,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import okio.Closeable
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 
@@ -60,7 +62,7 @@ private constructor(
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
     private val builder: Builder,
-) : ExecutionOptions {
+) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
 
   init {
@@ -108,10 +110,19 @@ private constructor(
   @ApolloDeprecatedSince(v3_0_0)
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloCall<D> = subscription(subscription)
 
-  fun dispose() {
+  override fun close() {
     concurrencyInfo.coroutineScope.cancel()
     networkTransport.dispose()
     subscriptionNetworkTransport.dispose()
+  }
+
+  @Deprecated(
+    "Use close() instead or call okio.use { }",
+    replaceWith = ReplaceWith("close()"),
+  )
+  @ApolloDeprecatedSince(v3_3_1)
+  fun dispose() {
+    close()
   }
 
   private val networkInterceptor = NetworkInterceptor(
