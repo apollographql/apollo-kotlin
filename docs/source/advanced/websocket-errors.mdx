@@ -1,0 +1,71 @@
+---
+title: Handle WebSocket errors
+---
+
+Because the WebSocket is a shared resource, error handling is different from regular queries. In HTTP queries, an error has a single consumer. With WebSockets, an error may have multiple consumers.
+
+## WebSocket errors with multiple consumers
+
+When your network goes down or your server closes the connection (because it wants a new token or something else), all the subscriptions are terminated. You could retry them individually. The example below uses a very naive [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff) algorithm:
+
+```kotlin
+apolloClient.subscription(MySubscription())
+    .toFlow()
+    .retryWhen { e, attempt ->
+      delay(2.0.pow(attempt.toDouble()).toLong())
+      // retry after the delay
+      true
+    }
+    .collect {
+      println("trips booked: ${it.data?.tripsBooked}")
+    }
+```
+
+This has a number of shortcomings (not mentioning the naive exponential backoff implementation):
+- This code has to be implemented in different places
+- The attempt is tied to the collector lifecycle, there is no way to reset it if the network is back up
+
+Instead you can manage this in a more central place when configuring your ApolloClient:
+
+```kotlin
+    val apolloClient = ApolloClient.Builder()
+        .httpServerUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .webSocketReopenWhen { e, attempt ->
+          delay(2.0.pow(attempt.toDouble()).toLong())
+          // retry after the delay
+          true
+        }
+```
+
+The above code will remember all current subscriptions and resubscribe to the server automatically without having to call `retry`
+in each screen.
+
+## WebSocket errors with single consumers
+
+In some cases, you may have a situation where an error is for a single consumer. This happens typically for [error messages](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md#error):
+
+```json
+{
+  "id": "3f32558f-49a3-4dc2-9d1c-445adf0a66c7",
+  "type": "error",
+  "payload": { }
+}
+```
+
+In these cases, the Flow will throw a `SubscriptionOperationException` error and you will need to handle the retry:
+
+```kotlin
+apolloClient.subscription(MySubscription())
+    .toFlow()
+    .retryWhen { e, attempt ->
+      if (e is SubscriptionOperationException) {
+        // handle the operation error
+      } else {
+        // handle global errors that were not caught by webSocketReopenWhen
+      }
+    }
+    .collect {
+      println("trips booked: ${it.data?.tripsBooked}")
+    }
+```
