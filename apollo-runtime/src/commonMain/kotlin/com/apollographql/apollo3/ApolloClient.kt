@@ -319,7 +319,9 @@ private constructor(
      *
      * @param webSocketReopenWhen a function taking the error and attempt index (starting from zero) as parameters
      * and returning 'true' to reopen automatically or 'false' to forward the error to all listening [Flow].
+     *
      * It is a suspending function, so it can be used to introduce delay before retry (e.g. backoff strategy).
+     * attempt is reset after a successful connection.
      *
      * See also [subscriptionNetworkTransport] for more customization
      */

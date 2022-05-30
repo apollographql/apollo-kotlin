@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.isDeferred
@@ -110,7 +111,7 @@ private constructor(
   }
 
   /**
-   * Long-running method that creates/handles the websocket lifecyle
+   * Long-running method that creates/handles the websocket lifecycle
    */
   private suspend fun supervise(scope: CoroutineScope) {
     /**
@@ -184,7 +185,7 @@ private constructor(
               )
             } catch (e: Exception) {
               // Error opening the websocket
-              mutableEvents.emit(NetworkError(e))
+              messages.send(NetworkError(e))
               continue
             }
 
@@ -198,7 +199,7 @@ private constructor(
             } catch (e: Exception) {
               // Error initializing the connection
               protocol = null
-              mutableEvents.emit(NetworkError(e))
+              messages.send(NetworkError(e))
               continue
             }
 
@@ -292,7 +293,7 @@ private constructor(
           }
           apolloResponse
         }
-        is OperationError -> throw ApolloNetworkException("Operation error ${request.operation.name()}: ${response.payload}")
+        is OperationError -> throw SubscriptionOperationException("Operation error ${request.operation.name()}: ${response.payload}")
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
 
         // Cannot happen as these events are filtered out upstream

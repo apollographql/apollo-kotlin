@@ -33,6 +33,20 @@ class ApolloNetworkException(
 ) : ApolloException(message = message, cause = platformCause as? Throwable)
 
 /**
+ * The server could not process a subscription and sent an error.
+ *
+ * This typically happens if there is a validation error. This is a terminal event.
+ *
+ * @param operationName the name of the subscription that triggered the error.
+ * @param payload the payload returned by the server.
+ */
+class SubscriptionOperationException(
+    operationName: String,
+    val payload: Any? = null,
+) : ApolloException(message = "Operation error $operationName")
+
+
+/**
  * A WebSocket connection could not be established: e.g., expired token
  */
 class ApolloWebSocketClosedException(
