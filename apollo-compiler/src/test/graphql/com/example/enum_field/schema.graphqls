@@ -13,5 +13,5 @@ enum Gravity {
   is
 
   # a name that clashes with the generated `type` constant
-  type
+  type @experimental_targetName(name: "type_")
 }

@@ -56,7 +56,7 @@ class EnumAsEnumBuilder(
         .addType(companionTypeSpec())
         .apply {
           values.forEach { value ->
-            addEnumConstant(layout.enumAsEnumValueName(value.name), value.enumConstTypeSpec())
+            addEnumConstant(layout.enumAsEnumValueName(value.targetName), value.enumConstTypeSpec())
           }
           addEnumConstant("UNKNOWN__", unknownValueTypeSpec())
         }
@@ -81,7 +81,7 @@ class EnumAsEnumBuilder(
                 .indent()
                 .add(
                     values.map {
-                      CodeBlock.of("%N", layout.enumAsEnumValueName(it.name))
+                      CodeBlock.of("%N", layout.enumAsEnumValueName(it.targetName))
                     }.joinToCode(",\n")
                 )
                 .unindent()

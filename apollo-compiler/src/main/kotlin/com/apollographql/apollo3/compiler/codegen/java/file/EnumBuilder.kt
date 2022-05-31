@@ -64,7 +64,7 @@ class EnumBuilder(
         )
         .addFields(
             values.map { value ->
-              FieldSpec.builder(selfClassName, layout.enumValueName(value.name))
+              FieldSpec.builder(selfClassName, layout.enumValueName(value.targetName))
                   .addModifiers(Modifier.PUBLIC)
                   .addModifiers(Modifier.STATIC)
                   .initializer(CodeBlock.of("new $T($S)", selfClassName, value.name))
@@ -82,7 +82,7 @@ class EnumBuilder(
                         .beginControlFlow("switch($rawValue)")
                         .apply {
                           values.forEach {
-                            add("case $S: return $L.$L;\n", it.name, layout.enumName(name), layout.enumValueName(it.name))
+                            add("case $S: return $L.$L;\n", it.name, layout.enumName(name), layout.enumValueName(it.targetName))
                           }
                         }
                         .add("default: return new $L.${Identifier.UNKNOWN__}($rawValue);\n", layout.enumName(name))

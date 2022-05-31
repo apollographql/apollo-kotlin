@@ -91,6 +91,8 @@ object ApolloCompiler {
       findConditionalFragments(definitions).checkNoErrors()
     }
 
+    findApolloReservedEnumValueNames(schema).checkNoErrors()
+
     val warnings = validationResult.issues.filter {
       it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || options.warnOnDeprecatedUsages)
     }

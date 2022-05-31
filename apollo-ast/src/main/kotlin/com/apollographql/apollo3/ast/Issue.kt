@@ -21,7 +21,7 @@ sealed class Issue(
       message: String,
       sourceLocation: SourceLocation,
       severity: Severity = Severity.ERROR,
-      val details: ValidationDetails = ValidationDetails.Other
+      val details: ValidationDetails = ValidationDetails.Other,
   ) : Issue(message, sourceLocation, severity)
 
   /**
@@ -46,6 +46,13 @@ sealed class Issue(
    * This error is an Apollo Kotlin specific error
    */
   class UpperCaseField(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
+
+  /**
+   * Certain enum value names such as `type` are reserved for Apollo.
+   *
+   * This error is an Apollo Kotlin specific error
+   */
+  class ReservedEnumValueName(message: String, sourceLocation: SourceLocation) : Issue(message, sourceLocation, Severity.ERROR)
 
   enum class Severity {
     WARNING,

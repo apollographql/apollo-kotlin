@@ -37,7 +37,12 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        parseResult.valueAssertNoErrors().validateAsSchema().issues
+        val schemaResult = parseResult.valueAssertNoErrors().validateAsSchema()
+        schemaResult.issues + if (graphQLFile.name == "reserved-enum-value-names.graphql") {
+          findApolloReservedEnumValueNames(schemaResult.value!!)
+        } else {
+          emptyList()
+        }
       }
     }
     issues.serialize()

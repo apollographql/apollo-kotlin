@@ -8,5 +8,5 @@ enum Enum {
     NORTH
     SOUTH
 
-    type
+    type @experimental_targetName(name: "type_")
 }

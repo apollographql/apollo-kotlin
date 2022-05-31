@@ -24,3 +24,5 @@ fun String.escapeKotlinReservedEnumValueNames(): String {
     else -> this
   }
 }
+
+fun String.isApolloReservedEnumValueName() = this == "type"
