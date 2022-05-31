@@ -266,7 +266,7 @@ data class GQLInterfaceTypeDefinition(
       write("interface $name")
       if (implementsInterfaces.isNotEmpty()) {
         write(" implements ")
-        write(implementsInterfaces.joinToString(" "))
+        write(implementsInterfaces.joinToString(" & "))
       }
       if (directives.isNotEmpty()) {
         write(" ")
@@ -308,7 +308,7 @@ data class GQLObjectTypeDefinition(
       write("type $name")
       if (implementsInterfaces.isNotEmpty()) {
         write(" implements ")
-        write(implementsInterfaces.joinToString(" "))
+        write(implementsInterfaces.joinToString(" & "))
       }
       if (directives.isNotEmpty()) {
         write(" ")
