@@ -68,7 +68,6 @@ ext.dep = [
         allOpen          : "org.jetbrains.kotlin:kotlin-allopen", // the Kotlin plugin resolves the version
     ],
     moshi                        : [
-        adapters     : "com.squareup.moshi:moshi-adapters:$versions.moshi",
         ksp          : "dev.zacsweers.moshix:moshi-ksp:$versions.moshix",
         sealedCodegen: "dev.zacsweers.moshix:moshi-sealed-codegen:$versions.moshix",
         sealedRuntime: "dev.zacsweers.moshix:moshi-sealed-runtime:$versions.moshix",

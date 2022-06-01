@@ -12,7 +12,6 @@ dependencies {
   api(okio())
   api(projects.apolloAnnotations)
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
 

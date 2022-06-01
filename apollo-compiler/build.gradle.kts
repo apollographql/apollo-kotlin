@@ -16,7 +16,6 @@ dependencies {
   }
   implementation(groovy.util.Eval.x(project, "x.dep.poet.java"))
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
 
