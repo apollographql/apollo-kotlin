@@ -2031,5 +2031,6 @@ public final class com/apollographql/apollo3/compiler/operationoutput/OperationD
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationOutputKt {
 	public static final fun findOperationId (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun toOperationOutput (Lokio/BufferedSource;)Ljava/util/Map;
 }
 
