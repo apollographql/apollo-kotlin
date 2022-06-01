@@ -1,5 +1,7 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo3.compiler.introspection
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.ConversionException
 import com.apollographql.apollo3.ast.GQLArgument
@@ -284,6 +286,8 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
  * See https://spec.graphql.org/draft/#sel-GAHXJHABuCB_Dn6F
  */
 @ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("GQLDocumentBuilder", "com.apollographql.apollo3.ast.introspection"))
 fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
     .toGQLDocument()
     /**
@@ -297,12 +301,16 @@ fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = G
  * In the process, the builtin definitions are removed and added again.
  */
 @ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchema", "com.apollographql.apollo3.ast.introspection"))
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().validateAsSchema().valueAssertNoErrors()
 
 /**
  * Transforms the given file to a [GQLDocument] without doing validation
  */
 @ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchemaGQLDocument", "com.apollographql.apollo3.ast.introspection"))
 fun File.toSchemaGQLDocument(): GQLDocument {
   return if (extension == "json") {
     toIntrospectionSchema().toGQLDocument(filePath = path)
@@ -312,4 +320,6 @@ fun File.toSchemaGQLDocument(): GQLDocument {
 }
 
 @ApolloExperimental
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchema", "com.apollographql.apollo3.ast.introspection"))
 fun File.toSchema(): Schema = toSchemaGQLDocument().validateAsSchema().valueAssertNoErrors()

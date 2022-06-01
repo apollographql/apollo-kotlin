@@ -1,16 +1,28 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
+import com.apollographql.apollo3.ast.introspection.toGQLDocument
+import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.fromJson
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.compiler.toJson
 import okio.Buffer
 import java.io.File
+
+/**
+ * @return the graph from a service key like "service:$graph:$token"
+ *
+ * This will not work with user keys
+ */
+internal fun String.getGraph(): String? {
+  if (!startsWith("service:")) {
+    return null
+  }
+  return split(":")[1]
+}
 
 object SchemaDownloader {
   /**
@@ -55,12 +67,7 @@ object SchemaDownloader {
         check(key != null) {
           "Apollo: either endpoint (for introspection) or key (for registry) is required"
         }
-        var graph2 = graph
-        if (graph2 == null && key.startsWith("service:")) {
-          // Fallback to reading the graph from the key
-          // This will not work with user keys
-          graph2 = key.split(":")[1]
-        }
+        val graph2 = graph ?: key.getGraph()
         check (graph2 != null) {
           "Apollo: graph is required to download from the registry"
         }

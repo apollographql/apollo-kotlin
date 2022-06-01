@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import org.junit.Test
 import java.io.File
 

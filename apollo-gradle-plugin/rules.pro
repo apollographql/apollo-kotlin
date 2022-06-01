@@ -21,9 +21,11 @@
 }
 
 # Moshi uses reflection in StandardJsonAdapters
--keepclassmembers class com.apollographql.apollo3.compiler.introspection.IntrospectionSchema$Schema$Kind extends java.lang.Enum {
+-keepclassmembers class com.apollographql.apollo3.ast.introspection.IntrospectionSchema$Schema$Kind extends java.lang.Enum {
     <fields>;
 }
+# Keep all the introspection stuff as it uses moshi for Json
+-keep class com.apollographql.apollo3.ast.introspection.** { *; }
 
 # Keep apollo-api for ApolloExperimental
 -keep class com.apollographql.apollo3.api.** { *; }

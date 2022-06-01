@@ -10,12 +10,9 @@ dependencies {
   compileOnly(groovy.util.Eval.x(project, "x.dep.android.minPlugin"))
   
   api(projects.apolloCompiler)
+  implementation(projects.apolloTooling)
+  implementation(projects.apolloTooling)
   implementation(projects.apolloAst)
-
-  implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi").toString()) {
-    because("Needed for manual Json construction in `SchemaDownloader`")
-  }
 }
 
 

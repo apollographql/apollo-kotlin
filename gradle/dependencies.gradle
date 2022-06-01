@@ -132,6 +132,7 @@ ext.dep = [
     // specify the version
     kotlinPluginWithoutVersion   : "org.jetbrains.kotlin:kotlin-gradle-plugin",
     turbine                      : "app.cash.turbine:turbine:0.7.0",
+    clikt                      : "com.github.ajalt.clikt:clikt:3.4.0",
 ]
 ext.androidConfig = [
     compileSdkVersion: 30,

@@ -1,0 +1,21 @@
+public final class com/apollographql/apollo3/tooling/RegisterOperations {
+	public static final field INSTANCE Lcom/apollographql/apollo3/tooling/RegisterOperations;
+	public final fun registerOperations (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public final fun safelistingHash (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/tooling/SchemaDownloader {
+	public static final field INSTANCE Lcom/apollographql/apollo3/tooling/SchemaDownloader;
+	public final fun download (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;)V
+	public static synthetic fun download$default (Lcom/apollographql/apollo3/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/io/File;ZLjava/util/Map;ILjava/lang/Object;)V
+	public final fun downloadIntrospection (Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;
+	public final fun downloadRegistry (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Z)Ljava/lang/String;
+	public static synthetic fun downloadRegistry$default (Lcom/apollographql/apollo3/tooling/SchemaDownloader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ZILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/tooling/SchemaUploader {
+	public static final field INSTANCE Lcom/apollographql/apollo3/tooling/SchemaUploader;
+	public final fun uploadSchema (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public static synthetic fun uploadSchema$default (Lcom/apollographql/apollo3/tooling/SchemaUploader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+}
+

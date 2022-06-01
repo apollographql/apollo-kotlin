@@ -9,4 +9,11 @@ open class ApolloPlugin : Plugin<Project> {
     val defaultService = project.objects.newInstance(DefaultService::class.java, project, "service")
     project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project, defaultService) as DefaultApolloExtension
   }
+
+  companion object {
+    internal val extraHeaders = mapOf(
+        "apollographql-client-name" to "apollo-gradle-plugin",
+        "apollographql-client-version" to com.apollographql.apollo3.compiler.APOLLO_VERSION
+    )
+  }
 }

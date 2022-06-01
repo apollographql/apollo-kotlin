@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.QueryDocumentMinifier
+import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition

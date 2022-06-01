@@ -1,15 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
-import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.compiler.toJson
-import okio.Buffer
+import com.apollographql.apollo3.gradle.internal.ApolloPlugin.Companion.extraHeaders
+import com.apollographql.apollo3.tooling.SchemaDownloader
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -90,7 +82,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         registryUrl = registryUrl.getOrElse("https://graphql.api.apollographql.com/api/graphql"),
         schema = schemaFile,
         insecure = insecure.getOrElse(false),
-        headers = header.toMap(),
+        headers = header.toMap() + extraHeaders,
     )
   }
 

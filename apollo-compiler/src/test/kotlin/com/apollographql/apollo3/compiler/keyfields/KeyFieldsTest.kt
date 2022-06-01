@@ -8,8 +8,8 @@ import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.withApolloDefinitions
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
-import com.apollographql.apollo3.compiler.introspection.toSchema
-import com.apollographql.apollo3.compiler.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import okio.buffer
 import okio.source
 import org.junit.Assert.fail

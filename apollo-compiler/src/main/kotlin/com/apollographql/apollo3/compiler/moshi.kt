@@ -1,12 +1,9 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.compiler.introspection.IntrospectionSchema
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonReader
-import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import okio.buffer
 import okio.sink
 import okio.source
