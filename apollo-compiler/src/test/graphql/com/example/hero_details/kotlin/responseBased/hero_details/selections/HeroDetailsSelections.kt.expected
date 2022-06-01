@@ -18,22 +18,22 @@ import com.example.hero_details.type.hero_type
 import kotlin.collections.List
 
 public object HeroDetailsSelections {
-  private val node: List<CompiledSelection> = listOf(
+  private val _node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val edges: List<CompiledSelection> = listOf(
+  private val _edges: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "node",
           type = Character.type
-        ).selections(node)
+        ).selections(_node)
         .build()
       )
 
-  private val friendsConnection: List<CompiledSelection> = listOf(
+  private val _friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
           type = GraphQLInt.type
@@ -41,11 +41,11 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
-        ).selections(edges)
+        ).selections(_edges)
         .build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "type",
           type = hero_type.type.notNull()
@@ -57,7 +57,7 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(friendsConnection)
+        ).selections(_friendsConnection)
         .build()
       )
 
@@ -65,7 +65,7 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

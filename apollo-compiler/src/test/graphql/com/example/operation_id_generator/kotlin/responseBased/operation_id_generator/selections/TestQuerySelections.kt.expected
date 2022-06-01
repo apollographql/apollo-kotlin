@@ -14,7 +14,7 @@ import com.example.operation_id_generator.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -29,7 +29,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

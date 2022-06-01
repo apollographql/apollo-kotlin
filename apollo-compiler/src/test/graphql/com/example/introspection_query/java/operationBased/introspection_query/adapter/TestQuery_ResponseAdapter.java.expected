@@ -29,24 +29,24 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.__Schema __schema = null;
-      TestQuery.__Type __type = null;
+      TestQuery.__Schema ___schema = null;
+      TestQuery.__Type ___type = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __schema = new ObjectAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
-          case 1: __type = new ObjectAdapter<TestQuery.__Type>(__Type.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: ___schema = new ObjectAdapter<TestQuery.__Schema>(__Schema.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 1: ___type = new ObjectAdapter<TestQuery.__Type>(__Type.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(__schema, "__schema");
-      Assertions.checkFieldNotMissing(__type, "__type");
+      Assertions.checkFieldNotMissing(___schema, "__schema");
+      Assertions.checkFieldNotMissing(___type, "__type");
 
       return new TestQuery.Data(
-        __schema,
-        __type
+        ___schema,
+        ___type
       );
     }
 
@@ -69,24 +69,24 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.__Schema fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.QueryType queryType = null;
-      List<TestQuery.Type> types = null;
+      TestQuery.QueryType _queryType = null;
+      List<TestQuery.Type> _types = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: queryType = new ObjectAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
-          case 1: types = new ListAdapter<>(new ObjectAdapter<TestQuery.Type>(Type.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _queryType = new ObjectAdapter<TestQuery.QueryType>(QueryType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 1: _types = new ListAdapter<>(new ObjectAdapter<TestQuery.Type>(Type.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(queryType, "queryType");
-      Assertions.checkFieldNotMissing(types, "types");
+      Assertions.checkFieldNotMissing(_queryType, "queryType");
+      Assertions.checkFieldNotMissing(_types, "types");
 
       return new TestQuery.__Schema(
-        queryType,
-        types
+        _queryType,
+        _types
       );
     }
 
@@ -109,18 +109,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.QueryType fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.QueryType(
-        name
+        _name
       );
     }
 
@@ -140,18 +140,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Type(
-        name
+        _name
       );
     }
 
@@ -171,18 +171,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.__Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.__Type(
-        name
+        _name
       );
     }
 

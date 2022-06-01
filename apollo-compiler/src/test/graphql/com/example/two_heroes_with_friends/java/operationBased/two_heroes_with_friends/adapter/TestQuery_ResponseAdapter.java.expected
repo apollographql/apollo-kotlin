@@ -31,21 +31,21 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.R2 r2 = null;
-      TestQuery.Luke luke = null;
+      TestQuery.R2 _r2 = null;
+      TestQuery.Luke _luke = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: _luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        r2,
-        luke
+        _r2,
+        _luke
       );
     }
 
@@ -68,24 +68,24 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
-      TestQuery.FriendsConnection friendsConnection = null;
+      String _name = null;
+      TestQuery.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_friendsConnection, "friendsConnection");
 
       return new TestQuery.R2(
-        name,
-        friendsConnection
+        _name,
+        _friendsConnection
       );
     }
 
@@ -108,21 +108,21 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.FriendsConnection fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer totalCount = null;
-      List<TestQuery.Edge> edges = null;
+      Integer _totalCount = null;
+      List<TestQuery.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.FriendsConnection(
-        totalCount,
-        edges
+        _totalCount,
+        _edges
       );
     }
 
@@ -145,18 +145,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Node node = null;
+      TestQuery.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Edge(
-        node
+        _node
       );
     }
 
@@ -176,20 +176,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.Node(
-        name
+        _name
       );
     }
 
@@ -209,28 +209,28 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String id = null;
-      String name = null;
-      TestQuery.FriendsConnection1 friendsConnection = null;
+      String _id = null;
+      String _name = null;
+      TestQuery.FriendsConnection1 _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection1>(FriendsConnection1.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_friendsConnection, "friendsConnection");
 
       return new TestQuery.Luke(
-        id,
-        name,
-        friendsConnection
+        _id,
+        _name,
+        _friendsConnection
       );
     }
 
@@ -256,21 +256,21 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.FriendsConnection1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer totalCount = null;
-      List<TestQuery.Edge1> edges = null;
+      Integer _totalCount = null;
+      List<TestQuery.Edge1> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.FriendsConnection1(
-        totalCount,
-        edges
+        _totalCount,
+        _edges
       );
     }
 
@@ -293,18 +293,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Edge1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Node1 node = null;
+      TestQuery.Node1 _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Edge1(
-        node
+        _node
       );
     }
 
@@ -324,20 +324,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Node1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.Node1(
-        name
+        _name
       );
     }
 

@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -53,23 +53,23 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var name: String? = null
-        var deprecated: String? = null
-        var deprecatedBool: Boolean? = null
+        var _name: String? = null
+        var _deprecated: String? = null
+        var _deprecatedBool: Boolean? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> deprecated = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> deprecatedBool = BooleanAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _deprecated = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _deprecatedBool = BooleanAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Hero(
-          name = name!!,
-          deprecated = deprecated!!,
-          deprecatedBool = deprecatedBool!!
+          name = _name!!,
+          deprecated = _deprecated!!,
+          deprecatedBool = _deprecatedBool!!
         )
       }
 

@@ -25,18 +25,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var heroWithReview: TestQuery.Data.HeroWithReview? = null
+      var _heroWithReview: TestQuery.Data.HeroWithReview? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> heroWithReview = HeroWithReview.obj().nullable().fromJson(reader,
+          0 -> _heroWithReview = HeroWithReview.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        heroWithReview = heroWithReview
+        heroWithReview = _heroWithReview
       )
     }
 
@@ -54,20 +54,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.HeroWithReview {
-        var name: String? = null
-        var height: Double? = null
+        var _name: String? = null
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.HeroWithReview(
-          name = name!!,
-          height = height
+          name = _name!!,
+          height = _height
         )
       }
 

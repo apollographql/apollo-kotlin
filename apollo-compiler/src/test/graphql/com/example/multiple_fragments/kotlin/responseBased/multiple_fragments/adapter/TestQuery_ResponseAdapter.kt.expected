@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var a: TestQuery.Data.A? = null
+      var _a: TestQuery.Data.A? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> a = A.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = A.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        a = a
+        a = _a
       )
     }
 
@@ -53,20 +53,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.A {
-        var __typename: String? = null
-        var node: TestQuery.Data.A.Node? = null
+        var ___typename: String? = null
+        var _node: TestQuery.Data.A.Node? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.A(
-          __typename = __typename!!,
-          node = node
+          __typename = ___typename!!,
+          node = _node
         )
       }
 
@@ -85,12 +85,12 @@ public object TestQuery_ResponseAdapter {
       private object Node : Adapter<TestQuery.Data.A.Node> {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.A.Node {
-          val __typename = reader.readTypename()
-          return when(__typename) {
+          val ___typename = reader.readTypename()
+          return when(___typename) {
             "ANode",
-            -> ANodeNode.fromJson(reader, customScalarAdapters, __typename)
+            -> ANodeNode.fromJson(reader, customScalarAdapters, ___typename)
             else
-            -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
+            -> OtherNode.fromJson(reader, customScalarAdapters, ___typename)
           }
         }
 
@@ -114,23 +114,23 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.A.ANodeNode {
-          var __typename: String? = typename
-          var field1: String? = null
-          var field2: String? = null
+          var ___typename: String? = typename
+          var _field1: String? = null
+          var _field2: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.A.ANodeNode(
-            __typename = __typename!!,
-            field1 = field1,
-            field2 = field2
+            __typename = ___typename!!,
+            field1 = _field1,
+            field2 = _field2
           )
         }
 
@@ -158,17 +158,17 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): TestQuery.Data.A.OtherNode {
-          var __typename: String? = typename
+          var ___typename: String? = typename
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.A.OtherNode(
-            __typename = __typename!!
+            __typename = ___typename!!
           )
         }
 

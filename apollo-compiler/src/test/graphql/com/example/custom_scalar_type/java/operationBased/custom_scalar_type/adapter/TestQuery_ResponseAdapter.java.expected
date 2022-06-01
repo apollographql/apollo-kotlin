@@ -34,18 +34,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Hero hero = null;
+      TestQuery.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        hero
+        _hero
       );
     }
 
@@ -65,44 +65,44 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      Long id = null;
-      String name = null;
-      Date birthDate = null;
-      List<Date> appearanceDates = null;
-      Object fieldWithUnsupportedType = null;
-      String profileLink = null;
-      List<String> links = null;
+      Long _id = null;
+      String _name = null;
+      Date _birthDate = null;
+      List<Date> _appearanceDates = null;
+      Object _fieldWithUnsupportedType = null;
+      String _profileLink = null;
+      List<String> _links = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = (customScalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).fromJson(reader, customScalarAdapters); break;
-          case 1: name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
-          case 2: birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
-          case 3: appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
-          case 4: fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
-          case 5: profileLink = com.example.UrlAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 6: links = new ListAdapter<>(com.example.UrlAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = (customScalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).fromJson(reader, customScalarAdapters); break;
+          case 1: _name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
+          case 2: _birthDate = (customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, customScalarAdapters); break;
+          case 3: _appearanceDates = new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, customScalarAdapters); break;
+          case 4: _fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 5: _profileLink = com.example.UrlAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 6: _links = new ListAdapter<>(com.example.UrlAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(birthDate, "birthDate");
-      Assertions.checkFieldNotMissing(appearanceDates, "appearanceDates");
-      Assertions.checkFieldNotMissing(fieldWithUnsupportedType, "fieldWithUnsupportedType");
-      Assertions.checkFieldNotMissing(profileLink, "profileLink");
-      Assertions.checkFieldNotMissing(links, "links");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_birthDate, "birthDate");
+      Assertions.checkFieldNotMissing(_appearanceDates, "appearanceDates");
+      Assertions.checkFieldNotMissing(_fieldWithUnsupportedType, "fieldWithUnsupportedType");
+      Assertions.checkFieldNotMissing(_profileLink, "profileLink");
+      Assertions.checkFieldNotMissing(_links, "links");
 
       return new TestQuery.Hero(
-        id,
-        name,
-        birthDate,
-        appearanceDates,
-        fieldWithUnsupportedType,
-        profileLink,
-        links
+        _id,
+        _name,
+        _birthDate,
+        _appearanceDates,
+        _fieldWithUnsupportedType,
+        _profileLink,
+        _links
       );
     }
 

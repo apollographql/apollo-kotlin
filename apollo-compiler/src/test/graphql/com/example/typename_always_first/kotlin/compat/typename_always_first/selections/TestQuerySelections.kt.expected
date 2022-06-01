@@ -15,7 +15,7 @@ import com.example.typename_always_first.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val _onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
@@ -26,7 +26,7 @@ public object TestQuerySelections {
         ).build()
       )
 
-  private val onDroid: List<CompiledSelection> = listOf(
+  private val _onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -41,7 +41,7 @@ public object TestQuerySelections {
         ).build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -49,12 +49,12 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(_onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(onDroid)
+        ).selections(_onDroid)
         .build()
       )
 
@@ -62,7 +62,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build(),
         CompiledField.Builder(
           name = "__typename",

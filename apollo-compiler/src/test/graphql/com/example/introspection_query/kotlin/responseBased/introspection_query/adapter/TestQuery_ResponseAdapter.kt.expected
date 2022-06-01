@@ -23,20 +23,20 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var __schema: TestQuery.Data.__Schema? = null
-      var __type: TestQuery.Data.__Type? = null
+      var ___schema: TestQuery.Data.__Schema? = null
+      var ___type: TestQuery.Data.__Type? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __schema = __Schema.obj().fromJson(reader, customScalarAdapters)
-          1 -> __type = __Type.obj().fromJson(reader, customScalarAdapters)
+          0 -> ___schema = __Schema.obj().fromJson(reader, customScalarAdapters)
+          1 -> ___type = __Type.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        __schema = __schema!!,
-        __type = __type!!
+        __schema = ___schema!!,
+        __type = ___type!!
       )
     }
 
@@ -57,20 +57,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.__Schema {
-        var queryType: TestQuery.Data.__Schema.QueryType? = null
-        var types: List<TestQuery.Data.__Schema.Type>? = null
+        var _queryType: TestQuery.Data.__Schema.QueryType? = null
+        var _types: List<TestQuery.Data.__Schema.Type>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> queryType = QueryType.obj().fromJson(reader, customScalarAdapters)
-            1 -> types = Type.obj().list().fromJson(reader, customScalarAdapters)
+            0 -> _queryType = QueryType.obj().fromJson(reader, customScalarAdapters)
+            1 -> _types = Type.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.__Schema(
-          queryType = queryType!!,
-          types = types!!
+          queryType = _queryType!!,
+          types = _types!!
         )
       }
 
@@ -91,17 +91,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema.QueryType {
-          var name: String? = null
+          var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.__Schema.QueryType(
-            name = name
+            name = _name
           )
         }
 
@@ -120,17 +120,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.__Schema.Type {
-          var name: String? = null
+          var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.__Schema.Type(
-            name = name
+            name = _name
           )
         }
 
@@ -150,17 +150,17 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.__Type {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.__Type(
-          name = name
+          name = _name
         )
       }
 

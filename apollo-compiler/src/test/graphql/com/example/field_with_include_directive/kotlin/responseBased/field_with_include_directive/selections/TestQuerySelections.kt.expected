@@ -16,14 +16,14 @@ import com.example.field_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val friendsConnection: List<CompiledSelection> = listOf(
+  private val _friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
           type = GraphQLInt.type
         ).build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -33,7 +33,7 @@ public object TestQuerySelections {
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).condition(listOf(CompiledCondition("skipFriends", true)))
-        .selections(friendsConnection)
+        .selections(_friendsConnection)
         .build()
       )
 
@@ -41,7 +41,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

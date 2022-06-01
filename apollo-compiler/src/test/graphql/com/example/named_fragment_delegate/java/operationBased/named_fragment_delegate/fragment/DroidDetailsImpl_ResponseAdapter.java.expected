@@ -29,26 +29,26 @@ public class DroidDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_delegate.fragment.DroidDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      String primaryFunction = null;
-      List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> friends = null;
+      String _name = null;
+      String _primaryFunction = null;
+      List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.named_fragment_delegate.fragment.DroidDetails(
-        name,
-        primaryFunction,
-        friends
+        _name,
+        _primaryFunction,
+        _friends
       );
     }
 
@@ -74,20 +74,20 @@ public class DroidDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_delegate.fragment.DroidDetails.Friend fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.named_fragment_delegate.fragment.DroidDetails.Friend(
-        name
+        _name
       );
     }
 

@@ -16,7 +16,7 @@ import com.example.named_fragment_inside_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object GetHeroSelections {
-  private val onCharacter: List<CompiledSelection> = listOf(
+  private val _onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -33,7 +33,7 @@ public object GetHeroSelections {
         .build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -41,7 +41,7 @@ public object GetHeroSelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter)
+        ).selections(_onCharacter)
         .build()
       )
 
@@ -49,7 +49,7 @@ public object GetHeroSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

@@ -30,18 +30,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Tree tree = null;
+      TestQuery.Tree _tree = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: tree = new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _tree = new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        tree
+        _tree
       );
     }
 
@@ -61,27 +61,27 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Tree fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
-      List<TestQuery.Child> children = null;
-      TestQuery.Parent parent = null;
+      String _name = null;
+      List<TestQuery.Child> _children = null;
+      TestQuery.Parent _parent = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: children = new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 2: parent = new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _children = new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 2: _parent = new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(children, "children");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_children, "children");
 
       return new TestQuery.Tree(
-        name,
-        children,
-        parent
+        _name,
+        _children,
+        _parent
       );
     }
 
@@ -107,20 +107,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Child fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.Child(
-        name
+        _name
       );
     }
 
@@ -140,20 +140,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Parent fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.Parent(
-        name
+        _name
       );
     }
 

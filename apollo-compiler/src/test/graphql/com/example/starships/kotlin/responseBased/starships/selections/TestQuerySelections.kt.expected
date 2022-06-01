@@ -18,7 +18,7 @@ import com.example.starships.type.Starship
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val starship: List<CompiledSelection> = listOf(
+  private val _starship: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -40,7 +40,7 @@ public object TestQuerySelections {
         ).arguments(listOf(
           CompiledArgument("id", CompiledVariable("id"))
         ))
-        .selections(starship)
+        .selections(_starship)
         .build()
       )
 }

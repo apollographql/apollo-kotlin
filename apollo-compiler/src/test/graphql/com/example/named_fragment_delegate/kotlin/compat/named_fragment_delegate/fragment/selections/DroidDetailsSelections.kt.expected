@@ -14,7 +14,7 @@ import com.example.named_fragment_delegate.type.GraphQLString
 import kotlin.collections.List
 
 public object DroidDetailsSelections {
-  private val friends: List<CompiledSelection> = listOf(
+  private val _friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -33,7 +33,7 @@ public object DroidDetailsSelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends)
+        ).selections(_friends)
         .build()
       )
 }

@@ -31,23 +31,23 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      List<TestQuery.Review> reviews = null;
-      Integer testNullableArguments = null;
+      List<TestQuery.Review> _reviews = null;
+      Integer _testNullableArguments = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
-          case 1: testNullableArguments = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 1: _testNullableArguments = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(testNullableArguments, "testNullableArguments");
+      Assertions.checkFieldNotMissing(_testNullableArguments, "testNullableArguments");
 
       return new TestQuery.Data(
-        reviews,
-        testNullableArguments
+        _reviews,
+        _testNullableArguments
       );
     }
 
@@ -70,23 +70,23 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Review fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      Integer stars = null;
-      String commentary = null;
+      Integer _stars = null;
+      String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(stars, "stars");
+      Assertions.checkFieldNotMissing(_stars, "stars");
 
       return new TestQuery.Review(
-        stars,
-        commentary
+        _stars,
+        _commentary
       );
     }
 

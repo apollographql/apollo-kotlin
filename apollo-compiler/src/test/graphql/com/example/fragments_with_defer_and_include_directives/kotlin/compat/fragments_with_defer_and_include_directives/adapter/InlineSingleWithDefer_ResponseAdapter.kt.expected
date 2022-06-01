@@ -27,17 +27,17 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         InlineSingleWithDefer.Data {
-      var hero: InlineSingleWithDefer.Hero? = null
+      var _hero: InlineSingleWithDefer.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return InlineSingleWithDefer.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -56,30 +56,30 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         InlineSingleWithDefer.Hero {
-      var __typename: String? = null
+      var ___typename: String? = null
 
       val __path = reader.getPath()
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(__typename != null) {
+      check(___typename != null) {
         "__typename was not found"
       }
 
-      var asDroid: InlineSingleWithDefer.AsDroid? = null
-      if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
+      var _asDroid: InlineSingleWithDefer.AsDroid? = null
+      if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
         reader.rewind()
-        asDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.AsDroid.fromJson(reader,
+        _asDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
 
       return InlineSingleWithDefer.Hero(
-        __typename = __typename,
-        asDroid = asDroid
+        __typename = ___typename,
+        asDroid = _asDroid
       )
     }
 
@@ -103,20 +103,20 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         InlineSingleWithDefer.AsDroid {
-      var __typename: String? = null
-      var name: String? = null
+      var ___typename: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return InlineSingleWithDefer.AsDroid(
-        __typename = __typename!!,
-        name = name!!
+        __typename = ___typename!!,
+        name = _name!!
       )
     }
 

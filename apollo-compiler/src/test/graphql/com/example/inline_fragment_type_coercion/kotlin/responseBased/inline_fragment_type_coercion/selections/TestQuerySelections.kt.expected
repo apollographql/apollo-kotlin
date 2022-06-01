@@ -14,14 +14,14 @@ import com.example.inline_fragment_type_coercion.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onBar: List<CompiledSelection> = listOf(
+  private val _onBar: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "bar",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val foo: List<CompiledSelection> = listOf(
+  private val _foo: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -33,7 +33,7 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Bar",
           possibleTypes = listOf("BarObject", "FooBar")
-        ).selections(onBar)
+        ).selections(_onBar)
         .build()
       )
 
@@ -41,7 +41,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "foo",
           type = Foo.type
-        ).selections(foo)
+        ).selections(_foo)
         .build()
       )
 }

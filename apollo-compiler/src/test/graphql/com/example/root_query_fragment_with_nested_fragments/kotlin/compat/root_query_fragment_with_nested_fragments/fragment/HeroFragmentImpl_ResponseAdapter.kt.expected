@@ -21,17 +21,17 @@ public object HeroFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment {
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragment(
-        name = name!!
+        name = _name!!
       )
     }
 

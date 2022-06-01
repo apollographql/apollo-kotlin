@@ -29,18 +29,18 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV heroAVeryAVeryAVeryAVeryAVeryAVeryAV = null;
+      TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data(
-        heroAVeryAVeryAVeryAVeryAVeryAVeryAV
+        _heroAVeryAVeryAVeryAVeryAVeryAVeryAV
       );
     }
 
@@ -61,20 +61,20 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = null;
+      String _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
+      Assertions.checkFieldNotMissing(_nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, "nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
 
       return new TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV(
-        nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
+        _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName
       );
     }
 

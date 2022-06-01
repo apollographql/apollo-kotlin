@@ -18,7 +18,7 @@ import com.example.fragment_with_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object HeroDetailsSelections {
-  private val onDroid: List<CompiledSelection> = listOf(
+  private val _onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -30,22 +30,22 @@ public object HeroDetailsSelections {
         .build()
       )
 
-  private val node: List<CompiledSelection> = listOf(
+  private val _node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val edges: List<CompiledSelection> = listOf(
+  private val _edges: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "node",
           type = Character.type
-        ).selections(node)
+        ).selections(_node)
         .build()
       )
 
-  private val friendsConnection: List<CompiledSelection> = listOf(
+  private val _friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
           type = GraphQLInt.type
@@ -53,7 +53,7 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
-        ).selections(edges)
+        ).selections(_edges)
         .build()
       )
 
@@ -70,7 +70,7 @@ public object HeroDetailsSelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(onDroid)
+        ).selections(_onDroid)
         .build(),
         CompiledField.Builder(
           name = "name",
@@ -79,7 +79,7 @@ public object HeroDetailsSelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(friendsConnection)
+        ).selections(_friendsConnection)
         .build()
       )
 }

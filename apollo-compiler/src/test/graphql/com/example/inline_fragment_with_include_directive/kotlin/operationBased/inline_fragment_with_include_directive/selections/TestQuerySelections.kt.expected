@@ -16,7 +16,7 @@ import com.example.inline_fragment_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val _onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -27,7 +27,7 @@ public object TestQuerySelections {
         ).build()
       )
 
-  private val onDroid: List<CompiledSelection> = listOf(
+  private val _onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -38,14 +38,14 @@ public object TestQuerySelections {
         ).build()
       )
 
-  private val onCharacter: List<CompiledSelection> = listOf(
+  private val _onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -59,19 +59,19 @@ public object TestQuerySelections {
           possibleTypes = listOf("Human")
         ).condition(listOf(CompiledCondition("withDetails", false),
             CompiledCondition("skipHumanDetails", true)))
-        .selections(onHuman)
+        .selections(_onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("withDetails", false)))
-        .selections(onDroid)
+        .selections(_onDroid)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).condition(listOf(CompiledCondition("withDetails", false)))
-        .selections(onCharacter)
+        .selections(_onCharacter)
         .build()
       )
 
@@ -79,7 +79,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

@@ -15,21 +15,21 @@ import com.example.nested_field_with_multiple_fieldsets.type.Iface2
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onIface2: List<CompiledSelection> = listOf(
+  private val _onIface2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar1",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onImpl2: List<CompiledSelection> = listOf(
+  private val _onImpl2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar2",
           type = GraphQLString.type
         ).build()
       )
 
-  private val iface2: List<CompiledSelection> = listOf(
+  private val _iface2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -37,38 +37,38 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Iface2",
           possibleTypes = listOf("Impl2")
-        ).selections(onIface2)
+        ).selections(_onIface2)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl2",
           possibleTypes = listOf("Impl2")
-        ).selections(onImpl2)
+        ).selections(_onImpl2)
         .build()
       )
 
-  private val onIface1: List<CompiledSelection> = listOf(
+  private val _onIface1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "iface2",
           type = Iface2.type
-        ).selections(iface2)
+        ).selections(_iface2)
         .build()
       )
 
-  private val onIface21: List<CompiledSelection> = listOf(
+  private val _onIface21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar3",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onImpl21: List<CompiledSelection> = listOf(
+  private val _onImpl21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar4",
           type = GraphQLString.type
         ).build()
       )
 
-  private val iface21: List<CompiledSelection> = listOf(
+  private val _iface21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -76,24 +76,24 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Iface2",
           possibleTypes = listOf("Impl2")
-        ).selections(onIface21)
+        ).selections(_onIface21)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl2",
           possibleTypes = listOf("Impl2")
-        ).selections(onImpl21)
+        ).selections(_onImpl21)
         .build()
       )
 
-  private val onImpl1: List<CompiledSelection> = listOf(
+  private val _onImpl1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "iface2",
           type = Iface2.type
-        ).selections(iface21)
+        ).selections(_iface21)
         .build()
       )
 
-  private val iface1: List<CompiledSelection> = listOf(
+  private val _iface1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -101,12 +101,12 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Iface1",
           possibleTypes = listOf("Impl1")
-        ).selections(onIface1)
+        ).selections(_onIface1)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl1",
           possibleTypes = listOf("Impl1")
-        ).selections(onImpl1)
+        ).selections(_onImpl1)
         .build()
       )
 
@@ -114,7 +114,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "iface1",
           type = Iface1.type
-        ).selections(iface1)
+        ).selections(_iface1)
         .build()
       )
 }

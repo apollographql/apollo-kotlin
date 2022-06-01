@@ -21,17 +21,17 @@ public object CharacterNameImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterName {
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_inside_inline_fragment.fragment.CharacterName(
-        name = name!!
+        name = _name!!
       )
     }
 

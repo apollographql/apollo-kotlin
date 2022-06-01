@@ -14,7 +14,7 @@ import com.example.antlr_tokens.type.TypeWithGraphQLKeywords
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val typeWithGraphQLKeywords: List<CompiledSelection> = listOf(
+  private val _typeWithGraphQLKeywords: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "on",
           type = GraphQLString.type
@@ -43,7 +43,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "typeWithGraphQLKeywords",
           type = TypeWithGraphQLKeywords.type
-        ).selections(typeWithGraphQLKeywords)
+        ).selections(_typeWithGraphQLKeywords)
         .build()
       )
 }

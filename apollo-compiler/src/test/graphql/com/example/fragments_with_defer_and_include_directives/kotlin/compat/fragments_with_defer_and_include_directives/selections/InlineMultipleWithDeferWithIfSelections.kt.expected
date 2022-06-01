@@ -15,28 +15,28 @@ import com.example.fragments_with_defer_and_include_directives.type.GraphQLStrin
 import kotlin.collections.List
 
 public object InlineMultipleWithDeferWithIfSelections {
-  private val onCharacter: List<CompiledSelection> = listOf(
+  private val _onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build()
       )
 
-  private val onCharacter1: List<CompiledSelection> = listOf(
+  private val _onCharacter1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val onCharacter2: List<CompiledSelection> = listOf(
+  private val _onCharacter2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -44,17 +44,17 @@ public object InlineMultipleWithDeferWithIfSelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter)
+        ).selections(_onCharacter)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter1)
+        ).selections(_onCharacter1)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter2)
+        ).selections(_onCharacter2)
         .build()
       )
 
@@ -62,7 +62,7 @@ public object InlineMultipleWithDeferWithIfSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

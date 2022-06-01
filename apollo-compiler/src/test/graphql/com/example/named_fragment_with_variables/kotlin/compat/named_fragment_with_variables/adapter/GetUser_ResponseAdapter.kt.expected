@@ -21,22 +21,22 @@ public object GetUser_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
-      var __typename: String? = null
+      var ___typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
-      val fragments = com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.Data.Fragments.fromJson(reader,
+      val _fragments = com.example.named_fragment_with_variables.adapter.GetUser_ResponseAdapter.Data.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return GetUser.Data(
-        __typename = __typename!!,
-        fragments = fragments
+        __typename = ___typename!!,
+        fragments = _fragments
       )
     }
 
@@ -58,11 +58,11 @@ public object GetUser_ResponseAdapter {
 
 
         reader.rewind()
-        val queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+        val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
             customScalarAdapters)
 
         return GetUser.Data.Fragments(
-          queryFragment = queryFragment
+          queryFragment = _queryFragment
         )
       }
 

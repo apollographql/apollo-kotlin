@@ -22,17 +22,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var cat: TestQuery.Data.Cat? = null
+      var _cat: TestQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> cat = Cat.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        cat = cat!!
+        cat = _cat!!
       )
     }
 
@@ -50,22 +50,22 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Cat {
-        var __typename: String? = null
+        var ___typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
-        val onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.fromJson(reader,
+        val _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.Cat(
-          __typename = __typename!!,
-          onNode = onNode
+          __typename = ___typename!!,
+          onNode = _onNode
         )
       }
 
@@ -86,22 +86,22 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode {
-          var __typename: String? = null
+          var ___typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           reader.rewind()
-          val onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
+          val _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
               customScalarAdapters)
 
           return TestQuery.Data.Cat.OnNode(
-            __typename = __typename!!,
-            onAnimal = onAnimal
+            __typename = ___typename!!,
+            onAnimal = _onAnimal
           )
         }
 
@@ -122,17 +122,17 @@ public object TestQuery_ResponseAdapter {
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode.OnAnimal {
-            var species: String? = null
+            var _species: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> species = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestQuery.Data.Cat.OnNode.OnAnimal(
-              species = species!!
+              species = _species!!
             )
           }
 

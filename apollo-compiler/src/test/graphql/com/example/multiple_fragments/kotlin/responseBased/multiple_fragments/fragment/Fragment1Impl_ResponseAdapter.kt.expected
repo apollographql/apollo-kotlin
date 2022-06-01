@@ -20,17 +20,17 @@ public object Fragment1Impl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         Fragment1Impl.Data {
-      var field1: String? = null
+      var _field1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return Fragment1Impl.Data(
-        field1 = field1
+        field1 = _field1
       )
     }
 

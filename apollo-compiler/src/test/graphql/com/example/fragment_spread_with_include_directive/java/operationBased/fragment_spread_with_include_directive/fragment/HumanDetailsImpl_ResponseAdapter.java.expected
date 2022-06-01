@@ -25,18 +25,18 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragment_spread_with_include_directive.fragment.HumanDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String homePlanet = null;
+      String _homePlanet = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.fragment_spread_with_include_directive.fragment.HumanDetails(
-        homePlanet
+        _homePlanet
       );
     }
 

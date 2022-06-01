@@ -14,14 +14,14 @@ import com.example.interface_always_nested.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onB: List<CompiledSelection> = listOf(
+  private val _onB: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB1",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onA: List<CompiledSelection> = listOf(
+  private val _onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -33,11 +33,11 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "B",
           possibleTypes = listOf("ABC", "BC")
-        ).selections(onB)
+        ).selections(_onB)
         .build()
       )
 
-  private val root1: List<CompiledSelection> = listOf(
+  private val _root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -45,7 +45,7 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "A",
           possibleTypes = listOf("ABC", "AC")
-        ).selections(onA)
+        ).selections(_onA)
         .build()
       )
 
@@ -53,7 +53,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "root",
           type = C.type
-        ).selections(root1)
+        ).selections(_root)
         .build()
       )
 }

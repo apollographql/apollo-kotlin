@@ -26,18 +26,18 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_without_implementation.fragment.HumanDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      Double height = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.named_fragment_without_implementation.fragment.HumanDetails(
-        height
+        _height
       );
     }
 

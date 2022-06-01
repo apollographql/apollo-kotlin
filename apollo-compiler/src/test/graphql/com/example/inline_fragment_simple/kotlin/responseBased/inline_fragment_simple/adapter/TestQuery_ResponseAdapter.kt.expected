@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -52,12 +52,12 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        val __typename = reader.readTypename()
-        return when(__typename) {
+        val ___typename = reader.readTypename()
+        return when(___typename) {
           "Human",
-          -> HumanHero.fromJson(reader, customScalarAdapters, __typename)
+          -> HumanHero.fromJson(reader, customScalarAdapters, ___typename)
           else
-          -> OtherHero.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherHero.fromJson(reader, customScalarAdapters, ___typename)
         }
       }
 
@@ -81,20 +81,20 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.HumanHero {
-        var __typename: String? = typename
-        var height: Double? = null
+        var ___typename: String? = typename
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.HumanHero(
-          __typename = __typename!!,
-          height = height
+          __typename = ___typename!!,
+          height = _height
         )
       }
 
@@ -119,17 +119,17 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherHero {
-        var __typename: String? = typename
+        var ___typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherHero(
-          __typename = __typename!!
+          __typename = ___typename!!
         )
       }
 

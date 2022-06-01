@@ -24,17 +24,17 @@ public object CatQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CatQuery.Data {
-      var cat: CatQuery.Data.Cat? = null
+      var _cat: CatQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return CatQuery.Data(
-        cat = cat
+        cat = _cat
       )
     }
 
@@ -50,12 +50,12 @@ public object CatQuery_ResponseAdapter {
     private object Cat : Adapter<CatQuery.Data.Cat> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CatQuery.Data.Cat {
-        val __typename = reader.readTypename()
-        return when(__typename) {
+        val ___typename = reader.readTypename()
+        return when(___typename) {
           "Cat",
-          -> OtherAnimalCat.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherAnimalCat.fromJson(reader, customScalarAdapters, ___typename)
           else
-          -> OtherCat.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherCat.fromJson(reader, customScalarAdapters, ___typename)
         }
       }
 
@@ -80,17 +80,17 @@ public object CatQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): CatQuery.Data.OtherCat {
-        var __typename: String? = typename
+        var ___typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return CatQuery.Data.OtherCat(
-          __typename = __typename!!
+          __typename = ___typename!!
         )
       }
 
@@ -112,20 +112,20 @@ public object CatQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): CatQuery.Data.OtherAnimalCat {
-        var __typename: String? = typename
-        var name: String? = null
+        var ___typename: String? = typename
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return CatQuery.Data.OtherAnimalCat(
-          __typename = __typename!!,
-          name = name!!
+          __typename = ___typename!!,
+          name = _name!!
         )
       }
 

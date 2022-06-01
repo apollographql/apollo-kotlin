@@ -16,7 +16,7 @@ import com.example.hero_with_review.type.Review
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val createReview: List<CompiledSelection> = listOf(
+  private val _createReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
           type = GraphQLInt.type.notNull()
@@ -51,7 +51,7 @@ public object TestQuerySelections {
             ),
           ))
         ))
-        .selections(createReview)
+        .selections(_createReview)
         .build()
       )
 }

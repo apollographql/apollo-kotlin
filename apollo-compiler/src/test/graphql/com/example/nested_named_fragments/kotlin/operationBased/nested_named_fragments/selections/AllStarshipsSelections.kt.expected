@@ -19,7 +19,7 @@ import com.example.nested_named_fragments.type.StarshipsEdge
 import kotlin.collections.List
 
 public object AllStarshipsSelections {
-  private val node: List<CompiledSelection> = listOf(
+  private val _node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -31,19 +31,19 @@ public object AllStarshipsSelections {
         .build()
       )
 
-  private val edges: List<CompiledSelection> = listOf(
+  private val _edges: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "node",
           type = Starship.type
-        ).selections(node)
+        ).selections(_node)
         .build()
       )
 
-  private val allStarships: List<CompiledSelection> = listOf(
+  private val _allStarships: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "edges",
           type = StarshipsEdge.type.list()
-        ).selections(edges)
+        ).selections(_edges)
         .build()
       )
 
@@ -54,7 +54,7 @@ public object AllStarshipsSelections {
         ).arguments(listOf(
           CompiledArgument("first", 7)
         ))
-        .selections(allStarships)
+        .selections(_allStarships)
         .build()
       )
 }

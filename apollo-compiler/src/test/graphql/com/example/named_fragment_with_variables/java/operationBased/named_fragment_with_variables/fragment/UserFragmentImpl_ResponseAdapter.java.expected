@@ -26,28 +26,28 @@ public class UserFragmentImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_with_variables.fragment.UserFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String firstName = null;
-      String lastName = null;
-      String avatar = null;
+      String _firstName = null;
+      String _lastName = null;
+      String _avatar = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: firstName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: lastName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: avatar = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _firstName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _lastName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _avatar = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(firstName, "firstName");
-      Assertions.checkFieldNotMissing(lastName, "lastName");
-      Assertions.checkFieldNotMissing(avatar, "avatar");
+      Assertions.checkFieldNotMissing(_firstName, "firstName");
+      Assertions.checkFieldNotMissing(_lastName, "lastName");
+      Assertions.checkFieldNotMissing(_avatar, "avatar");
 
       return new com.example.named_fragment_with_variables.fragment.UserFragment(
-        firstName,
-        lastName,
-        avatar
+        _firstName,
+        _lastName,
+        _avatar
       );
     }
 

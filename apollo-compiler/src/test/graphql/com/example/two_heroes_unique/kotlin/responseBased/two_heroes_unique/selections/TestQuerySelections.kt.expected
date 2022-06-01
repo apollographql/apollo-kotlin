@@ -15,14 +15,14 @@ import com.example.two_heroes_unique.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val r2: List<CompiledSelection> = listOf(
+  private val _r2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val luke: List<CompiledSelection> = listOf(
+  private val _luke: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -38,7 +38,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("r2")
-        .selections(r2)
+        .selections(_r2)
         .build(),
         CompiledField.Builder(
           name = "hero",
@@ -47,7 +47,7 @@ public object TestQuerySelections {
         .arguments(listOf(
           CompiledArgument("episode", "EMPIRE")
         ))
-        .selections(luke)
+        .selections(_luke)
         .build()
       )
 }

@@ -17,13 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalQuerySelections {
-  private static List<CompiledSelection> animal = Arrays.asList(
+  private static List<CompiledSelection> _animal = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledFragment.Builder("Cat", Arrays.asList("Cat")).selections(CatFragmentSelections.root).build(),
     new CompiledFragment.Builder("Dog", Arrays.asList("Dog")).selections(DogFragmentSelections.root).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("animal", Animal.type).selections(animal).build()
+    new CompiledField.Builder("animal", Animal.type).selections(_animal).build()
   );
 }

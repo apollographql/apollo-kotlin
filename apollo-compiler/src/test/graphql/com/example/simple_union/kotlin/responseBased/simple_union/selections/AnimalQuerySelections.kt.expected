@@ -16,7 +16,7 @@ import com.example.simple_union.type.GraphQLString
 import kotlin.collections.List
 
 public object AnimalQuerySelections {
-  private val animal: List<CompiledSelection> = listOf(
+  private val _animal: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -37,7 +37,7 @@ public object AnimalQuerySelections {
         CompiledField.Builder(
           name = "animal",
           type = Animal.type
-        ).selections(animal)
+        ).selections(_animal)
         .build()
       )
 }

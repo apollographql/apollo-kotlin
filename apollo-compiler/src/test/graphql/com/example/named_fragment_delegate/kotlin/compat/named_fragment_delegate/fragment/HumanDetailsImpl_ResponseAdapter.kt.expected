@@ -25,23 +25,23 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails {
-      var name: String? = null
-      var profileLink: Any? = null
-      var friendsConnection: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection? = null
+      var _name: String? = null
+      var _profileLink: Any? = null
+      var _friendsConnection: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_delegate.fragment.HumanDetails(
-        name = name!!,
-        profileLink = profileLink!!,
-        friendsConnection = friendsConnection!!
+        name = _name!!,
+        profileLink = _profileLink!!,
+        friendsConnection = _friendsConnection!!
       )
     }
 
@@ -67,18 +67,18 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection {
-      var edges: List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge?>? = null
+      var _edges: List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection(
-        edges = edges
+        edges = _edges
       )
     }
 
@@ -97,17 +97,17 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails.Edge {
-      var node: com.example.named_fragment_delegate.fragment.HumanDetails.Node? = null
+      var _node: com.example.named_fragment_delegate.fragment.HumanDetails.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_delegate.fragment.HumanDetails.Edge(
-        node = node
+        node = _node
       )
     }
 
@@ -126,17 +126,17 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails.Node {
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_delegate.fragment.HumanDetails.Node(
-        name = name!!
+        name = _name!!
       )
     }
 

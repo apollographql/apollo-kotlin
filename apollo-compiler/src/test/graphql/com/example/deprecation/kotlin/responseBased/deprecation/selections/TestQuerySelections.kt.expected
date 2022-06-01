@@ -16,7 +16,7 @@ import com.example.deprecation.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -38,7 +38,7 @@ public object TestQuerySelections {
         ).arguments(listOf(
           CompiledArgument("episode", CompiledVariable("episode"))
         ))
-        .selections(hero)
+        .selections(_hero)
         .build()
       )
 }

@@ -26,18 +26,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var search: List<TestQuery.Data.Search?>? = null
+      var _search: List<TestQuery.Data.Search?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> search = Search.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _search = Search.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        search = search
+        search = _search
       )
     }
 
@@ -53,14 +53,14 @@ public object TestQuery_ResponseAdapter {
     private object Search : Adapter<TestQuery.Data.Search> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Search {
-        val __typename = reader.readTypename()
-        return when(__typename) {
+        val ___typename = reader.readTypename()
+        return when(___typename) {
           "Human",
-          -> CharacterHumanSearch.fromJson(reader, customScalarAdapters, __typename)
+          -> CharacterHumanSearch.fromJson(reader, customScalarAdapters, ___typename)
           "Droid",
-          -> CharacterDroidSearch.fromJson(reader, customScalarAdapters, __typename)
+          -> CharacterDroidSearch.fromJson(reader, customScalarAdapters, ___typename)
           else
-          -> OtherSearch.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherSearch.fromJson(reader, customScalarAdapters, ___typename)
         }
       }
 
@@ -87,23 +87,23 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.CharacterHumanSearch {
-        var __typename: String? = typename
-        var name: String? = null
-        var homePlanet: String? = null
+        var ___typename: String? = typename
+        var _name: String? = null
+        var _homePlanet: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _homePlanet = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.CharacterHumanSearch(
-          __typename = __typename!!,
-          name = name!!,
-          homePlanet = homePlanet
+          __typename = ___typename!!,
+          name = _name!!,
+          homePlanet = _homePlanet
         )
       }
 
@@ -131,23 +131,23 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.CharacterDroidSearch {
-        var __typename: String? = typename
-        var name: String? = null
-        var primaryFunction: String? = null
+        var ___typename: String? = typename
+        var _name: String? = null
+        var _primaryFunction: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.CharacterDroidSearch(
-          __typename = __typename!!,
-          name = name!!,
-          primaryFunction = primaryFunction
+          __typename = ___typename!!,
+          name = _name!!,
+          primaryFunction = _primaryFunction
         )
       }
 
@@ -175,17 +175,17 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherSearch {
-        var __typename: String? = typename
+        var ___typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherSearch(
-          __typename = __typename!!
+          __typename = ___typename!!
         )
       }
 

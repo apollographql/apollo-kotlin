@@ -23,17 +23,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var character: TestQuery.Data.Character? = null
+      var _character: TestQuery.Data.Character? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> character = Character.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _character = Character.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        character = character
+        character = _character
       )
     }
 
@@ -51,17 +51,17 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Character {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Character(
-          name = name!!
+          name = _name!!
         )
       }
 

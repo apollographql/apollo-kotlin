@@ -18,7 +18,7 @@ import com.example.named_fragment_with_variables.type.User
 import kotlin.collections.List
 
 public object QueryFragmentSelections {
-  private val user: List<CompiledSelection> = listOf(
+  private val _user: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -30,7 +30,7 @@ public object QueryFragmentSelections {
         .build()
       )
 
-  private val organization: List<CompiledSelection> = listOf(
+  private val _organization: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLString.type.notNull()
@@ -41,7 +41,7 @@ public object QueryFragmentSelections {
         ).arguments(listOf(
           CompiledArgument("query", CompiledVariable("query"))
         ))
-        .selections(user)
+        .selections(_user)
         .build()
       )
 
@@ -52,7 +52,7 @@ public object QueryFragmentSelections {
         ).arguments(listOf(
           CompiledArgument("id", CompiledVariable("organizationId"))
         ))
-        .selections(organization)
+        .selections(_organization)
         .build()
       )
 }

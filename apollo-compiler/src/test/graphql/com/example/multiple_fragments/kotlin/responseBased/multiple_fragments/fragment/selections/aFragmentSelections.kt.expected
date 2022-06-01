@@ -14,7 +14,7 @@ import com.example.multiple_fragments.type.Node
 import kotlin.collections.List
 
 public object aFragmentSelections {
-  private val node: List<CompiledSelection> = listOf(
+  private val _node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -35,7 +35,7 @@ public object aFragmentSelections {
         CompiledField.Builder(
           name = "node",
           type = Node.type
-        ).selections(node)
+        ).selections(_node)
         .build()
       )
 }

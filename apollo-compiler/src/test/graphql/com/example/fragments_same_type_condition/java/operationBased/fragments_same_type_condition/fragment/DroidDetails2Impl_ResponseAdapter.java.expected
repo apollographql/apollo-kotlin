@@ -25,18 +25,18 @@ public class DroidDetails2Impl_ResponseAdapter {
     @Override
     public com.example.fragments_same_type_condition.fragment.DroidDetails2 fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String primaryFunction = null;
+      String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.fragments_same_type_condition.fragment.DroidDetails2(
-        primaryFunction
+        _primaryFunction
       );
     }
 

@@ -28,17 +28,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -57,38 +57,38 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var id: Long? = null
-        var name: java.lang.String? = null
-        var birthDate: Date? = null
-        var appearanceDates: List<Date>? = null
-        var fieldWithUnsupportedType: Any? = null
-        var profileLink: java.lang.String? = null
-        var links: List<java.lang.String>? = null
+        var _id: Long? = null
+        var _name: java.lang.String? = null
+        var _birthDate: Date? = null
+        var _appearanceDates: List<Date>? = null
+        var _fieldWithUnsupportedType: Any? = null
+        var _profileLink: java.lang.String? = null
+        var _links: List<java.lang.String>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
+            0 -> _id = customScalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
                 customScalarAdapters)
-            1 -> name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
-            2 -> birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
+            1 -> _name = com.example.MyStringAdapter().fromJson(reader, customScalarAdapters)
+            2 -> _birthDate = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
                 customScalarAdapters)
-            3 -> appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
+            3 -> _appearanceDates = customScalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
                 customScalarAdapters)
-            4 -> fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
-            5 -> profileLink = com.example.UrlAdapter.fromJson(reader, customScalarAdapters)
-            6 -> links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
+            4 -> _fieldWithUnsupportedType = AnyAdapter.fromJson(reader, customScalarAdapters)
+            5 -> _profileLink = com.example.UrlAdapter.fromJson(reader, customScalarAdapters)
+            6 -> _links = com.example.UrlAdapter.list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Hero(
-          id = id!!,
-          name = name!!,
-          birthDate = birthDate!!,
-          appearanceDates = appearanceDates!!,
-          fieldWithUnsupportedType = fieldWithUnsupportedType!!,
-          profileLink = profileLink!!,
-          links = links!!
+          id = _id!!,
+          name = _name!!,
+          birthDate = _birthDate!!,
+          appearanceDates = _appearanceDates!!,
+          fieldWithUnsupportedType = _fieldWithUnsupportedType!!,
+          profileLink = _profileLink!!,
+          links = _links!!
         )
       }
 

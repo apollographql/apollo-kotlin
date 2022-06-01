@@ -22,17 +22,17 @@ public object CharacterDetails3Impl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
-      var birthDate: Any? = null
+      var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3(
-        birthDate = birthDate!!
+        birthDate = _birthDate!!
       )
     }
 

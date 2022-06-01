@@ -22,17 +22,17 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_without_implementation.fragment.HumanDetails {
-      var height: Double? = null
+      var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_without_implementation.fragment.HumanDetails(
-        height = height
+        height = _height
       )
     }
 

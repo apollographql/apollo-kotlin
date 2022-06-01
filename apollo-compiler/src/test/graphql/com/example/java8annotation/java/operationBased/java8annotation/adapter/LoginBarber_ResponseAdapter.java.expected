@@ -28,20 +28,20 @@ public class LoginBarber_ResponseAdapter {
     @Override
     public LoginBarber.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      LoginBarber.Login login = null;
+      LoginBarber.Login _login = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: login = new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _login = new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(login, "login");
+      Assertions.checkFieldNotMissing(_login, "login");
 
       return new LoginBarber.Data(
-        login
+        _login
       );
     }
 
@@ -61,20 +61,20 @@ public class LoginBarber_ResponseAdapter {
     @Override
     public LoginBarber.Login fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String response = null;
+      String _response = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: response = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _response = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(response, "response");
+      Assertions.checkFieldNotMissing(_response, "response");
 
       return new LoginBarber.Login(
-        response
+        _response
       );
     }
 

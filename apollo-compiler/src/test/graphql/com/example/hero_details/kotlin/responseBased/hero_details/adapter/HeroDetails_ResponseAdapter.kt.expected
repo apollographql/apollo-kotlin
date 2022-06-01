@@ -28,17 +28,17 @@ public object HeroDetails_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetails.Data {
-      var hero: HeroDetails.Data.Hero? = null
+      var _hero: HeroDetails.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetails.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -56,23 +56,23 @@ public object HeroDetails_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           HeroDetails.Data.Hero {
-        var type: hero_type? = null
-        var name: String? = null
-        var friendsConnection: HeroDetails.Data.Hero.FriendsConnection? = null
+        var _type: hero_type? = null
+        var _name: String? = null
+        var _friendsConnection: HeroDetails.Data.Hero.FriendsConnection? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> type = hero_type_ResponseAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+            0 -> _type = hero_type_ResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return HeroDetails.Data.Hero(
-          type = type!!,
-          name = name!!,
-          friendsConnection = friendsConnection!!
+          type = _type!!,
+          name = _name!!,
+          friendsConnection = _friendsConnection!!
         )
       }
 
@@ -96,21 +96,21 @@ public object HeroDetails_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): HeroDetails.Data.Hero.FriendsConnection {
-          var totalCount: Int? = null
-          var edges: List<HeroDetails.Data.Hero.FriendsConnection.Edge?>? = null
+          var _totalCount: Int? = null
+          var _edges: List<HeroDetails.Data.Hero.FriendsConnection.Edge?>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-              1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+              0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                   customScalarAdapters)
               else -> break
             }
           }
 
           return HeroDetails.Data.Hero.FriendsConnection(
-            totalCount = totalCount,
-            edges = edges
+            totalCount = _totalCount,
+            edges = _edges
           )
         }
 
@@ -132,17 +132,17 @@ public object HeroDetails_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               HeroDetails.Data.Hero.FriendsConnection.Edge {
-            var node: HeroDetails.Data.Hero.FriendsConnection.Edge.Node? = null
+            var _node: HeroDetails.Data.Hero.FriendsConnection.Edge.Node? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+                0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return HeroDetails.Data.Hero.FriendsConnection.Edge(
-              node = node
+              node = _node
             )
           }
 
@@ -161,17 +161,17 @@ public object HeroDetails_ResponseAdapter {
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 HeroDetails.Data.Hero.FriendsConnection.Edge.Node {
-              var name: String? = null
+              var _name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
 
               return HeroDetails.Data.Hero.FriendsConnection.Edge.Node(
-                name = name!!
+                name = _name!!
               )
             }
 

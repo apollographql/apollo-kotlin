@@ -16,7 +16,7 @@ import com.example.arguments_hardcoded.type.Review
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val reviews: List<CompiledSelection> = listOf(
+  private val _reviews: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
           type = GraphQLInt.type.notNull()
@@ -36,7 +36,7 @@ public object TestQuerySelections {
           CompiledArgument("starsFloat", 9.9),
           CompiledArgument("starsInt", 10)
         ))
-        .selections(reviews)
+        .selections(_reviews)
         .build(),
         CompiledField.Builder(
           name = "testNullableArguments",

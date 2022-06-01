@@ -20,12 +20,12 @@ public object IFragmentImpl_ResponseAdapter {
   public object Data : Adapter<IFragmentImpl.Data> {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         IFragmentImpl.Data {
-      val __typename = reader.readTypename()
-      return when(__typename) {
+      val ___typename = reader.readTypename()
+      return when(___typename) {
         "A",
-        -> AData.fromJson(reader, customScalarAdapters, __typename)
+        -> AData.fromJson(reader, customScalarAdapters, ___typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, ___typename)
       }
     }
 
@@ -49,20 +49,20 @@ public object IFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): IFragmentImpl.AData {
-      var __typename: String? = typename
-      var fieldA: String? = null
+      var ___typename: String? = typename
+      var _fieldA: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return IFragmentImpl.AData(
-        __typename = __typename!!,
-        fieldA = fieldA
+        __typename = ___typename!!,
+        fieldA = _fieldA
       )
     }
 
@@ -87,17 +87,17 @@ public object IFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): IFragmentImpl.OtherData {
-      var __typename: String? = typename
+      var ___typename: String? = typename
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return IFragmentImpl.OtherData(
-        __typename = __typename!!
+        __typename = ___typename!!
       )
     }
 

@@ -16,7 +16,7 @@ import com.example.input_object_variable_and_argument.type.Human
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val heroWithReview: List<CompiledSelection> = listOf(
+  private val _heroWithReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -51,7 +51,7 @@ public object TestQuerySelections {
             "listOfStringNonOptional" to emptyList<Nothing>(),
           ))
         ))
-        .selections(heroWithReview)
+        .selections(_heroWithReview)
         .build()
       )
 }

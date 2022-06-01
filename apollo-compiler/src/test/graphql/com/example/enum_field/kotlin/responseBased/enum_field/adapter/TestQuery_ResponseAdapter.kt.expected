@@ -23,17 +23,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var gravity: Gravity? = null
+      var _gravity: Gravity? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> gravity = Gravity_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
+          0 -> _gravity = Gravity_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        gravity = gravity
+        gravity = _gravity
       )
     }
 

@@ -28,24 +28,24 @@ public class GetUser_ResponseAdapter {
     @Override
     public GetUser.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String __typename = null;
+      String ___typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      QueryFragment queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      QueryFragment _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(__typename, "__typename");
+      Assertions.checkFieldNotMissing(___typename, "__typename");
 
       return new GetUser.Data(
-        __typename,
-        queryFragment
+        ___typename,
+        _queryFragment
       );
     }
 

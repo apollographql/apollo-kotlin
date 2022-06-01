@@ -15,7 +15,7 @@ import com.example.multiple_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val a: List<CompiledSelection> = listOf(
+  private val _a: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -31,7 +31,7 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "a",
           type = A.type
-        ).selections(a)
+        ).selections(_a)
         .build()
       )
 }

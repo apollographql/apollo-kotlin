@@ -15,7 +15,7 @@ import com.example.fragments_with_defer_and_include_directives.type.GraphQLStrin
 import kotlin.collections.List
 
 public object SpreadSingleWithDeferSelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val _hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -31,7 +31,7 @@ public object SpreadSingleWithDeferSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(_hero)
         .build()
       )
 }

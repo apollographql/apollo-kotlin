@@ -20,17 +20,17 @@ public object CatFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CatFragmentImpl.Data {
-      var meow: String? = null
+      var _meow: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> meow = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _meow = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return CatFragmentImpl.Data(
-        meow = meow!!
+        meow = _meow!!
       )
     }
 

@@ -29,21 +29,21 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.R2 r2 = null;
-      TestQuery.Luke luke = null;
+      TestQuery.R2 _r2 = null;
+      TestQuery.Luke _luke = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: _luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        r2,
-        luke
+        _r2,
+        _luke
       );
     }
 
@@ -66,20 +66,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.R2 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.R2(
-        name
+        _name
       );
     }
 
@@ -99,24 +99,24 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Luke fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String id = null;
-      String name = null;
+      String _id = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.Luke(
-        id,
-        name
+        _id,
+        _name
       );
     }
 

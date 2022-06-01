@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> typeWithGraphQLKeywords = Arrays.asList(
+  private static List<CompiledSelection> _typeWithGraphQLKeywords = Arrays.asList(
     new CompiledField.Builder("on", GraphQLString.type).build(),
     new CompiledField.Builder("null", GraphQLString.type).arguments(Arrays.asList(new CompiledArgument("fragment", new CompiledVariable("operation"), false))).build(),
     new CompiledField.Builder("null", GraphQLString.type).alias("alias").arguments(Arrays.asList(new CompiledArgument("fragment", "A string\n"
@@ -23,6 +23,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("typeWithGraphQLKeywords", TypeWithGraphQLKeywords.type).selections(typeWithGraphQLKeywords).build()
+    new CompiledField.Builder("typeWithGraphQLKeywords", TypeWithGraphQLKeywords.type).selections(_typeWithGraphQLKeywords).build()
   );
 }

@@ -30,18 +30,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.CreateReview createReview = null;
+      TestQuery.CreateReview _createReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: createReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        createReview
+        _createReview
       );
     }
 
@@ -61,23 +61,23 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.CreateReview fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer stars = null;
-      String commentary = null;
+      Integer _stars = null;
+      String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(stars, "stars");
+      Assertions.checkFieldNotMissing(_stars, "stars");
 
       return new TestQuery.CreateReview(
-        stars,
-        commentary
+        _stars,
+        _commentary
       );
     }
 

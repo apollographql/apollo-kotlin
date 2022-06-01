@@ -27,21 +27,21 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
-      var name: String? = null
-      var friends: List<HeroDetailsImpl.Data.Friend?>? = null
+      var _name: String? = null
+      var _friends: List<HeroDetailsImpl.Data.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetailsImpl.Data(
-        name = name!!,
-        friends = friends
+        name = _name!!,
+        friends = _friends
       )
     }
 
@@ -60,14 +60,14 @@ public object HeroDetailsImpl_ResponseAdapter {
     private object Friend : Adapter<HeroDetailsImpl.Data.Friend> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           HeroDetailsImpl.Data.Friend {
-        val __typename = reader.readTypename()
-        return when(__typename) {
+        val ___typename = reader.readTypename()
+        return when(___typename) {
           "Human",
-          -> HumanFriend.fromJson(reader, customScalarAdapters, __typename)
+          -> HumanFriend.fromJson(reader, customScalarAdapters, ___typename)
           "Droid",
-          -> DroidFriend.fromJson(reader, customScalarAdapters, __typename)
+          -> DroidFriend.fromJson(reader, customScalarAdapters, ___typename)
           else
-          -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherFriend.fromJson(reader, customScalarAdapters, ___typename)
         }
       }
 
@@ -95,23 +95,23 @@ public object HeroDetailsImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): HeroDetailsImpl.Data.HumanFriend {
-        var __typename: String? = typename
-        var name: String? = null
-        var height: Double? = null
+        var ___typename: String? = typename
+        var _name: String? = null
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return HeroDetailsImpl.Data.HumanFriend(
-          __typename = __typename!!,
-          name = name!!,
-          height = height
+          __typename = ___typename!!,
+          name = _name!!,
+          height = _height
         )
       }
 
@@ -139,23 +139,23 @@ public object HeroDetailsImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): HeroDetailsImpl.Data.DroidFriend {
-        var __typename: String? = typename
-        var name: String? = null
-        var primaryFunction: String? = null
+        var ___typename: String? = typename
+        var _name: String? = null
+        var _primaryFunction: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return HeroDetailsImpl.Data.DroidFriend(
-          __typename = __typename!!,
-          name = name!!,
-          primaryFunction = primaryFunction
+          __typename = ___typename!!,
+          name = _name!!,
+          primaryFunction = _primaryFunction
         )
       }
 
@@ -183,20 +183,20 @@ public object HeroDetailsImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): HeroDetailsImpl.Data.OtherFriend {
-        var __typename: String? = typename
-        var name: String? = null
+        var ___typename: String? = typename
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return HeroDetailsImpl.Data.OtherFriend(
-          __typename = __typename!!,
-          name = name!!
+          __typename = ___typename!!,
+          name = _name!!
         )
       }
 

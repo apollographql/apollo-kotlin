@@ -30,18 +30,18 @@ public class TestSubscription_ResponseAdapter {
     @Override
     public TestSubscription.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      TestSubscription.CommentAdded commentAdded = null;
+      TestSubscription.CommentAdded _commentAdded = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestSubscription.Data(
-        commentAdded
+        _commentAdded
       );
     }
 
@@ -61,24 +61,24 @@ public class TestSubscription_ResponseAdapter {
     @Override
     public TestSubscription.CommentAdded fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer id = null;
-      String content = null;
+      Integer _id = null;
+      String _content = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: content = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _content = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(content, "content");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_content, "content");
 
       return new TestSubscription.CommentAdded(
-        id,
-        content
+        _id,
+        _content
       );
     }
 

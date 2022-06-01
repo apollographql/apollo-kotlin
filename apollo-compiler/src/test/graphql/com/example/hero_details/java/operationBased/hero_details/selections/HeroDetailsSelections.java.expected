@@ -19,26 +19,26 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsSelections {
-  private static List<CompiledSelection> node = Arrays.asList(
+  private static List<CompiledSelection> _node = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  private static List<CompiledSelection> edges = Arrays.asList(
-    new CompiledField.Builder("node", Character.type).selections(node).build()
+  private static List<CompiledSelection> _edges = Arrays.asList(
+    new CompiledField.Builder("node", Character.type).selections(_node).build()
   );
 
-  private static List<CompiledSelection> friendsConnection = Arrays.asList(
+  private static List<CompiledSelection> _friendsConnection = Arrays.asList(
     new CompiledField.Builder("totalCount", GraphQLInt.type).build(),
-    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
+    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(_edges).build()
   );
 
-  private static List<CompiledSelection> hero = Arrays.asList(
+  private static List<CompiledSelection> _hero = Arrays.asList(
     new CompiledField.Builder("type", new CompiledNotNullType(hero_type.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(_friendsConnection).build()
   );
 
   public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).selections(hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(_hero).build()
   );
 }

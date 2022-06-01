@@ -30,18 +30,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.HeroWithReview heroWithReview = null;
+      TestQuery.HeroWithReview _heroWithReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: heroWithReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _heroWithReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.HeroWithReview>(HeroWithReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        heroWithReview
+        _heroWithReview
       );
     }
 
@@ -61,23 +61,23 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.HeroWithReview fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      Double height = null;
+      String _name = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.HeroWithReview(
-        name,
-        height
+        _name,
+        _height
       );
     }
 

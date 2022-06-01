@@ -22,29 +22,29 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment.fragment.HeroDetails {
-      var __typename: String? = null
+      var ___typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(__typename != null) {
+      check(___typename != null) {
         "__typename was not found"
       }
 
-      var humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+      var _humanDetails: HumanDetails? = null
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.simple_fragment.fragment.HeroDetails(
-        __typename = __typename,
-        humanDetails = humanDetails
+        __typename = ___typename,
+        humanDetails = _humanDetails
       )
     }
 

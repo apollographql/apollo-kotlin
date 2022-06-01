@@ -21,22 +21,22 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var __typename: String? = null
+      var ___typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
-      val queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+      val _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Data(
-        __typename = __typename!!,
-        queryFragment = queryFragment
+        __typename = ___typename!!,
+        queryFragment = _queryFragment
       )
     }
 

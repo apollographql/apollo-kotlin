@@ -17,26 +17,26 @@ import com.example.named_fragment_delegate.type.URL
 import kotlin.collections.List
 
 public object HumanDetailsSelections {
-  private val node: List<CompiledSelection> = listOf(
+  private val _node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val edges: List<CompiledSelection> = listOf(
+  private val _edges: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "node",
           type = Character.type
-        ).selections(node)
+        ).selections(_node)
         .build()
       )
 
-  private val friendsConnection: List<CompiledSelection> = listOf(
+  private val _friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
-        ).selections(edges)
+        ).selections(_edges)
         .build()
       )
 
@@ -52,7 +52,7 @@ public object HumanDetailsSelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(friendsConnection)
+        ).selections(_friendsConnection)
         .build()
       )
 }

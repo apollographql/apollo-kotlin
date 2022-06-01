@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -53,21 +53,21 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var name: String? = null
-        var friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
+        var _name: String? = null
+        var _friendsConnection: TestQuery.Data.Hero.FriendsConnection? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> friendsConnection = FriendsConnection.obj().nullable().fromJson(reader,
+            0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _friendsConnection = FriendsConnection.obj().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Hero(
-          name = name,
-          friendsConnection = friendsConnection
+          name = _name,
+          friendsConnection = _friendsConnection
         )
       }
 
@@ -89,17 +89,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.FriendsConnection {
-          var totalCount: Int? = null
+          var _totalCount: Int? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.FriendsConnection(
-            totalCount = totalCount
+            totalCount = _totalCount
           )
         }
 
