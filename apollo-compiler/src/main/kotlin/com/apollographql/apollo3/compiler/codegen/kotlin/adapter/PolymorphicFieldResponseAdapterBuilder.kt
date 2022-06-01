@@ -89,9 +89,10 @@ class PolymorphicFieldResponseAdapterBuilder(
   private fun readFromResponseCodeBlock(): CodeBlock {
     val builder = CodeBlock.builder()
 
-    builder.add(typenameFromReaderCodeBlock())
+    builder.add(typenameFromReaderCodeBlock(context))
 
-    builder.beginControlFlow("return·when($__typename) {")
+    val typeName = context.layout.escapedVariableName(__typename)
+    builder.beginControlFlow("return·when($typeName) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       if (!model.isFallback) {
         model.possibleTypes.forEach { possibleType ->
@@ -101,7 +102,7 @@ class PolymorphicFieldResponseAdapterBuilder(
         builder.addStatement("else")
       }
       builder.addStatement(
-          "-> %T.$fromJson($reader, $customScalarAdapters, $__typename)",
+          "-> %T.$fromJson($reader, $customScalarAdapters, $typeName)",
           ClassName.from(path + model.modelName),
       )
     }

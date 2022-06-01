@@ -87,7 +87,9 @@ abstract class CodegenLayout(
 
   // variables keep the same case as their declared name
   internal fun variableName(name: String) = regularIdentifier(name)
+  internal fun escapedVariableName(name: String) = regularIdentifier("_$name")
   internal fun propertyName(name: String) = regularIdentifier(name)
+  internal fun escapedPropertyName(name: String) = regularIdentifier("_$name")
 
   // ------------------------ Helpers ---------------------------------
 

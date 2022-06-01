@@ -1,4 +1,5 @@
 @file:JvmName("ApolloParser")
+
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
@@ -28,7 +29,7 @@ fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocume
 @ApolloExperimental
 fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = null): List<GQLDefinition> = parseAsGQLDocument(filePath)
     .valueAssertNoErrors()
-    .validateAsExecutable(schema)
+    .validateAsExecutable(schema, allowCapitalizedFieldNames = true)
     .valueAssertNoErrors()
 
 /**
@@ -96,9 +97,9 @@ fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
  * @return  a [GQLResult] containing the operation and fragment definitions in 'value', along with any potential issues
  */
 @ApolloExperimental
-fun GQLDocument.validateAsExecutable(schema: Schema): GQLResult<List<GQLDefinition>> {
+fun GQLDocument.validateAsExecutable(schema: Schema, allowCapitalizedFieldNames: Boolean): GQLResult<List<GQLDefinition>> {
   val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-  val issues = ExecutableValidationScope(schema, fragments).validate(this)
+  val issues = ExecutableValidationScope(schema, fragments, allowCapitalizedFieldNames).validate(this)
   return GQLResult(definitions, issues)
 }
 
@@ -109,6 +110,6 @@ fun GQLDocument.validateAsExecutable(schema: Schema): GQLResult<List<GQLDefiniti
 fun GQLFragmentDefinition.inferVariables(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableValidationScope(schema, fragments).inferFragmentVariables(this)
+) = ExecutableValidationScope(schema, fragments, true).inferFragmentVariables(this)
 
 

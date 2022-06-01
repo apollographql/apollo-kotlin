@@ -34,7 +34,6 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.findExperimentalReason
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.responseName
@@ -48,6 +47,7 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 internal class ExecutableValidationScope(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    private val allowCapitalizedFieldNames: Boolean,
 ) : ValidationScope, VariableReferencesScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
@@ -135,20 +135,22 @@ internal class ExecutableValidationScope(
       return
     }
 
-    if (alias != null) {
-      if (isFirstLetterUpperCase(alias)) {
-        issues.add(Issue.UpperCaseField(message = """
+    if (!allowCapitalizedFieldNames) {
+      if (alias != null) {
+        if (isFirstLetterUpperCase(alias)) {
+          issues.add(Issue.UpperCaseField(message = """
                       Capitalized alias '$alias' is not supported as it causes name clashes with the generated models. Use '${decapitalizeFirstLetter(alias)}' instead.
+                    """.trimIndent(),
+              sourceLocation = sourceLocation)
+          )
+        }
+      } else if (isFirstLetterUpperCase(name)) {
+        issues.add(Issue.UpperCaseField(message = """
+                      Capitalized field '$name' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.
                     """.trimIndent(),
             sourceLocation = sourceLocation)
         )
       }
-    } else if (isFirstLetterUpperCase(name)) {
-      issues.add(Issue.UpperCaseField(message = """
-                      Capitalized field '$name' is not supported as it causes name clashes with the generated models. Use an alias instead.
-                    """.trimIndent(),
-          sourceLocation = sourceLocation)
-      )
     }
 
     if (fieldDefinition.directives.findDeprecationReason() != null) {

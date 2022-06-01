@@ -68,7 +68,8 @@ class CompiledSelectionsBuilder(
   }
 
   private fun List<GQLSelection>.walk(name: String, private: Boolean, parentType: String): List<FieldSpec> {
-    val propertyName = resolveNameClashes(usedNames, context.layout.propertyName(name))
+    val maybeEscapedName = if (private) context.layout.escapedPropertyName(name) else context.layout.propertyName(name)
+    val propertyName = resolveNameClashes(usedNames, maybeEscapedName)
 
     val results = mapNotNull { it.walk(true, parentType) }
 

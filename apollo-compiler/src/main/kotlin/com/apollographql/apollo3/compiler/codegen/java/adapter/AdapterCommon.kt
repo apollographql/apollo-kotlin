@@ -55,9 +55,9 @@ internal fun responseNamesFieldSpec(model: IrModel): FieldSpec? {
       .build()
 }
 
-private fun javaTypenameFromReaderCodeBlock(): CodeBlock {
+private fun javaTypenameFromReaderCodeBlock(context: JavaContext): CodeBlock {
   return CodeBlock.builder()
-      .add("String $__typename = $T.readTypename($reader);\n", JavaClassNames.JsonReaders)
+      .add("String ${context.layout.escapedVariableName(__typename)} = $T.readTypename($reader);\n", JavaClassNames.JsonReaders)
       .build()
 }
 
@@ -77,7 +77,7 @@ internal fun readFromResponseCodeBlock(
     CodeBlock.of(
         "$T $L = $L;",
         context.resolver.resolveIrType(property.info.type),
-        context.layout.variableName(property.info.responseName),
+        context.layout.escapedVariableName(property.info.responseName),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -101,7 +101,7 @@ internal fun readFromResponseCodeBlock(
               CodeBlock.of(
                   "case $L: $L = $L.$fromJson($reader, $customScalarAdapters); break;",
                   index,
-                  context.layout.variableName(property.info.responseName),
+                  context.layout.escapedVariableName(property.info.responseName),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
               )
             }.joinToCode(separator = "\n", suffix = "\n")
@@ -116,6 +116,8 @@ internal fun readFromResponseCodeBlock(
 
   val checkedProperties = mutableSetOf<String>()
 
+  val typeName = context.layout.escapedVariableName(__typename)
+
   /**
    * Read the synthetic properties
    */
@@ -127,9 +129,9 @@ internal fun readFromResponseCodeBlock(
           if (regularProperties.none { it.info.responseName == "__typename" }) {
             // We are in a nested fragment that needs access to __typename, get it from the buffered reader
             add("$reader.rewind();\n")
-            add(javaTypenameFromReaderCodeBlock())
+            add(javaTypenameFromReaderCodeBlock(context))
           } else {
-            add("$T.checkFieldNotMissing($__typename, $S);", JavaClassNames.Assertions, __typename)
+            add("$T.checkFieldNotMissing($typeName, $S);", JavaClassNames.Assertions, __typename)
           }
         }.build()
   } else {
@@ -143,15 +145,15 @@ internal fun readFromResponseCodeBlock(
             add(
                 "$T $L = null;\n",
                 context.resolver.resolveIrType(property.info.type),
-                context.layout.variableName(property.info.responseName),
+                context.layout.escapedVariableName(property.info.responseName),
             )
-            val pathLiteral = if(path.isNotEmpty()) {
+            val pathLiteral = if (path.isNotEmpty()) {
               __path
             } else {
               "null"
             }
             beginControlFlow(
-                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $pathLiteral))",
+                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $typeName, $customScalarAdapters.getAdapterContext(), $pathLiteral))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )
@@ -165,7 +167,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "$L = $L.INSTANCE.$fromJson($reader, $customScalarAdapters);\n",
-                context.layout.variableName(property.info.responseName),
+                context.layout.escapedVariableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath())
             )
         )
@@ -187,7 +189,7 @@ internal fun readFromResponseCodeBlock(
             CodeBlock.of(
                 "$T.checkFieldNotMissing($L, $S);\n",
                 JavaClassNames.Assertions,
-                context.layout.variableName(property.info.responseName),
+                context.layout.escapedVariableName(property.info.responseName),
                 property.info.responseName
             )
           }.joinToCode("")
@@ -198,7 +200,7 @@ internal fun readFromResponseCodeBlock(
       .indent()
       .add(
           visibleProperties.map { property ->
-            CodeBlock.of(L, context.layout.variableName(property.info.responseName))
+            CodeBlock.of(L, context.layout.escapedVariableName(property.info.responseName))
           }.joinToCode(separator = ",\n", suffix = "\n")
       )
       .unindent()

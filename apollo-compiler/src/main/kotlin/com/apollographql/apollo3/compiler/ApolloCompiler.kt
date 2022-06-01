@@ -83,7 +83,7 @@ object ApolloCompiler {
     val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
         filePath = null
-    ).validateAsExecutable(options.schema)
+    ).validateAsExecutable(options.schema, allowCapitalizedFieldNames = options.flattenModels)
 
     validationResult.issues.checkNoErrors()
 

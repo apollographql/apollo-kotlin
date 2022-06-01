@@ -317,7 +317,7 @@ class CodegenTest {
 
       val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
-      val flattenModels = when (targetLanguage) {
+      val flattenModels = folder.name == "capitalized_fields" || when (targetLanguage) {
         JAVA -> true
         else -> {
           @Suppress("DEPRECATION")
