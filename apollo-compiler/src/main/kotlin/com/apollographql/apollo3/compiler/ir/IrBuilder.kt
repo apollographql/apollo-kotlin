@@ -44,6 +44,7 @@ import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findExperimentalReason
 import com.apollographql.apollo3.ast.findNonnull
+import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.isApollo
 import com.apollographql.apollo3.ast.isFieldNonNull
@@ -80,7 +81,8 @@ internal class IrBuilder(
 
   private val builder = when (codegenModels) {
     @Suppress("DEPRECATION")
-    MODELS_COMPAT -> OperationBasedModelGroupBuilder(
+    MODELS_COMPAT,
+    -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
@@ -269,6 +271,7 @@ internal class IrBuilder(
   private fun GQLEnumValueDefinition.toIr(): IrEnum.Value {
     return IrEnum.Value(
         name = name,
+        targetName = directives.findTargetName() ?: name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
         experimentalReason = directives.findExperimentalReason(),

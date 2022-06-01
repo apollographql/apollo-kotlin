@@ -24,3 +24,8 @@ directive @fieldPolicy(forField: String!, keyArgs: String!) repeatable on OBJECT
 directive @experimental(
   reason: String! = "Experimental"
 ) on FIELD_DEFINITION | ARGUMENT_DEFINITION | INPUT_FIELD_DEFINITION | ENUM_VALUE
+
+# Use the specified name for the enum value in the generated code.
+# Use this for instance when the name would clash with a reserved keyword or field in the generated code.
+# This directive is experimental.
+directive @experimental_targetName(name: String!) on ENUM_VALUE

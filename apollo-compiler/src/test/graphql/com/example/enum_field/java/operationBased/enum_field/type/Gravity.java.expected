@@ -23,6 +23,8 @@ public class Gravity {
 
   public static Gravity is = new Gravity("is");
 
+  public static Gravity type_ = new Gravity("type");
+
   public String rawValue;
 
   public Gravity(String rawValue) {
@@ -36,6 +38,7 @@ public class Gravity {
       case "BOTTOM": return Gravity.BOTTOM;
       case "bottom": return Gravity.bottom;
       case "is": return Gravity.is;
+      case "type": return Gravity.type_;
       default: return new Gravity.UNKNOWN__(rawValue);
     }
   }

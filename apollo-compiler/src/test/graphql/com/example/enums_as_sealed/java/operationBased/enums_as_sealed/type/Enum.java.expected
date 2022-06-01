@@ -21,6 +21,8 @@ public class Enum {
 
   public static Enum SOUTH = new Enum("SOUTH");
 
+  public static Enum type_ = new Enum("type");
+
   public String rawValue;
 
   public Enum(String rawValue) {
@@ -33,6 +35,7 @@ public class Enum {
       case "North": return Enum.North;
       case "NORTH": return Enum.NORTH;
       case "SOUTH": return Enum.SOUTH;
+      case "type": return Enum.type_;
       default: return new Enum.UNKNOWN__(rawValue);
     }
   }

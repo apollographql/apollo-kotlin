@@ -15,7 +15,7 @@ fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_
 // Does nothing. KotlinPoet will add the backticks
 fun String.escapeKotlinReservedWord() = this
 
-fun String.escapeKotlinReservedEnumValueNames() : String {
+fun String.escapeKotlinReservedEnumValueNames(): String {
   return when {
     // https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
     "(?:name|ordinal)_*".toRegex().matches(this) -> "${this}_"
@@ -24,3 +24,5 @@ fun String.escapeKotlinReservedEnumValueNames() : String {
     else -> this
   }
 }
+
+internal fun String.isApolloReservedEnumValueName() = this == "type"

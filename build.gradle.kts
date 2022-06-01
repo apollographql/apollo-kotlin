@@ -203,13 +203,6 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "com.apollographql.apollo3.cache.internal",
       )
   )
-  ignoredProjects.addAll(
-      listOf(
-          "apollo-compiler",
-          "apollo-ast",
-          "apollo-testing-support",
-      )
-  )
   nonPublicMarkers.addAll(
       listOf(
           "com.apollographql.apollo3.annotations.ApolloInternal",

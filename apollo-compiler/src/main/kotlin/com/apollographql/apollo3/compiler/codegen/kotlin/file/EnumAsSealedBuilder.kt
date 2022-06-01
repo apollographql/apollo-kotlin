@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.knownValues
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.deprecatedAnnotation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddExperimental
@@ -76,7 +74,7 @@ class EnumAsSealedBuilder(
   }
 
   private fun IrEnum.Value.toObjectTypeSpec(superClass: TypeName): TypeSpec {
-    return TypeSpec.objectBuilder(layout.enumAsSealedClassValueName(name))
+    return TypeSpec.objectBuilder(layout.enumAsSealedClassValueName(targetName))
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
         .maybeAddExperimental(context.resolver, experimentalReason)
@@ -154,7 +152,7 @@ class EnumAsSealedBuilder(
   }
 
   private fun IrEnum.Value.valueClassName(): ClassName {
-    return ClassName(packageName, simpleName, layout.enumAsSealedClassValueName(name))
+    return ClassName(packageName, simpleName, layout.enumAsSealedClassValueName(targetName))
   }
 
   private fun unknownValueClassName(): ClassName {

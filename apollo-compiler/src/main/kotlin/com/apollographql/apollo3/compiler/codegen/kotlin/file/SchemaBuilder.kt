@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 
+import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -43,7 +44,7 @@ class SchemaBuilder(
     builder.indent()
     builder.add(
         allTypenames.sortedBy { it }.map {
-          CodeBlock.of("%T.type", context.resolver.resolveSchemaType(it))
+          CodeBlock.of("%T.$type", context.resolver.resolveSchemaType(it))
         }.joinToString(", ")
     )
     builder.unindent()

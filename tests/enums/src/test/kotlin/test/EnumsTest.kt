@@ -14,6 +14,7 @@ class EnumsTest {
     assertEquals(Direction.UNKNOWN__, Direction.safeValueOf("newDirection"))
     assertEquals(Direction.name_, Direction.safeValueOf("name"))
     assertEquals(Direction.ordinal_, Direction.safeValueOf("ordinal"))
+    assertEquals(Direction.type_, Direction.safeValueOf("type"))
   }
 
   @Test
@@ -23,6 +24,7 @@ class EnumsTest {
     assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
+    assertEquals(Gravity.type_, Gravity.safeValueOf("type"))
   }
 
   @Test
@@ -45,6 +47,7 @@ class EnumsTest {
             Gravity.RIGHT,
             Gravity.name,
             Gravity.ordinal,
+            Gravity.type_,
         ).toList(),
         Gravity.knownValues().toList()
     )

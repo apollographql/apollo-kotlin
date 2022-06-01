@@ -1,0 +1,11 @@
+type Query {
+  enum: Enum
+}
+
+enum Enum {
+  type
+}
+
+enum Enum2 {
+  type @experimental_targetName(name: "type")
+}

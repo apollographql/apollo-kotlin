@@ -1,0 +1,5 @@
+ERROR: ReservedEnumValueName (6:2)
+'type' is a reserved enum value name, please use the @experimental_targetName directive to specify a target name
+------------
+ERROR: ReservedEnumValueName (10:2)
+'type' is a reserved enum value name, please use a different name

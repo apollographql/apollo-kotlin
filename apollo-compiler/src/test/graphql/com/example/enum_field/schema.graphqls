@@ -9,6 +9,9 @@ enum Gravity {
   # like BOTTOM but with different case instead
   bottom @deprecated(reason: "use BOTTOM instead")
 
-  # an enum that clashes with a Kotlin reserved keyword
+  # a name that clashes with a Kotlin reserved keyword
   is
+
+  # a name that clashes with the generated `type` constant
+  type @experimental_targetName(name: "type_")
 }

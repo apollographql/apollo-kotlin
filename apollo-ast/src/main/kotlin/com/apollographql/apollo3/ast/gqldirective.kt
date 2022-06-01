@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloInternal
+
 fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "deprecated" }
     ?.let {
       it.arguments
@@ -29,6 +31,22 @@ fun List<GQLDirective>.findExperimentalReason() = firstOrNull { it.name == "expe
           }
           ?: "Experimental"
     }
+
+@ApolloInternal
+fun List<GQLDirective>.findTargetName() = firstOrNull { it.name == "experimental_targetName" }
+    ?.let {
+      it.arguments
+          ?.arguments
+          ?.firstOrNull { it.name == "name" }
+          ?.value
+          ?.let { value ->
+            if (value !is GQLStringValue) {
+              throw ConversionException("name must be a string", it.sourceLocation)
+            }
+            value.value
+          }
+    }
+
 
 /**
  * @return `true` or `false` based on the `if` argument if the `optional` directive is present, `null` otherwise
