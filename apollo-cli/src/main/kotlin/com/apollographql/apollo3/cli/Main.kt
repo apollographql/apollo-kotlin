@@ -5,7 +5,7 @@ import com.github.ajalt.clikt.core.subcommands
 
 private class MainCommand: CliktCommand() {
   override fun run() {
-    println("apollo-cli is experimental and might change in backward incomapatible ways")
+    println("apollo-cli is experimental and might change in backward incompatible ways")
   }
 }
 
