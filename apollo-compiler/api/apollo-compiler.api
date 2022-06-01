@@ -1,0 +1,2033 @@
+public abstract interface class com/apollographql/apollo3/compiler/AdapterInitializer {
+}
+
+public final class com/apollographql/apollo3/compiler/AdapterInitializerJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/AdapterInitializer;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/AdapterInitializer;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/ApolloCompiler$Logger {
+	public abstract fun warning (Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/compiler/ApolloMetadata {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/ApolloMetadata$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/CommonMetadata;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ApolloMetadata;Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCommonMetadata ()Lcom/apollographql/apollo3/compiler/CommonMetadata;
+	public final fun getCompilerMetadata ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public final fun getModuleName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun writeTo (Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo3/compiler/ApolloMetadata$Companion {
+	public final fun readFrom (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+}
+
+public final class com/apollographql/apollo3/compiler/ApolloMetadataJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ApolloMetadata;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/CheckNoApolloReservedEnumValueNamesKt {
+}
+
+public final class com/apollographql/apollo3/compiler/CommonMetadata {
+	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/ast/Schema;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Map;
+	public final fun copy (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Lcom/apollographql/apollo3/compiler/CommonMetadata;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CommonMetadata;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCodegenModels ()Ljava/lang/String;
+	public final fun getPluginVersion ()Ljava/lang/String;
+	public final fun getScalarMapping ()Ljava/util/Map;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public final fun getSchemaPackageName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/CommonMetadataJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/CommonMetadata;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/CommonMetadata;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/CompilerMetadata {
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
+	public final fun copy (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFragments ()Ljava/util/List;
+	public final fun getResolverInfo ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/CompilerMetadataJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/CompilerMetadata;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getExpression ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializerJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/IncomingOptions {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/IncomingOptions$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getCodegenModels ()Ljava/lang/String;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public final fun getSchemaPackageName ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/IncomingOptions$Companion {
+	public final fun resolveSchema (Ljava/util/Collection;Ljava/util/List;)Lkotlin/Pair;
+}
+
+public final class com/apollographql/apollo3/compiler/MoshiKt {
+	public static final fun getMOSHI ()Lcom/squareup/moshi/Moshi;
+}
+
+public final class com/apollographql/apollo3/compiler/NameTable {
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public final fun getNameToClassName ()Ljava/util/Map;
+	public final fun getNameToFileName ()Ljava/util/Map;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/OperationIdGenerator {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/OperationIdGenerator$Companion;
+	public abstract fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun getVersion ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/OperationIdGenerator$Companion {
+}
+
+public final class com/apollographql/apollo3/compiler/OperationIdGenerator$Sha256 : com/apollographql/apollo3/compiler/OperationIdGenerator {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/OperationIdGenerator$Sha256;
+	public fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun getVersion ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/OperationOutputGenerator {
+	public abstract fun generate (Ljava/util/Collection;)Ljava/util/Map;
+	public abstract fun getVersion ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/OperationOutputGenerator$Default : com/apollographql/apollo3/compiler/OperationOutputGenerator {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/OperationIdGenerator;)V
+	public fun generate (Ljava/util/Collection;)Ljava/util/Map;
+	public fun getVersion ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/Options$Companion {
+	public final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
+	public final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
+	public final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
+	public final fun getDefaultScalarMapping ()Ljava/util/Map;
+	public final fun getDefaultSealedClassesForEnumsMatching ()Ljava/util/List;
+	public final fun getDefaultTargetLanguage ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
+}
+
+public final class com/apollographql/apollo3/compiler/OptionsKt {
+	public static final field ADD_TYPENAME_ALWAYS Ljava/lang/String;
+	public static final field ADD_TYPENAME_IF_ABSTRACT Ljava/lang/String;
+	public static final field ADD_TYPENAME_IF_FRAGMENTS Ljava/lang/String;
+	public static final field ADD_TYPENAME_IF_POLYMORPHIC Ljava/lang/String;
+	public static final field MODELS_COMPAT Ljava/lang/String;
+	public static final field MODELS_OPERATION_BASED Ljava/lang/String;
+	public static final field MODELS_RESPONSE_BASED Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/PackageNameGenerator {
+	public abstract fun getVersion ()Ljava/lang/String;
+	public abstract fun packageName (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/PackageNameGenerator$FilePathAware : com/apollographql/apollo3/compiler/PackageNameGenerator {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/Roots;Ljava/lang/String;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/Roots;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getVersion ()Ljava/lang/String;
+	public fun packageName (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Flat : com/apollographql/apollo3/compiler/PackageNameGenerator {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getPackageName ()Ljava/lang/String;
+	public fun getVersion ()Ljava/lang/String;
+	public fun packageName (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ReservedKeywordsKt {
+	public static final fun escapeJavaReservedWord (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun escapeKotlinReservedEnumValueNames (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun escapeKotlinReservedWord (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/Roots {
+	public fun <init> (Ljava/util/Collection;)V
+	public final fun filePackageName (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/RuntimeAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/RuntimeAdapterInitializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ScalarInfo {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;)V
+	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/AdapterInitializer;
+	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;)Lcom/apollographql/apollo3/compiler/ScalarInfo;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ScalarInfo;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ScalarInfo;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAdapterInitializer ()Lcom/apollographql/apollo3/compiler/AdapterInitializer;
+	public final fun getTargetName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ScalarInfoJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/ScalarInfo;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ScalarInfo;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/StringsKt {
+	public static final fun capitalizeFirstLetter (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun decapitalizeFirstLetter (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/TargetLanguage : java/lang/Enum {
+	public static final field JAVA Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public static final field KOTLIN_1_4 Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public static final field KOTLIN_1_5 Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/TargetLanguage;
+}
+
+public final class com/apollographql/apollo3/compiler/VersionKt {
+	public static final field APOLLO_VERSION Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/compiler/codegen/CodegenLayout {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/CodegenLayout$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZZLkotlin/jvm/functions/Function1;)V
+	public abstract fun escapeReservedWord (Ljava/lang/String;)Ljava/lang/String;
+	public final fun fragmentAdapterPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun fragmentPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun fragmentResponseFieldsPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun operationAdapterPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun operationPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun operationResponseAdapterWrapperName (Lcom/apollographql/apollo3/compiler/ir/IrOperation;)Ljava/lang/String;
+	public final fun operationResponseFieldsPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun operationSelectionsName (Lcom/apollographql/apollo3/compiler/ir/IrOperation;)Ljava/lang/String;
+	public final fun operationTestBuildersPackageName (Ljava/lang/String;)Ljava/lang/String;
+	public final fun operationTestBuildersWrapperName (Lcom/apollographql/apollo3/compiler/ir/IrOperation;)Ljava/lang/String;
+	public final fun operationVariablesAdapterName (Lcom/apollographql/apollo3/compiler/ir/IrOperation;)Ljava/lang/String;
+	protected final fun regularIdentifier (Ljava/lang/String;)Ljava/lang/String;
+	public final fun testBuilder (Ljava/lang/String;)Ljava/lang/String;
+	public final fun typeAdapterPackageName ()Ljava/lang/String;
+	public final fun typePackageName ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/CodegenLayout$Companion {
+	public final fun lowerCamelCaseIgnoringNonLetters (Ljava/util/Collection;)Ljava/lang/String;
+	public final fun modelName (Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;)Ljava/lang/String;
+	public final fun modelName (Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;Ljava/util/Set;Ljava/lang/String;Z)Ljava/lang/String;
+	public final fun upperCamelCaseIgnoringNonLetters (Ljava/util/Collection;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public fun <init> (Ljava/lang/String;[Ljava/lang/String;)V
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSimpleNames ()Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverClassNameJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverEntry {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)V
+	public final fun getClassName ()Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
+	public final fun getKey ()Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverEntryJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverInfo {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun getEntries ()Ljava/util/List;
+	public final fun getMagic ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverInfoJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverKey {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;Ljava/lang/String;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getKind ()Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : java/lang/Enum {
+	public static final field Fragment Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field FragmentSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field FragmentVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field Model Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field ModelAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field Operation Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field OperationSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field OperationVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field SchemaType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field SchemaTypeAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field TestBuilder Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverMemberName {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;Ljava/lang/String;)V
+	public final fun getClassName ()Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/ResolverMemberNameJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverMemberName;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverMemberName;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile {
+	public fun <init> (Ljava/lang/String;Lcom/squareup/javapoet/TypeSpec;)V
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getTypeSpec ()Lcom/squareup/javapoet/TypeSpec;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public abstract fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGen {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/Ir;Ljava/util/List;ZLcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZLjava/util/Map;ZZZLjava/lang/String;ZLjava/util/Map;Ljava/util/Map;)V
+	public final fun write (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGenKt {
+	public static final fun isNotEmpty (Lcom/squareup/javapoet/CodeBlock;)Z
+	public static final fun joinToCode (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/squareup/javapoet/CodeBlock;
+	public static synthetic fun joinToCode$default (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodegenLayout : com/apollographql/apollo3/compiler/codegen/CodegenLayout {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZZLkotlin/jvm/functions/Function1;)V
+	public fun escapeReservedWord (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaContext {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaCodegenLayout;Lcom/apollographql/apollo3/compiler/codegen/java/JavaResolver;)V
+	public final fun getLayout ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaCodegenLayout;
+	public final fun getResolver ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaResolver;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaResolver {
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/java/JavaResolver;Ljava/util/Map;)V
+	public final fun adapterInitializer (Lcom/apollographql/apollo3/compiler/ir/IrType;Z)Lcom/squareup/javapoet/CodeBlock;
+	public final fun canResolveSchemaType (Ljava/lang/String;)Z
+	public final fun entries ()Ljava/util/List;
+	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaResolver;
+	public final fun registerEnumAdapter (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerFragment (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerFragmentSelections (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerFragmentVariablesAdapter (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerInputObjectAdapter (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerModel (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerModelAdapter (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerOperation (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerOperationSelections (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerOperationVariablesAdapter (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun registerSchemaType (Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveCompiledType (Ljava/lang/String;)Lcom/squareup/javapoet/CodeBlock;
+	public final fun resolveFragment (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveFragmentSelections (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveFragmentVariablesAdapter (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveIrType (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/squareup/javapoet/TypeName;
+	public final fun resolveModel (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveModelAdapter (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveOperation (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveOperationSelections (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveOperationVariablesAdapter (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveScalarTaget (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+	public final fun resolveSchemaType (Ljava/lang/String;)Lcom/squareup/javapoet/ClassName;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaResolverKt {
+	public static final fun toJavaPoetClassName (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)Lcom/squareup/javapoet/ClassName;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/adapter/AdapterCommonKt {
+	public static final fun singletonAdapterInitializer (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;Z)Lcom/squareup/javapoet/CodeBlock;
+	public static synthetic fun singletonAdapterInitializer$default (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/adapter/EnumResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrEnum;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getEnum ()Lcom/apollographql/apollo3/compiler/ir/IrEnum;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/adapter/MonomorphicFieldResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/adapter/ResponseAdapterBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrModel;Ljava/util/List;Z)V
+	public fun build ()Ljava/util/List;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getModel ()Lcom/apollographql/apollo3/compiler/ir/IrModel;
+	public final fun getPath ()Ljava/util/List;
+	public final fun getPublic ()Z
+	public fun prepare ()V
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/codegen/java/adapter/ResponseAdapterBuilder {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/java/adapter/ResponseAdapterBuilder$Companion;
+	public abstract fun build ()Ljava/util/List;
+	public abstract fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/adapter/ResponseAdapterBuilder$Companion {
+	public final fun create (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Ljava/util/List;Z)Lcom/apollographql/apollo3/compiler/codegen/java/adapter/ResponseAdapterBuilder;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/CustomScalarBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrCustomScalar;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/EnumBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrEnum;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/ExecutableCommonKt {
+	public static final fun adapterMethodSpec (Lcom/apollographql/apollo3/compiler/codegen/java/JavaResolver;Lcom/apollographql/apollo3/compiler/ir/IrProperty;)Lcom/squareup/javapoet/MethodSpec;
+	public static final fun rootFieldMethodSpec (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Ljava/lang/String;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/MethodSpec;
+	public static final fun serializeVariablesMethodSpec (Lcom/squareup/javapoet/TypeName;Ljava/lang/String;)Lcom/squareup/javapoet/MethodSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/FragmentBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/FragmentDataAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getFlatten ()Z
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/FragmentModelsBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;ZZ)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/FragmentSelectionsBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getAllFragmentDefinitions ()Ljava/util/Map;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/FragmentVariablesAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/InputObjectAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrInputObject;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getInputObject ()Lcom/apollographql/apollo3/compiler/ir/IrInputObject;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSimpleName ()Ljava/lang/String;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/InputObjectBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrInputObject;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getInputObject ()Lcom/apollographql/apollo3/compiler/ir/IrInputObject;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/InterfaceBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrInterface;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/ObjectBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrObject;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/OperationBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Ljava/lang/String;ZLcom/apollographql/apollo3/compiler/ir/IrOperation;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+	public final fun typeSpec ()Lcom/squareup/javapoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/OperationResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrOperation;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getFlatten ()Z
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/OperationSelectionsBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrOperation;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getAllFragmentDefinitions ()Ljava/util/Map;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/OperationVariablesAdapterBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrOperation;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSimpleName ()Ljava/lang/String;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/SchemaBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/file/UnionBuilder : com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrUnion;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/helpers/CollectionsKt {
+	public static final fun toArrayInitializerCodeblock (Ljava/util/List;)Lcom/squareup/javapoet/CodeBlock;
+	public static final fun toListInitializerCodeblock (Ljava/util/List;Z)Lcom/squareup/javapoet/CodeBlock;
+	public static synthetic fun toListInitializerCodeblock$default (Ljava/util/List;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
+	public static final fun toMapInitializerCodeblock (Ljava/util/List;)Lcom/squareup/javapoet/CodeBlock;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataClassKt {
+	public static final fun makeDataClass (Lcom/squareup/javapoet/TypeSpec$Builder;)Lcom/squareup/javapoet/TypeSpec$Builder;
+	public static final fun makeDataClassFromParameters (Lcom/squareup/javapoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/javapoet/TypeSpec$Builder;
+	public static final fun makeDataClassFromProperties (Lcom/squareup/javapoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/javapoet/TypeSpec$Builder;
+	public static final fun withEqualsImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
+	public static final fun withHashCodeImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
+	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/helpers/NamedType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getGraphQlName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/helpers/NamedTypeKt {
+	public static final fun toNamedType (Lcom/apollographql/apollo3/compiler/ir/IrInputField;)Lcom/apollographql/apollo3/compiler/codegen/java/helpers/NamedType;
+	public static final fun toNamedType (Lcom/apollographql/apollo3/compiler/ir/IrVariable;)Lcom/apollographql/apollo3/compiler/codegen/java/helpers/NamedType;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/model/ModelBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Lcom/apollographql/apollo3/compiler/ir/IrModel;Lcom/squareup/javapoet/ClassName;Ljava/util/List;)V
+	public final fun build ()Lcom/squareup/javapoet/TypeSpec;
+	public final fun prepare ()V
+	public final fun typeSpec (Lcom/apollographql/apollo3/compiler/ir/IrModel;)Lcom/squareup/javapoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/selections/CompiledSelectionsBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/java/JavaContext;Ljava/util/Map;Lcom/apollographql/apollo3/ast/Schema;)V
+	public final fun build (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/squareup/javapoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/selections/CompiledSelectionsBuilder$SelectionResult {
+	public fun <init> (Lcom/squareup/javapoet/CodeBlock;Ljava/util/List;)V
+	public final fun getInitializer ()Lcom/squareup/javapoet/CodeBlock;
+	public final fun getNestedFieldSpecs ()Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/CgFile {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getFileName ()Ljava/lang/String;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getTypeSpecs ()Ljava/util/List;
+	public final fun isTest ()Z
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public abstract fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodeGen {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/Ir;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZLjava/util/Map;ZZZZLjava/lang/String;ZZLjava/util/List;Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/Map;Ljava/util/Map;ZLjava/lang/String;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/ir/Ir;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZLjava/util/Map;ZZZZLjava/lang/String;ZZLjava/util/List;Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/Map;Ljava/util/Map;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun write (Ljava/io/File;Ljava/io/File;)Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodegenLayout : com/apollographql/apollo3/compiler/codegen/CodegenLayout {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZZLkotlin/jvm/functions/Function1;)V
+	public fun escapeReservedWord (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodegenLayout;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Lcom/apollographql/apollo3/compiler/TargetLanguage;)V
+	public final fun getLayout ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodegenLayout;
+	public final fun getResolver ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
+	public final fun getTargetLanguageVersion ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public final fun isTargetLanguageVersionAtLeast (Lcom/apollographql/apollo3/compiler/TargetLanguage;)Z
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames;
+	public final fun getObj ()Lcom/squareup/kotlinpoet/MemberName;
+	public final fun getReadTypename ()Lcom/squareup/kotlinpoet/MemberName;
+	public final fun getWithTestResolver ()Lcom/squareup/kotlinpoet/MemberName;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;)V
+	public final fun adapterInitializer (Lcom/apollographql/apollo3/compiler/ir/IrType;Z)Lcom/squareup/kotlinpoet/CodeBlock;
+	public final fun canResolveSchemaType (Ljava/lang/String;)Z
+	public final fun entries ()Ljava/util/List;
+	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
+	public final fun registerEnumAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerFragment (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerFragmentSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerFragmentVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerInputObjectAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerModel (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerModelAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerOperation (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerOperationSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerOperationVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerSchemaType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerTestBuilder (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveCompiledType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/CodeBlock;
+	public final fun resolveExperimentalAnnotation ()Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveFragment (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveFragmentSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveFragmentVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveIrType (Lcom/apollographql/apollo3/compiler/ir/IrType;Lkotlin/jvm/functions/Function1;)Lcom/squareup/kotlinpoet/TypeName;
+	public static synthetic fun resolveIrType$default (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Lcom/apollographql/apollo3/compiler/ir/IrType;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/squareup/kotlinpoet/TypeName;
+	public final fun resolveModel (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveModelAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveOperation (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveOperationSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveOperationVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveSchemaType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveTestBuilder (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinSymbolsKt {
+	public static final fun toKotlinPoetClassName (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)Lcom/squareup/kotlinpoet/ClassName;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/adapter/ImplementationAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/adapter/ResponseAdapterBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrModel;Ljava/util/List;ZZ)V
+	public fun build ()Ljava/util/List;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/adapter/PolymorphicFieldResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/adapter/ResponseAdapterBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Ljava/util/List;Z)V
+	public fun build ()Ljava/util/List;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getModelGroup ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun getPath ()Ljava/util/List;
+	public final fun getPublic ()Z
+	public fun prepare ()V
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/codegen/kotlin/adapter/ResponseAdapterBuilder {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/kotlin/adapter/ResponseAdapterBuilder$Companion;
+	public abstract fun build ()Ljava/util/List;
+	public abstract fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/adapter/ResponseAdapterBuilder$Companion {
+	public final fun create (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Ljava/util/List;Z)Lcom/apollographql/apollo3/compiler/codegen/kotlin/adapter/ResponseAdapterBuilder;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/CustomScalarBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrCustomScalar;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/EnumAsEnumBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrEnum;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun className ()Lcom/squareup/kotlinpoet/TypeName;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/EnumAsSealedBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrEnum;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun className ()Lcom/squareup/kotlinpoet/TypeName;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/EnumResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrEnum;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getEnum ()Lcom/apollographql/apollo3/compiler/ir/IrEnum;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/ExecutableCommonKt {
+	public static final fun adapterFunSpec (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Lcom/apollographql/apollo3/compiler/ir/IrProperty;)Lcom/squareup/kotlinpoet/FunSpec;
+	public static final fun maybeAddFilterNotNull (Lcom/squareup/kotlinpoet/TypeSpec;Z)Lcom/squareup/kotlinpoet/TypeSpec;
+	public static final fun rootFieldFunSpec (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/FunSpec;
+	public static final fun serializeVariablesFunSpec (Lcom/squareup/kotlinpoet/TypeName;Ljava/lang/String;)Lcom/squareup/kotlinpoet/FunSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/FragmentBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;ZLcom/apollographql/apollo3/compiler/ir/IrNamedFragment;ZZ)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/FragmentModelsBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;ZZ)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/FragmentResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getFlatten ()Z
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/FragmentSelectionsBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getAllFragmentDefinitions ()Ljava/util/Map;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/FragmentVariablesAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getFragment ()Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/InputObjectAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrInputObject;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getInputObject ()Lcom/apollographql/apollo3/compiler/ir/IrInputObject;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSimpleName ()Ljava/lang/String;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/InputObjectBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrInputObject;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getInputObject ()Lcom/apollographql/apollo3/compiler/ir/IrInputObject;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/InterfaceBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrInterface;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/ObjectBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrObject;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/OperationBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;ZLjava/lang/String;ZLcom/apollographql/apollo3/compiler/ir/IrOperation;ZZ)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+	public final fun typeSpec ()Lcom/squareup/kotlinpoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/OperationResponseAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrOperation;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getFlatten ()Z
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/OperationSelectionsBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrOperation;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getAllFragmentDefinitions ()Ljava/util/Map;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/OperationVariablesAdapterBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrOperation;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSimpleName ()Ljava/lang/String;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/SchemaBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/TestBuildersBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrOperation;Z)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public final fun getContext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;
+	public final fun getDataModelGroup ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun getFlatten ()Z
+	public final fun getOperation ()Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/UnionBuilder : com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrUnion;)V
+	public fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
+	public fun prepare ()V
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {
+	public static final fun makeDataClass (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;Z)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
+	public static synthetic fun makeDataClass$default (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;ZILjava/lang/Object;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
+	public static final fun makeDataClassFromProperties (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/NamedType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExperimentalReason ()Ljava/lang/String;
+	public final fun getGraphQlName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/NamedTypeKt {
+	public static final fun toNamedType (Lcom/apollographql/apollo3/compiler/ir/IrInputField;)Lcom/apollographql/apollo3/compiler/codegen/kotlin/helpers/NamedType;
+	public static final fun toNamedType (Lcom/apollographql/apollo3/compiler/ir/IrVariable;)Lcom/apollographql/apollo3/compiler/codegen/kotlin/helpers/NamedType;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/model/ModelBuilder {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Lcom/apollographql/apollo3/compiler/ir/IrModel;Lcom/squareup/kotlinpoet/ClassName;Ljava/util/List;Z)V
+	public final fun build ()Lcom/squareup/kotlinpoet/TypeSpec;
+	public final fun prepare ()V
+	public final fun typeSpec (Lcom/apollographql/apollo3/compiler/ir/IrModel;)Lcom/squareup/kotlinpoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Ljava/util/Map;Lcom/apollographql/apollo3/ast/Schema;)V
+	public final fun build (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/squareup/kotlinpoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder$Companion {
+	public final fun codeBlock (Lcom/apollographql/apollo3/ast/GQLType;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;)Lcom/squareup/kotlinpoet/CodeBlock;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder$SelectionResult {
+	public fun <init> (Lcom/squareup/kotlinpoet/CodeBlock;Ljava/util/List;)V
+	public final fun getInitializer ()Lcom/squareup/kotlinpoet/CodeBlock;
+	public final fun getNestedPropertySpecs ()Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun get__schema ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;
+	public final fun component3 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMutationType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;
+	public final fun getQueryType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;
+	public final fun getSubscriptionType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public final fun getTypes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun component6 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getArgs ()Ljava/util/List;
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
+	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field$Argument {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun component6 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field$Argument;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field$Argument;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field$Argument;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDefaultValue ()Ljava/lang/Object;
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
+	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$InputField {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun component6 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$InputField;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$InputField;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/Object;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$InputField;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDefaultValue ()Ljava/lang/Object;
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
+	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind : java/lang/Enum {
+	public static final field ENUM Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field INPUT_OBJECT Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field INTERFACE Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field LIST Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field NON_NULL Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field OBJECT Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field SCALAR Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static final field UNION Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public abstract fun getDescription ()Ljava/lang/String;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum : com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getEnumValues ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum$Value {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum$Value;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum$Value;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum$Value;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$InputObject : com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$InputObject;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$InputObject;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$InputObject;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getInputFields ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Interface : com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Interface;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Interface;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Interface;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getFields ()Ljava/util/List;
+	public final fun getKind ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public final fun getPossibleTypes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Object : com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Object;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Object;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Object;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getFields ()Ljava/util/List;
+	public final fun getInterfaces ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Scalar : com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Scalar;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Scalar;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Scalar;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDescription ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Union : com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Union;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Union;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Union;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDescription ()Ljava/lang/String;
+	public final fun getFields ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public final fun getPossibleTypes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKind ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Kind;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchemaJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchemaKt {
+	public static final fun normalize (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;
+	public static final fun normalize (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public static final fun toIntrospectionSchema (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public static final fun toIntrospectionSchema (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public static final fun toIntrospectionSchema (Lokio/BufferedSource;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public static synthetic fun toIntrospectionSchema$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_SchemaJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_FieldJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Field_ArgumentJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field$Argument;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Field$Argument;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_InputFieldJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$InputField;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$InputField;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_MutationTypeJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$MutationType;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_QueryTypeJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$QueryType;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_SubscriptionTypeJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$SubscriptionType;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_TypeJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_TypeRefJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$TypeRef;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_EnumJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_Enum_ValueJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum$Value;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Enum$Value;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_InputObjectJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$InputObject;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$InputObject;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_InterfaceJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Interface;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Interface;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_ObjectJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Object;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Object;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_ScalarJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Scalar;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Scalar;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema_Schema_Type_UnionJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Union;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema$Schema$Type$Union;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/Introspection_to_schemaKt {
+	public static synthetic fun toGQLDocument$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
+}
+
+public final class com/apollographql/apollo3/compiler/introspection/Schema_to_introspectionKt {
+	public static final fun toIntrospectionSchema (Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
+	public static final fun toKotlinValue (Lcom/apollographql/apollo3/ast/GQLValue;Z)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/Ir {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/ast/Schema;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component10 ()Lcom/apollographql/apollo3/ast/Schema;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun component6 ()Ljava/util/List;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/compiler/ir/Ir;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/Ir;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/Map;Lcom/apollographql/apollo3/ast/Schema;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/Ir;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAllFragmentDefinitions ()Ljava/util/Map;
+	public final fun getCustomScalars ()Ljava/util/List;
+	public final fun getEnums ()Ljava/util/List;
+	public final fun getFragments ()Ljava/util/List;
+	public final fun getInputObjects ()Ljava/util/List;
+	public final fun getInterfaces ()Ljava/util/List;
+	public final fun getObjects ()Ljava/util/List;
+	public final fun getOperations ()Ljava/util/List;
+	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
+	public final fun getUnions ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/compiler/ir/IrAccessor {
+	public abstract fun getReturnedModelId ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrBooleanValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (Z)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lcom/apollographql/apollo3/compiler/ir/IrBooleanValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrBooleanValue;ZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrBooleanValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrCustomScalar : com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrCustomScalar;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrCustomScalar;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrCustomScalar;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getKotlinName ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrDumperKt {
+	public static final fun dumpTo (Lcom/apollographql/apollo3/compiler/ir/Ir;Ljava/io/File;)V
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrEnum : com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/ir/IrEnum;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrEnum;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrEnum;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDescription ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
+	public final fun getValues ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrEnum$Value {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrEnum$Value;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrEnum$Value;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrEnum$Value;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExperimentalReason ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getTargetName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrEnumType : com/apollographql/apollo3/compiler/ir/IrType, com/apollographql/apollo3/compiler/ir/IrNamedType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrEnumType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrEnumType;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrEnumValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrEnumValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrEnumValue;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrEnumValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFieldInfo {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;Lcom/apollographql/apollo3/ast/GQLType;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun component4 ()Lcom/apollographql/apollo3/ast/GQLType;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;Lcom/apollographql/apollo3/ast/GQLType;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;Lcom/apollographql/apollo3/ast/GQLType;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExperimentalReason ()Ljava/lang/String;
+	public final fun getGqlType ()Lcom/apollographql/apollo3/ast/GQLType;
+	public final fun getResponseName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFloatValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (D)V
+	public final fun component1 ()D
+	public final fun copy (D)Lcom/apollographql/apollo3/compiler/ir/IrFloatValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrFloatValue;DILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrFloatValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrFragmentAccessor : com/apollographql/apollo3/compiler/ir/IrAccessor {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrFragmentAccessor;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrFragmentAccessor;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrFragmentAccessor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFragmentName ()Ljava/lang/String;
+	public fun getReturnedModelId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrInputField {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;Lcom/apollographql/apollo3/compiler/ir/IrValue;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun component6 ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;Lcom/apollographql/apollo3/compiler/ir/IrValue;)Lcom/apollographql/apollo3/compiler/ir/IrInputField;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInputField;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;Lcom/apollographql/apollo3/compiler/ir/IrValue;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInputField;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDefaultValue ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExperimentalReason ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrInputObject : com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/ir/IrInputObject;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInputObject;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInputObject;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getFields ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrInputObjectType : com/apollographql/apollo3/compiler/ir/IrType, com/apollographql/apollo3/compiler/ir/IrNamedType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInputObjectType;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrIntValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lcom/apollographql/apollo3/compiler/ir/IrIntValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrIntValue;IILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrIntValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrInterface : com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/Set;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrInterface;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInterface;Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInterface;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getImplements ()Ljava/util/List;
+	public final fun getKeyFields ()Ljava/util/Set;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrKt {
+	public static final field MODEL_FRAGMENT_DATA Ljava/lang/String;
+	public static final field MODEL_FRAGMENT_INTERFACE Ljava/lang/String;
+	public static final field MODEL_OPERATION_DATA Ljava/lang/String;
+	public static final field MODEL_UNKNOWN Ljava/lang/String;
+	public static final fun isOptional (Lcom/apollographql/apollo3/compiler/ir/IrType;)Z
+	public static final fun makeNonNull (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public static final fun makeNonOptional (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public static final fun makeNullable (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public static final fun makeOptional (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrType;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrListType : com/apollographql/apollo3/compiler/ir/IrType {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrListType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrListType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrListType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun leafType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrListValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lcom/apollographql/apollo3/compiler/ir/IrListValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrListValue;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrListValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValues ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModel {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/List;Ljava/util/Set;Ljava/util/List;Ljava/util/List;Ljava/util/List;ZZ)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Z
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/Set;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/Set;
+	public final fun component6 ()Ljava/util/List;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/List;Ljava/util/Set;Ljava/util/List;Ljava/util/List;Ljava/util/List;ZZ)Lcom/apollographql/apollo3/compiler/ir/IrModel;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrModel;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/List;Ljava/util/Set;Ljava/util/List;Ljava/util/List;Ljava/util/List;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrModel;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccessors ()Ljava/util/List;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getImplements ()Ljava/util/List;
+	public final fun getModelGroups ()Ljava/util/List;
+	public final fun getModelName ()Ljava/lang/String;
+	public final fun getPossibleTypes ()Ljava/util/Set;
+	public final fun getProperties ()Ljava/util/List;
+	public final fun getTypeSet ()Ljava/util/Set;
+	public fun hashCode ()I
+	public final fun isFallback ()Z
+	public final fun isInterface ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModelGroup {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBaseModelId ()Ljava/lang/String;
+	public final fun getModels ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrModelType : com/apollographql/apollo3/compiler/ir/IrType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrModelType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrModelType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrModelType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrNamedFragment {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/util/List;
+	public final fun component7 ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun component8 ()Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public final fun component9 ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;)Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrNamedFragment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataModelGroup ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun getDataProperty ()Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getFilePath ()Ljava/lang/String;
+	public final fun getInterfaceModelGroup ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSelections ()Ljava/util/List;
+	public final fun getTypeCondition ()Ljava/lang/String;
+	public final fun getVariables ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/ir/IrNamedType {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrNonNullType : com/apollographql/apollo3/compiler/ir/IrType {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrNonNullType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun leafType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrNullValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrNullValue;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrObject : com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/Set;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrObject;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObject;Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObject;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getImplements ()Ljava/util/List;
+	public final fun getKeyFields ()Ljava/util/Set;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrObjectValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lcom/apollographql/apollo3/compiler/ir/IrObjectValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObjectValue;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObjectValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFields ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrObjectValue$Field {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrValue;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
+	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrValue;)Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$Field;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$Field;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrValue;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObjectValue$Field;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getValue ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperation {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrOperationType;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public final fun component11 ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/util/List;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrOperationType;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;)Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrOperation;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrOperationType;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrOperation;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataModelGroup ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun getDataProperty ()Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getFilePath ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getOperationType ()Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+	public final fun getResponseBasedDataModelGroup ()Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public final fun getSelections ()Ljava/util/List;
+	public final fun getSourceWithFragments ()Ljava/lang/String;
+	public final fun getTypeCondition ()Ljava/lang/String;
+	public final fun getVariables ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationType : java/lang/Enum {
+	public static final field Mutation Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+	public static final field Query Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+	public static final field Subscription Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/ir/IrOperationType;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOptionalType : com/apollographql/apollo3/compiler/ir/IrType {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrOptionalType;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun leafType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrProperty {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;ZLcom/apollographql/apollo3/api/BooleanExpression;Z)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;
+	public final fun component2 ()Z
+	public final fun component3 ()Lcom/apollographql/apollo3/api/BooleanExpression;
+	public final fun component4 ()Z
+	public final fun copy (Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;ZLcom/apollographql/apollo3/api/BooleanExpression;Z)Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrProperty;Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;ZLcom/apollographql/apollo3/api/BooleanExpression;ZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrProperty;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCondition ()Lcom/apollographql/apollo3/api/BooleanExpression;
+	public final fun getInfo ()Lcom/apollographql/apollo3/compiler/ir/IrFieldInfo;
+	public final fun getOverride ()Z
+	public final fun getRequiresBuffering ()Z
+	public final fun getRequiresTypename ()Z
+	public fun hashCode ()I
+	public final fun isSynthetic ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrScalarType : com/apollographql/apollo3/compiler/ir/IrType, com/apollographql/apollo3/compiler/ir/IrNamedType {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrScalarType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrScalarType;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrStringValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrStringValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrStringValue;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrStringValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrSubtypeAccessor : com/apollographql/apollo3/compiler/ir/IrAccessor {
+	public fun <init> (Ljava/util/Set;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/Set;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrSubtypeAccessor;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrSubtypeAccessor;Ljava/util/Set;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrSubtypeAccessor;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getReturnedModelId ()Ljava/lang/String;
+	public final fun getTypeSet ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/compiler/ir/IrType {
+	public fun leafType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrUnion : com/apollographql/apollo3/compiler/ir/IrSchemaType {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrUnion;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrUnion;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrUnion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDeprecationReason ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getMembers ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/compiler/ir/IrValue {
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrVariable {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrValue;Lcom/apollographql/apollo3/compiler/ir/IrType;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
+	public final fun component3 ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public final fun copy (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrValue;Lcom/apollographql/apollo3/compiler/ir/IrType;)Lcom/apollographql/apollo3/compiler/ir/IrVariable;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrVariable;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrValue;Lcom/apollographql/apollo3/compiler/ir/IrType;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrVariable;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDefaultValue ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrVariableValue : com/apollographql/apollo3/compiler/ir/IrValue {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrVariableValue;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrVariableValue;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrVariableValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/ir/ModelGroupBuilder {
+	public abstract fun buildFragmentData (Ljava/lang/String;)Lkotlin/Pair;
+	public abstract fun buildFragmentInterface (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrModelGroup;
+	public abstract fun buildOperationData (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lkotlin/Pair;
+}
+
+public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSource ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptorJsonAdapter : com/squareup/moshi/JsonAdapter {
+	public fun <init> (Lcom/squareup/moshi/Moshi;)V
+	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/operationoutput/OperationDescriptor;
+	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
+	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/operationoutput/OperationDescriptor;)V
+	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/operationoutput/OperationOutputKt {
+	public static final fun findOperationId (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
+}
+

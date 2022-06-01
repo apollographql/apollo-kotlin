@@ -1,0 +1,31 @@
+public final class com/apollographql/apollo3/testing/-FileSystemCommon {
+	public static final fun checkFile (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun pathToJsonReader (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonReader;
+	public static final fun pathToUtf8 (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/testing/ChannelsKt {
+	public static synthetic fun receiveOrTimeout$default (Lkotlinx/coroutines/channels/Channel;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/apollographql/apollo3/testing/MockserverKt {
+	public static final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;J)V
+	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JILjava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo3/testing/ReadFileJvmKt {
+	public static final fun getHostFileSystem ()Lokio/FileSystem;
+	public static final fun getTestsPath ()Ljava/lang/String;
+	public static final fun shouldUpdateTestFixtures ()Z
+}
+
+public final class com/apollographql/apollo3/testing/RunWithMainLoopJvmKt {
+	public static final fun runTest (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun runTest$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo3/testing/TestNetworkTransportKt {
+	public static synthetic fun enqueueTestResponse$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;ILjava/lang/Object;)V
+	public static synthetic fun registerTestResponse$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;ILjava/lang/Object;)V
+}
+

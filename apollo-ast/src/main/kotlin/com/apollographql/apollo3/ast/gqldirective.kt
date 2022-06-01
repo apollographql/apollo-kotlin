@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloInternal
+
 fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "deprecated" }
     ?.let {
       it.arguments
@@ -30,6 +32,7 @@ fun List<GQLDirective>.findExperimentalReason() = firstOrNull { it.name == "expe
           ?: "Experimental"
     }
 
+@ApolloInternal
 fun List<GQLDirective>.findTargetName() = firstOrNull { it.name == "experimental_targetName" }
     ?.let {
       it.arguments
