@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
@@ -24,6 +25,7 @@ internal fun String.getGraph(): String? {
   return split(":")[1]
 }
 
+@ApolloExperimental
 object SchemaDownloader {
   /**
    * Main entry point for downloading a schema either from introspection or from the Apollo Studio registry

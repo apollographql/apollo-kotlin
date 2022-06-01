@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDefinition
@@ -162,6 +163,7 @@ private fun GQLNode.sort(): GQLNode {
   }.copyWithSortedChildren()
 }
 
+@ApolloExperimental
 object RegisterOperations {
   private val mutation = """
       mutation RegisterOperations(
