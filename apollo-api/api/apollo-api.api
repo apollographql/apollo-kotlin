@@ -802,7 +802,6 @@ public final class com/apollographql/apollo3/api/http/HttpHeaders {
 }
 
 public final class com/apollographql/apollo3/api/http/HttpKt {
-	public static final fun get (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/http/HttpMethod : java/lang/Enum {

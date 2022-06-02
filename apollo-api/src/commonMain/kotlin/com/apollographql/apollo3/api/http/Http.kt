@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.Buffer
 import okio.BufferedSink
 import okio.BufferedSource
@@ -34,6 +35,7 @@ data class HttpHeader(val name: String, val value: String)
  *
  * The header name matching is case insensitive
  */
+@ApolloExperimental
 fun List<HttpHeader>.get(name: String): String? {
   return singleOrNull { it.name.lowercase() == name.lowercase() }?.value?.trim()
 }
