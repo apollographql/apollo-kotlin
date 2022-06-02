@@ -52,7 +52,7 @@ internal fun readFromResponseCodeBlock(
 
     CodeBlock.of(
         "var·%N:·%T·=·%L",
-        context.layout.escapedVariableName(property.info.responseName),
+        property.responseName(context),
         context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
         variableInitializer
     )
@@ -76,7 +76,7 @@ internal fun readFromResponseCodeBlock(
               CodeBlock.of(
                   "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
                   index,
-                  context.layout.escapedVariableName(property.info.responseName),
+                  property.responseName(context),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
               )
             }.joinToCode(separator = "\n", suffix = "\n")
@@ -92,8 +92,6 @@ internal fun readFromResponseCodeBlock(
   val checkedProperties = mutableSetOf<String>()
 
 
-  val typeName = context.layout.escapedVariableName(__typename)
-
   /**
    * Read the synthetic properties
    */
@@ -105,9 +103,9 @@ internal fun readFromResponseCodeBlock(
           if (regularProperties.none { it.info.responseName == "__typename" }) {
             // We are in a nested fragment that needs access to __typename, get it from the buffered reader
             add("$reader.rewind()\n")
-            add(typenameFromReaderCodeBlock(context))
+            add(typenameFromReaderCodeBlock())
           } else {
-            beginControlFlow("check(${typeName}·!=·null)")
+            beginControlFlow("check($__typename·!=·null)")
             add("%S\n", "__typename was not found")
             endControlFlow()
           }
@@ -123,15 +121,15 @@ internal fun readFromResponseCodeBlock(
           if (property.condition != BooleanExpression.True) {
             add(
                 "var·%N:·%T·=·null\n",
-                context.layout.escapedVariableName(property.info.responseName),
+                property.responseName(context),
                 context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
             )
             val typenameLiteral = if (property.requiresTypename) {
-              typeName
+              __typename
             } else {
               "null"
             }
-            val pathLiteral = if(path.isNotEmpty()) {
+            val pathLiteral = if (path.isNotEmpty()) {
               __path
             } else {
               "null"
@@ -147,7 +145,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
-                context.layout.escapedVariableName(property.info.responseName),
+                property.responseName(context),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
         )
@@ -173,7 +171,7 @@ internal fun readFromResponseCodeBlock(
         CodeBlock.of(
             "%N·=·%N%L",
             context.layout.propertyName(property.info.responseName),
-            context.layout.escapedVariableName(property.info.responseName),
+            property.responseName(context),
             maybeAssertNotNull
         )
       }.joinToCode(separator = ",\n", suffix = "\n"))
@@ -196,9 +194,14 @@ internal fun readFromResponseCodeBlock(
       .build()
 }
 
-internal fun typenameFromReaderCodeBlock(context: KotlinContext): CodeBlock {
+private fun IrProperty.responseName(context: KotlinContext): String {
+  val responseName = info.responseName
+  return if (responseName == "__typename") responseName else context.layout.variableName(responseName)
+}
+
+internal fun typenameFromReaderCodeBlock(): CodeBlock {
   return CodeBlock.builder().apply {
-    add("val ${context.layout.escapedVariableName(__typename)} = ${reader}.%M()\n", KotlinMemberNames.readTypename)
+    add("val $__typename = ${reader}.%M()\n", KotlinMemberNames.readTypename)
   }.build()
 }
 
