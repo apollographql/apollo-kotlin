@@ -28,39 +28,39 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_with_inline_fragment.fragment.HeroDetails {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _name: String? = null
       var _friendsConnection: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(___typename != null) {
+      check(__typename != null) {
         "__typename was not found"
       }
 
       var _onDroid: com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.fromJson(reader,
             customScalarAdapters)
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.fragment_with_inline_fragment.fragment.HeroDetails(
-        __typename = ___typename,
+        __typename = __typename,
         name = _name!!,
         friendsConnection = _friendsConnection!!,
         onDroid = _onDroid,
@@ -200,11 +200,11 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -214,7 +214,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             customScalarAdapters)
 
         return com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           droidDetails = _droidDetails
         )
       }

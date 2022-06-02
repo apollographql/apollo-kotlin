@@ -76,7 +76,7 @@ public class HeroDetailsImpl implements Fragment<HeroDetails> {
       "data",
       Character.type
     )
-    .selections(HeroDetailsSelections.root)
+    .selections(HeroDetailsSelections.__root)
     .build();
   }
 }

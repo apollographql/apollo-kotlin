@@ -38,7 +38,7 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
     name = "data",
     type = Human.type
   )
-  .selections(selections = HumanDetailsSelections.root)
+  .selections(selections = HumanDetailsSelections.__root)
   .build()
 
   public data class Data(

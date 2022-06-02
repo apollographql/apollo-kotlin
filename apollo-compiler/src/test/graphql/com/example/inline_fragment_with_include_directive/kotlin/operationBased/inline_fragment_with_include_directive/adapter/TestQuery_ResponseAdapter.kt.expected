@@ -57,30 +57,30 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var ___typename: String? = null
+        var __typename: String? = null
         var _id: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (and(possibleTypes("Human"),and(variable("withDetails"),not(variable("skipHumanDetails")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onHuman = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (and(possibleTypes("Droid"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onDroid = com.example.inline_fragment_with_include_directive.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
@@ -94,7 +94,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.Hero(
-          __typename = ___typename,
+          __typename = __typename,
           id = _id!!,
           onHuman = _onHuman,
           onDroid = _onDroid,

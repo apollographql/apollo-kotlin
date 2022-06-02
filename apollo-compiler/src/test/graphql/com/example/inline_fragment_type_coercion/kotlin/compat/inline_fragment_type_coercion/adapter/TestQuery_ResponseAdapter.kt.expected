@@ -54,30 +54,30 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Foo {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _foo: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _foo = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(___typename != null) {
+      check(__typename != null) {
         "__typename was not found"
       }
 
       var _asBar: TestQuery.AsBar? = null
-      if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _asBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.AsBar.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Foo(
-        __typename = ___typename,
+        __typename = __typename,
         foo = _foo!!,
         asBar = _asBar
       )
@@ -106,13 +106,13 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsBar {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _foo: String? = null
       var _bar: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _foo = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _bar = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
@@ -120,7 +120,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.AsBar(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         foo = _foo!!,
         bar = _bar!!
       )

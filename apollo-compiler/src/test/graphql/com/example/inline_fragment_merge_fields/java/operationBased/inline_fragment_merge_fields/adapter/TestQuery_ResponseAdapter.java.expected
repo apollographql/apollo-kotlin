@@ -62,14 +62,14 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String ___typename = null;
+      String __typename = null;
       String _name = null;
       TestQuery.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 2: _friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -79,12 +79,12 @@ public class TestQuery_ResponseAdapter {
       reader.rewind();
       TestQuery.OnCharacter _onCharacter = com.example.inline_fragment_merge_fields.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(_name, "name");
       Assertions.checkFieldNotMissing(_friendsConnection, "friendsConnection");
 
       return new TestQuery.Hero(
-        ___typename,
+        __typename,
         _name,
         _friendsConnection,
         _onCharacter

@@ -25,14 +25,14 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HeroDetailsImpl.Data> {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
-      val ___typename = reader.readTypename()
-      return when(___typename) {
+      val __typename = reader.readTypename()
+      return when(__typename) {
         "Human",
-        -> HumanData.fromJson(reader, customScalarAdapters, ___typename)
+        -> HumanData.fromJson(reader, customScalarAdapters, __typename)
         "Droid",
-        -> DroidData.fromJson(reader, customScalarAdapters, ___typename)
+        -> DroidData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, ___typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
@@ -57,13 +57,13 @@ public object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HeroDetailsImpl.HumanData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
       var _friendsConnection: HeroDetailsImpl.HumanData.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
@@ -71,7 +71,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       return HeroDetailsImpl.HumanData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!,
         friendsConnection = _friendsConnection!!
       )
@@ -198,14 +198,14 @@ public object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HeroDetailsImpl.DroidData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
       var _primaryFunction: String? = null
       var _friendsConnection: HeroDetailsImpl.DroidData.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           3 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
@@ -214,7 +214,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       return HeroDetailsImpl.DroidData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!,
         primaryFunction = _primaryFunction,
         friendsConnection = _friendsConnection!!
@@ -344,13 +344,13 @@ public object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HeroDetailsImpl.OtherData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
       var _friendsConnection: HeroDetailsImpl.OtherData.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
@@ -358,7 +358,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       return HeroDetailsImpl.OtherData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!,
         friendsConnection = _friendsConnection!!
       )

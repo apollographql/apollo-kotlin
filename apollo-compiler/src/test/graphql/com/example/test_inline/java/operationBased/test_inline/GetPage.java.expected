@@ -119,7 +119,7 @@ public class GetPage implements Query<GetPage.Data> {
       "data",
       com.example.test_inline.type.Query.type
     )
-    .selections(GetPageSelections.root)
+    .selections(GetPageSelections.__root)
     .build();
   }
 

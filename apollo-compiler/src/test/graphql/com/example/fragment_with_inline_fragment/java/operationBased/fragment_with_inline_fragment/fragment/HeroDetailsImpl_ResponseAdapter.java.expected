@@ -34,29 +34,29 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragment_with_inline_fragment.fragment.HeroDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
       String _name = null;
       com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 2: _friendsConnection = new ObjectAdapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid _onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         _onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         _humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
@@ -65,7 +65,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       Assertions.checkFieldNotMissing(_friendsConnection, "friendsConnection");
 
       return new com.example.fragment_with_inline_fragment.fragment.HeroDetails(
-        ___typename,
+        __typename,
         _name,
         _friendsConnection,
         _onDroid,
@@ -207,12 +207,12 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -220,10 +220,10 @@ public class HeroDetailsImpl_ResponseAdapter {
       reader.rewind();
       DroidDetails _droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
-        ___typename,
+        __typename,
         _droidDetails
       );
     }

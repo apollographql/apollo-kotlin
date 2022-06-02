@@ -56,12 +56,12 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           InlineMultipleWithDeferWithIf.Data.Hero {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -85,7 +85,7 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
         }
 
         return InlineMultipleWithDeferWithIf.Data.Hero(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           onCharacter = _onCharacter,
           onCharacterDeferF_second = _onCharacterDeferF_second,
           onCharacterDeferF_third = _onCharacterDeferF_third

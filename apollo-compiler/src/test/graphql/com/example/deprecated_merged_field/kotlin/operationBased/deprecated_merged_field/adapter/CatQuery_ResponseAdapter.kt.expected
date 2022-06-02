@@ -51,11 +51,11 @@ public object CatQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CatQuery.Data.Cat {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -65,7 +65,7 @@ public object CatQuery_ResponseAdapter {
             customScalarAdapters)
 
         return CatQuery.Data.Cat(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           animalFragment = _animalFragment
         )
       }

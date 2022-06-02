@@ -59,12 +59,12 @@ public object HeroDetailQuery_ResponseAdapter {
         Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "Human",
-          -> HumanHeroDetailQuery.fromJson(reader, customScalarAdapters, ___typename)
+          -> HumanHeroDetailQuery.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherHeroDetailQuery.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherHeroDetailQuery.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -90,14 +90,14 @@ public object HeroDetailQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _name: String? = null
         var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend?>? = null
         var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
@@ -107,7 +107,7 @@ public object HeroDetailQuery_ResponseAdapter {
         }
 
         return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           name = _name!!,
           friends = _friends,
           height = _height
@@ -188,13 +188,13 @@ public object HeroDetailQuery_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend {
-            var ___typename: String? = null
+            var __typename: String? = null
             var _name: String? = null
             var _friendsConnection: com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend.FriendsConnection? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader,
                     customScalarAdapters)
@@ -203,7 +203,7 @@ public object HeroDetailQuery_ResponseAdapter {
             }
 
             return com.example.unique_type_name.HeroDetailQuery.Data.HumanHeroDetailQuery.Friend.Friend(
-              __typename = ___typename!!,
+              __typename = __typename!!,
               name = _name!!,
               friendsConnection = _friendsConnection!!
             )
@@ -339,13 +339,13 @@ public object HeroDetailQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _name: String? = null
         var _friends: List<com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery.Friend?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
@@ -354,7 +354,7 @@ public object HeroDetailQuery_ResponseAdapter {
         }
 
         return com.example.unique_type_name.HeroDetailQuery.Data.OtherHeroDetailQuery(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           name = _name!!,
           friends = _friends
         )

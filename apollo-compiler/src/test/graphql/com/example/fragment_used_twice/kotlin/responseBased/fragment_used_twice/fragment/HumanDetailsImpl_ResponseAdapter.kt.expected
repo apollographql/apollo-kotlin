@@ -21,12 +21,12 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HumanDetailsImpl.Data> {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HumanDetailsImpl.Data {
-      val ___typename = reader.readTypename()
-      return when(___typename) {
+      val __typename = reader.readTypename()
+      return when(__typename) {
         "Human",
-        -> CharacterData.fromJson(reader, customScalarAdapters, ___typename)
+        -> CharacterData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, ___typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
@@ -51,13 +51,13 @@ public object HumanDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HumanDetailsImpl.CharacterData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
       var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
@@ -65,7 +65,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       }
 
       return HumanDetailsImpl.CharacterData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!,
         birthDate = _birthDate!!
       )
@@ -95,19 +95,19 @@ public object HumanDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HumanDetailsImpl.OtherData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return HumanDetailsImpl.OtherData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!
       )
     }

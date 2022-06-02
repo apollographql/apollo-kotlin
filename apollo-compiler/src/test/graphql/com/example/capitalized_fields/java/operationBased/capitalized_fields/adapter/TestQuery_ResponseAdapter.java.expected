@@ -60,13 +60,13 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Horse fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String ___typename = null;
+      String __typename = null;
       String _Donkey = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _Donkey = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -75,10 +75,10 @@ public class TestQuery_ResponseAdapter {
       reader.rewind();
       TestQuery.OnHorse _onHorse = com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Horse(
-        ___typename,
+        __typename,
         _Donkey,
         _onHorse
       );

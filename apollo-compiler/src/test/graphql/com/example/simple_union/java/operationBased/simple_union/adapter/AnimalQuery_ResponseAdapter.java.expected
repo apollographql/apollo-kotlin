@@ -66,31 +66,31 @@ public class AnimalQuery_ResponseAdapter {
     @Override
     public AnimalQuery.Animal fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       CatFragment _catFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       DogFragment _dogFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new AnimalQuery.Animal(
-        ___typename,
+        __typename,
         _catFragment,
         _dogFragment
       );

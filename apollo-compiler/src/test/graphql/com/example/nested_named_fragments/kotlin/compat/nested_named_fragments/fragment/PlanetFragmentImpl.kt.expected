@@ -35,6 +35,6 @@ public class PlanetFragmentImpl() : Fragment<PlanetFragment> {
     name = "data",
     type = Planet.type
   )
-  .selections(selections = planetFragmentSelections.root)
+  .selections(selections = planetFragmentSelections.__root)
   .build()
 }

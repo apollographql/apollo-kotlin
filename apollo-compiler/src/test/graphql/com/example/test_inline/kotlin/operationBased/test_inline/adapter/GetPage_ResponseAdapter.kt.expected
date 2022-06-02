@@ -53,30 +53,30 @@ public object GetPage_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetPage.Data.Collection {
-        var ___typename: String? = null
+        var __typename: String? = null
         var _items: List<GetPage.Data.Collection.Item>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
-        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader,
               customScalarAdapters)
         }
 
         return GetPage.Data.Collection(
-          __typename = ___typename,
+          __typename = __typename,
           items = _items!!,
           onParticularCollection = _onParticularCollection
         )
@@ -164,28 +164,28 @@ public object GetPage_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               GetPage.Data.Collection.OnParticularCollection.Item {
-            var ___typename: String? = null
+            var __typename: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
-            check(___typename != null) {
+            check(__typename != null) {
               "__typename was not found"
             }
 
             var _onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
-            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+            if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
               _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader,
                   customScalarAdapters)
             }
 
             return GetPage.Data.Collection.OnParticularCollection.Item(
-              __typename = ___typename,
+              __typename = __typename,
               onParticularItem = _onParticularItem
             )
           }

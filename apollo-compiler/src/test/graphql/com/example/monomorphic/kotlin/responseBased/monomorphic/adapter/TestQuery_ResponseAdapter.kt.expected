@@ -49,12 +49,12 @@ public object TestQuery_ResponseAdapter {
     private object Cat : Adapter<TestQuery.Data.Cat> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Cat {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "Cat",
-          -> AnimalNodeCat.fromJson(reader, customScalarAdapters, ___typename)
+          -> AnimalNodeCat.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherCat.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherCat.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -79,19 +79,19 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.AnimalNodeCat {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _species: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.AnimalNodeCat(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           species = _species!!
         )
       }
@@ -117,17 +117,17 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherCat {
-        var ___typename: String? = typename
+        var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherCat(
-          __typename = ___typename!!
+          __typename = __typename!!
         )
       }
 

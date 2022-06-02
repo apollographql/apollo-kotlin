@@ -24,19 +24,19 @@ public object GetUser_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _organization: GetUser.Data.Organization? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetUser.Data(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         organization = _organization
       )
     }
@@ -93,14 +93,14 @@ public object GetUser_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetUser.Data.Organization.User {
-          var ___typename: String? = null
+          var __typename: String? = null
           var _firstName: String? = null
           var _lastName: String? = null
           var _avatar: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _firstName = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> _lastName = StringAdapter.fromJson(reader, customScalarAdapters)
               3 -> _avatar = StringAdapter.fromJson(reader, customScalarAdapters)
@@ -109,7 +109,7 @@ public object GetUser_ResponseAdapter {
           }
 
           return GetUser.Data.Organization.User(
-            __typename = ___typename!!,
+            __typename = __typename!!,
             firstName = _firstName!!,
             lastName = _lastName!!,
             avatar = _avatar!!

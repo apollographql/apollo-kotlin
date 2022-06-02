@@ -69,38 +69,38 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
     @Override
     public SpreadMultipleWithDeferWithIf.Hero fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       CharacterDetails _characterDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       CharacterDetails2 _characterDetails2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("c_second"))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("c_second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       CharacterDetails3 _characterDetails3 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("c_third")))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("c_third")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new SpreadMultipleWithDeferWithIf.Hero(
-        ___typename,
+        __typename,
         _characterDetails,
         _characterDetails2,
         _characterDetails3

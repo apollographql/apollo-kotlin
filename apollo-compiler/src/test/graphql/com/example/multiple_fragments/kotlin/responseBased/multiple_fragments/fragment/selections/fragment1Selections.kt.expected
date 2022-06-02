@@ -11,7 +11,7 @@ import com.example.multiple_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object fragment1Selections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "field1",
           type = GraphQLString.type

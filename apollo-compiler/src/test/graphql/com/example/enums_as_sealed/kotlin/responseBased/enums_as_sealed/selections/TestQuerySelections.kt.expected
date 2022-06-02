@@ -11,7 +11,7 @@ import com.example.enums_as_sealed.type.Enum
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "enum",
           type = Enum.type

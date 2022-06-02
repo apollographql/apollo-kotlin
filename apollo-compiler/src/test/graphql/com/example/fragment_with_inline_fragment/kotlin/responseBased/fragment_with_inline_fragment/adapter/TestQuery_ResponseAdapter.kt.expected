@@ -56,14 +56,14 @@ public object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "Human",
-          -> HumanHero.fromJson(reader, customScalarAdapters, ___typename)
+          -> HumanHero.fromJson(reader, customScalarAdapters, __typename)
           "Droid",
-          -> DroidHero.fromJson(reader, customScalarAdapters, ___typename)
+          -> DroidHero.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherHero.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherHero.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -89,14 +89,14 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.HumanHero {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _name: String? = null
         var _friendsConnection: TestQuery.Data.HumanHero.FriendsConnection? = null
         var _appearsIn: List<Episode?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             3 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
@@ -106,7 +106,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.HumanHero(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           name = _name!!,
           friendsConnection = _friendsConnection!!,
           appearsIn = _appearsIn!!
@@ -239,7 +239,7 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.DroidHero {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _name: String? = null
         var _primaryFunction: String? = null
         var _friendsConnection: TestQuery.Data.DroidHero.FriendsConnection? = null
@@ -247,7 +247,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             3 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
@@ -258,7 +258,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.DroidHero(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           name = _name!!,
           primaryFunction = _primaryFunction,
           friendsConnection = _friendsConnection!!,
@@ -395,14 +395,14 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherHero {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _name: String? = null
         var _friendsConnection: TestQuery.Data.OtherHero.FriendsConnection? = null
         var _appearsIn: List<Episode?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             3 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
@@ -412,7 +412,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.OtherHero(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           name = _name!!,
           friendsConnection = _friendsConnection!!,
           appearsIn = _appearsIn!!

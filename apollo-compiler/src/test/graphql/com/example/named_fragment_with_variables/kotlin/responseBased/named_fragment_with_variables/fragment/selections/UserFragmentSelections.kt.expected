@@ -14,7 +14,7 @@ import com.example.named_fragment_with_variables.type.GraphQLString
 import kotlin.collections.List
 
 public object UserFragmentSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "firstName",
           type = GraphQLString.type.notNull()

@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HumanDetailsSelections {
-  public static List<CompiledSelection> root = Arrays.asList(
+  public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(CharacterDetailsSelections.root).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(CharacterDetailsSelections.__root).build()
   );
 }

@@ -58,18 +58,18 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var ___typename: String? = null
+        var __typename: String? = null
         var _id: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
@@ -81,14 +81,14 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _humanDetails: HumanDetails? = null
-        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
-          __typename = ___typename,
+          __typename = __typename,
           id = _id!!,
           heroDetails = _heroDetails,
           humanDetails = _humanDetails

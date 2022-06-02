@@ -125,7 +125,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
       "data",
       com.example.mutation_create_review_semantic_naming.type.Mutation.type
     )
-    .selections(CreateReviewForEpisodeMutationSelections.root)
+    .selections(CreateReviewForEpisodeMutationSelections.__root)
     .build();
   }
 

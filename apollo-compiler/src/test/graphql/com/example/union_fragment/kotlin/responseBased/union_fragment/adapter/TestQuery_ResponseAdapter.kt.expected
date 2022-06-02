@@ -52,12 +52,12 @@ public object TestQuery_ResponseAdapter {
     private object Search : Adapter<TestQuery.Data.Search> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Search {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "Starship",
-          -> StarshipSearch.fromJson(reader, customScalarAdapters, ___typename)
+          -> StarshipSearch.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherSearch.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherSearch.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -82,13 +82,13 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.StarshipSearch {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _id: String? = null
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
@@ -96,7 +96,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.StarshipSearch(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           id = _id!!,
           name = _name!!
         )
@@ -126,17 +126,17 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherSearch {
-        var ___typename: String? = typename
+        var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherSearch(
-          __typename = ___typename!!
+          __typename = __typename!!
         )
       }
 

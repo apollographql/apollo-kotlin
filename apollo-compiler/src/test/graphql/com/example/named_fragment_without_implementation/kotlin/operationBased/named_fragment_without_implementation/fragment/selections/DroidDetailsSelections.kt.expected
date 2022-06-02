@@ -11,7 +11,7 @@ import com.example.named_fragment_without_implementation.type.GraphQLString
 import kotlin.collections.List
 
 public object DroidDetailsSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
           type = GraphQLString.type

@@ -146,7 +146,7 @@ public class TestOperation implements Query<TestOperation.Data> {
       "data",
       com.example.inline_fragment_intersection.type.Query.type
     )
-    .selections(TestOperationSelections.root)
+    .selections(TestOperationSelections.__root)
     .build();
   }
 

@@ -50,12 +50,12 @@ public object TestQuery_ResponseAdapter {
     private object Foo : Adapter<TestQuery.Data.Foo> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Foo {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "FooBar",
-          -> BarFoo.fromJson(reader, customScalarAdapters, ___typename)
+          -> BarFoo.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherFoo.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherFoo.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -79,13 +79,13 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.BarFoo {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _foo: String? = null
         var _bar: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _foo = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _bar = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
@@ -93,7 +93,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.BarFoo(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           foo = _foo!!,
           bar = _bar!!
         )
@@ -123,19 +123,19 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherFoo {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _foo: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _foo = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherFoo(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           foo = _foo!!
         )
       }

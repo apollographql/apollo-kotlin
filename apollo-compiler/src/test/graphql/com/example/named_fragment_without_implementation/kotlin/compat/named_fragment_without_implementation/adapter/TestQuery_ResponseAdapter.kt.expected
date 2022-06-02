@@ -57,12 +57,12 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters)
 
       return TestQuery.Hero(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!,
         fragments = _fragments
       )
@@ -100,17 +100,17 @@ public object TestQuery_ResponseAdapter {
 
 
         reader.rewind()
-        val ___typename = reader.readTypename()
+        val __typename = reader.readTypename()
 
         var _humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         var _droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)

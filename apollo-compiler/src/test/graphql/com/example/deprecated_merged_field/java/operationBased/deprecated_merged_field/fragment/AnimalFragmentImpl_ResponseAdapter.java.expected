@@ -30,31 +30,31 @@ public class AnimalFragmentImpl_ResponseAdapter {
     @Override
     public com.example.deprecated_merged_field.fragment.AnimalFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat _onCat = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog _onDog = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
         _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new com.example.deprecated_merged_field.fragment.AnimalFragment(
-        ___typename,
+        __typename,
         _onCat,
         _onDog
       );

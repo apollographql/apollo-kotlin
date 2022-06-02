@@ -57,28 +57,28 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Search {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onCharacter: TestQuery.Data.Search.OnCharacter? = null
-        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onCharacter = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Search(
-          __typename = ___typename,
+          __typename = __typename,
           onCharacter = _onCharacter
         )
       }
@@ -102,37 +102,37 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Search.OnCharacter {
-          var ___typename: String? = null
+          var __typename: String? = null
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
-          check(___typename != null) {
+          check(__typename != null) {
             "__typename was not found"
           }
 
           var _onHuman: TestQuery.Data.Search.OnCharacter.OnHuman? = null
-          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
             _onHuman = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnHuman.fromJson(reader,
                 customScalarAdapters)
           }
 
           var _onDroid: TestQuery.Data.Search.OnCharacter.OnDroid? = null
-          if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
             _onDroid = com.example.inline_fragment_inside_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnCharacter.OnDroid.fromJson(reader,
                 customScalarAdapters)
           }
 
           return TestQuery.Data.Search.OnCharacter(
-            __typename = ___typename,
+            __typename = __typename,
             name = _name!!,
             onHuman = _onHuman,
             onDroid = _onDroid

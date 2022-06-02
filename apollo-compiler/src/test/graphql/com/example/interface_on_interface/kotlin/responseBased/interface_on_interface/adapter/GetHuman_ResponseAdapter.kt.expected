@@ -98,12 +98,12 @@ public object GetHuman_ResponseAdapter {
     private object Node : Adapter<GetHuman.Data.Node> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHuman.Data.Node {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "Human",
-          -> HumanNode.fromJson(reader, customScalarAdapters, ___typename)
+          -> HumanNode.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNode.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -127,19 +127,19 @@ public object GetHuman_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetHuman.Data.HumanNode {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetHuman.Data.HumanNode(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           height = _height!!
         )
       }
@@ -165,17 +165,17 @@ public object GetHuman_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetHuman.Data.OtherNode {
-        var ___typename: String? = typename
+        var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetHuman.Data.OtherNode(
-          __typename = ___typename!!
+          __typename = __typename!!
         )
       }
 

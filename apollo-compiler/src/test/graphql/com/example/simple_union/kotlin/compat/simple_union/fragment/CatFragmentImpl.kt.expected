@@ -35,6 +35,6 @@ public class CatFragmentImpl() : Fragment<CatFragment> {
     name = "data",
     type = Cat.type
   )
-  .selections(selections = CatFragmentSelections.root)
+  .selections(selections = CatFragmentSelections.__root)
   .build()
 }

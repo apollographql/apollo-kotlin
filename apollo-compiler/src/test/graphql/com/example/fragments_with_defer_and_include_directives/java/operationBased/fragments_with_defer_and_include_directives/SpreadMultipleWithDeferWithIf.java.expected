@@ -133,7 +133,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
       "data",
       com.example.fragments_with_defer_and_include_directives.type.Query.type
     )
-    .selections(SpreadMultipleWithDeferWithIfSelections.root)
+    .selections(SpreadMultipleWithDeferWithIfSelections.__root)
     .build();
   }
 

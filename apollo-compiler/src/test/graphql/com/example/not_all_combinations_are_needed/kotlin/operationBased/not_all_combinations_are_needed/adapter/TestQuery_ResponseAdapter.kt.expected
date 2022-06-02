@@ -54,28 +54,28 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Root {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onA: TestQuery.Data.Root.OnA? = null
-        if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ABC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Root(
-          __typename = ___typename,
+          __typename = __typename,
           onA = _onA
         )
       }
@@ -99,30 +99,30 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
-          var ___typename: String? = null
+          var __typename: String? = null
           var _fieldA1: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
-          check(___typename != null) {
+          check(__typename != null) {
             "__typename was not found"
           }
 
           var _onB: TestQuery.Data.Root.OnA.OnB? = null
-          if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("ABC","SomeBC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
             _onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
           }
 
           return TestQuery.Data.Root.OnA(
-            __typename = ___typename,
+            __typename = __typename,
             fieldA1 = _fieldA1,
             onB = _onB
           )
@@ -150,11 +150,11 @@ public object TestQuery_ResponseAdapter {
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA.OnB {
-            var ___typename: String? = null
+            var __typename: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -164,7 +164,7 @@ public object TestQuery_ResponseAdapter {
                 customScalarAdapters)
 
             return TestQuery.Data.Root.OnA.OnB(
-              __typename = ___typename!!,
+              __typename = __typename!!,
               bFragment = _bFragment
             )
           }

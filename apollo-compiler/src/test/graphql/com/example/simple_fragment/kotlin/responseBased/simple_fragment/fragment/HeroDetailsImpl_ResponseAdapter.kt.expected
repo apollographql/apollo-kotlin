@@ -19,12 +19,12 @@ internal object HeroDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HeroDetailsImpl.Data> {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
-      val ___typename = reader.readTypename()
-      return when(___typename) {
+      val __typename = reader.readTypename()
+      return when(__typename) {
         "Human",
-        -> HumanData.fromJson(reader, customScalarAdapters, ___typename)
+        -> HumanData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, ___typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
@@ -48,19 +48,19 @@ internal object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HeroDetailsImpl.HumanData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetailsImpl.HumanData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!
       )
     }
@@ -86,17 +86,17 @@ internal object HeroDetailsImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): HeroDetailsImpl.OtherData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetailsImpl.OtherData(
-        __typename = ___typename!!
+        __typename = __typename!!
       )
     }
 

@@ -12,7 +12,7 @@ import com.example.fragments_with_defer_and_include_directives.type.GraphQLID
 import kotlin.collections.List
 
 public object CharacterDetails2Selections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()

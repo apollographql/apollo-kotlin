@@ -18,7 +18,7 @@ import com.example.nested_conditional_inline.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val _onHuman1: List<CompiledSelection> = listOf(
+  private val __onHuman1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
@@ -28,7 +28,7 @@ public object TestQuerySelections {
         .build()
       )
 
-  private val _friends: List<CompiledSelection> = listOf(
+  private val __friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -40,19 +40,19 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(_onHuman1)
+        ).selections(__onHuman1)
         .build()
       )
 
-  private val _onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(_friends)
+        ).selections(__friends)
         .build()
       )
 
-  private val _onHuman2: List<CompiledSelection> = listOf(
+  private val __onHuman2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
@@ -62,7 +62,7 @@ public object TestQuerySelections {
         .build()
       )
 
-  private val _friends1: List<CompiledSelection> = listOf(
+  private val __friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -74,19 +74,19 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(_onHuman2)
+        ).selections(__onHuman2)
         .build()
       )
 
-  private val _onDroid: List<CompiledSelection> = listOf(
+  private val __onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(_friends1)
+        ).selections(__friends1)
         .build()
       )
 
-  private val _hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -98,23 +98,23 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(_onHuman)
+        ).selections(__onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(_onDroid)
+        ).selections(__onDroid)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).arguments(listOf(
           CompiledArgument("episode", CompiledVariable("episode"))
         ))
-        .selections(_hero)
+        .selections(__hero)
         .build()
       )
 }

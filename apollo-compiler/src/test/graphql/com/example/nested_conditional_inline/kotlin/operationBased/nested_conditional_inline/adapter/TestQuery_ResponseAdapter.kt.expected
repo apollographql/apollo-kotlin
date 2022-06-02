@@ -56,37 +56,37 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var ___typename: String? = null
+        var __typename: String? = null
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onDroid = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
-          __typename = ___typename,
+          __typename = __typename,
           name = _name!!,
           onHuman = _onHuman,
           onDroid = _onDroid
@@ -150,30 +150,30 @@ public object TestQuery_ResponseAdapter {
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman.Friend {
-            var ___typename: String? = null
+            var __typename: String? = null
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
-            check(___typename != null) {
+            check(__typename != null) {
               "__typename was not found"
             }
 
             var _onHuman: TestQuery.Data.Hero.OnHuman.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
               _onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }
 
             return TestQuery.Data.Hero.OnHuman.Friend(
-              __typename = ___typename,
+              __typename = __typename,
               name = _name!!,
               onHuman = _onHuman
             )
@@ -263,30 +263,30 @@ public object TestQuery_ResponseAdapter {
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid.Friend {
-            var ___typename: String? = null
+            var __typename: String? = null
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
-            check(___typename != null) {
+            check(__typename != null) {
               "__typename was not found"
             }
 
             var _onHuman: TestQuery.Data.Hero.OnDroid.Friend.OnHuman? = null
-            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+            if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
               _onHuman = com.example.nested_conditional_inline.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.Friend.OnHuman.fromJson(reader,
                   customScalarAdapters)
             }
 
             return TestQuery.Data.Hero.OnDroid.Friend(
-              __typename = ___typename,
+              __typename = __typename,
               name = _name!!,
               onHuman = _onHuman
             )

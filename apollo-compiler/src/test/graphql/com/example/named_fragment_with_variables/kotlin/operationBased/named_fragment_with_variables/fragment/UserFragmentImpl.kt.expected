@@ -32,6 +32,6 @@ public data class UserFragmentImpl(
     name = "data",
     type = User.type
   )
-  .selections(selections = UserFragmentSelections.root)
+  .selections(selections = UserFragmentSelections.__root)
   .build()
 }

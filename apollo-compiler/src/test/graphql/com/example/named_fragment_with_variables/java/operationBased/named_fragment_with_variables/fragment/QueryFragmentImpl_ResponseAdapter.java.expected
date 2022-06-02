@@ -101,12 +101,12 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.User fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -114,10 +114,10 @@ public class QueryFragmentImpl_ResponseAdapter {
       reader.rewind();
       UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.named_fragment_with_variables.fragment.QueryFragment.User(
-        ___typename,
+        __typename,
         _userFragment
       );
     }

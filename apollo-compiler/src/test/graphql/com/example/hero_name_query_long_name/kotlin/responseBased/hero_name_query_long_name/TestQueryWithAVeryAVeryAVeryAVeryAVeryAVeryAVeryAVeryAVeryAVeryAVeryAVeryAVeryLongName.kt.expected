@@ -46,7 +46,7 @@ public data class
     name = "data",
     type = com.example.hero_name_query_long_name.type.Query.type
   )
-  .selections(selections = TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections.root)
+  .selections(selections = TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections.__root)
   .build()
 
   public data class Data(

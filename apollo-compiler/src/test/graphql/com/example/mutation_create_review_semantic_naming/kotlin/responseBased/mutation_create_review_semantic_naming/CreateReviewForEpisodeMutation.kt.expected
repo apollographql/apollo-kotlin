@@ -42,7 +42,7 @@ public data class CreateReviewForEpisodeMutation(
     name = "data",
     type = com.example.mutation_create_review_semantic_naming.type.Mutation.type
   )
-  .selections(selections = CreateReviewForEpisodeMutationSelections.root)
+  .selections(selections = CreateReviewForEpisodeMutationSelections.__root)
   .build()
 
   public data class Data(

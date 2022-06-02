@@ -21,11 +21,11 @@ public object GetUser_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -35,7 +35,7 @@ public object GetUser_ResponseAdapter {
           customScalarAdapters)
 
       return GetUser.Data(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         queryFragment = _queryFragment
       )
     }

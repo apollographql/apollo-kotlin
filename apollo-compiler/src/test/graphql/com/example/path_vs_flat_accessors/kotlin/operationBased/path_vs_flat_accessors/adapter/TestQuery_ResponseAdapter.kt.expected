@@ -54,35 +54,35 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Root {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onA: TestQuery.Data.Root.OnA? = null
-        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onA = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onB: TestQuery.Data.Root.OnB? = null
-        if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnB.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Root(
-          __typename = ___typename,
+          __typename = __typename,
           onA = _onA,
           onB = _onB
         )
@@ -112,28 +112,28 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
-          var ___typename: String? = null
+          var __typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
-          check(___typename != null) {
+          check(__typename != null) {
             "__typename was not found"
           }
 
           var _onB: TestQuery.Data.Root.OnA.OnB? = null
-          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
             _onB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
           }
 
           return TestQuery.Data.Root.OnA(
-            __typename = ___typename,
+            __typename = __typename,
             onB = _onB
           )
         }

@@ -23,11 +23,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment.fragment.HeroDetails {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -37,7 +37,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
           customScalarAdapters)
 
       return com.example.simple_fragment.fragment.HeroDetails(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         fragments = _fragments
       )
     }
@@ -60,10 +60,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
 
         reader.rewind()
-        val ___typename = reader.readTypename()
+        val __typename = reader.readTypename()
 
         var _humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)

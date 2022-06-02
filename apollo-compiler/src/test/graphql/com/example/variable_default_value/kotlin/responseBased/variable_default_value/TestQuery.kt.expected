@@ -40,7 +40,7 @@ public data class TestQuery @JvmOverloads constructor(
     name = "data",
     type = com.example.variable_default_value.type.Query.type
   )
-  .selections(selections = TestQuerySelections.root)
+  .selections(selections = TestQuerySelections.__root)
   .build()
 
   public data class Data(

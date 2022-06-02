@@ -35,6 +35,6 @@ public class PilotFragmentImpl() : Fragment<PilotFragment> {
     name = "data",
     type = Person.type
   )
-  .selections(selections = pilotFragmentSelections.root)
+  .selections(selections = pilotFragmentSelections.__root)
   .build()
 }

@@ -116,14 +116,14 @@ public object AllStarships_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node {
-            var ___typename: String? = null
+            var __typename: String? = null
             var _id: String? = null
             var _name: String? = null
             var _pilotConnection: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                 1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
                 2 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 3 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader,
@@ -133,7 +133,7 @@ public object AllStarships_ResponseAdapter {
             }
 
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
-              __typename = ___typename!!,
+              __typename = __typename!!,
               id = _id!!,
               name = _name,
               pilotConnection = _pilotConnection
@@ -231,13 +231,13 @@ public object AllStarships_ResponseAdapter {
                 public override fun fromJson(reader: JsonReader,
                     customScalarAdapters: CustomScalarAdapters):
                     com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node {
-                  var ___typename: String? = null
+                  var __typename: String? = null
                   var _name: String? = null
                   var _homeworld: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld? = null
 
                   while(true) {
                     when (reader.selectName(RESPONSE_NAMES)) {
-                      0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                      0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                       1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                       2 -> _homeworld = Homeworld.obj().nullable().fromJson(reader,
                           customScalarAdapters)
@@ -246,7 +246,7 @@ public object AllStarships_ResponseAdapter {
                   }
 
                   return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node(
-                    __typename = ___typename!!,
+                    __typename = __typename!!,
                     name = _name,
                     homeworld = _homeworld
                   )
@@ -275,19 +275,19 @@ public object AllStarships_ResponseAdapter {
                   public override fun fromJson(reader: JsonReader,
                       customScalarAdapters: CustomScalarAdapters):
                       com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld {
-                    var ___typename: String? = null
+                    var __typename: String? = null
                     var _name: String? = null
 
                     while(true) {
                       when (reader.selectName(RESPONSE_NAMES)) {
-                        0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+                        0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
                         1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                         else -> break
                       }
                     }
 
                     return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node.PilotConnection.Edge.Node.Homeworld(
-                      __typename = ___typename!!,
+                      __typename = __typename!!,
                       name = _name
                     )
                   }

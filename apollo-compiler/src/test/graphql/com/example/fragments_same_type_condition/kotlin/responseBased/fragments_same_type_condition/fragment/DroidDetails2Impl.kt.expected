@@ -35,7 +35,7 @@ public class DroidDetails2Impl() : Fragment<DroidDetails2Impl.Data> {
     name = "data",
     type = Droid.type
   )
-  .selections(selections = DroidDetails2Selections.root)
+  .selections(selections = DroidDetails2Selections.__root)
   .build()
 
   public data class Data(

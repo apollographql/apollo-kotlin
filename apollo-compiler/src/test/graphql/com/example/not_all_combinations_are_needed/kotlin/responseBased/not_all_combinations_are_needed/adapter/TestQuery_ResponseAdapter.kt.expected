@@ -51,12 +51,12 @@ public object TestQuery_ResponseAdapter {
     private object Root : Adapter<TestQuery.Data.Root> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Root {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "ABC",
-          -> ABRoot.fromJson(reader, customScalarAdapters, ___typename)
+          -> ABRoot.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherRoot.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherRoot.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -80,13 +80,13 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.ABRoot {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _fieldA1: String? = null
         var _fieldB1: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
@@ -94,7 +94,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         return TestQuery.Data.ABRoot(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           fieldA1 = _fieldA1,
           fieldB1 = _fieldB1
         )
@@ -124,17 +124,17 @@ public object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherRoot {
-        var ___typename: String? = typename
+        var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherRoot(
-          __typename = ___typename!!
+          __typename = __typename!!
         )
       }
 

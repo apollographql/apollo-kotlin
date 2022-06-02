@@ -12,7 +12,7 @@ import com.example.fragments_with_type_condition.type.GraphQLString
 import kotlin.collections.List
 
 public object DroidDetailsSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()

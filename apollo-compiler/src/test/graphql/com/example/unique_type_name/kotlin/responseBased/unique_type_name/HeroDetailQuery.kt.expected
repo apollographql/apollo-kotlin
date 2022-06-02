@@ -45,7 +45,7 @@ public class HeroDetailQuery() : Query<HeroDetailQuery.Data> {
     name = "data",
     type = com.example.unique_type_name.type.Query.type
   )
-  .selections(selections = HeroDetailQuerySelections.root)
+  .selections(selections = HeroDetailQuerySelections.__root)
   .build()
 
   public data class Data(

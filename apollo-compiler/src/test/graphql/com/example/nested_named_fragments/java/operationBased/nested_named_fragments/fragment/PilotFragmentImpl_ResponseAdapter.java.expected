@@ -65,12 +65,12 @@ public class PilotFragmentImpl_ResponseAdapter {
     @Override
     public com.example.nested_named_fragments.fragment.PilotFragment.Homeworld fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -78,10 +78,10 @@ public class PilotFragmentImpl_ResponseAdapter {
       reader.rewind();
       PlanetFragment _planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.nested_named_fragments.fragment.PilotFragment.Homeworld(
-        ___typename,
+        __typename,
         _planetFragment
       );
     }

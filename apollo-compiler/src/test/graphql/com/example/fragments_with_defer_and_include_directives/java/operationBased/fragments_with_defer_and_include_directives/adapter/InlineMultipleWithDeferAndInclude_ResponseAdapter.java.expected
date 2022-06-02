@@ -66,56 +66,56 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     @Override
     public InlineMultipleWithDeferAndInclude.Hero fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       InlineMultipleWithDeferAndInclude.OnDroidIfCond1 _onDroidIfCond1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("cond1"))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("cond1"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _onDroidIfCond1 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidIfCond1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       InlineMultipleWithDeferAndInclude.OnDroidIfNotCond2 _onDroidIfNotCond2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond2")))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond2")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _onDroidIfNotCond2 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidIfNotCond2.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       InlineMultipleWithDeferAndInclude.OnDroidDeferE_first _onDroidDeferE_first = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("e_first"))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("e_first"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _onDroidDeferE_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_first.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       InlineMultipleWithDeferAndInclude.OnDroidDeferE_second _onDroidDeferE_second = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("e_second"))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("e_second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _onDroidDeferE_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_second.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       InlineMultipleWithDeferAndInclude.OnDroidDeferE_third _onDroidDeferE_third = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("e_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3")))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("e_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _onDroidDeferE_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_third.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth _onDroidDeferE_fourth = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("e_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4"))))), customScalarAdapters.getAdapterContext().variables(), ___typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("e_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4"))))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
         _onDroidDeferE_fourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidDeferE_fourth.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new InlineMultipleWithDeferAndInclude.Hero(
-        ___typename,
+        __typename,
         _onDroidIfCond1,
         _onDroidIfNotCond2,
         _onDroidDeferE_first,

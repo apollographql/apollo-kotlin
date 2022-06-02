@@ -79,7 +79,7 @@ public class HumanDetailsImpl implements Fragment<HumanDetails> {
       "data",
       Human.type
     )
-    .selections(HumanDetailsSelections.root)
+    .selections(HumanDetailsSelections.__root)
     .build();
   }
 }

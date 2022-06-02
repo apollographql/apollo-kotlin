@@ -84,7 +84,7 @@ public class UserFragmentImpl implements Fragment<UserFragment> {
       "data",
       User.type
     )
-    .selections(UserFragmentSelections.root)
+    .selections(UserFragmentSelections.__root)
     .build();
   }
 }

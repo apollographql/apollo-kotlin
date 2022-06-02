@@ -57,11 +57,11 @@ public object AnimalQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalQuery.Animal {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -71,7 +71,7 @@ public object AnimalQuery_ResponseAdapter {
           customScalarAdapters)
 
       return AnimalQuery.Animal(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         fragments = _fragments
       )
     }
@@ -94,17 +94,17 @@ public object AnimalQuery_ResponseAdapter {
 
 
         reader.rewind()
-        val ___typename = reader.readTypename()
+        val __typename = reader.readTypename()
 
         var _catFragment: CatFragment? = null
-        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
               customScalarAdapters)
         }
 
         var _dogFragment: DogFragment? = null
-        if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
               customScalarAdapters)

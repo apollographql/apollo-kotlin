@@ -137,7 +137,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       "data",
       com.example.union_inline_fragments.type.Query.type
     )
-    .selections(TestQuerySelections.root)
+    .selections(TestQuerySelections.__root)
     .build();
   }
 

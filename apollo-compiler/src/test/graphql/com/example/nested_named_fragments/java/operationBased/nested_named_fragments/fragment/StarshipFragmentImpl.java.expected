@@ -76,7 +76,7 @@ public class StarshipFragmentImpl implements Fragment<StarshipFragment> {
       "data",
       Starship.type
     )
-    .selections(starshipFragmentSelections.root)
+    .selections(starshipFragmentSelections.__root)
     .build();
   }
 }

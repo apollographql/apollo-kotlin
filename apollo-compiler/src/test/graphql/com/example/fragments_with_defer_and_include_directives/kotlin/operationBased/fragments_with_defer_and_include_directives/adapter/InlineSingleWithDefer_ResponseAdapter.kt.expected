@@ -55,29 +55,29 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           InlineSingleWithDefer.Data.Hero {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onDroid: InlineSingleWithDefer.Data.Hero.OnDroid? = null
-        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
 
         return InlineSingleWithDefer.Data.Hero(
-          __typename = ___typename,
+          __typename = __typename,
           onDroid = _onDroid
         )
       }

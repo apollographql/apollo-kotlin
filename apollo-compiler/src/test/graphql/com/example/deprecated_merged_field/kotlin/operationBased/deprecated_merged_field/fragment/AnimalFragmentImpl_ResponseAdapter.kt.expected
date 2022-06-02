@@ -23,35 +23,35 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.deprecated_merged_field.fragment.AnimalFragment {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(___typename != null) {
+      check(__typename != null) {
         "__typename was not found"
       }
 
       var _onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
-      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
             customScalarAdapters)
       }
 
       var _onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
-      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment(
-        __typename = ___typename,
+        __typename = __typename,
         onCat = _onCat,
         onDog = _onDog
       )

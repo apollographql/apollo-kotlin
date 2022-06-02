@@ -102,28 +102,28 @@ public object GetHuman_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.Node {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(___typename != null) {
+      check(__typename != null) {
         "__typename was not found"
       }
 
       var _asHuman: GetHuman.AsHuman? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _asHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
       return GetHuman.Node(
-        __typename = ___typename,
+        __typename = __typename,
         asHuman = _asHuman
       )
     }
@@ -148,19 +148,19 @@ public object GetHuman_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.AsHuman {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetHuman.AsHuman(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         height = _height!!
       )
     }

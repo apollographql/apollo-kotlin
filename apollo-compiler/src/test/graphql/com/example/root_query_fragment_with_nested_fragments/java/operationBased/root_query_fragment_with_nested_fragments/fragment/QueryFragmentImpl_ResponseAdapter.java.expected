@@ -28,7 +28,7 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero _hero = null;
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid _droid = null;
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human _human = null;
@@ -36,7 +36,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           case 2: _droid = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           case 3: _human = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
@@ -44,10 +44,10 @@ public class QueryFragmentImpl_ResponseAdapter {
         }
       }
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment(
-        ___typename,
+        __typename,
         _hero,
         _droid,
         _human
@@ -80,12 +80,12 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -93,10 +93,10 @@ public class QueryFragmentImpl_ResponseAdapter {
       reader.rewind();
       HeroFragment _heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
-        ___typename,
+        __typename,
         _heroFragment
       );
     }
@@ -120,12 +120,12 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -133,10 +133,10 @@ public class QueryFragmentImpl_ResponseAdapter {
       reader.rewind();
       DroidFragment _droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
-        ___typename,
+        __typename,
         _droidFragment
       );
     }
@@ -160,12 +160,12 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -173,10 +173,10 @@ public class QueryFragmentImpl_ResponseAdapter {
       reader.rewind();
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman _onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
-        ___typename,
+        __typename,
         _onHuman
       );
     }

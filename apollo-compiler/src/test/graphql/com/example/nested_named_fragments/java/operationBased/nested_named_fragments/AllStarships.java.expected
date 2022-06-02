@@ -140,7 +140,7 @@ public class AllStarships implements Query<AllStarships.Data> {
       "data",
       Root.type
     )
-    .selections(AllStarshipsSelections.root)
+    .selections(AllStarshipsSelections.__root)
     .build();
   }
 

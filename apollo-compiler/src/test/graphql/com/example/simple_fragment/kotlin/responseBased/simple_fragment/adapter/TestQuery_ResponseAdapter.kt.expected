@@ -50,12 +50,12 @@ internal object TestQuery_ResponseAdapter {
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "Human",
-          -> HumanHero.fromJson(reader, customScalarAdapters, ___typename)
+          -> HumanHero.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherHero.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherHero.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -79,19 +79,19 @@ internal object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.HumanHero {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.HumanHero(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           name = _name!!
         )
       }
@@ -117,17 +117,17 @@ internal object TestQuery_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherHero {
-        var ___typename: String? = typename
+        var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherHero(
-          __typename = ___typename!!
+          __typename = __typename!!
         )
       }
 

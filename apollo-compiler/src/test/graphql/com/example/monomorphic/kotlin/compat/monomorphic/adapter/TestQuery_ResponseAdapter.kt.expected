@@ -51,11 +51,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Cat {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -65,7 +65,7 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters)
 
       return TestQuery.Cat(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         asNode = _asNode
       )
     }
@@ -88,11 +88,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsNode {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -102,7 +102,7 @@ public object TestQuery_ResponseAdapter {
           customScalarAdapters)
 
       return TestQuery.AsNode(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         asAnimal = _asAnimal
       )
     }
@@ -125,19 +125,19 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsAnimal {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _species: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsAnimal(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         species = _species!!
       )
     }

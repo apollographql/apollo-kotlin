@@ -43,7 +43,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
     name = "data",
     type = com.example.simple_union.type.Query.type
   )
-  .selections(selections = AnimalQuerySelections.root)
+  .selections(selections = AnimalQuerySelections.__root)
   .build()
 
   public data class Data(

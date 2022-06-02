@@ -19,14 +19,14 @@ import com.example.inline_fragment_intersection.type.Race
 import kotlin.collections.List
 
 public object TestOperationSelections {
-  private val _onWookie: List<CompiledSelection> = listOf(
+  private val __onWookie: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "lifeExpectancy",
           type = GraphQLFloat.type
         ).build()
       )
 
-  private val _friends: List<CompiledSelection> = listOf(
+  private val __friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -38,18 +38,18 @@ public object TestOperationSelections {
         CompiledFragment.Builder(
           typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
-        ).selections(_onWookie)
+        ).selections(__onWookie)
         .build()
       )
 
-  private val _onWookie1: List<CompiledSelection> = listOf(
+  private val __onWookie1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "race",
           type = Race.type.notNull()
         ).build()
       )
 
-  private val _friends1: List<CompiledSelection> = listOf(
+  private val __friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -61,11 +61,11 @@ public object TestOperationSelections {
         CompiledFragment.Builder(
           typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
-        ).selections(_onWookie1)
+        ).selections(__onWookie1)
         .build()
       )
 
-  private val _onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "profilePictureUrl",
           type = GraphQLString.type
@@ -73,11 +73,11 @@ public object TestOperationSelections {
         CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
-        ).selections(_friends1)
+        ).selections(__friends1)
         .build()
       )
 
-  private val _onBeing: List<CompiledSelection> = listOf(
+  private val __onBeing: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -89,23 +89,23 @@ public object TestOperationSelections {
         CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
-        ).selections(_friends)
+        ).selections(__friends)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(_onHuman)
+        ).selections(__onHuman)
         .build()
       )
 
-  private val _friends2: List<CompiledSelection> = listOf(
+  private val __friends2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "lifeExpectancy",
           type = GraphQLFloat.type
         ).build()
       )
 
-  private val _onWookie2: List<CompiledSelection> = listOf(
+  private val __onWookie2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "race",
           type = Race.type.notNull()
@@ -113,18 +113,18 @@ public object TestOperationSelections {
         CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
-        ).selections(_friends2)
+        ).selections(__friends2)
         .build()
       )
 
-  private val _onWookie3: List<CompiledSelection> = listOf(
+  private val __onWookie3: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "lifeExpectancy",
           type = GraphQLFloat.type
         ).build()
       )
 
-  private val _friends3: List<CompiledSelection> = listOf(
+  private val __friends3: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -132,19 +132,19 @@ public object TestOperationSelections {
         CompiledFragment.Builder(
           typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
-        ).selections(_onWookie3)
+        ).selections(__onWookie3)
         .build()
       )
 
-  private val _onBeing1: List<CompiledSelection> = listOf(
+  private val __onBeing1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "friends",
           type = Being.type.notNull().list().notNull()
-        ).selections(_friends3)
+        ).selections(__friends3)
         .build()
       )
 
-  private val _random: List<CompiledSelection> = listOf(
+  private val __random: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -152,25 +152,25 @@ public object TestOperationSelections {
         CompiledFragment.Builder(
           typeCondition = "Being",
           possibleTypes = listOf("Human", "Wookie")
-        ).selections(_onBeing)
+        ).selections(__onBeing)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Wookie",
           possibleTypes = listOf("Wookie")
-        ).selections(_onWookie2)
+        ).selections(__onWookie2)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Being",
           possibleTypes = listOf("Human", "Wookie")
-        ).selections(_onBeing1)
+        ).selections(__onBeing1)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "random",
           type = Anything.type.notNull()
-        ).selections(_random)
+        ).selections(__random)
         .build()
       )
 }

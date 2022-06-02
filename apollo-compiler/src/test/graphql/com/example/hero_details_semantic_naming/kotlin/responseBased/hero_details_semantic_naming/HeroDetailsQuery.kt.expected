@@ -42,7 +42,7 @@ public class HeroDetailsQuery() : Query<HeroDetailsQuery.Data> {
     name = "data",
     type = com.example.hero_details_semantic_naming.type.Query.type
   )
-  .selections(selections = HeroDetailsQuerySelections.root)
+  .selections(selections = HeroDetailsQuerySelections.__root)
   .build()
 
   public data class Data(

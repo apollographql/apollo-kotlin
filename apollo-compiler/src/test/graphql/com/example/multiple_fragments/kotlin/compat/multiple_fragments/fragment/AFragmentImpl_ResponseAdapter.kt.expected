@@ -54,11 +54,11 @@ public object AFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.multiple_fragments.fragment.AFragment.Node {
-      var ___typename: String? = null
+      var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -68,7 +68,7 @@ public object AFragmentImpl_ResponseAdapter {
           customScalarAdapters)
 
       return com.example.multiple_fragments.fragment.AFragment.Node(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         fragments = _fragments
       )
     }
@@ -92,17 +92,17 @@ public object AFragmentImpl_ResponseAdapter {
 
 
         reader.rewind()
-        val ___typename = reader.readTypename()
+        val __typename = reader.readTypename()
 
         var _fragment1: Fragment1? = null
-        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
               customScalarAdapters)
         }
 
         var _fragment2: Fragment2? = null
-        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
               customScalarAdapters)

@@ -53,13 +53,13 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Horse {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _Donkey: String? = null
       var _Cow: TestQuery.Cow? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _Donkey = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
@@ -67,7 +67,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.Horse(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         Donkey = _Donkey,
         Cow = _Cow
       )

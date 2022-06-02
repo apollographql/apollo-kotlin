@@ -35,7 +35,7 @@ public class DogFragmentImpl() : Fragment<DogFragmentImpl.Data> {
     name = "data",
     type = Dog.type
   )
-  .selections(selections = DogFragmentSelections.root)
+  .selections(selections = DogFragmentSelections.__root)
   .build()
 
   public data class Data(

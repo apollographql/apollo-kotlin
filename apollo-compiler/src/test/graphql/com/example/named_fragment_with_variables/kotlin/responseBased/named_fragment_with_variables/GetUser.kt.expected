@@ -44,7 +44,7 @@ public data class GetUser(
     name = "data",
     type = com.example.named_fragment_with_variables.type.Query.type
   )
-  .selections(selections = GetUserSelections.root)
+  .selections(selections = GetUserSelections.__root)
   .build()
 
   public data class Data(

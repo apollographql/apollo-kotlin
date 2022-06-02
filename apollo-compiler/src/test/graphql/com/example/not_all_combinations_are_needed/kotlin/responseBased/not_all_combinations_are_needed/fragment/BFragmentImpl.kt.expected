@@ -35,7 +35,7 @@ public class BFragmentImpl() : Fragment<BFragmentImpl.Data> {
     name = "data",
     type = B.type
   )
-  .selections(selections = bFragmentSelections.root)
+  .selections(selections = bFragmentSelections.__root)
   .build()
 
   public data class Data(

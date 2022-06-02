@@ -39,6 +39,6 @@ internal class HeroDetailsImpl() : Fragment<HeroDetails> {
     name = "data",
     type = Character.type
   )
-  .selections(selections = HeroDetailsSelections.root)
+  .selections(selections = HeroDetailsSelections.__root)
   .build()
 }

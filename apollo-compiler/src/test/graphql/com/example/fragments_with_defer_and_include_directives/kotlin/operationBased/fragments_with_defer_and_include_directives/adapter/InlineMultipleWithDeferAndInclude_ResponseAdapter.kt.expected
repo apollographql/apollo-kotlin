@@ -57,64 +57,64 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           InlineMultipleWithDeferAndInclude.Data.Hero {
-        var ___typename: String? = null
+        var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
-        check(___typename != null) {
+        check(__typename != null) {
           "__typename was not found"
         }
 
         var _onDroidIfCond1: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1? = null
-        if (and(possibleTypes("Droid"),variable("cond1")).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),variable("cond1")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroidIfCond1 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroidIfNotCond2: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2? = null
-        if (and(possibleTypes("Droid"),not(variable("cond2"))).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),not(variable("cond2"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroidIfNotCond2 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroidDeferE_first: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first? = null
-        if (and(possibleTypes("Droid"),label("e_first")).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("e_first")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroidDeferE_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroidDeferE_second: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second? = null
-        if (and(possibleTypes("Droid"),label("e_second")).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("e_second")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroidDeferE_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroidDeferE_third: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third? = null
-        if (and(possibleTypes("Droid"),and(label("e_third"),variable("cond3"))).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),and(label("e_third"),variable("cond3"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroidDeferE_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.fromJson(reader,
               customScalarAdapters)
         }
 
         var _onDroidDeferE_fourth: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth? = null
-        if (and(possibleTypes("Droid"),and(label("e_fourth"),not(variable("cond4")))).evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),and(label("e_fourth"),not(variable("cond4")))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onDroidDeferE_fourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.fromJson(reader,
               customScalarAdapters)
         }
 
         return InlineMultipleWithDeferAndInclude.Data.Hero(
-          __typename = ___typename,
+          __typename = __typename,
           onDroidIfCond1 = _onDroidIfCond1,
           onDroidIfNotCond2 = _onDroidIfNotCond2,
           onDroidDeferE_first = _onDroidDeferE_first,

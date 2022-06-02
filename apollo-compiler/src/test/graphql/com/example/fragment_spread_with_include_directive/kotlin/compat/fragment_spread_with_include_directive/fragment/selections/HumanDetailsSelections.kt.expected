@@ -11,7 +11,7 @@ import com.example.fragment_spread_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object HumanDetailsSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",
           type = GraphQLString.type

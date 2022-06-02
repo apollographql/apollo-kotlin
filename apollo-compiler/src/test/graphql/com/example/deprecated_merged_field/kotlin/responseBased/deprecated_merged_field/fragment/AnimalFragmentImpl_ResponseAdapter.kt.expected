@@ -19,14 +19,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
   public object Data : Adapter<AnimalFragmentImpl.Data> {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalFragmentImpl.Data {
-      val ___typename = reader.readTypename()
-      return when(___typename) {
+      val __typename = reader.readTypename()
+      return when(__typename) {
         "Cat",
-        -> CatData.fromJson(reader, customScalarAdapters, ___typename)
+        -> CatData.fromJson(reader, customScalarAdapters, __typename)
         "Dog",
-        -> DogData.fromJson(reader, customScalarAdapters, ___typename)
+        -> DogData.fromJson(reader, customScalarAdapters, __typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, ___typename)
+        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
       }
     }
 
@@ -51,19 +51,19 @@ public object AnimalFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): AnimalFragmentImpl.CatData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalFragmentImpl.CatData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!
       )
     }
@@ -89,19 +89,19 @@ public object AnimalFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): AnimalFragmentImpl.DogData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalFragmentImpl.DogData(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!
       )
     }
@@ -127,17 +127,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       typename: String,
     ): AnimalFragmentImpl.OtherData {
-      var ___typename: String? = typename
+      var __typename: String? = typename
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalFragmentImpl.OtherData(
-        __typename = ___typename!!
+        __typename = __typename!!
       )
     }
 

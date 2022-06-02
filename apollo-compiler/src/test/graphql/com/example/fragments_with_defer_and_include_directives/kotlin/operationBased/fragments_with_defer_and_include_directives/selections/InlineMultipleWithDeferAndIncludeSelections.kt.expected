@@ -16,49 +16,49 @@ import com.example.fragments_with_defer_and_include_directives.type.GraphQLStrin
 import kotlin.collections.List
 
 public object InlineMultipleWithDeferAndIncludeSelections {
-  private val _onDroid: List<CompiledSelection> = listOf(
+  private val __onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val _onDroid1: List<CompiledSelection> = listOf(
+  private val __onDroid1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build()
       )
 
-  private val _onDroid2: List<CompiledSelection> = listOf(
+  private val __onDroid2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val _onDroid3: List<CompiledSelection> = listOf(
+  private val __onDroid3: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build()
       )
 
-  private val _onDroid4: List<CompiledSelection> = listOf(
+  private val __onDroid4: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val _onDroid5: List<CompiledSelection> = listOf(
+  private val __onDroid5: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build()
       )
 
-  private val _hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -67,43 +67,43 @@ public object InlineMultipleWithDeferAndIncludeSelections {
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond1", false)))
-        .selections(_onDroid)
+        .selections(__onDroid)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond2", true)))
-        .selections(_onDroid1)
+        .selections(__onDroid1)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(_onDroid2)
+        ).selections(__onDroid2)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(_onDroid3)
+        ).selections(__onDroid3)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond3", false)))
-        .selections(_onDroid4)
+        .selections(__onDroid4)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond4", true)))
-        .selections(_onDroid5)
+        .selections(__onDroid5)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(_hero)
+        ).selections(__hero)
         .build()
       )
 }

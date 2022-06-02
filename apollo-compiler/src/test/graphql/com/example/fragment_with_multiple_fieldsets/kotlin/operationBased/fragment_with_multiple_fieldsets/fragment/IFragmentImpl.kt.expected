@@ -35,6 +35,6 @@ public class IFragmentImpl() : Fragment<IFragment> {
     name = "data",
     type = I.type
   )
-  .selections(selections = iFragmentSelections.root)
+  .selections(selections = iFragmentSelections.__root)
   .build()
 }

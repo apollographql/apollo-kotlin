@@ -57,32 +57,32 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _name: String? = null
       var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
-      check(___typename != null) {
+      check(__typename != null) {
         "__typename was not found"
       }
 
       var _asDroid: TestQuery.AsDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), ___typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
         _asDroid = com.example.hero_name.adapter.TestQuery_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Hero(
-        __typename = ___typename,
+        __typename = __typename,
         name = _name!!,
         birthDate = _birthDate!!,
         asDroid = _asDroid
@@ -116,14 +116,14 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsDroid {
-      var ___typename: String? = null
+      var __typename: String? = null
       var _name: String? = null
       var _birthDate: Any? = null
       var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           3 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
@@ -132,7 +132,7 @@ public object TestQuery_ResponseAdapter {
       }
 
       return TestQuery.AsDroid(
-        __typename = ___typename!!,
+        __typename = __typename!!,
         name = _name!!,
         birthDate = _birthDate!!,
         primaryFunction = _primaryFunction

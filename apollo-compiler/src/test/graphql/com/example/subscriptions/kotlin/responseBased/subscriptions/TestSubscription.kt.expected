@@ -38,7 +38,7 @@ public data class TestSubscription(
     name = "data",
     type = com.example.subscriptions.type.Subscription.type
   )
-  .selections(selections = TestSubscriptionSelections.root)
+  .selections(selections = TestSubscriptionSelections.__root)
   .build()
 
   public data class Data(

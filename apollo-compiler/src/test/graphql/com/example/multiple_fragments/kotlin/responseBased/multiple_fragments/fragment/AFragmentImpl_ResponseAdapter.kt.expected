@@ -50,12 +50,12 @@ public object AFragmentImpl_ResponseAdapter {
     private object Node : Adapter<AFragmentImpl.Data.Node> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           AFragmentImpl.Data.Node {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "ANode",
-          -> ANodeNode.fromJson(reader, customScalarAdapters, ___typename)
+          -> ANodeNode.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherNode.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -79,13 +79,13 @@ public object AFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AFragmentImpl.Data.ANodeNode {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _field1: String? = null
         var _field2: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
@@ -93,7 +93,7 @@ public object AFragmentImpl_ResponseAdapter {
         }
 
         return AFragmentImpl.Data.ANodeNode(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           field1 = _field1,
           field2 = _field2
         )
@@ -123,17 +123,17 @@ public object AFragmentImpl_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): AFragmentImpl.Data.OtherNode {
-        var ___typename: String? = typename
+        var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return AFragmentImpl.Data.OtherNode(
-          __typename = ___typename!!
+          __typename = __typename!!
         )
       }
 

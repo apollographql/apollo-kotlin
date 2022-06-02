@@ -26,13 +26,13 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragment_used_twice.fragment.HumanDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String ___typename = null;
+      String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: ___typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -41,11 +41,11 @@ public class HumanDetailsImpl_ResponseAdapter {
       reader.rewind();
       CharacterDetails _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      Assertions.checkFieldNotMissing(___typename, "__typename");
+      Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.fragment_used_twice.fragment.HumanDetails(
-        ___typename,
+        __typename,
         _name,
         _characterDetails
       );

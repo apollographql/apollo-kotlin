@@ -76,7 +76,7 @@ public class CatFragmentImpl implements Fragment<CatFragment> {
       "data",
       Cat.type
     )
-    .selections(CatFragmentSelections.root)
+    .selections(CatFragmentSelections.__root)
     .build();
   }
 }

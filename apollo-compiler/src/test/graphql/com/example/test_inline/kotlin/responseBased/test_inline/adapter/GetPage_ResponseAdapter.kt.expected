@@ -50,12 +50,12 @@ public object GetPage_ResponseAdapter {
     private object Collection : Adapter<GetPage.Data.Collection> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetPage.Data.Collection {
-        val ___typename = reader.readTypename()
-        return when(___typename) {
+        val __typename = reader.readTypename()
+        return when(__typename) {
           "ParticularCollection",
-          -> ParticularCollectionCollection.fromJson(reader, customScalarAdapters, ___typename)
+          -> ParticularCollectionCollection.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherCollection.fromJson(reader, customScalarAdapters, ___typename)
+          -> OtherCollection.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
@@ -81,19 +81,19 @@ public object GetPage_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetPage.Data.ParticularCollectionCollection {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _items: List<GetPage.Data.ParticularCollectionCollection.Item>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetPage.Data.ParticularCollectionCollection(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           items = _items!!
         )
       }
@@ -114,12 +114,12 @@ public object GetPage_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.ParticularCollectionCollection.Item {
-          val ___typename = reader.readTypename()
-          return when(___typename) {
+          val __typename = reader.readTypename()
+          return when(__typename) {
             "ParticularItem",
-            -> ParticularItemItem.fromJson(reader, customScalarAdapters, ___typename)
+            -> ParticularItemItem.fromJson(reader, customScalarAdapters, __typename)
             else
-            -> OtherItem.fromJson(reader, customScalarAdapters, ___typename)
+            -> OtherItem.fromJson(reader, customScalarAdapters, __typename)
           }
         }
 
@@ -146,13 +146,13 @@ public object GetPage_ResponseAdapter {
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var _title: String? = null
-          var ___typename: String? = typename
+          var __typename: String? = typename
           var _image: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               2 -> _image = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
@@ -160,7 +160,7 @@ public object GetPage_ResponseAdapter {
 
           return GetPage.Data.ParticularCollectionCollection.ParticularItemItem(
             title = _title!!,
-            __typename = ___typename!!,
+            __typename = __typename!!,
             image = _image!!
           )
         }
@@ -190,19 +190,19 @@ public object GetPage_ResponseAdapter {
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var _title: String? = null
-          var ___typename: String? = typename
+          var __typename: String? = typename
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.ParticularCollectionCollection.OtherItem(
             title = _title!!,
-            __typename = ___typename!!
+            __typename = __typename!!
           )
         }
 
@@ -228,19 +228,19 @@ public object GetPage_ResponseAdapter {
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): GetPage.Data.OtherCollection {
-        var ___typename: String? = typename
+        var __typename: String? = typename
         var _items: List<GetPage.Data.OtherCollection.Item>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> ___typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetPage.Data.OtherCollection(
-          __typename = ___typename!!,
+          __typename = __typename!!,
           items = _items!!
         )
       }

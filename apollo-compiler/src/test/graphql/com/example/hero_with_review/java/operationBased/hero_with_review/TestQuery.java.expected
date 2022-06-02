@@ -127,7 +127,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
       "data",
       com.example.hero_with_review.type.Mutation.type
     )
-    .selections(TestQuerySelections.root)
+    .selections(TestQuerySelections.__root)
     .build();
   }
 
