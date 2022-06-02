@@ -28,7 +28,7 @@ internal object Identifier {
   const val id = "id"
   const val name = "name"
   const val data = "data"
-  const val root = "root"
+  const val root = "__root"
   const val selections = "selections"
   const val document = "document"
   const val equals = "equals"

@@ -88,7 +88,8 @@ abstract class CodegenLayout(
   // Variables are escaped to avoid a clash with the model name if they are capitalized
   internal fun variableName(name: String) = regularIdentifier("_$name")
   internal fun propertyName(name: String) = regularIdentifier(name)
-  internal fun escapedPropertyName(name: String) = regularIdentifier("_$name")
+
+  internal fun compiledSelectionsName(name: String) = regularIdentifier("__$name")
 
   // ------------------------ Helpers ---------------------------------
 
