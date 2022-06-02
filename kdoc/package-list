@@ -33,8 +33,11 @@ com.apollographql.apollo3.exception
 module:apollo-ast
 com.apollographql.apollo3.ast
 com.apollographql.apollo3.ast.internal
+com.apollographql.apollo3.ast.introspection
 com.apollographql.apollo3.ast.transformation
 com.apollographql.apollo3.generated.antlr
+module:apollo-cli
+com.apollographql.apollo3.cli
 module:apollo-compiler
 com.apollographql.apollo3.compiler
 com.apollographql.apollo3.compiler.codegen
@@ -82,3 +85,5 @@ module:apollo-rx3-support
 com.apollographql.apollo3.rx3
 module:apollo-testing-support
 com.apollographql.apollo3.testing
+module:apollo-tooling
+com.apollographql.apollo3.tooling
