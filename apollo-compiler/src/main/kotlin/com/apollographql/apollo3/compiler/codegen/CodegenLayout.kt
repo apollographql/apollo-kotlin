@@ -86,7 +86,7 @@ abstract class CodegenLayout(
   internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
-  internal fun variableName(name: String) = regularIdentifier("_$name")
+  internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")
   internal fun propertyName(name: String) = regularIdentifier(name)
 
   internal fun compiledSelectionsName(name: String) = regularIdentifier("__$name")

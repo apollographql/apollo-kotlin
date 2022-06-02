@@ -77,7 +77,7 @@ internal fun readFromResponseCodeBlock(
     CodeBlock.of(
         "$T $L = $L;",
         context.resolver.resolveIrType(property.info.type),
-        property.responseName(context),
+        context.layout.variableName(property.info.responseName),
         variableInitializer
     )
   }.joinToCode(separator = "\n", suffix = "\n")
@@ -101,7 +101,7 @@ internal fun readFromResponseCodeBlock(
               CodeBlock.of(
                   "case $L: $L = $L.$fromJson($reader, $customScalarAdapters); break;",
                   index,
-                  property.responseName(context),
+                  context.layout.variableName(property.info.responseName),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
               )
             }.joinToCode(separator = "\n", suffix = "\n")
@@ -143,7 +143,7 @@ internal fun readFromResponseCodeBlock(
             add(
                 "$T $L = null;\n",
                 context.resolver.resolveIrType(property.info.type),
-                property.responseName(context),
+                context.layout.variableName(property.info.responseName),
             )
             val pathLiteral = if (path.isNotEmpty()) {
               __path
@@ -165,7 +165,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "$L = $L.INSTANCE.$fromJson($reader, $customScalarAdapters);\n",
-                property.responseName(context),
+                context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath())
             )
         )
@@ -187,7 +187,7 @@ internal fun readFromResponseCodeBlock(
             CodeBlock.of(
                 "$T.checkFieldNotMissing($L, $S);\n",
                 JavaClassNames.Assertions,
-                property.responseName(context),
+                context.layout.variableName(property.info.responseName),
                 property.info.responseName
             )
           }.joinToCode("")
@@ -198,7 +198,7 @@ internal fun readFromResponseCodeBlock(
       .indent()
       .add(
           visibleProperties.map { property ->
-            CodeBlock.of(L, property.responseName(context))
+            CodeBlock.of(L, context.layout.variableName(property.info.responseName))
           }.joinToCode(separator = ",\n", suffix = "\n")
       )
       .unindent()
@@ -220,11 +220,6 @@ internal fun readFromResponseCodeBlock(
       .applyIf(checks.isNotEmpty()) { add("\n") }
       .add(suffix)
       .build()
-}
-
-private fun IrProperty.responseName(context: JavaContext): String {
-  val responseName = info.responseName
-  return if (responseName == "__typename") responseName else context.layout.variableName(responseName)
 }
 
 private fun IrType.modelPath(): String {

@@ -52,7 +52,7 @@ internal fun readFromResponseCodeBlock(
 
     CodeBlock.of(
         "var·%N:·%T·=·%L",
-        property.responseName(context),
+        context.layout.variableName(property.info.responseName),
         context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
         variableInitializer
     )
@@ -76,7 +76,7 @@ internal fun readFromResponseCodeBlock(
               CodeBlock.of(
                   "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
                   index,
-                  property.responseName(context),
+                  context.layout.variableName(property.info.responseName),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
               )
             }.joinToCode(separator = "\n", suffix = "\n")
@@ -121,7 +121,7 @@ internal fun readFromResponseCodeBlock(
           if (property.condition != BooleanExpression.True) {
             add(
                 "var·%N:·%T·=·null\n",
-                property.responseName(context),
+                context.layout.variableName(property.info.responseName),
                 context.resolver.resolveIrType(property.info.type).copy(nullable = !property.info.type.isOptional()),
             )
             val typenameLiteral = if (property.requiresTypename) {
@@ -145,7 +145,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             CodeBlock.of(
                 "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
-                property.responseName(context),
+                context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
         )
@@ -171,7 +171,7 @@ internal fun readFromResponseCodeBlock(
         CodeBlock.of(
             "%N·=·%N%L",
             context.layout.propertyName(property.info.responseName),
-            property.responseName(context),
+            context.layout.variableName(property.info.responseName),
             maybeAssertNotNull
         )
       }.joinToCode(separator = ",\n", suffix = "\n"))
@@ -192,11 +192,6 @@ internal fun readFromResponseCodeBlock(
       .applyIf(syntheticLoop.isNotEmpty()) { add("\n") }
       .add(suffix)
       .build()
-}
-
-private fun IrProperty.responseName(context: KotlinContext): String {
-  val responseName = info.responseName
-  return if (responseName == "__typename") responseName else context.layout.variableName(responseName)
 }
 
 internal fun typenameFromReaderCodeBlock(): CodeBlock {
