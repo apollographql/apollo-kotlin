@@ -102,10 +102,7 @@ constructor(
       contentLength = body.size
     }
 
-    fun body(body: String) = apply {
-      this.body = flowOf(body.encodeUtf8())
-      contentLength = body.length
-    }
+    fun body(body: String) = body(body.encodeUtf8())
 
     fun headers(headers: Map<String, String>) = apply {
       this.headers.clear()

@@ -36,6 +36,9 @@ class EnqueueTest {
             .addHeader("X-Test", "true")
             .build(),
         MockResponse.Builder()
+            .body("ä".trimIndent())
+            .build(),
+        MockResponse.Builder()
             .body(flowOf("First chunk\n".encodeUtf8(), "Second chunk".encodeUtf8()).asChunked())
             .statusCode(200)
             .addHeader("X-Test", "false")
