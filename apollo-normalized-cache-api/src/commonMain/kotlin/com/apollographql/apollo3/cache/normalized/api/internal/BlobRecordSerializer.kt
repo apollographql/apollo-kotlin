@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import okio.Buffer
@@ -38,7 +36,7 @@ object BlobRecordSerializer {
     buffer.writeInt(keys.size)
     for (key in keys) {
       buffer.writeString(key)
-      buffer.writeAny(record.lastUpdated?.get(key))
+      buffer.writeAny(record.date?.get(key))
       buffer.writeAny(record.fields[key])
     }
 

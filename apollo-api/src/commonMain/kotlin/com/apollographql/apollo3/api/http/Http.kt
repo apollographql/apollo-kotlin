@@ -30,6 +30,15 @@ interface HttpBody {
 data class HttpHeader(val name: String, val value: String)
 
 /**
+ * Get the value for header [name] or null if this header doesn't exist or is defined multiple times
+ *
+ * The header name matching is case insensitive
+ */
+fun List<HttpHeader>.get(name: String): String? {
+  return singleOrNull { it.name.lowercase() == name.lowercase() }?.value?.trim()
+}
+
+/**
  * a HTTP request to be sent
  */
 class HttpRequest
