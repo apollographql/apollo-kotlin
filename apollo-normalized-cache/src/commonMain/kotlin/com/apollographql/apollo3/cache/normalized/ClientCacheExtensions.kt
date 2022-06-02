@@ -338,7 +338,7 @@ fun <T> MutableExecutionOptions<T>.storeExpirationDate(storeExpirationDate: Bool
   addExecutionContext(StoreExpirationDateContext(storeExpirationDate))
   if (this is ApolloClient.Builder) {
     check(interceptors.none { it is StoreExpirationInterceptor }) {
-      "Apollo: you can only call storeExpirationDate() on ApolloClient.Builder()"
+      "Apollo: storeExpirationDate() can only be called once on ApolloClient.Builder()"
     }
     addInterceptor(StoreExpirationInterceptor())
   }
