@@ -12,4 +12,4 @@ fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationT
 fun GQLOperationDefinition.validate(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableValidationScope(schema, fragments, allowCapitalizedFieldNames = true).validateOperation(this)
+) = ExecutableValidationScope(schema, fragments).validateOperation(this)

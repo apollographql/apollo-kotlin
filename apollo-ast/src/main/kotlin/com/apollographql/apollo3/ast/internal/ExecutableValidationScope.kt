@@ -47,7 +47,6 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 internal class ExecutableValidationScope(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val allowCapitalizedFieldNames: Boolean,
 ) : ValidationScope, VariableReferencesScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
@@ -107,24 +106,6 @@ internal class ExecutableValidationScope(
     return variableUsages.distinctBy { it.variable.name }
   }
 
-  private fun decapitalizeFirstLetter(name: String): String {
-    val builder = StringBuilder(name.length)
-    var isDecapitalized = false
-    name.forEach {
-      builder.append(if (!isDecapitalized && it.isLetter()) {
-        isDecapitalized = true
-        it.toString().lowercase()
-      } else {
-        it.toString()
-      })
-    }
-    return builder.toString()
-  }
-
-  private fun isFirstLetterUpperCase(name: String): Boolean {
-    return name.firstOrNull { it.isLetter() }?.isUpperCase() ?: true
-  }
-
   private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
     val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)
     if (fieldDefinition == null) {
@@ -133,24 +114,6 @@ internal class ExecutableValidationScope(
           sourceLocation = sourceLocation
       )
       return
-    }
-
-    if (!allowCapitalizedFieldNames) {
-      if (alias != null) {
-        if (isFirstLetterUpperCase(alias)) {
-          issues.add(Issue.UpperCaseField(message = """
-                      Capitalized alias '$alias' is not supported as it causes name clashes with the generated models. Use '${decapitalizeFirstLetter(alias)}' instead.
-                    """.trimIndent(),
-              sourceLocation = sourceLocation)
-          )
-        }
-      } else if (isFirstLetterUpperCase(name)) {
-        issues.add(Issue.UpperCaseField(message = """
-                      Capitalized field '$name' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.
-                    """.trimIndent(),
-            sourceLocation = sourceLocation)
-        )
-      }
     }
 
     if (fieldDefinition.directives.findDeprecationReason() != null) {

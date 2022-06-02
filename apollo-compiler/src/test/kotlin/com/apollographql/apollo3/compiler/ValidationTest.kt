@@ -31,7 +31,11 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, allowCapitalizedFieldNames = graphQLFile.name == "capitalized_fields_allowed.graphql").issues
+        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!).issues + if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
+          findCapitalizedFields(parseResult.value!!.definitions)
+        } else {
+          emptyList()
+        }
       }
     } else {
       if (parseResult.issues.isNotEmpty()) {

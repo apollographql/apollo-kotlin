@@ -83,7 +83,7 @@ object ApolloCompiler {
     val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
         filePath = null
-    ).validateAsExecutable(options.schema, allowCapitalizedFieldNames = options.flattenModels)
+    ).validateAsExecutable(options.schema)
 
     validationResult.issues.checkNoErrors()
 
@@ -92,6 +92,10 @@ object ApolloCompiler {
     }
 
     findApolloReservedEnumValueNames(schema).checkNoErrors()
+
+    if (!options.flattenModels) {
+      findCapitalizedFields(definitions + incomingFragments).checkNoErrors()
+    }
 
     val warnings = validationResult.issues.filter {
       it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || options.warnOnDeprecatedUsages)
