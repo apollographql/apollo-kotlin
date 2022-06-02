@@ -12,7 +12,7 @@ kotlin {
         api(projects.apolloNormalizedCacheApi)
         api(projects.apolloRuntime)
         api(projects.apolloMockserver)
-        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+        api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
         implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
           because("We need locks in TestNetworkTransportHandler (we don't use the gradle plugin rewrite)")
         }
@@ -27,7 +27,7 @@ kotlin {
 
     val jsMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlinNodejs"))
         implementation(kotlin("test-js"))
         api(okioNodeJs())
       }

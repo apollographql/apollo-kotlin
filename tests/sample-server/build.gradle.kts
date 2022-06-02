@@ -6,11 +6,11 @@ plugins {
 
 dependencies {
   api(groovy.util.Eval.x(project, "x.dep.graphqlKotlin"))
-  api(groovy.util.Eval.x(project, "x.dep.kotlin.reflect").toString()) {
+  api(groovy.util.Eval.x(project, "x.dep.kotlinReflect").toString()) {
     because("graphqlKotlin pull kotlin-reflect and that triggers a warning like" +
         "Runtime JAR files in the classpath should have the same version.")
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutinesReactor").toString()) {
+  implementation(groovy.util.Eval.x(project, "x.dep.kotlinCoroutinesReactor").toString()) {
     because("reactor must have the same version as the coroutines version")
   }
 }

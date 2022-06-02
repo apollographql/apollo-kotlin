@@ -13,7 +13,7 @@ group = "com.jvm"
 version = "1.0.0"
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.apolloApi"))
 }
 
 configure<ApolloExtension> {

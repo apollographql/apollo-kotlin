@@ -16,7 +16,7 @@ project.buildscript.repositories {
 
 project.buildscript.dependencies.apply {
   add("classpath", groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
-  add("classpath", groovy.util.Eval.x(project, "x.dep.apollo.plugin"))
+  add("classpath", groovy.util.Eval.x(project, "x.dep.apolloPlugin"))
   add("classpath", groovy.util.Eval.x(project, "x.dep.androidPlugin"))
 }
 

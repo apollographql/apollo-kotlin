@@ -10,7 +10,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.apollo.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.apolloPlugin"))
     // This project is run with Gradle 5.4 and Kotlin 1.5 doesn't support that so stick with 1.4.32
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:KOTLIN_VERSION")
   }
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.apolloApi"))
 }
 
 configure<ApolloExtension> {

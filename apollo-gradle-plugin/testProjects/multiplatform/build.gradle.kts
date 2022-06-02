@@ -26,7 +26,7 @@ configure<KotlinMultiplatformExtension> {
     sourceSets {
         get("commonMain").apply {
             dependencies {
-                implementation(groovy.util.Eval.x(project, "x.dep.apollo.api"))
+                implementation(groovy.util.Eval.x(project, "x.dep.apolloApi"))
             }
         }
     }

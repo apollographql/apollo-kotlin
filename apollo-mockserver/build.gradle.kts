@@ -13,13 +13,13 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
       }
     }
 
     val jsMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlin.nodejs"))
+        implementation(groovy.util.Eval.x(project, "x.dep.kotlinNodejs"))
       }
     }
 
