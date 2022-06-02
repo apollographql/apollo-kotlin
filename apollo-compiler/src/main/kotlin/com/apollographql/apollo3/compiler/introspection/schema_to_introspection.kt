@@ -1,5 +1,7 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo3.compiler.introspection
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.ConversionException
 import com.apollographql.apollo3.ast.GQLBooleanValue
@@ -201,9 +203,13 @@ internal fun GQLTypeDefinition.schemaKind() = when (this) {
   is GQLInterfaceTypeDefinition -> IntrospectionSchema.Schema.Kind.INTERFACE
 }
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toIntrospectionSchema", "com.apollographql.apollo3.ast.introspection"))
 fun Schema.toIntrospectionSchema() = IntrospectionSchemaBuilder(this).toIntrospectionSchema()
 
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toKotlinValue", "com.apollographql.apollo3.ast.introspection"))
 fun GQLValue.toKotlinValue(constContext: Boolean): Any? {
   return when (this) {
     is GQLIntValue -> value

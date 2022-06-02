@@ -6,8 +6,8 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.compiler.introspection.toGQLDocument
-import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.apollographql.apollo3.ast.introspection.toGQLDocument
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File

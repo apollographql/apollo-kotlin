@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.apolloDefinitions
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import java.io.File
 
 

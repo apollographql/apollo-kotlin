@@ -1,5 +1,7 @@
+@file:Suppress("DEPRECATION")
 package com.apollographql.apollo3.compiler.introspection
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.compiler.fromJson
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
@@ -12,6 +14,8 @@ import okio.source
 import java.io.File
 
 @JsonClass(generateAdapter = true)
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("IntrospectionSchema", "com.apollographql.apollo3.ast.introspection"))
 data class IntrospectionSchema(
     val __schema: Schema,
 ) {

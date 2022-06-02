@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.gradle.internal.ApolloPlugin.Companion.extraHeaders
+import com.apollographql.apollo3.tooling.SchemaUploader
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -67,7 +69,8 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
         key = key,
         graph = graph,
         variant = graphVariant ?: "current",
-        sdl = File(projectRootDir).resolve(schema).readText()
+        sdl = File(projectRootDir).resolve(schema).readText(),
+        headers = extraHeaders
     )
   }
 }

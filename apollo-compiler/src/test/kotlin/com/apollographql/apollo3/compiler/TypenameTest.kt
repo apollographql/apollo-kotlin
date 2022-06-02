@@ -6,7 +6,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.toExecutableDefinitions
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
-import com.apollographql.apollo3.compiler.introspection.toSchema
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.google.common.truth.Truth.assertThat
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector

@@ -24,6 +24,7 @@ dependencies {
 
   add("shade", projects.apolloGradlePluginExternal)
 
+  testImplementation(projects.apolloAst)
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))

@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.compiler.toJson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -24,8 +24,6 @@ internal object SchemaHelper {
         .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
         .addInterceptor { chain ->
           chain.request().newBuilder()
-              .header("apollographql-client-name", "apollo-gradle-plugin")
-              .header("apollographql-client-version", com.apollographql.apollo3.compiler.APOLLO_VERSION)
               .build()
               .let {
                 chain.proceed(it)

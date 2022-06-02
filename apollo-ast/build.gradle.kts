@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
   antlr
   kotlin("jvm")
+  id("com.google.devtools.ksp")
 }
 
 dependencies {
@@ -10,6 +11,12 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
   api(okio())
   api(projects.apolloAnnotations)
+
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
+
+  ksp(groovy.util.Eval.x(project, "x.dep.moshi.sealedCodegen"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
 
   testImplementation(kotlin("test-junit"))
 }

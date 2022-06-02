@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo3.compiler.introspection.normalize
-import com.apollographql.apollo3.compiler.introspection.toIntrospectionSchema
+import com.apollographql.apollo3.ast.introspection.normalize
+import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome

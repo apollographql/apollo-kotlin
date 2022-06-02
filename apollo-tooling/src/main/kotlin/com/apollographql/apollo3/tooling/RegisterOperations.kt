@@ -1,5 +1,6 @@
-package com.apollographql.apollo3.gradle.internal
+package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDefinition
@@ -27,7 +28,7 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.gradle.internal.SchemaDownloader.cast
+import com.apollographql.apollo3.tooling.SchemaDownloader.cast
 import okio.Buffer
 
 
@@ -121,7 +122,7 @@ private fun printDocument(gqlNode: GQLNode): String {
   return buffer.readUtf8()
 }
 
-fun GQLNode.copyWithSortedChildren(): GQLNode {
+private fun GQLNode.copyWithSortedChildren(): GQLNode {
   return when (this) {
     is GQLDocument -> {
       copy(definitions = definitions.sortedBy { it.score() })
@@ -154,7 +155,7 @@ fun GQLNode.copyWithSortedChildren(): GQLNode {
   }
 }
 
-fun GQLNode.sort(): GQLNode {
+private fun GQLNode.sort(): GQLNode {
   val newChildren = children.mapNotNull { it.sort() }
   val nodeContainer = NodeContainer(newChildren)
   return copyWithNewChildrenInternal(nodeContainer).also {
@@ -162,6 +163,7 @@ fun GQLNode.sort(): GQLNode {
   }.copyWithSortedChildren()
 }
 
+@ApolloExperimental
 object RegisterOperations {
   private val mutation = """
       mutation RegisterOperations(

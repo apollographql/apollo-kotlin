@@ -7,8 +7,8 @@ plugins {
 
 dependencies {
   implementation(projects.apolloAst)
-  implementation(projects.apolloNormalizedCacheApi) {
-    because("To generate the CacheResolver")
+  implementation(projects.apolloApi) {
+    because("For BooleanExpression")
   }
   implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin").toString()) {
     // We don't use any of the KotlinPoet kotlin-reflect features
@@ -16,7 +16,6 @@ dependencies {
   }
   implementation(groovy.util.Eval.x(project, "x.dep.poet.java"))
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.adapters"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
 
