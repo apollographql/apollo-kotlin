@@ -334,43 +334,55 @@ fun <T> MutableExecutionOptions<T>.storeReceiveDate(storeReceiveDate: Boolean) =
  * Default: false
  */
 @ApolloExperimental
-fun ApolloClient.Builder.storeExpirationDate(storeExpirationDate: Boolean): ApolloClient.Builder = apply {
+fun <T> MutableExecutionOptions<T>.storeExpirationDate(storeExpirationDate: Boolean): T {
   addExecutionContext(StoreExpirationDateContext(storeExpirationDate))
-  addInterceptor(object : ApolloInterceptor {
-    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      return chain.proceed(request).map {
-        val headers = it.executionContext[HttpInfo]?.headers.orEmpty()
-
-        val cacheControl = headers.get("cache-control")?.lowercase() ?: return@map it
-
-        val c = cacheControl.split(",").map { it.trim() }
-        val maxAge = c.mapNotNull {
-          if (it.startsWith("max-age=")) {
-            it.substring(8).toIntOrNull()
-          } else {
-            null
-          }
-        }.firstOrNull() ?: return@map it
-
-        val age = headers.get("age")?.toIntOrNull()
-        val expires = if (age != null) {
-          currentTimeMillis() / 1000 + maxAge - age
-        } else {
-          currentTimeMillis() / 1000 + maxAge
-        }
-
-        return@map it.newBuilder()
-            .cacheHeaders(
-                it.cacheHeaders.newBuilder()
-                    .addHeader(ApolloCacheHeaders.DATE, expires.toString())
-                    .build()
-            )
-            .build()
-      }
+  if (this is ApolloClient.Builder) {
+    check(interceptors.none { it is StoreExpirationInterceptor }) {
+      "Apollo: you can only call storeExpirationDate() on ApolloClient.Builder()"
     }
-  })
+    addInterceptor(StoreExpirationInterceptor())
+  }
+  @Suppress("UNCHECKED_CAST")
+  return this as T
 }
 
+private class StoreExpirationInterceptor: ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).map {
+      val store = request.executionContext[StoreExpirationDateContext]?.value
+      if (store != true) {
+        return@map it
+      }
+      val headers = it.executionContext[HttpInfo]?.headers.orEmpty()
+
+      val cacheControl = headers.get("cache-control")?.lowercase() ?: return@map it
+
+      val c = cacheControl.split(",").map { it.trim() }
+      val maxAge = c.mapNotNull {
+        if (it.startsWith("max-age=")) {
+          it.substring(8).toIntOrNull()
+        } else {
+          null
+        }
+      }.firstOrNull() ?: return@map it
+
+      val age = headers.get("age")?.toIntOrNull()
+      val expires = if (age != null) {
+        currentTimeMillis() / 1000 + maxAge - age
+      } else {
+        currentTimeMillis() / 1000 + maxAge
+      }
+
+      return@map it.newBuilder()
+          .cacheHeaders(
+              it.cacheHeaders.newBuilder()
+                  .addHeader(ApolloCacheHeaders.DATE, expires.toString())
+                  .build()
+          )
+          .build()
+    }
+  }
+}
 
 /**
  * @param cacheHeaders additional cache headers to be passed to your [com.apollographql.apollo3.cache.normalized.api.NormalizedCache]
