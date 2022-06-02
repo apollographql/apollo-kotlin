@@ -1,3 +1,9 @@
+public final class com/apollographql/apollo3/compiler/-checkApolloReservedEnumValueNames {
+}
+
+public final class com/apollographql/apollo3/compiler/-checkCapitalizedFields {
+}
+
 public abstract interface class com/apollographql/apollo3/compiler/AdapterInitializer {
 }
 
@@ -41,12 +47,6 @@ public final class com/apollographql/apollo3/compiler/ApolloMetadataJsonAdapter 
 	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ApolloMetadata;)V
 	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/CheckNoApolloReservedEnumValueNamesKt {
-}
-
-public final class com/apollographql/apollo3/compiler/CheckNoCapitalizedFieldsKt {
 }
 
 public final class com/apollographql/apollo3/compiler/CommonMetadata {

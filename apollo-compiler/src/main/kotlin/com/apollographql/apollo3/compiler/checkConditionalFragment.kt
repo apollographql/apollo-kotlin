@@ -12,16 +12,15 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.internal.IssuesScope
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
 
-
-internal fun findConditionalFragments(definitions: List<GQLDefinition>): List<Issue> {
+internal fun checkConditionalFragments(definitions: List<GQLDefinition>): List<Issue> {
   val scope = object : IssuesScope {
     override val issues = mutableListOf<Issue>()
   }
 
   definitions.forEach {
     when (it) {
-      is GQLOperationDefinition -> scope.findConditionalFragments(it.selectionSet.selections)
-      is GQLFragmentDefinition -> scope.findConditionalFragments(it.selectionSet.selections)
+      is GQLOperationDefinition -> scope.checkConditionalFragments(it.selectionSet.selections)
+      is GQLFragmentDefinition -> scope.checkConditionalFragments(it.selectionSet.selections)
     }
   }
 
@@ -32,10 +31,10 @@ internal fun findConditionalFragments(definitions: List<GQLDefinition>): List<Is
  * Fragments with @include/@skip or @defer directives are hard to generate as responseBased models because they would
  * need multiple shapes depending on the condition. This is not supported at the moment
  */
-private fun IssuesScope.findConditionalFragments(selections: List<GQLSelection>) {
+private fun IssuesScope.checkConditionalFragments(selections: List<GQLSelection>) {
   selections.forEach {
     when (it) {
-      is GQLField -> findConditionalFragments(it.selectionSet?.selections ?: emptyList())
+      is GQLField -> checkConditionalFragments(it.selectionSet?.selections ?: emptyList())
       is GQLInlineFragment -> {
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
@@ -45,7 +44,7 @@ private fun IssuesScope.findConditionalFragments(selections: List<GQLSelection>)
               )
           )
         }
-        findConditionalFragments(it.selectionSet.selections)
+        checkConditionalFragments(it.selectionSet.selections)
       }
       is GQLFragmentSpread -> {
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {

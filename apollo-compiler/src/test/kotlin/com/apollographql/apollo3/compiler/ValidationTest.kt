@@ -32,7 +32,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
         parseResult.issues
       } else {
         parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!).issues + if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
-          findCapitalizedFields(parseResult.value!!.definitions)
+          checkCapitalizedFields(parseResult.value!!.definitions)
         } else {
           emptyList()
         }
@@ -43,7 +43,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       } else {
         val schemaResult = parseResult.valueAssertNoErrors().validateAsSchema()
         schemaResult.issues + if (graphQLFile.name == "reserved-enum-value-names.graphql") {
-          findApolloReservedEnumValueNames(schemaResult.value!!)
+          checkApolloReservedEnumValueNames(schemaResult.value!!)
         } else {
           emptyList()
         }

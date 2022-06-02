@@ -1,3 +1,5 @@
+@file:JvmName("-checkCapitalizedFields")
+
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -12,7 +14,7 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.internal.IssuesScope
 
 @ApolloInternal
-fun findCapitalizedFields(definitions: List<GQLDefinition>): List<Issue> {
+fun checkCapitalizedFields(definitions: List<GQLDefinition>): List<Issue> {
   val scope = object : ValidationScope {
     override val issues = mutableListOf<Issue>()
     override val fragmentsByName = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
@@ -20,8 +22,8 @@ fun findCapitalizedFields(definitions: List<GQLDefinition>): List<Issue> {
 
   definitions.forEach {
     when (it) {
-      is GQLOperationDefinition -> scope.findCapitalizedFields(it.selectionSet.selections)
-      is GQLFragmentDefinition -> scope.findCapitalizedFields(it.selectionSet.selections)
+      is GQLOperationDefinition -> scope.checkCapitalizedFields(it.selectionSet.selections)
+      is GQLFragmentDefinition -> scope.checkCapitalizedFields(it.selectionSet.selections)
     }
   }
 
@@ -31,7 +33,7 @@ fun findCapitalizedFields(definitions: List<GQLDefinition>): List<Issue> {
 /**
  * Fields named with a capital first letter clash with the corresponding model name, unless flatten.
  */
-private fun ValidationScope.findCapitalizedFields(selections: List<GQLSelection>) {
+private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection>) {
   selections.forEach {
     when (it) {
       is GQLField -> {
@@ -52,11 +54,11 @@ private fun ValidationScope.findCapitalizedFields(selections: List<GQLSelection>
           )
         }
         it.selectionSet?.let { selectionSet ->
-          findCapitalizedFields(selectionSet.selections)
+          checkCapitalizedFields(selectionSet.selections)
         }
       }
-      is GQLInlineFragment -> findCapitalizedFields(it.selectionSet.selections)
-      is GQLFragmentSpread -> findCapitalizedFields(fragmentsByName[it.name]!!.selectionSet.selections)
+      is GQLInlineFragment -> checkCapitalizedFields(it.selectionSet.selections)
+      is GQLFragmentSpread -> checkCapitalizedFields(fragmentsByName[it.name]!!.selectionSet.selections)
     }
   }
 }

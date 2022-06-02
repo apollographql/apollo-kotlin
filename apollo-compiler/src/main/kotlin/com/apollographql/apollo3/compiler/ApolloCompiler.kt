@@ -88,13 +88,13 @@ object ApolloCompiler {
     validationResult.issues.checkNoErrors()
 
     if (options.codegenModels == MODELS_RESPONSE_BASED) {
-      findConditionalFragments(definitions).checkNoErrors()
+      checkConditionalFragments(definitions).checkNoErrors()
     }
 
-    findApolloReservedEnumValueNames(schema).checkNoErrors()
+    checkApolloReservedEnumValueNames(schema).checkNoErrors()
 
     if (!options.flattenModels) {
-      findCapitalizedFields(definitions + incomingFragments).checkNoErrors()
+      checkCapitalizedFields(definitions + incomingFragments).checkNoErrors()
     }
 
     val warnings = validationResult.issues.filter {
