@@ -11,7 +11,6 @@ dependencies {
   
   api(projects.apolloCompiler)
   implementation(projects.apolloTooling)
-  implementation(projects.apolloTooling)
   implementation(projects.apolloAst)
 }
 
