@@ -46,6 +46,9 @@ public final class com/apollographql/apollo3/compiler/ApolloMetadataJsonAdapter 
 public final class com/apollographql/apollo3/compiler/CheckNoApolloReservedEnumValueNamesKt {
 }
 
+public final class com/apollographql/apollo3/compiler/CheckNoCapitalizedFieldsKt {
+}
+
 public final class com/apollographql/apollo3/compiler/CommonMetadata {
 	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
 	public final fun component1 ()Lcom/apollographql/apollo3/ast/Schema;
