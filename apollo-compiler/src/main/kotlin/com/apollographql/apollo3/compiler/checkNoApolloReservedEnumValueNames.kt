@@ -21,7 +21,7 @@ fun findApolloReservedEnumValueNames(schema: Schema): List<Issue> {
         if (targetName == null) {
           issues.add(
               Issue.ReservedEnumValueName(
-                  message = "'${value.name}' is a reserved enum value name, please use the @experimental_targetName directive to specify a target name",
+                  message = "'${value.name}' is a reserved enum value name, please use the @targetName directive to specify a target name",
                   sourceLocation = value.sourceLocation
               )
           )

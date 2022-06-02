@@ -33,7 +33,7 @@ fun List<GQLDirective>.findExperimentalReason() = firstOrNull { it.name == "expe
     }
 
 @ApolloInternal
-fun List<GQLDirective>.findTargetName() = firstOrNull { it.name == "experimental_targetName" }
+fun List<GQLDirective>.findTargetName() = firstOrNull { it.name == "targetName" }
     ?.let {
       it.arguments
           ?.arguments

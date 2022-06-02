@@ -7,5 +7,5 @@ enum Enum {
 }
 
 enum Enum2 {
-  type @experimental_targetName(name: "type")
+  type @targetName(name: "type")
 }
