@@ -94,7 +94,7 @@ object ApolloCompiler {
     checkApolloReservedEnumValueNames(schema).checkNoErrors()
 
     if (!options.flattenModels) {
-      checkCapitalizedFields(definitions + incomingFragments).checkNoErrors()
+      checkCapitalizedFields(definitions).checkNoErrors()
     }
 
     val warnings = validationResult.issues.filter {
