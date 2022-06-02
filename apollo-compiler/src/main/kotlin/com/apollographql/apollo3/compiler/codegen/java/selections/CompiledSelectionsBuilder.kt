@@ -67,8 +67,8 @@ class CompiledSelectionsBuilder(
         .build()
   }
 
-  private fun List<GQLSelection>.walk(name: String, private: Boolean, parentType: String): List<FieldSpec> {
-    val modelName = if (name == root) name else context.layout.compiledSelectionsName(name)
+  private fun List<GQLSelection>.walk(name: String, isRoot: Boolean, parentType: String): List<FieldSpec> {
+    val modelName = if (isRoot) root else context.layout.compiledSelectionsName(name)
     val propertyName = resolveNameClashes(usedNames, modelName)
 
     val results = mapNotNull { it.walk(true, parentType) }
@@ -76,7 +76,7 @@ class CompiledSelectionsBuilder(
     val property = FieldSpec.builder(ParameterizedTypeName.get(JavaClassNames.List, JavaClassNames.CompiledSelection), propertyName)
         .initializer(results.map { it.initializer }.toListInitializerCodeblock(withNewLines = true))
         .addModifiers(Modifier.STATIC)
-        .addModifiers(if (private) Modifier.PRIVATE else Modifier.PUBLIC)
+        .addModifiers(if (isRoot) Modifier.PRIVATE else Modifier.PUBLIC)
         .build()
 
     return results.flatMap { it.nestedFieldSpecs } + property

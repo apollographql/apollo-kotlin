@@ -64,8 +64,8 @@ class CompiledSelectionsBuilder(
         .build()
   }
 
-  private fun List<GQLSelection>.walk(name: String, private: Boolean, parentType: String): List<PropertySpec> {
-    val modelName = if (name == root) name else context.layout.compiledSelectionsName(name)
+  private fun List<GQLSelection>.walk(name: String, isRoot: Boolean, parentType: String): List<PropertySpec> {
+    val modelName = if (isRoot) root else context.layout.compiledSelectionsName(name)
     val propertyName = resolveNameClashes(usedNames, modelName)
 
     val results = mapNotNull { it.walk(true, parentType) }
@@ -78,7 +78,7 @@ class CompiledSelectionsBuilder(
 
     val property = PropertySpec.builder(propertyName, KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
         .initializer(builder.build())
-        .applyIf(private) {
+        .applyIf(isRoot) {
           addModifiers(KModifier.PRIVATE)
         }
         .build()
