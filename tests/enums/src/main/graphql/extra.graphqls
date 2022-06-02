@@ -1,8 +1,8 @@
 extend enum Direction {
-  type @experimental_targetName(name: "type_")
+  type @targetName(name: "type_")
 }
 
 extend enum Gravity {
-  type @experimental_targetName(name: "type_")
+  type @targetName(name: "type_")
 }
 

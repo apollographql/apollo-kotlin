@@ -64,7 +64,7 @@ private fun GQLDocument.withoutDefinitions(definitions: List<GQLDefinition>): GQ
 /**
  * Adds [definitions] to the [GQLDocument]
  *
- * If a definition alreay exists, it is kept as is and a warning is logged
+ * If a definition already exists, it is kept as is and a warning is logged
  *
  * See https://spec.graphql.org/draft/#sel-FAHnBPLCAACCcooU
  */
