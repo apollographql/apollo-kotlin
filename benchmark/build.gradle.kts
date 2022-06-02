@@ -10,7 +10,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.androidPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
 
