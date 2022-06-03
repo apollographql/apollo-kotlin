@@ -7,12 +7,15 @@ If you want to discuss the project or just say hi, stop by [the kotlinlang slack
 
 ## Project Setup
 
-This project is developed using IntelliJ IDEA. Android Studio might work too, but we find out the experience for
-multiplatform code to be better with IntelliJ IDEA. To build multiplatform projects, you need MacOS and the Xcode
-developer tools.
+You will need:
+* Java11+
+* A recent version of IntelliJ IDEA community. Android Studio might work too, but we find out the experience for
+multiplatform code to be better with IntelliJ IDEA.
+* MacOS and the Xcode developer tools for iOS/MacOS targets.
 
-To build the integration tests, use the `tests` build. It's a composite build that includes the main build so that it's
-possible to use `apollo-gradle-plugin` with dependency substitution.
+We recommend opening the `tests` folder in IntelliJ. It's a composite build that includes the main build and integration-tests
+so it's easy to add GraphQL and test the codegen end-to-end. If you only want to do small changes, you can open the root
+project to save some sync times.
 
 ## Using a local version of Apollo Kotlin
 
