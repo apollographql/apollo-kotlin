@@ -30,7 +30,7 @@ repositories {
 dependencies {
   // ADD DEPENDENCIES HERE
   implementation dep.jetbrainsAnnotations
-  implementation dep.apollo.api
+  implementation dep.apolloApi
 }
 
 // ADD ANDROID CONFIGURATION HERE

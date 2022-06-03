@@ -7,16 +7,16 @@ plugins {
 }
 
 dependencies {
-  antlr(groovy.util.Eval.x(project, "x.dep.antlr.antlr"))
-  implementation(groovy.util.Eval.x(project, "x.dep.antlr.runtime"))
+  antlr(groovy.util.Eval.x(project, "x.dep.antlrAntlr"))
+  implementation(groovy.util.Eval.x(project, "x.dep.antlrRuntime"))
   api(okio())
   api(projects.apolloAnnotations)
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiSealedRuntime"))
 
-  ksp(groovy.util.Eval.x(project, "x.dep.moshi.sealedCodegen"))
-  ksp(groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshiSealedCodegen"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
   testImplementation(kotlin("test-junit"))
 }

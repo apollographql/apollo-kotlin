@@ -9,7 +9,7 @@ apply(plugin = "org.jetbrains.kotlin.jvm")
 apply(plugin = "com.apollographql.apollo3")
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.apollo.api"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.apolloApi"))
   add("implementation", "com.jvm:jvm-producer:1.0.0")
   add("apolloMetadata", "com.jvm:jvm-producer-apollo:1.0.0")
 }

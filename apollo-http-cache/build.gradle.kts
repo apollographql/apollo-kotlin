@@ -3,10 +3,10 @@ plugins {
 }
 
 dependencies {
-  api(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  api(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
   api(projects.apolloApi)
   api(projects.apolloRuntime)
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
 
   testImplementation(projects.apolloMockserver)

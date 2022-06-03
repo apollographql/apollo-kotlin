@@ -28,8 +28,8 @@ dependencies {
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.mockWebServer"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttp.tls"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttpMockWebServer"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttpTls"))
 }
 
 if (relocateJar) {

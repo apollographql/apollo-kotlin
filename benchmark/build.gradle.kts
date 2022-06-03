@@ -10,7 +10,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.android.plugin"))
+    classpath(groovy.util.Eval.x(project, "x.dep.androidPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
 
@@ -40,8 +40,8 @@ dependencies {
   add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:${properties.get("apolloVersion")}")
   add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:${properties.get("apolloVersion")}")
 
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  add("ksp", groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
+  add("implementation", groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
+  add("ksp", groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
   add("androidTestImplementation", "androidx.benchmark:benchmark-junit4:1.0.0")
 }

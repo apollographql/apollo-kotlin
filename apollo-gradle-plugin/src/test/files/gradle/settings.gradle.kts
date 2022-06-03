@@ -14,7 +14,7 @@ pluginManagement {
   resolutionStrategy {
     eachPlugin {
       if (requested.id.id == "com.apollographql.apollo3") {
-        useModule(groovy.util.Eval.x(extra, "x.dep.apollo.plugin"))
+        useModule(groovy.util.Eval.x(extra, "x.dep.apolloPlugin"))
       }
     }
   }

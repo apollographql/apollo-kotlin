@@ -8,11 +8,11 @@ dependencies {
   implementation(projects.apolloAnnotations)
   implementation(projects.apolloAst)
   api(projects.apolloCompiler)
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
-  implementation(groovy.util.Eval.x(project, "x.dep.okHttp.okHttp"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiSealedRuntime"))
+  implementation(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
 }

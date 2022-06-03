@@ -10,17 +10,17 @@ dependencies {
   implementation(projects.apolloApi) {
     because("For BooleanExpression")
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.poet.kotlin").toString()) {
+  implementation(groovy.util.Eval.x(project, "x.dep.poetKotlin").toString()) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.poet.java"))
+  implementation(groovy.util.Eval.x(project, "x.dep.poetJava"))
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.moshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshi.sealedRuntime"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiSealedRuntime"))
 
-  ksp(groovy.util.Eval.x(project, "x.dep.moshi.sealedCodegen"))
-  ksp(groovy.util.Eval.x(project, "x.dep.moshi.ksp"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshiSealedCodegen"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.javaCompileTesting"))

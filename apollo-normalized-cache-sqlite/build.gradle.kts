@@ -39,13 +39,13 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     val jvmMain by getting {
       dependsOn(commonMain)
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.jvm"))
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelightJvm"))
       }
     }
 
     val appleMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.native"))
+        implementation(groovy.util.Eval.x(project, "x.dep.sqldelightNative"))
       }
     }
 
@@ -59,10 +59,10 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       val androidMain by getting {
         dependsOn(commonMain)
         dependencies {
-          api(groovy.util.Eval.x(project, "x.dep.androidx.sqlite"))
-          implementation(groovy.util.Eval.x(project, "x.dep.sqldelight.android"))
-          implementation(groovy.util.Eval.x(project, "x.dep.androidx.sqliteFramework"))
-          implementation(groovy.util.Eval.x(project, "x.dep.androidx.startupRuntime"))
+          api(groovy.util.Eval.x(project, "x.dep.androidxSqlite"))
+          implementation(groovy.util.Eval.x(project, "x.dep.sqldelightAndroid"))
+          implementation(groovy.util.Eval.x(project, "x.dep.androidxSqliteFramework"))
+          implementation(groovy.util.Eval.x(project, "x.dep.androidxStartupRuntime"))
         }
       }
       val androidTest by getting {

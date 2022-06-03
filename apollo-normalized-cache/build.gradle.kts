@@ -10,7 +10,7 @@ kotlin {
       dependencies {
         api(projects.apolloRuntime)
         api(projects.apolloNormalizedCacheApi)
-        api(groovy.util.Eval.x(project, "x.dep.kotlin.coroutines"))
+        api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
       }
     }
   }

@@ -13,11 +13,11 @@ import java.io.File
 object TestUtils {
   class Plugin(val artifact: String?, val id: String)
 
-  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "android.plugin")
-  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "android.plugin")
+  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "androidPlugin")
+  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "androidPlugin")
   val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "kotlinPlugin")
   val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "kotlinPlugin")
-  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apollo.plugin")
+  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apolloPlugin")
 
   fun withDirectory(block: (File) -> Unit) {
     val dest = File(File(System.getProperty("user.dir")), "build/testProject")
