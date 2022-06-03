@@ -39,13 +39,13 @@ public class TestQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      QueryFragment queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      QueryFragment _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Data(
         __typename,
-        queryFragment
+        _queryFragment
       );
     }
 

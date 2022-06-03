@@ -27,17 +27,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Hero? = null
+      var _hero: TestQuery.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -69,16 +69,16 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asHuman: TestQuery.AsHuman? = null
+      var _asHuman: TestQuery.AsHuman? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asHuman = com.example.inline_fragment_simple.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
+        _asHuman = com.example.inline_fragment_simple.adapter.TestQuery_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Hero(
         __typename = __typename,
-        asHuman = asHuman
+        asHuman = _asHuman
       )
     }
 
@@ -103,19 +103,19 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsHuman {
       var __typename: String? = null
-      var height: Double? = null
+      var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsHuman(
         __typename = __typename!!,
-        height = height
+        height = _height
       )
     }
 

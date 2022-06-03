@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
+      var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> nonOptionalHero = NonOptionalHero.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _nonOptionalHero = NonOptionalHero.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        nonOptionalHero = nonOptionalHero!!
+        nonOptionalHero = _nonOptionalHero!!
       )
     }
 
@@ -55,12 +55,12 @@ public object TestQuery_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.NonOptionalHero {
         var __typename: String? = null
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -69,17 +69,17 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
+        var _onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
+          _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.NonOptionalHero(
           __typename = __typename,
-          name = name!!,
-          onHuman = onHuman
+          name = _name!!,
+          onHuman = _onHuman
         )
       }
 
@@ -105,17 +105,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.NonOptionalHero.OnHuman {
-          var height: Double? = null
+          var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.NonOptionalHero.OnHuman(
-            height = height
+            height = _height
           )
         }
 

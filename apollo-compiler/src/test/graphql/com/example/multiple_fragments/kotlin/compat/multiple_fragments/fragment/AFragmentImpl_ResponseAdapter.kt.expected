@@ -25,17 +25,17 @@ public object AFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.multiple_fragments.fragment.AFragment {
-      var node: com.example.multiple_fragments.fragment.AFragment.Node? = null
+      var _node: com.example.multiple_fragments.fragment.AFragment.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.multiple_fragments.fragment.AFragment(
-        node = node
+        node = _node
       )
     }
 
@@ -64,12 +64,12 @@ public object AFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.Node.Fragments.fromJson(reader,
+      val _fragments = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.Node.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.multiple_fragments.fragment.AFragment.Node(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -94,23 +94,23 @@ public object AFragmentImpl_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        var fragment1: Fragment1? = null
+        var _fragment1: Fragment1? = null
         if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
+          _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
               customScalarAdapters)
         }
 
-        var fragment2: Fragment2? = null
+        var _fragment2: Fragment2? = null
         if (possibleTypes("ANode").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
+          _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
               customScalarAdapters)
         }
 
         return com.example.multiple_fragments.fragment.AFragment.Node.Fragments(
-          fragment1 = fragment1,
-          fragment2 = fragment2
+          fragment1 = _fragment1,
+          fragment2 = _fragment2
         )
       }
 

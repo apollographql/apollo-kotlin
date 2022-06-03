@@ -42,7 +42,7 @@ public class GetHuman() : Query<GetHuman.Data> {
     name = "data",
     type = com.example.interface_on_interface.type.Query.type
   )
-  .selections(selections = GetHumanSelections.root)
+  .selections(selections = GetHumanSelections.__root)
   .build()
 
   public data class Data(

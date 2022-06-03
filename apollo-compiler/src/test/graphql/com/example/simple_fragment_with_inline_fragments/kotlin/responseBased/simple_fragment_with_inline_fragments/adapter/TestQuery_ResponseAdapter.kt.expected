@@ -28,17 +28,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -57,14 +57,14 @@ public object TestQuery_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var __typename: String? = null
-        var name: String? = null
-        var friends: List<TestQuery.Data.Hero.Friend?>? = null
+        var _name: String? = null
+        var _friends: List<TestQuery.Data.Hero.Friend?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
@@ -72,8 +72,8 @@ public object TestQuery_ResponseAdapter {
 
         return TestQuery.Data.Hero(
           __typename = __typename!!,
-          name = name!!,
-          friends = friends
+          name = _name!!,
+          friends = _friends
         )
       }
 
@@ -132,22 +132,22 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.Hero.HumanFriend {
           var __typename: String? = typename
-          var name: String? = null
-          var height: Double? = null
+          var _name: String? = null
+          var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.HumanFriend(
             __typename = __typename!!,
-            name = name!!,
-            height = height
+            name = _name!!,
+            height = _height
           )
         }
 
@@ -176,22 +176,22 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.Hero.DroidFriend {
           var __typename: String? = typename
-          var name: String? = null
-          var primaryFunction: String? = null
+          var _name: String? = null
+          var _primaryFunction: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.DroidFriend(
             __typename = __typename!!,
-            name = name!!,
-            primaryFunction = primaryFunction
+            name = _name!!,
+            primaryFunction = _primaryFunction
           )
         }
 
@@ -220,19 +220,19 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.Hero.OtherFriend {
           var __typename: String? = typename
-          var name: String? = null
+          var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.OtherFriend(
             __typename = __typename!!,
-            name = name!!
+            name = _name!!
           )
         }
 

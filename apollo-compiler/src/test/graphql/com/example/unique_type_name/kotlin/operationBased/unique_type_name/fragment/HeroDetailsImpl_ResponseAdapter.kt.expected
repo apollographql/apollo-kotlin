@@ -25,20 +25,20 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.unique_type_name.fragment.HeroDetails {
-      var name: String? = null
-      var friendsConnection: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection? = null
+      var _name: String? = null
+      var _friendsConnection: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.unique_type_name.fragment.HeroDetails(
-        name = name!!,
-        friendsConnection = friendsConnection!!
+        name = _name!!,
+        friendsConnection = _friendsConnection!!
       )
     }
 
@@ -60,21 +60,21 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.unique_type_name.fragment.HeroDetails.FriendsConnection {
-        var totalCount: Int? = null
-        var edges: List<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge?>? = null
+        var _totalCount: Int? = null
+        var _edges: List<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+            0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection(
-          totalCount = totalCount,
-          edges = edges
+          totalCount = _totalCount,
+          edges = _edges
         )
       }
 
@@ -97,17 +97,17 @@ public object HeroDetailsImpl_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge {
-          var node: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
+          var _node: com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge(
-            node = node
+            node = _node
           )
         }
 
@@ -127,17 +127,17 @@ public object HeroDetailsImpl_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node {
-            var name: String? = null
+            var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return com.example.unique_type_name.fragment.HeroDetails.FriendsConnection.Edge.Node(
-              name = name!!
+              name = _name!!
             )
           }
 

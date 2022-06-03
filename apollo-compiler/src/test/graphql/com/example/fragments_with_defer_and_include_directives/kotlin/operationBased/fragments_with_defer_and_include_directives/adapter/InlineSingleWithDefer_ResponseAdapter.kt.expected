@@ -27,17 +27,17 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         InlineSingleWithDefer.Data {
-      var hero: InlineSingleWithDefer.Data.Hero? = null
+      var _hero: InlineSingleWithDefer.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return InlineSingleWithDefer.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -69,16 +69,16 @@ public object InlineSingleWithDefer_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onDroid: InlineSingleWithDefer.Data.Hero.OnDroid? = null
+        var _onDroid: InlineSingleWithDefer.Data.Hero.OnDroid? = null
         if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
+          _onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
 
         return InlineSingleWithDefer.Data.Hero(
           __typename = __typename,
-          onDroid = onDroid
+          onDroid = _onDroid
         )
       }
 
@@ -101,17 +101,17 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): InlineSingleWithDefer.Data.Hero.OnDroid {
-          var name: String? = null
+          var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return InlineSingleWithDefer.Data.Hero.OnDroid(
-            name = name!!
+            name = _name!!
           )
         }
 

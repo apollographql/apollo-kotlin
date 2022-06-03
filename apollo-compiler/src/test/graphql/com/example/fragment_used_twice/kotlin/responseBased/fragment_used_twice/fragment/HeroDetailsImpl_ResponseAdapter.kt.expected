@@ -23,22 +23,22 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         HeroDetailsImpl.Data {
       var __typename: String? = null
-      var name: String? = null
-      var birthDate: Any? = null
+      var _name: String? = null
+      var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetailsImpl.Data(
         __typename = __typename!!,
-        name = name!!,
-        birthDate = birthDate!!
+        name = _name!!,
+        birthDate = _birthDate!!
       )
     }
 

@@ -26,20 +26,20 @@ public class DogFragmentImpl_ResponseAdapter {
     @Override
     public com.example.simple_union.fragment.DogFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String woof = null;
+      String _woof = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: woof = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _woof = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(woof, "woof");
+      Assertions.checkFieldNotMissing(_woof, "woof");
 
       return new com.example.simple_union.fragment.DogFragment(
-        woof
+        _woof
       );
     }
 

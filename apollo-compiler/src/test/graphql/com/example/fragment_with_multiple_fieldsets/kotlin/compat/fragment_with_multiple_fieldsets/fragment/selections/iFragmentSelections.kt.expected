@@ -13,14 +13,14 @@ import com.example.fragment_with_multiple_fieldsets.type.GraphQLString
 import kotlin.collections.List
 
 public object iFragmentSelections {
-  private val onA: List<CompiledSelection> = listOf(
+  private val __onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldA",
           type = GraphQLString.type
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -28,7 +28,7 @@ public object iFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "A",
           possibleTypes = listOf("A")
-        ).selections(onA)
+        ).selections(__onA)
         .build()
       )
 }

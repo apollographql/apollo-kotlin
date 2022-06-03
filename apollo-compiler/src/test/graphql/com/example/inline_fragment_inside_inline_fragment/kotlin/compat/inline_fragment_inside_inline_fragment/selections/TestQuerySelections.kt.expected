@@ -16,21 +16,21 @@ import com.example.inline_fragment_inside_inline_fragment.type.SearchResult
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onDroid: List<CompiledSelection> = listOf(
+  private val __onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onCharacter: List<CompiledSelection> = listOf(
+  private val __onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -42,16 +42,16 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(onDroid)
+        ).selections(__onDroid)
         .build()
       )
 
-  private val search: List<CompiledSelection> = listOf(
+  private val __search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -59,18 +59,18 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter)
+        ).selections(__onCharacter)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "search",
           type = SearchResult.type.list()
         ).arguments(listOf(
           CompiledArgument("text", "bla-bla")
         ))
-        .selections(search)
+        .selections(__search)
         .build()
       )
 }

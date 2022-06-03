@@ -35,7 +35,7 @@ public class Fragment1Impl() : Fragment<Fragment1Impl.Data> {
     name = "data",
     type = ANode.type
   )
-  .selections(selections = fragment1Selections.root)
+  .selections(selections = fragment1Selections.__root)
   .build()
 
   public data class Data(

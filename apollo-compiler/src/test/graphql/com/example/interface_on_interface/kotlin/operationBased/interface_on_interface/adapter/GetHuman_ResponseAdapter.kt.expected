@@ -26,20 +26,20 @@ public object GetHuman_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHuman.Data {
-      var human: GetHuman.Data.Human? = null
-      var node: GetHuman.Data.Node? = null
+      var _human: GetHuman.Data.Human? = null
+      var _node: GetHuman.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> human = Human.obj().fromJson(reader, customScalarAdapters)
-          1 -> node = Node.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _human = Human.obj().fromJson(reader, customScalarAdapters)
+          1 -> _node = Node.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetHuman.Data(
-        human = human!!,
-        node = node!!
+        human = _human!!,
+        node = _node!!
       )
     }
 
@@ -60,23 +60,23 @@ public object GetHuman_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHuman.Data.Human {
-        var id: String? = null
-        var name: String? = null
-        var height: Double? = null
+        var _id: String? = null
+        var _name: String? = null
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetHuman.Data.Human(
-          id = id!!,
-          name = name!!,
-          height = height!!
+          id = _id!!,
+          name = _name!!,
+          height = _height!!
         )
       }
 
@@ -114,16 +114,16 @@ public object GetHuman_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onHuman: GetHuman.Data.Node.OnHuman? = null
+        var _onHuman: GetHuman.Data.Node.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
+          _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         return GetHuman.Data.Node(
           __typename = __typename,
-          onHuman = onHuman
+          onHuman = _onHuman
         )
       }
 
@@ -146,17 +146,17 @@ public object GetHuman_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetHuman.Data.Node.OnHuman {
-          var height: Double? = null
+          var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetHuman.Data.Node.OnHuman(
-            height = height!!
+            height = _height!!
           )
         }
 

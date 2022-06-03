@@ -52,19 +52,19 @@ public object AnimalFragmentImpl_ResponseAdapter {
       typename: String,
     ): AnimalFragmentImpl.CatData {
       var __typename: String? = typename
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalFragmentImpl.CatData(
         __typename = __typename!!,
-        name = name!!
+        name = _name!!
       )
     }
 
@@ -90,19 +90,19 @@ public object AnimalFragmentImpl_ResponseAdapter {
       typename: String,
     ): AnimalFragmentImpl.DogData {
       var __typename: String? = typename
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalFragmentImpl.DogData(
         __typename = __typename!!,
-        name = name!!
+        name = _name!!
       )
     }
 

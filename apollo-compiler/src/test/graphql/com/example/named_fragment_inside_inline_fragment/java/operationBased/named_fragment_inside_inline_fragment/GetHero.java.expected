@@ -122,7 +122,7 @@ public class GetHero implements Query<GetHero.Data> {
       "data",
       com.example.named_fragment_inside_inline_fragment.type.Query.type
     )
-    .selections(GetHeroSelections.root)
+    .selections(GetHeroSelections.__root)
     .build();
   }
 

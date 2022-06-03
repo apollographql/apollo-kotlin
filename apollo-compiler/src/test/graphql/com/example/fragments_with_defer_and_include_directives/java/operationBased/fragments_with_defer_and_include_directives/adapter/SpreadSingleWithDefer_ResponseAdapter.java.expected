@@ -35,18 +35,18 @@ public class SpreadSingleWithDefer_ResponseAdapter {
     @Override
     public SpreadSingleWithDefer.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      SpreadSingleWithDefer.Hero hero = null;
+      SpreadSingleWithDefer.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<SpreadSingleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadSingleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new SpreadSingleWithDefer.Data(
-        hero
+        _hero
       );
     }
 
@@ -78,15 +78,15 @@ public class SpreadSingleWithDefer_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      DroidDetails droidDetails = null;
+      DroidDetails _droidDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel(null))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new SpreadSingleWithDefer.Hero(
         __typename,
-        droidDetails
+        _droidDetails
       );
     }
 

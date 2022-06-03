@@ -146,7 +146,7 @@ public class GetUser implements Query<GetUser.Data> {
       "data",
       com.example.named_fragment_with_variables.type.Query.type
     )
-    .selections(GetUserSelections.root)
+    .selections(GetUserSelections.__root)
     .build();
   }
 

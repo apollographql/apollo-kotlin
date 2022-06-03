@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var iface1: TestQuery.Data.Iface1? = null
+      var _iface1: TestQuery.Data.Iface1? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> iface1 = Iface1.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _iface1 = Iface1.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        iface1 = iface1
+        iface1 = _iface1
       )
     }
 
@@ -81,19 +81,19 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.Impl1Iface1 {
         var __typename: String? = typename
-        var iface2: TestQuery.Data.Impl1Iface1.Iface2? = null
+        var _iface2: TestQuery.Data.Impl1Iface1.Iface2? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Impl1Iface1(
           __typename = __typename!!,
-          iface2 = iface2
+          iface2 = _iface2
         )
       }
 
@@ -145,28 +145,28 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.Impl1Iface1.Impl2Iface2 {
           var __typename: String? = typename
-          var scalar1: String? = null
-          var scalar2: String? = null
-          var scalar3: String? = null
-          var scalar4: String? = null
+          var _scalar1: String? = null
+          var _scalar2: String? = null
+          var _scalar3: String? = null
+          var _scalar4: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              4 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              4 -> _scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Impl1Iface1.Impl2Iface2(
             __typename = __typename!!,
-            scalar1 = scalar1,
-            scalar2 = scalar2,
-            scalar3 = scalar3,
-            scalar4 = scalar4
+            scalar1 = _scalar1,
+            scalar2 = _scalar2,
+            scalar3 = _scalar3,
+            scalar4 = _scalar4
           )
         }
 
@@ -201,22 +201,22 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.Impl1Iface1.OtherIface2 {
           var __typename: String? = typename
-          var scalar1: String? = null
-          var scalar3: String? = null
+          var _scalar1: String? = null
+          var _scalar3: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Impl1Iface1.OtherIface2(
             __typename = __typename!!,
-            scalar1 = scalar1,
-            scalar3 = scalar3
+            scalar1 = _scalar1,
+            scalar3 = _scalar3
           )
         }
 
@@ -246,19 +246,19 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.OtherIface1 {
         var __typename: String? = typename
-        var iface2: TestQuery.Data.OtherIface1.Iface2? = null
+        var _iface2: TestQuery.Data.OtherIface1.Iface2? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
+            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherIface1(
           __typename = __typename!!,
-          iface2 = iface2
+          iface2 = _iface2
         )
       }
 
@@ -309,22 +309,22 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.OtherIface1.Impl2Iface2 {
           var __typename: String? = typename
-          var scalar1: String? = null
-          var scalar2: String? = null
+          var _scalar1: String? = null
+          var _scalar2: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.OtherIface1.Impl2Iface2(
             __typename = __typename!!,
-            scalar1 = scalar1,
-            scalar2 = scalar2
+            scalar1 = _scalar1,
+            scalar2 = _scalar2
           )
         }
 
@@ -353,19 +353,19 @@ public object TestQuery_ResponseAdapter {
           typename: String,
         ): TestQuery.Data.OtherIface1.OtherIface2 {
           var __typename: String? = typename
-          var scalar1: String? = null
+          var _scalar1: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.OtherIface1.OtherIface2(
             __typename = __typename!!,
-            scalar1 = scalar1
+            scalar1 = _scalar1
           )
         }
 

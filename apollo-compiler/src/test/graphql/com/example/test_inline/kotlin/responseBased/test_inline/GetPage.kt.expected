@@ -42,7 +42,7 @@ public class GetPage() : Query<GetPage.Data> {
     name = "data",
     type = com.example.test_inline.type.Query.type
   )
-  .selections(selections = GetPageSelections.root)
+  .selections(selections = GetPageSelections.__root)
   .build()
 
   public data class Data(

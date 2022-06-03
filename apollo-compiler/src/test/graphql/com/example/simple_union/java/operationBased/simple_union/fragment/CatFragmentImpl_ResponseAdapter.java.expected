@@ -26,20 +26,20 @@ public class CatFragmentImpl_ResponseAdapter {
     @Override
     public com.example.simple_union.fragment.CatFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String meow = null;
+      String _meow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: meow = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _meow = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(meow, "meow");
+      Assertions.checkFieldNotMissing(_meow, "meow");
 
       return new com.example.simple_union.fragment.CatFragment(
-        meow
+        _meow
       );
     }
 

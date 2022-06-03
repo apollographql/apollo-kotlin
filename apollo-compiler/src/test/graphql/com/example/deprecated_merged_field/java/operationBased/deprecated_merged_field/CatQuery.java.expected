@@ -119,7 +119,7 @@ public class CatQuery implements Query<CatQuery.Data> {
       "data",
       com.example.deprecated_merged_field.type.Query.type
     )
-    .selections(CatQuerySelections.root)
+    .selections(CatQuerySelections.__root)
     .build();
   }
 

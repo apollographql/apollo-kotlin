@@ -36,24 +36,24 @@ public object AnimalFragmentImpl_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asCat: com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat? = null
+      var _asCat: com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat? = null
       if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsCat.fromJson(reader,
+        _asCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsCat.fromJson(reader,
             customScalarAdapters)
       }
 
-      var asDog: com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog? = null
+      var _asDog: com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog? = null
       if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsDog.fromJson(reader,
+        _asDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AsDog.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment(
         __typename = __typename,
-        asCat = asCat,
-        asDog = asDog
+        asCat = _asCat,
+        asDog = _asDog
       )
     }
 
@@ -83,19 +83,19 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat {
       var __typename: String? = null
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment.AsCat(
         __typename = __typename!!,
-        name = name!!
+        name = _name!!
       )
     }
 
@@ -118,19 +118,19 @@ public object AnimalFragmentImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog {
       var __typename: String? = null
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment.AsDog(
         __typename = __typename!!,
-        name = name!!
+        name = _name!!
       )
     }
 

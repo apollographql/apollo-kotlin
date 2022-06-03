@@ -18,14 +18,14 @@ import com.example.union_fragment.type.SearchResult
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onStarship: List<CompiledSelection> = listOf(
+  private val __onStarship: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build()
       )
 
-  private val search: List<CompiledSelection> = listOf(
+  private val __search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -33,23 +33,23 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Starship",
           possibleTypes = listOf("Starship")
-        ).selections(onStarship)
+        ).selections(__onStarship)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Starship",
           possibleTypes = (listOf("Starship"))
-        ).selections(StarshipSelections.root)
+        ).selections(StarshipSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "search",
           type = SearchResult.type.list()
         ).arguments(listOf(
           CompiledArgument("text", "test")
         ))
-        .selections(search)
+        .selections(__search)
         .build()
       )
 }

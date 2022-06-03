@@ -25,18 +25,18 @@ public class BFragmentImpl_ResponseAdapter {
     @Override
     public com.example.not_all_combinations_are_needed.fragment.BFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String fieldB1 = null;
+      String _fieldB1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.not_all_combinations_are_needed.fragment.BFragment(
-        fieldB1
+        _fieldB1
       );
     }
 

@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Hero? = null
+      var _hero: TestQuery.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -56,28 +56,28 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
       var __typename: String? = null
-      var name: String? = null
-      var appearsIn: List<Episode?>? = null
+      var _name: String? = null
+      var _appearsIn: List<Episode?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
-      val fragments = com.example.fragment_with_inline_fragment.adapter.TestQuery_ResponseAdapter.Hero.Fragments.fromJson(reader,
+      val _fragments = com.example.fragment_with_inline_fragment.adapter.TestQuery_ResponseAdapter.Hero.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Hero(
         __typename = __typename!!,
-        name = name!!,
-        appearsIn = appearsIn!!,
-        fragments = fragments
+        name = _name!!,
+        appearsIn = _appearsIn!!,
+        fragments = _fragments
       )
     }
 
@@ -106,11 +106,11 @@ public object TestQuery_ResponseAdapter {
 
 
         reader.rewind()
-        val heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Hero.Fragments(
-          heroDetails = heroDetails
+          heroDetails = _heroDetails
         )
       }
 

@@ -13,7 +13,7 @@ import com.example.named_fragment_inside_inline_fragment.type.Episode
 import kotlin.collections.List
 
 public object characterAppearsInSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "appearsIn",
           type = Episode.type.list().notNull()

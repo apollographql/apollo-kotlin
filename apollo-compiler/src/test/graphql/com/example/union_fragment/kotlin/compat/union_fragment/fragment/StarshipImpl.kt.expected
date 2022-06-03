@@ -33,6 +33,6 @@ public class StarshipImpl() : Fragment<Starship> {
     name = "data",
     type = com.example.union_fragment.type.Starship.type
   )
-  .selections(selections = StarshipSelections.root)
+  .selections(selections = StarshipSelections.__root)
   .build()
 }

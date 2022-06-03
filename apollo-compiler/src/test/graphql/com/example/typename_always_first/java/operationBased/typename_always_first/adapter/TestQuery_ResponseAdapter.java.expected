@@ -34,13 +34,13 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Hero hero = null;
+      TestQuery.Hero _hero = null;
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           case 1: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -49,7 +49,7 @@ public class TestQuery_ResponseAdapter {
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Data(
-        hero,
+        _hero,
         __typename
       );
     }
@@ -84,22 +84,22 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnHuman onHuman = null;
+      TestQuery.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onHuman = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onHuman = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      TestQuery.OnDroid onDroid = null;
+      TestQuery.OnDroid _onDroid = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onDroid = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onDroid = com.example.typename_always_first.adapter.TestQuery_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.Hero(
         __typename,
-        onHuman,
-        onDroid
+        _onHuman,
+        _onDroid
       );
     }
 
@@ -127,13 +127,13 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      Double height = null;
+      Double _height = null;
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
@@ -142,7 +142,7 @@ public class TestQuery_ResponseAdapter {
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.OnHuman(
-        height,
+        _height,
         __typename
       );
     }
@@ -166,27 +166,27 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnDroid fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
       String __typename = null;
-      String primaryFunction = null;
+      String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.OnDroid(
-        name,
+        _name,
         __typename,
-        primaryFunction
+        _primaryFunction
       );
     }
 

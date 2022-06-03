@@ -120,7 +120,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       "data",
       com.example.not_all_combinations_are_needed.type.Query.type
     )
-    .selections(TestQuerySelections.root)
+    .selections(TestQuerySelections.__root)
     .build();
   }
 

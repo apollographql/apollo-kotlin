@@ -24,17 +24,17 @@ public object AllStarships_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.AllStarships.Data {
-      var allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
+      var _allStarships: com.example.nested_named_fragments.AllStarships.Data.AllStarships? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> allStarships = AllStarships.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _allStarships = AllStarships.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.nested_named_fragments.AllStarships.Data(
-        allStarships = allStarships
+        allStarships = _allStarships
       )
     }
 
@@ -53,18 +53,18 @@ public object AllStarships_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.nested_named_fragments.AllStarships.Data.AllStarships {
-        var edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
+        var _edges: List<com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.nested_named_fragments.AllStarships.Data.AllStarships(
-          edges = edges
+          edges = _edges
         )
       }
 
@@ -84,17 +84,17 @@ public object AllStarships_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge {
-          var node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
+          var _node: com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj(true).nullable().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge(
-            node = node
+            node = _node
           )
         }
 
@@ -124,12 +124,12 @@ public object AllStarships_ResponseAdapter {
             }
 
             reader.rewind()
-            val starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.fromJson(reader,
+            val _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.fromJson(reader,
                 customScalarAdapters)
 
             return com.example.nested_named_fragments.AllStarships.Data.AllStarships.Edge.Node(
               __typename = __typename!!,
-              starshipFragment = starshipFragment
+              starshipFragment = _starshipFragment
             )
           }
 

@@ -21,24 +21,24 @@ public object HumanDetailsImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragment_used_twice.fragment.HumanDetails {
       var __typename: String? = null
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
-      val characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
+      val _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
           customScalarAdapters)
 
       return com.example.fragment_used_twice.fragment.HumanDetails(
         __typename = __typename!!,
-        name = name!!,
-        characterDetails = characterDetails
+        name = _name!!,
+        characterDetails = _characterDetails
       )
     }
 

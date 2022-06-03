@@ -20,23 +20,23 @@ public object UserFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         UserFragmentImpl.Data {
-      var firstName: String? = null
-      var lastName: String? = null
-      var avatar: String? = null
+      var _firstName: String? = null
+      var _lastName: String? = null
+      var _avatar: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _avatar = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return UserFragmentImpl.Data(
-        firstName = firstName!!,
-        lastName = lastName!!,
-        avatar = avatar!!
+        firstName = _firstName!!,
+        lastName = _lastName!!,
+        avatar = _avatar!!
       )
     }
 

@@ -29,17 +29,17 @@ public class QueryFragmentImpl_ResponseAdapter {
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero hero = null;
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid droid = null;
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human human = null;
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero _hero = null;
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid _droid = null;
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human _human = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 2: droid = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 3: human = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 2: _droid = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 3: _human = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -48,9 +48,9 @@ public class QueryFragmentImpl_ResponseAdapter {
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment(
         __typename,
-        hero,
-        droid,
-        human
+        _hero,
+        _droid,
+        _human
       );
     }
 
@@ -91,13 +91,13 @@ public class QueryFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind();
-      HeroFragment heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      HeroFragment _heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero(
         __typename,
-        heroFragment
+        _heroFragment
       );
     }
 
@@ -131,13 +131,13 @@ public class QueryFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind();
-      DroidFragment droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      DroidFragment _droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid(
         __typename,
-        droidFragment
+        _droidFragment
       );
     }
 
@@ -171,13 +171,13 @@ public class QueryFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind();
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman _onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human(
         __typename,
-        onHuman
+        _onHuman
       );
     }
 
@@ -200,23 +200,23 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      String homePlanet = null;
+      String _name = null;
+      String _homePlanet = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman(
-        name,
-        homePlanet
+        _name,
+        _homePlanet
       );
     }
 

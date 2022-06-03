@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -54,21 +54,21 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        var name: String? = null
-        var appearsIn: List<Episode?>? = null
+        var _name: String? = null
+        var _appearsIn: List<Episode?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> appearsIn = Episode_ResponseAdapter.nullable().list().nullable().fromJson(reader,
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _appearsIn = Episode_ResponseAdapter.nullable().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Hero(
-          name = name!!,
-          appearsIn = appearsIn
+          name = _name!!,
+          appearsIn = _appearsIn
         )
       }
 

@@ -29,21 +29,21 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails {
-      var name: String? = null
-      var friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
+      var _name: String? = null
+      var _friends: List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails(
-        name = name!!,
-        friends = friends
+        name = _name!!,
+        friends = _friends
       )
     }
 
@@ -68,12 +68,12 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend {
       var __typename: String? = null
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -82,25 +82,25 @@ public object HeroDetailsImpl_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman? = null
+      var _asHuman: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsHuman.fromJson(reader,
+        _asHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
-      var asDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid? = null
+      var _asDroid: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid? = null
       if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.fromJson(reader,
+        _asDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.AsDroid.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend(
         __typename = __typename,
-        name = name!!,
-        asHuman = asHuman,
-        asDroid = asDroid
+        name = _name!!,
+        asHuman = _asHuman,
+        asDroid = _asDroid
       )
     }
 
@@ -134,22 +134,22 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman {
       var __typename: String? = null
-      var name: String? = null
-      var height: Double? = null
+      var _name: String? = null
+      var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsHuman(
         __typename = __typename!!,
-        name = name!!,
-        height = height
+        name = _name!!,
+        height = _height
       )
     }
 
@@ -176,22 +176,22 @@ public object HeroDetailsImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid {
       var __typename: String? = null
-      var name: String? = null
-      var primaryFunction: String? = null
+      var _name: String? = null
+      var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.AsDroid(
         __typename = __typename!!,
-        name = name!!,
-        primaryFunction = primaryFunction
+        name = _name!!,
+        primaryFunction = _primaryFunction
       )
     }
 

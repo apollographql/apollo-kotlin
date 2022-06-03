@@ -1,0 +1,11 @@
+ERROR: UpperCaseField (2:2)
+Capitalized field 'Horse' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.
+------------
+ERROR: UpperCaseField (3:4)
+Capitalized field 'Donkey' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.
+------------
+ERROR: UpperCaseField (5:6)
+Capitalized field 'Cow' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.
+------------
+ERROR: UpperCaseField (6:8)
+Capitalized field 'Moo' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.

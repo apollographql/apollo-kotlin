@@ -26,20 +26,20 @@ public class CharacterDetails2Impl_ResponseAdapter {
     @Override
     public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2 fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String id = null;
+      String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
+      Assertions.checkFieldNotMissing(_id, "id");
 
       return new com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2(
-        id
+        _id
       );
     }
 

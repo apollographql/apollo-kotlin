@@ -35,6 +35,6 @@ public class HumanDetailsImpl() : Fragment<HumanDetails> {
     name = "data",
     type = Human.type
   )
-  .selections(selections = HumanDetailsSelections.root)
+  .selections(selections = HumanDetailsSelections.__root)
   .build()
 }

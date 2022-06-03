@@ -24,24 +24,24 @@ public object DroidDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_delegate.fragment.DroidDetails {
-      var name: String? = null
-      var primaryFunction: String? = null
-      var friends: List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend?>? = null
+      var _name: String? = null
+      var _primaryFunction: String? = null
+      var _friends: List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_delegate.fragment.DroidDetails(
-        name = name!!,
-        primaryFunction = primaryFunction,
-        friends = friends
+        name = _name!!,
+        primaryFunction = _primaryFunction,
+        friends = _friends
       )
     }
 
@@ -66,17 +66,17 @@ public object DroidDetailsImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.named_fragment_delegate.fragment.DroidDetails.Friend {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.named_fragment_delegate.fragment.DroidDetails.Friend(
-          name = name!!
+          name = _name!!
         )
       }
 

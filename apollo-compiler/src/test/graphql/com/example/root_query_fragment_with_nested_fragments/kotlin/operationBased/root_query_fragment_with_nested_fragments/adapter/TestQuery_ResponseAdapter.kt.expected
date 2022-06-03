@@ -31,12 +31,12 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val queryFragment = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+      val _queryFragment = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Data(
         __typename = __typename!!,
-        queryFragment = queryFragment
+        queryFragment = _queryFragment
       )
     }
 

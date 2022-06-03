@@ -23,20 +23,20 @@ public object PilotFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         PilotFragmentImpl.Data {
-      var name: String? = null
-      var homeworld: PilotFragmentImpl.Data.Homeworld? = null
+      var _name: String? = null
+      var _homeworld: PilotFragmentImpl.Data.Homeworld? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return PilotFragmentImpl.Data(
-        name = name,
-        homeworld = homeworld
+        name = _name,
+        homeworld = _homeworld
       )
     }
 
@@ -58,19 +58,19 @@ public object PilotFragmentImpl_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return PilotFragmentImpl.Data.Homeworld(
           __typename = __typename!!,
-          name = name
+          name = _name
         )
       }
 

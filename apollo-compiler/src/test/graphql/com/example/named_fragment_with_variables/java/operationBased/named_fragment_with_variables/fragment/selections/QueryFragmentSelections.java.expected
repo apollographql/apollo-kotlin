@@ -19,17 +19,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryFragmentSelections {
-  private static List<CompiledSelection> user = Arrays.asList(
+  private static List<CompiledSelection> __user = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("User", Arrays.asList("User")).selections(UserFragmentSelections.root).build()
+    new CompiledFragment.Builder("User", Arrays.asList("User")).selections(UserFragmentSelections.__root).build()
   );
 
-  private static List<CompiledSelection> organization = Arrays.asList(
+  private static List<CompiledSelection> __organization = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("user", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(User.type)))).arguments(Arrays.asList(new CompiledArgument("query", new CompiledVariable("query"), false))).selections(user).build()
+    new CompiledField.Builder("user", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(User.type)))).arguments(Arrays.asList(new CompiledArgument("query", new CompiledVariable("query"), false))).selections(__user).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("organization", Organization.type).arguments(Arrays.asList(new CompiledArgument("id", new CompiledVariable("organizationId"), false))).selections(organization).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("organization", Organization.type).arguments(Arrays.asList(new CompiledArgument("id", new CompiledVariable("organizationId"), false))).selections(__organization).build()
   );
 }

@@ -50,19 +50,19 @@ public object IFragmentImpl_ResponseAdapter {
       typename: String,
     ): IFragmentImpl.AData {
       var __typename: String? = typename
-      var fieldA: String? = null
+      var _fieldA: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return IFragmentImpl.AData(
         __typename = __typename!!,
-        fieldA = fieldA
+        fieldA = _fieldA
       )
     }
 

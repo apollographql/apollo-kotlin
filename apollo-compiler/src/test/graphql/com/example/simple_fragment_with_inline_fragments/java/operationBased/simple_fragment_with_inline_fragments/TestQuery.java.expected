@@ -123,7 +123,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       "data",
       com.example.simple_fragment_with_inline_fragments.type.Query.type
     )
-    .selections(TestQuerySelections.root)
+    .selections(TestQuerySelections.__root)
     .build();
   }
 

@@ -25,17 +25,17 @@ public object GetPage_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Data {
-      var collection: GetPage.Collection? = null
+      var _collection: GetPage.Collection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.Data(
-        collection = collection!!
+        collection = _collection!!
       )
     }
 
@@ -55,12 +55,12 @@ public object GetPage_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Collection {
       var __typename: String? = null
-      var items: List<GetPage.Item1>? = null
+      var _items: List<GetPage.Item1>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> items = Item1.obj().list().fromJson(reader, customScalarAdapters)
+          1 -> _items = Item1.obj().list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -69,17 +69,17 @@ public object GetPage_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asParticularCollection: GetPage.AsParticularCollection? = null
+      var _asParticularCollection: GetPage.AsParticularCollection? = null
       if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularCollection.fromJson(reader,
+        _asParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularCollection.fromJson(reader,
             customScalarAdapters)
       }
 
       return GetPage.Collection(
         __typename = __typename,
-        items = items!!,
-        asParticularCollection = asParticularCollection
+        items = _items!!,
+        asParticularCollection = _asParticularCollection
       )
     }
 
@@ -106,17 +106,17 @@ public object GetPage_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Item1 {
-      var title: String? = null
+      var _title: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.Item1(
-        title = title!!
+        title = _title!!
       )
     }
 
@@ -136,19 +136,19 @@ public object GetPage_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.AsParticularCollection {
       var __typename: String? = null
-      var items: List<GetPage.Item>? = null
+      var _items: List<GetPage.Item>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
+          1 -> _items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.AsParticularCollection(
         __typename = __typename!!,
-        items = items!!
+        items = _items!!
       )
     }
 
@@ -170,12 +170,12 @@ public object GetPage_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Item {
-      var title: String? = null
+      var _title: String? = null
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
@@ -185,17 +185,17 @@ public object GetPage_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asParticularItem: GetPage.AsParticularItem? = null
+      var _asParticularItem: GetPage.AsParticularItem? = null
       if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularItem.fromJson(reader,
+        _asParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.AsParticularItem.fromJson(reader,
             customScalarAdapters)
       }
 
       return GetPage.Item(
-        title = title!!,
+        title = _title!!,
         __typename = __typename,
-        asParticularItem = asParticularItem
+        asParticularItem = _asParticularItem
       )
     }
 
@@ -222,23 +222,23 @@ public object GetPage_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.AsParticularItem {
-      var title: String? = null
+      var _title: String? = null
       var __typename: String? = null
-      var image: String? = null
+      var _image: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
           1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _image = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.AsParticularItem(
-        title = title!!,
+        title = _title!!,
         __typename = __typename!!,
-        image = image!!
+        image = _image!!
       )
     }
 

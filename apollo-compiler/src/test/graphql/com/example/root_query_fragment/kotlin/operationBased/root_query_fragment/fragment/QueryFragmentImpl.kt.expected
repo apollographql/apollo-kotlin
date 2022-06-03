@@ -35,6 +35,6 @@ public class QueryFragmentImpl() : Fragment<QueryFragment> {
     name = "data",
     type = Query.type
   )
-  .selections(selections = QueryFragmentSelections.root)
+  .selections(selections = QueryFragmentSelections.__root)
   .build()
 }

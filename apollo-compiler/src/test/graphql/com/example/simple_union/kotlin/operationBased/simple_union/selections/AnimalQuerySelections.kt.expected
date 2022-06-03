@@ -16,7 +16,7 @@ import com.example.simple_union.type.GraphQLString
 import kotlin.collections.List
 
 public object AnimalQuerySelections {
-  private val animal: List<CompiledSelection> = listOf(
+  private val __animal: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -24,20 +24,20 @@ public object AnimalQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Cat",
           possibleTypes = (listOf("Cat"))
-        ).selections(CatFragmentSelections.root)
+        ).selections(CatFragmentSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Dog",
           possibleTypes = (listOf("Dog"))
-        ).selections(DogFragmentSelections.root)
+        ).selections(DogFragmentSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "animal",
           type = Animal.type
-        ).selections(animal)
+        ).selections(__animal)
         .build()
       )
 }

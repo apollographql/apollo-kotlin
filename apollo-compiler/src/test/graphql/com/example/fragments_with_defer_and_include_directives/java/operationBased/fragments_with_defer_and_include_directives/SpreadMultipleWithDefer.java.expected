@@ -114,7 +114,7 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
       "data",
       com.example.fragments_with_defer_and_include_directives.type.Query.type
     )
-    .selections(SpreadMultipleWithDeferSelections.root)
+    .selections(SpreadMultipleWithDeferSelections.__root)
     .build();
   }
 

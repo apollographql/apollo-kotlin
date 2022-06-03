@@ -19,22 +19,22 @@ import com.example.two_heroes_with_friends.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val node: List<CompiledSelection> = listOf(
+  private val __node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val edges: List<CompiledSelection> = listOf(
+  private val __edges: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "node",
           type = Character.type
-        ).selections(node)
+        ).selections(__node)
         .build()
       )
 
-  private val friendsConnection: List<CompiledSelection> = listOf(
+  private val __friendsConnection: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
           type = GraphQLInt.type
@@ -42,11 +42,11 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
-        ).selections(edges)
+        ).selections(__edges)
         .build()
       )
 
-  private val r2: List<CompiledSelection> = listOf(
+  private val __r2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -54,26 +54,26 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(friendsConnection)
+        ).selections(__friendsConnection)
         .build()
       )
 
-  private val node1: List<CompiledSelection> = listOf(
+  private val __node1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val edges1: List<CompiledSelection> = listOf(
+  private val __edges1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "node",
           type = Character.type
-        ).selections(node1)
+        ).selections(__node1)
         .build()
       )
 
-  private val friendsConnection1: List<CompiledSelection> = listOf(
+  private val __friendsConnection1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "totalCount",
           type = GraphQLInt.type
@@ -81,11 +81,11 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "edges",
           type = FriendsEdge.type.list()
-        ).selections(edges1)
+        ).selections(__edges1)
         .build()
       )
 
-  private val luke: List<CompiledSelection> = listOf(
+  private val __luke: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -97,16 +97,16 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
-        ).selections(friendsConnection1)
+        ).selections(__friendsConnection1)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
         ).alias("r2")
-        .selections(r2)
+        .selections(__r2)
         .build(),
         CompiledField.Builder(
           name = "hero",
@@ -115,7 +115,7 @@ public object TestQuerySelections {
         .arguments(listOf(
           CompiledArgument("episode", "EMPIRE")
         ))
-        .selections(luke)
+        .selections(__luke)
         .build()
       )
 }

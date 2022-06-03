@@ -16,14 +16,14 @@ import com.example.simple_inline_fragment.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onCharacter1: List<CompiledSelection> = listOf(
+  private val __onCharacter1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val onCharacter: List<CompiledSelection> = listOf(
+  private val __onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -35,25 +35,25 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter1)
+        ).selections(__onCharacter1)
         .build()
       )
 
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
         ).build()
       )
 
-  private val onDroid: List<CompiledSelection> = listOf(
+  private val __onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
           type = GraphQLString.type
         ).build()
       )
 
-  private val hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -61,25 +61,25 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter)
+        ).selections(__onCharacter)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(onDroid)
+        ).selections(__onDroid)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(__hero)
         .build()
       )
 }

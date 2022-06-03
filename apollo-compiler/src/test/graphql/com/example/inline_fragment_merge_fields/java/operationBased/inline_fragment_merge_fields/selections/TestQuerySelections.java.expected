@@ -19,44 +19,44 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> node = Arrays.asList(
+  private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  private static List<CompiledSelection> edges = Arrays.asList(
-    new CompiledField.Builder("node", Character.type).selections(node).build()
+  private static List<CompiledSelection> __edges = Arrays.asList(
+    new CompiledField.Builder("node", Character.type).selections(__node).build()
   );
 
-  private static List<CompiledSelection> friendsConnection = Arrays.asList(
-    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges).build()
+  private static List<CompiledSelection> __friendsConnection = Arrays.asList(
+    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(__edges).build()
   );
 
-  private static List<CompiledSelection> node1 = Arrays.asList(
+  private static List<CompiledSelection> __node1 = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  private static List<CompiledSelection> edges1 = Arrays.asList(
-    new CompiledField.Builder("node", Character.type).selections(node1).build()
+  private static List<CompiledSelection> __edges1 = Arrays.asList(
+    new CompiledField.Builder("node", Character.type).selections(__node1).build()
   );
 
-  private static List<CompiledSelection> friendsConnection1 = Arrays.asList(
-    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(edges1).build()
+  private static List<CompiledSelection> __friendsConnection1 = Arrays.asList(
+    new CompiledField.Builder("edges", new CompiledListType(FriendsEdge.type)).selections(__edges1).build()
   );
 
-  private static List<CompiledSelection> onCharacter = Arrays.asList(
+  private static List<CompiledSelection> __onCharacter = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("profileLink", new CompiledNotNullType(URL.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection1).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection1).build()
   );
 
-  private static List<CompiledSelection> hero = Arrays.asList(
+  private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(friendsConnection).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection).build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).selections(hero).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("hero", Character.type).selections(__hero).build()
   );
 }

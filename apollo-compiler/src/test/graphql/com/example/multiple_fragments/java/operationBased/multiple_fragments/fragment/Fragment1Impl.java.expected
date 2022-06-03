@@ -76,7 +76,7 @@ public class Fragment1Impl implements Fragment<Fragment1> {
       "data",
       ANode.type
     )
-    .selections(fragment1Selections.root)
+    .selections(fragment1Selections.__root)
     .build();
   }
 }

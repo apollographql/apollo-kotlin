@@ -24,17 +24,17 @@ public object AnimalQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalQuery.Data {
-      var animal: AnimalQuery.Data.Animal? = null
+      var _animal: AnimalQuery.Data.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalQuery.Data(
-        animal = animal
+        animal = _animal
       )
     }
 
@@ -83,19 +83,19 @@ public object AnimalQuery_ResponseAdapter {
         typename: String,
       ): AnimalQuery.Data.CatAnimal {
         var __typename: String? = typename
-        var meow: String? = null
+        var _meow: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> meow = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _meow = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return AnimalQuery.Data.CatAnimal(
           __typename = __typename!!,
-          meow = meow!!
+          meow = _meow!!
         )
       }
 
@@ -121,19 +121,19 @@ public object AnimalQuery_ResponseAdapter {
         typename: String,
       ): AnimalQuery.Data.DogAnimal {
         var __typename: String? = typename
-        var woof: String? = null
+        var _woof: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> woof = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _woof = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return AnimalQuery.Data.DogAnimal(
           __typename = __typename!!,
-          woof = woof!!
+          woof = _woof!!
         )
       }
 

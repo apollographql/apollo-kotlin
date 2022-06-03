@@ -24,17 +24,17 @@ public object QueryFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_with_variables.fragment.QueryFragment {
-      var organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
+      var _organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_with_variables.fragment.QueryFragment(
-        organization = organization
+        organization = _organization
       )
     }
 
@@ -54,20 +54,20 @@ public object QueryFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
-      var id: String? = null
-      var user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.User>? = null
+      var _id: String? = null
+      var _user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.User>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> user = User.obj(true).list().fromJson(reader, customScalarAdapters)
+          0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _user = User.obj(true).list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.named_fragment_with_variables.fragment.QueryFragment.Organization(
-        id = id!!,
-        user = user!!
+        id = _id!!,
+        user = _user!!
       )
     }
 
@@ -100,12 +100,12 @@ public object QueryFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.User.Fragments.fromJson(reader,
+      val _fragments = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.User.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return com.example.named_fragment_with_variables.fragment.QueryFragment.User(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -128,11 +128,11 @@ public object QueryFragmentImpl_ResponseAdapter {
 
 
         reader.rewind()
-        val userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
+        val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
             customScalarAdapters)
 
         return com.example.named_fragment_with_variables.fragment.QueryFragment.User.Fragments(
-          userFragment = userFragment
+          userFragment = _userFragment
         )
       }
 

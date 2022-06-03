@@ -36,24 +36,24 @@ public object AnimalFragmentImpl_ResponseAdapter {
         "__typename was not found"
       }
 
-      var onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
+      var _onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
       if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
+        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
             customScalarAdapters)
       }
 
-      var onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
+      var _onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
       if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
+        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment(
         __typename = __typename,
-        onCat = onCat,
-        onDog = onDog
+        onCat = _onCat,
+        onDog = _onDog
       )
     }
 
@@ -82,17 +82,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat(
-          name = name!!
+          name = _name!!
         )
       }
 
@@ -112,17 +112,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog(
-          name = name!!
+          name = _name!!
         )
       }
 

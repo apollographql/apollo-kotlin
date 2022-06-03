@@ -35,18 +35,18 @@ public class AnimalQuery_ResponseAdapter {
     @Override
     public AnimalQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      AnimalQuery.Animal animal = null;
+      AnimalQuery.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: animal = new NullableAdapter<>(new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new AnimalQuery.Data(
-        animal
+        _animal
       );
     }
 
@@ -77,22 +77,22 @@ public class AnimalQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      CatFragment catFragment = null;
+      CatFragment _catFragment = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+        _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      DogFragment dogFragment = null;
+      DogFragment _dogFragment = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+        _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new AnimalQuery.Animal(
         __typename,
-        catFragment,
-        dogFragment
+        _catFragment,
+        _dogFragment
       );
     }
 

@@ -27,17 +27,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -68,16 +68,16 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onHuman: TestQuery.Data.Hero.OnHuman? = null
+        var _onHuman: TestQuery.Data.Hero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onHuman = com.example.inline_fragment_simple.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
+          _onHuman = com.example.inline_fragment_simple.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
           __typename = __typename,
-          onHuman = onHuman
+          onHuman = _onHuman
         )
       }
 
@@ -100,17 +100,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
-          var height: Double? = null
+          var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.OnHuman(
-            height = height
+            height = _height
           )
         }
 

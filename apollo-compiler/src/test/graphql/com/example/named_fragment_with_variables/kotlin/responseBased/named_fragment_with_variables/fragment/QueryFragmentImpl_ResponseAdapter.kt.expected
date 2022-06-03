@@ -23,17 +23,17 @@ public object QueryFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         QueryFragmentImpl.Data {
-      var organization: QueryFragmentImpl.Data.Organization? = null
+      var _organization: QueryFragmentImpl.Data.Organization? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return QueryFragmentImpl.Data(
-        organization = organization
+        organization = _organization
       )
     }
 
@@ -51,20 +51,20 @@ public object QueryFragmentImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           QueryFragmentImpl.Data.Organization {
-        var id: String? = null
-        var user: List<QueryFragmentImpl.Data.Organization.User>? = null
+        var _id: String? = null
+        var _user: List<QueryFragmentImpl.Data.Organization.User>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> user = User.obj().list().fromJson(reader, customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _user = User.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return QueryFragmentImpl.Data.Organization(
-          id = id!!,
-          user = user!!
+          id = _id!!,
+          user = _user!!
         )
       }
 
@@ -87,25 +87,25 @@ public object QueryFragmentImpl_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): QueryFragmentImpl.Data.Organization.User {
           var __typename: String? = null
-          var firstName: String? = null
-          var lastName: String? = null
-          var avatar: String? = null
+          var _firstName: String? = null
+          var _lastName: String? = null
+          var _avatar: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _avatar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return QueryFragmentImpl.Data.Organization.User(
             __typename = __typename!!,
-            firstName = firstName!!,
-            lastName = lastName!!,
-            avatar = avatar!!
+            firstName = _firstName!!,
+            lastName = _lastName!!,
+            avatar = _avatar!!
           )
         }
 

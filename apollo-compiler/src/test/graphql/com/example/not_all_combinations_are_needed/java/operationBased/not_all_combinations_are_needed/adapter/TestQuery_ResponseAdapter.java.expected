@@ -34,18 +34,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Root root = null;
+      TestQuery.Root _root = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: root = new NullableAdapter<>(new ObjectAdapter<TestQuery.Root>(Root.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _root = new NullableAdapter<>(new ObjectAdapter<TestQuery.Root>(Root.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        root
+        _root
       );
     }
 
@@ -76,15 +76,15 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnA onA = null;
+      TestQuery.OnA _onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.Root(
         __typename,
-        onA
+        _onA
       );
     }
 
@@ -109,28 +109,28 @@ public class TestQuery_ResponseAdapter {
     public TestQuery.OnA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
-      String fieldA1 = null;
+      String _fieldA1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnB onB = null;
+      TestQuery.OnB _onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","SomeBC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.OnA(
         __typename,
-        fieldA1,
-        onB
+        _fieldA1,
+        _onB
       );
     }
 
@@ -168,13 +168,13 @@ public class TestQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      BFragment bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      BFragment _bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.OnB(
         __typename,
-        bFragment
+        _bFragment
       );
     }
 

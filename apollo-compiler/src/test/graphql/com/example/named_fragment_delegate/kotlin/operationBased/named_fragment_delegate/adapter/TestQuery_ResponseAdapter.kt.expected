@@ -27,17 +27,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -68,24 +68,24 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var droidDetails: DroidDetails? = null
+        var _droidDetails: DroidDetails? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          droidDetails = com.example.named_fragment_delegate.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+          _droidDetails = com.example.named_fragment_delegate.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        var humanDetails: HumanDetails? = null
+        var _humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          humanDetails = com.example.named_fragment_delegate.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+          _humanDetails = com.example.named_fragment_delegate.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
           __typename = __typename,
-          droidDetails = droidDetails,
-          humanDetails = humanDetails
+          droidDetails = _droidDetails,
+          humanDetails = _humanDetails
         )
       }
 

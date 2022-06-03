@@ -21,17 +21,17 @@ public object PlanetFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.nested_named_fragments.fragment.PlanetFragment {
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.nested_named_fragments.fragment.PlanetFragment(
-        name = name
+        name = _name
       )
     }
 

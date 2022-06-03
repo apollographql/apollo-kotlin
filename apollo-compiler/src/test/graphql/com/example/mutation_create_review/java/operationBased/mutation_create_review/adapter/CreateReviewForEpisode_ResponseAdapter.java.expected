@@ -34,18 +34,18 @@ public class CreateReviewForEpisode_ResponseAdapter {
     @Override
     public CreateReviewForEpisode.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      CreateReviewForEpisode.CreateReview createReview = null;
+      CreateReviewForEpisode.CreateReview _createReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new CreateReviewForEpisode.Data(
-        createReview
+        _createReview
       );
     }
 
@@ -65,35 +65,35 @@ public class CreateReviewForEpisode_ResponseAdapter {
     @Override
     public CreateReviewForEpisode.CreateReview fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer stars = null;
-      String commentary = null;
-      List<List<String>> listOfListOfString = null;
-      List<List<Episode>> listOfListOfEnum = null;
-      List<List<Date>> listOfListOfCustom = null;
-      List<List<CreateReviewForEpisode.ListOfListOfObject>> listOfListOfObject = null;
+      Integer _stars = null;
+      String _commentary = null;
+      List<List<String>> _listOfListOfString = null;
+      List<List<Episode>> _listOfListOfEnum = null;
+      List<List<Date>> _listOfListOfCustom = null;
+      List<List<CreateReviewForEpisode.ListOfListOfObject>> _listOfListOfObject = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
-          case 2: listOfListOfString = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).fromJson(reader, customScalarAdapters); break;
-          case 3: listOfListOfEnum = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).fromJson(reader, customScalarAdapters); break;
-          case 4: listOfListOfCustom = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).fromJson(reader, customScalarAdapters); break;
-          case 5: listOfListOfObject = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
+          case 2: _listOfListOfString = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).fromJson(reader, customScalarAdapters); break;
+          case 3: _listOfListOfEnum = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).fromJson(reader, customScalarAdapters); break;
+          case 4: _listOfListOfCustom = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).fromJson(reader, customScalarAdapters); break;
+          case 5: _listOfListOfObject = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(stars, "stars");
+      Assertions.checkFieldNotMissing(_stars, "stars");
 
       return new CreateReviewForEpisode.CreateReview(
-        stars,
-        commentary,
-        listOfListOfString,
-        listOfListOfEnum,
-        listOfListOfCustom,
-        listOfListOfObject
+        _stars,
+        _commentary,
+        _listOfListOfString,
+        _listOfListOfEnum,
+        _listOfListOfCustom,
+        _listOfListOfObject
       );
     }
 
@@ -128,20 +128,20 @@ public class CreateReviewForEpisode_ResponseAdapter {
     @Override
     public CreateReviewForEpisode.ListOfListOfObject fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
+          case 0: _name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new CreateReviewForEpisode.ListOfListOfObject(
-        name
+        _name
       );
     }
 

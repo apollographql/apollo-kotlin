@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  189526
-aggregate-kotlin-responseBased                                                                  48938
-aggregate-kotlin-operationBased                                                                 34136
-aggregate-kotlin-compat                                                                         35553
-aggregate-java-operationBased                                                                   70899
+aggregate-all                                                                                  191390
+aggregate-kotlin-responseBased                                                                  49334
+aggregate-kotlin-operationBased                                                                 34570
+aggregate-kotlin-compat                                                                         35948
+aggregate-java-operationBased                                                                   71538
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5395
 kotlin-compat-fragments_with_defer_and_include_directives                                        3596
@@ -43,10 +43,10 @@ kotlin-compat-inline_fragment_intersection                                      
 java-operationBased-named_fragment_inside_inline_fragment                                        1145
 java-operationBased-fragments_with_type_condition                                                1143
 kotlin-compat-unique_type_name                                                                   1120
-kotlin-operationBased-inline_fragment_intersection                                               1107
+kotlin-operationBased-inline_fragment_intersection                                               1108
 kotlin-operationBased-union_inline_fragments                                                     1106
 kotlin-responseBased-fragment_used_twice                                                         1105
-kotlin-responseBased-union_inline_fragments                                                      1094
+kotlin-responseBased-union_inline_fragments                                                      1095
 kotlin-responseBased-__schema                                                                    1087
 java-operationBased-root_query_inline_fragment                                                   1081
 kotlin-operationBased-unique_type_name                                                           1077
@@ -136,6 +136,7 @@ kotlin-compat-not_all_combinations_are_needed                                   
 kotlin-compat-union_fragment                                                                      650
 java-operationBased-deprecation                                                                   647
 kotlin-compat-inline_fragment_inside_inline_fragment                                              643
+java-operationBased-capitalized_fields                                                            639
 kotlin-operationBased-fragments_same_type_condition                                               639
 kotlin-operationBased-simple_union                                                                637
 java-operationBased-recursive_selection                                                           635
@@ -219,6 +220,7 @@ kotlin-responseBased-variable_default_value                                     
 java-operationBased-enums_as_sealed                                                               437
 java-operationBased-case_sensitive_enum                                                           434
 kotlin-operationBased-hero_name                                                                   434
+kotlin-operationBased-capitalized_fields                                                          433
 java-operationBased-nonnull                                                                       431
 kotlin-responseBased-field_with_include_directive                                                 429
 kotlin-responseBased-optional                                                                     428
@@ -228,6 +230,8 @@ kotlin-responseBased-recursive_selection                                        
 kotlin-responseBased-inline_fragment_simple                                                       409
 kotlin-compat-inline_fragment_type_coercion                                                       408
 kotlin-operationBased-inline_fragment_for_non_optional_field                                      405
+kotlin-compat-capitalized_fields                                                                  395
+kotlin-responseBased-capitalized_fields                                                           395
 kotlin-operationBased-inline_fragment_type_coercion                                               394
 kotlin-compat-inline_fragment_simple                                                              393
 kotlin-responseBased-two_heroes_unique                                                            390

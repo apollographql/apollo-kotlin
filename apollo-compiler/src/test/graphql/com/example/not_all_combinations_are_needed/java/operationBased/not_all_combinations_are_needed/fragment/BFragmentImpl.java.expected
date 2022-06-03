@@ -76,7 +76,7 @@ public class BFragmentImpl implements Fragment<BFragment> {
       "data",
       B.type
     )
-    .selections(bFragmentSelections.root)
+    .selections(bFragmentSelections.__root)
     .build();
   }
 }

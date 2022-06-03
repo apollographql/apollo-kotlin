@@ -14,21 +14,21 @@ import com.example.recursive_selection.type.Tree
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val children: List<CompiledSelection> = listOf(
+  private val __children: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val parent: List<CompiledSelection> = listOf(
+  private val __parent: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val tree: List<CompiledSelection> = listOf(
+  private val __tree: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -36,20 +36,20 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "children",
           type = Tree.type.notNull().list().notNull()
-        ).selections(children)
+        ).selections(__children)
         .build(),
         CompiledField.Builder(
           name = "parent",
           type = Tree.type
-        ).selections(parent)
+        ).selections(__parent)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "tree",
           type = Tree.type
-        ).selections(tree)
+        ).selections(__tree)
         .build()
       )
 }

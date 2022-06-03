@@ -35,16 +35,16 @@ internal object HeroDetailsImpl_ResponseAdapter {
         "__typename was not found"
       }
 
-      var humanDetails: HumanDetails? = null
+      var _humanDetails: HumanDetails? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.simple_fragment.fragment.HeroDetails(
         __typename = __typename,
-        humanDetails = humanDetails
+        humanDetails = _humanDetails
       )
     }
 

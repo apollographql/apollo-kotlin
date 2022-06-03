@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var foo: TestQuery.Data.Foo? = null
+      var _foo: TestQuery.Data.Foo? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> foo = Foo.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _foo = Foo.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        foo = foo
+        foo = _foo
       )
     }
 
@@ -54,12 +54,12 @@ public object TestQuery_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Foo {
         var __typename: String? = null
-        var foo: String? = null
+        var _foo: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> foo = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _foo = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,17 +68,17 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onBar: TestQuery.Data.Foo.OnBar? = null
+        var _onBar: TestQuery.Data.Foo.OnBar? = null
         if (possibleTypes("BarObject","FooBar").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
+          _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.Data.Foo.OnBar.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Foo(
           __typename = __typename,
-          foo = foo!!,
-          onBar = onBar
+          foo = _foo!!,
+          onBar = _onBar
         )
       }
 
@@ -104,17 +104,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Foo.OnBar {
-          var bar: String? = null
+          var _bar: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> bar = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _bar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Foo.OnBar(
-            bar = bar!!
+            bar = _bar!!
           )
         }
 

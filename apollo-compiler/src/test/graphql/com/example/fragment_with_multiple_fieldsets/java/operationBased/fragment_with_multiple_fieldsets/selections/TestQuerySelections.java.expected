@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> i = Arrays.asList(
+  private static List<CompiledSelection> __i = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("I", Arrays.asList("A", "B")).selections(iFragmentSelections.root).build()
+    new CompiledFragment.Builder("I", Arrays.asList("A", "B")).selections(iFragmentSelections.__root).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("i", I.type).selections(i).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("i", I.type).selections(__i).build()
   );
 }

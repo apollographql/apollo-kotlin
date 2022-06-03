@@ -46,7 +46,7 @@ public class AllStarships() : Query<AllStarships.Data> {
     name = "data",
     type = Root.type
   )
-  .selections(selections = AllStarshipsSelections.root)
+  .selections(selections = AllStarshipsSelections.__root)
   .build()
 
   public data class Data(

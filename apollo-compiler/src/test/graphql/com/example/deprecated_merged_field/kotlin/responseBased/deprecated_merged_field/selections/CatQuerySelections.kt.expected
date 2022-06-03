@@ -15,7 +15,7 @@ import com.example.deprecated_merged_field.type.GraphQLString
 import kotlin.collections.List
 
 public object CatQuerySelections {
-  private val cat: List<CompiledSelection> = listOf(
+  private val __cat: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -23,15 +23,15 @@ public object CatQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Animal",
           possibleTypes = (listOf("Cat", "Dog"))
-        ).selections(AnimalFragmentSelections.root)
+        ).selections(AnimalFragmentSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "cat",
           type = Cat.type
-        ).selections(cat)
+        ).selections(__cat)
         .build()
       )
 }

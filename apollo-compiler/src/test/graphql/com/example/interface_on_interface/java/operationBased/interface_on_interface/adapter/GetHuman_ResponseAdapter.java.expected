@@ -33,24 +33,24 @@ public class GetHuman_ResponseAdapter {
     @Override
     public GetHuman.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      GetHuman.Human human = null;
-      GetHuman.Node node = null;
+      GetHuman.Human _human = null;
+      GetHuman.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: human = new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
-          case 1: node = new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
+          case 0: _human = new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 1: _node = new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(human, "human");
-      Assertions.checkFieldNotMissing(node, "node");
+      Assertions.checkFieldNotMissing(_human, "human");
+      Assertions.checkFieldNotMissing(_node, "node");
 
       return new GetHuman.Data(
-        human,
-        node
+        _human,
+        _node
       );
     }
 
@@ -73,28 +73,28 @@ public class GetHuman_ResponseAdapter {
     @Override
     public GetHuman.Human fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String id = null;
-      String name = null;
-      Double height = null;
+      String _id = null;
+      String _name = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(height, "height");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_height, "height");
 
       return new GetHuman.Human(
-        id,
-        name,
-        height
+        _id,
+        _name,
+        _height
       );
     }
 
@@ -131,15 +131,15 @@ public class GetHuman_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      GetHuman.OnHuman onHuman = null;
+      GetHuman.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new GetHuman.Node(
         __typename,
-        onHuman
+        _onHuman
       );
     }
 
@@ -163,20 +163,20 @@ public class GetHuman_ResponseAdapter {
     @Override
     public GetHuman.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      Double height = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(height, "height");
+      Assertions.checkFieldNotMissing(_height, "height");
 
       return new GetHuman.OnHuman(
-        height
+        _height
       );
     }
 

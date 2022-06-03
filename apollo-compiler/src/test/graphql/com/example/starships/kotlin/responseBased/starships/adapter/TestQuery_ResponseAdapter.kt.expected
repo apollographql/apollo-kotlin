@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var starship: TestQuery.Data.Starship? = null
+      var _starship: TestQuery.Data.Starship? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> starship = Starship.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _starship = Starship.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        starship = starship
+        starship = _starship
       )
     }
 
@@ -54,24 +54,24 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Starship {
-        var id: String? = null
-        var name: String? = null
-        var coordinates: List<List<Double>>? = null
+        var _id: String? = null
+        var _name: String? = null
+        var _coordinates: List<List<Double>>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> coordinates = DoubleAdapter.list().list().nullable().fromJson(reader,
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _coordinates = DoubleAdapter.list().list().nullable().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Starship(
-          id = id!!,
-          name = name!!,
-          coordinates = coordinates
+          id = _id!!,
+          name = _name!!,
+          coordinates = _coordinates
         )
       }
 

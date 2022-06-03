@@ -20,17 +20,17 @@ public object DogFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.simple_union.fragment.DogFragment {
-      var woof: String? = null
+      var _woof: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> woof = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _woof = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.simple_union.fragment.DogFragment(
-        woof = woof!!
+        woof = _woof!!
       )
     }
 

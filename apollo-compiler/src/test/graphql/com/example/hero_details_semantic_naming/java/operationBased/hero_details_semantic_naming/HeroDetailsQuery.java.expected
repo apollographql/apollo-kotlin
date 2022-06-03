@@ -117,7 +117,7 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
       "data",
       com.example.hero_details_semantic_naming.type.Query.type
     )
-    .selections(HeroDetailsQuerySelections.root)
+    .selections(HeroDetailsQuerySelections.__root)
     .build();
   }
 

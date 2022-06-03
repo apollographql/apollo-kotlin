@@ -19,13 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> starship = Arrays.asList(
+  private static List<CompiledSelection> __starship = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("coordinates", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(GraphQLFloat.type))))).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument("id", new CompiledVariable("id"), false))).selections(starship).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("starship", Starship.type).arguments(Arrays.asList(new CompiledArgument("id", new CompiledVariable("id"), false))).selections(__starship).build()
   );
 }

@@ -21,17 +21,17 @@ public object BFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.not_all_combinations_are_needed.fragment.BFragment {
-      var fieldB1: String? = null
+      var _fieldB1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.not_all_combinations_are_needed.fragment.BFragment(
-        fieldB1 = fieldB1
+        fieldB1 = _fieldB1
       )
     }
 

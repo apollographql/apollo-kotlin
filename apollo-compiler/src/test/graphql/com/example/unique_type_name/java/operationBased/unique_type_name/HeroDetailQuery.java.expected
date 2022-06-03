@@ -137,7 +137,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
       "data",
       com.example.unique_type_name.type.Query.type
     )
-    .selections(HeroDetailQuerySelections.root)
+    .selections(HeroDetailQuerySelections.__root)
     .build();
   }
 

@@ -15,21 +15,21 @@ import com.example.nested_field_with_multiple_fieldsets.type.Iface2
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onIface2: List<CompiledSelection> = listOf(
+  private val __onIface2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar1",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onImpl2: List<CompiledSelection> = listOf(
+  private val __onImpl2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar2",
           type = GraphQLString.type
         ).build()
       )
 
-  private val iface2: List<CompiledSelection> = listOf(
+  private val __iface2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -37,38 +37,38 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Iface2",
           possibleTypes = listOf("Impl2")
-        ).selections(onIface2)
+        ).selections(__onIface2)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl2",
           possibleTypes = listOf("Impl2")
-        ).selections(onImpl2)
+        ).selections(__onImpl2)
         .build()
       )
 
-  private val onIface1: List<CompiledSelection> = listOf(
+  private val __onIface1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "iface2",
           type = Iface2.type
-        ).selections(iface2)
+        ).selections(__iface2)
         .build()
       )
 
-  private val onIface21: List<CompiledSelection> = listOf(
+  private val __onIface21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar3",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onImpl21: List<CompiledSelection> = listOf(
+  private val __onImpl21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "scalar4",
           type = GraphQLString.type
         ).build()
       )
 
-  private val iface21: List<CompiledSelection> = listOf(
+  private val __iface21: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -76,24 +76,24 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Iface2",
           possibleTypes = listOf("Impl2")
-        ).selections(onIface21)
+        ).selections(__onIface21)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl2",
           possibleTypes = listOf("Impl2")
-        ).selections(onImpl21)
+        ).selections(__onImpl21)
         .build()
       )
 
-  private val onImpl1: List<CompiledSelection> = listOf(
+  private val __onImpl1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "iface2",
           type = Iface2.type
-        ).selections(iface21)
+        ).selections(__iface21)
         .build()
       )
 
-  private val iface1: List<CompiledSelection> = listOf(
+  private val __iface1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -101,20 +101,20 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Iface1",
           possibleTypes = listOf("Impl1")
-        ).selections(onIface1)
+        ).selections(__onIface1)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Impl1",
           possibleTypes = listOf("Impl1")
-        ).selections(onImpl1)
+        ).selections(__onImpl1)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "iface1",
           type = Iface1.type
-        ).selections(iface1)
+        ).selections(__iface1)
         .build()
       )
 }

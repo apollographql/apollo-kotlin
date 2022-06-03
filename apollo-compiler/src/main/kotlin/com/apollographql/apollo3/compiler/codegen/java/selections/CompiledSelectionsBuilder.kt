@@ -63,19 +63,20 @@ class CompiledSelectionsBuilder(
   fun build(selections: List<GQLSelection>, rootName: String, parentType: String): TypeSpec {
     return TypeSpec.classBuilder(rootName)
         .addModifiers(Modifier.PUBLIC)
-        .addFields(selections.walk(root, false, parentType))
+        .addFields(selections.walk(root, isRoot = true, parentType))
         .build()
   }
 
-  private fun List<GQLSelection>.walk(name: String, private: Boolean, parentType: String): List<FieldSpec> {
-    val propertyName = resolveNameClashes(usedNames, context.layout.propertyName(name))
+  private fun List<GQLSelection>.walk(name: String, isRoot: Boolean, parentType: String): List<FieldSpec> {
+    val modelName = if (isRoot) root else context.layout.compiledSelectionsName(name)
+    val propertyName = resolveNameClashes(usedNames, modelName)
 
-    val results = mapNotNull { it.walk(true, parentType) }
+    val results = mapNotNull { it.walk(isRoot = false, parentType) }
 
     val property = FieldSpec.builder(ParameterizedTypeName.get(JavaClassNames.List, JavaClassNames.CompiledSelection), propertyName)
         .initializer(results.map { it.initializer }.toListInitializerCodeblock(withNewLines = true))
         .addModifiers(Modifier.STATIC)
-        .addModifiers(if (private) Modifier.PRIVATE else Modifier.PUBLIC)
+        .addModifiers(if (isRoot) Modifier.PUBLIC else Modifier.PRIVATE)
         .build()
 
     return results.flatMap { it.nestedFieldSpecs } + property
@@ -83,10 +84,10 @@ class CompiledSelectionsBuilder(
 
   class SelectionResult(val initializer: CodeBlock, val nestedFieldSpecs: List<FieldSpec>)
 
-  private fun GQLSelection.walk(private: Boolean, parentType: String): SelectionResult? {
+  private fun GQLSelection.walk(isRoot: Boolean, parentType: String): SelectionResult? {
     return when (this) {
-      is GQLField -> this.walk(private, parentType)
-      is GQLInlineFragment -> walk(private)
+      is GQLField -> this.walk(isRoot, parentType)
+      is GQLInlineFragment -> walk(isRoot)
       is GQLFragmentSpread -> walk()
     }
   }
@@ -113,7 +114,7 @@ class CompiledSelectionsBuilder(
     return CodeBlock.of("new $T($S, $L)", JavaClassNames.CompiledCondition, expression.value.name, inverted.toString())
   }
 
-  private fun GQLField.walk(private: Boolean, parentType: String): SelectionResult? {
+  private fun GQLField.walk(isRoot: Boolean, parentType: String): SelectionResult? {
     val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
@@ -140,7 +141,7 @@ class CompiledSelectionsBuilder(
     var nestededFieldSpecs: List<FieldSpec> = emptyList()
     val selections = selectionSet?.selections ?: emptyList()
     if (selections.isNotEmpty()) {
-      nestededFieldSpecs = selections.walk(alias ?: name, private, fieldDefinition.type.leafType().name)
+      nestededFieldSpecs = selections.walk(alias ?: name, isRoot, fieldDefinition.type.leafType().name)
       builder.add(".selections($L)", nestededFieldSpecs.last().name)
     }
     builder.unindent()
@@ -149,7 +150,7 @@ class CompiledSelectionsBuilder(
     return SelectionResult(builder.build(), nestededFieldSpecs)
   }
 
-  private fun GQLInlineFragment.walk(private: Boolean): SelectionResult? {
+  private fun GQLInlineFragment.walk(isRoot: Boolean): SelectionResult? {
     val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
@@ -172,7 +173,7 @@ class CompiledSelectionsBuilder(
     var nestededFieldSpecs: List<FieldSpec> = emptyList()
     val selections = selectionSet.selections
     if (selections.isNotEmpty()) {
-      nestededFieldSpecs = selections.walk(name, private, typeCondition.name)
+      nestededFieldSpecs = selections.walk(name, isRoot, typeCondition.name)
       builder.add(".selections($L)", nestededFieldSpecs.last().name)
     }
     builder.unindent()

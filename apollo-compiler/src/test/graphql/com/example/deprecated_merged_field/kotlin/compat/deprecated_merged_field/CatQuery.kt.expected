@@ -42,7 +42,7 @@ public class CatQuery() : Query<CatQuery.Data> {
     name = "data",
     type = com.example.deprecated_merged_field.type.Query.type
   )
-  .selections(selections = CatQuerySelections.root)
+  .selections(selections = CatQuerySelections.__root)
   .build()
 
   public data class Data(

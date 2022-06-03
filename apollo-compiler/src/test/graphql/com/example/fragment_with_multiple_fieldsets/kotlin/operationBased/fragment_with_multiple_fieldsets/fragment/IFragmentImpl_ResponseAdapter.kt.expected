@@ -37,16 +37,16 @@ public object IFragmentImpl_ResponseAdapter {
         "__typename was not found"
       }
 
-      var onA: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA? = null
+      var _onA: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA? = null
       if (possibleTypes("A").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.fromJson(reader,
+        _onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.fromJson(reader,
             customScalarAdapters)
       }
 
       return com.example.fragment_with_multiple_fieldsets.fragment.IFragment(
         __typename = __typename,
-        onA = onA
+        onA = _onA
       )
     }
 
@@ -70,17 +70,17 @@ public object IFragmentImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA {
-        var fieldA: String? = null
+        var _fieldA: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA(
-          fieldA = fieldA
+          fieldA = _fieldA
         )
       }
 

@@ -32,17 +32,17 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         SpreadMultipleWithDeferAndInclude.Data {
-      var hero: SpreadMultipleWithDeferAndInclude.Hero? = null
+      var _hero: SpreadMultipleWithDeferAndInclude.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return SpreadMultipleWithDeferAndInclude.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -71,12 +71,12 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDeferAndInclude_ResponseAdapter.Hero.Fragments.fromJson(reader,
+      val _fragments = com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDeferAndInclude_ResponseAdapter.Hero.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return SpreadMultipleWithDeferAndInclude.Hero(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -101,15 +101,15 @@ public object SpreadMultipleWithDeferAndInclude_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        var droidDetails: DroidDetails? = null
+        var _droidDetails: DroidDetails? = null
         if (and(possibleTypes("Droid"),or(variable("cond1"),not(variable("cond2")),label("b_first"),label("b_second"),and(label("b_third"),variable("cond3")),and(label("b_fourth"),not(variable("cond4"))))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return SpreadMultipleWithDeferAndInclude.Hero.Fragments(
-          droidDetails = droidDetails
+          droidDetails = _droidDetails
         )
       }
 

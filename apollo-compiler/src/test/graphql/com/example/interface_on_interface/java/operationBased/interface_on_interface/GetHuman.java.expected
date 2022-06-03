@@ -116,7 +116,7 @@ public class GetHuman implements Query<GetHuman.Data> {
       "data",
       com.example.interface_on_interface.type.Query.type
     )
-    .selections(GetHumanSelections.root)
+    .selections(GetHumanSelections.__root)
     .build();
   }
 

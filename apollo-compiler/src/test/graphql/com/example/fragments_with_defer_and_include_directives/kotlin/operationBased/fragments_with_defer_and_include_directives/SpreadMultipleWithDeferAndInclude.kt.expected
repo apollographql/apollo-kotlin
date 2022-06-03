@@ -43,7 +43,7 @@ public data class SpreadMultipleWithDeferAndInclude(
     name = "data",
     type = com.example.fragments_with_defer_and_include_directives.type.Query.type
   )
-  .selections(selections = SpreadMultipleWithDeferAndIncludeSelections.root)
+  .selections(selections = SpreadMultipleWithDeferAndIncludeSelections.__root)
   .build()
 
   public data class Data(

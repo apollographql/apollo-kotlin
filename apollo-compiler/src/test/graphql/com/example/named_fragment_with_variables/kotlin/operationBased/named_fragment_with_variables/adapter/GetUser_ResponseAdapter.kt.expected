@@ -31,12 +31,12 @@ public object GetUser_ResponseAdapter {
       }
 
       reader.rewind()
-      val queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
           customScalarAdapters)
 
       return GetUser.Data(
         __typename = __typename!!,
-        queryFragment = queryFragment
+        queryFragment = _queryFragment
       )
     }
 

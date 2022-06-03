@@ -22,17 +22,17 @@ public object LoginBarber_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         LoginBarber.Data {
-      var login: LoginBarber.Data.Login? = null
+      var _login: LoginBarber.Data.Login? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> login = Login.obj().fromJson(reader, customScalarAdapters)
+          0 -> _login = Login.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return LoginBarber.Data(
-        login = login!!
+        login = _login!!
       )
     }
 
@@ -50,17 +50,17 @@ public object LoginBarber_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           LoginBarber.Data.Login {
-        var response: String? = null
+        var _response: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> response = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _response = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return LoginBarber.Data.Login(
-          response = response!!
+          response = _response!!
         )
       }
 

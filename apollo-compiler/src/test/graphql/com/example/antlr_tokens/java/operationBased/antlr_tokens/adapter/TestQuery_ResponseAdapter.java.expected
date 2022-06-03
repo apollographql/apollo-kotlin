@@ -28,18 +28,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.TypeWithGraphQLKeywords typeWithGraphQLKeywords = null;
+      TestQuery.TypeWithGraphQLKeywords _typeWithGraphQLKeywords = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        typeWithGraphQLKeywords
+        _typeWithGraphQLKeywords
       );
     }
 
@@ -59,24 +59,24 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.TypeWithGraphQLKeywords fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String on = null;
-      String null_ = null;
-      String alias = null;
+      String _on = null;
+      String _null = null;
+      String _alias = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: on = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: null_ = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: alias = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _on = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _null = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _alias = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.TypeWithGraphQLKeywords(
-        on,
-        null_,
-        alias
+        _on,
+        _null,
+        _alias
       );
     }
 

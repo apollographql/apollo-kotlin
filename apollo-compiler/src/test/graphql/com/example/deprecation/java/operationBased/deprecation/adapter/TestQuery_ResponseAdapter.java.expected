@@ -30,18 +30,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Hero hero = null;
+      TestQuery.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        hero
+        _hero
       );
     }
 
@@ -61,28 +61,28 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
-      String deprecated = null;
-      Boolean deprecatedBool = null;
+      String _name = null;
+      String _deprecated = null;
+      Boolean _deprecatedBool = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: deprecated = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: deprecatedBool = Adapters.BooleanAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _deprecated = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _deprecatedBool = Adapters.BooleanAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(deprecated, "deprecated");
-      Assertions.checkFieldNotMissing(deprecatedBool, "deprecatedBool");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_deprecated, "deprecated");
+      Assertions.checkFieldNotMissing(_deprecatedBool, "deprecatedBool");
 
       return new TestQuery.Hero(
-        name,
-        deprecated,
-        deprecatedBool
+        _name,
+        _deprecated,
+        _deprecatedBool
       );
     }
 

@@ -17,12 +17,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestSubscriptionSelections {
-  private static List<CompiledSelection> commentAdded = Arrays.asList(
+  private static List<CompiledSelection> __commentAdded = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLInt.type)).build(),
     new CompiledField.Builder("content", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument("repoFullName", new CompiledVariable("repo"), false))).selections(commentAdded).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument("repoFullName", new CompiledVariable("repo"), false))).selections(__commentAdded).build()
   );
 }

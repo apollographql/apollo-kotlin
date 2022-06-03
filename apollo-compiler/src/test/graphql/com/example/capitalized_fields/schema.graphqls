@@ -1,0 +1,12 @@
+type Query {
+  Horse: Horse
+}
+
+type Horse {
+  Donkey: String
+  Cow: Cow
+}
+
+type Cow {
+  Moo: String
+}

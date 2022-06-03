@@ -33,20 +33,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.NonOptionalHero nonOptionalHero = null;
+      TestQuery.NonOptionalHero _nonOptionalHero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: nonOptionalHero = new ObjectAdapter<TestQuery.NonOptionalHero>(NonOptionalHero.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
+          case 0: _nonOptionalHero = new ObjectAdapter<TestQuery.NonOptionalHero>(NonOptionalHero.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(nonOptionalHero, "nonOptionalHero");
+      Assertions.checkFieldNotMissing(_nonOptionalHero, "nonOptionalHero");
 
       return new TestQuery.Data(
-        nonOptionalHero
+        _nonOptionalHero
       );
     }
 
@@ -67,30 +67,30 @@ public class TestQuery_ResponseAdapter {
     public TestQuery.NonOptionalHero fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnHuman onHuman = null;
+      TestQuery.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.NonOptionalHero(
         __typename,
-        name,
-        onHuman
+        _name,
+        _onHuman
       );
     }
 
@@ -117,18 +117,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      Double height = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.OnHuman(
-        height
+        _height
       );
     }
 

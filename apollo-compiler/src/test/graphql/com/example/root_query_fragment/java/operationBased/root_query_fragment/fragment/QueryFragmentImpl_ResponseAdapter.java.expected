@@ -29,13 +29,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     public com.example.root_query_fragment.fragment.QueryFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
-      com.example.root_query_fragment.fragment.QueryFragment.Hero hero = null;
+      com.example.root_query_fragment.fragment.QueryFragment.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,7 +44,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
       return new com.example.root_query_fragment.fragment.QueryFragment(
         __typename,
-        hero
+        _hero
       );
     }
 
@@ -67,20 +67,20 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.root_query_fragment.fragment.QueryFragment.Hero fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.root_query_fragment.fragment.QueryFragment.Hero(
-        name
+        _name
       );
     }
 

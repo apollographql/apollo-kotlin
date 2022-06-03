@@ -14,14 +14,14 @@ import com.example.path_vs_flat_accessors.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onB: List<CompiledSelection> = listOf(
+  private val __onB: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB1",
           type = GraphQLString.type
         ).build()
       )
 
-  private val onA: List<CompiledSelection> = listOf(
+  private val __onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -29,18 +29,18 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "B",
           possibleTypes = listOf("ABC", "BC")
-        ).selections(onB)
+        ).selections(__onB)
         .build()
       )
 
-  private val onB1: List<CompiledSelection> = listOf(
+  private val __onB1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "fieldB2",
           type = GraphQLString.type
         ).build()
       )
 
-  private val root1: List<CompiledSelection> = listOf(
+  private val __root1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -48,20 +48,20 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "A",
           possibleTypes = listOf("ABC", "AC")
-        ).selections(onA)
+        ).selections(__onA)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "B",
           possibleTypes = listOf("ABC", "BC")
-        ).selections(onB1)
+        ).selections(__onB1)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "root",
           type = C.type
-        ).selections(root1)
+        ).selections(__root1)
         .build()
       )
 }

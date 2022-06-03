@@ -15,33 +15,33 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> onB = Arrays.asList(
+  private static List<CompiledSelection> __onB = Arrays.asList(
     new CompiledField.Builder("fieldB1", GraphQLString.type).build()
   );
 
-  private static List<CompiledSelection> onA = Arrays.asList(
+  private static List<CompiledSelection> __onA = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("fieldA1", GraphQLString.type).build(),
-    new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(onB).build()
+    new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(__onB).build()
   );
 
-  private static List<CompiledSelection> onA1 = Arrays.asList(
+  private static List<CompiledSelection> __onA1 = Arrays.asList(
     new CompiledField.Builder("fieldA2", GraphQLString.type).build()
   );
 
-  private static List<CompiledSelection> onB1 = Arrays.asList(
+  private static List<CompiledSelection> __onB1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("fieldB2", GraphQLString.type).build(),
-    new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(onA1).build()
+    new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(__onA1).build()
   );
 
-  private static List<CompiledSelection> c = Arrays.asList(
+  private static List<CompiledSelection> __c = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(onA).build(),
-    new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(onB1).build()
+    new CompiledFragment.Builder("A", Arrays.asList("ABC", "AC")).selections(__onA).build(),
+    new CompiledFragment.Builder("B", Arrays.asList("ABC", "BC")).selections(__onB1).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("c", C.type).selections(c).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("c", C.type).selections(__c).build()
   );
 }

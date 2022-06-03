@@ -27,17 +27,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -68,24 +68,24 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var droidDetails1: DroidDetails1? = null
+        var _droidDetails1: DroidDetails1? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          droidDetails1 = com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.fromJson(reader,
+          _droidDetails1 = com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.fromJson(reader,
               customScalarAdapters)
         }
 
-        var droidDetails2: DroidDetails2? = null
+        var _droidDetails2: DroidDetails2? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          droidDetails2 = com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.fromJson(reader,
+          _droidDetails2 = com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
           __typename = __typename,
-          droidDetails1 = droidDetails1,
-          droidDetails2 = droidDetails2
+          droidDetails1 = _droidDetails1,
+          droidDetails2 = _droidDetails2
         )
       }
 

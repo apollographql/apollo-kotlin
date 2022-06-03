@@ -76,7 +76,7 @@ public class PilotFragmentImpl implements Fragment<PilotFragment> {
       "data",
       Person.type
     )
-    .selections(pilotFragmentSelections.root)
+    .selections(pilotFragmentSelections.__root)
     .build();
   }
 }

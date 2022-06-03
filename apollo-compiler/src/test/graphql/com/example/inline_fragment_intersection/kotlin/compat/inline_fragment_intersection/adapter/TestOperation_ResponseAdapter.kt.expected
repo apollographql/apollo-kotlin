@@ -32,17 +32,17 @@ public object TestOperation_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
-      var random: TestOperation.Random? = null
+      var _random: TestOperation.Random? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> random = Random.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _random = Random.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.Data(
-        random = random!!
+        random = _random!!
       )
     }
 
@@ -74,24 +74,24 @@ public object TestOperation_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asBeing: TestOperation.AsBeing? = null
+      var _asBeing: TestOperation.AsBeing? = null
       if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsBeing.fromJson(reader,
+        _asBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsBeing.fromJson(reader,
             customScalarAdapters)
       }
 
-      var asWookie2: TestOperation.AsWookie2? = null
+      var _asWookie2: TestOperation.AsWookie2? = null
       if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asWookie2 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie2.fromJson(reader,
+        _asWookie2 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie2.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestOperation.Random(
         __typename = __typename,
-        asBeing = asBeing,
-        asWookie2 = asWookie2
+        asBeing = _asBeing,
+        asWookie2 = _asWookie2
       )
     }
 
@@ -121,14 +121,14 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsBeing {
       var __typename: String? = null
-      var name: String? = null
-      var friends: List<TestOperation.Friend1>? = null
+      var _name: String? = null
+      var _friends: List<TestOperation.Friend1>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend1.obj(true).list().fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friends = Friend1.obj(true).list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -137,18 +137,18 @@ public object TestOperation_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asHuman: TestOperation.AsHuman? = null
+      var _asHuman: TestOperation.AsHuman? = null
       if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsHuman.fromJson(reader,
+        _asHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsHuman.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestOperation.AsBeing(
         __typename = __typename,
-        name = name!!,
-        friends = friends!!,
-        asHuman = asHuman
+        name = _name!!,
+        friends = _friends!!,
+        asHuman = _asHuman
       )
     }
 
@@ -179,12 +179,12 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend1 {
       var __typename: String? = null
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -193,17 +193,17 @@ public object TestOperation_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asWookie1: TestOperation.AsWookie1? = null
+      var _asWookie1: TestOperation.AsWookie1? = null
       if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asWookie1 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie1.fromJson(reader,
+        _asWookie1 = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie1.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestOperation.Friend1(
         __typename = __typename,
-        name = name!!,
-        asWookie1 = asWookie1
+        name = _name!!,
+        asWookie1 = _asWookie1
       )
     }
 
@@ -231,22 +231,22 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie1 {
       var __typename: String? = null
-      var name: String? = null
-      var lifeExpectancy: Double? = null
+      var _name: String? = null
+      var _lifeExpectancy: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsWookie1(
         __typename = __typename!!,
-        name = name!!,
-        lifeExpectancy = lifeExpectancy
+        name = _name!!,
+        lifeExpectancy = _lifeExpectancy
       )
     }
 
@@ -273,25 +273,25 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsHuman {
       var __typename: String? = null
-      var name: String? = null
-      var friends: List<TestOperation.Friend>? = null
-      var profilePictureUrl: String? = null
+      var _name: String? = null
+      var _friends: List<TestOperation.Friend>? = null
+      var _profilePictureUrl: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
-          3 -> profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
+          3 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsHuman(
         __typename = __typename!!,
-        name = name!!,
-        friends = friends!!,
-        profilePictureUrl = profilePictureUrl
+        name = _name!!,
+        friends = _friends!!,
+        profilePictureUrl = _profilePictureUrl
       )
     }
 
@@ -320,14 +320,14 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend {
       var __typename: String? = null
-      var name: String? = null
-      var isFamous: Boolean? = null
+      var _name: String? = null
+      var _isFamous: Boolean? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -336,18 +336,18 @@ public object TestOperation_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asWookie: TestOperation.AsWookie? = null
+      var _asWookie: TestOperation.AsWookie? = null
       if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie.fromJson(reader,
+        _asWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.AsWookie.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestOperation.Friend(
         __typename = __typename,
-        name = name!!,
-        isFamous = isFamous,
-        asWookie = asWookie
+        name = _name!!,
+        isFamous = _isFamous,
+        asWookie = _asWookie
       )
     }
 
@@ -379,28 +379,28 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie {
       var __typename: String? = null
-      var name: String? = null
-      var isFamous: Boolean? = null
-      var lifeExpectancy: Double? = null
-      var race: Race? = null
+      var _name: String? = null
+      var _isFamous: Boolean? = null
+      var _lifeExpectancy: Double? = null
+      var _race: Race? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
-          3 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-          4 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+          3 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          4 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsWookie(
         __typename = __typename!!,
-        name = name!!,
-        isFamous = isFamous,
-        lifeExpectancy = lifeExpectancy,
-        race = race!!
+        name = _name!!,
+        isFamous = _isFamous,
+        lifeExpectancy = _lifeExpectancy,
+        race = _race!!
       )
     }
 
@@ -432,22 +432,22 @@ public object TestOperation_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.AsWookie2 {
       var __typename: String? = null
-      var race: Race? = null
-      var friends: List<TestOperation.Friend2>? = null
+      var _race: Race? = null
+      var _friends: List<TestOperation.Friend2>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend2.obj().list().fromJson(reader, customScalarAdapters)
+          1 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friends = Friend2.obj().list().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.AsWookie2(
         __typename = __typename!!,
-        race = race!!,
-        friends = friends!!
+        race = _race!!,
+        friends = _friends!!
       )
     }
 
@@ -472,17 +472,17 @@ public object TestOperation_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Friend2 {
-      var lifeExpectancy: Double? = null
+      var _lifeExpectancy: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.Friend2(
-        lifeExpectancy = lifeExpectancy
+        lifeExpectancy = _lifeExpectancy
       )
     }
 

@@ -23,17 +23,17 @@ public object CatQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CatQuery.Data {
-      var cat: CatQuery.Data.Cat? = null
+      var _cat: CatQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> cat = Cat.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return CatQuery.Data(
-        cat = cat
+        cat = _cat
       )
     }
 
@@ -61,12 +61,12 @@ public object CatQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
+        val _animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
             customScalarAdapters)
 
         return CatQuery.Data.Cat(
           __typename = __typename!!,
-          animalFragment = animalFragment
+          animalFragment = _animalFragment
         )
       }
 

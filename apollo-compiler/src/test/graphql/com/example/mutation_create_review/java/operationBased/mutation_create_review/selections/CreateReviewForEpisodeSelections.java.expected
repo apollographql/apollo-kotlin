@@ -21,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CreateReviewForEpisodeSelections {
-  private static List<CompiledSelection> listOfListOfObject = Arrays.asList(
+  private static List<CompiledSelection> __listOfListOfObject = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  private static List<CompiledSelection> createReview = Arrays.asList(
+  private static List<CompiledSelection> __createReview = Arrays.asList(
     new CompiledField.Builder("stars", new CompiledNotNullType(GraphQLInt.type)).build(),
     new CompiledField.Builder("commentary", GraphQLString.type).build(),
     new CompiledField.Builder("listOfListOfString", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(GraphQLString.type))))).build(),
     new CompiledField.Builder("listOfListOfEnum", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Episode.type))))).build(),
     new CompiledField.Builder("listOfListOfCustom", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Date.type))))).build(),
-    new CompiledField.Builder("listOfListOfObject", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Character.type))))).selections(listOfListOfObject).build()
+    new CompiledField.Builder("listOfListOfObject", new CompiledListType(new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Character.type))))).selections(__listOfListOfObject).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new CompiledVariable("review"), false))).selections(createReview).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new CompiledVariable("review"), false))).selections(__createReview).build()
   );
 }

@@ -16,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections {
-  private static List<CompiledSelection> heroAVeryAVeryAVeryAVeryAVeryAVeryAV = Arrays.asList(
+  private static List<CompiledSelection> __heroAVeryAVeryAVeryAVeryAVeryAVeryAV = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).alias("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName").build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV").arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName"), false))).selections(heroAVeryAVeryAVeryAVeryAVeryAVeryAV).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("hero", Character.type).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV").arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName"), false))).selections(__heroAVeryAVeryAVeryAVeryAVeryAVeryAV).build()
   );
 }

@@ -30,28 +30,28 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      Object profileLink = null;
-      com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection friendsConnection = null;
+      String _name = null;
+      Object _profileLink = null;
+      com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: profileLink = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friendsConnection = new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _profileLink = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _friendsConnection = new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(profileLink, "profileLink");
-      Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_profileLink, "profileLink");
+      Assertions.checkFieldNotMissing(_friendsConnection, "friendsConnection");
 
       return new com.example.named_fragment_delegate.fragment.HumanDetails(
-        name,
-        profileLink,
-        friendsConnection
+        _name,
+        _profileLink,
+        _friendsConnection
       );
     }
 
@@ -77,18 +77,18 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> edges = null;
+      List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection(
-        edges
+        _edges
       );
     }
 
@@ -109,18 +109,18 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails.Edge fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      com.example.named_fragment_delegate.fragment.HumanDetails.Node node = null;
+      com.example.named_fragment_delegate.fragment.HumanDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.named_fragment_delegate.fragment.HumanDetails.Edge(
-        node
+        _node
       );
     }
 
@@ -140,20 +140,20 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_delegate.fragment.HumanDetails.Node fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.named_fragment_delegate.fragment.HumanDetails.Node(
-        name
+        _name
       );
     }
 

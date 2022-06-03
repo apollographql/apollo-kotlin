@@ -15,7 +15,7 @@ import com.example.not_all_combinations_are_needed.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onB: List<CompiledSelection> = listOf(
+  private val __onB: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -23,11 +23,11 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "B",
           possibleTypes = (listOf("ABC", "SomeBC"))
-        ).selections(bFragmentSelections.root)
+        ).selections(bFragmentSelections.__root)
         .build()
       )
 
-  private val onA: List<CompiledSelection> = listOf(
+  private val __onA: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -39,11 +39,11 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "B",
           possibleTypes = listOf("ABC", "SomeBC")
-        ).selections(onB)
+        ).selections(__onB)
         .build()
       )
 
-  private val root1: List<CompiledSelection> = listOf(
+  private val __root1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -51,15 +51,15 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "A",
           possibleTypes = listOf("ABC")
-        ).selections(onA)
+        ).selections(__onA)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "root",
           type = C.type
-        ).selections(root1)
+        ).selections(__root1)
         .build()
       )
 }

@@ -19,22 +19,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class starshipFragmentSelections {
-  private static List<CompiledSelection> node = Arrays.asList(
+  private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Person", Arrays.asList("Person")).selections(pilotFragmentSelections.root).build()
+    new CompiledFragment.Builder("Person", Arrays.asList("Person")).selections(pilotFragmentSelections.__root).build()
   );
 
-  private static List<CompiledSelection> edges = Arrays.asList(
-    new CompiledField.Builder("node", Person.type).selections(node).build()
+  private static List<CompiledSelection> __edges = Arrays.asList(
+    new CompiledField.Builder("node", Person.type).selections(__node).build()
   );
 
-  private static List<CompiledSelection> pilotConnection = Arrays.asList(
-    new CompiledField.Builder("edges", new CompiledListType(StarshipPilotsEdge.type)).selections(edges).build()
+  private static List<CompiledSelection> __pilotConnection = Arrays.asList(
+    new CompiledField.Builder("edges", new CompiledListType(StarshipPilotsEdge.type)).selections(__edges).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
+  public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
     new CompiledField.Builder("name", GraphQLString.type).build(),
-    new CompiledField.Builder("pilotConnection", StarshipPilotsConnection.type).selections(pilotConnection).build()
+    new CompiledField.Builder("pilotConnection", StarshipPilotsConnection.type).selections(__pilotConnection).build()
   );
 }

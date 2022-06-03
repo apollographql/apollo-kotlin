@@ -23,17 +23,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var a: TestQuery.Data.A? = null
+      var _a: TestQuery.Data.A? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        a = a
+        a = _a
       )
     }
 
@@ -61,12 +61,12 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
+        val _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.A(
           __typename = __typename!!,
-          aFragment = aFragment
+          aFragment = _aFragment
         )
       }
 

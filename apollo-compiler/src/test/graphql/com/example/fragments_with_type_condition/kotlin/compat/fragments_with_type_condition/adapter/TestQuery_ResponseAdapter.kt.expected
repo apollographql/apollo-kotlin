@@ -28,20 +28,20 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var r2: TestQuery.R2? = null
-      var luke: TestQuery.Luke? = null
+      var _r2: TestQuery.R2? = null
+      var _luke: TestQuery.Luke? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> r2 = R2.obj(true).nullable().fromJson(reader, customScalarAdapters)
-          1 -> luke = Luke.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _r2 = R2.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> _luke = Luke.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        r2 = r2,
-        luke = luke
+        r2 = _r2,
+        luke = _luke
       )
     }
 
@@ -73,12 +73,12 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.Fragments.fromJson(reader,
+      val _fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.R2.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.R2(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -102,23 +102,23 @@ public object TestQuery_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        var humanDetails: HumanDetails? = null
+        var _humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        var droidDetails: DroidDetails? = null
+        var _droidDetails: DroidDetails? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.R2.Fragments(
-          humanDetails = humanDetails,
-          droidDetails = droidDetails
+          humanDetails = _humanDetails,
+          droidDetails = _droidDetails
         )
       }
 
@@ -155,12 +155,12 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.Fragments.fromJson(reader,
+      val _fragments = com.example.fragments_with_type_condition.adapter.TestQuery_ResponseAdapter.Luke.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Luke(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -184,23 +184,23 @@ public object TestQuery_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        var humanDetails: HumanDetails? = null
+        var _humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+          _humanDetails = com.example.fragments_with_type_condition.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
               customScalarAdapters)
         }
 
-        var droidDetails: DroidDetails? = null
+        var _droidDetails: DroidDetails? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+          _droidDetails = com.example.fragments_with_type_condition.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Luke.Fragments(
-          humanDetails = humanDetails,
-          droidDetails = droidDetails
+          humanDetails = _humanDetails,
+          droidDetails = _droidDetails
         )
       }
 

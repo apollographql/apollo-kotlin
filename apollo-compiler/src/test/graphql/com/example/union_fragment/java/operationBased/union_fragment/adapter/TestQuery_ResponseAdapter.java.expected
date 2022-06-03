@@ -35,18 +35,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      List<TestQuery.Search> search = null;
+      List<TestQuery.Search> _search = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: search = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _search = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        search
+        _search
       );
     }
 
@@ -77,22 +77,22 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnStarship onStarship = null;
+      TestQuery.OnStarship _onStarship = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      Starship starship = null;
+      Starship _starship = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.fromJson(reader, customScalarAdapters);
+        _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.Search(
         __typename,
-        onStarship,
-        starship
+        _onStarship,
+        _starship
       );
     }
 
@@ -120,20 +120,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnStarship fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String id = null;
+      String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
+      Assertions.checkFieldNotMissing(_id, "id");
 
       return new TestQuery.OnStarship(
-        id
+        _id
       );
     }
 

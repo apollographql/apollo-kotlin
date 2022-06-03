@@ -27,23 +27,23 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragments_with_type_condition.fragment.HumanDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      Double height = null;
+      String _name = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.fragments_with_type_condition.fragment.HumanDetails(
-        name,
-        height
+        _name,
+        _height
       );
     }
 

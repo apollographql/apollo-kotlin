@@ -16,7 +16,7 @@ import com.example.subscriptions.type.GraphQLString
 import kotlin.collections.List
 
 public object TestSubscriptionSelections {
-  private val commentAdded: List<CompiledSelection> = listOf(
+  private val __commentAdded: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLInt.type.notNull()
@@ -27,14 +27,14 @@ public object TestSubscriptionSelections {
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "commentAdded",
           type = Comment.type
         ).arguments(listOf(
           CompiledArgument("repoFullName", CompiledVariable("repo"))
         ))
-        .selections(commentAdded)
+        .selections(__commentAdded)
         .build()
       )
 }

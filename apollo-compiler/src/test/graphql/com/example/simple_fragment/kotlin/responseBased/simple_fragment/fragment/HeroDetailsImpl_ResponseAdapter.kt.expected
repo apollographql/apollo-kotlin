@@ -49,19 +49,19 @@ internal object HeroDetailsImpl_ResponseAdapter {
       typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return HeroDetailsImpl.HumanData(
         __typename = __typename!!,
-        name = name!!
+        name = _name!!
       )
     }
 

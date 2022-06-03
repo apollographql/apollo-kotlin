@@ -16,7 +16,7 @@ import com.example.mutation_create_review_semantic_naming.type.Review
 import kotlin.collections.List
 
 public object CreateReviewForEpisodeMutationSelections {
-  private val createReview: List<CompiledSelection> = listOf(
+  private val __createReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
           type = GraphQLInt.type.notNull()
@@ -27,7 +27,7 @@ public object CreateReviewForEpisodeMutationSelections {
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "createReview",
           type = Review.type
@@ -35,7 +35,7 @@ public object CreateReviewForEpisodeMutationSelections {
           CompiledArgument("episode", CompiledVariable("ep")),
           CompiledArgument("review", CompiledVariable("review"))
         ))
-        .selections(createReview)
+        .selections(__createReview)
         .build()
       )
 }

@@ -15,7 +15,7 @@ import com.example.simple_fragment_with_inline_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -23,15 +23,15 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
-        ).selections(HeroDetailsSelections.root)
+        ).selections(HeroDetailsSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(__hero)
         .build()
       )
 }

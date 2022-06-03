@@ -17,7 +17,7 @@ import com.example.interface_on_interface.type.Node
 import kotlin.collections.List
 
 public object GetHumanSelections {
-  private val human: List<CompiledSelection> = listOf(
+  private val __human: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -32,14 +32,14 @@ public object GetHumanSelections {
         ).build()
       )
 
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type.notNull()
         ).build()
       )
 
-  private val node: List<CompiledSelection> = listOf(
+  private val __node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -47,20 +47,20 @@ public object GetHumanSelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "human",
           type = Human.type.notNull()
-        ).selections(human)
+        ).selections(__human)
         .build(),
         CompiledField.Builder(
           name = "node",
           type = Node.type.notNull()
-        ).selections(node)
+        ).selections(__node)
         .build()
       )
 }

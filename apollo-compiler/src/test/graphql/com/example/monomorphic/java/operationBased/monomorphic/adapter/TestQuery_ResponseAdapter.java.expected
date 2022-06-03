@@ -28,20 +28,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Cat cat = null;
+      TestQuery.Cat _cat = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: cat = new ObjectAdapter<TestQuery.Cat>(Cat.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
+          case 0: _cat = new ObjectAdapter<TestQuery.Cat>(Cat.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(cat, "cat");
+      Assertions.checkFieldNotMissing(_cat, "cat");
 
       return new TestQuery.Data(
-        cat
+        _cat
       );
     }
 
@@ -72,13 +72,13 @@ public class TestQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      TestQuery.OnNode onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestQuery.OnNode _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnNode.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.Cat(
         __typename,
-        onNode
+        _onNode
       );
     }
 
@@ -111,13 +111,13 @@ public class TestQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      TestQuery.OnAnimal onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestQuery.OnAnimal _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.OnAnimal.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.OnNode(
         __typename,
-        onAnimal
+        _onAnimal
       );
     }
 
@@ -139,20 +139,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnAnimal fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String species = null;
+      String _species = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: species = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _species = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(species, "species");
+      Assertions.checkFieldNotMissing(_species, "species");
 
       return new TestQuery.OnAnimal(
-        species
+        _species
       );
     }
 

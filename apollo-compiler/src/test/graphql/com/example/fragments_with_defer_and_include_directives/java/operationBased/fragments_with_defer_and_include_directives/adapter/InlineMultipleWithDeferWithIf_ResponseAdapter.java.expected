@@ -34,18 +34,18 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     @Override
     public InlineMultipleWithDeferWithIf.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      InlineMultipleWithDeferWithIf.Hero hero = null;
+      InlineMultipleWithDeferWithIf.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new InlineMultipleWithDeferWithIf.Data(
-        hero
+        _hero
       );
     }
 
@@ -77,27 +77,27 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       }
 
       reader.rewind();
-      InlineMultipleWithDeferWithIf.OnCharacter onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
+      InlineMultipleWithDeferWithIf.OnCharacter _onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
-      InlineMultipleWithDeferWithIf.OnCharacterDeferF_second onCharacterDeferF_second = null;
+      InlineMultipleWithDeferWithIf.OnCharacterDeferF_second _onCharacterDeferF_second = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BLabel("f_second")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_second.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDeferWithIf.OnCharacterDeferF_third onCharacterDeferF_third = null;
+      InlineMultipleWithDeferWithIf.OnCharacterDeferF_third _onCharacterDeferF_third = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("f_third"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacterDeferF_third.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new InlineMultipleWithDeferWithIf.Hero(
         __typename,
-        onCharacter,
-        onCharacterDeferF_second,
-        onCharacterDeferF_third
+        _onCharacter,
+        _onCharacterDeferF_second,
+        _onCharacterDeferF_third
       );
     }
 
@@ -127,20 +127,20 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     @Override
     public InlineMultipleWithDeferWithIf.OnCharacter fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String id = null;
+      String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
+      Assertions.checkFieldNotMissing(_id, "id");
 
       return new InlineMultipleWithDeferWithIf.OnCharacter(
-        id
+        _id
       );
     }
 
@@ -160,20 +160,20 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     @Override
     public InlineMultipleWithDeferWithIf.OnCharacterDeferF_second fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new InlineMultipleWithDeferWithIf.OnCharacterDeferF_second(
-        name
+        _name
       );
     }
 
@@ -193,20 +193,20 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     @Override
     public InlineMultipleWithDeferWithIf.OnCharacterDeferF_third fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new InlineMultipleWithDeferWithIf.OnCharacterDeferF_third(
-        name
+        _name
       );
     }
 

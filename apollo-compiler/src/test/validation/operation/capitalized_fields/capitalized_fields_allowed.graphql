@@ -1,0 +1,10 @@
+query TestQuery {
+  Horse {
+    Donkey
+    ... on Horse {
+      Cow {
+        Moo
+      }
+    }
+  }
+}

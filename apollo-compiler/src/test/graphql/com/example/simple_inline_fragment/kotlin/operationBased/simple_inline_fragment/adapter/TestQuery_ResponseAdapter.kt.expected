@@ -28,17 +28,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Data.Hero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -70,28 +70,28 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
+        val _onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
             customScalarAdapters)
 
-        var onHuman: TestQuery.Data.Hero.OnHuman? = null
+        var _onHuman: TestQuery.Data.Hero.OnHuman? = null
         if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onHuman = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
+          _onHuman = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
               customScalarAdapters)
         }
 
-        var onDroid: TestQuery.Data.Hero.OnDroid? = null
+        var _onDroid: TestQuery.Data.Hero.OnDroid? = null
         if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onDroid = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
+          _onDroid = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
           __typename = __typename,
-          onCharacter = onCharacter,
-          onHuman = onHuman,
-          onDroid = onDroid
+          onCharacter = _onCharacter,
+          onHuman = _onHuman,
+          onDroid = _onDroid
         )
       }
 
@@ -123,24 +123,24 @@ public object TestQuery_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnCharacter {
           var __typename: String? = null
-          var id: String? = null
+          var _id: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           reader.rewind()
-          val onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.OnCharacter.fromJson(reader,
+          val _onCharacter = com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.OnCharacter.fromJson(reader,
               customScalarAdapters)
 
           return TestQuery.Data.Hero.OnCharacter(
             __typename = __typename!!,
-            id = id!!,
-            onCharacter = onCharacter
+            id = _id!!,
+            onCharacter = _onCharacter
           )
         }
 
@@ -165,17 +165,17 @@ public object TestQuery_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               TestQuery.Data.Hero.OnCharacter.OnCharacter {
-            var name: String? = null
+            var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestQuery.Data.Hero.OnCharacter.OnCharacter(
-              name = name!!
+              name = _name!!
             )
           }
 
@@ -195,17 +195,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnHuman {
-          var height: Double? = null
+          var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.OnHuman(
-            height = height
+            height = _height
           )
         }
 
@@ -224,17 +224,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.OnDroid {
-          var primaryFunction: String? = null
+          var _primaryFunction: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Hero.OnDroid(
-            primaryFunction = primaryFunction
+            primaryFunction = _primaryFunction
           )
         }
 

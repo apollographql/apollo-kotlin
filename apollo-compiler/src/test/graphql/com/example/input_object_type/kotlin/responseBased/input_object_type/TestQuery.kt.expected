@@ -41,7 +41,7 @@ public data class TestQuery(
     name = "data",
     type = com.example.input_object_type.type.Mutation.type
   )
-  .selections(selections = TestQuerySelections.root)
+  .selections(selections = TestQuerySelections.__root)
   .build()
 
   public data class Data(

@@ -25,17 +25,17 @@ public object TestSubscription_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestSubscription.Data {
-      var commentAdded: TestSubscription.Data.CommentAdded? = null
+      var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> commentAdded = CommentAdded.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _commentAdded = CommentAdded.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestSubscription.Data(
-        commentAdded = commentAdded
+        commentAdded = _commentAdded
       )
     }
 
@@ -53,20 +53,20 @@ public object TestSubscription_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestSubscription.Data.CommentAdded {
-        var id: Int? = null
-        var content: String? = null
+        var _id: Int? = null
+        var _content: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> content = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _id = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _content = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestSubscription.Data.CommentAdded(
-          id = id!!,
-          content = content!!
+          id = _id!!,
+          content = _content!!
         )
       }
 

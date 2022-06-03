@@ -25,18 +25,18 @@ public class Fragment1Impl_ResponseAdapter {
     @Override
     public com.example.multiple_fragments.fragment.Fragment1 fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String field1 = null;
+      String _field1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: field1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _field1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.multiple_fragments.fragment.Fragment1(
-        field1
+        _field1
       );
     }
 

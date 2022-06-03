@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class pilotFragmentSelections {
-  private static List<CompiledSelection> homeworld = Arrays.asList(
+  private static List<CompiledSelection> __homeworld = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Planet", Arrays.asList("Planet")).selections(planetFragmentSelections.root).build()
+    new CompiledFragment.Builder("Planet", Arrays.asList("Planet")).selections(planetFragmentSelections.__root).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
+  public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("name", GraphQLString.type).build(),
-    new CompiledField.Builder("homeworld", Planet.type).selections(homeworld).build()
+    new CompiledField.Builder("homeworld", Planet.type).selections(__homeworld).build()
   );
 }

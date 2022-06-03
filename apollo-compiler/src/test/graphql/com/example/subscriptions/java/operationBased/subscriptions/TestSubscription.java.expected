@@ -116,7 +116,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
       "data",
       com.example.subscriptions.type.Subscription.type
     )
-    .selections(TestSubscriptionSelections.root)
+    .selections(TestSubscriptionSelections.__root)
     .build();
   }
 

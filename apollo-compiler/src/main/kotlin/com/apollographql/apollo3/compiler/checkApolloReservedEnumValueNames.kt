@@ -1,3 +1,4 @@
+@file:JvmName("-checkApolloReservedEnumValueNames")
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -7,7 +8,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
 
 @ApolloInternal
-fun findApolloReservedEnumValueNames(schema: Schema): List<Issue> {
+fun checkApolloReservedEnumValueNames(schema: Schema): List<Issue> {
   val issues = mutableListOf<Issue>()
 
   for (enumDefinition in schema

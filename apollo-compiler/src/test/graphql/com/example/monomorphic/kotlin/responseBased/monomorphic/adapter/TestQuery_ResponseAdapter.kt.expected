@@ -23,17 +23,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var cat: TestQuery.Data.Cat? = null
+      var _cat: TestQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> cat = Cat.obj().fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        cat = cat!!
+        cat = _cat!!
       )
     }
 
@@ -80,19 +80,19 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.AnimalNodeCat {
         var __typename: String? = typename
-        var species: String? = null
+        var _species: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> species = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.AnimalNodeCat(
           __typename = __typename!!,
-          species = species!!
+          species = _species!!
         )
       }
 

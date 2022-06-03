@@ -43,7 +43,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
     name = "data",
     type = com.example.hero_details.type.Query.type
   )
-  .selections(selections = HeroDetailsSelections.root)
+  .selections(selections = HeroDetailsSelections.__root)
   .build()
 
   public data class Data(

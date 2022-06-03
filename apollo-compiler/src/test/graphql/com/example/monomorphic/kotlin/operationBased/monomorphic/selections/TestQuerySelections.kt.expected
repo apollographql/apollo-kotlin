@@ -14,14 +14,14 @@ import com.example.monomorphic.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onAnimal: List<CompiledSelection> = listOf(
+  private val __onAnimal: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "species",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val onNode: List<CompiledSelection> = listOf(
+  private val __onNode: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -29,11 +29,11 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Animal",
           possibleTypes = listOf("Cat", "Dog")
-        ).selections(onAnimal)
+        ).selections(__onAnimal)
         .build()
       )
 
-  private val cat: List<CompiledSelection> = listOf(
+  private val __cat: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -41,15 +41,15 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Node",
           possibleTypes = listOf("Cat", "Dog")
-        ).selections(onNode)
+        ).selections(__onNode)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "cat",
           type = Cat.type.notNull()
-        ).selections(cat)
+        ).selections(__cat)
         .build()
       )
 }

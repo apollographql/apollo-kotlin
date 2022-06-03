@@ -34,18 +34,18 @@ public class InlineSingleWithDefer_ResponseAdapter {
     @Override
     public InlineSingleWithDefer.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      InlineSingleWithDefer.Hero hero = null;
+      InlineSingleWithDefer.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<InlineSingleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineSingleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new InlineSingleWithDefer.Data(
-        hero
+        _hero
       );
     }
 
@@ -77,15 +77,15 @@ public class InlineSingleWithDefer_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      InlineSingleWithDefer.OnDroid onDroid = null;
+      InlineSingleWithDefer.OnDroid _onDroid = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel(null))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onDroid = com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new InlineSingleWithDefer.Hero(
         __typename,
-        onDroid
+        _onDroid
       );
     }
 
@@ -109,20 +109,20 @@ public class InlineSingleWithDefer_ResponseAdapter {
     @Override
     public InlineSingleWithDefer.OnDroid fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new InlineSingleWithDefer.OnDroid(
-        name
+        _name
       );
     }
 

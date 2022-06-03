@@ -24,24 +24,24 @@ public object DroidDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidDetailsImpl.Data {
-      var name: String? = null
-      var primaryFunction: String? = null
-      var friends: List<DroidDetailsImpl.Data.Friend?>? = null
+      var _name: String? = null
+      var _primaryFunction: String? = null
+      var _friends: List<DroidDetailsImpl.Data.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friends = Friend.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return DroidDetailsImpl.Data(
-        name = name!!,
-        primaryFunction = primaryFunction,
-        friends = friends
+        name = _name!!,
+        primaryFunction = _primaryFunction,
+        friends = _friends
       )
     }
 
@@ -65,17 +65,17 @@ public object DroidDetailsImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           DroidDetailsImpl.Data.Friend {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return DroidDetailsImpl.Data.Friend(
-          name = name!!
+          name = _name!!
         )
       }
 

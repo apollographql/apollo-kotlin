@@ -30,18 +30,18 @@ public class CatQuery_ResponseAdapter {
     @Override
     public CatQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      CatQuery.Cat cat = null;
+      CatQuery.Cat _cat = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: cat = new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _cat = new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new CatQuery.Data(
-        cat
+        _cat
       );
     }
 
@@ -72,13 +72,13 @@ public class CatQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      AnimalFragment animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      AnimalFragment _animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new CatQuery.Cat(
         __typename,
-        animalFragment
+        _animalFragment
       );
     }
 

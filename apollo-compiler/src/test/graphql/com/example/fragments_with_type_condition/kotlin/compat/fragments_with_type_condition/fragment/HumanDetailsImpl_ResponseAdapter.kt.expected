@@ -23,20 +23,20 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragments_with_type_condition.fragment.HumanDetails {
-      var name: String? = null
-      var height: Double? = null
+      var _name: String? = null
+      var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.fragments_with_type_condition.fragment.HumanDetails(
-        name = name!!,
-        height = height
+        name = _name!!,
+        height = _height
       )
     }
 

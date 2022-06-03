@@ -27,27 +27,27 @@ public class HeroDetailsImpl_ResponseAdapter {
     public com.example.fragment_used_twice.fragment.HeroDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      CharacterDetails characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+      CharacterDetails _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.fragment_used_twice.fragment.HeroDetails(
         __typename,
-        name,
-        characterDetails
+        _name,
+        _characterDetails
       );
     }
 

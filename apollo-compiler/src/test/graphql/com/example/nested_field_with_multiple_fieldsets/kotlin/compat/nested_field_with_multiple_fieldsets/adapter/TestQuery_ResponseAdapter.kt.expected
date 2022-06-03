@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var iface1: TestQuery.Iface1? = null
+      var _iface1: TestQuery.Iface1? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> iface1 = Iface1.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _iface1 = Iface1.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        iface1 = iface1
+        iface1 = _iface1
       )
     }
 
@@ -56,12 +56,12 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Iface1 {
       var __typename: String? = null
-      var iface2: TestQuery.Iface21? = null
+      var _iface2: TestQuery.Iface21? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> iface2 = Iface21.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> _iface2 = Iface21.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -70,17 +70,17 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asImpl1: TestQuery.AsImpl1? = null
+      var _asImpl1: TestQuery.AsImpl1? = null
       if (possibleTypes("Impl1").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl1.fromJson(reader,
+        _asImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl1.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Iface1(
         __typename = __typename,
-        iface2 = iface2,
-        asImpl1 = asImpl1
+        iface2 = _iface2,
+        asImpl1 = _asImpl1
       )
     }
 
@@ -108,12 +108,12 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Iface21 {
       var __typename: String? = null
-      var scalar1: String? = null
+      var _scalar1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -122,17 +122,17 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asImpl21: TestQuery.AsImpl21? = null
+      var _asImpl21: TestQuery.AsImpl21? = null
       if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asImpl21 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.fromJson(reader,
+        _asImpl21 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl21.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Iface21(
         __typename = __typename,
-        scalar1 = scalar1,
-        asImpl21 = asImpl21
+        scalar1 = _scalar1,
+        asImpl21 = _asImpl21
       )
     }
 
@@ -160,22 +160,22 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl21 {
       var __typename: String? = null
-      var scalar1: String? = null
-      var scalar2: String? = null
+      var _scalar1: String? = null
+      var _scalar2: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsImpl21(
         __typename = __typename!!,
-        scalar1 = scalar1,
-        scalar2 = scalar2
+        scalar1 = _scalar1,
+        scalar2 = _scalar2
       )
     }
 
@@ -201,19 +201,19 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl1 {
       var __typename: String? = null
-      var iface2: TestQuery.Iface2? = null
+      var _iface2: TestQuery.Iface2? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsImpl1(
         __typename = __typename!!,
-        iface2 = iface2
+        iface2 = _iface2
       )
     }
 
@@ -236,14 +236,14 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Iface2 {
       var __typename: String? = null
-      var scalar1: String? = null
-      var scalar3: String? = null
+      var _scalar1: String? = null
+      var _scalar3: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -252,18 +252,18 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asImpl2: TestQuery.AsImpl2? = null
+      var _asImpl2: TestQuery.AsImpl2? = null
       if (possibleTypes("Impl2").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.fromJson(reader,
+        _asImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.AsImpl2.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Iface2(
         __typename = __typename,
-        scalar1 = scalar1,
-        scalar3 = scalar3,
-        asImpl2 = asImpl2
+        scalar1 = _scalar1,
+        scalar3 = _scalar3,
+        asImpl2 = _asImpl2
       )
     }
 
@@ -295,28 +295,28 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsImpl2 {
       var __typename: String? = null
-      var scalar1: String? = null
-      var scalar3: String? = null
-      var scalar2: String? = null
-      var scalar4: String? = null
+      var _scalar1: String? = null
+      var _scalar3: String? = null
+      var _scalar2: String? = null
+      var _scalar4: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          4 -> scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _scalar1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _scalar3 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          3 -> _scalar2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          4 -> _scalar4 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsImpl2(
         __typename = __typename!!,
-        scalar1 = scalar1,
-        scalar3 = scalar3,
-        scalar2 = scalar2,
-        scalar4 = scalar4
+        scalar1 = _scalar1,
+        scalar3 = _scalar3,
+        scalar2 = _scalar2,
+        scalar4 = _scalar4
       )
     }
 

@@ -76,7 +76,7 @@ public class DroidFragmentImpl implements Fragment<DroidFragment> {
       "data",
       Droid.type
     )
-    .selections(droidFragmentSelections.root)
+    .selections(droidFragmentSelections.__root)
     .build();
   }
 }

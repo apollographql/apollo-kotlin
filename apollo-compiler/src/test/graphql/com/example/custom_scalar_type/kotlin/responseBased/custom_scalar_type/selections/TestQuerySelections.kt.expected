@@ -18,7 +18,7 @@ import com.example.custom_scalar_type.type.UnsupportedType
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -49,11 +49,11 @@ public object TestQuerySelections {
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(__hero)
         .build()
       )
 }

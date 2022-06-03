@@ -29,17 +29,17 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         SpreadMultipleWithDefer.Data {
-      var hero: SpreadMultipleWithDefer.Data.Hero? = null
+      var _hero: SpreadMultipleWithDefer.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return SpreadMultipleWithDefer.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -71,16 +71,16 @@ public object SpreadMultipleWithDefer_ResponseAdapter {
           "__typename was not found"
         }
 
-        var droidDetails: DroidDetails? = null
+        var _droidDetails: DroidDetails? = null
         if (and(possibleTypes("Droid"),or(label("a_first"),label("a_second"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
               customScalarAdapters)
         }
 
         return SpreadMultipleWithDefer.Data.Hero(
           __typename = __typename,
-          droidDetails = droidDetails
+          droidDetails = _droidDetails
         )
       }
 

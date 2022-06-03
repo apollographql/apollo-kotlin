@@ -155,7 +155,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
       "data",
       com.example.fragments_with_defer_and_include_directives.type.Query.type
     )
-    .selections(InlineMultipleWithDeferAndIncludeSelections.root)
+    .selections(InlineMultipleWithDeferAndIncludeSelections.__root)
     .build();
   }
 

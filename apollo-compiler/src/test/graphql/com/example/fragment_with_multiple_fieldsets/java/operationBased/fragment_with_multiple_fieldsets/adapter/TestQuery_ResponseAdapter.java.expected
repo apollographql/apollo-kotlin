@@ -30,18 +30,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.I i = null;
+      TestQuery.I _i = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: i = new NullableAdapter<>(new ObjectAdapter<TestQuery.I>(I.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _i = new NullableAdapter<>(new ObjectAdapter<TestQuery.I>(I.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        i
+        _i
       );
     }
 
@@ -72,13 +72,13 @@ public class TestQuery_ResponseAdapter {
       }
 
       reader.rewind();
-      IFragment iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      IFragment _iFragment = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new TestQuery.I(
         __typename,
-        iFragment
+        _iFragment
       );
     }
 

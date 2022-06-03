@@ -31,18 +31,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Starship starship = null;
+      TestQuery.Starship _starship = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: starship = new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _starship = new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        starship
+        _starship
       );
     }
 
@@ -62,27 +62,27 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Starship fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String id = null;
-      String name = null;
-      List<List<Double>> coordinates = null;
+      String _id = null;
+      String _name = null;
+      List<List<Double>> _coordinates = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: coordinates = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.DoubleAdapter))).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _coordinates = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.DoubleAdapter))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new TestQuery.Starship(
-        id,
-        name,
-        coordinates
+        _id,
+        _name,
+        _coordinates
       );
     }
 

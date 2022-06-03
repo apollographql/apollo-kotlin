@@ -127,7 +127,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       "data",
       com.example.inline_fragment_merge_fields.type.Query.type
     )
-    .selections(TestQuerySelections.root)
+    .selections(TestQuerySelections.__root)
     .build();
   }
 

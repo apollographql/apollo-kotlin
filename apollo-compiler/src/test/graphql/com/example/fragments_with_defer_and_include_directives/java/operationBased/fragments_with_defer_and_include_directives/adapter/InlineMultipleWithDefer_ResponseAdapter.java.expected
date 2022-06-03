@@ -34,18 +34,18 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     @Override
     public InlineMultipleWithDefer.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      InlineMultipleWithDefer.Hero hero = null;
+      InlineMultipleWithDefer.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new InlineMultipleWithDefer.Data(
-        hero
+        _hero
       );
     }
 
@@ -77,22 +77,22 @@ public class InlineMultipleWithDefer_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      InlineMultipleWithDefer.OnDroidDeferD_first onDroidDeferD_first = null;
+      InlineMultipleWithDefer.OnDroidDeferD_first _onDroidDeferD_first = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_first"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      InlineMultipleWithDefer.OnDroidDeferD_second onDroidDeferD_second = null;
+      InlineMultipleWithDefer.OnDroidDeferD_second _onDroidDeferD_second = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_second"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new InlineMultipleWithDefer.Hero(
         __typename,
-        onDroidDeferD_first,
-        onDroidDeferD_second
+        _onDroidDeferD_first,
+        _onDroidDeferD_second
       );
     }
 
@@ -120,20 +120,20 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     @Override
     public InlineMultipleWithDefer.OnDroidDeferD_first fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new InlineMultipleWithDefer.OnDroidDeferD_first(
-        name
+        _name
       );
     }
 
@@ -153,20 +153,20 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     @Override
     public InlineMultipleWithDefer.OnDroidDeferD_second fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String id = null;
+      String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
+      Assertions.checkFieldNotMissing(_id, "id");
 
       return new InlineMultipleWithDefer.OnDroidDeferD_second(
-        id
+        _id
       );
     }
 

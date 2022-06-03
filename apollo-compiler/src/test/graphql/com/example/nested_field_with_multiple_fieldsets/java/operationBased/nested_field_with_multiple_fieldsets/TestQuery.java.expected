@@ -129,7 +129,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       "data",
       com.example.nested_field_with_multiple_fieldsets.type.Query.type
     )
-    .selections(TestQuerySelections.root)
+    .selections(TestQuerySelections.__root)
     .build();
   }
 

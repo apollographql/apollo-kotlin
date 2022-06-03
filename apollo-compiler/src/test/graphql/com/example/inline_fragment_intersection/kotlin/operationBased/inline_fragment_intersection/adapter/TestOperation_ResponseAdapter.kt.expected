@@ -32,17 +32,17 @@ public object TestOperation_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
-      var random: TestOperation.Data.Random? = null
+      var _random: TestOperation.Data.Random? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> random = Random.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _random = Random.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.Data(
-        random = random!!
+        random = _random!!
       )
     }
 
@@ -73,24 +73,24 @@ public object TestOperation_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onBeing: TestOperation.Data.Random.OnBeing? = null
+        var _onBeing: TestOperation.Data.Random.OnBeing? = null
         if (possibleTypes("Human","Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
+          _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
               customScalarAdapters)
         }
 
-        var onWookie: TestOperation.Data.Random.OnWookie? = null
+        var _onWookie: TestOperation.Data.Random.OnWookie? = null
         if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
+          _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestOperation.Data.Random(
           __typename = __typename,
-          onBeing = onBeing,
-          onWookie = onWookie
+          onBeing = _onBeing,
+          onWookie = _onWookie
         )
       }
 
@@ -119,14 +119,14 @@ public object TestOperation_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnBeing {
           var __typename: String? = null
-          var name: String? = null
-          var friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
+          var _name: String? = null
+          var _friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -135,18 +135,18 @@ public object TestOperation_ResponseAdapter {
             "__typename was not found"
           }
 
-          var onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
+          var _onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
           if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
-            onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
+            _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
                 customScalarAdapters)
           }
 
           return TestOperation.Data.Random.OnBeing(
             __typename = __typename,
-            name = name!!,
-            friends = friends!!,
-            onHuman = onHuman
+            name = _name!!,
+            friends = _friends!!,
+            onHuman = _onHuman
           )
         }
 
@@ -177,12 +177,12 @@ public object TestOperation_ResponseAdapter {
               customScalarAdapters: CustomScalarAdapters):
               TestOperation.Data.Random.OnBeing.Friend {
             var __typename: String? = null
-            var name: String? = null
+            var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+                1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
@@ -191,17 +191,17 @@ public object TestOperation_ResponseAdapter {
               "__typename was not found"
             }
 
-            var onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
+            var _onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
             if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
-              onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
+              _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
                   customScalarAdapters)
             }
 
             return TestOperation.Data.Random.OnBeing.Friend(
               __typename = __typename,
-              name = name!!,
-              onWookie = onWookie
+              name = _name!!,
+              onWookie = _onWookie
             )
           }
 
@@ -228,17 +228,18 @@ public object TestOperation_ResponseAdapter {
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 TestOperation.Data.Random.OnBeing.Friend.OnWookie {
-              var lifeExpectancy: Double? = null
+              var _lifeExpectancy: Double? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader,
+                      customScalarAdapters)
                   else -> break
                 }
               }
 
               return TestOperation.Data.Random.OnBeing.Friend.OnWookie(
-                lifeExpectancy = lifeExpectancy
+                lifeExpectancy = _lifeExpectancy
               )
             }
 
@@ -259,21 +260,21 @@ public object TestOperation_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               TestOperation.Data.Random.OnBeing.OnHuman {
-            var profilePictureUrl: String? = null
-            var friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
+            var _profilePictureUrl: String? = null
+            var _friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> profilePictureUrl = NullableStringAdapter.fromJson(reader,
+                0 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader,
                     customScalarAdapters)
-                1 -> friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
+                1 -> _friends = Friend.obj(true).list().fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestOperation.Data.Random.OnBeing.OnHuman(
-              profilePictureUrl = profilePictureUrl,
-              friends = friends!!
+              profilePictureUrl = _profilePictureUrl,
+              friends = _friends!!
             )
           }
 
@@ -296,12 +297,12 @@ public object TestOperation_ResponseAdapter {
                 customScalarAdapters: CustomScalarAdapters):
                 TestOperation.Data.Random.OnBeing.OnHuman.Friend {
               var __typename: String? = null
-              var isFamous: Boolean? = null
+              var _isFamous: Boolean? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
                   0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-                  1 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+                  1 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
@@ -310,17 +311,17 @@ public object TestOperation_ResponseAdapter {
                 "__typename was not found"
               }
 
-              var onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
+              var _onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
               if (possibleTypes("Wookie").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
                 reader.rewind()
-                onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
+                _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
                     customScalarAdapters)
               }
 
               return TestOperation.Data.Random.OnBeing.OnHuman.Friend(
                 __typename = __typename,
-                isFamous = isFamous,
-                onWookie = onWookie
+                isFamous = _isFamous,
+                onWookie = _onWookie
               )
             }
 
@@ -348,17 +349,17 @@ public object TestOperation_ResponseAdapter {
               public override fun fromJson(reader: JsonReader,
                   customScalarAdapters: CustomScalarAdapters):
                   TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
-                var race: Race? = null
+                var _race: Race? = null
 
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+                    0 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
                     else -> break
                   }
                 }
 
                 return TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie(
-                  race = race!!
+                  race = _race!!
                 )
               }
 
@@ -380,20 +381,20 @@ public object TestOperation_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestOperation.Data.Random.OnWookie {
-          var race: Race? = null
-          var friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
+          var _race: Race? = null
+          var _friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
-              1 -> friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+              0 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestOperation.Data.Random.OnWookie(
-            race = race!!,
-            friends = friends!!
+            race = _race!!,
+            friends = _friends!!
           )
         }
 
@@ -415,17 +416,17 @@ public object TestOperation_ResponseAdapter {
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters):
               TestOperation.Data.Random.OnWookie.Friend {
-            var lifeExpectancy: Double? = null
+            var _lifeExpectancy: Double? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestOperation.Data.Random.OnWookie.Friend(
-              lifeExpectancy = lifeExpectancy
+              lifeExpectancy = _lifeExpectancy
             )
           }
 

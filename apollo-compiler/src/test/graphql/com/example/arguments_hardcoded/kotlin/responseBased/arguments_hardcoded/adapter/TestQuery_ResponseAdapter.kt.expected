@@ -26,21 +26,21 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var reviews: List<TestQuery.Data.Review?>? = null
-      var testNullableArguments: Int? = null
+      var _reviews: List<TestQuery.Data.Review?>? = null
+      var _testNullableArguments: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> reviews = Review.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _reviews = Review.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
-          1 -> testNullableArguments = IntAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _testNullableArguments = IntAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        reviews = reviews,
-        testNullableArguments = testNullableArguments!!
+        reviews = _reviews,
+        testNullableArguments = _testNullableArguments!!
       )
     }
 
@@ -61,20 +61,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Review {
-        var stars: Int? = null
-        var commentary: String? = null
+        var _stars: Int? = null
+        var _commentary: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Review(
-          stars = stars!!,
-          commentary = commentary
+          stars = _stars!!,
+          commentary = _commentary
         )
       }
 

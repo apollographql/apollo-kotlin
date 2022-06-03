@@ -26,21 +26,21 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var `yield`: TestQuery.Data.Yield? = null
-      var objects: List<TestQuery.Data.Object?>? = null
+      var _yield: TestQuery.Data.Yield? = null
+      var _objects: List<TestQuery.Data.Object?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> `yield` = Yield.obj().nullable().fromJson(reader, customScalarAdapters)
-          1 -> objects = Object.obj(true).nullable().list().nullable().fromJson(reader,
+          0 -> _yield = Yield.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _objects = Object.obj(true).nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        `yield` = `yield`,
-        objects = objects
+        `yield` = _yield,
+        objects = _objects
       )
     }
 
@@ -62,20 +62,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Yield {
-        var `while`: String? = null
-        var it: String? = null
+        var _while: String? = null
+        var _it: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> `while` = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> it = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _while = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _it = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.Yield(
-          `while` = `while`!!,
-          it = it!!
+          `while` = _while!!,
+          it = _it!!
         )
       }
 
@@ -110,16 +110,16 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onCharacter: TestQuery.Data.Object.OnCharacter? = null
+        var _onCharacter: TestQuery.Data.Object.OnCharacter? = null
         if (possibleTypes("Droid","Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.fromJson(reader,
+          _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.Data.Object.OnCharacter.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.Object(
           __typename = __typename,
-          onCharacter = onCharacter
+          onCharacter = _onCharacter
         )
       }
 
@@ -142,17 +142,17 @@ public object TestQuery_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Object.OnCharacter {
-          var name: String? = null
+          var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestQuery.Data.Object.OnCharacter(
-            name = name!!
+            name = _name!!
           )
         }
 

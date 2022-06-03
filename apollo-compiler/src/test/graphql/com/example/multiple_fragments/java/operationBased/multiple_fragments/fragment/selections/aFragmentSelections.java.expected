@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class aFragmentSelections {
-  private static List<CompiledSelection> node = Arrays.asList(
+  private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("ANode", Arrays.asList("ANode")).selections(fragment1Selections.root).build(),
-    new CompiledFragment.Builder("ANode", Arrays.asList("ANode")).selections(fragment2Selections.root).build()
+    new CompiledFragment.Builder("ANode", Arrays.asList("ANode")).selections(fragment1Selections.__root).build(),
+    new CompiledFragment.Builder("ANode", Arrays.asList("ANode")).selections(fragment2Selections.__root).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("node", Node.type).selections(node).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("node", Node.type).selections(__node).build()
   );
 }

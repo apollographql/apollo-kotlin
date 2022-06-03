@@ -39,7 +39,7 @@ public data class TestQuery(
     name = "data",
     type = com.example.hero_with_review.type.Mutation.type
   )
-  .selections(selections = TestQuerySelections.root)
+  .selections(selections = TestQuerySelections.__root)
   .build()
 
   public data class Data(

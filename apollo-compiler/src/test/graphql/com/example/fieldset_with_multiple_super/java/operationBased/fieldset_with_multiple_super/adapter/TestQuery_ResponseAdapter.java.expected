@@ -33,18 +33,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.C c = null;
+      TestQuery.C _c = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: c = new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _c = new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        c
+        _c
       );
     }
 
@@ -75,22 +75,22 @@ public class TestQuery_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnA onA = null;
+      TestQuery.OnA _onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      TestQuery.OnB1 onB = null;
+      TestQuery.OnB1 _onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.C(
         __typename,
-        onA,
-        onB
+        _onA,
+        _onB
       );
     }
 
@@ -119,28 +119,28 @@ public class TestQuery_ResponseAdapter {
     public TestQuery.OnA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
-      String fieldA1 = null;
+      String _fieldA1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnB onB = null;
+      TestQuery.OnB _onB = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","BC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.OnA(
         __typename,
-        fieldA1,
-        onB
+        _fieldA1,
+        _onB
       );
     }
 
@@ -167,18 +167,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnB fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String fieldB1 = null;
+      String _fieldB1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.OnB(
-        fieldB1
+        _fieldB1
       );
     }
 
@@ -199,28 +199,28 @@ public class TestQuery_ResponseAdapter {
     public TestQuery.OnB1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
-      String fieldB2 = null;
+      String _fieldB2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnA1 onA = null;
+      TestQuery.OnA1 _onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","AC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.OnA1.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new TestQuery.OnB1(
         __typename,
-        fieldB2,
-        onA
+        _fieldB2,
+        _onA
       );
     }
 
@@ -247,18 +247,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnA1 fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String fieldA2 = null;
+      String _fieldA2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: fieldA2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _fieldA2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.OnA1(
-        fieldA2
+        _fieldA2
       );
     }
 

@@ -27,20 +27,20 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var r2: TestQuery.Data.R2? = null
-      var luke: TestQuery.Data.Luke? = null
+      var _r2: TestQuery.Data.R2? = null
+      var _luke: TestQuery.Data.Luke? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> r2 = R2.obj().nullable().fromJson(reader, customScalarAdapters)
-          1 -> luke = Luke.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _r2 = R2.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _luke = Luke.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        r2 = r2,
-        luke = luke
+        r2 = _r2,
+        luke = _luke
       )
     }
 
@@ -92,22 +92,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.HumanR2 {
         var __typename: String? = typename
-        var name: String? = null
-        var height: Double? = null
+        var _name: String? = null
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.HumanR2(
           __typename = __typename!!,
-          name = name!!,
-          height = height
+          name = _name!!,
+          height = _height
         )
       }
 
@@ -136,22 +136,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.DroidR2 {
         var __typename: String? = typename
-        var name: String? = null
-        var primaryFunction: String? = null
+        var _name: String? = null
+        var _primaryFunction: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.DroidR2(
           __typename = __typename!!,
-          name = name!!,
-          primaryFunction = primaryFunction
+          name = _name!!,
+          primaryFunction = _primaryFunction
         )
       }
 
@@ -239,22 +239,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.HumanLuke {
         var __typename: String? = typename
-        var name: String? = null
-        var height: Double? = null
+        var _name: String? = null
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.HumanLuke(
           __typename = __typename!!,
-          name = name!!,
-          height = height
+          name = _name!!,
+          height = _height
         )
       }
 
@@ -283,22 +283,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.DroidLuke {
         var __typename: String? = typename
-        var name: String? = null
-        var primaryFunction: String? = null
+        var _name: String? = null
+        var _primaryFunction: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.DroidLuke(
           __typename = __typename!!,
-          name = name!!,
-          primaryFunction = primaryFunction
+          name = _name!!,
+          primaryFunction = _primaryFunction
         )
       }
 

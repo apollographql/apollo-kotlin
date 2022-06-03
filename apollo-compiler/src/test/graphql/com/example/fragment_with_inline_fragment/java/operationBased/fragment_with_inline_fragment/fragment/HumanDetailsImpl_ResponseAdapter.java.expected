@@ -26,20 +26,20 @@ public class HumanDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragment_with_inline_fragment.fragment.HumanDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.fragment_with_inline_fragment.fragment.HumanDetails(
-        name
+        _name
       );
     }
 

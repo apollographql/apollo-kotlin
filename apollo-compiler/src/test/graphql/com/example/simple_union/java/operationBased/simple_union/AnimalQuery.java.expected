@@ -119,7 +119,7 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
       "data",
       com.example.simple_union.type.Query.type
     )
-    .selections(AnimalQuerySelections.root)
+    .selections(AnimalQuerySelections.__root)
     .build();
   }
 

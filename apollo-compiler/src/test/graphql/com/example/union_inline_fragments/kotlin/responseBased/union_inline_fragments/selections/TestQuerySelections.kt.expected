@@ -19,21 +19,21 @@ import com.example.union_inline_fragments.type.SearchResult
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onCharacter1: List<CompiledSelection> = listOf(
+  private val __onCharacter1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val onCharacter2: List<CompiledSelection> = listOf(
+  private val __onCharacter2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "firstAppearsIn",
           type = Episode.type.notNull()
         ).build()
       )
 
-  private val friends1: List<CompiledSelection> = listOf(
+  private val __friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -41,11 +41,11 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter2)
+        ).selections(__onCharacter2)
         .build()
       )
 
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",
           type = GraphQLString.type
@@ -53,18 +53,18 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends1)
+        ).selections(__friends1)
         .build()
       )
 
-  private val friends2: List<CompiledSelection> = listOf(
+  private val __friends2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
         ).build()
       )
 
-  private val onDroid: List<CompiledSelection> = listOf(
+  private val __onDroid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "primaryFunction",
           type = GraphQLString.type
@@ -72,11 +72,11 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends2)
+        ).selections(__friends2)
         .build()
       )
 
-  private val friends: List<CompiledSelection> = listOf(
+  private val __friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -84,21 +84,21 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter1)
+        ).selections(__onCharacter1)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).selections(onDroid)
+        ).selections(__onDroid)
         .build()
       )
 
-  private val onCharacter: List<CompiledSelection> = listOf(
+  private val __onCharacter: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -110,18 +110,18 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends)
+        ).selections(__friends)
         .build()
       )
 
-  private val onStarship: List<CompiledSelection> = listOf(
+  private val __onStarship: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val search: List<CompiledSelection> = listOf(
+  private val __search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -129,23 +129,23 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
-        ).selections(onCharacter)
+        ).selections(__onCharacter)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Starship",
           possibleTypes = listOf("Starship")
-        ).selections(onStarship)
+        ).selections(__onStarship)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "search",
           type = SearchResult.type.list()
         ).arguments(listOf(
           CompiledArgument("text", "test")
         ))
-        .selections(search)
+        .selections(__search)
         .build()
       )
 }

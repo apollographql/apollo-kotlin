@@ -15,7 +15,7 @@ import com.example.fragments_with_defer_and_include_directives.type.GraphQLStrin
 import kotlin.collections.List
 
 public object SpreadMultipleWithDeferSelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -23,20 +23,20 @@ public object SpreadMultipleWithDeferSelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.root)
+        ).selections(DroidDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.root)
+        ).selections(DroidDetailsSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(__hero)
         .build()
       )
 }

@@ -35,6 +35,6 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragment> {
     name = "data",
     type = Animal.type
   )
-  .selections(selections = AnimalFragmentSelections.root)
+  .selections(selections = AnimalFragmentSelections.__root)
   .build()
 }

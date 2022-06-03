@@ -16,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LoginBarberSelections {
-  private static List<CompiledSelection> login = Arrays.asList(
+  private static List<CompiledSelection> __login = Arrays.asList(
     new CompiledField.Builder("response", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("login", new CompiledNotNullType(User.type)).arguments(Arrays.asList(new CompiledArgument("input", new CompiledVariable("input"), false))).selections(login).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("login", new CompiledNotNullType(User.type)).arguments(Arrays.asList(new CompiledArgument("input", new CompiledVariable("input"), false))).selections(__login).build()
   );
 }

@@ -24,17 +24,17 @@ public object GetPage_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Data {
-      var collection: GetPage.Data.Collection? = null
+      var _collection: GetPage.Data.Collection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> collection = Collection.obj().fromJson(reader, customScalarAdapters)
+          0 -> _collection = Collection.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.Data(
-        collection = collection!!
+        collection = _collection!!
       )
     }
 
@@ -82,19 +82,19 @@ public object GetPage_ResponseAdapter {
         typename: String,
       ): GetPage.Data.ParticularCollectionCollection {
         var __typename: String? = typename
-        var items: List<GetPage.Data.ParticularCollectionCollection.Item>? = null
+        var _items: List<GetPage.Data.ParticularCollectionCollection.Item>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> items = Item.obj().list().fromJson(reader, customScalarAdapters)
+            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetPage.Data.ParticularCollectionCollection(
           __typename = __typename!!,
-          items = items!!
+          items = _items!!
         )
       }
 
@@ -145,23 +145,23 @@ public object GetPage_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
-          var title: String? = null
+          var _title: String? = null
           var __typename: String? = typename
-          var image: String? = null
+          var _image: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _image = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.ParticularCollectionCollection.ParticularItemItem(
-            title = title!!,
+            title = _title!!,
             __typename = __typename!!,
-            image = image!!
+            image = _image!!
           )
         }
 
@@ -189,19 +189,19 @@ public object GetPage_ResponseAdapter {
           customScalarAdapters: CustomScalarAdapters,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
-          var title: String? = null
+          var _title: String? = null
           var __typename: String? = typename
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
               1 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.ParticularCollectionCollection.OtherItem(
-            title = title!!,
+            title = _title!!,
             __typename = __typename!!
           )
         }
@@ -229,19 +229,19 @@ public object GetPage_ResponseAdapter {
         typename: String,
       ): GetPage.Data.OtherCollection {
         var __typename: String? = typename
-        var items: List<GetPage.Data.OtherCollection.Item>? = null
+        var _items: List<GetPage.Data.OtherCollection.Item>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> items = Item.obj().list().fromJson(reader, customScalarAdapters)
+            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetPage.Data.OtherCollection(
           __typename = __typename!!,
-          items = items!!
+          items = _items!!
         )
       }
 
@@ -262,17 +262,17 @@ public object GetPage_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetPage.Data.OtherCollection.Item {
-          var title: String? = null
+          var _title: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.OtherCollection.Item(
-            title = title!!
+            title = _title!!
           )
         }
 

@@ -38,7 +38,7 @@ public data class LoginBarber(
     name = "data",
     type = com.example.java8annotation.type.Mutation.type
   )
-  .selections(selections = LoginBarberSelections.root)
+  .selections(selections = LoginBarberSelections.__root)
   .build()
 
   public data class Data(

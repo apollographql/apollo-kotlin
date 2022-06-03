@@ -43,7 +43,7 @@ internal data class CreateReviewForEpisode(
     name = "data",
     type = com.example.mutation_create_review.type.Mutation.type
   )
-  .selections(selections = CreateReviewForEpisodeSelections.root)
+  .selections(selections = CreateReviewForEpisodeSelections.__root)
   .build()
 
   public data class Data(

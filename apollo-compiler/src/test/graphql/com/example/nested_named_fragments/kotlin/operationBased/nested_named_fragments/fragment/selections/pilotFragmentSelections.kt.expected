@@ -14,7 +14,7 @@ import com.example.nested_named_fragments.type.Planet
 import kotlin.collections.List
 
 public object pilotFragmentSelections {
-  private val homeworld: List<CompiledSelection> = listOf(
+  private val __homeworld: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -22,11 +22,11 @@ public object pilotFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Planet",
           possibleTypes = (listOf("Planet"))
-        ).selections(planetFragmentSelections.root)
+        ).selections(planetFragmentSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type
@@ -34,7 +34,7 @@ public object pilotFragmentSelections {
         CompiledField.Builder(
           name = "homeworld",
           type = Planet.type
-        ).selections(homeworld)
+        ).selections(__homeworld)
         .build()
       )
 }

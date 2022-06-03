@@ -17,13 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> reviews = Arrays.asList(
+  private static List<CompiledSelection> __reviews = Arrays.asList(
     new CompiledField.Builder("stars", new CompiledNotNullType(GraphQLInt.type)).build(),
     new CompiledField.Builder("commentary", GraphQLString.type).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("reviews", new CompiledListType(Review.type)).arguments(Arrays.asList(new CompiledArgument("episode", "JEDI", false), new CompiledArgument("starsFloat", 9.9, false), new CompiledArgument("starsInt", 10, false))).selections(reviews).build(),
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("reviews", new CompiledListType(Review.type)).arguments(Arrays.asList(new CompiledArgument("episode", "JEDI", false), new CompiledArgument("starsFloat", 9.9, false), new CompiledArgument("starsInt", 10, false))).selections(__reviews).build(),
     new CompiledField.Builder("testNullableArguments", new CompiledNotNullType(GraphQLInt.type)).arguments(Arrays.asList(new CompiledArgument("boolean", null, false), new CompiledArgument("episode", null, false), new CompiledArgument("float", null, false), new CompiledArgument("int", null, false), new CompiledArgument("list", null, false), new CompiledArgument("review", null, false), new CompiledArgument("string", null, false))).build()
   );
 }

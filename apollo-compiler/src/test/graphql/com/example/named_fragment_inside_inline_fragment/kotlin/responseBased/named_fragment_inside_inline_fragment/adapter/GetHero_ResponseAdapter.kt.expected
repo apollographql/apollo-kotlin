@@ -26,17 +26,17 @@ public object GetHero_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHero.Data {
-      var hero: GetHero.Data.Hero? = null
+      var _hero: GetHero.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetHero.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -55,14 +55,14 @@ public object GetHero_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetHero.Data.Hero {
         var __typename: String? = null
-        var name: String? = null
-        var appearsIn: List<Episode?>? = null
+        var _name: String? = null
+        var _appearsIn: List<Episode?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
                 customScalarAdapters)
             else -> break
           }
@@ -70,8 +70,8 @@ public object GetHero_ResponseAdapter {
 
         return GetHero.Data.Hero(
           __typename = __typename!!,
-          name = name!!,
-          appearsIn = appearsIn!!
+          name = _name!!,
+          appearsIn = _appearsIn!!
         )
       }
 

@@ -114,7 +114,7 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
       "data",
       com.example.java8annotation.type.Mutation.type
     )
-    .selections(LoginBarberSelections.root)
+    .selections(LoginBarberSelections.__root)
     .build();
   }
 

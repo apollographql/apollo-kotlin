@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var createReview: TestQuery.Data.CreateReview? = null
+      var _createReview: TestQuery.Data.CreateReview? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        createReview = createReview
+        createReview = _createReview
       )
     }
 
@@ -53,20 +53,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.CreateReview {
-        var stars: Int? = null
-        var commentary: String? = null
+        var _stars: Int? = null
+        var _commentary: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> stars = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _commentary = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.CreateReview(
-          stars = stars!!,
-          commentary = commentary
+          stars = _stars!!,
+          commentary = _commentary
         )
       }
 

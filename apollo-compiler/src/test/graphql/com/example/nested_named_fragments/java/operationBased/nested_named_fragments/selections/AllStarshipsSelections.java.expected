@@ -20,20 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AllStarshipsSelections {
-  private static List<CompiledSelection> node = Arrays.asList(
+  private static List<CompiledSelection> __node = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Starship", Arrays.asList("Starship")).selections(starshipFragmentSelections.root).build()
+    new CompiledFragment.Builder("Starship", Arrays.asList("Starship")).selections(starshipFragmentSelections.__root).build()
   );
 
-  private static List<CompiledSelection> edges = Arrays.asList(
-    new CompiledField.Builder("node", Starship.type).selections(node).build()
+  private static List<CompiledSelection> __edges = Arrays.asList(
+    new CompiledField.Builder("node", Starship.type).selections(__node).build()
   );
 
-  private static List<CompiledSelection> allStarships = Arrays.asList(
-    new CompiledField.Builder("edges", new CompiledListType(StarshipsEdge.type)).selections(edges).build()
+  private static List<CompiledSelection> __allStarships = Arrays.asList(
+    new CompiledField.Builder("edges", new CompiledListType(StarshipsEdge.type)).selections(__edges).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("allStarships", StarshipsConnection.type).arguments(Arrays.asList(new CompiledArgument("first", 7, false))).selections(allStarships).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("allStarships", StarshipsConnection.type).arguments(Arrays.asList(new CompiledArgument("first", 7, false))).selections(__allStarships).build()
   );
 }

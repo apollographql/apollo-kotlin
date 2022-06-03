@@ -31,12 +31,12 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter.Data.Fragments.fromJson(reader,
+      val _fragments = com.example.root_query_fragment.adapter.TestQuery_ResponseAdapter.Data.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.Data(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -58,11 +58,11 @@ public object TestQuery_ResponseAdapter {
 
 
         reader.rewind()
-        val queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+        val _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.Fragments(
-          queryFragment = queryFragment
+          queryFragment = _queryFragment
         )
       }
 

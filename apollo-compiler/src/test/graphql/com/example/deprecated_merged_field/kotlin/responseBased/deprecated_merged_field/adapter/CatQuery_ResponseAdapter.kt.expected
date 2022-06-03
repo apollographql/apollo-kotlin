@@ -24,17 +24,17 @@ public object CatQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CatQuery.Data {
-      var cat: CatQuery.Data.Cat? = null
+      var _cat: CatQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return CatQuery.Data(
-        cat = cat
+        cat = _cat
       )
     }
 
@@ -113,19 +113,19 @@ public object CatQuery_ResponseAdapter {
         typename: String,
       ): CatQuery.Data.OtherAnimalCat {
         var __typename: String? = typename
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return CatQuery.Data.OtherAnimalCat(
           __typename = __typename!!,
-          name = name!!
+          name = _name!!
         )
       }
 

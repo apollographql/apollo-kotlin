@@ -36,7 +36,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
     name = "data",
     type = Animal.type
   )
-  .selections(selections = AnimalFragmentSelections.root)
+  .selections(selections = AnimalFragmentSelections.__root)
   .build()
 
   public interface Data : AnimalFragment, Fragment.Data {

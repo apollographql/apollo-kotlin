@@ -76,7 +76,7 @@ public class IFragmentImpl implements Fragment<IFragment> {
       "data",
       I.type
     )
-    .selections(iFragmentSelections.root)
+    .selections(iFragmentSelections.__root)
     .build();
   }
 }

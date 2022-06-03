@@ -13,7 +13,7 @@ import com.example.fragment_used_twice.type.GraphQLString
 import kotlin.collections.List
 
 public object HeroDetailsSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -25,7 +25,7 @@ public object HeroDetailsSelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
-        ).selections(CharacterDetailsSelections.root)
+        ).selections(CharacterDetailsSelections.__root)
         .build()
       )
 }

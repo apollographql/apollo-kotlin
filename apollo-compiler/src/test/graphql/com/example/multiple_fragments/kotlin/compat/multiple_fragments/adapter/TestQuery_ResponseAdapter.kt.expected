@@ -23,17 +23,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var a: TestQuery.A? = null
+      var _a: TestQuery.A? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _a = A.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        a = a
+        a = _a
       )
     }
 
@@ -62,12 +62,12 @@ public object TestQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.multiple_fragments.adapter.TestQuery_ResponseAdapter.A.Fragments.fromJson(reader,
+      val _fragments = com.example.multiple_fragments.adapter.TestQuery_ResponseAdapter.A.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return TestQuery.A(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -89,11 +89,11 @@ public object TestQuery_ResponseAdapter {
 
 
         reader.rewind()
-        val aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
+        val _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.A.Fragments(
-          aFragment = aFragment
+          aFragment = _aFragment
         )
       }
 

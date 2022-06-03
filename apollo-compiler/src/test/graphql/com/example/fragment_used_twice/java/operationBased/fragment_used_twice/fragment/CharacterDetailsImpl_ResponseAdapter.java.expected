@@ -27,24 +27,24 @@ public class CharacterDetailsImpl_ResponseAdapter {
     @Override
     public com.example.fragment_used_twice.fragment.CharacterDetails fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      Object birthDate = null;
+      String _name = null;
+      Object _birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(birthDate, "birthDate");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_birthDate, "birthDate");
 
       return new com.example.fragment_used_twice.fragment.CharacterDetails(
-        name,
-        birthDate
+        _name,
+        _birthDate
       );
     }
 

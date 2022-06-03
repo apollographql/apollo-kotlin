@@ -11,7 +11,7 @@ import com.example.nested_named_fragments.type.GraphQLString
 import kotlin.collections.List
 
 public object planetFragmentSelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type

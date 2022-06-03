@@ -28,21 +28,21 @@ public class PilotFragmentImpl_ResponseAdapter {
     @Override
     public com.example.nested_named_fragments.fragment.PilotFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      com.example.nested_named_fragments.fragment.PilotFragment.Homeworld homeworld = null;
+      String _name = null;
+      com.example.nested_named_fragments.fragment.PilotFragment.Homeworld _homeworld = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: homeworld = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _homeworld = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.nested_named_fragments.fragment.PilotFragment(
-        name,
-        homeworld
+        _name,
+        _homeworld
       );
     }
 
@@ -76,13 +76,13 @@ public class PilotFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind();
-      PlanetFragment planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      PlanetFragment _planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.nested_named_fragments.fragment.PilotFragment.Homeworld(
         __typename,
-        planetFragment
+        _planetFragment
       );
     }
 

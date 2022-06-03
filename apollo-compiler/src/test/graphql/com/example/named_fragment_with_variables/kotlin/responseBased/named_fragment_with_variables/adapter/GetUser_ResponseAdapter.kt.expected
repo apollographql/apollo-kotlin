@@ -25,19 +25,19 @@ public object GetUser_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetUser.Data {
       var __typename: String? = null
-      var organization: GetUser.Data.Organization? = null
+      var _organization: GetUser.Data.Organization? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _organization = Organization.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetUser.Data(
         __typename = __typename!!,
-        organization = organization
+        organization = _organization
       )
     }
 
@@ -58,20 +58,20 @@ public object GetUser_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetUser.Data.Organization {
-        var id: String? = null
-        var user: List<GetUser.Data.Organization.User>? = null
+        var _id: String? = null
+        var _user: List<GetUser.Data.Organization.User>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> user = User.obj().list().fromJson(reader, customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _user = User.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return GetUser.Data.Organization(
-          id = id!!,
-          user = user!!
+          id = _id!!,
+          user = _user!!
         )
       }
 
@@ -94,25 +94,25 @@ public object GetUser_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetUser.Data.Organization.User {
           var __typename: String? = null
-          var firstName: String? = null
-          var lastName: String? = null
-          var avatar: String? = null
+          var _firstName: String? = null
+          var _lastName: String? = null
+          var _avatar: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> firstName = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lastName = StringAdapter.fromJson(reader, customScalarAdapters)
-              3 -> avatar = StringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _firstName = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lastName = StringAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _avatar = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetUser.Data.Organization.User(
             __typename = __typename!!,
-            firstName = firstName!!,
-            lastName = lastName!!,
-            avatar = avatar!!
+            firstName = _firstName!!,
+            lastName = _lastName!!,
+            avatar = _avatar!!
           )
         }
 

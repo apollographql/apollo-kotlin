@@ -17,30 +17,30 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetPageSelections {
-  private static List<CompiledSelection> items = Arrays.asList(
+  private static List<CompiledSelection> __items = Arrays.asList(
     new CompiledField.Builder("title", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  private static List<CompiledSelection> onParticularItem = Arrays.asList(
+  private static List<CompiledSelection> __onParticularItem = Arrays.asList(
     new CompiledField.Builder("image", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  private static List<CompiledSelection> items1 = Arrays.asList(
+  private static List<CompiledSelection> __items1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("ParticularItem", Arrays.asList("ParticularItem")).selections(onParticularItem).build()
+    new CompiledFragment.Builder("ParticularItem", Arrays.asList("ParticularItem")).selections(__onParticularItem).build()
   );
 
-  private static List<CompiledSelection> onParticularCollection = Arrays.asList(
-    new CompiledField.Builder("items", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Item.type)))).selections(items1).build()
+  private static List<CompiledSelection> __onParticularCollection = Arrays.asList(
+    new CompiledField.Builder("items", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Item.type)))).selections(__items1).build()
   );
 
-  private static List<CompiledSelection> collection = Arrays.asList(
+  private static List<CompiledSelection> __collection = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("items", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Item.type)))).selections(items).build(),
-    new CompiledFragment.Builder("ParticularCollection", Arrays.asList("ParticularCollection")).selections(onParticularCollection).build()
+    new CompiledField.Builder("items", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Item.type)))).selections(__items).build(),
+    new CompiledFragment.Builder("ParticularCollection", Arrays.asList("ParticularCollection")).selections(__onParticularCollection).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("collection", new CompiledNotNullType(Collection.type)).selections(collection).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("collection", new CompiledNotNullType(Collection.type)).selections(__collection).build()
   );
 }

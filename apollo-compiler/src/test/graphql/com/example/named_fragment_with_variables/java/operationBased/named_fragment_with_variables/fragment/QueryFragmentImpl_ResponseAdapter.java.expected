@@ -29,18 +29,18 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      com.example.named_fragment_with_variables.fragment.QueryFragment.Organization organization = null;
+      com.example.named_fragment_with_variables.fragment.QueryFragment.Organization _organization = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.named_fragment_with_variables.fragment.QueryFragment(
-        organization
+        _organization
       );
     }
 
@@ -60,24 +60,24 @@ public class QueryFragmentImpl_ResponseAdapter {
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String id = null;
-      List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> user = null;
+      String _id = null;
+      List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> _user = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
-      Assertions.checkFieldNotMissing(user, "user");
+      Assertions.checkFieldNotMissing(_id, "id");
+      Assertions.checkFieldNotMissing(_user, "user");
 
       return new com.example.named_fragment_with_variables.fragment.QueryFragment.Organization(
-        id,
-        user
+        _id,
+        _user
       );
     }
 
@@ -112,13 +112,13 @@ public class QueryFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind();
-      UserFragment userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.named_fragment_with_variables.fragment.QueryFragment.User(
         __typename,
-        userFragment
+        _userFragment
       );
     }
 

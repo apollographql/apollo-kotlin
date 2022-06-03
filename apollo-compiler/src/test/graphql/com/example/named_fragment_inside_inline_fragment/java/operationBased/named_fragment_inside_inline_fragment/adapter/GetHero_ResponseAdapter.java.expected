@@ -31,18 +31,18 @@ public class GetHero_ResponseAdapter {
     @Override
     public GetHero.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      GetHero.Hero hero = null;
+      GetHero.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new GetHero.Data(
-        hero
+        _hero
       );
     }
 
@@ -73,13 +73,13 @@ public class GetHero_ResponseAdapter {
       }
 
       reader.rewind();
-      GetHero.OnCharacter onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
+      GetHero.OnCharacter _onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new GetHero.Hero(
         __typename,
-        onCharacter
+        _onCharacter
       );
     }
 
@@ -112,17 +112,17 @@ public class GetHero_ResponseAdapter {
       }
 
       reader.rewind();
-      CharacterName characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.fromJson(reader, customScalarAdapters);
+      CharacterName _characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE.fromJson(reader, customScalarAdapters);
 
       reader.rewind();
-      CharacterAppearsIn characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.fromJson(reader, customScalarAdapters);
+      CharacterAppearsIn _characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new GetHero.OnCharacter(
         __typename,
-        characterName,
-        characterAppearsIn
+        _characterName,
+        _characterAppearsIn
       );
     }
 

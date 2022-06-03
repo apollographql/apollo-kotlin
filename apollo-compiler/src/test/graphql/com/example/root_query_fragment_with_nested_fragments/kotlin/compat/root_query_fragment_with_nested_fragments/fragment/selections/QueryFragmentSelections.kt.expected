@@ -17,7 +17,7 @@ import com.example.root_query_fragment_with_nested_fragments.type.Human
 import kotlin.collections.List
 
 public object QueryFragmentSelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -25,11 +25,11 @@ public object QueryFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
-        ).selections(heroFragmentSelections.root)
+        ).selections(heroFragmentSelections.__root)
         .build()
       )
 
-  private val droid: List<CompiledSelection> = listOf(
+  private val __droid: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -37,11 +37,11 @@ public object QueryFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = (listOf("Droid"))
-        ).selections(droidFragmentSelections.root)
+        ).selections(droidFragmentSelections.__root)
         .build()
       )
 
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -52,7 +52,7 @@ public object QueryFragmentSelections {
         ).build()
       )
 
-  private val human: List<CompiledSelection> = listOf(
+  private val __human: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -60,11 +60,11 @@ public object QueryFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -72,7 +72,7 @@ public object QueryFragmentSelections {
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(__hero)
         .build(),
         CompiledField.Builder(
           name = "droid",
@@ -80,7 +80,7 @@ public object QueryFragmentSelections {
         ).arguments(listOf(
           CompiledArgument("id", 1)
         ))
-        .selections(droid)
+        .selections(__droid)
         .build(),
         CompiledField.Builder(
           name = "human",
@@ -88,7 +88,7 @@ public object QueryFragmentSelections {
         ).arguments(listOf(
           CompiledArgument("id", 1)
         ))
-        .selections(human)
+        .selections(__human)
         .build()
       )
 }

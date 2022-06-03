@@ -31,17 +31,17 @@ public object TestOperation_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestOperation.Data {
-      var random: TestOperation.Data.Random? = null
+      var _random: TestOperation.Data.Random? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> random = Random.obj().fromJson(reader, customScalarAdapters)
+          0 -> _random = Random.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestOperation.Data(
-        random = random!!
+        random = _random!!
       )
     }
 
@@ -94,25 +94,25 @@ public object TestOperation_ResponseAdapter {
         typename: String,
       ): TestOperation.Data.BeingHumanRandom {
         var __typename: String? = typename
-        var name: String? = null
-        var friends: List<TestOperation.Data.BeingHumanRandom.Friend>? = null
-        var profilePictureUrl: String? = null
+        var _name: String? = null
+        var _friends: List<TestOperation.Data.BeingHumanRandom.Friend>? = null
+        var _profilePictureUrl: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
-            3 -> profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+            3 -> _profilePictureUrl = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestOperation.Data.BeingHumanRandom(
           __typename = __typename!!,
-          name = name!!,
-          friends = friends!!,
-          profilePictureUrl = profilePictureUrl
+          name = _name!!,
+          friends = _friends!!,
+          profilePictureUrl = _profilePictureUrl
         )
       }
 
@@ -171,28 +171,28 @@ public object TestOperation_ResponseAdapter {
           typename: String,
         ): TestOperation.Data.BeingHumanRandom.WookieFriend {
           var __typename: String? = typename
-          var name: String? = null
-          var lifeExpectancy: Double? = null
-          var isFamous: Boolean? = null
-          var race: Race? = null
+          var _name: String? = null
+          var _lifeExpectancy: Double? = null
+          var _isFamous: Boolean? = null
+          var _race: Race? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
-              3 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
-              4 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              3 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+              4 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestOperation.Data.BeingHumanRandom.WookieFriend(
             __typename = __typename!!,
-            name = name!!,
-            lifeExpectancy = lifeExpectancy,
-            isFamous = isFamous,
-            race = race!!
+            name = _name!!,
+            lifeExpectancy = _lifeExpectancy,
+            isFamous = _isFamous,
+            race = _race!!
           )
         }
 
@@ -227,22 +227,22 @@ public object TestOperation_ResponseAdapter {
           typename: String,
         ): TestOperation.Data.BeingHumanRandom.OtherFriend {
           var __typename: String? = typename
-          var name: String? = null
-          var isFamous: Boolean? = null
+          var _name: String? = null
+          var _isFamous: Boolean? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _isFamous = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestOperation.Data.BeingHumanRandom.OtherFriend(
             __typename = __typename!!,
-            name = name!!,
-            isFamous = isFamous
+            name = _name!!,
+            isFamous = _isFamous
           )
         }
 
@@ -272,25 +272,25 @@ public object TestOperation_ResponseAdapter {
         typename: String,
       ): TestOperation.Data.BeingWookieRandom {
         var __typename: String? = typename
-        var name: String? = null
-        var friends: List<TestOperation.Data.BeingWookieRandom.Friend>? = null
-        var race: Race? = null
+        var _name: String? = null
+        var _friends: List<TestOperation.Data.BeingWookieRandom.Friend>? = null
+        var _race: Race? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
-            3 -> race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _friends = Friend.obj().list().fromJson(reader, customScalarAdapters)
+            3 -> _race = Race_ResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestOperation.Data.BeingWookieRandom(
           __typename = __typename!!,
-          name = name!!,
-          friends = friends!!,
-          race = race!!
+          name = _name!!,
+          friends = _friends!!,
+          race = _race!!
         )
       }
 
@@ -348,22 +348,22 @@ public object TestOperation_ResponseAdapter {
           typename: String,
         ): TestOperation.Data.BeingWookieRandom.WookieFriend {
           var __typename: String? = typename
-          var name: String? = null
-          var lifeExpectancy: Double? = null
+          var _name: String? = null
+          var _lifeExpectancy: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestOperation.Data.BeingWookieRandom.WookieFriend(
             __typename = __typename!!,
-            name = name!!,
-            lifeExpectancy = lifeExpectancy
+            name = _name!!,
+            lifeExpectancy = _lifeExpectancy
           )
         }
 
@@ -392,22 +392,22 @@ public object TestOperation_ResponseAdapter {
           typename: String,
         ): TestOperation.Data.BeingWookieRandom.OtherFriend {
           var __typename: String? = typename
-          var name: String? = null
-          var lifeExpectancy: Double? = null
+          var _name: String? = null
+          var _lifeExpectancy: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-              2 -> lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              2 -> _lifeExpectancy = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return TestOperation.Data.BeingWookieRandom.OtherFriend(
             __typename = __typename!!,
-            name = name!!,
-            lifeExpectancy = lifeExpectancy
+            name = _name!!,
+            lifeExpectancy = _lifeExpectancy
           )
         }
 

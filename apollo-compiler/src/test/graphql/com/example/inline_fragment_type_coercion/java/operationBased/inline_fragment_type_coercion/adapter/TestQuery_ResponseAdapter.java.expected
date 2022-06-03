@@ -33,18 +33,18 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      TestQuery.Foo foo = null;
+      TestQuery.Foo _foo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: foo = new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _foo = new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        foo
+        _foo
       );
     }
 
@@ -65,30 +65,30 @@ public class TestQuery_ResponseAdapter {
     public TestQuery.Foo fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
-      String foo = null;
+      String _foo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: foo = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _foo = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      TestQuery.OnBar onBar = null;
+      TestQuery.OnBar _onBar = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("BarObject","FooBar")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      Assertions.checkFieldNotMissing(foo, "foo");
+      Assertions.checkFieldNotMissing(_foo, "foo");
 
       return new TestQuery.Foo(
         __typename,
-        foo,
-        onBar
+        _foo,
+        _onBar
       );
     }
 
@@ -115,20 +115,20 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.OnBar fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String bar = null;
+      String _bar = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: bar = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _bar = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(bar, "bar");
+      Assertions.checkFieldNotMissing(_bar, "bar");
 
       return new TestQuery.OnBar(
-        bar
+        _bar
       );
     }
 

@@ -30,18 +30,18 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
     @Override
     public CreateReviewForEpisodeMutation.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      CreateReviewForEpisodeMutation.CreateReview createReview = null;
+      CreateReviewForEpisodeMutation.CreateReview _createReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisodeMutation.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new CreateReviewForEpisodeMutation.Data(
-        createReview
+        _createReview
       );
     }
 
@@ -61,23 +61,23 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
     @Override
     public CreateReviewForEpisodeMutation.CreateReview fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer stars = null;
-      String commentary = null;
+      Integer _stars = null;
+      String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _commentary = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(stars, "stars");
+      Assertions.checkFieldNotMissing(_stars, "stars");
 
       return new CreateReviewForEpisodeMutation.CreateReview(
-        stars,
-        commentary
+        _stars,
+        _commentary
       );
     }
 

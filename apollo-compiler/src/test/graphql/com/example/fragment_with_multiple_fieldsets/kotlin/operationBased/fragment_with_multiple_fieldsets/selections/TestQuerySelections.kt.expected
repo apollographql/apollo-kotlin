@@ -15,7 +15,7 @@ import com.example.fragment_with_multiple_fieldsets.type.I
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val i: List<CompiledSelection> = listOf(
+  private val __i: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -23,15 +23,15 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "I",
           possibleTypes = (listOf("A", "B"))
-        ).selections(iFragmentSelections.root)
+        ).selections(iFragmentSelections.__root)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "i",
           type = I.type
-        ).selections(i)
+        ).selections(__i)
         .build()
       )
 }

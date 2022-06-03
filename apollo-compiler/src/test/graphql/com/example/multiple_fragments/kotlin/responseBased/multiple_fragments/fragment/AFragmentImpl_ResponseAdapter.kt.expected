@@ -24,17 +24,17 @@ public object AFragmentImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AFragmentImpl.Data {
-      var node: AFragmentImpl.Data.Node? = null
+      var _node: AFragmentImpl.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AFragmentImpl.Data(
-        node = node
+        node = _node
       )
     }
 
@@ -80,22 +80,22 @@ public object AFragmentImpl_ResponseAdapter {
         typename: String,
       ): AFragmentImpl.Data.ANodeNode {
         var __typename: String? = typename
-        var field1: String? = null
-        var field2: String? = null
+        var _field1: String? = null
+        var _field2: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return AFragmentImpl.Data.ANodeNode(
           __typename = __typename!!,
-          field1 = field1,
-          field2 = field2
+          field1 = _field1,
+          field2 = _field2
         )
       }
 

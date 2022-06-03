@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsSelections {
-  private static List<CompiledSelection> friends = Arrays.asList(
+  private static List<CompiledSelection> __friends = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
+  public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("primaryFunction", GraphQLString.type).build(),
-    new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(friends).build()
+    new CompiledField.Builder("friends", new CompiledListType(Character.type)).selections(__friends).build()
   );
 }

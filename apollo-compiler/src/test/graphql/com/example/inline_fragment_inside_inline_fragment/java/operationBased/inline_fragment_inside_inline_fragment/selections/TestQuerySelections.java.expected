@@ -17,27 +17,27 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> onHuman = Arrays.asList(
+  private static List<CompiledSelection> __onHuman = Arrays.asList(
     new CompiledField.Builder("homePlanet", GraphQLString.type).build()
   );
 
-  private static List<CompiledSelection> onDroid = Arrays.asList(
+  private static List<CompiledSelection> __onDroid = Arrays.asList(
     new CompiledField.Builder("primaryFunction", GraphQLString.type).build()
   );
 
-  private static List<CompiledSelection> onCharacter = Arrays.asList(
+  private static List<CompiledSelection> __onCharacter = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(onDroid).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(__onHuman).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(__onDroid).build()
   );
 
-  private static List<CompiledSelection> search = Arrays.asList(
+  private static List<CompiledSelection> __search = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "bla-bla", false))).selections(search).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "bla-bla", false))).selections(__search).build()
   );
 }

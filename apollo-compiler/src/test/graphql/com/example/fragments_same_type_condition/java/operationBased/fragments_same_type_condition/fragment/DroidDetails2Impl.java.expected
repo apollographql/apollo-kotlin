@@ -76,7 +76,7 @@ public class DroidDetails2Impl implements Fragment<DroidDetails2> {
       "data",
       Droid.type
     )
-    .selections(DroidDetails2Selections.root)
+    .selections(DroidDetails2Selections.__root)
     .build();
   }
 }

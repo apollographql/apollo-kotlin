@@ -25,17 +25,17 @@ public object GetPage_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetPage.Data {
-      var collection: GetPage.Data.Collection? = null
+      var _collection: GetPage.Data.Collection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _collection = Collection.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetPage.Data(
-        collection = collection!!
+        collection = _collection!!
       )
     }
 
@@ -54,12 +54,12 @@ public object GetPage_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           GetPage.Data.Collection {
         var __typename: String? = null
-        var items: List<GetPage.Data.Collection.Item>? = null
+        var _items: List<GetPage.Data.Collection.Item>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> items = Item.obj().list().fromJson(reader, customScalarAdapters)
+            1 -> _items = Item.obj().list().fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -68,17 +68,17 @@ public object GetPage_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
+        var _onParticularCollection: GetPage.Data.Collection.OnParticularCollection? = null
         if (possibleTypes("ParticularCollection").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader,
+          _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.fromJson(reader,
               customScalarAdapters)
         }
 
         return GetPage.Data.Collection(
           __typename = __typename,
-          items = items!!,
-          onParticularCollection = onParticularCollection
+          items = _items!!,
+          onParticularCollection = _onParticularCollection
         )
       }
 
@@ -104,17 +104,17 @@ public object GetPage_ResponseAdapter {
 
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): GetPage.Data.Collection.Item {
-          var title: String? = null
+          var _title: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> title = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _title = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.Collection.Item(
-            title = title!!
+            title = _title!!
           )
         }
 
@@ -135,17 +135,17 @@ public object GetPage_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             GetPage.Data.Collection.OnParticularCollection {
-          var items: List<GetPage.Data.Collection.OnParticularCollection.Item>? = null
+          var _items: List<GetPage.Data.Collection.OnParticularCollection.Item>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
+              0 -> _items = Item.obj(true).list().fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
 
           return GetPage.Data.Collection.OnParticularCollection(
-            items = items!!
+            items = _items!!
           )
         }
 
@@ -177,16 +177,16 @@ public object GetPage_ResponseAdapter {
               "__typename was not found"
             }
 
-            var onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
+            var _onParticularItem: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem? = null
             if (possibleTypes("ParticularItem").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
               reader.rewind()
-              onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader,
+              _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.fromJson(reader,
                   customScalarAdapters)
             }
 
             return GetPage.Data.Collection.OnParticularCollection.Item(
               __typename = __typename,
-              onParticularItem = onParticularItem
+              onParticularItem = _onParticularItem
             )
           }
 
@@ -211,17 +211,17 @@ public object GetPage_ResponseAdapter {
             public override fun fromJson(reader: JsonReader,
                 customScalarAdapters: CustomScalarAdapters):
                 GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem {
-              var image: String? = null
+              var _image: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> image = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> _image = StringAdapter.fromJson(reader, customScalarAdapters)
                   else -> break
                 }
               }
 
               return GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem(
-                image = image!!
+                image = _image!!
               )
             }
 

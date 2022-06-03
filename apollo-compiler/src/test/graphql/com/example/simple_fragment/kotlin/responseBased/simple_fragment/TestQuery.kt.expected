@@ -48,7 +48,7 @@ internal class TestQuery() : Query<TestQuery.Data> {
     name = "data",
     type = com.example.simple_fragment.type.Query.type
   )
-  .selections(selections = TestQuerySelections.root)
+  .selections(selections = TestQuerySelections.__root)
   .build()
 
   public data class Data(

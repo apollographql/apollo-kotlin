@@ -16,14 +16,14 @@ import com.example.inline_fragment_for_non_optional_field.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
         ).build()
       )
 
-  private val nonOptionalHero: List<CompiledSelection> = listOf(
+  private val __nonOptionalHero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -35,18 +35,18 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "nonOptionalHero",
           type = Character.type.notNull()
         ).arguments(listOf(
           CompiledArgument("episode", "EMPIRE")
         ))
-        .selections(nonOptionalHero)
+        .selections(__nonOptionalHero)
         .build()
       )
 }

@@ -133,7 +133,7 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
       "data",
       com.example.mutation_create_review.type.Mutation.type
     )
-    .selections(CreateReviewForEpisodeSelections.root)
+    .selections(CreateReviewForEpisodeSelections.__root)
     .build();
   }
 

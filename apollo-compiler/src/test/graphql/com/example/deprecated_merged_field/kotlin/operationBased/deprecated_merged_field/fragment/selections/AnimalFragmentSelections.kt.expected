@@ -13,21 +13,21 @@ import com.example.deprecated_merged_field.type.GraphQLString
 import kotlin.collections.List
 
 public object AnimalFragmentSelections {
-  private val onCat: List<CompiledSelection> = listOf(
+  private val __onCat: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val onDog: List<CompiledSelection> = listOf(
+  private val __onDog: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -35,12 +35,12 @@ public object AnimalFragmentSelections {
         CompiledFragment.Builder(
           typeCondition = "Cat",
           possibleTypes = listOf("Cat")
-        ).selections(onCat)
+        ).selections(__onCat)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Dog",
           possibleTypes = listOf("Dog")
-        ).selections(onDog)
+        ).selections(__onDog)
         .build()
       )
 }

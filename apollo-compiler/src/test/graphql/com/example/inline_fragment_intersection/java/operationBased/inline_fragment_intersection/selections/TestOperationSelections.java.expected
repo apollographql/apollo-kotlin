@@ -20,68 +20,68 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestOperationSelections {
-  private static List<CompiledSelection> onWookie = Arrays.asList(
+  private static List<CompiledSelection> __onWookie = Arrays.asList(
     new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 
-  private static List<CompiledSelection> friends = Arrays.asList(
+  private static List<CompiledSelection> __friends = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie).build()
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(__onWookie).build()
   );
 
-  private static List<CompiledSelection> onWookie1 = Arrays.asList(
+  private static List<CompiledSelection> __onWookie1 = Arrays.asList(
     new CompiledField.Builder("race", new CompiledNotNullType(Race.type)).build()
   );
 
-  private static List<CompiledSelection> friends1 = Arrays.asList(
+  private static List<CompiledSelection> __friends1 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("isFamous", GraphQLBoolean.type).build(),
-    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie1).build()
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(__onWookie1).build()
   );
 
-  private static List<CompiledSelection> onHuman = Arrays.asList(
+  private static List<CompiledSelection> __onHuman = Arrays.asList(
     new CompiledField.Builder("profilePictureUrl", GraphQLString.type).build(),
-    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends1).build()
+    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(__friends1).build()
   );
 
-  private static List<CompiledSelection> onBeing = Arrays.asList(
+  private static List<CompiledSelection> __onBeing = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends).build(),
-    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(onHuman).build()
+    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(__friends).build(),
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).selections(__onHuman).build()
   );
 
-  private static List<CompiledSelection> friends2 = Arrays.asList(
+  private static List<CompiledSelection> __friends2 = Arrays.asList(
     new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 
-  private static List<CompiledSelection> onWookie2 = Arrays.asList(
+  private static List<CompiledSelection> __onWookie2 = Arrays.asList(
     new CompiledField.Builder("race", new CompiledNotNullType(Race.type)).build(),
-    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends2).build()
+    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(__friends2).build()
   );
 
-  private static List<CompiledSelection> onWookie3 = Arrays.asList(
+  private static List<CompiledSelection> __onWookie3 = Arrays.asList(
     new CompiledField.Builder("lifeExpectancy", GraphQLFloat.type).build()
   );
 
-  private static List<CompiledSelection> friends3 = Arrays.asList(
+  private static List<CompiledSelection> __friends3 = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie3).build()
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(__onWookie3).build()
   );
 
-  private static List<CompiledSelection> onBeing1 = Arrays.asList(
-    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(friends3).build()
+  private static List<CompiledSelection> __onBeing1 = Arrays.asList(
+    new CompiledField.Builder("friends", new CompiledNotNullType(new CompiledListType(new CompiledNotNullType(Being.type)))).selections(__friends3).build()
   );
 
-  private static List<CompiledSelection> random = Arrays.asList(
+  private static List<CompiledSelection> __random = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(onBeing).build(),
-    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(onWookie2).build(),
-    new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(onBeing1).build()
+    new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(__onBeing).build(),
+    new CompiledFragment.Builder("Wookie", Arrays.asList("Wookie")).selections(__onWookie2).build(),
+    new CompiledFragment.Builder("Being", Arrays.asList("Human", "Wookie")).selections(__onBeing1).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("random", new CompiledNotNullType(Anything.type)).selections(random).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("random", new CompiledNotNullType(Anything.type)).selections(__random).build()
   );
 }

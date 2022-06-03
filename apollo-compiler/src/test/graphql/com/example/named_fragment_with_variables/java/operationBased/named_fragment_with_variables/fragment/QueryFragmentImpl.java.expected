@@ -99,7 +99,7 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
       "data",
       Query.type
     )
-    .selections(QueryFragmentSelections.root)
+    .selections(QueryFragmentSelections.__root)
     .build();
   }
 }

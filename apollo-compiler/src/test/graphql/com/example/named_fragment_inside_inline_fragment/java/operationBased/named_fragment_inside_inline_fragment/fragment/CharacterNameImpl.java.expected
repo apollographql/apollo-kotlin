@@ -76,7 +76,7 @@ public class CharacterNameImpl implements Fragment<CharacterName> {
       "data",
       Character.type
     )
-    .selections(characterNameSelections.root)
+    .selections(characterNameSelections.__root)
     .build();
   }
 }

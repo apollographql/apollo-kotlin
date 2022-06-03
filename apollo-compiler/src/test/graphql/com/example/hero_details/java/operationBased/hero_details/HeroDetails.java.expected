@@ -119,7 +119,7 @@ public class HeroDetails implements Query<HeroDetails.Data> {
       "data",
       com.example.hero_details.type.Query.type
     )
-    .selections(HeroDetailsSelections.root)
+    .selections(HeroDetailsSelections.__root)
     .build();
   }
 

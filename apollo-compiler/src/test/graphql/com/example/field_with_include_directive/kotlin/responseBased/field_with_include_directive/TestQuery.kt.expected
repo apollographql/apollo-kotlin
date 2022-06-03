@@ -40,7 +40,7 @@ public data class TestQuery(
     name = "data",
     type = com.example.field_with_include_directive.type.Query.type
   )
-  .selections(selections = TestQuerySelections.root)
+  .selections(selections = TestQuerySelections.__root)
   .build()
 
   public data class Data(

@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var hero: TestQuery.Hero? = null
+      var _hero: TestQuery.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -57,25 +57,25 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Hero {
       var __typename: String? = null
-      var name: String? = null
-      var friendsConnection: TestQuery.FriendsConnection? = null
-      var profileLink: Any? = null
+      var _name: String? = null
+      var _friendsConnection: TestQuery.FriendsConnection? = null
+      var _profileLink: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
-          3 -> profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          3 -> _profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Hero(
         __typename = __typename!!,
-        name = name!!,
-        friendsConnection = friendsConnection!!,
-        profileLink = profileLink!!
+        name = _name!!,
+        friendsConnection = _friendsConnection!!,
+        profileLink = _profileLink!!
       )
     }
 
@@ -103,18 +103,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.FriendsConnection {
-      var edges: List<TestQuery.Edge?>? = null
+      var _edges: List<TestQuery.Edge?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> edges = Edge.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.FriendsConnection(
-        edges = edges
+        edges = _edges
       )
     }
 
@@ -133,17 +133,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Edge {
-      var node: TestQuery.Node? = null
+      var _node: TestQuery.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Edge(
-        node = node
+        node = _node
       )
     }
 
@@ -162,17 +162,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Node {
-      var name: String? = null
+      var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Node(
-        name = name!!
+        name = _name!!
       )
     }
 

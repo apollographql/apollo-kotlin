@@ -23,18 +23,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
+      var _typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
+          0 -> _typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        typeWithGraphQLKeywords = typeWithGraphQLKeywords
+        typeWithGraphQLKeywords = _typeWithGraphQLKeywords
       )
     }
 
@@ -53,23 +53,23 @@ public object TestQuery_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.TypeWithGraphQLKeywords {
-        var on: String? = null
-        var `null`: String? = null
-        var alias: String? = null
+        var _on: String? = null
+        var _null: String? = null
+        var _alias: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> `null` = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> alias = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _on = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _null = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _alias = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.TypeWithGraphQLKeywords(
-          on = on,
-          `null` = `null`,
-          alias = alias
+          on = _on,
+          `null` = _null,
+          alias = _alias
         )
       }
 

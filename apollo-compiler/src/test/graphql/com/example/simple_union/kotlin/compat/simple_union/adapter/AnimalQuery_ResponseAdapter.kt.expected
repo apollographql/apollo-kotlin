@@ -28,17 +28,17 @@ public object AnimalQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         AnimalQuery.Data {
-      var animal: AnimalQuery.Animal? = null
+      var _animal: AnimalQuery.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> animal = Animal.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return AnimalQuery.Data(
-        animal = animal
+        animal = _animal
       )
     }
 
@@ -67,12 +67,12 @@ public object AnimalQuery_ResponseAdapter {
       }
 
       reader.rewind()
-      val fragments = com.example.simple_union.adapter.AnimalQuery_ResponseAdapter.Animal.Fragments.fromJson(reader,
+      val _fragments = com.example.simple_union.adapter.AnimalQuery_ResponseAdapter.Animal.Fragments.fromJson(reader,
           customScalarAdapters)
 
       return AnimalQuery.Animal(
         __typename = __typename!!,
-        fragments = fragments
+        fragments = _fragments
       )
     }
 
@@ -96,23 +96,23 @@ public object AnimalQuery_ResponseAdapter {
         reader.rewind()
         val __typename = reader.readTypename()
 
-        var catFragment: CatFragment? = null
+        var _catFragment: CatFragment? = null
         if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
+          _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
               customScalarAdapters)
         }
 
-        var dogFragment: DogFragment? = null
+        var _dogFragment: DogFragment? = null
         if (possibleTypes("Dog").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
+          _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
               customScalarAdapters)
         }
 
         return AnimalQuery.Animal.Fragments(
-          catFragment = catFragment,
-          dogFragment = dogFragment
+          catFragment = _catFragment,
+          dogFragment = _dogFragment
         )
       }
 

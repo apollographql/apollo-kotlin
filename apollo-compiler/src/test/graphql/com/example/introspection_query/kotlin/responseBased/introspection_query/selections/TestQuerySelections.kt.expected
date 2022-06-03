@@ -16,45 +16,45 @@ import com.example.introspection_query.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val queryType: List<CompiledSelection> = listOf(
+  private val __queryType: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type
         ).build()
       )
 
-  private val types: List<CompiledSelection> = listOf(
+  private val __types: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type
         ).build()
       )
 
-  private val __schema: List<CompiledSelection> = listOf(
+  private val ____schema: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "queryType",
           type = CompiledTypeType.notNull()
-        ).selections(queryType)
+        ).selections(__queryType)
         .build(),
         CompiledField.Builder(
           name = "types",
           type = CompiledTypeType.notNull().list().notNull()
-        ).selections(types)
+        ).selections(__types)
         .build()
       )
 
-  private val __type: List<CompiledSelection> = listOf(
+  private val ____type: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__schema",
           type = CompiledSchemaType.notNull()
-        ).selections(__schema)
+        ).selections(____schema)
         .build(),
         CompiledField.Builder(
           name = "__type",
@@ -62,7 +62,7 @@ public object TestQuerySelections {
         ).arguments(listOf(
           CompiledArgument("name", "Vehicle")
         ))
-        .selections(__type)
+        .selections(____type)
         .build()
       )
 }

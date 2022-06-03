@@ -23,18 +23,18 @@ public object CharacterAppearsInImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         CharacterAppearsInImpl.Data {
-      var appearsIn: List<Episode?>? = null
+      var _appearsIn: List<Episode?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+          0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return CharacterAppearsInImpl.Data(
-        appearsIn = appearsIn!!
+        appearsIn = _appearsIn!!
       )
     }
 

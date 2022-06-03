@@ -76,7 +76,7 @@ public class PlanetFragmentImpl implements Fragment<PlanetFragment> {
       "data",
       Planet.type
     )
-    .selections(planetFragmentSelections.root)
+    .selections(planetFragmentSelections.__root)
     .build();
   }
 }

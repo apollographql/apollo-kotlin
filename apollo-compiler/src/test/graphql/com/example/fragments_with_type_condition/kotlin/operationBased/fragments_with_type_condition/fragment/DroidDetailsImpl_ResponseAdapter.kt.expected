@@ -22,20 +22,20 @@ public object DroidDetailsImpl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.fragments_with_type_condition.fragment.DroidDetails {
-      var name: String? = null
-      var primaryFunction: String? = null
+      var _name: String? = null
+      var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return com.example.fragments_with_type_condition.fragment.DroidDetails(
-        name = name!!,
-        primaryFunction = primaryFunction
+        name = _name!!,
+        primaryFunction = _primaryFunction
       )
     }
 

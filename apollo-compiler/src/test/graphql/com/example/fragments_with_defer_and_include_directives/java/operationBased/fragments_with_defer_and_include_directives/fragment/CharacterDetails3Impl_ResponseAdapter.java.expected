@@ -27,20 +27,20 @@ public class CharacterDetails3Impl_ResponseAdapter {
     @Override
     public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      Object birthDate = null;
+      Object _birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(birthDate, "birthDate");
+      Assertions.checkFieldNotMissing(_birthDate, "birthDate");
 
       return new com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3(
-        birthDate
+        _birthDate
       );
     }
 

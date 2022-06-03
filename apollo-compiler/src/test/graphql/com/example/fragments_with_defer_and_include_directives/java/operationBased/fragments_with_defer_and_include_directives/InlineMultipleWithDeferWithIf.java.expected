@@ -124,7 +124,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
       "data",
       com.example.fragments_with_defer_and_include_directives.type.Query.type
     )
-    .selections(InlineMultipleWithDeferWithIfSelections.root)
+    .selections(InlineMultipleWithDeferWithIfSelections.__root)
     .build();
   }
 

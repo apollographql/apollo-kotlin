@@ -35,7 +35,7 @@ public class CharacterDetailsImpl() : Fragment<CharacterDetailsImpl.Data> {
     name = "data",
     type = Character.type
   )
-  .selections(selections = CharacterDetailsSelections.root)
+  .selections(selections = CharacterDetailsSelections.__root)
   .build()
 
   public data class Data(

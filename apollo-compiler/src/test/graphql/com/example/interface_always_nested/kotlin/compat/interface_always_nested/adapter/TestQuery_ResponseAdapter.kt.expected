@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var root: TestQuery.Root? = null
+      var _root: TestQuery.Root? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> root = Root.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _root = Root.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        root = root
+        root = _root
       )
     }
 
@@ -68,16 +68,16 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asA: TestQuery.AsA? = null
+      var _asA: TestQuery.AsA? = null
       if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
+        _asA = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsA.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.Root(
         __typename = __typename,
-        asA = asA
+        asA = _asA
       )
     }
 
@@ -102,12 +102,12 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsA {
       var __typename: String? = null
-      var fieldA1: String? = null
+      var _fieldA1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -116,17 +116,17 @@ public object TestQuery_ResponseAdapter {
         "__typename was not found"
       }
 
-      var asB: TestQuery.AsB? = null
+      var _asB: TestQuery.AsB? = null
       if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
         reader.rewind()
-        asB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
+        _asB = com.example.interface_always_nested.adapter.TestQuery_ResponseAdapter.AsB.fromJson(reader,
             customScalarAdapters)
       }
 
       return TestQuery.AsA(
         __typename = __typename,
-        fieldA1 = fieldA1,
-        asB = asB
+        fieldA1 = _fieldA1,
+        asB = _asB
       )
     }
 
@@ -154,22 +154,22 @@ public object TestQuery_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.AsB {
       var __typename: String? = null
-      var fieldA1: String? = null
-      var fieldB1: String? = null
+      var _fieldA1: String? = null
+      var _fieldB1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.AsB(
         __typename = __typename!!,
-        fieldA1 = fieldA1,
-        fieldB1 = fieldB1
+        fieldA1 = _fieldA1,
+        fieldB1 = _fieldB1
       )
     }
 

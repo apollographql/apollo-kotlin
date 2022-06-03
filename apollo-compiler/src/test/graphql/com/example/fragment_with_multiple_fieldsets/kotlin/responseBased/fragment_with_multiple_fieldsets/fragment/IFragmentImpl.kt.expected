@@ -35,7 +35,7 @@ public class IFragmentImpl() : Fragment<IFragmentImpl.Data> {
     name = "data",
     type = I.type
   )
-  .selections(selections = iFragmentSelections.root)
+  .selections(selections = iFragmentSelections.__root)
   .build()
 
   public interface Data : IFragment, Fragment.Data {

@@ -76,7 +76,7 @@ public class CharacterDetailsImpl implements Fragment<CharacterDetails> {
       "data",
       Character.type
     )
-    .selections(CharacterDetailsSelections.root)
+    .selections(CharacterDetailsSelections.__root)
     .build();
   }
 }

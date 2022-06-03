@@ -25,18 +25,18 @@ public class PlanetFragmentImpl_ResponseAdapter {
     @Override
     public com.example.nested_named_fragments.fragment.PlanetFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.nested_named_fragments.fragment.PlanetFragment(
-        name
+        _name
       );
     }
 

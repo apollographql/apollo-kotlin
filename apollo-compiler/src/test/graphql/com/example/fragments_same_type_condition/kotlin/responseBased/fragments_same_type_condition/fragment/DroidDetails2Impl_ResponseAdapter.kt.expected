@@ -20,17 +20,17 @@ public object DroidDetails2Impl_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         DroidDetails2Impl.Data {
-      var primaryFunction: String? = null
+      var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return DroidDetails2Impl.Data(
-        primaryFunction = primaryFunction
+        primaryFunction = _primaryFunction
       )
     }
 

@@ -43,7 +43,7 @@ public class GetHero() : Query<GetHero.Data> {
     name = "data",
     type = com.example.named_fragment_inside_inline_fragment.type.Query.type
   )
-  .selections(selections = GetHeroSelections.root)
+  .selections(selections = GetHeroSelections.__root)
   .build()
 
   public data class Data(

@@ -29,26 +29,26 @@ public class StarshipFragmentImpl_ResponseAdapter {
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String id = null;
-      String name = null;
-      com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection pilotConnection = null;
+      String _id = null;
+      String _name = null;
+      com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection _pilotConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: pilotConnection = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>(PilotConnection.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _pilotConnection = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>(PilotConnection.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(id, "id");
+      Assertions.checkFieldNotMissing(_id, "id");
 
       return new com.example.nested_named_fragments.fragment.StarshipFragment(
-        id,
-        name,
-        pilotConnection
+        _id,
+        _name,
+        _pilotConnection
       );
     }
 
@@ -74,18 +74,18 @@ public class StarshipFragmentImpl_ResponseAdapter {
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      List<com.example.nested_named_fragments.fragment.StarshipFragment.Edge> edges = null;
+      List<com.example.nested_named_fragments.fragment.StarshipFragment.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection(
-        edges
+        _edges
       );
     }
 
@@ -106,18 +106,18 @@ public class StarshipFragmentImpl_ResponseAdapter {
     @Override
     public com.example.nested_named_fragments.fragment.StarshipFragment.Edge fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      com.example.nested_named_fragments.fragment.StarshipFragment.Node node = null;
+      com.example.nested_named_fragments.fragment.StarshipFragment.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.nested_named_fragments.fragment.StarshipFragment.Edge(
-        node
+        _node
       );
     }
 
@@ -149,13 +149,13 @@ public class StarshipFragmentImpl_ResponseAdapter {
       }
 
       reader.rewind();
-      PilotFragment pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      PilotFragment _pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.INSTANCE.fromJson(reader, customScalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
       return new com.example.nested_named_fragments.fragment.StarshipFragment.Node(
         __typename,
-        pilotFragment
+        _pilotFragment
       );
     }
 

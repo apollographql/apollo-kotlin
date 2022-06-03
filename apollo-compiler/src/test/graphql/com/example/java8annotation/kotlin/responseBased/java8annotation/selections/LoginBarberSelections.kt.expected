@@ -15,21 +15,21 @@ import com.example.java8annotation.type.User
 import kotlin.collections.List
 
 public object LoginBarberSelections {
-  private val login: List<CompiledSelection> = listOf(
+  private val __login: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "response",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "login",
           type = User.type.notNull()
         ).arguments(listOf(
           CompiledArgument("input", CompiledVariable("input"))
         ))
-        .selections(login)
+        .selections(__login)
         .build()
       )
 }

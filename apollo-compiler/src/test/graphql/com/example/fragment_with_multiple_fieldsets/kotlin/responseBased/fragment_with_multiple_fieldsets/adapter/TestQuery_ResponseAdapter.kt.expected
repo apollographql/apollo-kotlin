@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var i: TestQuery.Data.I? = null
+      var _i: TestQuery.Data.I? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> i = I.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _i = I.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        i = i
+        i = _i
       )
     }
 
@@ -81,19 +81,19 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.AI {
         var __typename: String? = typename
-        var fieldA: String? = null
+        var _fieldA: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _fieldA = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.AI(
           __typename = __typename!!,
-          fieldA = fieldA
+          fieldA = _fieldA
         )
       }
 

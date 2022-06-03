@@ -26,17 +26,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var c: TestQuery.Data.C? = null
+      var _c: TestQuery.Data.C? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> c = C.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _c = C.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        c = c
+        c = _c
       )
     }
 
@@ -67,24 +67,24 @@ public object TestQuery_ResponseAdapter {
           "__typename was not found"
         }
 
-        var onA: TestQuery.Data.C.OnA? = null
+        var _onA: TestQuery.Data.C.OnA? = null
         if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader,
+          _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader,
               customScalarAdapters)
         }
 
-        var onB: TestQuery.Data.C.OnB? = null
+        var _onB: TestQuery.Data.C.OnB? = null
         if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader,
+          _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader,
               customScalarAdapters)
         }
 
         return TestQuery.Data.C(
           __typename = __typename,
-          onA = onA,
-          onB = onB
+          onA = _onA,
+          onB = _onB
         )
       }
 
@@ -113,12 +113,12 @@ public object TestQuery_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnA {
           var __typename: String? = null
-          var fieldA1: String? = null
+          var _fieldA1: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -127,17 +127,17 @@ public object TestQuery_ResponseAdapter {
             "__typename was not found"
           }
 
-          var onB: TestQuery.Data.C.OnA.OnB? = null
+          var _onB: TestQuery.Data.C.OnA.OnB? = null
           if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
-            onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader,
+            _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader,
                 customScalarAdapters)
           }
 
           return TestQuery.Data.C.OnA(
             __typename = __typename,
-            fieldA1 = fieldA1,
-            onB = onB
+            fieldA1 = _fieldA1,
+            onB = _onB
           )
         }
 
@@ -163,17 +163,17 @@ public object TestQuery_ResponseAdapter {
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnA.OnB {
-            var fieldB1: String? = null
+            var _fieldB1: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestQuery.Data.C.OnA.OnB(
-              fieldB1 = fieldB1
+              fieldB1 = _fieldB1
             )
           }
 
@@ -194,12 +194,12 @@ public object TestQuery_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnB {
           var __typename: String? = null
-          var fieldB2: String? = null
+          var _fieldB2: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
               0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-              1 -> fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              1 -> _fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -208,17 +208,17 @@ public object TestQuery_ResponseAdapter {
             "__typename was not found"
           }
 
-          var onA: TestQuery.Data.C.OnB.OnA? = null
+          var _onA: TestQuery.Data.C.OnB.OnA? = null
           if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
             reader.rewind()
-            onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader,
+            _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader,
                 customScalarAdapters)
           }
 
           return TestQuery.Data.C.OnB(
             __typename = __typename,
-            fieldB2 = fieldB2,
-            onA = onA
+            fieldB2 = _fieldB2,
+            onA = _onA
           )
         }
 
@@ -244,17 +244,17 @@ public object TestQuery_ResponseAdapter {
 
           public override fun fromJson(reader: JsonReader,
               customScalarAdapters: CustomScalarAdapters): TestQuery.Data.C.OnB.OnA {
-            var fieldA2: String? = null
+            var _fieldA2: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> fieldA2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _fieldA2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
                 else -> break
               }
             }
 
             return TestQuery.Data.C.OnB.OnA(
-              fieldA2 = fieldA2
+              fieldA2 = _fieldA2
             )
           }
 

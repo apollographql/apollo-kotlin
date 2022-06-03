@@ -25,18 +25,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var search: List<TestQuery.Data.Search?>? = null
+      var _search: List<TestQuery.Data.Search?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> search = Search.obj().nullable().list().nullable().fromJson(reader,
+          0 -> _search = Search.obj().nullable().list().nullable().fromJson(reader,
               customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        search = search
+        search = _search
       )
     }
 
@@ -83,22 +83,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.StarshipSearch {
         var __typename: String? = typename
-        var id: String? = null
-        var name: String? = null
+        var _id: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.StarshipSearch(
           __typename = __typename!!,
-          id = id!!,
-          name = name!!
+          id = _id!!,
+          name = _name!!
         )
       }
 

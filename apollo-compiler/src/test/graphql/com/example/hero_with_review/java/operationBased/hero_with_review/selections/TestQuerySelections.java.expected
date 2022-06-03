@@ -18,12 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> createReview = Arrays.asList(
+  private static List<CompiledSelection> __createReview = Arrays.asList(
     new CompiledField.Builder("stars", new CompiledNotNullType(GraphQLInt.type)).build(),
     new CompiledField.Builder("commentary", GraphQLString.type).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new ImmutableMapBuilder().put("stars", 5).put("listOfEnums", Arrays.asList("JEDI", "EMPIRE", "NEWHOPE")).put("listOfStringNonOptional", Arrays.asList("1", "2", "3")).put("favoriteColor", new ImmutableMapBuilder().put("red", 1).put("blue", 1).build()).build(), false))).selections(createReview).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new ImmutableMapBuilder().put("stars", 5).put("listOfEnums", Arrays.asList("JEDI", "EMPIRE", "NEWHOPE")).put("listOfStringNonOptional", Arrays.asList("1", "2", "3")).put("favoriteColor", new ImmutableMapBuilder().put("red", 1).put("blue", 1).build()).build(), false))).selections(__createReview).build()
   );
 }

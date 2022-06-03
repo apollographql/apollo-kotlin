@@ -15,14 +15,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuerySelections {
-  private static List<CompiledSelection> typeWithGraphQLKeywords = Arrays.asList(
+  private static List<CompiledSelection> __typeWithGraphQLKeywords = Arrays.asList(
     new CompiledField.Builder("on", GraphQLString.type).build(),
     new CompiledField.Builder("null", GraphQLString.type).arguments(Arrays.asList(new CompiledArgument("fragment", new CompiledVariable("operation"), false))).build(),
     new CompiledField.Builder("null", GraphQLString.type).alias("alias").arguments(Arrays.asList(new CompiledArgument("fragment", "A string\n"
             + "with a new line", false))).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("typeWithGraphQLKeywords", TypeWithGraphQLKeywords.type).selections(typeWithGraphQLKeywords).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("typeWithGraphQLKeywords", TypeWithGraphQLKeywords.type).selections(__typeWithGraphQLKeywords).build()
   );
 }

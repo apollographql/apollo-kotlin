@@ -18,14 +18,14 @@ import com.example.unique_type_name.type.GraphQLString
 import kotlin.collections.List
 
 public object HeroDetailQuerySelections {
-  private val friends: List<CompiledSelection> = listOf(
+  private val __friends: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val friends2: List<CompiledSelection> = listOf(
+  private val __friends2: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -33,11 +33,11 @@ public object HeroDetailQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
-        ).selections(HeroDetailsSelections.root)
+        ).selections(HeroDetailsSelections.__root)
         .build()
       )
 
-  private val friends1: List<CompiledSelection> = listOf(
+  private val __friends1: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "appearsIn",
           type = Episode.type.list().notNull()
@@ -45,11 +45,11 @@ public object HeroDetailQuerySelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends2)
+        ).selections(__friends2)
         .build()
       )
 
-  private val onHuman: List<CompiledSelection> = listOf(
+  private val __onHuman: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "height",
           type = GraphQLFloat.type
@@ -57,11 +57,11 @@ public object HeroDetailQuerySelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends1)
+        ).selections(__friends1)
         .build()
       )
 
-  private val heroDetailQuery: List<CompiledSelection> = listOf(
+  private val __heroDetailQuery: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -73,20 +73,20 @@ public object HeroDetailQuerySelections {
         CompiledField.Builder(
           name = "friends",
           type = Character.type.list()
-        ).selections(friends)
+        ).selections(__friends)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
-        ).selections(onHuman)
+        ).selections(__onHuman)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "heroDetailQuery",
           type = Character.type
-        ).selections(heroDetailQuery)
+        ).selections(__heroDetailQuery)
         .build()
       )
 }

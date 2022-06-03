@@ -33,18 +33,18 @@ public class HeroDetails_ResponseAdapter {
     @Override
     public HeroDetails.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      HeroDetails.Hero hero = null;
+      HeroDetails.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: hero = new NullableAdapter<>(new ObjectAdapter<HeroDetails.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<HeroDetails.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new HeroDetails.Data(
-        hero
+        _hero
       );
     }
 
@@ -64,28 +64,28 @@ public class HeroDetails_ResponseAdapter {
     @Override
     public HeroDetails.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      hero_type type = null;
-      String name = null;
-      HeroDetails.FriendsConnection friendsConnection = null;
+      hero_type _type = null;
+      String _name = null;
+      HeroDetails.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: type = hero_type_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: friendsConnection = new ObjectAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 0: _type = hero_type_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 2: _friendsConnection = new ObjectAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(type, "type");
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
+      Assertions.checkFieldNotMissing(_type, "type");
+      Assertions.checkFieldNotMissing(_name, "name");
+      Assertions.checkFieldNotMissing(_friendsConnection, "friendsConnection");
 
       return new HeroDetails.Hero(
-        type,
-        name,
-        friendsConnection
+        _type,
+        _name,
+        _friendsConnection
       );
     }
 
@@ -111,21 +111,21 @@ public class HeroDetails_ResponseAdapter {
     @Override
     public HeroDetails.FriendsConnection fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer totalCount = null;
-      List<HeroDetails.Edge> edges = null;
+      Integer _totalCount = null;
+      List<HeroDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new HeroDetails.FriendsConnection(
-        totalCount,
-        edges
+        _totalCount,
+        _edges
       );
     }
 
@@ -148,18 +148,18 @@ public class HeroDetails_ResponseAdapter {
     @Override
     public HeroDetails.Edge fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      HeroDetails.Node node = null;
+      HeroDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: node = new NullableAdapter<>(new ObjectAdapter<HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new HeroDetails.Edge(
-        node
+        _node
       );
     }
 
@@ -179,20 +179,20 @@ public class HeroDetails_ResponseAdapter {
     @Override
     public HeroDetails.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new HeroDetails.Node(
-        name
+        _name
       );
     }
 

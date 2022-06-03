@@ -35,7 +35,7 @@ public class HeroFragmentImpl() : Fragment<HeroFragmentImpl.Data> {
     name = "data",
     type = Character.type
   )
-  .selections(selections = heroFragmentSelections.root)
+  .selections(selections = heroFragmentSelections.__root)
   .build()
 
   public data class Data(

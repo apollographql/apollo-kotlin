@@ -145,7 +145,7 @@ internal fun readFromResponseCodeBlock(
                 context.resolver.resolveIrType(property.info.type),
                 context.layout.variableName(property.info.responseName),
             )
-            val pathLiteral = if(path.isNotEmpty()) {
+            val pathLiteral = if (path.isNotEmpty()) {
               __path
             } else {
               "null"

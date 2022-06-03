@@ -76,7 +76,7 @@ public class DogFragmentImpl implements Fragment<DogFragment> {
       "data",
       Dog.type
     )
-    .selections(DogFragmentSelections.root)
+    .selections(DogFragmentSelections.__root)
     .build();
   }
 }

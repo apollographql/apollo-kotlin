@@ -23,19 +23,19 @@ public object QueryFragmentImpl_ResponseAdapter {
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         QueryFragmentImpl.Data {
       var __typename: String? = null
-      var hero: QueryFragmentImpl.Data.Hero? = null
+      var _hero: QueryFragmentImpl.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          1 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return QueryFragmentImpl.Data(
         __typename = __typename!!,
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -56,17 +56,17 @@ public object QueryFragmentImpl_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           QueryFragmentImpl.Data.Hero {
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return QueryFragmentImpl.Data.Hero(
-          name = name!!
+          name = _name!!
         )
       }
 

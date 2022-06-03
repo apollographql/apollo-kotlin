@@ -18,7 +18,7 @@ import com.example.fragment_spread_with_include_directive.type.GraphQLString
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val hero: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -30,23 +30,23 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = (listOf("Droid", "Human"))
-        ).selections(HeroDetailsSelections.root)
+        ).selections(HeroDetailsSelections.__root)
         .condition(listOf(CompiledCondition("withDetails", false),
             CompiledCondition("skipHumanDetails", true)))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = (listOf("Human"))
-        ).selections(HumanDetailsSelections.root)
+        ).selections(HumanDetailsSelections.__root)
         .condition(listOf(CompiledCondition("withDetails", false)))
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "hero",
           type = Character.type
-        ).selections(hero)
+        ).selections(__hero)
         .build()
       )
 }

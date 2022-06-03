@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var root: TestQuery.Data.Root? = null
+      var _root: TestQuery.Data.Root? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> root = Root.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _root = Root.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        root = root
+        root = _root
       )
     }
 
@@ -84,22 +84,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.ABRoot {
         var __typename: String? = typename
-        var fieldA1: String? = null
-        var fieldB1: String? = null
+        var _fieldA1: String? = null
+        var _fieldB1: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.ABRoot(
           __typename = __typename!!,
-          fieldA1 = fieldA1,
-          fieldB1 = fieldB1
+          fieldA1 = _fieldA1,
+          fieldB1 = _fieldB1
         )
       }
 
@@ -160,19 +160,19 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.OtherARoot {
         var __typename: String? = typename
-        var fieldA1: String? = null
+        var _fieldA1: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherARoot(
           __typename = __typename!!,
-          fieldA1 = fieldA1
+          fieldA1 = _fieldA1
         )
       }
 

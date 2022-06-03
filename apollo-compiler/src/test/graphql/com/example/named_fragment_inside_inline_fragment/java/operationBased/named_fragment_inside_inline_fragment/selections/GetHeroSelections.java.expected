@@ -17,18 +17,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetHeroSelections {
-  private static List<CompiledSelection> onCharacter = Arrays.asList(
+  private static List<CompiledSelection> __onCharacter = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterNameSelections.root).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterAppearsInSelections.root).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterNameSelections.__root).build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(characterAppearsInSelections.__root).build()
   );
 
-  private static List<CompiledSelection> hero = Arrays.asList(
+  private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(onCharacter).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter).build()
   );
 
-  public static List<CompiledSelection> root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).selections(hero).build()
+  public static List<CompiledSelection> __root = Arrays.asList(
+    new CompiledField.Builder("hero", Character.type).selections(__hero).build()
   );
 }

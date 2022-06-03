@@ -20,14 +20,14 @@ import com.example.mutation_create_review.type.Review
 import kotlin.collections.List
 
 internal object CreateReviewForEpisodeSelections {
-  private val listOfListOfObject: List<CompiledSelection> = listOf(
+  private val __listOfListOfObject: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
         ).build()
       )
 
-  private val createReview: List<CompiledSelection> = listOf(
+  private val __createReview: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "stars",
           type = GraphQLInt.type.notNull()
@@ -51,11 +51,11 @@ internal object CreateReviewForEpisodeSelections {
         CompiledField.Builder(
           name = "listOfListOfObject",
           type = Character.type.notNull().list().notNull().list()
-        ).selections(listOfListOfObject)
+        ).selections(__listOfListOfObject)
         .build()
       )
 
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "createReview",
           type = Review.type
@@ -63,7 +63,7 @@ internal object CreateReviewForEpisodeSelections {
           CompiledArgument("episode", CompiledVariable("ep")),
           CompiledArgument("review", CompiledVariable("review"))
         ))
-        .selections(createReview)
+        .selections(__createReview)
         .build()
       )
 }

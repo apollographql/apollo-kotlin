@@ -88,10 +88,14 @@ object ApolloCompiler {
     validationResult.issues.checkNoErrors()
 
     if (options.codegenModels == MODELS_RESPONSE_BASED) {
-      findConditionalFragments(definitions).checkNoErrors()
+      checkConditionalFragments(definitions).checkNoErrors()
     }
 
-    findApolloReservedEnumValueNames(schema).checkNoErrors()
+    checkApolloReservedEnumValueNames(schema).checkNoErrors()
+
+    if (!options.flattenModels) {
+      checkCapitalizedFields(definitions).checkNoErrors()
+    }
 
     val warnings = validationResult.issues.filter {
       it.severity == Issue.Severity.WARNING && (it !is Issue.DeprecatedUsage || options.warnOnDeprecatedUsages)

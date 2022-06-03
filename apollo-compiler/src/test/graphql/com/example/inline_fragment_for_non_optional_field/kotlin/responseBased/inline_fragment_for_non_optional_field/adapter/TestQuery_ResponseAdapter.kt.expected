@@ -25,17 +25,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
+      var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> nonOptionalHero = NonOptionalHero.obj().fromJson(reader, customScalarAdapters)
+          0 -> _nonOptionalHero = NonOptionalHero.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        nonOptionalHero = nonOptionalHero!!
+        nonOptionalHero = _nonOptionalHero!!
       )
     }
 
@@ -83,22 +83,22 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.HumanNonOptionalHero {
         var __typename: String? = typename
-        var name: String? = null
-        var height: Double? = null
+        var _name: String? = null
+        var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.HumanNonOptionalHero(
           __typename = __typename!!,
-          name = name!!,
-          height = height
+          name = _name!!,
+          height = _height
         )
       }
 
@@ -127,19 +127,19 @@ public object TestQuery_ResponseAdapter {
         typename: String,
       ): TestQuery.Data.OtherNonOptionalHero {
         var __typename: String? = typename
-        var name: String? = null
+        var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> name = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.OtherNonOptionalHero(
           __typename = __typename!!,
-          name = name!!
+          name = _name!!
         )
       }
 

@@ -35,6 +35,6 @@ public class CharacterAppearsInImpl() : Fragment<CharacterAppearsIn> {
     name = "data",
     type = Character.type
   )
-  .selections(selections = characterAppearsInSelections.root)
+  .selections(selections = characterAppearsInSelections.__root)
   .build()
 }

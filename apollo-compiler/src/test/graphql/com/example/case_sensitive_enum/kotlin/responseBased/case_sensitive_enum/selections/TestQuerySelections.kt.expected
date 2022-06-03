@@ -11,7 +11,7 @@ import com.example.case_sensitive_enum.type.Enum
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  public val root: List<CompiledSelection> = listOf(
+  public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "enum",
           type = Enum.type

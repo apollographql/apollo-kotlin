@@ -129,7 +129,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            val pathLiteral = if(path.isNotEmpty()) {
+            val pathLiteral = if (path.isNotEmpty()) {
               __path
             } else {
               "null"

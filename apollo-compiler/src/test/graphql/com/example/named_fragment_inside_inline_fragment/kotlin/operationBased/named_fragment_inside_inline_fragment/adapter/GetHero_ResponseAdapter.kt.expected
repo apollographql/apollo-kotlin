@@ -23,17 +23,17 @@ public object GetHero_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         GetHero.Data {
-      var hero: GetHero.Data.Hero? = null
+      var _hero: GetHero.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return GetHero.Data(
-        hero = hero
+        hero = _hero
       )
     }
 
@@ -61,12 +61,12 @@ public object GetHero_ResponseAdapter {
         }
 
         reader.rewind()
-        val onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
+        val _onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
             customScalarAdapters)
 
         return GetHero.Data.Hero(
           __typename = __typename!!,
-          onCharacter = onCharacter
+          onCharacter = _onCharacter
         )
       }
 
@@ -97,17 +97,17 @@ public object GetHero_ResponseAdapter {
           }
 
           reader.rewind()
-          val characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
+          val _characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
               customScalarAdapters)
 
           reader.rewind()
-          val characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
+          val _characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
               customScalarAdapters)
 
           return GetHero.Data.Hero.OnCharacter(
             __typename = __typename!!,
-            characterName = characterName,
-            characterAppearsIn = characterAppearsIn
+            characterName = _characterName,
+            characterAppearsIn = _characterAppearsIn
           )
         }
 

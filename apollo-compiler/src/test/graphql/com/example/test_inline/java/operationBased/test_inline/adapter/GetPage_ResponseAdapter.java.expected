@@ -33,20 +33,20 @@ public class GetPage_ResponseAdapter {
     @Override
     public GetPage.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      GetPage.Collection collection = null;
+      GetPage.Collection _collection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: collection = new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
+          case 0: _collection = new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(collection, "collection");
+      Assertions.checkFieldNotMissing(_collection, "collection");
 
       return new GetPage.Data(
-        collection
+        _collection
       );
     }
 
@@ -67,30 +67,30 @@ public class GetPage_ResponseAdapter {
     public GetPage.Collection fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String __typename = null;
-      List<GetPage.Item> items = null;
+      List<GetPage.Item> _items = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 1: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      GetPage.OnParticularCollection onParticularCollection = null;
+      GetPage.OnParticularCollection _onParticularCollection = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      Assertions.checkFieldNotMissing(items, "items");
+      Assertions.checkFieldNotMissing(_items, "items");
 
       return new GetPage.Collection(
         __typename,
-        items,
-        onParticularCollection
+        _items,
+        _onParticularCollection
       );
     }
 
@@ -117,20 +117,20 @@ public class GetPage_ResponseAdapter {
     @Override
     public GetPage.Item fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      String title = null;
+      String _title = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(title, "title");
+      Assertions.checkFieldNotMissing(_title, "title");
 
       return new GetPage.Item(
-        title
+        _title
       );
     }
 
@@ -150,20 +150,20 @@ public class GetPage_ResponseAdapter {
     @Override
     public GetPage.OnParticularCollection fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      List<GetPage.Item1> items = null;
+      List<GetPage.Item1> _items = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(items, "items");
+      Assertions.checkFieldNotMissing(_items, "items");
 
       return new GetPage.OnParticularCollection(
-        items
+        _items
       );
     }
 
@@ -194,15 +194,15 @@ public class GetPage_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      GetPage.OnParticularItem onParticularItem = null;
+      GetPage.OnParticularItem _onParticularItem = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new GetPage.Item1(
         __typename,
-        onParticularItem
+        _onParticularItem
       );
     }
 
@@ -226,20 +226,20 @@ public class GetPage_ResponseAdapter {
     @Override
     public GetPage.OnParticularItem fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      String image = null;
+      String _image = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: image = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _image = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(image, "image");
+      Assertions.checkFieldNotMissing(_image, "image");
 
       return new GetPage.OnParticularItem(
-        image
+        _image
       );
     }
 

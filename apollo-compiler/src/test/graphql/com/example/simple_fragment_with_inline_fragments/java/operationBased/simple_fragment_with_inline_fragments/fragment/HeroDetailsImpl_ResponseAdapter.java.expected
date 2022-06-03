@@ -34,23 +34,23 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
-      List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> friends = null;
+      String _name = null;
+      List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails(
-        name,
-        friends
+        _name,
+        _friends
       );
     }
 
@@ -75,37 +75,37 @@ public class HeroDetailsImpl_ResponseAdapter {
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String __typename = null;
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman onHuman = null;
+      com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid onDroid = null;
+      com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid _onDroid = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend(
         __typename,
-        name,
-        onHuman,
-        onDroid
+        _name,
+        _onHuman,
+        _onDroid
       );
     }
 
@@ -137,18 +137,18 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      Double height = null;
+      Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman(
-        height
+        _height
       );
     }
 
@@ -169,18 +169,18 @@ public class HeroDetailsImpl_ResponseAdapter {
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String primaryFunction = null;
+      String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid(
-        primaryFunction
+        _primaryFunction
       );
     }
 

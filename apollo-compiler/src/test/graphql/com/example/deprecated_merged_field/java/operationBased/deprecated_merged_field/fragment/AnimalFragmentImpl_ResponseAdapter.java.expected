@@ -41,22 +41,22 @@ public class AnimalFragmentImpl_ResponseAdapter {
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
-      com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat onCat = null;
+      com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat _onCat = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
-      com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog onDog = null;
+      com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog _onDog = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnDog.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
       return new com.example.deprecated_merged_field.fragment.AnimalFragment(
         __typename,
-        onCat,
-        onDog
+        _onCat,
+        _onDog
       );
     }
 
@@ -84,20 +84,20 @@ public class AnimalFragmentImpl_ResponseAdapter {
     @Override
     public com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat(
-        name
+        _name
       );
     }
 
@@ -118,20 +118,20 @@ public class AnimalFragmentImpl_ResponseAdapter {
     @Override
     public com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog fromJson(
         JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
-      String name = null;
+      String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
-      Assertions.checkFieldNotMissing(name, "name");
+      Assertions.checkFieldNotMissing(_name, "name");
 
       return new com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog(
-        name
+        _name
       );
     }
 
