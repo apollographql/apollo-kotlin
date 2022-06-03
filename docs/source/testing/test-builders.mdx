@@ -31,6 +31,17 @@ query HeroForEpisode($ep: Episode!) {
     firstName
     lastName
     age
+    
+    ship {
+      model
+      speed
+    }
+
+    friends {
+      firstName
+      lastName
+    }
+
     ... on Droid {
       primaryFunction
     }
@@ -55,6 +66,17 @@ fun test() {
     hero = humanHero {
       firstName = "John"
       age = 42
+      friends = listOf(
+        humanFriend {
+          firstName = "Jane"
+        },
+        humanFriend {
+          lastName = "Doe"
+        }
+      )
+      ship = ship {
+        model = "X-Wing"
+      }
     }
   }
 
@@ -64,6 +86,7 @@ fun test() {
 ```
 
 In this example, the `hero` field is a `Human` object with specified values for `firstName` and `age`. The values for `lastName`and `height` are automatically populated with mock values.
+Similarly, values for the ship's speed, the 1st friend's last name and 2nd friend's first name are automatically populated.
 
 > You can replace `humanHero` above with `droidHero` to create a `Droid` object instead, or specify `otherHero` to create an object that is neither a `Human` nor a `Droid`.
 
