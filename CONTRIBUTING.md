@@ -194,8 +194,6 @@ following events:
     - All apiCheck
 - `tests-integration`
     - All integration tests (except Java 9+ ones)
-- `tests-java9`
-    - Java 9+ specific tests
 
 ### On pushes to `main` branch
 

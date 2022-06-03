@@ -22,8 +22,9 @@ application {
 
 afterEvaluate {
   java {
-    sourceCompatibility = JavaVersion.VERSION_1_9
-    targetCompatibility = JavaVersion.VERSION_1_9
+    // Override the default toolchain
+    @Suppress("UnstableApiUsage")
+    toolchain.languageVersion.set(JavaLanguageVersion.of(9))
   }
 }
 apollo {

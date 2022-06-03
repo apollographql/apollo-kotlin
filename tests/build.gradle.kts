@@ -66,30 +66,12 @@ rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJ
   rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
 }
 
-fun Project.requiresJava9() = name in listOf("jpms")
-
-tasks.register("ciBuildJava8") {
-  description = """Execute the 'build' task in Java8 subprojects and termination:run"""
+tasks.register("ciBuild") {
+  description = """Execute the 'build' task in subprojects and the `termination:run` task too"""
   subprojects {
-    if (!requiresJava9()) {
-      this@register.dependsOn(tasks.matching { it.name == "build" })
-    }
+    this@register.dependsOn(tasks.matching { it.name == "build" })
   }
   dependsOn(":termination:run")
-}
-
-tasks.register("ciBuildJava9") {
-  description = """Execute the 'build' task in Java9 subprojects"""
-  subprojects {
-    if (requiresJava9()) {
-      this@register.dependsOn(tasks.matching { it.name == "build" })
-    }
-  }
-}
-
-tasks.register("ciBuild") {
-  dependsOn("ciBuildJava8")
-  dependsOn("ciBuildJava9")
 }
 
 plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {

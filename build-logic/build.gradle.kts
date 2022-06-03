@@ -48,10 +48,8 @@ dependencies {
 
 // This shuts down a warning in Kotlin 1.5.30:
 // 'compileJava' task (current target is 11) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.
-// I'm not sure
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
+  toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {

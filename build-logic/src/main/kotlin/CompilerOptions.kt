@@ -44,9 +44,7 @@ fun Project.configureJavaAndKotlinCompilers() {
     @Suppress("UnstableApiUsage")
     project.extensions.getByType(JavaPluginExtension::class.java).apply {
       // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
-      toolchain {
-        it.languageVersion.set(JavaLanguageVersion.of(8))
-      }
+      toolchain.languageVersion.set(JavaLanguageVersion.of(8))
     }
     @Suppress("UnstableApiUsage")
     project.tasks.withType(Test::class.java).configureEach {
