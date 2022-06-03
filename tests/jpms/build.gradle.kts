@@ -24,7 +24,7 @@ afterEvaluate {
   java {
     // Override the default toolchain
     @Suppress("UnstableApiUsage")
-    toolchain.languageVersion.set(JavaLanguageVersion.of(9))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
   }
 }
 apollo {
