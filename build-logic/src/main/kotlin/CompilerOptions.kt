@@ -1,6 +1,9 @@
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.testing.Test
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -38,14 +41,20 @@ fun Project.configureJavaAndKotlinCompilers() {
       }
     }
 
-    // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
-    // (multiplatform modules don't set this)
+    @Suppress("UnstableApiUsage")
     project.extensions.getByType(JavaPluginExtension::class.java).apply {
-      sourceCompatibility = JavaVersion.VERSION_1_8
-      targetCompatibility = JavaVersion.VERSION_1_8
+      // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
+      toolchain {
+        it.languageVersion.set(JavaLanguageVersion.of(8))
+      }
     }
-
-    // Android projects target 1.8 starting with 4.2, no need to do anything
-    // https://developer.android.com/studio/releases/gradle-plugin#4-2-0
+    @Suppress("UnstableApiUsage")
+    project.tasks.withType(Test::class.java).configureEach {
+      // Run tests with 11 for Android
+      val javaToolchains = project.extensions.getByType(JavaToolchainService::class.java)
+      it.javaLauncher.set(javaToolchains.launcherFor {
+        it.languageVersion.set(JavaLanguageVersion.of(11))
+      })
+    }
   }
 }
