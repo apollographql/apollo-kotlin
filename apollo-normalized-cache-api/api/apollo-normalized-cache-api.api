@@ -163,11 +163,11 @@ public final class com/apollographql/apollo3/cache/normalized/api/Record : java/
 	public final fun fieldKeys ()Ljava/util/Set;
 	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public final fun getDate ()Ljava/util/Map;
 	public fun getEntries ()Ljava/util/Set;
 	public final fun getFields ()Ljava/util/Map;
 	public final fun getKey ()Ljava/lang/String;
 	public fun getKeys ()Ljava/util/Set;
-	public final fun getLastUpdated ()Ljava/util/Map;
 	public final fun getMutationId ()Ljava/util/UUID;
 	public fun getSize ()I
 	public final fun getSizeInBytes ()I

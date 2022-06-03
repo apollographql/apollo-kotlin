@@ -3,9 +3,7 @@ package com.apollographql.apollo3.cache.normalized.api
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.internal.RecordWeigher.calculateBytes
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.benasher44.uuid.Uuid
-import kotlin.jvm.JvmOverloads
 
 /**
  * A normalized entry that corresponds to a response object. Object fields are stored if they are a GraphQL Scalars. If
@@ -30,7 +28,7 @@ class Record(
 ) : Map<String, Any?> by fields {
 
   @ApolloExperimental
-  var lastUpdated: Map<String, Long?>? = null
+  var date: Map<String, Long?>? = null
     private set
 
   @ApolloInternal
@@ -38,14 +36,14 @@ class Record(
       key: String,
       fields: Map<String, Any?>,
       mutationId: Uuid?,
-      lastUpdated: Map<String, Long?>,
+      date: Map<String, Long?>,
   ) : this(key, fields, mutationId) {
-    this.lastUpdated = lastUpdated
+    this.date = date
   }
 
   val sizeInBytes: Int
     get() {
-      val datesSize = lastUpdated?.size?.times(8) ?: 0
+      val datesSize = date?.size?.times(8) ?: 0
       return calculateBytes(this) + datesSize
     }
 
@@ -54,10 +52,10 @@ class Record(
    * A field key incorporates any GraphQL arguments in addition to the field name.
    */
   @ApolloExperimental
-  fun mergeWith(newRecord: Record, date: Long?): Pair<Record, Set<String>> {
+  fun mergeWith(newRecord: Record, newDate: Long?): Pair<Record, Set<String>> {
     val changedKeys = mutableSetOf<String>()
     val mergedFields = fields.toMutableMap()
-    val lastUpdated = lastUpdated?.toMutableMap() ?: mutableMapOf()
+    val date = this.date?.toMutableMap() ?: mutableMapOf()
 
     for ((fieldKey, newFieldValue) in newRecord.fields) {
       val hasOldFieldValue = fields.containsKey(fieldKey)
@@ -67,8 +65,8 @@ class Record(
         changedKeys.add("$key.$fieldKey")
       }
       // Even if the value did not change update date
-      if (date != null) {
-        lastUpdated[fieldKey] = date
+      if (newDate != null) {
+        date[fieldKey] = newDate
       }
     }
 
@@ -76,7 +74,7 @@ class Record(
         key = key,
         fields = mergedFields,
         mutationId = newRecord.mutationId,
-        lastUpdated = lastUpdated
+        date = date
     ) to changedKeys
   }
 

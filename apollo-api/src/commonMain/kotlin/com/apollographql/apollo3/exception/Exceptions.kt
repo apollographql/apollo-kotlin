@@ -103,21 +103,21 @@ class ApolloParseException(message: String? = null, cause: Throwable? = null) : 
 class CacheMissException @ApolloInternal constructor(
     val key: String,
     val fieldName: String? = null,
-    age: Long? = null,
-) : ApolloException(message = message(key, fieldName, age)) {
+    stale: Boolean = false,
+) : ApolloException(message = message(key, fieldName, stale)) {
 
   @ApolloExperimental
-  val age: Long? = age
+  val stale: Boolean = stale
 
-  constructor(key: String, fieldName: String?): this(key, fieldName, null)
+  constructor(key: String, fieldName: String?): this(key, fieldName, false)
 
   companion object {
-    internal fun message(key: String?, fieldName: String?, age: Long? = null): String {
+    internal fun message(key: String?, fieldName: String?, stale: Boolean): String {
       return if (fieldName == null) {
         "Object '$key' not found"
       } else {
-        if (age != null) {
-          "Field '$fieldName' on object '$key' has expired (age=$age)"
+        if (stale) {
+          "Field '$fieldName' on object '$key' is stale"
         } else {
           "Object '$key' has no field named '$fieldName'"
         }
@@ -127,7 +127,7 @@ class CacheMissException @ApolloInternal constructor(
     @ApolloDeprecatedSince(v3_3_1)
     @Deprecated("Use CacheMissException.message instead")
     fun message(key: String?, fieldName: String?): String {
-      return message(key, fieldName, null)
+      return message(key, fieldName, false)
     }
   }
 }
