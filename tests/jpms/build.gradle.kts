@@ -21,10 +21,9 @@ application {
 }
 
 afterEvaluate {
-  java {
-    // Override the default toolchain
-    @Suppress("UnstableApiUsage")
-    toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+  project.tasks.withType(JavaCompile::class.java).configureEach {
+    // Override the default. JPMS is only available with Java9+
+    options.release.set(9)
   }
 }
 apollo {

@@ -1,6 +1,7 @@
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.jvm.toolchain.JavaToolchainService
@@ -43,16 +44,13 @@ fun Project.configureJavaAndKotlinCompilers() {
 
     @Suppress("UnstableApiUsage")
     project.extensions.getByType(JavaPluginExtension::class.java).apply {
-      // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
-      toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+      // Compile and run tests with Java11
+      toolchain.languageVersion.set(JavaLanguageVersion.of(11))
     }
     @Suppress("UnstableApiUsage")
-    project.tasks.withType(Test::class.java).configureEach {
-      // Run tests with 11 for Android
-      val javaToolchains = project.extensions.getByType(JavaToolchainService::class.java)
-      it.javaLauncher.set(javaToolchains.launcherFor {
-        it.languageVersion.set(JavaLanguageVersion.of(11))
-      })
+    project.tasks.withType(JavaCompile::class.java).configureEach {
+      // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
+      it.options.release.set(8)
     }
   }
 }
