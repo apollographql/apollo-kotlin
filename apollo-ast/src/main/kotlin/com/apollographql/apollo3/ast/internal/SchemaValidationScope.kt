@@ -171,7 +171,9 @@ private fun SchemaValidationScope.validateObjects() {
     }
 
     o.directives.forEach { directive ->
-      validateDirective(directive, o)
+      validateDirective(directive, o) {
+        issues.add(it.constContextError())
+      }
     }
   }
 }

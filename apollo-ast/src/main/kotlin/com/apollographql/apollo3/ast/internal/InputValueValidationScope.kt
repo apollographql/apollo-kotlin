@@ -25,22 +25,36 @@ import com.apollographql.apollo3.ast.isDeprecated
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.toUtf8
 
-internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedType: GQLType, hasLocationDefaultValue: Boolean): GQLValue {
+internal fun ValidationScope.validateAndCoerceValueInConstContext(
+    value: GQLValue,
+    expectedType: GQLType,
+    hasLocationDefaultValue: Boolean,
+): GQLValue {
+  return validateAndCoerceValue(value, expectedType, hasLocationDefaultValue) {
+    issues.add(it.constContextError())
+  }
+}
+
+internal fun VariableUsage.constContextError(): Issue = Issue.ValidationError(
+    message = "Variable '${variable.name}' used in non-variable context",
+    sourceLocation = variable.sourceLocation
+)
+
+internal fun ValidationScope.validateAndCoerceValue(
+    value: GQLValue,
+    expectedType: GQLType,
+    hasLocationDefaultValue: Boolean,
+    registerVariableUsage: (VariableUsage) -> Unit,
+): GQLValue {
   if (value is GQLVariableValue) {
-    if (this !is VariableReferencesScope) {
-      registerIssue(
-          "Variable '${value.name}' used in non-variable context",
-          value.sourceLocation,
-      )
-    } else {
-      variableUsages.add(
-          VariableUsage(
-              value,
-              expectedType,
-              hasLocationDefaultValue
-          )
-      )
-    }
+    registerVariableUsage(
+        VariableUsage(
+            value,
+            expectedType,
+            hasLocationDefaultValue
+        )
+    )
+
     return value
   } else if (value is GQLNullValue) {
     if (expectedType is GQLNonNullType) {
@@ -54,7 +68,7 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
 
   when (expectedType) {
     is GQLNonNullType -> {
-      return validateAndCoerceValue(value, expectedType.type, hasLocationDefaultValue)
+      return validateAndCoerceValue(value, expectedType.type, hasLocationDefaultValue, registerVariableUsage)
     }
     is GQLListType -> {
       val coercedValue = if (value !is GQLListValue) {
@@ -72,14 +86,14 @@ internal fun ValidationScope.validateAndCoerceValue(value: GQLValue, expectedTyp
             /**
              * When using a GQLListValue like `[$variable, 1, 3]`, it's not possible to have a default location value
              */
-            validateAndCoerceValue(it, expectedType.type, false)
+            validateAndCoerceValue(it, expectedType.type, false, registerVariableUsage)
           }
       )
     }
     is GQLNamedType -> {
       when (val expectedTypeDefinition = typeDefinitions[expectedType.name]) {
         is GQLInputObjectTypeDefinition -> {
-          return validateAndCoerceInputObject(value, expectedTypeDefinition)
+          return validateAndCoerceInputObject(value, expectedTypeDefinition, registerVariableUsage)
         }
         is GQLScalarTypeDefinition -> {
           if (!expectedTypeDefinition.isBuiltIn()) {
@@ -104,7 +118,11 @@ private fun ValidationScope.registerIssue(value: GQLValue, expectedType: GQLType
   registerIssue(message = "Value `${value.toUtf8()}` cannot be used in position expecting `${expectedType.pretty()}`", sourceLocation = value.sourceLocation)
 }
 
-private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expectedTypeDefinition: GQLInputObjectTypeDefinition): GQLValue {
+private fun ValidationScope.validateAndCoerceInputObject(
+    value: GQLValue,
+    expectedTypeDefinition: GQLInputObjectTypeDefinition,
+    registerVariableUsage: (VariableUsage) -> Unit,
+): GQLValue {
   val expectedType = GQLNamedType(name = expectedTypeDefinition.name)
   if (value !is GQLObjectValue) {
     registerIssue(value, expectedType)
@@ -139,7 +157,7 @@ private fun ValidationScope.validateAndCoerceInputObject(value: GQLValue, expect
     }
     GQLObjectField(
         name = field.name,
-        value = validateAndCoerceValue(field.value, inputField.type, inputField.defaultValue != null)
+        value = validateAndCoerceValue(field.value, inputField.type, inputField.defaultValue != null, registerVariableUsage)
     )
   })
 }

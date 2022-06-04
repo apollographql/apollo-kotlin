@@ -38,10 +38,6 @@ import com.apollographql.apollo3.ast.parseAsGQLSelections
 import com.apollographql.apollo3.ast.pretty
 import okio.Buffer
 
-internal interface VariableReferencesScope {
-  val variableUsages: MutableList<VariableUsage>
-}
-
 interface IssuesScope {
   val issues: MutableList<Issue>
 }
@@ -84,28 +80,10 @@ internal class DefaultValidationScope(
   override val issues = mutableListOf<Issue>()
 }
 
-internal class ExecutableValidationScope2(
-    override val typeDefinitions: Map<String, GQLTypeDefinition>,
-    override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
-    override val issues: MutableList<Issue> = mutableListOf(),
-    override val variableUsages: MutableList<VariableUsage> = mutableListOf(),
-) : ValidationScope, VariableReferencesScope {
-  constructor(validationScope: ValidationScope) : this(
-      validationScope.typeDefinitions,
-      validationScope.directiveDefinitions,
-      validationScope.issues
-  )
-
-  constructor(schema: Schema) : this(
-      schema.typeDefinitions,
-      schema.directiveDefinitions,
-  )
-}
-
-
 internal fun ValidationScope.validateDirective(
     directive: GQLDirective,
     directiveContext: GQLNode,
+    registerVariableUsage: (VariableUsage) -> Unit
 ) {
   val directiveLocation = when (directiveContext) {
     is GQLField -> GQLDirectiveLocation.FIELD
@@ -160,7 +138,8 @@ internal fun ValidationScope.validateDirective(
       directive.arguments?.arguments ?: emptyList(),
       directive.sourceLocation,
       directiveDefinition.arguments,
-      "directive '${directiveDefinition.name}'"
+      "directive '${directiveDefinition.name}'",
+      registerVariableUsage
   )
 
   /**
@@ -227,6 +206,7 @@ private fun ValidationScope.validateArgument(
     argument: GQLArgument,
     inputValueDefinitions: List<GQLInputValueDefinition>,
     debug: String,
+    registerVariableUsage: (VariableUsage) -> Unit,
 ) = with(argument) {
   val schemaArgument = inputValueDefinitions.firstOrNull { it.name == name }
   if (schemaArgument == null) {
@@ -240,10 +220,14 @@ private fun ValidationScope.validateArgument(
   // 5.6.2 Input Object Field Names
   // Note that this does not modify the document, it calls coerce because it's easier
   // to validate at the same time but the coerced result is not used here
-  validateAndCoerceValue(argument.value, schemaArgument.type, schemaArgument.defaultValue != null)
+  validateAndCoerceValue(argument.value, schemaArgument.type, schemaArgument.defaultValue != null, registerVariableUsage)
 }
 
 /**
+ * validates fields or directive arguments
+ *
+ * See https://spec.graphql.org/draft/#sec-Validation.Arguments
+ *
  * @param sourceLocation: the location of the field or directive for error reporting
  */
 internal fun ValidationScope.validateArguments(
@@ -251,6 +235,7 @@ internal fun ValidationScope.validateArguments(
     sourceLocation: SourceLocation,
     inputValueDefinitions: List<GQLInputValueDefinition>,
     debug: String,
+    registerVariableUsage: (VariableUsage) -> Unit
 ) {
   // 5.4.2 Argument Uniqueness
   arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {
@@ -272,7 +257,7 @@ internal fun ValidationScope.validateArguments(
   }
 
   arguments.forEach {
-    validateArgument(it, inputValueDefinitions, debug)
+    validateArgument(it, inputValueDefinitions, debug, registerVariableUsage)
   }
 }
 
