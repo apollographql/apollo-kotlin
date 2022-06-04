@@ -11,7 +11,7 @@ internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
 
   /**
    * The builtin definitions are required to validate directives amongst other
-   * things so add them early in the validation proccess.
+   * things so add them early in the validation process.
    */
   val allDefinitions = document.withBuiltinDefinitions().definitions
   override val typeDefinitions = getTypeDefinitions(allDefinitions)

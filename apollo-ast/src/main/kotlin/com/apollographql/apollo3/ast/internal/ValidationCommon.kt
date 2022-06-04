@@ -46,8 +46,15 @@ interface IssuesScope {
   val issues: MutableList<Issue>
 }
 
+/**
+ * The base interface for different validation scopes
+ * A validation scope is a mutable class that keeps track of issues.
+ * It also has typeDefinitions and directiveDefinitions from the schema. Some methods are shared between schema and executable validation.
+ *
+ */
 internal interface ValidationScope : IssuesScope {
   override val issues: MutableList<Issue>
+
   val typeDefinitions: Map<String, GQLTypeDefinition>
   val directiveDefinitions: Map<String, GQLDirectiveDefinition>
 
