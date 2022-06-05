@@ -22,6 +22,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLSchemaExtension
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
@@ -74,16 +75,20 @@ internal interface ValidationScope : IssuesScope {
 internal class DefaultValidationScope(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
+    issues: MutableList<Issue>? = null,
 ) : ValidationScope {
   constructor(schema: Schema) : this(schema.typeDefinitions, schema.directiveDefinitions)
 
-  override val issues = mutableListOf<Issue>()
+  override val issues = issues ?: mutableListOf()
 }
 
+/**
+ * @param directiveContext the node representing the location where this directive is applied
+ */
 internal fun ValidationScope.validateDirective(
     directive: GQLDirective,
     directiveContext: GQLNode,
-    registerVariableUsage: (VariableUsage) -> Unit
+    registerVariableUsage: (VariableUsage) -> Unit,
 ) {
   val directiveLocation = when (directiveContext) {
     is GQLField -> GQLDirectiveLocation.FIELD
@@ -100,10 +105,10 @@ internal fun ValidationScope.validateDirective(
     }
     is GQLFragmentDefinition -> GQLDirectiveLocation.FRAGMENT_DEFINITION
     is GQLVariableDefinition -> GQLDirectiveLocation.VARIABLE_DEFINITION
-    is GQLSchemaDefinition -> GQLDirectiveLocation.SCHEMA
+    is GQLSchemaDefinition, is GQLSchemaExtension -> GQLDirectiveLocation.SCHEMA
     is GQLScalarTypeDefinition -> GQLDirectiveLocation.SCALAR
     is GQLFieldDefinition -> GQLDirectiveLocation.FIELD_DEFINITION
-    is GQLInputValueDefinition -> error("validating directices on input values is not supported yet as we need to distinguish between arguments and inputfields")
+    is GQLInputValueDefinition -> error("validating directives on input values is not supported yet as we need to distinguish between arguments and inputfields")
     is GQLInterfaceTypeDefinition -> GQLDirectiveLocation.INTERFACE
     is GQLUnionTypeDefinition -> GQLDirectiveLocation.UNION
     is GQLEnumTypeDefinition -> GQLDirectiveLocation.ENUM
@@ -235,7 +240,7 @@ internal fun ValidationScope.validateArguments(
     sourceLocation: SourceLocation,
     inputValueDefinitions: List<GQLInputValueDefinition>,
     debug: String,
-    registerVariableUsage: (VariableUsage) -> Unit
+    registerVariableUsage: (VariableUsage) -> Unit,
 ) {
   // 5.4.2 Argument Uniqueness
   arguments.groupBy { it.name }.filter { it.value.size > 1 }.toList().firstOrNull()?.let {

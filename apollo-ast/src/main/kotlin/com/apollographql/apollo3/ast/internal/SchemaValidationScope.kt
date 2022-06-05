@@ -1,115 +1,106 @@
 package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 
-/**
- */
-internal class SchemaValidationScope(document: GQLDocument) : ValidationScope {
-  override val issues = mutableListOf<Issue>()
+@Suppress("UNCHECKED_CAST")
+internal fun validateSchema(definitions: List<GQLDefinition>): GQLResult<Schema> {
+  val issues = mutableListOf<Issue>()
+  val builtinDefinitions = builtinDefinitions()
+  var allDefinitions = mergeDefinitions(definitions, builtinDefinitions, ConflictResolution.TakeLeft)
 
-  val documentDefinitions = document.definitions
+  val foreignDefinitions = allDefinitions.filterIsInstance<GQLSchemaExtension>()
+      .getForeignDefinitions(issues, builtinDefinitions)
+
+  allDefinitions = allDefinitions + foreignDefinitions.values.flatten()
+
+  val directiveDefinitions = mutableMapOf<String, GQLDirectiveDefinition>()
+  val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
+  val typeSystemExtensions = mutableListOf<GQLTypeSystemExtension>()
+  var schemaDefinition: GQLSchemaDefinition? = null
+
+  allDefinitions.forEach { gqlDefinition ->
+    when (gqlDefinition) {
+      is GQLSchemaDefinition -> {
+        if (schemaDefinition != null) {
+          issues.add(Issue.ValidationError("schema is already defined. First definition was ${schemaDefinition!!.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+        } else {
+          schemaDefinition = gqlDefinition
+        }
+      }
+      is GQLDirectiveDefinition -> {
+        val existing = typeDefinitions[gqlDefinition.name]
+        if (existing != null) {
+          issues.add(Issue.ValidationError("Directive '${gqlDefinition.name} is defined multiple times. First definition was ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+        } else {
+          directiveDefinitions[gqlDefinition.name] = gqlDefinition
+        }
+      }
+      is GQLTypeDefinition -> {
+        val existing = typeDefinitions[gqlDefinition.name]
+        if (existing != null) {
+          issues.add(Issue.ValidationError("Type '${gqlDefinition.name} is defined multiple times. First definition was ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+        } else {
+          typeDefinitions[gqlDefinition.name] = gqlDefinition
+        }
+      }
+      is GQLTypeSystemExtension -> {
+        typeSystemExtensions.add(gqlDefinition)
+      }
+      else -> {
+        /**
+         * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
+         * graphql operations for schemas
+         */
+        issues.add(Issue.ValidationError("Found an executable definition. Schemas should only contain.", gqlDefinition.sourceLocation))
+      }
+    }
+  }
+
+  if (schemaDefinition == null) {
+    /**
+     * This is not in the specification per-se but is required for `extend schema @link` usages that are not 100% spec compliant
+     */
+    schemaDefinition = DefaultValidationScope(typeDefinitions, directiveDefinitions, issues).syntheticSchemaDefinition()
+  }
 
   /**
-   * The builtin definitions are required to validate directives amongst other
-   * things so add them early in the validation process.
+   * I'm not 100% clear on the order of validations, here I'm merging the extensions first thing
    */
-  val allDefinitions = document.withBuiltinDefinitions().definitions
-  override val typeDefinitions = getTypeDefinitions(allDefinitions)
-  override val directiveDefinitions = getDirectives(allDefinitions)
+  val dedupedDefinitions = listOfNotNull(schemaDefinition) + directiveDefinitions.values + typeDefinitions.values
+  val dedupedScope = DefaultValidationScope(typeDefinitions, directiveDefinitions, issues)
+  val mergedDefinitions = dedupedScope.mergeExtensions(dedupedDefinitions, typeSystemExtensions)
 
-  val schemaDefinition = getSchema(allDefinitions)
+  val mergedScope = DefaultValidationScope(
+      typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
+      directiveDefinitions = mergedDefinitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
+      issues = issues
+  )
+  mergedScope.validateNoIntrospectionNames()
 
-  init {
+  val mergedSchemaDefinition = mergedDefinitions.singleOrNull { it is GQLSchemaDefinition } as GQLSchemaDefinition?
+  if (mergedSchemaDefinition != null) {
+    mergedScope.validateRootOperationTypes(mergedSchemaDefinition)
+  }
+
+  mergedScope.validateInterfaces()
+  mergedScope.validateObjects()
+
+  val keyFields = mergedScope.validateAndComputeKeyFields()
+
+  return if (issues.containsError()) {
     /**
-     * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
-     * graphql operations for schemas
+     * Schema requires a valid [Query] root type which might not be always the case if there are error
      */
-    document.definitions.firstOrNull { it is GQLOperationDefinition || it is GQLFragmentDefinition }
-        ?.let {
-          registerIssue("Found an executable definition. Schemas should not contain operations or fragments.", it.sourceLocation)
-        }
-  }
-
-  companion object {
-    private fun ValidationScope.getTypeDefinitions(definitions: List<GQLDefinition>): Map<String, GQLTypeDefinition> {
-      val grouped = definitions.filterIsInstance<GQLTypeDefinition>()
-          .groupBy { it.name }
-
-      grouped.values.forEach {
-        val first = it.first()
-        val occurences = it.map { it.sourceLocation.pretty() }.joinToString("\n")
-        if (it.size > 1) {
-          issues.add(
-              Issue.ValidationError(
-                  "type '${first.name}' is defined multiple times:\n$occurences",
-                  first.sourceLocation,
-                  Issue.Severity.ERROR,
-                  ValidationDetails.DuplicateTypeName
-              )
-          )
-        }
-      }
-
-      return grouped.mapValues {
-        it.value.first()
-      }
-    }
-
-    private fun ValidationScope.getDirectives(definitions: List<GQLDefinition>): Map<String, GQLDirectiveDefinition> {
-      val grouped = definitions.filterIsInstance<GQLDirectiveDefinition>()
-          .groupBy { it.name }
-
-      grouped.values.forEach {
-        val first = it.first()
-        val occurences = it.map { it.sourceLocation.pretty() }.joinToString("\n")
-        if (it.size > 1) {
-          registerIssue(
-              message = "directive '${first.name}' is defined multiple times:\n$occurences",
-              sourceLocation = first.sourceLocation,
-          )
-        }
-      }
-
-      return grouped.mapValues {
-        it.value.first()
-      }
-    }
-
-
-    private fun ValidationScope.getSchema(definitions: List<GQLDefinition>): GQLSchemaDefinition? {
-      val schemaDefinitions = definitions.filterIsInstance<GQLSchemaDefinition>()
-      if (schemaDefinitions.count() > 1) {
-        registerIssue(
-            message = "multiple schema definitions found",
-            schemaDefinitions.last().sourceLocation,
-        )
-      }
-      return schemaDefinitions.singleOrNull()
-    }
-  }
-}
-
-internal fun SchemaValidationScope.validateDocumentAndMergeExtensions(): List<GQLDefinition> {
-  validateNoIntrospectionNames()
-  validateRootOperationTypes()
-
-  validateInterfaces()
-  validateObjects()
-
-  val schemaDefinition = schemaDefinition ?: syntheticSchemaDefinition()
-
-  return mergeExtensions(listOf(schemaDefinition) + allDefinitions.filter { it !is GQLSchemaDefinition })
-}
-
-internal fun SchemaValidationScope.validateRootOperationTypes() {
-  schemaDefinition?.rootOperationTypeDefinitions?.forEach {
-    val typeDefinition = typeDefinitions[it.namedType]
-    if (typeDefinition == null) {
-      registerIssue(
-          "Schema defines `${it.namedType}` as root for `${it.namedType}` but `${it.namedType}` is not defined",
-          sourceLocation = it.sourceLocation
-      )
-    }
+    GQLResult(null, issues)
+  } else {
+    GQLResult(
+        Schema(
+            mergedDefinitions,
+            keyFields,
+        ),
+        issues
+    )
   }
 }
 
@@ -119,8 +110,6 @@ internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
     // If there is no schema definition, look for an object type named after the operationType
     // i.e. Query, Mutation, ...
 
-    // We're capitalizing manually instead of calling capitalize in case we have weird localization issues
-    // For 3 string, that's ok
     val typeName = when (it) {
       "query" -> "Query"
       "mutation" -> "Mutation"
@@ -149,6 +138,139 @@ internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
   )
 }
 
+/**
+ * Parses the schema extensions
+ *
+ * extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "labs", import: ["targetName"])
+ */
+private fun List<GQLSchemaExtension>.getForeignDefinitions(
+    issues: MutableList<Issue>,
+    builtinDefinitions: List<GQLDefinition>,
+): Map<String, List<GQLDefinition>> {
+  val schemaExtensions = this
+
+  val ret = mutableMapOf<String, List<GQLDefinition>>()
+  schemaExtensions.forEach { schemaExtension ->
+    schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
+      if (gqlDirective.name == "link") {
+        val minimalSchema = builtinDefinitions + linkDefinitions()
+        val scope = DefaultValidationScope(
+            minimalSchema.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
+            minimalSchema.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
+        )
+        scope.validateDirective(gqlDirective, schemaExtension) {
+          issues.add(it.constContextError())
+        }
+        if (scope.issues.isNotEmpty()) {
+          issues.addAll(scope.issues)
+          return@eachDirective
+        }
+
+        val arguments = gqlDirective.arguments!!.arguments
+        val url = (arguments.first { it.name == "url" }.value as GQLStringValue).value
+        var `as` = (arguments.firstOrNull { it.name == "as" }?.value as GQLStringValue?)?.value
+        val import = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
+
+        var components = url.split("/")
+        if (components.last().isBlank()) {
+          // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0
+          components = components.dropLast(1)
+        } else if (components.last().startsWith("?")) {
+          // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/?key=val&k2=v2#frag
+          components = components.dropLast(1)
+        }
+
+        if (components.size < 2) {
+          issues.add(Issue.ValidationError("Invalid @link url: 'url'", gqlDirective.sourceLocation))
+          return@eachDirective
+        }
+
+        val foreignName = components[components.size - 2]
+
+        if (`as` == null) {
+          `as` = foreignName
+        }
+
+        val mappings = import.orEmpty().mapNotNull {
+          when (it) {
+            is GQLStringValue -> it.value to it.value
+            is GQLObjectValue -> {
+              if (it.fields.size != 2) {
+                issues.add(Issue.ValidationError("Too many fields in 'import' argument", it.sourceLocation))
+                return@mapNotNull null
+              }
+
+              val name = (it.fields.firstOrNull { it.name == "name" }?.value as? GQLStringValue)?.value
+              if (name == null) {
+                issues.add(Issue.ValidationError("import 'name' argument is either missing or not a string", it.sourceLocation))
+              }
+              val as2 = (it.fields.firstOrNull { it.name == "as" }?.value as? GQLStringValue)?.value
+              if (as2 == null) {
+                issues.add(Issue.ValidationError("import 'as' argument is either missing or not a string", it.sourceLocation))
+              }
+              if (name == null || as2 == null) {
+                return@mapNotNull null
+              }
+              name to as2
+            }
+            else -> {
+              issues.add(Issue.ValidationError("Bad 'import' argument", it.sourceLocation))
+              null
+            }
+          }
+        }.toMap()
+
+
+        if (foreignName == "kotlin_labs") {
+          ret[foreignName] = labsDefinitions().rename(mappings, `as`)
+        }
+      }
+    }
+  }
+
+  return ret
+}
+
+private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: String): List<GQLDefinition> {
+  fun GQLNamed.newName() = mappings.getOrDefault(name, "${prefix}__${name}")
+
+  return this.map { gqlDefinition ->
+    gqlDefinition.transform2 { gqlNode ->
+      when (gqlNode) {
+        is GQLTypeDefinition -> {
+          when (gqlNode) {
+            is GQLScalarTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
+            is GQLObjectTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
+            is GQLEnumTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
+            is GQLInterfaceTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
+            is GQLUnionTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
+            is GQLInputObjectTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
+          }
+        }
+        is GQLDirectiveDefinition -> {
+          // Special case, directives use a leading '@'
+          val newName = mappings["@${gqlNode.name}"]?.substring(1) ?: "${prefix}__${gqlNode.name}"
+          gqlNode.copy(name = newName)
+        }
+        is GQLNamedType -> gqlNode.copy(name = gqlNode.newName())
+        else -> gqlNode
+      }
+    } as GQLDefinition
+  }
+}
+
+internal fun ValidationScope.validateRootOperationTypes(schemaDefinition: GQLSchemaDefinition) {
+  schemaDefinition.rootOperationTypeDefinitions.forEach {
+    val typeDefinition = typeDefinitions[it.namedType]
+    if (typeDefinition == null) {
+      registerIssue(
+          "Schema defines `${it.namedType}` as root for `${it.namedType}` but `${it.namedType}` is not defined",
+          sourceLocation = it.sourceLocation
+      )
+    }
+  }
+}
+
 private fun ValidationScope.validateInterfaces() {
   typeDefinitions.values.filterIsInstance<GQLInterfaceTypeDefinition>().forEach {
     if (it.fields.isEmpty()) {
@@ -157,7 +279,7 @@ private fun ValidationScope.validateInterfaces() {
   }
 }
 
-private fun SchemaValidationScope.validateObjects() {
+private fun ValidationScope.validateObjects() {
   typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>().forEach { o ->
     if (o.fields.isEmpty()) {
       registerIssue("Object must specify one or more fields", o.sourceLocation)
@@ -178,17 +300,16 @@ private fun SchemaValidationScope.validateObjects() {
   }
 }
 
-private fun SchemaValidationScope.validateNoIntrospectionNames() {
+private fun ValidationScope.validateNoIntrospectionNames() {
   // 3.3 All types and directives defined within a schema must not have a name which begins with "__"
-  documentDefinitions.filterIsInstance<GQLNamed>().forEach { definition ->
-    definition as GQLDefinition
-    if (definition.name.startsWith("__")) {
+  (typeDefinitions.values + directiveDefinitions.values).forEach { definition ->
+    if (!builtInTypes.contains(definition.name) && definition.name.startsWith("__")) {
       registerIssue("names starting with '__' are reserved for introspection", definition.sourceLocation)
     }
   }
 }
 
-private fun SchemaValidationScope.keyFields(
+private fun ValidationScope.keyFields(
     typeDefinition: GQLTypeDefinition,
     allTypeDefinition: Map<String, GQLTypeDefinition>,
     keyFieldsCache: MutableMap<String, Set<String>>,
@@ -254,15 +375,12 @@ private fun List<GQLDirective>.toKeyFields(): Set<String>? {
 }
 
 /**
- * To prevent surprising behaviour, objects that declare key fields that also implement interfaces that declare key fields are an error
- *
- * @see <a href="https://github.com/apollographql/apollo-kotlin/issues/3356#issuecomment-1134381986">Discussion</a>
+ * validate and compute the keyfield cache
  */
-internal fun SchemaValidationScope.validateKeyFields(mergedDefinitions: List<GQLDefinition>): Map<String, Set<String>> {
+internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<String>> {
   val keyFieldsCache = mutableMapOf<String, Set<String>>()
-  val typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().filter { it.canHaveKeyFields() }
-  typeDefinitions.forEach {
-    keyFields(it, typeDefinitions.associateBy { it.name }, keyFieldsCache)
+  typeDefinitions.values.filter { it.canHaveKeyFields() }.forEach {
+    keyFields(it, typeDefinitions, keyFieldsCache)
   }
   return keyFieldsCache
 }

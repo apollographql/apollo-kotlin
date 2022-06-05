@@ -15,7 +15,7 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
  */
 class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
-    private val keyFields: Map<String, Set<String>>
+    private val keyFields: Map<String, Set<String>>,
 ) {
   @Deprecated("Use toSchema() to get a Schema")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)

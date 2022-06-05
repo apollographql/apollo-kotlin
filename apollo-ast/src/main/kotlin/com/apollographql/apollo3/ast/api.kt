@@ -2,15 +2,14 @@
 
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
-import com.apollographql.apollo3.ast.internal.SchemaValidationScope
 import com.apollographql.apollo3.ast.internal.antlrParse
 import com.apollographql.apollo3.ast.internal.toGQLDocument
 import com.apollographql.apollo3.ast.internal.toGQLSelection
 import com.apollographql.apollo3.ast.internal.toGQLValue
-import com.apollographql.apollo3.ast.internal.validateDocumentAndMergeExtensions
-import com.apollographql.apollo3.ast.internal.validateKeyFields
+import com.apollographql.apollo3.ast.internal.validateSchema
 import okio.BufferedSource
 
 /**
@@ -62,9 +61,13 @@ fun BufferedSource.parseAsGQLSelections(filePath: String? = null): GQLResult<Lis
 }
 
 /**
- * - Validate the given document as a schema.
- * - Add a schema definition if there is none
+ * Validate the given document as a schema:
+ * - Add the builtin definitions if they are not present already
+ * - Process any `@link` directive and imports definition if any
+ * - ensure uniqueness of schema/types/directives definitions
  * - Merge type extensions
+ *
+ * Although some validation is performed, this function does not pretend to implement the full GraphQL validation rules.
  *
  * @receiver the input document to validate and merge. It should not contain any builtin types
  * The current validation is very simple and will only catch simple errors
@@ -73,22 +76,13 @@ fun BufferedSource.parseAsGQLSelections(filePath: String? = null): GQLResult<Lis
  */
 @ApolloExperimental
 fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
-  val scope = SchemaValidationScope(this)
-  val mergedDefinitions = scope.validateDocumentAndMergeExtensions()
+  return validateSchema(definitions)
+}
 
-  /**
-   * If there is an error, do not try to instantiate a `Schema` as it will fail
-   *
-   * It might be that there are warnings though. For an example unknown directives
-   * In that case, it is safe
-   */
-  val schema = if (scope.issues.containsError()) {
-    null
-  } else {
-    val keyFields = scope.validateKeyFields(mergedDefinitions)
-    Schema(mergedDefinitions, keyFields)
-  }
-  return GQLResult(schema, scope.issues)
+@Deprecated("This method always adds the apollo directives which may clash with existing directives. Use `extend schema @link(...)` instead")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
+  return validateSchema(definitions + apolloDefinitions())
 }
 
 /**

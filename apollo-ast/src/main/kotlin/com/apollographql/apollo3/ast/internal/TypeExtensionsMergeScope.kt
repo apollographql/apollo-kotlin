@@ -17,6 +17,7 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeExtension
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
+import com.apollographql.apollo3.ast.GQLTypeExtension
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLUnionTypeExtension
@@ -25,10 +26,8 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.UnrecognizedAntlrRule
 
 
-internal fun ValidationScope.mergeExtensions(definitions: List<GQLDefinition>): List<GQLDefinition> {
-  val (extensions, otherDefinitions) = definitions.partition { it is GQLTypeSystemExtension }
-
-  return extensions.fold(otherDefinitions) { acc, extension ->
+internal fun ValidationScope.mergeExtensions(definitions: List<GQLDefinition>, extensions: List<GQLTypeSystemExtension>): List<GQLDefinition> {
+  return extensions.fold(definitions) { acc, extension ->
     when (extension) {
       is GQLSchemaExtension -> mergeSchemaExtension(acc, schemaExtension = extension)
       is GQLScalarTypeExtension -> merge<GQLScalarTypeDefinition, GQLScalarTypeExtension>(acc, extension, "scalar") { merge(it, extension) }

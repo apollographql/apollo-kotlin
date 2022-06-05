@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloInternal
+
 /**
  * The GraphQL AST definition
  *
@@ -48,6 +50,10 @@ interface GQLNode {
 sealed interface TransformResult {
   object Delete : TransformResult
   object Continue : TransformResult
+
+  /**
+   *
+   */
   class Replace(val newNode: GQLNode) : TransformResult
 }
 
@@ -68,6 +74,28 @@ fun GQLNode.transform(transformer: NodeTransformer): GQLNode? {
     }
   }
 }
+
+internal fun interface NodeTransformer2 {
+  fun transform(node: GQLNode): GQLNode?
+}
+
+/**
+ * [transform] above has a lot of limitations. Most importantly, replacing a node we not visit all
+ * its children.
+ * This version allows this.
+ * TODO: revisit this API so that it does not make a new copy of every node
+ */
+internal fun GQLNode.transform2(transformer: NodeTransformer2): GQLNode? {
+  val newChildren = children.mapNotNull { it.transform2(transformer) }
+  val nodeContainer = NodeContainer(newChildren)
+
+  return transformer.transform(
+      copyWithNewChildrenInternal(nodeContainer).also {
+        nodeContainer.assert()
+      }
+  )
+}
+
 
 /**
  * A [GQLNode] that has a name
@@ -811,6 +839,10 @@ data class GQLVariableDefinition(
   }
 }
 
+/**
+ * @param operationType one of "query", "mutation", "subscription"
+ * @param namedType the name of the root object type, i.e. "Query", ...
+ */
 data class GQLOperationTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val operationType: String,
@@ -830,6 +862,9 @@ data class GQLOperationTypeDefinition(
   }
 }
 
+/**
+ * @param name the name of the directive without the '@'. Example: "include"
+ */
 data class GQLDirective(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,

@@ -4,14 +4,10 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import okio.buffer
 import okio.source
 
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version")
 fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
   return withDefinitions(builtinDefinitions())
 }
 
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version")
 fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
   return withoutDefinitions(builtinDefinitions())
 }
@@ -40,9 +36,21 @@ fun GQLDocument.withApolloDefinitions(): GQLDocument {
 fun builtinDefinitions() = definitionsFromResources("builtins.graphqls")
 
 /**
+ * The @link definition for bootstrapping
+ *
+ * https://specs.apollo.dev/link/v1.0/
+ */
+fun linkDefinitions() = definitionsFromResources("link.graphqls")
+
+/**
  * Extra apollo specific definitions
  */
 fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
+
+/**
+ * Incubating definitions
+ */
+fun labsDefinitions() = definitionsFromResources("apollo.graphqls") + definitionsFromResources("labs.graphqls")
 
 private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!
