@@ -254,7 +254,7 @@ class CompiledSelectionsBuilder(
 
   private fun List<GQLArgument>.codeBlock(fieldName: String, parentType: String): CodeBlock {
     val typeDefinition = schema.typeDefinition(parentType)
-    val keyArgs = typeDefinition.keyArgs(fieldName)
+    val keyArgs = typeDefinition.keyArgs(fieldName, schema)
 
     val arguments = sortedBy { it.name }.map {
       val argumentBuilder = CodeBlock.builder()

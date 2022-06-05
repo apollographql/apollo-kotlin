@@ -51,6 +51,9 @@ internal class ExecutableValidationScope(
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
 
+  override val foreignNames: Map<String, String>
+    get() = schema.foreignNames
+
   override val issues = mutableListOf<Issue>()
 
   /**

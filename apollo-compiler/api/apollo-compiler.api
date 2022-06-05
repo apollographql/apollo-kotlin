@@ -237,6 +237,12 @@ public final class com/apollographql/apollo3/compiler/ScalarInfoJsonAdapter : co
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/compiler/SchemaAdapter {
+	public fun <init> ()V
+	public final fun fromJson (Ljava/util/Map;)Lcom/apollographql/apollo3/ast/Schema;
+	public final fun toJson (Lcom/apollographql/apollo3/ast/Schema;)Ljava/util/Map;
+}
+
 public final class com/apollographql/apollo3/compiler/StringsKt {
 	public static final fun capitalizeFirstLetter (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun decapitalizeFirstLetter (Ljava/lang/String;)Ljava/lang/String;

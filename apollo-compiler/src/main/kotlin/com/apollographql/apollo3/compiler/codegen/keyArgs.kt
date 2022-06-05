@@ -10,14 +10,14 @@ import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import okio.Buffer
 
-internal fun GQLTypeDefinition.keyArgs(fieldName: String): Set<String> {
+internal fun GQLTypeDefinition.keyArgs(fieldName: String, schema: Schema): Set<String> {
   val directives = when (this) {
     is GQLObjectTypeDefinition -> directives
     is GQLInterfaceTypeDefinition -> directives
     else -> emptyList()
   }
 
-  return directives.filter { it.name == Schema.FIELD_POLICY }.filter {
+  return directives.filter { schema.originalDirectiveName(it.name) == Schema.FIELD_POLICY }.filter {
     (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }?.value as GQLStringValue).value == fieldName
   }.flatMap {
     val keyArgsValue = it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_KEY_ARGS }?.value

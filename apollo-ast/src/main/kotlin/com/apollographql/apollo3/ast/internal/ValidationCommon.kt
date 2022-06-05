@@ -54,6 +54,15 @@ internal interface ValidationScope : IssuesScope {
 
   val typeDefinitions: Map<String, GQLTypeDefinition>
   val directiveDefinitions: Map<String, GQLDirectiveDefinition>
+  val foreignNames: Map<String, String>
+
+  fun originalDirectiveName(name: String): String {
+    return foreignNames["@$name"]?.substring(1) ?: name
+  }
+
+  fun originalTypeName(name: String): String {
+    return foreignNames[name]?: name
+  }
 
   fun registerIssue(
       message: String,
@@ -76,6 +85,7 @@ internal class DefaultValidationScope(
     override val typeDefinitions: Map<String, GQLTypeDefinition>,
     override val directiveDefinitions: Map<String, GQLDirectiveDefinition>,
     issues: MutableList<Issue>? = null,
+    override val foreignNames: Map<String, String> = emptyMap()
 ) : ValidationScope {
   constructor(schema: Schema) : this(schema.typeDefinitions, schema.directiveDefinitions)
 
@@ -151,10 +161,10 @@ internal fun ValidationScope.validateDirective(
   /**
    * Apollo specific validation
    */
-  if (directive.name == "nonnull") {
+  if (originalDirectiveName(directive.name) == Schema.NONNULL) {
     extraValidateNonNullDirective(directive, directiveContext)
   }
-  if (directive.name == Schema.FIELD_POLICY) {
+  if (originalDirectiveName(directive.name) == Schema.FIELD_POLICY) {
     extraValidateTypePolicyDirective(directive)
   }
 }

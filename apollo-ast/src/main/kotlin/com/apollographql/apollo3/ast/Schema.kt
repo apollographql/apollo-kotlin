@@ -19,15 +19,17 @@ import okio.Buffer
 class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
     private val keyFields: Map<String, Set<String>>,
-    private val foreignNames: Map<String, String>
+    val foreignNames: Map<String, String>,
+    private val directivesToStrip: List<String>,
 ) {
 
   @Deprecated("Use toSchema() to get a Schema")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-  constructor(definitions: List<GQLDefinition>): this(
+  constructor(definitions: List<GQLDefinition>) : this(
       definitions,
       emptyMap(),
-      emptyMap()
+      emptyMap(),
+      emptyList()
   )
 
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
@@ -49,6 +51,14 @@ class Schema internal constructor(
       definitions = definitions,
       filePath = null
   ).withoutBuiltinDefinitions()
+
+  fun originalDirectiveName(name: String): String {
+    return foreignNames["@$name"]?.substring(1) ?: name
+  }
+
+  fun originalTypeName(name: String): String {
+    return foreignNames[name] ?: name
+  }
 
   private fun rootOperationTypeDefinition(operationType: String): GQLTypeDefinition? {
     return definitions.filterIsInstance<GQLSchemaDefinition>().single()
@@ -105,7 +115,8 @@ class Schema internal constructor(
     return mapOf(
         "sdl" to GQLDocument(definitions, null).toUtf8(),
         "keyFields" to keyFields,
-        "foreignNames" to foreignNames
+        "foreignNames" to foreignNames,
+        "directivesToStrip" to directivesToStrip
     )
   }
 
@@ -147,9 +158,16 @@ class Schema internal constructor(
     return keyFields[name] ?: emptySet()
   }
 
+  fun shouldStrip(name: String): Boolean {
+    return directivesToStrip.contains(name)
+  }
+
   companion object {
     const val TYPE_POLICY = "typePolicy"
     const val FIELD_POLICY = "fieldPolicy"
+    const val NONNULL = "nonnull"
+    const val OPTIONAL = "optional"
+
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
 
@@ -159,7 +177,8 @@ class Schema internal constructor(
       return Schema(
           definitions = Buffer().writeUtf8(map["sdl"] as String).parseAsGQLDocument().value!!.definitions,
           keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
-          foreignNames = map["foreignNames"]!! as Map<String, String>
+          foreignNames = map["foreignNames"]!! as Map<String, String>,
+          directivesToStrip = map["directivesToStrip"]!! as List<String>,
       )
     }
   }

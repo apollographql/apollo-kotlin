@@ -2,6 +2,9 @@ package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
+import com.apollographql.apollo3.ast.Schema.Companion.FIELD_POLICY
+import com.apollographql.apollo3.ast.Schema.Companion.NONNULL
+import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 
 @Suppress("UNCHECKED_CAST")
 internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
@@ -13,7 +16,10 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       .getForeignSchemas(issues, builtinDefinitions)
 
   var foreignDefinitions = foreignSchemas.flatMap { it.definitions }
-  if (foreignSchemas.none { it.name == "kotlin_labs" } && requiresApolloDefinitions) {
+
+  var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
+
+  if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     println("""
       Apollo: using '@typePolicy', '@fieldPolicy', '@nonnull' or '@optional' will require importing them
       to avoid nameclashes in the future. To prepare for that change and remove this warning, create a 
@@ -23,6 +29,12 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       
       See https://specs.apollo.dev/link/v1.0/ for more information
       """.trimIndent())
+    val apolloDefinitions = apolloDefinitions()
+    /**
+     * Strip all directives. This will also strip schema directives like @typePolicy that should never appear in executable
+     * documents
+     */
+    directivesToStrip = directivesToStrip + apolloDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
     foreignDefinitions = foreignDefinitions + apolloDefinitions()
   }
   allDefinitions = allDefinitions + foreignDefinitions
@@ -46,7 +58,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         if (existing != null) {
           val message = buildString {
             "Directive '${gqlDefinition.name} is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}"
-            if (gqlDefinition.name in setOf("typePolicy", "fieldPolicy", "optional", "nonnull")) {
+            if (gqlDefinition.name in setOf(TYPE_POLICY, FIELD_POLICY, "optional", NONNULL)) {
               appendLine()
               append("""
                  Use '@link' to prefix the apollo. Create a 'extra.graphqls' file next to your schema and import the definitions:
@@ -103,10 +115,18 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   val dedupedScope = DefaultValidationScope(typeDefinitions, directiveDefinitions, issues)
   val mergedDefinitions = dedupedScope.mergeExtensions(dedupedDefinitions, typeSystemExtensions)
 
+  val foreignNames = foreignSchemas.flatMap {
+    it.newNames.entries
+  }.associateBy(
+      keySelector = { it.value },
+      valueTransform = { it.key }
+  )
+
   val mergedScope = DefaultValidationScope(
       typeDefinitions = mergedDefinitions.filterIsInstance<GQLTypeDefinition>().associateBy { it.name },
       directiveDefinitions = mergedDefinitions.filterIsInstance<GQLDirectiveDefinition>().associateBy { it.name },
-      issues = issues
+      issues = issues,
+      foreignNames = foreignNames,
   )
   mergedScope.validateNoIntrospectionNames()
 
@@ -126,17 +146,12 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
      */
     GQLResult(null, issues)
   } else {
-    val foreignNames = foreignSchemas.flatMap {
-      it.newNames.entries
-    }.associateBy(
-        keySelector = {it.value},
-        valueTransform = {it.key}
-    )
     GQLResult(
         Schema(
             mergedDefinitions,
             keyFields,
-            foreignNames
+            foreignNames,
+            directivesToStrip
         ),
         issues
     )
@@ -177,10 +192,15 @@ internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
   )
 }
 
+/**
+ * @param newNames a mapping from the foreigne name to the new name
+ * @param directivesToStrip the directives to strip (using new names)
+ */
 private class ForeignSchema(
     val name: String,
     val definitions: List<GQLDefinition>,
-    val newNames: Map<String, String>
+    val newNames: Map<String, String>,
+    val directivesToStrip: List<String>
 )
 
 /**
@@ -273,7 +293,8 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
               ForeignSchema(
                   name = foreignName,
                   definitions = definitions,
-                  newNames = renames
+                  newNames = renames,
+                  directivesToStrip = definitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
               )
           )
         }
@@ -292,7 +313,7 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
     }
   }
 
-  val definitions =  this.map { gqlDefinition ->
+  val definitions = this.map { gqlDefinition ->
     gqlDefinition.transform2 { gqlNode ->
       when (gqlNode) {
         is GQLTypeDefinition -> {
@@ -408,7 +429,7 @@ private fun ValidationScope.keyFields(
     )
   }
 
-  val keyFields = directives.toKeyFields()
+  val keyFields = directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toKeyFields()
   val ret = if (keyFields != null) {
     if (distinct.isNotEmpty()) {
       val extra = interfaces.indices.map {
@@ -430,11 +451,10 @@ private fun ValidationScope.keyFields(
 }
 
 private fun List<GQLDirective>.toKeyFields(): Set<String>? {
-  val directives = filter { it.name == Schema.TYPE_POLICY }
-  if (directives.isEmpty()) {
+  if (isEmpty()) {
     return null
   }
-  return directives.flatMap {
+  return flatMap {
     (it.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
       // No need to check here, this should be done during validation
       (gqlSelection as GQLField).name
