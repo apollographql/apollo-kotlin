@@ -1,3 +1,5 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@experimental"])
+
 type Query {
   newField(input: SomeInput! @experimental): Direction! @experimental
   oldField(input: SomeInput! @deprecated): Direction! @deprecated

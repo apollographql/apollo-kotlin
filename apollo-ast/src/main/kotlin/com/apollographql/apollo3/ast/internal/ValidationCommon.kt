@@ -120,6 +120,7 @@ internal fun ValidationScope.validateDirective(
   val directiveDefinition = directiveDefinitions[directive.name]
 
   if (directiveDefinition == null) {
+    // TODO: make this an error
     registerIssue(
         message = "Unknown directive '${directive.name}'",
         sourceLocation = directive.sourceLocation,

@@ -4,15 +4,28 @@ import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 
 @Suppress("UNCHECKED_CAST")
-internal fun validateSchema(definitions: List<GQLDefinition>): GQLResult<Schema> {
+internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
   val builtinDefinitions = builtinDefinitions()
   var allDefinitions = mergeDefinitions(definitions, builtinDefinitions, ConflictResolution.TakeLeft)
 
-  val foreignDefinitions = allDefinitions.filterIsInstance<GQLSchemaExtension>()
-      .getForeignDefinitions(issues, builtinDefinitions)
+  val foreignSchemas = allDefinitions.filterIsInstance<GQLSchemaExtension>()
+      .getForeignSchemas(issues, builtinDefinitions)
 
-  allDefinitions = allDefinitions + foreignDefinitions.values.flatten()
+  var foreignDefinitions = foreignSchemas.flatMap { it.definitions }
+  if (foreignSchemas.none { it.name == "kotlin_labs" } && requiresApolloDefinitions) {
+    println("""
+      Apollo: using '@typePolicy', '@fieldPolicy', '@nonnull' or '@optional' will require importing them
+      to avoid nameclashes in the future. To prepare for that change and remove this warning, create a 
+      'extra.graphqls' file next to your schema and import the definitions:
+      
+      extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@optional", "@nonnull", "@typePolicy", "@fieldPolicy"])
+      
+      See https://specs.apollo.dev/link/v1.0/ for more information
+      """.trimIndent())
+    foreignDefinitions = foreignDefinitions + apolloDefinitions()
+  }
+  allDefinitions = allDefinitions + foreignDefinitions
 
   val directiveDefinitions = mutableMapOf<String, GQLDirectiveDefinition>()
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
@@ -31,7 +44,26 @@ internal fun validateSchema(definitions: List<GQLDefinition>): GQLResult<Schema>
       is GQLDirectiveDefinition -> {
         val existing = typeDefinitions[gqlDefinition.name]
         if (existing != null) {
-          issues.add(Issue.ValidationError("Directive '${gqlDefinition.name} is defined multiple times. First definition was ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+          val message = buildString {
+            "Directive '${gqlDefinition.name} is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}"
+            if (gqlDefinition.name in setOf("typePolicy", "fieldPolicy", "optional", "nonnull")) {
+              appendLine()
+              append("""
+                 Use '@link' to prefix the apollo. Create a 'extra.graphqls' file next to your schema and import the definitions:
+                 
+                 extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "apollo")
+      
+                See https://specs.apollo.dev/link/v1.0/ for more information
+              """.trimIndent())
+            }
+          }
+          issues.add(
+              Issue.ValidationError(
+                  message = message,
+                  sourceLocation = gqlDefinition.sourceLocation,
+                  severity = Issue.Severity.ERROR
+              )
+          )
         } else {
           directiveDefinitions[gqlDefinition.name] = gqlDefinition
         }
@@ -39,7 +71,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>): GQLResult<Schema>
       is GQLTypeDefinition -> {
         val existing = typeDefinitions[gqlDefinition.name]
         if (existing != null) {
-          issues.add(Issue.ValidationError("Type '${gqlDefinition.name} is defined multiple times. First definition was ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+          issues.add(Issue.ValidationError("Type '${gqlDefinition.name} is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
         } else {
           typeDefinitions[gqlDefinition.name] = gqlDefinition
         }
@@ -94,10 +126,17 @@ internal fun validateSchema(definitions: List<GQLDefinition>): GQLResult<Schema>
      */
     GQLResult(null, issues)
   } else {
+    val foreignNames = foreignSchemas.flatMap {
+      it.newNames.entries
+    }.associateBy(
+        keySelector = {it.value},
+        valueTransform = {it.key}
+    )
     GQLResult(
         Schema(
             mergedDefinitions,
             keyFields,
+            foreignNames
         ),
         issues
     )
@@ -138,18 +177,25 @@ internal fun ValidationScope.syntheticSchemaDefinition(): GQLSchemaDefinition {
   )
 }
 
+private class ForeignSchema(
+    val name: String,
+    val definitions: List<GQLDefinition>,
+    val newNames: Map<String, String>
+)
+
 /**
  * Parses the schema extensions
  *
- * extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "labs", import: ["targetName"])
+ * Example: extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@nonnull"])
  */
-private fun List<GQLSchemaExtension>.getForeignDefinitions(
+private fun List<GQLSchemaExtension>.getForeignSchemas(
     issues: MutableList<Issue>,
     builtinDefinitions: List<GQLDefinition>,
-): Map<String, List<GQLDefinition>> {
+): List<ForeignSchema> {
   val schemaExtensions = this
 
-  val ret = mutableMapOf<String, List<GQLDefinition>>()
+  val foreignSchemas = mutableListOf<ForeignSchema>()
+
   schemaExtensions.forEach { schemaExtension ->
     schemaExtension.directives.forEach eachDirective@{ gqlDirective ->
       if (gqlDirective.name == "link") {
@@ -168,7 +214,7 @@ private fun List<GQLSchemaExtension>.getForeignDefinitions(
 
         val arguments = gqlDirective.arguments!!.arguments
         val url = (arguments.first { it.name == "url" }.value as GQLStringValue).value
-        var `as` = (arguments.firstOrNull { it.name == "as" }?.value as GQLStringValue?)?.value
+        var prefix = (arguments.firstOrNull { it.name == "as" }?.value as GQLStringValue?)?.value
         val import = (arguments.firstOrNull { it.name == "import" }?.value as GQLListValue?)?.values
 
         var components = url.split("/")
@@ -187,8 +233,8 @@ private fun List<GQLSchemaExtension>.getForeignDefinitions(
 
         val foreignName = components[components.size - 2]
 
-        if (`as` == null) {
-          `as` = foreignName
+        if (prefix == null) {
+          prefix = foreignName
         }
 
         val mappings = import.orEmpty().mapNotNull {
@@ -222,19 +268,31 @@ private fun List<GQLSchemaExtension>.getForeignDefinitions(
 
 
         if (foreignName == "kotlin_labs") {
-          ret[foreignName] = labsDefinitions().rename(mappings, `as`)
+          val (definitions, renames) = labsDefinitions().rename(mappings, prefix)
+          foreignSchemas.add(
+              ForeignSchema(
+                  name = foreignName,
+                  definitions = definitions,
+                  newNames = renames
+              )
+          )
         }
       }
     }
   }
 
-  return ret
+  return foreignSchemas
 }
 
-private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: String): List<GQLDefinition> {
-  fun GQLNamed.newName() = mappings.getOrDefault(name, "${prefix}__${name}")
+private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: String): Pair<List<GQLDefinition>, Map<String, String>> {
+  val renames = mutableMapOf<String, String>()
+  fun GQLNamed.newName(): String {
+    return mappings.getOrDefault(name, "${prefix}__${name}").also {
+      renames[name] = it
+    }
+  }
 
-  return this.map { gqlDefinition ->
+  val definitions =  this.map { gqlDefinition ->
     gqlDefinition.transform2 { gqlNode ->
       when (gqlNode) {
         is GQLTypeDefinition -> {
@@ -250,6 +308,7 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
         is GQLDirectiveDefinition -> {
           // Special case, directives use a leading '@'
           val newName = mappings["@${gqlNode.name}"]?.substring(1) ?: "${prefix}__${gqlNode.name}"
+          renames["@${gqlNode.name}"] = "@$newName"
           gqlNode.copy(name = newName)
         }
         is GQLNamedType -> gqlNode.copy(name = gqlNode.newName())
@@ -257,6 +316,8 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
       }
     } as GQLDefinition
   }
+
+  return definitions to renames
 }
 
 internal fun ValidationScope.validateRootOperationTypes(schemaDefinition: GQLSchemaDefinition) {
@@ -297,6 +358,14 @@ private fun ValidationScope.validateObjects() {
         issues.add(it.constContextError())
       }
     }
+
+    o.fields.forEach { gqlFieldDefinition ->
+      gqlFieldDefinition.directives.forEach { gqlDirective ->
+        validateDirective(gqlDirective, gqlFieldDefinition) {
+          issues.add(it.constContextError())
+        }
+      }
+    }
   }
 }
 
@@ -311,7 +380,6 @@ private fun ValidationScope.validateNoIntrospectionNames() {
 
 private fun ValidationScope.keyFields(
     typeDefinition: GQLTypeDefinition,
-    allTypeDefinition: Map<String, GQLTypeDefinition>,
     keyFieldsCache: MutableMap<String, Set<String>>,
 ): Set<String> {
   val cached = keyFieldsCache[typeDefinition.name]
@@ -326,7 +394,7 @@ private fun ValidationScope.keyFields(
     else -> error("Cannot get directives for $typeDefinition")
   }
 
-  val interfacesKeyFields = interfaces.map { keyFields(allTypeDefinition[it]!!, allTypeDefinition, keyFieldsCache) }
+  val interfacesKeyFields = interfaces.map { keyFields(typeDefinitions[it]!!, keyFieldsCache) }
       .filter { it.isNotEmpty() }
 
   val distinct = interfacesKeyFields.distinct()
@@ -342,7 +410,7 @@ private fun ValidationScope.keyFields(
 
   val keyFields = directives.toKeyFields()
   val ret = if (keyFields != null) {
-    if (!distinct.isEmpty()) {
+    if (distinct.isNotEmpty()) {
       val extra = interfaces.indices.map {
         "${interfaces[it]}: ${interfacesKeyFields[it]}"
       }.joinToString("\n")
@@ -380,7 +448,7 @@ private fun List<GQLDirective>.toKeyFields(): Set<String>? {
 internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<String>> {
   val keyFieldsCache = mutableMapOf<String, Set<String>>()
   typeDefinitions.values.filter { it.canHaveKeyFields() }.forEach {
-    keyFields(it, typeDefinitions, keyFieldsCache)
+    keyFields(it, keyFieldsCache)
   }
   return keyFieldsCache
 }

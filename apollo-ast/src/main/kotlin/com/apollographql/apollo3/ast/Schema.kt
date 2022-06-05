@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloInternal
+import okio.Buffer
 
 /**
  * A wrapper around a schema GQLDocument that:
@@ -12,14 +14,21 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
  *
  * @param definitions a list of validated and merged definitions
  * @param keyFields a Map containing the key fields for each type
+ * @param foreignNames a Map from a type system name -> its original name in the foreign schema
  */
 class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
     private val keyFields: Map<String, Set<String>>,
+    private val foreignNames: Map<String, String>
 ) {
+
   @Deprecated("Use toSchema() to get a Schema")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-  constructor(definitions: List<GQLDefinition>): this(definitions, emptyMap())
+  constructor(definitions: List<GQLDefinition>): this(
+      definitions,
+      emptyMap(),
+      emptyMap()
+  )
 
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
       .filterIsInstance<GQLTypeDefinition>()
@@ -91,6 +100,15 @@ class Schema internal constructor(
     return implementedTypes(subType).contains(type)
   }
 
+  @ApolloInternal
+  fun toMap(): Map<String, Any> {
+    return mapOf(
+        "sdl" to GQLDocument(definitions, null).toUtf8(),
+        "keyFields" to keyFields,
+        "foreignNames" to foreignNames
+    )
+  }
+
   /**
    * List all types (types, interfaces, unions) implemented by a given type (including itself)
    */
@@ -134,5 +152,16 @@ class Schema internal constructor(
     const val FIELD_POLICY = "fieldPolicy"
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
+
+    @Suppress("UNCHECKED_CAST")
+    @ApolloInternal
+    fun fromMap(map: Map<String, Any>): Schema {
+      return Schema(
+          definitions = Buffer().writeUtf8(map["sdl"] as String).parseAsGQLDocument().value!!.definitions,
+          keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
+          foreignNames = map["foreignNames"]!! as Map<String, String>
+      )
+    }
   }
 }
+

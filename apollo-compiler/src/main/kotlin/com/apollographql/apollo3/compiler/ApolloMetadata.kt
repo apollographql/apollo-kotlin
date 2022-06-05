@@ -6,11 +6,13 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
+import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
 import com.squareup.moshi.JsonWriter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import okio.buffer
 import okio.sink
 import okio.source
@@ -37,17 +39,6 @@ data class ApolloMetadata(
      * A JsonAdapter that will use SDL to serialize Schema and GQLFragmentDefinition
      */
     private val adapter by lazy {
-      val schemaJsonAdapter = object : JsonAdapter<Schema>() {
-        override fun fromJson(reader: JsonReader): Schema {
-          val string = reader.nextString()
-          return string.buffer().toSchema()
-        }
-
-        override fun toJson(writer: JsonWriter, schema: Schema?) {
-          writer.value(schema!!.toGQLDocument().toUtf8())
-        }
-      }
-
       val gqlFragmentJsonAdapter = object : JsonAdapter<GQLFragmentDefinition>() {
         override fun fromJson(reader: JsonReader): GQLFragmentDefinition {
           val string = reader.nextString()
@@ -60,7 +51,7 @@ data class ApolloMetadata(
       }
 
       Moshi.Builder()
-          .add(Schema::class.java, schemaJsonAdapter.nullSafe())
+          .add(SchemaAdapter())
           .add(GQLFragmentDefinition::class.java, gqlFragmentJsonAdapter.nonNull())
           .build()
           .adapter(ApolloMetadata::class.java)
@@ -74,6 +65,16 @@ data class ApolloMetadata(
     file.sink().buffer().use {
       adapter.toJson(it, this)
     }
+  }
+}
+
+class SchemaAdapter {
+  @ToJson fun toJson(schema: Schema): Map<String, Any> {
+    return schema.toMap()
+  }
+
+  @FromJson fun fromJson(map: Map<String, Any>): Schema {
+    return Schema.fromMap(map)
   }
 }
 

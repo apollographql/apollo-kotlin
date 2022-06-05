@@ -45,12 +45,12 @@ fun linkDefinitions() = definitionsFromResources("link.graphqls")
 /**
  * Extra apollo specific definitions
  */
-fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
+internal fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
 
 /**
  * Incubating definitions
  */
-fun labsDefinitions() = definitionsFromResources("apollo.graphqls") + definitionsFromResources("labs.graphqls")
+internal fun labsDefinitions() = definitionsFromResources("apollo.graphqls") + definitionsFromResources("labs.graphqls")
 
 private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!

@@ -4,6 +4,7 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static synthetic fun parseAsGQLValue$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun toExecutableDefinitions$default (Lokio/BufferedSource;Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
 	public static synthetic fun toSchema$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/Schema;
+	public static final fun validateAsSchemaAndAddApolloDefinition (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLResult;
 }
 
 public final class com/apollographql/apollo3/ast/Check_key_fieldsKt {
@@ -987,8 +988,8 @@ public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 }
 
 public final class com/apollographql/apollo3/ast/GqldocumentKt {
-	public static final fun apolloDefinitions ()Ljava/util/List;
 	public static final fun builtinDefinitions ()Ljava/util/List;
+	public static final fun linkDefinitions ()Ljava/util/List;
 	public static final fun withApolloDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static final fun withBuiltinDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static final fun withBuiltinDirectives (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;

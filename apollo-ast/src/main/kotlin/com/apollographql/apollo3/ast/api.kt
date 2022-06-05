@@ -82,7 +82,7 @@ fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
 @Deprecated("This method always adds the apollo directives which may clash with existing directives. Use `extend schema @link(...)` instead")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
 fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
-  return validateSchema(definitions + apolloDefinitions())
+  return validateSchema(definitions, true)
 }
 
 /**
