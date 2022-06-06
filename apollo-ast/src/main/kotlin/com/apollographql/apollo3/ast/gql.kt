@@ -81,7 +81,7 @@ internal fun interface NodeTransformer2 {
 }
 
 /**
- * [transform] above has a lot of limitations. Most importantly, replacing a node we not visit all
+ * [transform] above has a lot of limitations. Most importantly, replacing a node will not visit all
  * its children.
  * This version allows this.
  * TODO: revisit this API so that it does not make a new copy of every node
