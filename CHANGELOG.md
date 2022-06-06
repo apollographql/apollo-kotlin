@@ -22,7 +22,7 @@ An issue where `websocketReopenWhen` was not called in some cases was fixed. Als
 ## ✨️ [new] ApolloClient implements Closable (#4142)
 `ApolloClient` now implements `okio.Closable` so you can use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @_yogurtearl for this contribution!
 
-## ✨️ [new] `@targetName` directive on enum values (#4144)
+## ✨️ [new] experimental `@targetName` directive on enum values (#4144)
 If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the codeGen to use the specified name for the value instead. This directive is experimental for now.
 
 ## 📝 [new] Public API tracking
