@@ -27,6 +27,7 @@ fun GQLDocument.withoutBuiltinDirectives(): GQLDocument {
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
 @Deprecated("This method is deprecated and will be removed in a future version")
 fun GQLDocument.withApolloDefinitions(): GQLDocument {
+  @Suppress("DEPRECATION")
   return withDefinitions(apolloDefinitions())
 }
 
@@ -45,10 +46,12 @@ fun linkDefinitions() = definitionsFromResources("link.graphqls")
 /**
  * Extra apollo specific definitions
  */
-internal fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
+@Deprecated("These definitions were added unconditionally, use `labsDefinitions()` instead that support " +
+    "importing/renaming", ReplaceWith("labsDefinitions()"))
+fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
 
 /**
- * Incubating definitions
+ * Incubating definitions from https://specs.apollo.dev/kotlin_labs/v0.1
  */
 internal fun labsDefinitions() = definitionsFromResources("apollo.graphqls") + definitionsFromResources("labs.graphqls")
 

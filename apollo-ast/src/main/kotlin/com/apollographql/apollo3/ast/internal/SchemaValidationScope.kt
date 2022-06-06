@@ -29,13 +29,15 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       
       See https://specs.apollo.dev/link/v1.0/ for more information
       """.trimIndent())
+
+    @Suppress("DEPRECATION")
     val apolloDefinitions = apolloDefinitions()
     /**
      * Strip all directives. This will also strip schema directives like @typePolicy that should never appear in executable
      * documents
      */
     directivesToStrip = directivesToStrip + apolloDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
-    foreignDefinitions = foreignDefinitions + apolloDefinitions()
+    foreignDefinitions = foreignDefinitions + apolloDefinitions
   }
   allDefinitions = allDefinitions + foreignDefinitions
 
