@@ -4,7 +4,6 @@ public final class com/apollographql/apollo3/ast/ApolloParser {
 	public static synthetic fun parseAsGQLValue$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
 	public static synthetic fun toExecutableDefinitions$default (Lokio/BufferedSource;Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
 	public static synthetic fun toSchema$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/Schema;
-	public static final fun validateAsSchemaAndAddApolloDefinition (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLResult;
 }
 
 public final class com/apollographql/apollo3/ast/Check_key_fieldsKt {
@@ -983,7 +982,6 @@ public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 	public static final fun findDeprecationReason (Ljava/util/List;)Ljava/lang/String;
 	public static final fun findExperimentalReason (Ljava/util/List;)Ljava/lang/String;
 	public static final fun findNonnull (Ljava/util/List;)Z
-	public static final fun findNonnull (Ljava/util/List;Lcom/apollographql/apollo3/ast/Schema;)Z
 	public static final fun isApollo (Lcom/apollographql/apollo3/ast/GQLDirective;)Z
 	public static final fun optionalValue (Ljava/util/List;)Ljava/lang/Boolean;
 }
@@ -1138,12 +1136,10 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public final fun implementedTypes (Ljava/lang/String;)Ljava/util/Set;
 	public final fun isTypeASubTypeOf (Ljava/lang/String;Ljava/lang/String;)Z
 	public final fun isTypeASuperTypeOf (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun keyFields (Ljava/lang/String;)Ljava/util/Set;
 	public final fun originalDirectiveName (Ljava/lang/String;)Ljava/lang/String;
 	public final fun originalTypeName (Ljava/lang/String;)Ljava/lang/String;
 	public final fun possibleTypes (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;)Ljava/util/Set;
 	public final fun possibleTypes (Ljava/lang/String;)Ljava/util/Set;
-	public final fun shouldStrip (Ljava/lang/String;)Z
 	public final fun toGQLDocument ()Lcom/apollographql/apollo3/ast/GQLDocument;
 	public final fun typeDefinition (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/GQLTypeDefinition;
 }
