@@ -49,9 +49,8 @@ class IncomingOptions(
       )
 
       /**
-       * TODO: use `validateAsSchema` after a grace period
+       * TODO: use `validateAsSchema` to not automatically add the apollo definitions
        */
-      @Suppress("DEPRECATION")
       return schemaDocument.validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors() to mainSchemaDocument.filePath!!
     }
   }

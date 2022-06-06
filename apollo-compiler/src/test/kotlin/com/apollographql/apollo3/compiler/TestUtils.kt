@@ -71,7 +71,6 @@ internal object TestUtils {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
-          @Suppress("DEPRECATION")
           it.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors()
         }
   }

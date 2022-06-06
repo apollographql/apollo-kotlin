@@ -73,6 +73,6 @@ fun List<GQLDirective>.findNonnull() = any { it.name == Schema.NONNULL }
 @ApolloInternal
 fun List<GQLDirective>.findNonnull(schema: Schema) = any { schema.originalDirectiveName(it.name) == Schema.NONNULL }
 
-@Deprecated("This function is misleading as it only enumarates the stripable directive. Use apolloDefinition() instead.")
+@Deprecated("This function is misleading as it only enumerates the stripable directive. Use apolloDefinitions() instead.")
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-fun GQLDirective.isApollo() = name in listOf("optional", Schema.NONNULL)
+fun GQLDirective.isApollo() = name in listOf(Schema.OPTIONAL, Schema.NONNULL)

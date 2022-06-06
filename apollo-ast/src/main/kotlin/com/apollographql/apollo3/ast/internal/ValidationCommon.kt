@@ -244,7 +244,8 @@ private fun ValidationScope.validateArgument(
  *
  * See https://spec.graphql.org/draft/#sec-Validation.Arguments
  *
- * @param sourceLocation: the location of the field or directive for error reporting
+ * @param sourceLocation the location of the field or directive for error reporting
+ * @param registerVariableUsage a callback when a variable is found
  */
 internal fun ValidationScope.validateArguments(
     arguments: List<GQLArgument>,

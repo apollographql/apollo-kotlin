@@ -474,7 +474,9 @@ private fun List<GQLDirective>.toKeyFields(): Set<String>? {
 }
 
 /**
- * validate and compute the keyfield cache
+ * validate and compute the keyfield cache:
+ * - objects or interfaces cannot declare keyfields if they inherit and interface with keyfields
+ * - objects or intefaces cannot inherit two interfaces with keyfields
  */
 internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<String>> {
   val keyFieldsCache = mutableMapOf<String, Set<String>>()

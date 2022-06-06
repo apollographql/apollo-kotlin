@@ -42,7 +42,6 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        @Suppress("DEPRECATION")
         val schemaResult = parseResult.valueAssertNoErrors().validateAsSchemaAndAddApolloDefinition()
         schemaResult.issues + if (graphQLFile.name == "reserved-enum-value-names.graphql") {
           checkApolloReservedEnumValueNames(schemaResult.value!!)

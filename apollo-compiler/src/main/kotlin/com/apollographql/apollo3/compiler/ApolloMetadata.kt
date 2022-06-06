@@ -68,7 +68,7 @@ data class ApolloMetadata(
   }
 }
 
-class SchemaAdapter {
+private class SchemaAdapter {
   @ToJson fun toJson(schema: Schema): Map<String, Any> {
     return schema.toMap()
   }
