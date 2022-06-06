@@ -5,7 +5,7 @@ Change Log
 
 _2022-06-??_
 
-This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and Test Builders. It also contains a number of other improvements and bug fixes!
+This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test Builders. It also contains a number of other improvements and bug fixes!
 
 ## ✨️ [new] `@typePolicy` on interfaces and unions (#4131)
 [The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @_bubba for the contribution!
