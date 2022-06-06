@@ -4,6 +4,7 @@ package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
 import com.apollographql.apollo3.ast.internal.antlrParse
 import com.apollographql.apollo3.ast.internal.toGQLDocument
@@ -79,8 +80,7 @@ fun GQLDocument.validateAsSchema(): GQLResult<Schema> {
   return validateSchema(definitions)
 }
 
-@Deprecated("This method always adds the apollo directives which may clash with existing directives. Use `extend schema @link(...)` instead")
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+@ApolloInternal
 fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
   return validateSchema(definitions, true)
 }

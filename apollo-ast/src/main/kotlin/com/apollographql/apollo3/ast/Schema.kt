@@ -5,16 +5,23 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import okio.Buffer
 
 /**
- * A wrapper around a schema GQLDocument that:
- * - always contain builtin types contrary to introspection that will not contain directives and SDL that will not contain
- * any builtin definitions
- * - always has a schema definition
- * - has type extensions merged
+ * A wrapper around a schema [GQLDocument] that ensures the [GQLDocument] is valid and caches
+ * some extra information. In particular, [Schema]:
+ * - always contain builtin definitions (SDL can omit them)
+ * - always has a schema definition for easier lookup of root operation types
+ * - has all type system extensions merged
  * - has some helper functions to retrieve a type by name and/or possible types
+ * - caches [keyFields] for easier lookup during codegen
+ * - remembers [foreignNames] to keep track of renamed definitions
+ * - remembers [directivesToStrip] to keep track of client-only directives
  *
  * @param definitions a list of validated and merged definitions
  * @param keyFields a Map containing the key fields for each type
- * @param foreignNames a Map from a type system name -> its original name in the foreign schema
+ * @param foreignNames a Map from a type system name -> its original name in the foreign schema.
+ * To distinguish between directives and types, directive names must be prefixed by '@'
+ * Example: "@kotlin_labs_nonnull" -> "@nonnull"
+ * @param directivesToStrip directives to strip because they are coming from a foreign schema
+ * Example: "kotlin_labs_nonnull"
  */
 class Schema internal constructor(
     private val definitions: List<GQLDefinition>,
@@ -22,8 +29,13 @@ class Schema internal constructor(
     val foreignNames: Map<String, String>,
     private val directivesToStrip: List<String>,
 ) {
-
-  @Deprecated("Use toSchema() to get a Schema")
+  /**
+   * Creates a new Schema from a list of definition.
+   * This doesn't support foreign schemas.
+   *
+   * See also [validateAsSchema] and [toSchema]
+   */
+  @Deprecated("Use validateAsSchema() to get a Schema")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
   constructor(definitions: List<GQLDefinition>) : this(
       definitions,
@@ -110,6 +122,9 @@ class Schema internal constructor(
     return implementedTypes(subType).contains(type)
   }
 
+  /**
+   * Returns the [Schema] as a [Map] that can be easily serialized to Json
+   */
   @ApolloInternal
   fun toMap(): Map<String, Any> {
     return mapOf(
@@ -154,10 +169,15 @@ class Schema internal constructor(
   /**
    *  Get the key fields for an object, interface or union type.
    */
+  @ApolloInternal
   fun keyFields(name: String): Set<String> {
     return keyFields[name] ?: emptySet()
   }
 
+  /**
+   * return whether the given directive should be removed from operation documents before being sent to the server
+   */
+  @ApolloInternal
   fun shouldStrip(name: String): Boolean {
     return directivesToStrip.contains(name)
   }
@@ -171,6 +191,10 @@ class Schema internal constructor(
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
 
+    /**
+     * Parses the given [map] and creates a new [Schema].
+     * The [map] must come from a previous call to [toMap] to make sure the schema is valid
+     */
     @Suppress("UNCHECKED_CAST")
     @ApolloInternal
     fun fromMap(map: Map<String, Any>): Schema {
