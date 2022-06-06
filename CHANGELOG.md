@@ -11,7 +11,7 @@ This release introduces `@typePolicy` on interface/enums, improvements on subscr
 [The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @_bubba for the contribution!
 
 ## 🔌 WebSockets / Subscriptions error handling (#4147)
-An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails.
+An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails due to a specific operation error.
 
 ## 📐 Test Builders improvements and fixes
 * A DslMarker was added to improve usage with nested builders (#4089)
