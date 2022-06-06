@@ -3,12 +3,62 @@ Change Log
 
 # Version 3.3.1
 
-_TBD_
+_2022-06-??_
 
-This release starts tracking the MockServer public API. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
+This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and Test Builders. It also contains a number of other improvements and bug fixes!
 
-This release introduces SubscriptionOperationException. SubscriptionOperationException will be throw instead of the more generic `ApolloNetworkError` if a subscription fails
+## ✨️ [new] `@typePolicy` on interfaces and unions (#4131)
+[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @_bubba for the contribution!
 
+## 🔌 WebSockets / Subscriptions error handling (#4147)
+An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails.
+
+## 📐 Test Builders improvements and fixes
+* A DslMarker was added to improve usage with nested builders (#4089)
+* When calling a builder, but not assigning it to a field, an error is now thrown, preventing mistakes (#4122)
+* The error message displayed when `__typename` is missing was made clearer (#4146)
+* Fix: use `rawValue` instead of `name` for enums (#4121)
+
+## ✨️ [new] ApolloClient implements Closable (#4142)
+`ApolloClient` now implements `okio.Closable` so you can use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @_yogurtearl for this contribution!
+
+## ✨️ [new] `@targetName` directive on enum values (#4144)
+If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the codeGen to use the specified name for the value instead. This directive is experimental for now.
+
+## 📝 [new] Public API tracking
+This release starts tracking the public API of all modules, including MockServer. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
+
+## 👷‍ All changes
+* 🐘  publish `apollo-gradle-plugin-external` (#4078)
+* publish the R8 mapping file along the relocated jar (#4085)
+* 🧪 @experimental support (#4091)
+* MockServer: make MockResponse.body a Flow<ByteString> (#4096)
+* Add Operation.Data.toJsonString() convenience function for the jvm (#4124)
+* Fix incorrect content-length in MockServer (#4162)
+* Fix test directories not cleared (#4083)
+* Do not use 'header' as a enum value name as it breaks the Kotlin compiler (#4086)
+* Do not buffer entire body in Http Cache (#4076)
+* Issue-3909: add ApolloResponse cache headers (#4102)
+* 🧶 Use a getter instead of a const val OPERATION_QUERY (#4130)
+* Uploads should be read only once even when logging (#4125)
+* Sort the type names in the list so the code gen is deterministic (#4138)
+* Keep the 'interfaces' field on the JSON introspection (#4129)
+* Parse the interface's interface field in introspection (#4143)
+* SDLWriter: join implemented interfaces with & instead of space (#4151)
+* Allow capitalized field names if flattenModels is true (#4154)
+* 💧 first drop for a SQLite backend that stores when each field was last updated (#4104)
+* Add non-breaking spaces after 'return' (#4127)
+* 🧶  add a test for big strings (#4133)
+* 🧰  introduce apollo-tooling and apollo-cli (#4153)
+* Add a command to dump the completion script (#4164)
+* ⏳ Add a test for server side expiration (#4156)
+* ☕ make it possible to build the project with Java17 (#4166)
+
+## ❤️ External contributors
+
+TODO: names escaped to avoid notifying people pre-release
+
+Many thanks to @_tajchert, @_asimonigh, @_hrach, @_ArjanSM, @_yshrsmz, @_ephemient, @_bubba, @_eboudrant and @_yogurtearl for contributing to this release! 🙏
 
 
 # Version 3.3.0
