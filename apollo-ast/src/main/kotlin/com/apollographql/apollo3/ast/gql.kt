@@ -52,7 +52,8 @@ sealed interface TransformResult {
   object Continue : TransformResult
 
   /**
-   *
+   * Replace the given node. This is terminal in that the node children will not be visited
+   * unless you do it explicitly by calling [transform] recursively
    */
   class Replace(val newNode: GQLNode) : TransformResult
 }
