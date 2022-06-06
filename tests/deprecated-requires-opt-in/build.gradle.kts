@@ -16,12 +16,12 @@ apollo {
   }
   service("none") {
     srcDir("graphql")
-    experimentalAnnotation.set("none")
+    requiresOptInAnnotation.set("none")
     packageName.set("none")
   }
   service("custom") {
     srcDir("graphql")
-    experimentalAnnotation.set("com.example.MyExperimental")
+    requiresOptInAnnotation.set("com.example.MyRequiresOptIn")
     packageName.set("custom")
   }
 }

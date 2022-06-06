@@ -1,0 +1,16 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@requiresOptIn"])
+
+type Query {
+  newField(input: SomeInput! @experimental): Direction! @requiresOptIn(feature: "experimental")
+  oldField(input: SomeInput! @deprecated): Direction! @deprecated
+}
+
+input SomeInput {
+  newInputField: Int @requiresOptIn(feature: "experimental")
+  oldInputField: Int @deprecated(reason: "fields come and go, you better let go")
+}
+
+enum Direction {
+  NORTH @requiresOptIn(feature: "experimental"),
+  SOUTH @deprecated
+}

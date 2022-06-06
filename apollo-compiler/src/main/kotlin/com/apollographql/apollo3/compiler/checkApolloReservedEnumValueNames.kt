@@ -18,7 +18,7 @@ fun checkApolloReservedEnumValueNames(schema: Schema): List<Issue> {
   ) {
     for (value in enumDefinition.enumValues) {
       if (value.name.isApolloReservedEnumValueName()) {
-        val targetName = value.directives.findTargetName()
+        val targetName = value.directives.findTargetName(schema)
         if (targetName == null) {
           issues.add(
               Issue.ReservedEnumValueName(

@@ -18,23 +18,28 @@ fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "depre
           ?: "No longer supported"
     }
 
-fun List<GQLDirective>.findExperimentalReason() = firstOrNull { it.name == "experimental" }
-    ?.let {
+@ApolloInternal
+fun List<GQLDirective>.findOptInFeature(schema: Schema): String? = filter { schema.originalDirectiveName(it.name) == Schema.REQUIRES_OPT_IN }
+    .map {
       it.arguments
           ?.arguments
-          ?.firstOrNull { it.name == "reason" }
+          ?.firstOrNull { it.name == "feature" }
           ?.value
           ?.let { value ->
             if (value !is GQLStringValue) {
-              throw ConversionException("reason must be a string", it.sourceLocation)
+              throw ConversionException("feature must be a string", it.sourceLocation)
             }
             value.value
           }
-          ?: "Experimental"
-    }
+          ?: "ExperimentalAPI"
+    }.apply {
+      if (size > 1) {
+        error("Multiple @requiresOptIn directives are not supported at the moment")
+      }
+    }.firstOrNull()
 
 @ApolloInternal
-fun List<GQLDirective>.findTargetName() = firstOrNull { it.name == "targetName" }
+fun List<GQLDirective>.findTargetName(schema: Schema): String? = firstOrNull { schema.originalDirectiveName(it.name) == "targetName" }
     ?.let {
       it.arguments
           ?.arguments

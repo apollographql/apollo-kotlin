@@ -980,7 +980,6 @@ public final class com/apollographql/apollo3/ast/GqlKt {
 
 public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 	public static final fun findDeprecationReason (Ljava/util/List;)Ljava/lang/String;
-	public static final fun findExperimentalReason (Ljava/util/List;)Ljava/lang/String;
 	public static final fun findNonnull (Ljava/util/List;)Z
 	public static final fun isApollo (Lcom/apollographql/apollo3/ast/GQLDirective;)Z
 	public static final fun optionalValue (Ljava/util/List;)Ljava/lang/Boolean;
@@ -1124,6 +1123,7 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public static final field FIELD_POLICY_KEY_ARGS Ljava/lang/String;
 	public static final field NONNULL Ljava/lang/String;
 	public static final field OPTIONAL Ljava/lang/String;
+	public static final field REQUIRES_OPT_IN Ljava/lang/String;
 	public static final field TYPE_POLICY Ljava/lang/String;
 	public fun <init> (Ljava/util/List;)V
 	public final fun getDirectiveDefinitions ()Ljava/util/Map;

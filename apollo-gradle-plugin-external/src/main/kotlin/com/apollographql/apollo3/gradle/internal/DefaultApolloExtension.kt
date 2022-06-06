@@ -121,7 +121,7 @@ abstract class DefaultApolloExtension(
             && defaultService.codegenModels.isPresent.not()
             && defaultService.addTypename.isPresent.not()
             && defaultService.generateFragmentImplementations.isPresent.not()
-            && defaultService.experimentalAnnotation.isPresent.not()
+            && defaultService.requiresOptInAnnotation.isPresent.not()
         ) {
           """
             Configuring the default service is ignored if you specify other services, remove your configuration from the root of the apollo {} block:
@@ -569,7 +569,7 @@ abstract class DefaultApolloExtension(
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
-      task.experimentalAnnotation.set(service.experimentalAnnotation)
+      task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)
     }
   }
 

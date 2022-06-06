@@ -30,7 +30,7 @@ class KotlinResolver(
     entries: List<ResolverEntry>,
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
-    private val experimentalAnnotation: String?
+    private val requiresOptInAnnotation: String?
 ) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
@@ -242,10 +242,10 @@ class KotlinResolver(
 
   fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
   fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)
-  fun resolveExperimentalAnnotation(): ClassName? {
-    if (experimentalAnnotation == "none") {
+  fun resolveRequiresOptInAnnotation(): ClassName? {
+    if (requiresOptInAnnotation == "none") {
       return null
     }
-    return experimentalAnnotation?.let { ClassName.bestGuess(it) }
+    return requiresOptInAnnotation?.let { ClassName.bestGuess(it) }
   }
 }

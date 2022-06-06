@@ -202,7 +202,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val experimentalAnnotation: Property<String>
+  abstract val requiresOptInAnnotation: Property<String>
 
   @TaskAction
   fun taskAction() {
@@ -302,7 +302,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
-        experimentalAnnotation = experimentalAnnotation.getOrElse(defaultExperimentalAnnotation),
+        requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultExperimentalAnnotation),
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

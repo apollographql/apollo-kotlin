@@ -46,7 +46,7 @@ data class IrEnum(
       val targetName: String,
       val description: String?,
       val deprecationReason: String?,
-      val experimentalReason: String?,
+      val optInFeature: String?,
   )
 }
 
@@ -62,7 +62,7 @@ data class IrInputField(
     val name: String,
     val description: String?,
     val deprecationReason: String?,
-    val experimentalReason: String?,
+    val optInFeature: String?,
     val type: IrType,
     val defaultValue: IrValue?,
 )
@@ -129,7 +129,7 @@ data class IrFieldInfo(
      * from the fieldDefinition directives
      */
     val deprecationReason: String?,
-    val experimentalReason: String?,
+    val optInFeature: String?,
 )
 
 sealed class IrAccessor {

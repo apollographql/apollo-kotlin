@@ -15,7 +15,7 @@ class NamedType(
     val graphQlName: String,
     val description: String?,
     val deprecationReason: String?,
-    val experimentalReason: String?,
+    val optInFeature: String?,
     val type: IrType,
 )
 
@@ -29,7 +29,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
       )
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
-      .maybeAddExperimental(context.resolver, experimentalReason)
+      .maybeAddExperimental(context.resolver, optInFeature)
       .applyIf(type.isOptional()) { defaultValue("%T", KotlinSymbols.Absent) }
       .build()
 }
@@ -40,7 +40,7 @@ fun IrInputField.toNamedType() = NamedType(
     type = type,
     description = description,
     deprecationReason = deprecationReason,
-    experimentalReason = experimentalReason
+    optInFeature = optInFeature
 )
 
 fun IrVariable.toNamedType() = NamedType(
@@ -48,7 +48,7 @@ fun IrVariable.toNamedType() = NamedType(
     type = type,
     description = null,
     deprecationReason = null,
-    experimentalReason = null
+    optInFeature = null
 )
 
 

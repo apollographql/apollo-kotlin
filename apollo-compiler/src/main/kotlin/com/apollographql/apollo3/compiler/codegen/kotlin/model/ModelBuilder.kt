@@ -60,7 +60,7 @@ class ModelBuilder(
           .applyIf(it.override) { addModifiers(KModifier.OVERRIDE) }
           .maybeAddDescription(it.info.description)
           .maybeAddDeprecation(it.info.deprecationReason)
-          .maybeAddExperimental(context.resolver, it.info.experimentalReason)
+          .maybeAddExperimental(context.resolver, it.info.optInFeature)
           .build()
     }
 

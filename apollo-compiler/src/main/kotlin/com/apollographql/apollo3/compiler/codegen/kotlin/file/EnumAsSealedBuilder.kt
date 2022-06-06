@@ -77,7 +77,7 @@ class EnumAsSealedBuilder(
     return TypeSpec.objectBuilder(layout.enumAsSealedClassValueName(targetName))
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
-        .maybeAddExperimental(context.resolver, experimentalReason)
+        .maybeAddExperimental(context.resolver, optInFeature)
         .superclass(superClass)
         .addSuperclassConstructorParameter("rawValue·=·%S", name)
         .build()

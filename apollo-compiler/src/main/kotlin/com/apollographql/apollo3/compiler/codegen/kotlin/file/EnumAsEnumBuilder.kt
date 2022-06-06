@@ -104,7 +104,7 @@ class EnumAsEnumBuilder(
   private fun IrEnum.Value.enumConstTypeSpec(): TypeSpec {
     return TypeSpec.anonymousClassBuilder()
         .maybeAddDeprecation(deprecationReason)
-        .maybeAddExperimental(context.resolver, experimentalReason)
+        .maybeAddExperimental(context.resolver, optInFeature)
         .maybeAddDescription(description)
         .addSuperclassConstructorParameter("%S", name)
         .build()

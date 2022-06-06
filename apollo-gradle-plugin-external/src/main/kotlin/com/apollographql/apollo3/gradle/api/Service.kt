@@ -357,8 +357,6 @@ interface Service {
    * of compilation speed for large projects. If that's the case, opt-in the types that are used by multiple dependent modules here.
    * You don't need to add types that are used by a single dependent module.
    *
-   * This is currently experimental and this API might change in the future.
-   *
    * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
    */
   val alwaysGenerateTypesMatching: SetProperty<String>
@@ -519,16 +517,17 @@ interface Service {
   val sealedClassesForEnumsMatching: ListProperty<String>
 
   /**
-   * The annotation to use for experimental fields/inputFields/enumValues
+   * The annotation to use for `@requiresOptIn` fields/inputFields/enumValues
    *
    * You can pass the special value "none" to disable adding an annotation.
    * If you're using a custom annotation, it must be able to target:
    * - AnnotationTarget.PROPERTY
    * - AnnotationTarget.CLASS
    *
-   * Default: "com.apollographql.apollo3.annotations.Experimental"
+   * Default: "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
    */
-  val experimentalAnnotation: Property<String>
+  @ApolloExperimental
+  val requiresOptInAnnotation: Property<String>
 
   /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen

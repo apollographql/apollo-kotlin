@@ -53,7 +53,7 @@ internal class OperationBasedModelGroupBuilder(
         description = null,
         type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
-        experimentalReason = null,
+        optInFeature = null,
         gqlType = GQLNonNullType(type = GQLNamedType(name = rawTypeName)),
     )
 
@@ -92,7 +92,7 @@ internal class OperationBasedModelGroupBuilder(
         description = null,
         type = IrNonNullType(IrModelType(MODEL_UNKNOWN)),
         deprecationReason = null,
-        experimentalReason = null,
+        optInFeature = null,
         gqlType = GQLNonNullType(type = fragmentDefinition.typeCondition),
     )
 
@@ -256,7 +256,7 @@ internal class OperationBasedModelGroupBuilder(
                     responseName = "$prefix$name",
                     description = "Synthetic field for inline fragment on $typeCondition",
                     deprecationReason = null,
-                    experimentalReason = null,
+                    optInFeature = null,
                     type = type,
                     gqlType = null,
                 )
@@ -324,7 +324,7 @@ internal class OperationBasedModelGroupBuilder(
               responseName = first.name.decapitalizeFirstLetter().escapeKotlinReservedWord(),
               description = "Synthetic field for '${first.name}'",
               deprecationReason = null,
-              experimentalReason = null,
+              optInFeature = null,
               type = type,
               gqlType = null,
           )
@@ -354,7 +354,7 @@ internal class OperationBasedModelGroupBuilder(
           responseName = FRAGMENTS_SYNTHETIC_FIELD,
           description = "Synthetic field for grouping fragments",
           deprecationReason = null,
-          experimentalReason = null,
+          optInFeature = null,
           type = IrNonNullType(IrModelType(childPath)),
           gqlType = null,
       )

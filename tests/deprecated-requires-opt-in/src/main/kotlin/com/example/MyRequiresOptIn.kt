@@ -2,7 +2,7 @@ package com.example
 
 @RequiresOptIn(
     level = RequiresOptIn.Level.WARNING,
-    message = "Don't touch this"
+    message = "Apollo: This symbol requires opt-in"
 )
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
-annotation class MyExperimental
+annotation class MyRequiresOptIn
