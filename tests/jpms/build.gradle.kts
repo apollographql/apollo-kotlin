@@ -21,9 +21,9 @@ application {
 }
 
 afterEvaluate {
-  java {
-    sourceCompatibility = JavaVersion.VERSION_1_9
-    targetCompatibility = JavaVersion.VERSION_1_9
+  project.tasks.withType(JavaCompile::class.java).configureEach {
+    // Override the default. JPMS is only available with Java9+
+    options.release.set(9)
   }
 }
 apollo {
