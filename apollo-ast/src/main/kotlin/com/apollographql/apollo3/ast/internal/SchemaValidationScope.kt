@@ -107,7 +107,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
          * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
          * graphql operations for schemas
          */
-        issues.add(Issue.ValidationError("Found an executable definition. Schemas should only contain.", gqlDefinition.sourceLocation))
+        issues.add(Issue.ValidationError("Found an executable definition. Schemas should only contain type system definitions.", gqlDefinition.sourceLocation))
       }
     }
   }
