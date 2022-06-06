@@ -1,0 +1,6 @@
+query TestQuery {
+    # The schema defines @nonnull with a 'required' argument but this still validates
+    field @nonnull
+    # This fails to validate
+    alias: field @nonnull(toto: "foo")
+}

@@ -44,16 +44,9 @@ fun builtinDefinitions() = definitionsFromResources("builtins.graphqls")
 fun linkDefinitions() = definitionsFromResources("link.graphqls")
 
 /**
- * Extra apollo specific definitions
+ * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/v0.1
  */
-@Deprecated("These definitions were added unconditionally, use `labsDefinitions()` instead that support " +
-    "importing/renaming", ReplaceWith("labsDefinitions()"))
 fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
-
-/**
- * Incubating definitions from https://specs.apollo.dev/kotlin_labs/v0.1
- */
-internal fun labsDefinitions() = definitionsFromResources("apollo.graphqls") + definitionsFromResources("labs.graphqls")
 
 private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!
@@ -94,7 +87,7 @@ internal enum class ConflictResolution {
   TakeLeft
 }
 
-internal fun mergeDefinitions(left: List<GQLDefinition>, right: List<GQLDefinition>, conflictResolution: ConflictResolution): List<GQLDefinition> {
+internal fun combineDefinitions(left: List<GQLDefinition>, right: List<GQLDefinition>, conflictResolution: ConflictResolution): List<GQLDefinition> {
   val mergedDefinitions = left.toMutableList()
 
   right.forEach { builtInTypeDefinition ->
@@ -125,6 +118,6 @@ internal fun mergeDefinitions(left: List<GQLDefinition>, right: List<GQLDefiniti
  */
 private fun GQLDocument.withDefinitions(definitions: List<GQLDefinition>): GQLDocument {
   return copy(
-      definitions = mergeDefinitions(this.definitions, definitions, ConflictResolution.TakeLeft)
+      definitions = combineDefinitions(this.definitions, definitions, ConflictResolution.TakeLeft)
   )
 }

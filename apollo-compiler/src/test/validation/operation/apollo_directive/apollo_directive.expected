@@ -1,0 +1,5 @@
+ERROR: ValidationError (5:26)
+Unknown argument `toto` on directive 'nonnull'
+------------
+ERROR: ValidationError (5:17)
+'GQLDirective(sourceLocation=(5:17), name=nonnull, arguments=GQLArguments(arguments=[GQLArgument(sourceLocation=(5:26), name=toto, value=GQLStringValue(sourceLocation=(5:32), value=foo))], sourceLocation=(5:25))).name' cannot have arguments when applied on a field

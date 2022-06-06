@@ -132,7 +132,7 @@ internal fun ValidationScope.validateDirective(
   if (directiveDefinition == null) {
     // TODO: make this an error
     registerIssue(
-        message = "Unknown directive '${directive.name}'",
+        message = "Unknown directive '@${directive.name}'",
         sourceLocation = directive.sourceLocation,
         details = ValidationDetails.UnknownDirective,
         severity = Issue.Severity.WARNING
@@ -267,7 +267,7 @@ internal fun ValidationScope.validateArguments(
         // This will be caught later when validating individual arguments
         // registerIssue((message = "Cannot pass `null` for a required argument", sourceLocation = argumentValue.sourceLocation))
       } else if (argumentValue == null) {
-        registerIssue(message = "No value passed for required argument ${inputValueDefinition.name}", sourceLocation = sourceLocation)
+        registerIssue(message = "No value passed for required argument '${inputValueDefinition.name}'", sourceLocation = sourceLocation)
       }
     }
   }

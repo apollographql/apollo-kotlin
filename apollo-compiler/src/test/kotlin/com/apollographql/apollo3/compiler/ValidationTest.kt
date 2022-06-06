@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.TestUtils.checkExpected
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
 import okio.buffer
@@ -41,7 +42,8 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        val schemaResult = parseResult.valueAssertNoErrors().validateAsSchema()
+        @Suppress("DEPRECATION")
+        val schemaResult = parseResult.valueAssertNoErrors().validateAsSchemaAndAddApolloDefinition()
         schemaResult.issues + if (graphQLFile.name == "reserved-enum-value-names.graphql") {
           checkApolloReservedEnumValueNames(schemaResult.value!!)
         } else {

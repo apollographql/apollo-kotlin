@@ -1,0 +1,6 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "apollo", import: ["@optional", { name: "@nonnull", as: "@my_nonnull" }])
+
+type Query {
+    field: String
+}
+

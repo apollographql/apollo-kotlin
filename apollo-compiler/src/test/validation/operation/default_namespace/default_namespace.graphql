@@ -1,0 +1,10 @@
+query TestQuery {
+    # Success
+    field @kotlin_labs__nonnull
+
+    # Error: @typePolicy cannot be applied to FIELD
+    field @kotlin_labs__typePolicy(keyFields: "")
+
+    # Warning: unknown directive
+    field @nonnull
+}

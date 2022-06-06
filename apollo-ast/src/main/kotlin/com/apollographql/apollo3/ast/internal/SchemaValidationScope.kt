@@ -2,15 +2,15 @@ package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
-import com.apollographql.apollo3.ast.Schema.Companion.FIELD_POLICY
-import com.apollographql.apollo3.ast.Schema.Companion.NONNULL
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 
 @Suppress("UNCHECKED_CAST")
 internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
   val builtinDefinitions = builtinDefinitions()
-  var allDefinitions = mergeDefinitions(definitions, builtinDefinitions, ConflictResolution.TakeLeft)
+
+  // If the builtin definitions are already in the schema, keep them
+  var allDefinitions = combineDefinitions(definitions, builtinDefinitions, ConflictResolution.TakeLeft)
 
   val foreignSchemas = allDefinitions.filterIsInstance<GQLSchemaExtension>()
       .getForeignSchemas(issues, builtinDefinitions)
@@ -18,6 +18,9 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   var foreignDefinitions = foreignSchemas.flatMap { it.definitions }
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
+
+  @Suppress("DEPRECATION")
+  val apolloDefinitions = apolloDefinitions()
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     println("""
@@ -30,16 +33,18 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       See https://specs.apollo.dev/link/v1.0/ for more information
       """.trimIndent())
 
-    @Suppress("DEPRECATION")
-    val apolloDefinitions = apolloDefinitions()
     /**
      * Strip all directives. This will also strip schema directives like @typePolicy that should never appear in executable
      * documents
      */
     directivesToStrip = directivesToStrip + apolloDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
-    foreignDefinitions = foreignDefinitions + apolloDefinitions
+
+    /**
+     * Put apolloDefinitions first so that they override the user one in the case of a conflict
+     */
+    foreignDefinitions = apolloDefinitions + foreignDefinitions
   }
-  allDefinitions = allDefinitions + foreignDefinitions
+  allDefinitions =  foreignDefinitions + allDefinitions
 
   val directiveDefinitions = mutableMapOf<String, GQLDirectiveDefinition>()
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
@@ -56,26 +61,30 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         }
       }
       is GQLDirectiveDefinition -> {
-        val existing = typeDefinitions[gqlDefinition.name]
+        val existing = directiveDefinitions[gqlDefinition.name]
         if (existing != null) {
+          var severity: Issue.Severity = Issue.Severity.ERROR
           val message = buildString {
-            "Directive '${gqlDefinition.name} is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}"
-            if (gqlDefinition.name in setOf(TYPE_POLICY, FIELD_POLICY, "optional", NONNULL)) {
+            append("Directive '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}")
+            if (gqlDefinition.name in apolloDefinitions.mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()) {
               appendLine()
               append("""
-                 Use '@link' to prefix the apollo. Create a 'extra.graphqls' file next to your schema and import the definitions:
+                 Create a 'extra.graphqls' file next to your schema and import the definitions with a prefix:
                  
                  extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "apollo")
       
-                See https://specs.apollo.dev/link/v1.0/ for more information
+                 See https://specs.apollo.dev/link/v1.0/ for more information
               """.trimIndent())
+
+              // We override the definition to stay compatible with previous versions
+              severity = Issue.Severity.WARNING
             }
           }
           issues.add(
               Issue.ValidationError(
                   message = message,
                   sourceLocation = gqlDefinition.sourceLocation,
-                  severity = Issue.Severity.ERROR
+                  severity = severity
               )
           )
         } else {
@@ -85,7 +94,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
       is GQLTypeDefinition -> {
         val existing = typeDefinitions[gqlDefinition.name]
         if (existing != null) {
-          issues.add(Issue.ValidationError("Type '${gqlDefinition.name} is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
+          issues.add(Issue.ValidationError("Type '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}", gqlDefinition.sourceLocation))
         } else {
           typeDefinitions[gqlDefinition.name] = gqlDefinition
         }
@@ -290,7 +299,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
 
 
         if (foreignName == "kotlin_labs") {
-          val (definitions, renames) = labsDefinitions().rename(mappings, prefix)
+          val (definitions, renames) = apolloDefinitions().rename(mappings, prefix)
           foreignSchemas.add(
               ForeignSchema(
                   name = foreignName,
