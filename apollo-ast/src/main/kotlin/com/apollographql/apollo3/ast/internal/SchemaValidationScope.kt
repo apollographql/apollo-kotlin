@@ -250,7 +250,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
 
         var components = url.split("/")
         if (components.last().isBlank()) {
-          // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0
+          // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/
           components = components.dropLast(1)
         } else if (components.last().startsWith("?")) {
           // https://spec.example.com/a/b/c/mySchemanameidentity/v1.0/?key=val&k2=v2#frag
