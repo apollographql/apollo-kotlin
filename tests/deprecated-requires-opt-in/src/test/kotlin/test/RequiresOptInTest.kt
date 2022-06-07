@@ -15,6 +15,7 @@ import default.type.SomeInput as SomeInputDefault
 import custom.type.SomeInput as SomeInputCustom
 
 import org.junit.Test
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class RequiresOptInTest {
@@ -84,13 +85,13 @@ class RequiresOptInTest {
 
     val defaultInputClass = SomeInputDefault::class.java
     val defaultInputAnnotationsMethod = defaultInputClass.declaredMethods.firstOrNull { it.name == "getNewInputField${'$'}annotations" }
-    assertTrue(defaultInputAnnotationsMethod?.declaredAnnotations?.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"} == true)
+    assertFalse(defaultInputAnnotationsMethod?.declaredAnnotations?.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"} == true)
 
     val customInputClass = SomeInputCustom::class.java
     val customInputAnnotationsMethod = customInputClass.declaredMethods.firstOrNull { it.name == "getNewInputField${'$'}annotations" }
     assertTrue(customInputAnnotationsMethod?.declaredAnnotations?.any { it.annotationClass.simpleName == "MyRequiresOptIn"} == true)
 
-    assertTrue(DirectionDefault.NORTH.javaClass.getField("NORTH").declaredAnnotations.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"})
+    assertFalse(DirectionDefault.NORTH.javaClass.getField("NORTH").declaredAnnotations.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"})
     assertTrue(DirectionCustom.NORTH.javaClass.getField("NORTH").declaredAnnotations.any { it.annotationClass.simpleName == "MyRequiresOptIn"})
 
     val noneClass = GetNewFieldQueryNone.Data::class.java
@@ -99,7 +100,7 @@ class RequiresOptInTest {
 
     val defaultClass = GetNewFieldQueryDefault.Data::class.java
     val defaultAnnotationsMethod = defaultClass.declaredMethods.firstOrNull { it.name == "getNewField${'$'}annotations" }
-    assertTrue(defaultAnnotationsMethod?.declaredAnnotations?.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"} == true)
+    assertFalse(defaultAnnotationsMethod?.declaredAnnotations?.any { it.annotationClass.simpleName == "ApolloRequiresOptIn"} == true)
 
     val customClass = GetNewFieldQueryCustom.Data::class.java
     val customAnnotationsMethod = customClass.declaredMethods.firstOrNull { it.name == "getNewField${'$'}annotations" }
