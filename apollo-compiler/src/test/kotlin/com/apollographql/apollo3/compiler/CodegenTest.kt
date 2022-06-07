@@ -4,7 +4,9 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLNode
+import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
@@ -20,7 +22,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
@@ -343,12 +344,16 @@ class CodegenTest {
         else -> defaultAddJvmOverloads
       }
 
+      val packageName = "com.example.${folder.name}"
+      val outputDir = File("build/generated/test/${folder.name}/$targetLanguagePath/$codegenModels/")
+
       return Options(
           executableFiles = graphqlFiles,
-          schemaFile = schemaFile,
-          outputDir = File("build/generated/test/${folder.name}/$targetLanguagePath/$codegenModels/"),
-          packageName = "com.example.${folder.name}"
-      ).copy(
+          schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors(),
+          outputDir = outputDir,
+          testDir = outputDir,
+          schemaPackageName = packageName,
+          packageNameGenerator = PackageNameGenerator.Flat(packageName),
           operationOutputGenerator = operationOutputGenerator,
           scalarMapping = customScalarsMapping,
           codegenModels = codegenModels,

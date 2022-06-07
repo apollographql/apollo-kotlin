@@ -1,2 +1,2 @@
-WARNING: ValidationError (3:9)
-Unknown directive 'required'
+WARNING: ValidationError (4:9)
+Unknown directive '@required'

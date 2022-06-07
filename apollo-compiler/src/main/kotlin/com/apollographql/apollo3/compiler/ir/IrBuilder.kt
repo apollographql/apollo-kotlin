@@ -46,7 +46,6 @@ import com.apollographql.apollo3.ast.findExperimentalReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
-import com.apollographql.apollo3.ast.isApollo
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.optionalValue
@@ -283,7 +282,7 @@ internal class IrBuilder(
    */
   private fun GQLNode.formatToString(): String {
     return transform {
-      if (it is GQLDirective && it.isApollo()) {
+      if (it is GQLDirective && schema.shouldStrip(it.name)) {
         TransformResult.Delete
       } else {
         TransformResult.Continue
@@ -413,7 +412,7 @@ internal class IrBuilder(
         // We default to add the [Optional] wrapper, but this can be overridden by the user globally or individually
         // with the @optional directive.
 
-        val makeOptional = directives.optionalValue() ?: generateOptionalOperationVariables
+        val makeOptional = directives.optionalValue(schema) ?: generateOptionalOperationVariables
         if (makeOptional) {
           irType = irType.makeOptional()
         }
@@ -494,7 +493,7 @@ internal class IrBuilder(
       check(fieldDefinition != null) {
         "cannot find field definition for field '${gqlField.responseName()}' of type '${typeDefinition.name}'"
       }
-      val forceNonNull = gqlField.directives.findNonnull() || typeDefinition.isFieldNonNull(gqlField.name)
+      val forceNonNull = gqlField.directives.findNonnull(schema) || typeDefinition.isFieldNonNull(gqlField.name, schema)
 
       CollectedField(
           name = gqlField.name,
@@ -506,7 +505,7 @@ internal class IrBuilder(
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
           experimentalReason = fieldDefinition.directives.findExperimentalReason(),
           forceNonNull = forceNonNull,
-          forceOptional = gqlField.directives.optionalValue() == true,
+          forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
       )
     }.groupBy {

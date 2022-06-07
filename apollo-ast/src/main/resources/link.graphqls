@@ -1,0 +1,14 @@
+# https://specs.apollo.dev/link/v1.0/
+scalar Import
+
+enum Purpose {
+  EXECUTION,
+  SECURITY
+}
+
+directive @link(
+  url: String!,
+  as: String,
+  import: [Import],
+  for: Purpose
+) repeatable on SCHEMA

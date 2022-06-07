@@ -1,5 +1,6 @@
 query HeroName {
   hero {
+    # WARNING: '@required' is not defined by the schema
     name @required
   }
 }

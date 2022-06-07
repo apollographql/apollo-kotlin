@@ -1,0 +1,6 @@
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1")
+
+type Query {
+    field: String
+}
+

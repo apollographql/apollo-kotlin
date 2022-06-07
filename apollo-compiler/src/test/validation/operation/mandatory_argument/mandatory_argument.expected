@@ -1,2 +1,2 @@
 ERROR: ValidationError (2:4)
-No value passed for required argument input
+No value passed for required argument 'input'

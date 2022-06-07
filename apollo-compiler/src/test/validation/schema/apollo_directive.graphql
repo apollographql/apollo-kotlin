@@ -1,0 +1,6 @@
+type Query {
+    field: String
+}
+
+# A directive that clashes with some of the Apollo directives and that will be overridden
+directive @nonnull(required: String!) on FIELD

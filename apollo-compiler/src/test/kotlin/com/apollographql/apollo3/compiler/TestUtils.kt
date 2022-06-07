@@ -2,6 +2,9 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import java.io.File
@@ -68,7 +71,7 @@ internal object TestUtils {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
-          it.toSchema()
+          it.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors()
         }
   }
 

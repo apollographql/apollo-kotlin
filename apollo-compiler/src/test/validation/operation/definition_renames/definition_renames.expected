@@ -1,0 +1,2 @@
+ERROR: ValidationError (5:18)
+Directive 'apollo__typePolicy' cannot be applied on 'FIELD'

@@ -4,9 +4,8 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.apolloDefinitions
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
+import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import java.io.File
 
 
@@ -45,11 +44,14 @@ class IncomingOptions(
 
       val schemaDefinitions = schemaDocuments.flatMap { it.definitions }
       val schemaDocument = GQLDocument(
-          definitions = schemaDefinitions + apolloDefinitions(),
+          definitions = schemaDefinitions,
           filePath = null
       )
 
-      return schemaDocument.validateAsSchema().valueAssertNoErrors() to mainSchemaDocument.filePath!!
+      /**
+       * TODO: use `validateAsSchema` to not automatically add the apollo definitions
+       */
+      return schemaDocument.validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors() to mainSchemaDocument.filePath!!
     }
   }
 }

@@ -1,4 +1,2 @@
-ERROR: ValidationError (5:0)
-type 'Field' is defined multiple times:
-duplicate-type.graphql: (5, 1)
-duplicate-type.graphql: (9, 1)
+ERROR: ValidationError (9:0)
+Type 'Field' is defined multiple times. First definition is: duplicate-type.graphql: (5, 1)

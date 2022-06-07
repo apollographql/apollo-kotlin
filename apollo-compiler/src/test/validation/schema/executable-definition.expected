@@ -1,5 +1,5 @@
 ERROR: ValidationError (1:0)
-Found an executable definition. Schemas should not contain operations or fragments.
+Found an executable definition. Schemas should only contain type system definitions.
 ------------
 ERROR: ValidationError (-1:-1)
 No schema definition and not 'Query' type found

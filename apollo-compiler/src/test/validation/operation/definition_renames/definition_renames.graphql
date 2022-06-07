@@ -1,0 +1,6 @@
+query TestQuery {
+    field @optional
+    alias1: field @my_nonnull
+    # ERROR: cannot be applied on FIELD
+    alias2: field @apollo__typePolicy
+}

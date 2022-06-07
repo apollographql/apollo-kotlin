@@ -1,0 +1,7 @@
+# Fails with duplicate directive, see also apollo_directive.graphql
+type Query {
+  random: Int!
+}
+
+directive @foo(arg: String!) on INTERFACE
+directive @foo on OBJECT

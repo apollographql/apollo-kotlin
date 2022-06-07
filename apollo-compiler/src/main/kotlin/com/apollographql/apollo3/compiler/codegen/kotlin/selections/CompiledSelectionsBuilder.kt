@@ -293,7 +293,7 @@ class CompiledSelectionsBuilder(
     }
 
     val typeDefinition = schema.typeDefinition(parentType)
-    val keyArgs = typeDefinition.keyArgs(fieldName)
+    val keyArgs = typeDefinition.keyArgs(fieldName, schema)
 
     val builder = CodeBlock.builder()
     builder.add("listOf(\n")

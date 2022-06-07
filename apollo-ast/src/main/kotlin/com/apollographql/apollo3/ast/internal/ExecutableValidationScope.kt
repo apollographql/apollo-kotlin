@@ -47,16 +47,19 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 internal class ExecutableValidationScope(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
-) : ValidationScope, VariableReferencesScope {
+) : ValidationScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
+
+  override val foreignNames: Map<String, String>
+    get() = schema.foreignNames
 
   override val issues = mutableListOf<Issue>()
 
   /**
    * As the tree is walked, variable references will be put here
    */
-  override val variableUsages = mutableListOf<VariableUsage>()
+  private val variableUsages = mutableListOf<VariableUsage>()
 
   private val deferDirectiveLabels = mutableMapOf<String, SourceLocation>()
   private val deferDirectivePathAndLabels = mutableMapOf<String, SourceLocation>()
@@ -125,7 +128,9 @@ internal class ExecutableValidationScope(
         sourceLocation,
         fieldDefinition.arguments,
         "field `${fieldDefinition.name}`"
-    )
+    ) {
+      variableUsages.add(it)
+    }
 
     val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
 
@@ -159,7 +164,9 @@ internal class ExecutableValidationScope(
     }
 
     directives.forEach {
-      validateDirective(it, this)
+      validateDirective(it, this) {
+        variableUsages.add(it)
+      }
     }
   }
 
@@ -185,7 +192,9 @@ internal class ExecutableValidationScope(
     selectionSet.validate(inlineFragmentTypeDefinition, this@validate, path)
 
     directives.forEach {
-      validateDirective(it, this)
+      validateDirective(it, this) {
+        variableUsages.add(it)
+      }
       if (it.name == "experimental_defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }
@@ -220,7 +229,9 @@ internal class ExecutableValidationScope(
     fragmentDefinition.selectionSet.validate(fragmentTypeDefinition, this@validate, path)
 
     directives.forEach {
-      validateDirective(it, this)
+      validateDirective(it, this) {
+        variableUsages.add(it)
+      }
       if (it.name == "experimental_defer" && !path.startsWith('-')) it.validateDeferDirective(selectionSetParent, path)
     }
   }

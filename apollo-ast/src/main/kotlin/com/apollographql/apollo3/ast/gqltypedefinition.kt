@@ -1,5 +1,8 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.ast.Schema.Companion.NONNULL
 import com.apollographql.apollo3.ast.internal.buffer
 
 // 5.5.2.3 Fragment spread is possible
@@ -11,12 +14,17 @@ fun GQLTypeDefinition.possibleTypes(schema: Schema): Set<String> {
   return schema.possibleTypes(this)
 }
 
-fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean {
+@Deprecated("This method is for use in Apollo Kotlin only, please file an issue if you need it")
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
+fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean = isFieldNonNull(fieldName, null)
+
+@ApolloInternal
+fun GQLTypeDefinition.isFieldNonNull(fieldName: String, schema: Schema? = null): Boolean {
   val directive = when (this) {
     is GQLObjectTypeDefinition -> directives
     is GQLInterfaceTypeDefinition -> directives
     else -> return false
-  }.firstOrNull { it.name == "nonnull" }
+  }.firstOrNull { (schema?.originalDirectiveName(it.name) ?: it.name) == NONNULL }
 
   if (directive == null) {
     return false
