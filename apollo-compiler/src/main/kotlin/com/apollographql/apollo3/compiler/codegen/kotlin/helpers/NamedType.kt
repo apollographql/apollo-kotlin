@@ -29,7 +29,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
       )
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
-      .maybeAddExperimental(context.resolver, optInFeature)
+      .maybeAddRequiresOptIn(context.resolver, optInFeature)
       .applyIf(type.isOptional()) { defaultValue("%T", KotlinSymbols.Absent) }
       .build()
 }

@@ -55,7 +55,7 @@ internal fun ParameterSpec.Builder.maybeAddDeprecation(deprecationReason: String
   return addAnnotation(deprecatedAnnotation(deprecationReason))
 }
 
-internal fun TypeSpec.Builder.maybeAddExperimental(resolver: KotlinResolver, optInFeature: String?): TypeSpec.Builder {
+internal fun TypeSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): TypeSpec.Builder {
   if (optInFeature.isNullOrBlank()) {
     return this
   }
@@ -64,7 +64,7 @@ internal fun TypeSpec.Builder.maybeAddExperimental(resolver: KotlinResolver, opt
   return addAnnotation(AnnotationSpec.builder(annotation).build())
 }
 
-internal fun PropertySpec.Builder.maybeAddExperimental(resolver: KotlinResolver, optInFeature: String?): PropertySpec.Builder {
+internal fun PropertySpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): PropertySpec.Builder {
   if (optInFeature.isNullOrBlank()) {
     return this
   }
@@ -73,7 +73,7 @@ internal fun PropertySpec.Builder.maybeAddExperimental(resolver: KotlinResolver,
   return addAnnotation(AnnotationSpec.builder(annotation).build())
 }
 
-internal fun ParameterSpec.Builder.maybeAddExperimental(resolver: KotlinResolver, optInFeature: String?): ParameterSpec.Builder {
+internal fun ParameterSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolver, optInFeature: String?): ParameterSpec.Builder {
   if (optInFeature.isNullOrBlank()) {
     return this
   }
