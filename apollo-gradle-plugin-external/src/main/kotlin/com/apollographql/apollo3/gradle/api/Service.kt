@@ -519,6 +519,8 @@ interface Service {
   /**
    * The annotation to use for `@requiresOptIn` fields/inputFields/enumValues
    *
+   * This API is itself experimental and may change without advance notice
+   *
    * You can pass the special value "none" to disable adding an annotation.
    * If you're using a custom annotation, it must be able to target:
    * - AnnotationTarget.PROPERTY

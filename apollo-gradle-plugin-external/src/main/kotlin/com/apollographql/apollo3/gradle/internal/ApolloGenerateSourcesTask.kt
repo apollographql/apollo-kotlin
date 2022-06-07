@@ -14,7 +14,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloa
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
-import com.apollographql.apollo3.compiler.Options.Companion.defaultExperimentalAnnotation
+import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
@@ -302,7 +302,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
-        requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultExperimentalAnnotation),
+        requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

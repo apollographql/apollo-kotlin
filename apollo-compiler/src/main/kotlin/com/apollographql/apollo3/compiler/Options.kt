@@ -188,7 +188,7 @@ class Options(
      */
     val addJvmOverloads: Boolean = false,
     val addTypename: String = defaultAddTypename,
-    val requiresOptInAnnotation: String? = defaultExperimentalAnnotation
+    val requiresOptInAnnotation: String? = defaultRequiresOptInAnnotation
 ) {
 
   /**
@@ -300,7 +300,7 @@ class Options(
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
-    const val defaultExperimentalAnnotation = "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+    const val defaultRequiresOptInAnnotation = "none"
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
