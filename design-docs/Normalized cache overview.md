@@ -2,7 +2,7 @@
 
 This lists and describes the main concepts and components of the normalized cache.
 
-## Normalization, `Normalizer`, `Record`
+## Normalization
 
 Normalization is the process of converting a _hierarchical_ key-value data structure into a _flat_ key-record data structure.
 
@@ -113,6 +113,8 @@ An example:
 
 In this example we can see an advantage of normalization: both launches `109` and `108` reference the same mission `Starlink-15`, which is stored only once.
 
+### `Record`
+
 Each **record** is a key-value map, where the values can be:
 - null
 - scalar
@@ -123,7 +125,7 @@ Note: scalars can be maps when they are custom scalars.
 
 They are represented by the `Record` class - essentially a `Map<String, Any?>`.
 
-### Normalizer
+### `Normalizer`
 
 The normalization process is implemented in the `Normalizer` class. It is instantiated by `ApolloStore` when writing to the cache, the resulting `Record`s are then passed to the `NormalizedCache`.
 
@@ -261,16 +263,16 @@ Cache Interceptor ->> ApolloStore: readOperation
 ApolloStore ->> Cache Batch Reader: toMap
 Cache Batch Reader ->> Cache Resolver: resolve
 
-Cache Resolver -->> Cache Batch Reader: `CacheKey`
+Cache Resolver -->> Cache Batch Reader: CacheKey
 
 Cache Batch Reader ->> Normalized Cache: loadRecords
 
-Normalized Cache -->> Cache Batch Reader: `Collection<Record>`
+Normalized Cache -->> Cache Batch Reader: Collection<Record>
 
-Cache Batch Reader -->> ApolloStore: `Map`
+Cache Batch Reader -->> ApolloStore: Map
 Note right of ApolloStore: Convert the map to a D via Adapter
 
-ApolloStore -->> Cache Interceptor: `D`
+ApolloStore -->> Cache Interceptor: D
 
-Cache Interceptor -->> ApolloClient: `D`
+Cache Interceptor -->> ApolloClient: D
 ```
