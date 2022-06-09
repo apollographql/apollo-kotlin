@@ -2,6 +2,54 @@
 
 This lists and describes the main concepts and components of the normalized cache.
 
+## Overview
+
+### Reading from the cache
+
+```mermaid
+sequenceDiagram
+ApolloClient ->> Cache Interceptor: intercept
+Cache Interceptor ->> ApolloStore: readOperation
+ApolloStore ->> Cache Batch Reader: toMap
+Cache Batch Reader ->> Cache Resolver: resolve
+
+Cache Resolver -->> Cache Batch Reader: CacheKey
+
+Cache Batch Reader ->> Normalized Cache: loadRecords
+
+Normalized Cache -->> Cache Batch Reader: Collection<Record>
+
+Cache Batch Reader -->> ApolloStore: Map
+Note right of ApolloStore: Convert the map to a D via Adapter
+
+ApolloStore -->> Cache Interceptor: D
+
+Cache Interceptor -->> ApolloClient: 
+
+```
+
+### Writing to the cache
+
+```mermaid
+sequenceDiagram
+ApolloClient ->> Cache Interceptor: intercept()
+Cache Interceptor ->> ApolloStore: writeOperation()
+ApolloStore ->> Normalizer: normalize()
+Normalizer ->> Cache Key Generator: cacheKeyForObject
+
+Cache Key Generator -->> Normalizer: CacheKey
+Normalizer -->> ApolloStore: Map<String, Record>
+
+ApolloStore ->> NormalizedCache: merge()
+NormalizedCache -->> ApolloStore: Changed keys: Set<String>
+ApolloStore ->> ApolloStore: publishKeys
+
+ApolloStore -->> Cache Interceptor: Changed keys: Set<String>
+
+Cache Interceptor -->> ApolloClient: 
+
+```
+
 ## Normalization
 
 Normalization is the process of converting a _hierarchical_ key-value data structure into a _flat_ key-record data structure.
@@ -129,6 +177,8 @@ They are represented by the `Record` class - essentially a `Map<String, Any?>`.
 
 The normalization process is implemented in the `Normalizer` class. It is instantiated by `ApolloStore` when writing to the cache, the resulting `Record`s are then passed to the `NormalizedCache`.
 
+The `normalize()` method returns a `Map<String, Record>`.
+
 ## Cache
 
 ### `NormalizedCache`
@@ -252,27 +302,3 @@ Is instantiated and set when calling `ApolloClient.Builder` `.store` or `.normal
 ### `WatcherInterceptor`
 
 Uses `ApolloStore.changedKeys` to monitor changes in the cache. At each change, it proceeds to the next interceptor, which is `ApolloCacheInterceptor`.
-
-
-## Sequence diagram: reading the cache
-
-```mermaid
-sequenceDiagram
-ApolloClient ->> Cache Interceptor: intercept
-Cache Interceptor ->> ApolloStore: readOperation
-ApolloStore ->> Cache Batch Reader: toMap
-Cache Batch Reader ->> Cache Resolver: resolve
-
-Cache Resolver -->> Cache Batch Reader: CacheKey
-
-Cache Batch Reader ->> Normalized Cache: loadRecords
-
-Normalized Cache -->> Cache Batch Reader: Collection<Record>
-
-Cache Batch Reader -->> ApolloStore: Map
-Note right of ApolloStore: Convert the map to a D via Adapter
-
-ApolloStore -->> Cache Interceptor: D
-
-Cache Interceptor -->> ApolloClient: D
-```
