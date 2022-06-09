@@ -8,14 +8,14 @@ This lists and describes the main concepts and components of the normalized cach
 
 ```mermaid
 sequenceDiagram
-ApolloClient ->> Cache Interceptor: intercept
-Cache Interceptor ->> ApolloStore: readOperation
-ApolloStore ->> Cache Batch Reader: toMap
-Cache Batch Reader ->> Cache Resolver: resolve
+ApolloClient ->> Cache Interceptor: intercept()
+Cache Interceptor ->> ApolloStore: readOperation()
+ApolloStore ->> Cache Batch Reader: toMap()
+Cache Batch Reader ->> Cache Resolver: resolve()
 
 Cache Resolver -->> Cache Batch Reader: CacheKey
 
-Cache Batch Reader ->> Normalized Cache: loadRecords
+Cache Batch Reader ->> Normalized Cache: loadRecords()
 
 Normalized Cache -->> Cache Batch Reader: Collection<Record>
 
@@ -35,14 +35,14 @@ sequenceDiagram
 ApolloClient ->> Cache Interceptor: intercept()
 Cache Interceptor ->> ApolloStore: writeOperation()
 ApolloStore ->> Normalizer: normalize()
-Normalizer ->> Cache Key Generator: cacheKeyForObject
+Normalizer ->> Cache Key Generator: cacheKeyForObject()
 
 Cache Key Generator -->> Normalizer: CacheKey
 Normalizer -->> ApolloStore: Map<String, Record>
 
 ApolloStore ->> NormalizedCache: merge()
 NormalizedCache -->> ApolloStore: Changed keys: Set<String>
-ApolloStore ->> ApolloStore: publishKeys
+ApolloStore ->> ApolloStore: publishKeys()
 
 ApolloStore -->> Cache Interceptor: Changed keys: Set<String>
 
