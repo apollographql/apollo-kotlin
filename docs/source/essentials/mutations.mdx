@@ -61,7 +61,7 @@ to `ApolloClient#mutation(mutation)` to send the mutation to the server, execute
 
 
 ```kotlin
-val upvotePostMutation = UpvotePostMutation(votes = 3)
+val upvotePostMutation = UpvotePostMutation(postId = 3)
 
 val response = try {
   apolloClient.mutation(upvotePostMutation).execute()
