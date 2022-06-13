@@ -27,8 +27,8 @@ jobs:
           ./gradlew -p tests ciBuild
           ./gradlew dokkaHtmlMultiModule
         env:
-          COM_APOLLOGRAPHQL_VERSION_KOTLIN_PLUGIN: '1.7.0-RC2'
-          COM_APOLLOGRAPHQL_VERSION_KSP_GRADLE_PLUGIN: '1.7.0-RC2-1.0.5'
+          COM_APOLLOGRAPHQL_VERSION_KOTLIN_PLUGIN: '1.7.0'
+          COM_APOLLOGRAPHQL_VERSION_KSP_GRADLE_PLUGIN: '1.7.0-1.0.6'
           COM_APOLLOGRAPHQL_VERSION_KOTLINXDATETIME: '0.3.3'
       - name: Collect Diagnostics
         if: always()
