@@ -3,12 +3,12 @@ Change Log
 
 # Version 3.3.1
 
-_2022-06-??_
+_2022-06-13_
 
 This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test Builders. It also contains a number of other improvements and bug fixes!
 
 ## ✨️ [new] `@typePolicy` on interfaces and unions (#4131)
-[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @_bubba for the contribution!
+[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @bubba for the contribution!
 
 ## 🔌 WebSockets / Subscriptions error handling (#4147)
 An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails due to a specific operation error.
@@ -20,7 +20,7 @@ An issue where `websocketReopenWhen` was not called in some cases was fixed. Als
 * Fix: use `rawValue` instead of `name` for enums (#4121)
 
 ## ✨️ [new] ApolloClient implements Closable (#4142)
-`ApolloClient` now implements `okio.Closable` so you can use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @_yogurtearl for this contribution!
+`ApolloClient` now implements `okio.Closable` so you can use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @yogurtearl for this contribution!
 
 ## ✨️ [new] experimental `@targetName` directive on enum values (#4144)
 If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the codeGen to use the specified name for the value instead. This directive is experimental for now.
@@ -45,7 +45,7 @@ This adds a `@kotlin_labs__` prefix to all Apollo client directives:
 ```
 
 
-## ✨️ `SqlNormalizedCacheFactory` initialization on Android (#4104)
+## 🤖 `SqlNormalizedCacheFactory` initialization on Android (#4104)
 It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context` is automatically provided, via [App Startup](https://developer.android.com/topic/libraries/app-startup).
 
 ```kotlin
@@ -95,9 +95,7 @@ This release starts tracking the public API of all modules, including MockServer
 
 ## ❤️ External contributors
 
-TODO: names escaped to avoid notifying people pre-release
-
-Many thanks to @_tajchert, @_asimonigh, @_hrach, @_ArjanSM, @_yshrsmz, @_ephemient, @_bubba, @_eboudrant and @_yogurtearl for contributing to this release! 🙏
+Many thanks to @tajchert, @asimonigh, @hrach, @ArjanSM, @yshrsmz, @ephemient, @bubba, @eboudrant and @yogurtearl for contributing to this release! 🙏
 
 
 # Version 3.3.0
