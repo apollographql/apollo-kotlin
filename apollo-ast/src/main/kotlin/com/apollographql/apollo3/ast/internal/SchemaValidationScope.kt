@@ -23,19 +23,9 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   val apolloDefinitions = apolloDefinitions()
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
-    println("""
-      Apollo: using '@typePolicy', '@fieldPolicy', '@nonnull' or '@optional' will require importing them
-      to avoid nameclashes in the future. To prepare for that change and remove this warning, create a 
-      'extra.graphqls' file next to your schema and import the definitions:
-      
-      extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@optional", "@nonnull", "@typePolicy", "@fieldPolicy"])
-      
-      See https://specs.apollo.dev/link/v1.0/ for more information
-      """.trimIndent())
-
     /**
-     * Strip all directives. This will also strip schema directives like @typePolicy that should never appear in executable
-     * documents
+     * Strip all the apollo directives from outgoing operation documents.
+     * This will also strip schema directives like @typePolicy that should never appear in executable documents
      */
     directivesToStrip = directivesToStrip + apolloDefinitions.filterIsInstance<GQLDirectiveDefinition>().map { it.name }
 
@@ -64,21 +54,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
         val existing = directiveDefinitions[gqlDefinition.name]
         if (existing != null) {
           var severity: Issue.Severity = Issue.Severity.ERROR
-          val message = buildString {
-            append("Directive '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}")
-            if (gqlDefinition.name in apolloDefinitions.mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()) {
-              appendLine()
-              append("""
-                 Create a 'extra.graphqls' file next to your schema and import the definitions with a prefix:
-                 
-                 extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "apollo")
-      
-                 See https://specs.apollo.dev/link/v1.0/ for more information
-              """.trimIndent())
+          val message = "Directive '${gqlDefinition.name}' is defined multiple times. First definition is: ${existing.sourceLocation.pretty()}"
 
-              // We override the definition to stay compatible with previous versions
-              severity = Issue.Severity.WARNING
-            }
+          if (gqlDefinition.name in apolloDefinitions.mapNotNull { (it as? GQLDirectiveDefinition)?.name }.toSet()) {
+            // We override the definition to stay compatible with previous versions
+            severity = Issue.Severity.WARNING
           }
           issues.add(
               Issue.ValidationError(
