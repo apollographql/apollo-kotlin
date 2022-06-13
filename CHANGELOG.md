@@ -46,7 +46,7 @@ This adds a `@kotlin_labs__` prefix to all Apollo client directives:
 
 
 ## ✨️ `SqlNormalizedCacheFactory` initialization on Android (#4104)
-It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context` is automatically provided, via the use of an [Initializer](https://developer.android.com/topic/libraries/app-startup).
+It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context` is automatically provided, via [App Startup](https://developer.android.com/topic/libraries/app-startup).
 
 ```kotlin
 // Before
