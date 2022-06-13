@@ -52,7 +52,7 @@ private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!
       .source()
       .buffer()
-      .parseAsGQLDocument()
+      .parseAsGQLDocument("($name)")
       .valueAssertNoErrors()
       .definitions
 }

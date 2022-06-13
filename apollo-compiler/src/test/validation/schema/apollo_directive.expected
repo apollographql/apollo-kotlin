@@ -1,7 +1,2 @@
 WARNING: ValidationError (6:0)
-Directive 'nonnull' is defined multiple times. First definition is: null: (19, 1)
-Create a 'extra.graphqls' file next to your schema and import the definitions with a prefix:
-
-extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", as: "apollo")
-
-See https://specs.apollo.dev/link/v1.0/ for more information
+Directive 'nonnull' is defined multiple times. First definition is: (apollo.graphqls): (19, 1)

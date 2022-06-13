@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition
+import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
@@ -51,7 +52,13 @@ class IncomingOptions(
       /**
        * TODO: use `validateAsSchema` to not automatically add the apollo definitions
        */
-      return schemaDocument.validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors() to mainSchemaDocument.filePath!!
+      val result = schemaDocument.validateAsSchemaAndAddApolloDefinition()
+
+      result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
+        // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
+        println("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+      }
+      return result.valueAssertNoErrors() to mainSchemaDocument.filePath!!
     }
   }
 }
