@@ -5,11 +5,13 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.ResolverContext
 import com.apollographql.apollo3.exception.CacheMissException
 
 /**
@@ -22,7 +24,7 @@ internal class CacheBatchReader(
     private val cache: ReadOnlyNormalizedCache,
     private val rootKey: String,
     private val variables: Executable.Variables,
-    private val cacheResolver: CacheResolver,
+    private val cacheResolver: Any,
     private val cacheHeaders: CacheHeaders,
     private val rootSelections: List<CompiledSelection>,
     private val rootTypename: String,
@@ -113,8 +115,13 @@ internal class CacheBatchReader(
             return@mapNotNull null
           }
 
-          val value = cacheResolver.resolveField(it, variables, record, record.key)
-
+          val value = when (cacheResolver) {
+            is CacheResolver -> cacheResolver.resolveField(it, variables, record, record.key)
+            is ApolloResolver -> {
+              cacheResolver.resolveField(ResolverContext(it, variables, record, record.key, cacheHeaders))
+            }
+            else -> throw IllegalStateException()
+          }
           value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.leafType().name)
 
           it.responseName to value

@@ -2,14 +2,12 @@ package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
-
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
@@ -44,7 +42,7 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
-fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
@@ -58,11 +56,26 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: ApolloResolver,
+    cacheHeaders: CacheHeaders,
+) = readInternal(
+    cacheKey = cacheKey,
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+)
+
+
 private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
-    cacheResolver: CacheResolver,
+    cacheResolver: Any,
     cacheHeaders: CacheHeaders,
 ): D {
   val map = CacheBatchReader(
