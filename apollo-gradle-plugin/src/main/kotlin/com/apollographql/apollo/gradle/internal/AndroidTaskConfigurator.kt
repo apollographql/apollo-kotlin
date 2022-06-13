@@ -65,7 +65,7 @@ object AndroidTaskConfigurator {
       // Tell the kotlin compiler to compile our files
       project.tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
         it.dependsOn(codegenProvider)
-        (it as KotlinCompile).source(codegenProvider.get().outputDir.asFile.get())
+        (it as KotlinCompile).invokeSource(codegenProvider.get().outputDir.asFile.get())
       }
     } else {
       variant.registerJavaGeneratingTask(codegenProvider.get(), codegenProvider.get().outputDir.get().asFile)
@@ -79,9 +79,9 @@ object AndroidTaskConfigurator {
        */
       project.tasks.matching {
         it.name == "compile${variant.name.capitalize()}Kotlin"
-      }.configureEach{
+      }.configureEach {
         it.dependsOn(codegenProvider)
-        (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
+        (it as KotlinCompile).invokeSource(codegenProvider.get().outputDir.get().asFile)
       }
     }
   }
