@@ -61,7 +61,7 @@ object JvmTaskConfigurator {
       project.tasks.matching {
         it.name == "compileKotlin"
       }.configureEach {
-        (it as KotlinCompile).source(codegenProvider.get().outputDir.get().asFile)
+        (it as KotlinCompile).invokeSource(codegenProvider.get().outputDir.get().asFile)
       }
     }
     sourceDirectorySet.srcDir(codegenProvider.flatMap { it.outputDir })
