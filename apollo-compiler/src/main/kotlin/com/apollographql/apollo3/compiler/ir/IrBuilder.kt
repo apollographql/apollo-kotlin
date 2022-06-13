@@ -42,7 +42,7 @@ import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.findExperimentalReason
+import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
@@ -253,7 +253,7 @@ internal class IrBuilder(
         name = name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
-        experimentalReason = directives.findExperimentalReason(),
+        optInFeature = directives.findOptInFeature(schema),
         type = irType,
         defaultValue = coercedDefaultValue?.toIrValue(),
     )
@@ -270,10 +270,10 @@ internal class IrBuilder(
   private fun GQLEnumValueDefinition.toIr(): IrEnum.Value {
     return IrEnum.Value(
         name = name,
-        targetName = directives.findTargetName() ?: name,
+        targetName = directives.findTargetName(schema) ?: name,
         description = description,
         deprecationReason = directives.findDeprecationReason(),
-        experimentalReason = directives.findExperimentalReason(),
+        optInFeature = directives.findOptInFeature(schema),
     )
   }
 
@@ -470,7 +470,7 @@ internal class IrBuilder(
       val description: String?,
       val type: GQLType,
       val deprecationReason: String?,
-      val experimentalReason: String?,
+      val optInFeature: String?,
       val forceNonNull: Boolean,
       val forceOptional: Boolean,
 
@@ -503,7 +503,7 @@ internal class IrBuilder(
           type = fieldDefinition.type,
           description = fieldDefinition.description,
           deprecationReason = fieldDefinition.directives.findDeprecationReason(),
-          experimentalReason = fieldDefinition.directives.findExperimentalReason(),
+          optInFeature = fieldDefinition.directives.findOptInFeature(schema),
           forceNonNull = forceNonNull,
           forceOptional = gqlField.directives.optionalValue(schema) == true,
           parentType = fieldWithParent.parentType,
@@ -557,11 +557,11 @@ internal class IrBuilder(
           "Deprecated in: '${parents.joinToString(", ")}'"
         }
       }
-      val experimentalReason = fieldsWithSameResponseName.associateBy { it.experimentalReason }.values.let { experimentalCanditates ->
+      val optInFeature = fieldsWithSameResponseName.associateBy { it.optInFeature }.values.let { experimentalCanditates ->
         if (experimentalCanditates.size == 1) {
-          experimentalCanditates.single().experimentalReason
+          experimentalCanditates.single().optInFeature
         } else {
-          val parents = experimentalCanditates.filter { it.experimentalReason != null }.map { it.parentType }
+          val parents = experimentalCanditates.filter { it.optInFeature != null }.map { it.parentType }
           "Experimental in: '${parents.joinToString(", ")}'"
         }
       }
@@ -570,7 +570,7 @@ internal class IrBuilder(
           responseName = first.alias ?: first.name,
           description = description,
           deprecationReason = deprecationReason,
-          experimentalReason = experimentalReason,
+          optInFeature = optInFeature,
           type = irType,
           gqlType = first.type,
       )

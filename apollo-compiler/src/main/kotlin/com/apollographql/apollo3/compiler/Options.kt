@@ -188,7 +188,7 @@ class Options(
      */
     val addJvmOverloads: Boolean = false,
     val addTypename: String = defaultAddTypename,
-    val experimentalAnnotation: String? = defaultExperimentalAnnotation
+    val requiresOptInAnnotation: String? = defaultRequiresOptInAnnotation
 ) {
 
   /**
@@ -245,7 +245,7 @@ class Options(
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
       addJvmOverloads: Boolean = this.addJvmOverloads,
       addTypename: String = this.addTypename,
-      experimentalAnnotation: String? = this.experimentalAnnotation
+      requiresOptInAnnotation: String? = this.requiresOptInAnnotation
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -280,7 +280,7 @@ class Options(
       generateOptionalOperationVariables = generateOptionalOperationVariables,
       addJvmOverloads = addJvmOverloads,
       addTypename = addTypename,
-      experimentalAnnotation = experimentalAnnotation,
+      requiresOptInAnnotation = requiresOptInAnnotation,
   )
 
   companion object {
@@ -300,7 +300,7 @@ class Options(
     const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
-    const val defaultExperimentalAnnotation = "com.apollographql.apollo3.annotations.Experimental"
+    const val defaultRequiresOptInAnnotation = "none"
     const val defaultFlattenModels = true
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false

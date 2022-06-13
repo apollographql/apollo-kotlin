@@ -728,7 +728,6 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun registerTestBuilder (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveCompiledType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/CodeBlock;
-	public final fun resolveExperimentalAnnotation ()Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragment (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragmentSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragmentVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
@@ -739,6 +738,7 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun resolveOperation (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveOperationSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveOperationVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveRequiresOptInAnnotation ()Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveSchemaType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveTestBuilder (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 }
@@ -947,8 +947,8 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/Nam
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ir/IrType;)V
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
-	public final fun getExperimentalReason ()Ljava/lang/String;
 	public final fun getGraphQlName ()Ljava/lang/String;
+	public final fun getOptInFeature ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
 }
 
@@ -1521,8 +1521,8 @@ public final class com/apollographql/apollo3/compiler/ir/IrEnum$Value {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
-	public final fun getExperimentalReason ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
+	public final fun getOptInFeature ()Ljava/lang/String;
 	public final fun getTargetName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1563,8 +1563,8 @@ public final class com/apollographql/apollo3/compiler/ir/IrFieldInfo {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
-	public final fun getExperimentalReason ()Ljava/lang/String;
 	public final fun getGqlType ()Lcom/apollographql/apollo3/ast/GQLType;
+	public final fun getOptInFeature ()Ljava/lang/String;
 	public final fun getResponseName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun hashCode ()I
@@ -1609,8 +1609,8 @@ public final class com/apollographql/apollo3/compiler/ir/IrInputField {
 	public final fun getDefaultValue ()Lcom/apollographql/apollo3/compiler/ir/IrValue;
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
-	public final fun getExperimentalReason ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
+	public final fun getOptInFeature ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/compiler/ir/IrType;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

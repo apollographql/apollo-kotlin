@@ -234,7 +234,7 @@ object ApolloCompiler {
             scalarMapping = options.scalarMapping,
             nameToClassName = nameToClassName,
             addJvmOverloads = options.addJvmOverloads,
-            experimentalAnnotation = options.experimentalAnnotation,
+            requiresOptInAnnotation = options.requiresOptInAnnotation,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }

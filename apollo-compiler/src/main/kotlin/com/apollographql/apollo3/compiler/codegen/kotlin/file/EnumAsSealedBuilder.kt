@@ -8,7 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddExperimental
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -77,7 +77,7 @@ class EnumAsSealedBuilder(
     return TypeSpec.objectBuilder(layout.enumAsSealedClassValueName(targetName))
         .maybeAddDeprecation(deprecationReason)
         .maybeAddDescription(description)
-        .maybeAddExperimental(context.resolver, experimentalReason)
+        .maybeAddRequiresOptIn(context.resolver, optInFeature)
         .superclass(superClass)
         .addSuperclassConstructorParameter("rawValue·=·%S", name)
         .build()
