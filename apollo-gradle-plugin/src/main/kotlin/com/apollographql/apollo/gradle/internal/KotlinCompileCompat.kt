@@ -2,6 +2,7 @@ package com.apollographql.apollo.gradle.internal
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+// From https://github.com/square/wire/pull/2273:
 // The signature of this function changed in Kotlin 1.7, so we invoke it reflectively
 // to support both.
 // 1.6.x: `fun source(vararg sources: Any): SourceTask
