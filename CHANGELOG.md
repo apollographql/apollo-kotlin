@@ -25,6 +25,18 @@ An issue where `websocketReopenWhen` was not called in some cases was fixed. Als
 ## ✨️ [new] experimental `@targetName` directive on enum values (#4144)
 If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the codeGen to use the specified name for the value instead. This directive is experimental for now.
 
+## ✨️ `SqlNormalizedCacheFactory` initialization on Android (#4104)
+It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context` is automatically provided, via the use of an [Initializer](https://developer.android.com/topic/libraries/app-startup).
+
+```kotlin
+// Before
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(context, "apollo.db")
+
+// After
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("apollo.db")
+```
+
+
 ## 📝 [new] Public API tracking
 This release starts tracking the public API of all modules, including MockServer. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
 
