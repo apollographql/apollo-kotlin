@@ -45,7 +45,7 @@ ext.dep = [
     assertj: "org.assertj:assertj-core:3.21.0",
     atomicfu: "org.jetbrains.kotlinx:atomicfu:0.17.0",
     benManesVersions: "com.github.ben-manes:gradle-versions-plugin:0.33.0",
-    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.9.0",
+    binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.10.1",
     clikt: "com.github.ajalt.clikt:clikt:3.4.0",
     dokka: "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
     gr8: "com.gradleup:gr8-plugin:0.4",

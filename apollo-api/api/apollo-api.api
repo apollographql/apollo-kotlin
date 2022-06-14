@@ -752,7 +752,6 @@ public abstract interface class com/apollographql/apollo3/api/Upload {
 public final class com/apollographql/apollo3/api/_DataKt {
 	public static final fun toJson (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
 	public static synthetic fun toJson$default (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)V
-	public static synthetic fun toJsonString$default (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/http/ByteStringHttpBody : com/apollographql/apollo3/api/http/HttpBody {
@@ -1080,8 +1079,6 @@ public class com/apollographql/apollo3/exception/ApolloException : java/lang/Run
 }
 
 public final class com/apollographql/apollo3/exception/ApolloExceptionHandlerKt {
-	public static final fun getApolloExceptionHandler ()Lkotlin/jvm/functions/Function1;
-	public static final fun setApolloExceptionHandler (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class com/apollographql/apollo3/exception/ApolloGenericException : com/apollographql/apollo3/exception/ApolloException {
@@ -1125,10 +1122,8 @@ public final class com/apollographql/apollo3/exception/AutoPersistedQueriesNotSu
 public final class com/apollographql/apollo3/exception/CacheMissException : com/apollographql/apollo3/exception/ApolloException {
 	public static final field Companion Lcom/apollographql/apollo3/exception/CacheMissException$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getFieldName ()Ljava/lang/String;
 	public final fun getKey ()Ljava/lang/String;
-	public final fun getStale ()Z
 }
 
 public final class com/apollographql/apollo3/exception/CacheMissException$Companion {

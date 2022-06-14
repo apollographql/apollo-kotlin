@@ -1419,7 +1419,6 @@ public final class com/apollographql/apollo3/compiler/introspection/Introspectio
 }
 
 public final class com/apollographql/apollo3/compiler/introspection/Introspection_to_schemaKt {
-	public static synthetic fun toGQLDocument$default (Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
 }
 
 public final class com/apollographql/apollo3/compiler/introspection/Schema_to_introspectionKt {

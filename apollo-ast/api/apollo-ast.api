@@ -1,9 +1,4 @@
 public final class com/apollographql/apollo3/ast/ApolloParser {
-	public static synthetic fun parseAsGQLDocument$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLSelections$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun parseAsGQLValue$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLResult;
-	public static synthetic fun toExecutableDefinitions$default (Lokio/BufferedSource;Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
-	public static synthetic fun toSchema$default (Lokio/BufferedSource;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/Schema;
 }
 
 public final class com/apollographql/apollo3/ast/Check_key_fieldsKt {
@@ -1033,7 +1028,6 @@ public final class com/apollographql/apollo3/ast/GqltypedefinitionKt {
 	public static final fun implementsAbstractType (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Lcom/apollographql/apollo3/ast/Schema;)Z
 	public static final fun isAbstract (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;)Z
 	public static final fun isFieldNonNull (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Ljava/lang/String;)Z
-	public static synthetic fun isFieldNonNull$default (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Ljava/lang/String;Lcom/apollographql/apollo3/ast/Schema;ILjava/lang/Object;)Z
 	public static final fun possibleTypes (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Lcom/apollographql/apollo3/ast/Schema;)Ljava/util/Set;
 }
 
@@ -1654,7 +1648,6 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 }
 
 public final class com/apollographql/apollo3/ast/introspection/Introspection_to_schemaKt {
-	public static synthetic fun toGQLDocument$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/GQLDocument;
 }
 
 public final class com/apollographql/apollo3/ast/introspection/Schema_to_introspectionKt {
