@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
@@ -190,8 +191,9 @@ fun ApolloStore(
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
 ): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver)
 
+@ApolloExperimental
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
-    apolloResolver: ApolloResolver = FieldPolicyApolloResolver,
+    cacheKeyGenerator: CacheKeyGenerator,
+    apolloResolver: ApolloResolver,
 ): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, apolloResolver)

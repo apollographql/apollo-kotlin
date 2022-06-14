@@ -28,9 +28,7 @@ public final class com/apollographql/apollo3/cache/normalized/ApolloStore$Defaul
 }
 
 public final class com/apollographql/apollo3/cache/normalized/ApolloStoreKt {
-	public static final fun ApolloStore (Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo3/cache/normalized/api/ApolloResolver;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
 	public static final fun ApolloStore (Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo3/cache/normalized/api/CacheResolver;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
-	public static synthetic fun ApolloStore$default (Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo3/cache/normalized/api/ApolloResolver;ILjava/lang/Object;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
 	public static synthetic fun ApolloStore$default (Lcom/apollographql/apollo3/cache/normalized/api/NormalizedCacheFactory;Lcom/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator;Lcom/apollographql/apollo3/cache/normalized/api/CacheResolver;ILjava/lang/Object;)Lcom/apollographql/apollo3/cache/normalized/ApolloStore;
 }
 
