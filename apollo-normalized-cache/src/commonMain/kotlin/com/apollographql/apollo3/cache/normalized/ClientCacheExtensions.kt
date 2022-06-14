@@ -113,8 +113,8 @@ fun ApolloClient.Builder.normalizedCache(
 @JvmName("configureApolloClientBuilder2")
 fun ApolloClient.Builder.normalizedCache(
     normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
-    apolloResolver: ApolloResolver = FieldPolicyApolloResolver,
+    cacheKeyGenerator: CacheKeyGenerator,
+    apolloResolver: ApolloResolver,
     writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient.Builder {
   return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, apolloResolver), writeToCacheAsynchronously)
