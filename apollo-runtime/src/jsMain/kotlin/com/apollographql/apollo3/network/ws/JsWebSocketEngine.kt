@@ -5,6 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.internal.ChannelWrapper
 import io.ktor.http.Headers
+import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 import io.ktor.util.PlatformUtils
@@ -26,13 +27,14 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
   ): WebSocketConnection = open(Url(url), headers)
 
   private suspend fun open(url: Url, headers: List<HttpHeader>): WebSocketConnection {
-    val newUrl = url.copy(
-        protocol = when (url.protocol) {
-          URLProtocol.HTTPS -> URLProtocol.WSS
-          URLProtocol.HTTP -> URLProtocol.WS
-          URLProtocol.WS, URLProtocol.WSS -> url.protocol
-          /* URLProtocol.SOCKS */else -> throw UnsupportedOperationException("SOCKS is not a supported protocol")
-      })
+    val newUrl = URLBuilder(url).apply {
+      protocol = when (url.protocol) {
+        URLProtocol.HTTPS -> URLProtocol.WSS
+        URLProtocol.HTTP -> URLProtocol.WS
+        URLProtocol.WS, URLProtocol.WSS -> url.protocol
+        /* URLProtocol.SOCKS */else -> throw UnsupportedOperationException("SOCKS is not a supported protocol")
+      }
+    }.build()
     val socket = createWebSocket(newUrl.toString(), Headers.build { headers.forEach { append(it.name, it.value) } }).awaitConnection()
     val messageChannel = ChannelWrapper(Channel<String>(Channel.UNLIMITED))
     socket.onmessage = { messageEvent: MessageEvent ->
@@ -131,6 +133,7 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
       }
     }
   }
+
   private fun Event.asString(): String = buildString {
     append(JSON.stringify(this@asString, arrayOf("message", "target", "type", "isTrusted")))
   }
