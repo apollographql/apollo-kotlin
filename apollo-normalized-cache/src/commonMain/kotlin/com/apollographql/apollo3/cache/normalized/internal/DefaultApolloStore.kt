@@ -135,31 +135,6 @@ internal class DefaultApolloStore(
     }
   }
 
-  private fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
-      cacheKey: CacheKey,
-      customScalarAdapters: CustomScalarAdapters,
-      cache: ReadOnlyNormalizedCache,
-      cacheResolver: Any,
-      cacheHeaders: CacheHeaders,
-  ): D {
-    return when (cacheResolver) {
-      is CacheResolver -> readDataFromCache(
-          cacheKey,
-          customScalarAdapters,
-          cache,
-          cacheResolver,
-          cacheHeaders
-      )
-      is ApolloResolver -> readDataFromCache(
-          cacheKey,
-          customScalarAdapters,
-          cache,
-          cacheResolver,
-          cacheHeaders
-      )
-      else -> throw IllegalStateException()
-    }
-  }
 
 
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
@@ -308,6 +283,34 @@ internal class DefaultApolloStore(
 
   override fun dispose() {
     cacheHolder.dispose()
+  }
+
+  companion object {
+    private fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
+        cacheKey: CacheKey,
+        customScalarAdapters: CustomScalarAdapters,
+        cache: ReadOnlyNormalizedCache,
+        cacheResolver: Any,
+        cacheHeaders: CacheHeaders,
+    ): D {
+      return when (cacheResolver) {
+        is CacheResolver -> readDataFromCache(
+            cacheKey,
+            customScalarAdapters,
+            cache,
+            cacheResolver,
+            cacheHeaders
+        )
+        is ApolloResolver -> readDataFromCache(
+            cacheKey,
+            customScalarAdapters,
+            cache,
+            cacheResolver,
+            cacheHeaders
+        )
+        else -> throw IllegalStateException()
+      }
+    }
   }
 }
 
