@@ -114,7 +114,7 @@ Then include the SQLite cache in your `ApolloClient` initialization **according 
 
 ```kotlin
 // Android
-val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(context, "apollo.db")
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("apollo.db")
 // JVM
 val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("jdbc:sqlite:apollo.db")
 // iOS

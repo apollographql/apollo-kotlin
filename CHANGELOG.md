@@ -1,6 +1,103 @@
 Change Log
 ==========
 
+# Version 3.3.1
+
+_2022-06-13_
+
+This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test Builders. It also contains a number of other improvements and bug fixes!
+
+## ✨️ [new] `@typePolicy` on interfaces and unions (#4131)
+[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @bubba for the contribution!
+
+## 🔌 WebSockets / Subscriptions error handling (#4147)
+An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails due to a specific operation error.
+
+## 📐 Test Builders improvements and fixes
+* A DslMarker was added to improve usage with nested builders (#4089)
+* When calling a builder, but not assigning it to a field, an error is now thrown, preventing mistakes (#4122)
+* The error message displayed when `__typename` is missing was made clearer (#4146)
+* Fix: use `rawValue` instead of `name` for enums (#4121)
+
+## ✨️ [new] ApolloClient implements Closable (#4142)
+`ApolloClient` now implements `okio.Closable` so you can use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @yogurtearl for this contribution!
+
+## ✨️ [new] experimental `@targetName` directive on enum values (#4144)
+If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the codeGen to use the specified name for the value instead. This directive is experimental for now.
+
+## ✨️ [new] experimental support for renaming directives (#4174)
+
+As we add more client directives, the risk of nameclash with existing schema directives increases. If this happens, you can now import Apollo client directives using `@link`:
+
+```graphql
+# extra.graphqls
+extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1") 
+```
+
+This adds a `@kotlin_labs__` prefix to all Apollo client directives:
+
+```graphql
+{
+  hero {
+    name @kotlin_labs__nonnull
+  }
+}
+```
+
+
+## 🤖 `SqlNormalizedCacheFactory` initialization on Android (#4104)
+It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context` is automatically provided, via [App Startup](https://developer.android.com/topic/libraries/app-startup).
+
+```kotlin
+// Before
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory(context, "apollo.db")
+
+// After
+val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("apollo.db")
+```
+
+## 📝 [new] Public API tracking
+This release starts tracking the public API of all modules, including MockServer. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
+
+## 👷‍ All changes
+- 🐘  publish `apollo-gradle-plugin-external` (#4078)
+- publish the R8 mapping file along the relocated jar (#4085)
+- Fix test directories not cleared (#4083)
+- Do not use 'header' as a enum value name as it breaks the Kotlin compiler (#4086)
+- 🧪 @experimental support (#4091)
+- @experimental -> @requiresOptIn (#4175)
+- Do not buffer entire body in Http Cache (#4076)
+- ⬇️  add SchemaDownloader.download() (#4088)
+- add DslMarker for test builders (#4089)
+- MockServer: make MockResponse.body a Flow<ByteString> (#4096)
+- Issue-3909: add ApolloResponse cache headers (#4102)
+- Use rawValue instead of name for enums in test builders (#4121)
+- 💧 first drop for a SQLite backend that stores when each field was last updated (#4104)
+- Add Operation.Data.toJsonString() convenience function for the jvm (#4124)
+- Check for unassigned fields in Test Builders (#4122)
+- Add non-breaking spaces after 'return' (#4127)
+- 🧶 Use a getter instead of a const val OPERATION_QUERY (#4130)
+- Uploads should be read only once even when logging (#4125)
+- Keep the 'interfaces' field on the JSON introspection (#4129)
+- Allow @typePolicy directive on interfaces and unions (#4131)
+- typePolicy on interface: exclude empty keyfields (#4140)
+- Sort the type names in the list so the code gen is deterministic. (#4138)
+- Use okio.Closable.close instead of dispose on ApolloClient (#4142)
+- Parse the interface's interface field in introspection (#4143)
+- TestBuilders: improve error message when __typename is missing (#4146)
+- Do not bypass websocketReopenWhen {} (#4147)
+- SDLWriter: join implemented interfaces with & instead of space (#4151)
+- Escape "type" in enums and sealed classes (#4144)
+- 🧰  introduce apollo-tooling and apollo-cli (#4153)
+- Fix incorrect content-length in MockServer (#4162)
+- Allow capitalized field names if flattenModels is true (#4154)
+- 🏷️  Allow namespacing and renaming of directives (#4174)
+
+## ❤️ External contributors
+
+Many thanks to @tajchert, @asimonigh, @hrach, @ArjanSM, @yshrsmz, @ephemient, @bubba, @eboudrant and @yogurtearl for contributing to this release! 🙏
+
+
 # Version 3.3.0
 
 _2022-05-04_
