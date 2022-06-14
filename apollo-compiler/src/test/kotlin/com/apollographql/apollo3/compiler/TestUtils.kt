@@ -46,7 +46,7 @@ internal object TestUtils {
    * ./gradlew :apollo-compiler:test -testFilter="fragments_with_type_condition" --tests '*Codegen*'
    */
   fun testFilterMatches(value: String): Boolean {
-    val testFilter = System.getProperty("testFilter") ?: return true
+    val testFilter = System.getenv("testFilter") ?: System.getProperty("testFilter") ?: return true
 
     return Regex(testFilter).containsMatchIn(value)
   }

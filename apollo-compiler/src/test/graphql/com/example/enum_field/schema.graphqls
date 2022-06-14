@@ -14,4 +14,7 @@ enum Gravity {
 
   # a name that clashes with the generated `type` constant
   type @targetName(name: "type_")
+
+  # an enum value that clashes with the rawValue type
+  String
 }

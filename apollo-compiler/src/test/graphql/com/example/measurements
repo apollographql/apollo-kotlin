@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  191390
-aggregate-kotlin-responseBased                                                                  49334
+aggregate-all                                                                                  191394
+aggregate-kotlin-responseBased                                                                  49335
 aggregate-kotlin-operationBased                                                                 34570
 aggregate-kotlin-compat                                                                         35948
-aggregate-java-operationBased                                                                   71538
+aggregate-java-operationBased                                                                   71541
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5395
 kotlin-compat-fragments_with_defer_and_include_directives                                        3596
@@ -215,7 +215,7 @@ kotlin-operationBased-monomorphic                                               
 java-operationBased-operation_id_generator                                                        450
 kotlin-responseBased-monomorphic                                                                  446
 kotlin-responseBased-inline_fragment_for_non_optional_field                                       445
-java-operationBased-enum_field                                                                    440
+java-operationBased-enum_field                                                                    443
 kotlin-responseBased-variable_default_value                                                       440
 java-operationBased-enums_as_sealed                                                               437
 java-operationBased-case_sensitive_enum                                                           434
@@ -244,7 +244,7 @@ kotlin-responseBased-subscriptions                                              
 kotlin-responseBased-enums_as_sealed                                                              344
 kotlin-responseBased-operation_id_generator                                                       325
 kotlin-responseBased-merged_include                                                               323
-kotlin-responseBased-enum_field                                                                   318
+kotlin-responseBased-enum_field                                                                   319
 kotlin-responseBased-big_query                                                                    317
 kotlin-responseBased-case_sensitive_enum                                                          315
 kotlin-responseBased-nonnull                                                                      309
