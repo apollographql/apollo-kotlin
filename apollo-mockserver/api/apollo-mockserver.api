@@ -1,8 +1,4 @@
 public final class com/apollographql/apollo3/mockserver/-MockServers {
-	public static synthetic fun createMultipartMixedChunkedResponse$default (Ljava/util/List;ILjava/lang/String;Ljava/util/Map;JJLjava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/mockserver/MockResponse;
-	public static synthetic fun createMultipartMixedPart$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZILjava/lang/Object;)Ljava/lang/String;
-	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/lang/String;JIILjava/lang/Object;)V
-	public static synthetic fun enqueueMultipart$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/List;ILjava/lang/String;Ljava/util/Map;JJLjava/lang/String;ILjava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo3/mockserver/MockRequest {

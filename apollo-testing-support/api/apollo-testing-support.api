@@ -5,7 +5,6 @@ public final class com/apollographql/apollo3/testing/-FileSystemCommon {
 }
 
 public final class com/apollographql/apollo3/testing/ChannelsKt {
-	public static synthetic fun receiveOrTimeout$default (Lkotlinx/coroutines/channels/Channel;JLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/testing/MockserverKt {
@@ -25,7 +24,5 @@ public final class com/apollographql/apollo3/testing/RunWithMainLoopJvmKt {
 }
 
 public final class com/apollographql/apollo3/testing/TestNetworkTransportKt {
-	public static synthetic fun enqueueTestResponse$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;ILjava/lang/Object;)V
-	public static synthetic fun registerTestResponse$default (Lcom/apollographql/apollo3/ApolloClient;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;ILjava/lang/Object;)V
 }
 
