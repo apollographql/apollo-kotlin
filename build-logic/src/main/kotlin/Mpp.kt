@@ -15,7 +15,14 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
 
     if (withJs) {
       js(BOTH) {
-        nodejs()
+        nodejs {
+          testTask {
+            useMocha {
+              // Override default 2s timeout
+              timeout = "120s"
+            }
+          }
+        }
       }
     }
 
