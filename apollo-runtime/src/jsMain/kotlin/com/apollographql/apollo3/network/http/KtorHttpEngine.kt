@@ -6,20 +6,22 @@ import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
+import io.ktor.client.call.body
 import io.ktor.client.engine.js.Js
-import io.ktor.client.features.HttpTimeout
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.header
 import io.ktor.client.request.request
+import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
 import io.ktor.util.flattenEntries
 import io.ktor.utils.io.CancellationException
 import okio.Buffer
 
+
 actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Long, private val readTimeoutMillis: Long) : HttpEngine {
   var disposed = false
 
-  actual constructor(timeoutMillis: Long): this(timeoutMillis, timeoutMillis)
+  actual constructor(timeoutMillis: Long) : this(timeoutMillis, timeoutMillis)
 
   private val client = HttpClient(Js) {
     expectSuccess = false
@@ -31,7 +33,7 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
 
   override suspend fun execute(request: HttpRequest): HttpResponse {
     try {
-      val response = client.request<io.ktor.client.statement.HttpResponse>(request.url) {
+      val response = client.request(request.url) {
         method = when (request.method) {
           HttpMethod.Get -> io.ktor.http.HttpMethod.Get
           HttpMethod.Post -> io.ktor.http.HttpMethod.Post
@@ -43,10 +45,10 @@ actual class DefaultHttpEngine constructor(private val connectTimeoutMillis: Lon
           header(HttpHeaders.ContentType, it.contentType)
           val buffer = Buffer()
           it.writeTo(buffer)
-          body = buffer.readUtf8()
+          setBody(buffer.readUtf8())
         }
       }
-      val responseByteArray: ByteArray = response.receive()
+      val responseByteArray: ByteArray = response.body()
       val responseBufferedSource = Buffer().write(responseByteArray)
       return HttpResponse.Builder(statusCode = response.status.value)
           .body(responseBufferedSource)
