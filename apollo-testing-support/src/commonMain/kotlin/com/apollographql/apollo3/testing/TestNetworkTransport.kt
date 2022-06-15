@@ -12,7 +12,9 @@ import com.benasher44.uuid.uuid4
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.yield
 
 private sealed interface TestResponse {
   object NetworkError : TestResponse
@@ -27,9 +29,14 @@ class QueueTestNetworkTransport : NetworkTransport {
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     val response = lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
     if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
+
     @Suppress("UNCHECKED_CAST")
     val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
-    return flowOf(apolloResponse.newBuilder().isLast(true).build())
+    return flow {
+      // "Emulate" a network call
+      yield()
+      emit(apolloResponse.newBuilder().isLast(true).build())
+    }
   }
 
   fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) {
