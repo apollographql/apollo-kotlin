@@ -8,6 +8,8 @@ import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledType
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectType
 import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
@@ -25,94 +27,110 @@ internal class Normalizer(
 ) {
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: String): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope)
+  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: CompiledNamedType): Map<String, Record> {
+    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields)
 
     return records
   }
 
   /**
+   *
+   *
    * @param obj the json node representing the object
    * @param key the key for this record
    * @param selections the selections queried on this object
-   * @return the CacheKey
+   * @return the CacheKey if this object has a CacheKey or the new Map if the object was embedded
    */
   private fun buildRecord(
       obj: Map<String, Any?>,
-      key: String,
+      key: String?,
       selections: List<CompiledSelection>,
       typeInScope: String,
-  ): CacheKey {
+      embeddedFields: List<String>,
+  ): Any {
 
     val typename = obj["__typename"] as? String
     val allFields = collectFields(selections, typeInScope, typename)
 
-    val record = Record(
-        key = key,
-        fields = obj.entries.mapNotNull { entry ->
-          val compiledFields = allFields.filter { it.responseName == entry.key }
-          if (compiledFields.isEmpty()) {
-            // If we come here, `obj` contains more data than the CompiledSelections can understand
-            // This happened previously (see https://github.com/apollographql/apollo-android/pull/3636)
-            // This should not happen anymore but in case it does, we're logging some info here
-            throw RuntimeException("Cannot find a CompiledField for entry: {${entry.key}: ${entry.value}}, __typename = $typename, key = $key")
-          }
-          val includedFields = compiledFields.filter {
-            !it.shouldSkip(variableValues = variables.valueMap)
-          }
-          if (includedFields.isEmpty()) {
-            // If the field is absent, we don't want to serialize "null" to the cache, do not include this field in the record.
-            return@mapNotNull null
-          }
-          val mergedField = includedFields.first().newBuilder()
-              .selections(includedFields.flatMap { it.selections })
-              .condition(emptyList())
-              .build()
+    val fields = obj.entries.mapNotNull { entry ->
+      val compiledFields = allFields.filter { it.responseName == entry.key }
+      if (compiledFields.isEmpty()) {
+        // If we come here, `obj` contains more data than the CompiledSelections can understand
+        // This happened previously (see https://github.com/apollographql/apollo-android/pull/3636)
+        // This should not happen anymore but in case it does, we're logging some info here
+        throw RuntimeException("Cannot find a CompiledField for entry: {${entry.key}: ${entry.value}}, __typename = $typename, key = $key")
+      }
+      val includedFields = compiledFields.filter {
+        !it.shouldSkip(variableValues = variables.valueMap)
+      }
+      if (includedFields.isEmpty()) {
+        // If the field is absent, we don't want to serialize "null" to the cache, do not include this field in the record.
+        return@mapNotNull null
+      }
+      val mergedField = includedFields.first().newBuilder()
+          .selections(includedFields.flatMap { it.selections })
+          .condition(emptyList())
+          .build()
 
-          val fieldKey = mergedField.nameWithArguments(variables)
+      val fieldKey = mergedField.nameWithArguments(variables)
 
-          val base = if (key == CacheKey.rootKey().key) {
-            // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes
-            null
-          } else {
-            key
-          }
+      val base = if (key == CacheKey.rootKey().key) {
+        // If we're at the root level, skip `QUERY_ROOT` altogether to save a few bytes
+        null
+      } else {
+        key
+      }
 
-          fieldKey to replaceObjects(
-              entry.value,
-              mergedField,
-              mergedField.type,
-              base.append(fieldKey),
-          )
-        }.toMap()
-    )
+      fieldKey to replaceObjects(
+          entry.value,
+          mergedField,
+          mergedField.type,
+          base.append(fieldKey),
+          embeddedFields
+      )
+    }.toMap()
 
-    val existingRecord = records[key]
+    return if (key != null) {
+      val record = Record(
+          key = key,
+          fields = fields
+      )
 
-    val mergedRecord = if (existingRecord != null) {
-      /**
-       * A query might contain the same object twice, we don't want to lose some fields when that happens
-       */
-      existingRecord.mergeWith(record).first
+      val existingRecord = records[key]
+
+      val mergedRecord = if (existingRecord != null) {
+        /**
+         * A query might contain the same object twice, we don't want to lose some fields when that happens
+         */
+        existingRecord.mergeWith(record).first
+      } else {
+        record
+      }
+      records[key] = mergedRecord
+
+      CacheKey(key)
     } else {
-      record
+      fields
     }
-    records[key] = mergedRecord
-
-    return CacheKey(key)
   }
 
 
   /**
+   * Replace all objects in [value] with [CacheKey] and if [value] is an object itself, returns it as a [CacheKey]
+   *
+   * This function builds the list of records as a side effect
+   *
+   * @param value a json value from the response. Can be any type supported by [com.apollographql.apollo3.api.json.JsonWriter]
    * @param field the field currently being normalized
    * @param type_ the type currently being normalized. It can be different from [field.type] for lists.
-   * Since the same field will be used for several objects in list, we can't map 1:1 anymore
+   * @param embeddedFields the embedded fields of the parent
    */
   private fun replaceObjects(
       value: Any?,
       field: CompiledField,
       type_: CompiledType,
       path: String,
+      embeddedFields: List<String>
   ): Any? {
     /**
      * Remove the NotNull decoration if needed
@@ -131,18 +149,22 @@ internal class Normalizer(
       type is CompiledListType -> {
         check(value is List<*>)
         value.mapIndexed { index, item ->
-          replaceObjects(item, field, type.ofType, path.append(index.toString()))
+          replaceObjects(item, field, type.ofType, path.append(index.toString()), embeddedFields)
         }
       }
       // Check for [isComposite] as we don't want to build a record for json scalars
       type is CompiledNamedType && type.isComposite() -> {
         check(value is Map<*, *>)
         @Suppress("UNCHECKED_CAST")
-        val key = cacheKeyGenerator.cacheKeyForObject(
+        var key = cacheKeyGenerator.cacheKeyForObject(
             value as Map<String, Any?>,
             CacheKeyGeneratorContext(field, variables),
-        )?.key ?: path
-        buildRecord(value, key, field.selections, field.type.leafType().name)
+        )?.key
+
+        if (key == null && !embeddedFields.contains(field.name)) {
+          key = path
+        }
+        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
       }
       else -> {
         // scalar
@@ -150,6 +172,13 @@ internal class Normalizer(
       }
     }
   }
+
+  private val CompiledNamedType.embeddedFields: List<String>
+    get() = when (this) {
+      is ObjectType -> embeddedFields
+      is InterfaceType -> embeddedFields
+      else -> emptyList()
+    }
 
   private class CollectState {
     val fields = mutableListOf<CompiledField>()

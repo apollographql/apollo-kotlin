@@ -1,0 +1,11 @@
+type Query {
+  hero: Hero! @embed
+}
+
+type Hero {
+  friends: [Friend!]! @embed
+}
+
+type Friend {
+  name: String!
+}

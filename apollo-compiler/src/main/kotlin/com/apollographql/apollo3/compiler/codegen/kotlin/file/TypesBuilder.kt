@@ -24,7 +24,7 @@ internal fun IrCustomScalar.typePropertySpec(): PropertySpec {
   val kotlinName = kotlinName ?: builtinScalarKotlinName(name) ?: "kotlin.Any"
   return PropertySpec
       .builder(Identifier.type, KotlinSymbols.CustomScalarType)
-      .initializer("%T(%S, %S)", KotlinSymbols.CustomScalarType, name, kotlinName)
+      .initializer("%T(%S,·%S)", KotlinSymbols.CustomScalarType, name, kotlinName)
       .build()
 }
 
@@ -57,23 +57,24 @@ private fun List<String>.implementsToCode(resolver: KotlinResolver): CodeBlock {
   builder.add("listOf(")
   builder.add("%L", sorted().map {
     resolver.resolveCompiledType(it)
-  }.joinToCode(", "))
+  }.joinToCode(",·"))
   builder.add(")")
   return builder.build()
 }
 
 internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
-  builder.add("%T(name = %S", KotlinSymbols.ObjectType, name)
+  builder.add("%T(name·=·%S)", KotlinSymbols.ObjectTypeBuilder, name)
   if (keyFields.isNotEmpty()) {
-    builder.add(", ")
-    builder.add("keyFields = %L", keyFields.toCode())
+    builder.add(".keyFields(%L)", keyFields.toCode())
   }
   if (implements.isNotEmpty()) {
-    builder.add(", ")
-    builder.add("implements = %L", implements.implementsToCode(resolver))
+    builder.add(".implements(%L)", implements.implementsToCode(resolver))
   }
-  builder.add(")")
+  if (embeddedFields.isNotEmpty()) {
+    builder.add(".embeddedFields(%L)", embeddedFields.toCode())
+  }
+  builder.add(".build()")
 
   return PropertySpec
       .builder(type, KotlinSymbols.ObjectType)
@@ -83,16 +84,17 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
 
 internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
-  builder.add("%T(name = %S", KotlinSymbols.InterfaceType, name)
+  builder.add("%T(name·=·%S)", KotlinSymbols.InterfaceTypeBuilder, name)
   if (keyFields.isNotEmpty()) {
-    builder.add(", ")
-    builder.add("keyFields = %L", keyFields.toCode())
+    builder.add(".keyFields(%L)", keyFields.toCode())
   }
   if (implements.isNotEmpty()) {
-    builder.add(", ")
-    builder.add("implements = %L", implements.implementsToCode(resolver))
+    builder.add(".implements(%L)", implements.implementsToCode(resolver))
   }
-  builder.add(")")
+  if (embeddedFields.isNotEmpty()) {
+    builder.add(".embeddedFields(%L)", embeddedFields.toCode())
+  }
+  builder.add(".build()")
 
   return PropertySpec
       .builder(type, KotlinSymbols.InterfaceType)
@@ -105,12 +107,12 @@ internal fun IrUnion.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
   builder.add(members.map {
     resolver.resolveCompiledType(it)
-  }.joinToCode(", "))
+  }.joinToCode(",·"))
 
   return PropertySpec
       .builder(type, KotlinSymbols.UnionType)
       .maybeAddDescription(description)
       .maybeAddDeprecation(deprecationReason)
-      .initializer("%T(%S, %L)", KotlinSymbols.UnionType, name, builder.build())
+      .initializer("%T(%S,·%L)", KotlinSymbols.UnionType, name, builder.build())
       .build()
 }

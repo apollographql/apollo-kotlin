@@ -12,6 +12,7 @@ import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -36,6 +37,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.Schema.Companion.EMBED
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
@@ -184,8 +186,13 @@ internal class IrBuilder(
         keyFields = schema.keyFields(name),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on object definitions
-        deprecationReason = directives.findDeprecationReason()
+        deprecationReason = directives.findDeprecationReason(),
+        embeddedFields = fields.filterEmbedded()
     )
+  }
+
+  private fun List<GQLFieldDefinition>.filterEmbedded(): Set<String> {
+    return filter { it.directives.any { schema.originalDirectiveName(it.name) == EMBED } }.map { it.name }.toSet()
   }
 
   private fun GQLInterfaceTypeDefinition.toIr(): IrInterface {
@@ -198,7 +205,8 @@ internal class IrBuilder(
         keyFields = schema.keyFields(name),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on interfaces
-        deprecationReason = directives.findDeprecationReason()
+        deprecationReason = directives.findDeprecationReason(),
+        embeddedFields = fields.filterEmbedded()
     )
   }
 

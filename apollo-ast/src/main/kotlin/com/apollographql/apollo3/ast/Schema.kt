@@ -64,6 +64,11 @@ class Schema internal constructor(
       filePath = null
   ).withoutBuiltinDefinitions()
 
+  /**
+   * @param name the current name of the directive (like "kotlin_labs__nonnull")
+   *
+   * @return the original directive name (like "nonnull")
+   */
   fun originalDirectiveName(name: String): String {
     return foreignNames["@$name"]?.substring(1) ?: name
   }
@@ -188,6 +193,7 @@ class Schema internal constructor(
     const val NONNULL = "nonnull"
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
+    const val EMBED = "embed"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"

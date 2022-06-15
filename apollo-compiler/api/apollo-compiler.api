@@ -1655,17 +1655,19 @@ public final class com/apollographql/apollo3/compiler/ir/IrIntValue : com/apollo
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrInterface : com/apollographql/apollo3/compiler/ir/IrSchemaType {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/util/Set;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrInterface;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInterface;Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInterface;
+	public final fun component6 ()Ljava/util/Set;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)Lcom/apollographql/apollo3/compiler/ir/IrInterface;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrInterface;Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrInterface;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
+	public final fun getEmbeddedFields ()Ljava/util/Set;
 	public final fun getImplements ()Ljava/util/List;
 	public final fun getKeyFields ()Ljava/util/Set;
 	public fun getName ()Ljava/lang/String;
@@ -1809,17 +1811,19 @@ public final class com/apollographql/apollo3/compiler/ir/IrNullValue : com/apoll
 }
 
 public final class com/apollographql/apollo3/compiler/ir/IrObject : com/apollographql/apollo3/compiler/ir/IrSchemaType {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/util/Set;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ir/IrObject;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObject;Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObject;
+	public final fun component6 ()Ljava/util/Set;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)Lcom/apollographql/apollo3/compiler/ir/IrObject;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ir/IrObject;Ljava/lang/String;Ljava/util/List;Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ir/IrObject;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
+	public final fun getEmbeddedFields ()Ljava/util/Set;
 	public final fun getImplements ()Ljava/util/List;
 	public final fun getKeyFields ()Ljava/util/Set;
 	public fun getName ()Ljava/lang/String;

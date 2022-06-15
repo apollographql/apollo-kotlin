@@ -40,3 +40,8 @@ on FIELD_DEFINITION
 # Use this for instance when the name would clash with a reserved keyword or field in the generated code.
 # This directive is experimental.
 directive @targetName(name: String!) on ENUM_VALUE
+
+# Embed this field in its parent
+# Instead of creating a new Record, this field will be added to its parent Record
+# Use for relay connections or other places where keeping data colocated is useful
+directive @embed on FIELD_DEFINITION
