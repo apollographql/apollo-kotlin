@@ -1,7 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
+import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
@@ -36,6 +38,21 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders: CacheHeaders,
 ) = readInternal(
     cacheKey = CacheKey.rootKey(),
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+)
+
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
+fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: CacheResolver,
+    cacheHeaders: CacheHeaders,
+) = readInternal(
+    cacheKey = cacheKey,
     customScalarAdapters = customScalarAdapters,
     cache = cache,
     cacheResolver = cacheResolver,
