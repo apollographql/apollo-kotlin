@@ -52,7 +52,7 @@ val apolloClient = ApolloClient.Builder()
     .wsProtocol(
         SubscriptionWsProtocol.Factory(
             connectionPayload = {
-              mapOf("authorization" to token)  // highlight-line
+              mapOf("headers" to mapOf("authorization" to token))   // highlight-line
             }
         )
     )
