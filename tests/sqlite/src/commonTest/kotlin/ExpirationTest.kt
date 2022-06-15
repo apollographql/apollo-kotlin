@@ -7,10 +7,11 @@ import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.ExpireDateCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.ReceiveDateCacheResolver
+import com.apollographql.apollo3.cache.normalized.api.ReceiveDateApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.apolloStore
+import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
@@ -35,7 +36,7 @@ class ExpirationTest {
         .normalizedCache(
             normalizedCacheFactory = SqlNormalizedCacheFactory(name = null, withDates = true),
             cacheKeyGenerator = TypePolicyCacheKeyGenerator,
-            cacheResolver = ReceiveDateCacheResolver(maxAge)
+            apolloResolver = ReceiveDateApolloResolver(maxAge)
         )
         .storeReceiveDate(true)
         .serverUrl("unused")
@@ -47,7 +48,7 @@ class ExpirationTest {
 
     client.apolloStore.accessCache {
       // store records in the past
-      it.merge(records, cacheHeaders(currentTimeMillis() / 1000 - 11))
+      it.merge(records, cacheHeaders(currentTimeMillis() / 1000 - 15))
     }
 
     try {
@@ -57,13 +58,19 @@ class ExpirationTest {
       assertTrue(e.stale)
     }
 
+    // with max stale, should succeed
+    val response1 = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly)
+        .cacheHeaders(CacheHeaders.Builder().addHeader(ApolloCacheHeaders.MAX_STALE, "10").build())
+        .execute()
+    assertTrue(response1.data?.user?.name == "John")
+
     client.apolloStore.accessCache {
       // update records to be in the present
       it.merge(records, cacheHeaders(currentTimeMillis() / 1000))
     }
 
-    val response = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    assertTrue(response.data?.user?.name == "John")
+    val response2 = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
+    assertTrue(response2.data?.user?.name == "John")
   }
 
   @Test
@@ -90,7 +97,7 @@ class ExpirationTest {
       }
     """.trimIndent()
 
-    var response: ApolloResponse<GetUserQuery.Data>
+    val response: ApolloResponse<GetUserQuery.Data>
 
     // store data with an expiration date in the future
     mockServer.enqueue(
@@ -120,6 +127,7 @@ class ExpirationTest {
       assertTrue(e.stale)
     }
   }
+
 
   private fun cacheHeaders(date: Long): CacheHeaders {
     return CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DATE, date.toString()).build()

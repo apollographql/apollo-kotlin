@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
@@ -9,7 +10,6 @@ import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
-
 
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
@@ -44,6 +44,7 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
+@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
@@ -58,11 +59,40 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
-private fun <D : Executable.Data> Executable<D>.readInternal(
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
     cacheResolver: CacheResolver,
+    cacheHeaders: CacheHeaders,
+) = readInternal(
+    cacheKey = cacheKey,
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+)
+
+fun <D : Executable.Data> Executable<D>.readDataFromCache(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: ApolloResolver,
+    cacheHeaders: CacheHeaders,
+) = readInternal(
+    cacheKey = cacheKey,
+    customScalarAdapters = customScalarAdapters,
+    cache = cache,
+    cacheResolver = cacheResolver,
+    cacheHeaders = cacheHeaders,
+)
+
+
+private fun <D : Executable.Data> Executable<D>.readInternal(
+    cacheKey: CacheKey,
+    customScalarAdapters: CustomScalarAdapters,
+    cache: ReadOnlyNormalizedCache,
+    cacheResolver: Any,
     cacheHeaders: CacheHeaders,
 ): D {
   val map = CacheBatchReader(
