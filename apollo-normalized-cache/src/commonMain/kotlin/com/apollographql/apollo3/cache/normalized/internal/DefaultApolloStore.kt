@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
@@ -15,10 +14,10 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
+import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,6 +28,7 @@ internal class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheKeyGenerator: CacheKeyGenerator,
     private val cacheResolver: Any,
+    private val recordMerger: RecordMerger,
 ) : ApolloStore {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       // XXX: this is a potential code smell
@@ -136,7 +136,6 @@ internal class DefaultApolloStore(
   }
 
 
-
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
     /**
      * We don't know how the cache is going to be used, assume write access
@@ -170,8 +169,9 @@ internal class DefaultApolloStore(
   ): Set<String> {
     // Capture a local reference so as not to freeze "this"
     val objectIdGenerator = cacheKeyGenerator
+    val recordMerger = recordMerger
 
-    val changedKeys =  cacheHolder.writeAccess { cache ->
+    val changedKeys = cacheHolder.writeAccess { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
@@ -179,7 +179,7 @@ internal class DefaultApolloStore(
           rootKey = cacheKey.key
       ).values
 
-      cache.merge(records, cacheHeaders)
+      cache.merge(records, cacheHeaders, recordMerger)
     }
 
     if (publish) {
@@ -199,6 +199,7 @@ internal class DefaultApolloStore(
 
     // Capture a local reference so as not to freeze "this"
     val objectIdGenerator = cacheKeyGenerator
+    val recordMerger = recordMerger
 
     val (records, changedKeys) = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
@@ -207,7 +208,7 @@ internal class DefaultApolloStore(
           cacheKeyGenerator = objectIdGenerator
       )
 
-      records to cache.merge(records.values.toList(), cacheHeaders)
+      records to cache.merge(records.values.toList(), cacheHeaders, recordMerger)
     }
     if (publish) {
       publish(changedKeys)
@@ -271,7 +272,7 @@ internal class DefaultApolloStore(
 
   suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
     return cacheHolder.writeAccess { cache ->
-      cache.merge(record, cacheHeaders)
+      cache.merge(record, cacheHeaders, recordMerger)
     }
   }
 
