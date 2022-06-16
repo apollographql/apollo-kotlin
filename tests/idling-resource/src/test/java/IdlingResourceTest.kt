@@ -35,7 +35,7 @@ class IdlingResourceTest {
     assert(!idlingResource.isIdleNow)
     delay(300)
     assert(!idlingResource.isIdleNow)
-    delay(500)
+    delay(5000)
     assert(idlingResource.isIdleNow)
   }
 }
