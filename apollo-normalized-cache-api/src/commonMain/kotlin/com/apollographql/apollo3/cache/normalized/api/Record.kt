@@ -31,14 +31,32 @@ class Record(
   var date: Map<String, Long?>? = null
     private set
 
+  /**
+   * The arguments of the field this Record represents in its parent.
+   */
+  @ApolloExperimental
+  var arguments: Map<String, Any?> = emptyMap()
+    private set
+
+  /**
+   * Arbitrary metadata that can be attached to a Record.
+   */
+  @ApolloExperimental
+  var metadata: Map<String, Any?> = emptyMap()
+    private set
+
   @ApolloInternal
   constructor(
       key: String,
       fields: Map<String, Any?>,
       mutationId: Uuid?,
       date: Map<String, Long?>,
+      arguments: Map<String, Any?>,
+      metadata: Map<String, Any?>,
   ) : this(key, fields, mutationId) {
     this.date = date
+    this.arguments = arguments
+    this.metadata = metadata
   }
 
   val sizeInBytes: Int

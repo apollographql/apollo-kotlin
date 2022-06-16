@@ -28,7 +28,7 @@ internal class Normalizer(
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: CompiledNamedType): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields)
+    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields, emptyMap())
 
     return records
   }
@@ -47,7 +47,8 @@ internal class Normalizer(
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
-  ): Any {
+      argumentsWithValue: Map<String, Any?>,
+    ): Any {
 
     val typename = obj["__typename"] as? String
     val allFields = collectFields(selections, typeInScope, typename)
@@ -164,7 +165,7 @@ internal class Normalizer(
         if (key == null && !embeddedFields.contains(field.name)) {
           key = path
         }
-        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, , field.argumentsWithValue(variables))
       }
       else -> {
         // scalar
@@ -212,5 +213,8 @@ internal class Normalizer(
 
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
-}
 
+  private fun CompiledField.argumentsWithValue(variables: Executable.Variables): Map<String, Any?> {
+    return arguments.associate { it.name to resolveArgument(it.name, variables) }
+  }
+}

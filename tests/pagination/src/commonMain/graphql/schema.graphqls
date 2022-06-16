@@ -1,5 +1,20 @@
 type Query {
-  users: [User!]!
+  users(after: String = null, first: Int! = 10): UserConnection!
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+}
+
+type PageInfo {
+  startCursor: String!
+  endCursor: String!
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
 }
 
 type User @typePolicy(keyFields: "id"){

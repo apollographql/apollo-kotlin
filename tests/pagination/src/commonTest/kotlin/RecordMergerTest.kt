@@ -1,6 +1,10 @@
 package pagination
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
@@ -18,32 +22,42 @@ class RecordMergerTest {
     val client = ApolloClient.Builder()
         .normalizedCache(
             normalizedCacheFactory = MemoryCacheFactory(),
-            cacheKeyGenerator = TypePolicyCacheKeyGenerator,
+            cacheKeyGenerator = IgnoreArgumentsOnConnectionKeyGenerator(),
             apolloResolver = FieldPolicyApolloResolver,
             recordMerger = AppendListRecordMerger()
         )
         .serverUrl("unused")
         .build()
-    val query = UserListQuery()
-    val data1 = UserListQuery.Data(listOf(
-        UserListQuery.User("0", "John", "john@a.com", "User"),
-        UserListQuery.User("1", "Jane", "jane@a.com", "User"),
-    ))
-    val data2 = UserListQuery.Data(listOf(
-        UserListQuery.User("2", "Peter", "peter@a.com", "User"),
-        UserListQuery.User("3", "Alice", "alice@a.com", "User"),
-    ))
-    client.apolloStore.writeOperation(query, data1)
-    client.apolloStore.writeOperation(query, data2)
+    val query1 = UserListQuery(Optional.Present(null), Optional.Present(2))
+    val data1 = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("www", UserListQuery.Node("0", "John", "john@a.com", "User")),
+        UserListQuery.Edge("xxx", UserListQuery.Node("1", "Jane", "jane@a.com", "User")),
+    )))
+    val query2 = UserListQuery(Optional.Present("xxx"), Optional.Present(2))
+    val data2 = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("yyy", UserListQuery.Node("2", "Peter", "peter@a.com", "User")),
+        UserListQuery.Edge("zzz", UserListQuery.Node("3", "Alice", "alice@a.com", "User")),
+    )))
+    client.apolloStore.writeOperation(query1, data1)
+    client.apolloStore.writeOperation(query2, data2)
 
-    val dataFromStore = client.apolloStore.readOperation(query)
-    val mergedData = UserListQuery.Data(listOf(
-        UserListQuery.User("0", "John", "john@a.com", "User"),
-        UserListQuery.User("1", "Jane", "jane@a.com", "User"),
-        UserListQuery.User("2", "Peter", "peter@a.com", "User"),
-        UserListQuery.User("3", "Alice", "alice@a.com", "User"),
-    ))
+    val dataFromStore = client.apolloStore.readOperation(query1)
+    val mergedData = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("www", UserListQuery.Node("0", "John", "john@a.com", "User")),
+        UserListQuery.Edge("xxx", UserListQuery.Node("1", "Jane", "jane@a.com", "User")),
+        UserListQuery.Edge("yyy", UserListQuery.Node("2", "Peter", "peter@a.com", "User")),
+        UserListQuery.Edge("zzz", UserListQuery.Node("3", "Alice", "alice@a.com", "User")),
+    )))
     assertEquals(mergedData, dataFromStore)
+  }
+}
+
+class IgnoreArgumentsOnConnectionKeyGenerator : CacheKeyGenerator {
+  override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
+    if (context.field.type.leafType().name == "UserConnection") {
+      return CacheKey("users")
+    }
+    return TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
 }
 
@@ -78,7 +92,9 @@ class AppendListRecordMerger : RecordMerger {
         key = existing.key,
         fields = mergedFields,
         mutationId = incoming.mutationId,
-        date = date
+        date = date,
+        arguments = existing.arguments,
+        metadata = incoming.metadata + existing.metadata,
     ) to changedKeys
   }
 }
