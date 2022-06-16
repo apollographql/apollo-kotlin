@@ -10,6 +10,6 @@ import com.apollographql.apollo3.api.ObjectType
 public class Droid {
   public companion object {
     public val type: ObjectType =
-        ObjectType.Builder(name = "Droid").implements(listOf(Character.type, Thing.type)).build()
+        ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type, Thing.type)).build()
   }
 }

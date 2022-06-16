@@ -6,11 +6,10 @@
 package com.example.nested_named_fragments.type;
 
 import com.apollographql.apollo3.api.ObjectType;
-import java.util.Collections;
 
 /**
  * An edge in a connection.
  */
 public class StarshipPilotsEdge {
-  public static ObjectType type = new ObjectType("StarshipPilotsEdge", Collections.emptyList(), Collections.emptyList());
+  public static ObjectType type = (new ObjectType.Builder("StarshipPilotsEdge")).build();
 }

@@ -6,11 +6,10 @@
 package com.example.root_query_fragment.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
-import java.util.Collections;
 
 /**
  * A character from the Star Wars universe
  */
 public class Character {
-  public static InterfaceType type = new InterfaceType("Character", Collections.emptyList(), Collections.emptyList());
+  public static InterfaceType type = (new InterfaceType.Builder("Character")).build();
 }

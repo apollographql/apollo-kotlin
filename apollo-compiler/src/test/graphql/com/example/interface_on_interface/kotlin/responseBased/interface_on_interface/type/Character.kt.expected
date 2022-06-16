@@ -10,6 +10,6 @@ import com.apollographql.apollo3.api.InterfaceType
 public class Character {
   public companion object {
     public val type: InterfaceType =
-        InterfaceType.Builder(name = "Character").implements(listOf(Node.type)).build()
+        InterfaceType.Builder(name = "Character").interfaces(listOf(Node.type)).build()
   }
 }

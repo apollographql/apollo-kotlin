@@ -6,11 +6,10 @@
 package com.example.hero_details.type;
 
 import com.apollographql.apollo3.api.ObjectType;
-import java.util.Collections;
 
 /**
  * An edge object for a character's friends
  */
 public class FriendsEdge {
-  public static ObjectType type = new ObjectType("FriendsEdge", Collections.emptyList(), Collections.emptyList());
+  public static ObjectType type = (new ObjectType.Builder("FriendsEdge")).build();
 }

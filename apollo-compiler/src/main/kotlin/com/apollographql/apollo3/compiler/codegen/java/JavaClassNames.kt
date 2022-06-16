@@ -12,6 +12,8 @@ import com.squareup.javapoet.ClassName
 internal object JavaClassNames {
   val ObjectType = ClassNames.ObjectType.toJavaPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toJavaPoetClassName()
+  val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toJavaPoetClassName()
+  val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toJavaPoetClassName()
 
   val JsonReader = ClassNames.JsonReader.toJavaPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toJavaPoetClassName()

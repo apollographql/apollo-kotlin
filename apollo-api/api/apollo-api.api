@@ -613,7 +613,7 @@ public final class com/apollographql/apollo3/api/InterfaceType$Builder {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun build ()Lcom/apollographql/apollo3/api/InterfaceType;
 	public final fun embeddedFields (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
-	public final fun implements (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
+	public final fun interfaces (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
 	public final fun keyFields (Ljava/util/List;)Lcom/apollographql/apollo3/api/InterfaceType$Builder;
 }
 
@@ -668,7 +668,7 @@ public final class com/apollographql/apollo3/api/ObjectType$Builder {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun build ()Lcom/apollographql/apollo3/api/ObjectType;
 	public final fun embeddedFields (Ljava/util/List;)Lcom/apollographql/apollo3/api/ObjectType$Builder;
-	public final fun implements (Ljava/util/List;)Lcom/apollographql/apollo3/api/ObjectType$Builder;
+	public final fun interfaces (Ljava/util/List;)Lcom/apollographql/apollo3/api/ObjectType$Builder;
 	public final fun keyFields (Ljava/util/List;)Lcom/apollographql/apollo3/api/ObjectType$Builder;
 }
 

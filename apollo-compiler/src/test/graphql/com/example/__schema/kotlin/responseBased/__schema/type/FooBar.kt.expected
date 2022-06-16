@@ -13,6 +13,6 @@ import com.apollographql.apollo3.api.ObjectType
 public class FooBar {
   public companion object {
     public val type: ObjectType =
-        ObjectType.Builder(name = "FooBar").implements(listOf(Bar.type, Foo.type)).build()
+        ObjectType.Builder(name = "FooBar").interfaces(listOf(Bar.type, Foo.type)).build()
   }
 }

@@ -6,8 +6,7 @@
 package com.example.subscriptions.type;
 
 import com.apollographql.apollo3.api.ObjectType;
-import java.util.Collections;
 
 public class Subscription {
-  public static ObjectType type = new ObjectType("Subscription", Collections.emptyList(), Collections.emptyList());
+  public static ObjectType type = (new ObjectType.Builder("Subscription")).build();
 }

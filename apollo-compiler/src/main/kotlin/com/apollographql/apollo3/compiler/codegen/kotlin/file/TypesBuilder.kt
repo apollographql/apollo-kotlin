@@ -69,7 +69,7 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
     builder.add(".keyFields(%L)", keyFields.toCode())
   }
   if (implements.isNotEmpty()) {
-    builder.add(".implements(%L)", implements.implementsToCode(resolver))
+    builder.add(".interfaces(%L)", implements.implementsToCode(resolver))
   }
   if (embeddedFields.isNotEmpty()) {
     builder.add(".embeddedFields(%L)", embeddedFields.toCode())
@@ -89,7 +89,7 @@ internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpe
     builder.add(".keyFields(%L)", keyFields.toCode())
   }
   if (implements.isNotEmpty()) {
-    builder.add(".implements(%L)", implements.implementsToCode(resolver))
+    builder.add(".interfaces(%L)", implements.implementsToCode(resolver))
   }
   if (embeddedFields.isNotEmpty()) {
     builder.add(".embeddedFields(%L)", embeddedFields.toCode())

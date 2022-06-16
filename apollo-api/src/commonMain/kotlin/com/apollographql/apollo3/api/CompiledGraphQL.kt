@@ -193,7 +193,8 @@ class ObjectType internal constructor(
       this.keyFields = keyFields
     }
 
-    fun implements(implements: List<InterfaceType>) = apply {
+    // This method is named "interfaces" and not "implements" to avoid using a reserved Java keyword
+    fun interfaces(implements: List<InterfaceType>) = apply {
       this.implements = implements
     }
 
@@ -246,7 +247,8 @@ class InterfaceType internal constructor(
       this.keyFields = keyFields
     }
 
-    fun implements(implements: List<InterfaceType>) = apply {
+    // This method is named "interfaces" and not "implements" to avoid using a reserved Java keyword
+    fun interfaces(implements: List<InterfaceType>) = apply {
       this.implements = implements
     }
 

@@ -6,8 +6,7 @@
 package com.example.multiple_fragments.type;
 
 import com.apollographql.apollo3.api.ObjectType;
-import java.util.Collections;
 
 public class A {
-  public static ObjectType type = new ObjectType("A", Collections.emptyList(), Collections.emptyList());
+  public static ObjectType type = (new ObjectType.Builder("A")).build();
 }
