@@ -5,6 +5,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.withTimeout
 
 @ApolloExperimental
-suspend fun <T> Channel<T>.receiveOrTimeout(timeoutMillis: Long = 500) = withTimeout(timeoutMillis) {
+suspend fun <T> Channel<T>.receiveOrTimeout(timeoutMillis: Long = 5000) = withTimeout(timeoutMillis) {
   receive()
 }
