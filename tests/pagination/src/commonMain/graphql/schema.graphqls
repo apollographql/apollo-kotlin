@@ -1,4 +1,4 @@
-type Query @fieldPolicy(forField: "users", keyArgs: "id") {
+type Query {
   users: [User!]!
 }
 
