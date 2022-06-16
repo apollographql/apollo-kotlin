@@ -37,7 +37,6 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.Schema.Companion.EMBED
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
