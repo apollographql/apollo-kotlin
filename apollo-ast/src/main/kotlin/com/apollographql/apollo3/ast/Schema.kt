@@ -193,7 +193,6 @@ class Schema internal constructor(
     const val NONNULL = "nonnull"
     const val OPTIONAL = "optional"
     const val REQUIRES_OPT_IN = "requiresOptIn"
-    const val EMBED = "embed"
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
