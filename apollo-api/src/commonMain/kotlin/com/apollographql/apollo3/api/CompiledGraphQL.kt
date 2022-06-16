@@ -62,10 +62,10 @@ class CompiledField internal constructor(
   fun newBuilder(): Builder = Builder(this)
 
   class Builder(val name: String, val type: CompiledType) {
-    internal var alias: String? = null
-    internal var condition: List<CompiledCondition> = emptyList()
-    internal var arguments: List<CompiledArgument> = emptyList()
-    internal var selections: List<CompiledSelection> = emptyList()
+    private var alias: String? = null
+    private var condition: List<CompiledCondition> = emptyList()
+    private var arguments: List<CompiledArgument> = emptyList()
+    private var selections: List<CompiledSelection> = emptyList()
 
     constructor(compiledField: CompiledField) : this(compiledField.name, compiledField.type) {
       this.alias = compiledField.alias
@@ -179,9 +179,9 @@ class ObjectType internal constructor(
   fun newBuilder(): Builder = Builder(this)
 
   class Builder(internal val name: String) {
-    internal var keyFields: List<String> = emptyList()
-    internal var implements: List<InterfaceType> = emptyList()
-    internal var embeddedFields: List<String> = emptyList()
+    private var keyFields: List<String> = emptyList()
+    private var implements: List<InterfaceType> = emptyList()
+    private var embeddedFields: List<String> = emptyList()
 
     constructor(objectType: ObjectType) : this(objectType.name) {
       this.keyFields = objectType.keyFields
@@ -233,9 +233,9 @@ class InterfaceType internal constructor(
   fun newBuilder(): Builder = Builder(this)
 
   class Builder(internal val name: String) {
-    internal var keyFields: List<String> = emptyList()
-    internal var implements: List<InterfaceType> = emptyList()
-    internal var embeddedFields: List<String> = emptyList()
+    private var keyFields: List<String> = emptyList()
+    private var implements: List<InterfaceType> = emptyList()
+    private var embeddedFields: List<String> = emptyList()
 
     constructor(interfaceType: InterfaceType) : this(interfaceType.name) {
       this.keyFields = interfaceType.keyFields
