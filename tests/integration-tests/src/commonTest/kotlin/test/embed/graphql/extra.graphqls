@@ -1,0 +1,2 @@
+extend type Query @typePolicy(embeddedFields: "hero")
+extend type Hero @typePolicy(embeddedFields: "friends")

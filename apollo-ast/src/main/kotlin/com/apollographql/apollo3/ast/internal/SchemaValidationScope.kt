@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.ast.internal
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.*
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 
-@Suppress("UNCHECKED_CAST")
 internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
   val builtinDefinitions = builtinDefinitions()
@@ -19,7 +19,6 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  @Suppress("DEPRECATION")
   val apolloDefinitions = apolloDefinitions()
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
@@ -34,7 +33,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
      */
     foreignDefinitions = apolloDefinitions + foreignDefinitions
   }
-  allDefinitions =  foreignDefinitions + allDefinitions
+  allDefinitions = foreignDefinitions + allDefinitions
 
   val directiveDefinitions = mutableMapOf<String, GQLDirectiveDefinition>()
   val typeDefinitions = mutableMapOf<String, GQLTypeDefinition>()
@@ -50,6 +49,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
           schemaDefinition = gqlDefinition
         }
       }
+
       is GQLDirectiveDefinition -> {
         val existing = directiveDefinitions[gqlDefinition.name]
         if (existing != null) {
@@ -71,6 +71,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
           directiveDefinitions[gqlDefinition.name] = gqlDefinition
         }
       }
+
       is GQLTypeDefinition -> {
         val existing = typeDefinitions[gqlDefinition.name]
         if (existing != null) {
@@ -79,9 +80,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
           typeDefinitions[gqlDefinition.name] = gqlDefinition
         }
       }
+
       is GQLTypeSystemExtension -> {
         typeSystemExtensions.add(gqlDefinition)
       }
+
       else -> {
         /**
          * This is not in the specification per-se but in our use case, that will help catch some cases when users mistake
@@ -133,7 +136,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   return if (issues.containsError()) {
     /**
-     * Schema requires a valid [Query] root type which might not be always the case if there are error
+     * Schema requires a valid Query root type which might not be always the case if there are error
      */
     GQLResult(null, issues)
   } else {
@@ -191,7 +194,7 @@ private class ForeignSchema(
     val name: String,
     val definitions: List<GQLDefinition>,
     val newNames: Map<String, String>,
-    val directivesToStrip: List<String>
+    val directivesToStrip: List<String>,
 )
 
 /**
@@ -270,6 +273,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
               }
               name to as2
             }
+
             else -> {
               issues.add(Issue.ValidationError("Bad 'import' argument", it.sourceLocation))
               null
@@ -317,12 +321,14 @@ private fun List<GQLDefinition>.rename(mappings: Map<String, String>, prefix: St
             is GQLInputObjectTypeDefinition -> gqlNode.copy(name = gqlNode.newName())
           }
         }
+
         is GQLDirectiveDefinition -> {
           // Special case, directives use a leading '@'
           val newName = mappings["@${gqlNode.name}"]?.substring(1) ?: "${prefix}__${gqlNode.name}"
           renames["@${gqlNode.name}"] = "@$newName"
           gqlNode.copy(name = newName)
         }
+
         is GQLNamedType -> gqlNode.copy(name = gqlNode.newName())
         else -> gqlNode
       }
@@ -421,7 +427,7 @@ private fun ValidationScope.keyFields(
   }
 
   val keyFields = directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toKeyFields()
-  val ret = if (keyFields != null) {
+  val ret = if (keyFields.isNotEmpty()) {
     if (distinct.isNotEmpty()) {
       val extra = interfaces.indices.map {
         "${interfaces[it]}: ${interfacesKeyFields[it]}"
@@ -441,12 +447,23 @@ private fun ValidationScope.keyFields(
   return ret
 }
 
-private fun List<GQLDirective>.toKeyFields(): Set<String>? {
+private fun List<GQLDirective>.toKeyFields(): Set<String> = extractFields("keyFields")
+
+@ApolloInternal
+fun List<GQLDirective>.toEmbeddedFields(): Set<String> = extractFields("embeddedFields")
+
+private fun List<GQLDirective>.extractFields(argumentName: String): Set<String> {
   if (isEmpty()) {
-    return null
+    return emptySet()
   }
   return flatMap {
-    (it.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
+    val value = it.arguments?.arguments?.firstOrNull {
+      it.name == argumentName
+    }?.value
+
+    val selectionSet = (value as? GQLStringValue)?.value ?: return@flatMap emptyList()
+
+    selectionSet.buffer().parseAsGQLSelections().valueAssertNoErrors().map { gqlSelection ->
       // No need to check here, this should be done during validation
       (gqlSelection as GQLField).name
     }

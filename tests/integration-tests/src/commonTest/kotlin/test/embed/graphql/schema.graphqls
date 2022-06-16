@@ -1,9 +1,9 @@
 type Query {
-  hero: Hero! @embed
+  hero: Hero!
 }
 
 type Hero {
-  friends: [Friend!]! @embed
+  friends: [Friend!]!
 }
 
 type Friend {
