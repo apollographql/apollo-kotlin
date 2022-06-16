@@ -12,6 +12,6 @@ import com.apollographql.apollo3.api.ObjectType
  */
 internal class Review {
   public companion object {
-    public val type: ObjectType = ObjectType(name = "Review")
+    public val type: ObjectType = ObjectType.Builder(name = "Review").build()
   }
 }

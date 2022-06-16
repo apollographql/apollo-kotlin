@@ -15,13 +15,13 @@ class EmbedTest {
     val query = GetHeroQuery()
 
     val records = query.normalize(
-        data = GetHeroQuery.Data(
-            hero = GetHeroQuery.Hero(
-                friends = listOf(GetHeroQuery.Friend("Luke"), GetHeroQuery.Friend("Leia"))
+        GetHeroQuery.Data(
+            GetHeroQuery.Hero(
+                listOf(GetHeroQuery.Friend("Luke"), GetHeroQuery.Friend("Leia"))
             )
         ),
-        customScalarAdapters = CustomScalarAdapters.Empty,
-        cacheKeyGenerator = object : CacheKeyGenerator {
+        CustomScalarAdapters.Empty,
+        object : CacheKeyGenerator {
           override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
             return null
           }
