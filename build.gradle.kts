@@ -144,18 +144,17 @@ tasks.register("ciTestsNoGradle") {
     dependsOn(tasks.matching { it.name == "macosX64Test" })
     dependsOn(tasks.matching { it.name == "apiCheck" })
   }
-}
-
-tasks.register("ciBuild") {
-  description = "Execute the 'build' task in each subproject"
-  dependsOn(subprojectTasks("build"))
-
   doLast {
     val modifiedFiles = runCommand("git", "status", "--porcelain")
     if (modifiedFiles.isNotEmpty()) {
       error("The CI modified local files. This is certainly an indication that they should have been included in the PR. Modified files:\n$modifiedFiles")
     }
   }
+}
+
+tasks.register("ciBuild") {
+  description = "Execute the 'build' task in each subproject"
+  dependsOn(subprojectTasks("build"))
 }
 
 fun runCommand(vararg args: String): String {
