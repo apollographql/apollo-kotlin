@@ -44,14 +44,14 @@ internal class Normalizer(
    * @param selections the selections queried on this object
    * @return the CacheKey if this object has a CacheKey or the new Map if the object was embedded
    */
-  private fun buildRecord(
+  private fun buildFields(
       obj: Map<String, Any?>,
-      key: String?,
+      key: String,
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
       field: CompiledField?,
-  ): Any {
+  ): Map<String, Any?> {
 
     val typename = obj["__typename"] as? String
     val allFields = collectFields(selections, typeInScope, typename)
@@ -94,7 +94,24 @@ internal class Normalizer(
       )
     }.toMap()
 
-    return if (key != null) {
+    return fields
+  }
+  /**
+   *
+   *
+   * @param obj the json node representing the object
+   * @param key the key for this record
+   * @param selections the selections queried on this object
+   * @return the CacheKey if this object has a CacheKey or the new Map if the object was embedded
+   */
+  private fun buildRecord(
+      obj: Map<String, Any?>,
+      key: String,
+      selections: List<CompiledSelection>,
+      typeInScope: String,
+      embeddedFields: List<String>,
+  ): CacheKey {
+    val fields = buildFields(obj, key, selections, typeInScope, embeddedFields)
       val record = Record(
           key = key,
           fields = fields,
@@ -116,10 +133,7 @@ internal class Normalizer(
       }
       records[key] = mergedRecord
 
-      CacheKey(key)
-    } else {
-      fields
-    }
+      return CacheKey(key)
   }
 
 
@@ -169,10 +183,14 @@ internal class Normalizer(
             CacheKeyGeneratorContext(field, variables),
         )?.key
 
-        if (key == null && !embeddedFields.contains(field.name)) {
+        if (key == null) {
           key = path
         }
-        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, field)
+        if (embeddedFields.contains(field.name)) {
+          buildFields(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+        } else {
+          buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, field)
+        }
       }
       else -> {
         // scalar

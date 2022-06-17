@@ -13,6 +13,7 @@ import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.ResolverContext
 import com.apollographql.apollo3.exception.CacheMissException
+import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth
@@ -154,6 +155,27 @@ internal class CacheBatchReader(
         forEachIndexed { index, value ->
           value.registerCacheKeys(path + index, selections, typeInScope)
         }
+      }
+      is Map<*, *> -> {
+        @Suppress("UNCHECKED_CAST")
+        this as Map<String, @JvmSuppressWildcards Any?>
+        val collectedFields = collectAndMergeSameDirectives(selections, typeInScope, get("__typename") as? String)
+        collectedFields.mapNotNull {
+          if (it.shouldSkip(variables.valueMap)) {
+            return@mapNotNull null
+          }
+
+          val value = when (cacheResolver) {
+            is CacheResolver -> cacheResolver.resolveField(it, variables, this, "")
+            is ApolloResolver -> {
+              cacheResolver.resolveField(ResolverContext(it, variables, this, "", cacheHeaders))
+            }
+            else -> throw IllegalStateException()
+          }
+          value.registerCacheKeys(path + it.responseName, it.selections, it.type.leafType().name)
+
+          it.responseName to value
+        }.toMap()
       }
     }
   }
