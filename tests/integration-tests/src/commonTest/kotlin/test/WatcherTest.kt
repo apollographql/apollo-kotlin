@@ -27,6 +27,7 @@ import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.apollographql.apollo3.testing.runTest
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.channels.Channel
@@ -325,10 +326,9 @@ class WatcherTest {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // This will initially miss as the cache should be empty
-    val job = launch {
+    val job = launch(start = CoroutineStart.UNDISPATCHED) {
       apolloClient.query(query)
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .watch()
+          .watch(null)
           .collect {
             channel.send(it.data)
           }
