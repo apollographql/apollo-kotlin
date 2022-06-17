@@ -8,4 +8,9 @@ type Hero {
 
 type Friend {
   name: String!
+  pet: Animal!
+}
+
+type Animal {
+  name: String
 }
