@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 
 class EmbedTest {
   @Test
-  fun test() {
+  fun normalize() {
     val query = GetHeroQuery()
 
     val records = query.normalize(
@@ -33,12 +33,11 @@ class EmbedTest {
         }
     )
 
-    // Should be 3?
-    assertEquals(2, records.size)
+    assertEquals(3, records.size)
   }
 
   @Test
-  fun readFromCache() = runTest {
+  fun denormalize() = runTest {
     val client = ApolloClient.Builder()
         .normalizedCache(normalizedCacheFactory = MemoryCacheFactory())
         .serverUrl("unused")

@@ -50,7 +50,6 @@ internal class Normalizer(
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
-      field: CompiledField?,
   ): Map<String, Any?> {
 
     val typename = obj["__typename"] as? String
@@ -96,6 +95,7 @@ internal class Normalizer(
 
     return fields
   }
+
   /**
    *
    *
@@ -110,30 +110,31 @@ internal class Normalizer(
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
+      field: CompiledField?,
   ): CacheKey {
     val fields = buildFields(obj, key, selections, typeInScope, embeddedFields)
-      val record = Record(
-          key = key,
-          fields = fields,
-          mutationId = null,
-          date = emptyMap(),
-          arguments = field?.argumentsWithValue(variables) ?: emptyMap(),
-          metadata = field?.let { metadataGenerator.metadataForObject(obj, MetadataGeneratorContext(field = it, variables)) } ?: emptyMap(),
-      )
+    val record = Record(
+        key = key,
+        fields = fields,
+        mutationId = null,
+        date = emptyMap(),
+        arguments = field?.argumentsWithValue(variables) ?: emptyMap(),
+        metadata = field?.let { metadataGenerator.metadataForObject(obj, MetadataGeneratorContext(field = it, variables)) } ?: emptyMap(),
+    )
 
-      val existingRecord = records[key]
+    val existingRecord = records[key]
 
-      val mergedRecord = if (existingRecord != null) {
-        /**
-         * A query might contain the same object twice, we don't want to lose some fields when that happens
-         */
-        existingRecord.mergeWith(record).first
-      } else {
-        record
-      }
-      records[key] = mergedRecord
+    val mergedRecord = if (existingRecord != null) {
+      /**
+       * A query might contain the same object twice, we don't want to lose some fields when that happens
+       */
+      existingRecord.mergeWith(record).first
+    } else {
+      record
+    }
+    records[key] = mergedRecord
 
-      return CacheKey(key)
+    return CacheKey(key)
   }
 
 
