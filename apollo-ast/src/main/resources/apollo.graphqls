@@ -18,9 +18,11 @@ directive @optional(if: Boolean = true) on FIELD | VARIABLE_DEFINITION
 # and null in the other
 directive @nonnull(fields: String! = "") on OBJECT | FIELD
 
-# Marks fields as key fields. Key fields are used to compute the cache key of an object
-# `keyFields` should contain a selection set. Composite fields are not supported yet.
-directive @typePolicy(keyFields: String!) on OBJECT | INTERFACE | UNION
+# Attach extra information to a given type
+# `keyFields`: a selection set containing fields used to compute the cache key of an object. Order is important.
+# `embeddedFields`: a selection set containing fields that shouldn't create a new cache Record and should be
+# embedded in their parent instead. Order is unimportant.
+directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "") on OBJECT | INTERFACE | UNION
 
 # Indicates how to compute a key from a field arguments.
 # `keyArgs` should contain a selection set. Composite args are not supported yet.

@@ -12,6 +12,7 @@ import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -36,6 +37,7 @@ import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.Schema
+import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
@@ -46,6 +48,7 @@ import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
+import com.apollographql.apollo3.ast.internal.toEmbeddedFields
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.leafType
 import com.apollographql.apollo3.ast.optionalValue
@@ -184,7 +187,8 @@ internal class IrBuilder(
         keyFields = schema.keyFields(name),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on object definitions
-        deprecationReason = directives.findDeprecationReason()
+        deprecationReason = directives.findDeprecationReason(),
+        embeddedFields = directives.filter { schema.originalDirectiveName(it.name)== TYPE_POLICY }.toEmbeddedFields()
     )
   }
 
@@ -198,7 +202,8 @@ internal class IrBuilder(
         keyFields = schema.keyFields(name),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on interfaces
-        deprecationReason = directives.findDeprecationReason()
+        deprecationReason = directives.findDeprecationReason(),
+        embeddedFields = directives.filter { schema.originalDirectiveName(it.name)== TYPE_POLICY }.toEmbeddedFields()
     )
   }
 

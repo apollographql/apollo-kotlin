@@ -59,12 +59,17 @@ private fun List<String>.implementsToCode(resolver: JavaResolver): CodeBlock {
 
 internal fun IrObject.typeFieldSpec(resolver: JavaResolver): FieldSpec {
   val builder = CodeBlock.builder()
-  builder.add("new $T($S", JavaClassNames.ObjectType, name)
-  builder.add(", ")
-  builder.add(L, keyFields.toCode())
-  builder.add(", ")
-  builder.add(L, implements.implementsToCode(resolver))
-  builder.add(")")
+  builder.add("(new $T($S))", JavaClassNames.ObjectTypeBuilder, name)
+  if (keyFields.isNotEmpty()) {
+    builder.add(".keyFields($L)", keyFields.toCode())
+  }
+  if (implements.isNotEmpty()) {
+    builder.add(".interfaces($L)", implements.implementsToCode(resolver))
+  }
+  if (embeddedFields.isNotEmpty()) {
+    builder.add(".embeddedFields($L)", embeddedFields.toCode())
+  }
+  builder.add(".build()")
 
   return FieldSpec
       .builder(JavaClassNames.ObjectType, type, Modifier.STATIC, Modifier.PUBLIC)
@@ -74,12 +79,17 @@ internal fun IrObject.typeFieldSpec(resolver: JavaResolver): FieldSpec {
 
 internal fun IrInterface.typeFieldSpec(resolver: JavaResolver): FieldSpec {
   val builder = CodeBlock.builder()
-  builder.add("new $T($S", JavaClassNames.InterfaceType, name)
-  builder.add(", ")
-  builder.add(L, keyFields.toCode())
-  builder.add(", ")
-  builder.add(L, implements.implementsToCode(resolver))
-  builder.add(")")
+  builder.add("(new $T($S))", JavaClassNames.InterfaceTypeBuilder, name)
+  if (keyFields.isNotEmpty()) {
+    builder.add(".keyFields($L)", keyFields.toCode())
+  }
+  if (implements.isNotEmpty()) {
+    builder.add(".interfaces($L)", implements.implementsToCode(resolver))
+  }
+  if (embeddedFields.isNotEmpty()) {
+    builder.add(".embeddedFields($L)", embeddedFields.toCode())
+  }
+  builder.add(".build()")
 
   return FieldSpec
       .builder(JavaClassNames.InterfaceType, type, Modifier.STATIC, Modifier.PUBLIC)
