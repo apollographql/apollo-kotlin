@@ -14,6 +14,8 @@ import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.Record
 
 /**
@@ -24,11 +26,12 @@ internal class Normalizer(
     private val variables: Executable.Variables,
     private val rootKey: String,
     private val cacheKeyGenerator: CacheKeyGenerator,
+    private val metadataGenerator: MetadataGenerator,
 ) {
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: CompiledNamedType): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields, emptyMap())
+    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields, null)
 
     return records
   }
@@ -47,7 +50,7 @@ internal class Normalizer(
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
-      argumentsWithValue: Map<String, Any?>,
+      field: CompiledField?,
     ): Any {
 
     val typename = obj["__typename"] as? String
@@ -165,7 +168,7 @@ internal class Normalizer(
         if (key == null && !embeddedFields.contains(field.name)) {
           key = path
         }
-        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, , field.argumentsWithValue(variables))
+        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, , field)
       }
       else -> {
         // scalar

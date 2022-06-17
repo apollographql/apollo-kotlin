@@ -5,8 +5,11 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
@@ -23,6 +26,7 @@ class RecordMergerTest {
         .normalizedCache(
             normalizedCacheFactory = MemoryCacheFactory(),
             cacheKeyGenerator = IgnoreArgumentsOnConnectionKeyGenerator(),
+            metadataGenerator = CursorPaginationMetadataGenerator(),
             apolloResolver = FieldPolicyApolloResolver,
             recordMerger = AppendListRecordMerger()
         )
@@ -61,31 +65,56 @@ class IgnoreArgumentsOnConnectionKeyGenerator : CacheKeyGenerator {
   }
 }
 
+class CursorPaginationMetadataGenerator : MetadataGenerator {
+  override fun metadataForObject(obj: Map<String, Any?>, context: MetadataGeneratorContext): Map<String, Any?> {
+    if (context.field.type.leafType().name == "UserConnection") {
+      val edges = obj["edges"] as List<Map<String, Any?>>
+      val startCursor = edges.first()["cursor"] as String
+      val endCursor = edges.last()["cursor"] as String
+      return mapOf(
+          "startCursor" to startCursor,
+          "endCursor" to endCursor
+      )
+    }
+    return emptyMap()
+  }
+}
+
 class AppendListRecordMerger : RecordMerger {
   override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
-    val changedKeys = mutableSetOf<String>()
-    val mergedFields = existing.fields.toMutableMap()
+    val existingStartCursor = existing.metadata["startCursor"] as? String
+    val existingEndCursor = existing.metadata["endCursor"] as? String
+    if (existingStartCursor == null || existingEndCursor == null) {
+      return DefaultRecordMerger.merge(existing, incoming, newDate)
+    }
+
+    val incomingBeforeArgument = incoming.arguments["before"] as? String
+    val incomingAfterArgument = incoming.arguments["after"] as? String
+    if (incomingBeforeArgument == null && incomingAfterArgument == null) {
+      return DefaultRecordMerger.merge(existing, incoming, newDate)
+    }
+
+    val existingEdges = existing["edges"] as List<Record>
+    val incomingEdges = incoming["edges"] as List<Record>
+    val mergedEdges: List<Record> = if (incomingAfterArgument == existingEndCursor) {
+      existingEdges + incomingEdges
+    } else if (incomingBeforeArgument == existingStartCursor) {
+      incomingEdges + existingEdges
+    } else {
+      // We received a list which is neither the previous nor the next page.
+      // Handle this case by resetting the cache with this page
+      incomingEdges
+    }
+    val mergedFields = mapOf(
+        "edges" to mergedEdges,
+        // TODO: Use the incoming pageInfo - this may be unexpected
+        "pageInfo" to incoming["pageInfo"],
+    )
+    val changedKeys = setOf<String>("edges", "pageInfo")
     val date = existing.date?.toMutableMap() ?: mutableMapOf()
-
-    for ((fieldKey, incomingFieldValue) in incoming.fields) {
-      val hasExistingFieldValue = existing.fields.containsKey(fieldKey)
-      val existingFieldValue = existing.fields[fieldKey]
-
-      if (!hasExistingFieldValue) {
-        mergedFields[fieldKey] = incomingFieldValue
-        changedKeys.add("${existing.key}.$fieldKey")
-      } else if (incomingFieldValue is List<*> && existingFieldValue is List<*>) {
-        mergedFields[fieldKey] = existingFieldValue + incomingFieldValue
-        changedKeys.add("${existing.key}.$fieldKey")
-      } else if (existingFieldValue != incomingFieldValue) {
-        mergedFields[fieldKey] = incomingFieldValue
-        changedKeys.add("${existing.key}.$fieldKey")
-      }
-
-      // Even if the value did not change update date
-      if (newDate != null) {
-        date[fieldKey] = newDate
-      }
+    if (newDate != null) {
+      date["edges"] = newDate
+      date["pageInfo"] = newDate
     }
 
     return Record(
