@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+# Version 3.3.2
+
+_2022-06-17_
+
+This is a hot fix release that fixes a crash that could happen in the codegen when using `responseBased` codegen in a
+multimodule setup. It also includes a fix for incorrect generated code when using certain reserved names in enum values.
+
+## 👷‍ All changes
+
+- Update to KotlinPoet `1.12.0`, fixes generating enum values whose name clashes with other symbols (#4034)
+- Update to Ktor 2 (#4190)
+- Fix NPE in checkCapitalizedFields (#4201)
+
 # Version 3.3.1
 
 _2022-06-13_
