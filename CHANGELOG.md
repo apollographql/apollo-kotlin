@@ -18,13 +18,10 @@ multimodule setup. It also includes a fix for incorrect generated code when usin
 
 _2022-06-13_
 
-This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test
-Builders. It also contains a number of other improvements and bug fixes!
+This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test Builders. It also contains a number of other improvements and bug fixes!
 
 ## ✨️ [new] `@typePolicy` on interfaces and unions (#4131)
-
-[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be
-declared on interfaces and unions. Thank you @bubba for the contribution!
+[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @bubba for the contribution!
 
 ## 🔌 WebSockets / Subscriptions error handling (#4147)
 An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails due to a specific operation error.
