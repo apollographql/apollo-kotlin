@@ -174,6 +174,23 @@ Here are the steps to do a new release:
 * if it's a significant release, tweet about it 🐦
 * relax 🍹
 
+## Debugging minimized Gradle Plugin stacktraces
+
+Because the Gradle plugin uses [R8](https://r8.googlesource.com/r8) to relocate dependencies, the stacktraces do not match the source code by default. It is possible to retrace them using the mapping file and R8.
+
+Indicative steps (replace values accordingly bellow):
+
+```
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+export PATH=/path/to/depot_tools:$PATH
+git clone https://r8.googlesource.com/r8
+cd r8 
+./tools/gradle.py d8 r8
+wget https://repo.maven.apache.org/maven2/com/apollographql/apollo3/apollo-gradle-plugin/3.3.1/apollo-gradle-plugin-3.3.1-mapping.txt
+java -cp build/libs/r8_with_deps.jar com.android.tools.r8.retrace.Retrace apollo-gradle-plugin-3.3.1-mapping.txt
+[copy paste your stacktrace and press Crtl-D to launch the retracing]
+```
+
 ## Overview of the CI
 
 The project uses [GitHub Actions](https://docs.github.com/en/actions) to automate the build process.
