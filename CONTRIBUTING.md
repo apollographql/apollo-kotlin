@@ -178,7 +178,7 @@ Here are the steps to do a new release:
 
 Because the Gradle plugin uses [R8](https://r8.googlesource.com/r8) to relocate dependencies, the stacktraces do not match the source code by default. It is possible to retrace them using the mapping file and R8.
 
-Indicative steps (replace values accordingly bellow):
+Indicative steps (replace values accordingly below):
 
 ```
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
