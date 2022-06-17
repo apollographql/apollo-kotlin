@@ -1,5 +1,5 @@
 type Query {
-  users(after: String = null, first: Int! = 10): UserConnection!
+  users(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection!
 }
 
 type UserConnection @typePolicy(embeddedFields: "pageInfo, edges") {

@@ -2,6 +2,7 @@ package pagination
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
@@ -28,31 +29,79 @@ class RecordMergerTest {
             cacheKeyGenerator = IgnoreArgumentsOnConnectionKeyGenerator(),
             metadataGenerator = CursorPaginationMetadataGenerator(),
             apolloResolver = FieldPolicyApolloResolver,
-            recordMerger = AppendListRecordMerger()
+            recordMerger = CursorPaginationRecordMerger()
         )
         .serverUrl("unused")
         .build()
-    val query1 = UserListQuery(Optional.Present(null), Optional.Present(2))
+
+    // First page
+    val query1 = UserListQuery(Optional.Present(2))
     val data1 = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("www", UserListQuery.Node("0", "John", "john@a.com", "User")),
-        UserListQuery.Edge("xxx", UserListQuery.Node("1", "Jane", "jane@a.com", "User")),
-    )))
-    val query2 = UserListQuery(Optional.Present("xxx"), Optional.Present(2))
-    val data2 = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("yyy", UserListQuery.Node("2", "Peter", "peter@a.com", "User")),
-        UserListQuery.Edge("zzz", UserListQuery.Node("3", "Alice", "alice@a.com", "User")),
+        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
+        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
     )))
     client.apolloStore.writeOperation(query1, data1)
-    client.apolloStore.writeOperation(query2, data2)
+    var dataFromStore = client.apolloStore.readOperation(query1)
+    assertEquals(data1, dataFromStore)
 
-    val dataFromStore = client.apolloStore.readOperation(query1)
-    val mergedData = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("www", UserListQuery.Node("0", "John", "john@a.com", "User")),
-        UserListQuery.Edge("xxx", UserListQuery.Node("1", "Jane", "jane@a.com", "User")),
-        UserListQuery.Edge("yyy", UserListQuery.Node("2", "Peter", "peter@a.com", "User")),
-        UserListQuery.Edge("zzz", UserListQuery.Node("3", "Alice", "alice@a.com", "User")),
+    // Page after
+    val query2 = UserListQuery(Optional.Present(2), Optional.Present("xx43"))
+    val data2 = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
     )))
-    assertEquals(mergedData, dataFromStore)
+    client.apolloStore.writeOperation(query2, data2)
+    dataFromStore = client.apolloStore.readOperation(query1)
+    var expectedData = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
+        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+    )))
+    assertEquals(expectedData, dataFromStore)
+
+    // Page after
+    val query3 = UserListQuery(Optional.Present(2), Optional.Present("xx45"))
+    val data3 = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("xx46", UserListQuery.Node("46", "Bob", "bob@a.com", "User")),
+        UserListQuery.Edge("xx47", UserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
+    )))
+    client.apolloStore.writeOperation(query3, data3)
+    dataFromStore = client.apolloStore.readOperation(query1)
+    expectedData = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
+        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+        UserListQuery.Edge("xx46", UserListQuery.Node("46", "Bob", "bob@a.com", "User")),
+        UserListQuery.Edge("xx47", UserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
+    )))
+    assertEquals(expectedData, dataFromStore)
+
+    // Page before
+    val query4 = UserListQuery(Optional.Absent, Optional.Absent, Optional.Present(2), Optional.Present("xx42"))
+    val data4 = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("xx40", UserListQuery.Node("40", "Paul", "paul@a.com", "User")),
+        UserListQuery.Edge("xx41", UserListQuery.Node("41", "Mary", "mary@a.com", "User")),
+    )))
+    client.apolloStore.writeOperation(query4, data4)
+    dataFromStore = client.apolloStore.readOperation(query1)
+    expectedData = UserListQuery.Data(UserListQuery.Users(listOf(
+        UserListQuery.Edge("xx40", UserListQuery.Node("40", "Paul", "paul@a.com", "User")),
+        UserListQuery.Edge("xx41", UserListQuery.Node("41", "Mary", "mary@a.com", "User")),
+        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
+        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+        UserListQuery.Edge("xx46", UserListQuery.Node("46", "Bob", "bob@a.com", "User")),
+        UserListQuery.Edge("xx47", UserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
+    )))
+    assertEquals(expectedData, dataFromStore)
+
+    client.apolloStore.accessCache { cache ->
+      val record = cache.loadRecord("users", CacheHeaders.NONE)
+      assertEquals(mapOf("startCursor" to "xx40", "endCursor" to "xx47"), record!!.metadata)
+    }
   }
 }
 
@@ -65,6 +114,7 @@ class IgnoreArgumentsOnConnectionKeyGenerator : CacheKeyGenerator {
   }
 }
 
+@Suppress("UNCHECKED_CAST")
 class CursorPaginationMetadataGenerator : MetadataGenerator {
   override fun metadataForObject(obj: Map<String, Any?>, context: MetadataGeneratorContext): Map<String, Any?> {
     if (context.field.type.leafType().name == "UserConnection") {
@@ -80,7 +130,8 @@ class CursorPaginationMetadataGenerator : MetadataGenerator {
   }
 }
 
-class AppendListRecordMerger : RecordMerger {
+@Suppress("UNCHECKED_CAST")
+class CursorPaginationRecordMerger : RecordMerger {
   override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
     val existingStartCursor = existing.metadata["startCursor"] as? String
     val existingEndCursor = existing.metadata["endCursor"] as? String
