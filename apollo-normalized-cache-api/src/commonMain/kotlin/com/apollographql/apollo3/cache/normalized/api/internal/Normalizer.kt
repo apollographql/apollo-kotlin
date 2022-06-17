@@ -51,7 +51,7 @@ internal class Normalizer(
       typeInScope: String,
       embeddedFields: List<String>,
       field: CompiledField?,
-    ): Any {
+  ): Any {
 
     val typename = obj["__typename"] as? String
     val allFields = collectFields(selections, typeInScope, typename)
@@ -97,7 +97,11 @@ internal class Normalizer(
     return if (key != null) {
       val record = Record(
           key = key,
-          fields = fields
+          fields = fields,
+          mutationId = null,
+          date = emptyMap(),
+          arguments = field?.argumentsWithValue(variables) ?: emptyMap(),
+          metadata = field?.let { metadataGenerator.metadataForObject(obj, MetadataGeneratorContext(field = it, variables)) } ?: emptyMap(),
       )
 
       val existingRecord = records[key]
@@ -134,7 +138,7 @@ internal class Normalizer(
       field: CompiledField,
       type_: CompiledType,
       path: String,
-      embeddedFields: List<String>
+      embeddedFields: List<String>,
   ): Any? {
     /**
      * Remove the NotNull decoration if needed
@@ -168,7 +172,7 @@ internal class Normalizer(
         if (key == null && !embeddedFields.contains(field.name)) {
           key = path
         }
-        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, , field)
+        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, field)
       }
       else -> {
         // scalar

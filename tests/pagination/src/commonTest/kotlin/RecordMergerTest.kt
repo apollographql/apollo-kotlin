@@ -96,34 +96,44 @@ class AppendListRecordMerger : RecordMerger {
 
     val existingEdges = existing["edges"] as List<Record>
     val incomingEdges = incoming["edges"] as List<Record>
-    val mergedEdges: List<Record> = if (incomingAfterArgument == existingEndCursor) {
-      existingEdges + incomingEdges
+    val mergedEdges: List<Record>
+    val newStartCursor: String
+    val newEndCursor: String
+    if (incomingAfterArgument == existingEndCursor) {
+      mergedEdges = existingEdges + incomingEdges
+      newStartCursor = existingStartCursor
+      newEndCursor = incoming.metadata["endCursor"] as String
     } else if (incomingBeforeArgument == existingStartCursor) {
-      incomingEdges + existingEdges
+      mergedEdges = incomingEdges + existingEdges
+      newStartCursor = incoming.metadata["startCursor"] as String
+      newEndCursor = existingEndCursor
     } else {
       // We received a list which is neither the previous nor the next page.
       // Handle this case by resetting the cache with this page
-      incomingEdges
+      mergedEdges = incomingEdges
+      newStartCursor = incoming.metadata["startCursor"] as String
+      newEndCursor = incoming.metadata["endCursor"] as String
     }
     val mergedFields = mapOf(
         "edges" to mergedEdges,
         // TODO: Use the incoming pageInfo - this may be unexpected
         "pageInfo" to incoming["pageInfo"],
     )
-    val changedKeys = setOf<String>("edges", "pageInfo")
+    val changedKeys = setOf("edges", "pageInfo")
     val date = existing.date?.toMutableMap() ?: mutableMapOf()
     if (newDate != null) {
       date["edges"] = newDate
       date["pageInfo"] = newDate
     }
+    val metadata = mapOf("startCursor" to newStartCursor, "endCursor" to newEndCursor)
 
     return Record(
         key = existing.key,
         fields = mergedFields,
         mutationId = incoming.mutationId,
         date = date,
-        arguments = existing.arguments,
-        metadata = incoming.metadata + existing.metadata,
+        arguments = emptyMap(),
+        metadata = metadata,
     ) to changedKeys
   }
 }

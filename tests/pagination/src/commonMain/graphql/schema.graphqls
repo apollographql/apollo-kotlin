@@ -2,7 +2,7 @@ type Query {
   users(after: String = null, first: Int! = 10): UserConnection!
 }
 
-type UserConnection {
+type UserConnection @typePolicy(embeddedFields: "pageInfo, edges") {
   pageInfo: PageInfo!
   edges: [UserEdge!]!
 }
@@ -17,7 +17,7 @@ type UserEdge {
   node: User!
 }
 
-type User @typePolicy(keyFields: "id"){
+type User @typePolicy(keyFields: "id") {
   id: ID!
   name: String!
   email: String!
