@@ -72,6 +72,9 @@ tasks.register("ciBuild") {
     this@register.dependsOn(tasks.matching { it.name == "build" })
   }
   dependsOn(":termination:run")
+  doLast {
+    checkGitStatus()
+  }
 }
 
 plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {

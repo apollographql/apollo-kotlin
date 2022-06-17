@@ -144,6 +144,9 @@ tasks.register("ciTestsNoGradle") {
     dependsOn(tasks.matching { it.name == "macosX64Test" })
     dependsOn(tasks.matching { it.name == "apiCheck" })
   }
+  doLast {
+    checkGitStatus()
+  }
 }
 
 tasks.register("ciBuild") {
