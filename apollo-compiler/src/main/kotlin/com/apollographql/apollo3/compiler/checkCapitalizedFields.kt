@@ -58,7 +58,7 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
         }
       }
       is GQLInlineFragment -> checkCapitalizedFields(it.selectionSet.selections)
-      is GQLFragmentSpread -> checkCapitalizedFields(fragmentsByName[it.name]!!.selectionSet.selections)
+      is GQLFragmentSpread -> fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selectionSet.selections) }
     }
   }
 }
