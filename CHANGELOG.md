@@ -5,12 +5,12 @@ Change Log
 
 _2022-06-17_
 
-This is a "hot fix" release that fixes a crash that could happen in the codegen when using `responseBased` in a
+This is a hot fix release that fixes a crash that could happen in the codegen when using `responseBased` codegen in a
 multimodule setup. It also includes a fix for incorrect generated code when using certain reserved names in enum values.
 
 ## 👷‍ All changes
 
-- Add a test for enum constants (#4034)
+- Update to KotlinPoet `1.12.0`, fixes generating enum values whose name clashes with other symbols (#4034)
 - Update to Ktor 2 (#4190)
 - Fix NPE in checkCapitalizedFields (#4201)
 
