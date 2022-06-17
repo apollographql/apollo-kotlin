@@ -58,7 +58,9 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
         }
       }
       is GQLInlineFragment -> checkCapitalizedFields(it.selectionSet.selections)
-      is GQLFragmentSpread -> checkCapitalizedFields(fragmentsByName[it.name]!!.selectionSet.selections)
+      // it might be that the fragment is defined in an upstream module. In that case, it is validated
+      // already, no need to check it again
+      is GQLFragmentSpread -> fragmentsByName[it.name]?.let { fragment -> checkCapitalizedFields(fragment.selectionSet.selections) }
     }
   }
 }

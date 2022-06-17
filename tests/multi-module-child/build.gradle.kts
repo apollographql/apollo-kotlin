@@ -13,4 +13,5 @@ dependencies {
 
 apollo {
   packageName.set("multimodule.child")
+  flattenModels.set(false)
 }
