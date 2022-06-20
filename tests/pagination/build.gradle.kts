@@ -3,7 +3,7 @@ plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
 
-configureMppTestsDefaults()
+configureMppTestsDefaults(withJs = false)
 
 kotlin {
   sourceSets {

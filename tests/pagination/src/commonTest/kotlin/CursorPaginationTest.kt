@@ -295,7 +295,7 @@ class CursorPaginationRecordMerger : RecordMerger {
 }
 
 @Suppress("UNCHECKED_CAST")
-class OffsetPaginationMetadataGenerator(private val typeName) : MetadataGenerator {
+class OffsetPaginationMetadataGenerator(private val typeName: String) : MetadataGenerator {
   override fun metadataForObject(obj: Map<String, Any?>, context: MetadataGeneratorContext): Map<String, Any?> {
     if (context.field.type.leafType().name == typeName) {
       return mapOf(
