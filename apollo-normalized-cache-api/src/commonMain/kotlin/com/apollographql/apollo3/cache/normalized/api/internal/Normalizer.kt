@@ -14,6 +14,8 @@ import com.apollographql.apollo3.api.isComposite
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.Record
 
 /**
@@ -24,11 +26,12 @@ internal class Normalizer(
     private val variables: Executable.Variables,
     private val rootKey: String,
     private val cacheKeyGenerator: CacheKeyGenerator,
+    private val metadataGenerator: MetadataGenerator,
 ) {
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: CompiledNamedType): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields)
+    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields, null)
 
     return records
   }
@@ -41,13 +44,13 @@ internal class Normalizer(
    * @param selections the selections queried on this object
    * @return the CacheKey if this object has a CacheKey or the new Map if the object was embedded
    */
-  private fun buildRecord(
+  private fun buildFields(
       obj: Map<String, Any?>,
-      key: String?,
+      key: String,
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
-  ): Any {
+  ): Map<String, Any?> {
 
     val typename = obj["__typename"] as? String
     val allFields = collectFields(selections, typeInScope, typename)
@@ -90,28 +93,48 @@ internal class Normalizer(
       )
     }.toMap()
 
-    return if (key != null) {
-      val record = Record(
-          key = key,
-          fields = fields
-      )
+    return fields
+  }
 
-      val existingRecord = records[key]
+  /**
+   *
+   *
+   * @param obj the json node representing the object
+   * @param key the key for this record
+   * @param selections the selections queried on this object
+   * @return the CacheKey if this object has a CacheKey or the new Map if the object was embedded
+   */
+  private fun buildRecord(
+      obj: Map<String, Any?>,
+      key: String,
+      selections: List<CompiledSelection>,
+      typeInScope: String,
+      embeddedFields: List<String>,
+      field: CompiledField?,
+  ): CacheKey {
+    val fields = buildFields(obj, key, selections, typeInScope, embeddedFields)
+    val record = Record(
+        key = key,
+        fields = fields,
+        mutationId = null,
+        date = emptyMap(),
+        arguments = field?.argumentsWithValue(variables) ?: emptyMap(),
+        metadata = field?.let { metadataGenerator.metadataForObject(obj, MetadataGeneratorContext(field = it, variables)) } ?: emptyMap(),
+    )
 
-      val mergedRecord = if (existingRecord != null) {
-        /**
-         * A query might contain the same object twice, we don't want to lose some fields when that happens
-         */
-        existingRecord.mergeWith(record).first
-      } else {
-        record
-      }
-      records[key] = mergedRecord
+    val existingRecord = records[key]
 
-      CacheKey(key)
+    val mergedRecord = if (existingRecord != null) {
+      /**
+       * A query might contain the same object twice, we don't want to lose some fields when that happens
+       */
+      existingRecord.mergeWith(record).first
     } else {
-      fields
+      record
     }
+    records[key] = mergedRecord
+
+    return CacheKey(key)
   }
 
 
@@ -130,7 +153,7 @@ internal class Normalizer(
       field: CompiledField,
       type_: CompiledType,
       path: String,
-      embeddedFields: List<String>
+      embeddedFields: List<String>,
   ): Any? {
     /**
      * Remove the NotNull decoration if needed
@@ -161,10 +184,14 @@ internal class Normalizer(
             CacheKeyGeneratorContext(field, variables),
         )?.key
 
-        if (key == null && !embeddedFields.contains(field.name)) {
+        if (key == null) {
           key = path
         }
-        buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+        if (embeddedFields.contains(field.name)) {
+          buildFields(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+        } else {
+          buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, field)
+        }
       }
       else -> {
         // scalar
@@ -212,5 +239,8 @@ internal class Normalizer(
 
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
-}
 
+  private fun CompiledField.argumentsWithValue(variables: Executable.Variables): Map<String, Any?> {
+    return arguments.associate { it.name to resolveArgument(it.name, variables) }
+  }
+}

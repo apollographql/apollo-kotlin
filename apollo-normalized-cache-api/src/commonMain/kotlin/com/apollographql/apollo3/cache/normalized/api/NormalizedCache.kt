@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSuppressWildcards
 import kotlin.reflect.KClass
@@ -37,6 +38,32 @@ abstract class NormalizedCache : ReadOnlyNormalizedCache {
    * @return A set of record field keys that have changed. This set is returned by [Record.mergeWith].
    */
   abstract fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String>
+
+  /**
+   * @param record       The [Record] to merge.
+   * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
+   * @param recordMerger The [RecordMerger] to use when merging the record.
+   * @return A set of record field keys that have changed. This set is returned by [RecordMerger.merge].
+   */
+  @ApolloExperimental
+  open fun merge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> = merge(record, cacheHeaders)
+
+  /**
+   * Calls through to [NormalizedCache.merge]. Implementations should override this method
+   * if the underlying storage technology can offer an optimized manner to store multiple records.
+   *
+   * @param records The collection of Records to merge.
+   * @param cacheHeaders The [CacheHeaders] associated with the request which generated this record.
+   * @param recordMerger The [RecordMerger] to use when merging the records.
+   * @return A set of record field keys that have changed. This set is returned by [RecordMerger.merge].
+   */
+  @ApolloExperimental
+  open fun merge(
+      records: Collection<Record>,
+      cacheHeaders: CacheHeaders,
+      recordMerger: RecordMerger,
+  ): Set<String> = merge(records, cacheHeaders)
+
 
   /**
    * Clears all records from the cache.
