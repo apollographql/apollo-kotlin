@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readAny
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import okio.Buffer
@@ -16,17 +17,29 @@ import okio.use
  */
 @ApolloInternal
 object JsonRecordSerializer {
+  private const val KEY_ARGUMENTS = "__arguments"
+  private const val KEY_METADATA = "__metadata"
 
-  fun serialize(record: Record): String  {
-    return  toJson(record.fields)
+  fun serialize(record: Record): String {
+    return toJson(record)
   }
 
-  private fun toJson(fields: Map<String, Any?>): String {
+  private fun toJson(record: Record): String {
     val buffer = Buffer()
     BufferedSinkJsonWriter(buffer).use { jsonWriter ->
       jsonWriter.beginObject()
-      for ((key, value) in fields) {
+      for ((key, value) in record.fields) {
         jsonWriter.name(key).writeJsonValue(value)
+      }
+      jsonWriter.name(KEY_ARGUMENTS).writeObject {
+        for ((key, value) in record.arguments) {
+          jsonWriter.name(key).writeJsonValue(value)
+        }
+      }
+      jsonWriter.name(KEY_METADATA).writeObject {
+        for ((key, value) in record.metadata) {
+          jsonWriter.name(key).writeJsonValue(value)
+        }
       }
       jsonWriter.endObject()
     }
@@ -57,15 +70,22 @@ object JsonRecordSerializer {
   fun deserialize(key: String, jsonFieldSource: String): Record {
     val buffer = Buffer().write(jsonFieldSource.encodeUtf8())
 
-    val fields = BufferedSourceJsonReader(buffer)
-        .readAny()
+    val allFields = BufferedSourceJsonReader(buffer).readAny() as Map<String, Any?>
+    val fields = allFields
+        .filterKeys { it != KEY_ARGUMENTS && it != KEY_METADATA }
         .deserializeCacheKeys() as? Map<String, Any?>
 
-    check (fields != null) {
+    check(fields != null) {
       "error deserializing: $jsonFieldSource"
     }
 
-    return Record(key, fields)
+    return Record(
+        key = key,
+        fields = fields,
+        mutationId = null,
+        date = emptyMap(),
+        arguments = allFields[KEY_ARGUMENTS] as Map<String, Any?>,
+        metadata = allFields[KEY_METADATA] as Map<String, Any?>)
   }
 
   @Suppress("UNCHECKED_CAST")

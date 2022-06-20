@@ -17,6 +17,7 @@ kotlin {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-testing-support")
         implementation("com.apollographql.apollo3:apollo-normalized-cache")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
       }
     }
   }

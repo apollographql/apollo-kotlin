@@ -11,21 +11,37 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.normalizedCache
+import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RecordMergerTest {
   @Test
-  fun customRecordMerger() = runTest {
+  fun customRecordMergerMemoryCache() {
+    customRecordMerger(MemoryCacheFactory())
+  }
+
+  @Test
+  fun customRecordMergerBlobSqlCache() {
+    customRecordMerger(SqlNormalizedCacheFactory(name = null, withDates = true))
+  }
+
+  @Test
+  fun customRecordMergerJsonSqlCache() {
+    customRecordMerger(SqlNormalizedCacheFactory(name = null, withDates = false))
+  }
+
+  private fun customRecordMerger(cacheFactory: NormalizedCacheFactory) = runTest {
     val client = ApolloClient.Builder()
         .normalizedCache(
-            normalizedCacheFactory = MemoryCacheFactory(),
+            normalizedCacheFactory = cacheFactory,
             cacheKeyGenerator = IgnoreArgumentsOnConnectionKeyGenerator(),
             metadataGenerator = CursorPaginationMetadataGenerator(),
             apolloResolver = FieldPolicyApolloResolver,
