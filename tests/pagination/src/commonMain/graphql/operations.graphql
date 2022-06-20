@@ -1,7 +1,12 @@
-query UserList {
-  users {
-    id
-    name
-    email
+query UserList($first: Int, $after: String, $last: Int, $before: String) {
+  users(first: $first, after: $after, last: $last, before: $before) {
+    edges {
+      cursor
+      node {
+        id
+        name
+        email
+      }
+    }
   }
 }

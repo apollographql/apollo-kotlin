@@ -10,7 +10,9 @@ import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
+import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
+import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
@@ -190,12 +192,25 @@ fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
-): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver, DefaultRecordMerger)
+): ApolloStore = DefaultApolloStore(
+    normalizedCacheFactory = normalizedCacheFactory,
+    cacheKeyGenerator = cacheKeyGenerator,
+    metadataGenerator = EmptyMetadataGenerator,
+    cacheResolver = cacheResolver,
+    recordMerger = DefaultRecordMerger
+)
 
 @ApolloExperimental
 fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheKeyGenerator: CacheKeyGenerator,
+    metadataGenerator: MetadataGenerator,
     apolloResolver: ApolloResolver,
     recordMerger: RecordMerger = DefaultRecordMerger,
-): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, apolloResolver, recordMerger)
+): ApolloStore = DefaultApolloStore(
+    normalizedCacheFactory = normalizedCacheFactory,
+    cacheKeyGenerator = cacheKeyGenerator,
+    metadataGenerator = metadataGenerator,
+    cacheResolver = apolloResolver,
+    recordMerger = recordMerger
+)

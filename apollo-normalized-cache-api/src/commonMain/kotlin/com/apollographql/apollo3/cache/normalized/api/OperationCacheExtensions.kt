@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
@@ -15,7 +16,16 @@ fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyGenerator: CacheKeyGenerator,
-) = normalize(data, customScalarAdapters, cacheKeyGenerator, CacheKey.rootKey().key)
+) = normalize(data, customScalarAdapters, cacheKeyGenerator, EmptyMetadataGenerator, CacheKey.rootKey().key)
+
+@ApolloExperimental
+fun <D : Operation.Data> Operation<D>.normalize(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters,
+    cacheKeyGenerator: CacheKeyGenerator,
+    metadataGenerator: MetadataGenerator,
+) = normalize(data, customScalarAdapters, cacheKeyGenerator, metadataGenerator, CacheKey.rootKey().key)
+
 
 @Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.normalize(
@@ -27,9 +37,26 @@ fun <D : Executable.Data> Executable<D>.normalize(
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters)
-  return Normalizer(variables, rootKey, cacheKeyGenerator)
+  return Normalizer(variables, rootKey, cacheKeyGenerator, EmptyMetadataGenerator)
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.leafType())
 }
+
+@ApolloExperimental
+@Suppress("UNCHECKED_CAST")
+fun <D : Executable.Data> Executable<D>.normalize(
+    data: D,
+    customScalarAdapters: CustomScalarAdapters,
+    cacheKeyGenerator: CacheKeyGenerator,
+    metadataGenerator: MetadataGenerator,
+    rootKey: String,
+): Map<String, Record> {
+  val writer = MapJsonWriter()
+  adapter().toJson(writer, customScalarAdapters, data)
+  val variables = variables(customScalarAdapters)
+  return Normalizer(variables, rootKey, cacheKeyGenerator, metadataGenerator)
+      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.leafType())
+}
+
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
