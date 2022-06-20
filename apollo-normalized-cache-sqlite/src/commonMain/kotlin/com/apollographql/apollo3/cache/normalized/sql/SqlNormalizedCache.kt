@@ -175,10 +175,12 @@ class SqlNormalizedCache internal constructor(
       return this
     }
     return Record(
-        key,
-        fields,
-        mutationId,
-        fields.mapValues { date }
+        key = key,
+        fields = fields,
+        mutationId = mutationId,
+        date = fields.mapValues { date },
+        arguments = arguments,
+        metadata = metadata
     )
 
   }
