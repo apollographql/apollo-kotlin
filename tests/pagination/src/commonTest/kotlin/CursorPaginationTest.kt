@@ -19,30 +19,38 @@ import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RecordMergerTest {
   @Test
-  fun customRecordMergerMemoryCache() {
-    customRecordMerger(MemoryCacheFactory())
+  fun cursorBasedMemoryCache() {
+    cursorBased(MemoryCacheFactory())
   }
 
   @Test
-  fun customRecordMergerBlobSqlCache() {
-    customRecordMerger(SqlNormalizedCacheFactory(name = null, withDates = true))
+  fun cursorBasedBlobSqlCache() {
+    cursorBased(SqlNormalizedCacheFactory(name = null, withDates = true))
   }
 
   @Test
-  fun customRecordMergerJsonSqlCache() {
-    customRecordMerger(SqlNormalizedCacheFactory(name = null, withDates = false))
+  fun cursorBasedJsonSqlCache() {
+    cursorBased(SqlNormalizedCacheFactory(name = null, withDates = false))
   }
 
-  private fun customRecordMerger(cacheFactory: NormalizedCacheFactory) = runTest {
+  @Test
+  fun offsetBasedMemoryCache() {
+    offsetBased(MemoryCacheFactory())
+  }
+
+
+  private fun cursorBased(cacheFactory: NormalizedCacheFactory) = runTest {
     val client = ApolloClient.Builder()
         .normalizedCache(
             normalizedCacheFactory = cacheFactory,
-            cacheKeyGenerator = IgnoreArgumentsOnConnectionKeyGenerator(),
+            cacheKeyGenerator = IgnoreArgumentsKeyGenerator("UserConnection"),
             metadataGenerator = CursorPaginationMetadataGenerator(),
             apolloResolver = FieldPolicyApolloResolver,
             recordMerger = CursorPaginationRecordMerger()
@@ -51,80 +59,161 @@ class RecordMergerTest {
         .build()
 
     // First page
-    val query1 = UserListQuery(Optional.Present(2))
-    val data1 = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
-        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+    val query1 = CursorBasedUserListQuery(Optional.Present(2))
+    val data1 = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx42", CursorBasedUserListQuery.Node("42", "John", "john@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx43", CursorBasedUserListQuery.Node("43", "Jane", "jane@a.com", "User")),
     )))
     client.apolloStore.writeOperation(query1, data1)
     var dataFromStore = client.apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
 
     // Page after
-    val query2 = UserListQuery(Optional.Present(2), Optional.Present("xx43"))
-    val data2 = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+    val query2 = CursorBasedUserListQuery(Optional.Present(2), Optional.Present("xx43"))
+    val data2 = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx44", CursorBasedUserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx45", CursorBasedUserListQuery.Node("45", "Alice", "alice@a.com", "User")),
     )))
     client.apolloStore.writeOperation(query2, data2)
     dataFromStore = client.apolloStore.readOperation(query1)
-    var expectedData = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
-        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
-        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+    var expectedData = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx42", CursorBasedUserListQuery.Node("42", "John", "john@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx43", CursorBasedUserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx44", CursorBasedUserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx45", CursorBasedUserListQuery.Node("45", "Alice", "alice@a.com", "User")),
     )))
     assertEquals(expectedData, dataFromStore)
 
     // Page after
-    val query3 = UserListQuery(Optional.Present(2), Optional.Present("xx45"))
-    val data3 = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx46", UserListQuery.Node("46", "Bob", "bob@a.com", "User")),
-        UserListQuery.Edge("xx47", UserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
+    val query3 = CursorBasedUserListQuery(Optional.Present(2), Optional.Present("xx45"))
+    val data3 = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx46", CursorBasedUserListQuery.Node("46", "Bob", "bob@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx47", CursorBasedUserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
     )))
     client.apolloStore.writeOperation(query3, data3)
     dataFromStore = client.apolloStore.readOperation(query1)
-    expectedData = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
-        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
-        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
-        UserListQuery.Edge("xx46", UserListQuery.Node("46", "Bob", "bob@a.com", "User")),
-        UserListQuery.Edge("xx47", UserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
+    expectedData = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx42", CursorBasedUserListQuery.Node("42", "John", "john@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx43", CursorBasedUserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx44", CursorBasedUserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx45", CursorBasedUserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx46", CursorBasedUserListQuery.Node("46", "Bob", "bob@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx47", CursorBasedUserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
     )))
     assertEquals(expectedData, dataFromStore)
 
     // Page before
-    val query4 = UserListQuery(Optional.Absent, Optional.Absent, Optional.Present(2), Optional.Present("xx42"))
-    val data4 = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx40", UserListQuery.Node("40", "Paul", "paul@a.com", "User")),
-        UserListQuery.Edge("xx41", UserListQuery.Node("41", "Mary", "mary@a.com", "User")),
+    val query4 = CursorBasedUserListQuery(Optional.Absent, Optional.Absent, Optional.Present(2), Optional.Present("xx42"))
+    val data4 = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx40", CursorBasedUserListQuery.Node("40", "Paul", "paul@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx41", CursorBasedUserListQuery.Node("41", "Mary", "mary@a.com", "User")),
     )))
     client.apolloStore.writeOperation(query4, data4)
     dataFromStore = client.apolloStore.readOperation(query1)
-    expectedData = UserListQuery.Data(UserListQuery.Users(listOf(
-        UserListQuery.Edge("xx40", UserListQuery.Node("40", "Paul", "paul@a.com", "User")),
-        UserListQuery.Edge("xx41", UserListQuery.Node("41", "Mary", "mary@a.com", "User")),
-        UserListQuery.Edge("xx42", UserListQuery.Node("42", "John", "john@a.com", "User")),
-        UserListQuery.Edge("xx43", UserListQuery.Node("43", "Jane", "jane@a.com", "User")),
-        UserListQuery.Edge("xx44", UserListQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UserListQuery.Edge("xx45", UserListQuery.Node("45", "Alice", "alice@a.com", "User")),
-        UserListQuery.Edge("xx46", UserListQuery.Node("46", "Bob", "bob@a.com", "User")),
-        UserListQuery.Edge("xx47", UserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
+    expectedData = CursorBasedUserListQuery.Data(CursorBasedUserListQuery.UsersCursorBased(listOf(
+        CursorBasedUserListQuery.Edge("xx40", CursorBasedUserListQuery.Node("40", "Paul", "paul@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx41", CursorBasedUserListQuery.Node("41", "Mary", "mary@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx42", CursorBasedUserListQuery.Node("42", "John", "john@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx43", CursorBasedUserListQuery.Node("43", "Jane", "jane@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx44", CursorBasedUserListQuery.Node("44", "Peter", "peter@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx45", CursorBasedUserListQuery.Node("45", "Alice", "alice@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx46", CursorBasedUserListQuery.Node("46", "Bob", "bob@a.com", "User")),
+        CursorBasedUserListQuery.Edge("xx47", CursorBasedUserListQuery.Node("47", "Charlie", "charlie@a.com", "User")),
     )))
     assertEquals(expectedData, dataFromStore)
 
     client.apolloStore.accessCache { cache ->
-      val record = cache.loadRecord("users", CacheHeaders.NONE)
+      val record = cache.loadRecord("usersCursorBased", CacheHeaders.NONE)
       assertEquals(mapOf("startCursor" to "xx40", "endCursor" to "xx47"), record!!.metadata)
+    }
+  }
+
+  private fun offsetBased(cacheFactory: NormalizedCacheFactory) = runTest {
+    val client = ApolloClient.Builder()
+        .normalizedCache(
+            normalizedCacheFactory = cacheFactory,
+            cacheKeyGenerator = IgnoreArgumentsKeyGenerator("UserPage"),
+            metadataGenerator = OffsetPaginationMetadataGenerator("UserPage"),
+            apolloResolver = FieldPolicyApolloResolver,
+            recordMerger = OffsetPaginationRecordMerger()
+        )
+        .serverUrl("unused")
+        .build()
+
+    // First page
+    val query1 = OffsetBasedUserList2Query(Optional.Present(42), Optional.Present(2))
+    val data1 = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("42", "John", "john@a.com", "User"),
+        OffsetBasedUserList2Query.User("43", "Jane", "jane@a.com", "User"),
+    )))
+    client.apolloStore.writeOperation(query1, data1)
+    var dataFromStore = client.apolloStore.readOperation(query1)
+    assertEquals(data1, dataFromStore)
+
+    // Page after
+    val query2 = OffsetBasedUserList2Query(Optional.Present(44), Optional.Present(2))
+    val data2 = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("44", "Peter", "peter@a.com", "User"),
+        OffsetBasedUserList2Query.User("45", "Alice", "alice@a.com", "User"),
+    )))
+    client.apolloStore.writeOperation(query2, data2)
+    dataFromStore = client.apolloStore.readOperation(query1)
+    var expectedData = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("42", "John", "john@a.com", "User"),
+        OffsetBasedUserList2Query.User("43", "Jane", "jane@a.com", "User"),
+        OffsetBasedUserList2Query.User("44", "Peter", "peter@a.com", "User"),
+        OffsetBasedUserList2Query.User("45", "Alice", "alice@a.com", "User"),
+    )))
+    assertEquals(expectedData, dataFromStore)
+
+    // Page in the middle
+    val query3 = OffsetBasedUserList2Query(Optional.Present(44), Optional.Present(3))
+    val data3 = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("44", "Peter", "peter@a.com", "User"),
+        OffsetBasedUserList2Query.User("45", "Alice", "alice@a.com", "User"),
+        OffsetBasedUserList2Query.User("46", "Bob", "bob@a.com", "User"),
+    )))
+    client.apolloStore.writeOperation(query3, data3)
+    dataFromStore = client.apolloStore.readOperation(query1)
+    expectedData = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("42", "John", "john@a.com", "User"),
+        OffsetBasedUserList2Query.User("43", "Jane", "jane@a.com", "User"),
+        OffsetBasedUserList2Query.User("44", "Peter", "peter@a.com", "User"),
+        OffsetBasedUserList2Query.User("45", "Alice", "alice@a.com", "User"),
+        OffsetBasedUserList2Query.User("46", "Bob", "bob@a.com", "User"),
+    )))
+    assertEquals(expectedData, dataFromStore)
+
+    // Page before
+    val query4 = OffsetBasedUserList2Query(Optional.Present(40), Optional.Present(2))
+    val data4 = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("40", "Paul", "paul@a.com", "User"),
+        OffsetBasedUserList2Query.User("41", "Mary", "mary@a.com", "User"),
+    )))
+    client.apolloStore.writeOperation(query4, data4)
+    dataFromStore = client.apolloStore.readOperation(query1)
+    expectedData = OffsetBasedUserList2Query.Data(OffsetBasedUserList2Query.UsersOffsetBased2(listOf(
+        OffsetBasedUserList2Query.User("40", "Paul", "paul@a.com", "User"),
+        OffsetBasedUserList2Query.User("41", "Mary", "mary@a.com", "User"),
+        OffsetBasedUserList2Query.User("42", "John", "john@a.com", "User"),
+        OffsetBasedUserList2Query.User("43", "Jane", "jane@a.com", "User"),
+        OffsetBasedUserList2Query.User("44", "Peter", "peter@a.com", "User"),
+        OffsetBasedUserList2Query.User("45", "Alice", "alice@a.com", "User"),
+        OffsetBasedUserList2Query.User("46", "Bob", "bob@a.com", "User"),
+    )))
+    assertEquals(expectedData, dataFromStore)
+
+    client.apolloStore.accessCache { cache ->
+      val record = cache.loadRecord("usersOffsetBased2", CacheHeaders.NONE)
+      assertEquals(mapOf("offset" to 40), record!!.metadata)
     }
   }
 }
 
-class IgnoreArgumentsOnConnectionKeyGenerator : CacheKeyGenerator {
+class IgnoreArgumentsKeyGenerator(private val typeName: String) : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
-    if (context.field.type.leafType().name == "UserConnection") {
-      return CacheKey("users")
+    if (context.field.type.leafType().name == typeName) {
+      return CacheKey(context.field.alias ?: context.field.name)
     }
     return TypePolicyCacheKeyGenerator.cacheKeyForObject(obj, context)
   }
@@ -202,5 +291,75 @@ class CursorPaginationRecordMerger : RecordMerger {
         arguments = emptyMap(),
         metadata = metadata,
     ) to changedKeys
+  }
+}
+
+@Suppress("UNCHECKED_CAST")
+class OffsetPaginationMetadataGenerator(private val typeName) : MetadataGenerator {
+  override fun metadataForObject(obj: Map<String, Any?>, context: MetadataGeneratorContext): Map<String, Any?> {
+    if (context.field.type.leafType().name == typeName) {
+      return mapOf(
+          "offset" to context.field.resolveArgument("offset", context.variables) as Int,
+      )
+    }
+    return emptyMap()
+  }
+}
+
+@Suppress("UNCHECKED_CAST")
+class OffsetPaginationRecordMerger : RecordMerger {
+  override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
+    val existingOffset = existing.metadata["offset"] as? Int
+    val incomingOffset = incoming.arguments["offset"] as? Int
+    if (existingOffset == null || incomingOffset == null) {
+      return DefaultRecordMerger.merge(existing, incoming, newDate)
+    }
+
+    val existingUsers = existing["users"] as List<Record>
+    val incomingUsers = incoming["users"] as List<Record>
+    val mergedUsers: List<Record> = mergeLists(existingUsers, incomingUsers, existingOffset, incomingOffset)
+    val mergedFields = mapOf(
+        "users" to mergedUsers,
+    )
+    val changedKeys = setOf("users")
+    val date = existing.date?.toMutableMap() ?: mutableMapOf()
+    if (newDate != null) {
+      date["users"] = newDate
+    }
+    val metadata = mapOf("offset" to min(existingOffset, incomingOffset))
+
+    return Record(
+        key = existing.key,
+        fields = mergedFields,
+        mutationId = incoming.mutationId,
+        date = date,
+        arguments = emptyMap(),
+        metadata = metadata,
+    ) to changedKeys
+  }
+
+  private fun <T> mergeLists(existing: List<T>, incoming: List<T>, existingOffset: Int, incomingOffset: Int): List<T> {
+    if (incomingOffset > existingOffset + existing.size) {
+      // Incoming list's first item is further than immediately after the existing list's last item: can't merge. Handle it as a reset.
+      return incoming
+    }
+
+    if (incomingOffset + incoming.size < existingOffset) {
+      // Incoming list's last item is further than immediately before the existing list's first item: can't merge. Handle it as a reset.
+      return incoming
+    }
+
+    val merged = mutableListOf<T>()
+    val startOffset = min(existingOffset, incomingOffset)
+    val endOffset = max(existingOffset + existing.size, incomingOffset + incoming.size)
+    val incomingRange = incomingOffset until incomingOffset + incoming.size
+    for (i in startOffset until endOffset) {
+      if (i in incomingRange) {
+        merged.add(incoming[i - incomingOffset])
+      } else {
+        merged.add(existing[i - existingOffset])
+      }
+    }
+    return merged
   }
 }

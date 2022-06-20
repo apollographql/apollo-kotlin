@@ -1,5 +1,5 @@
-query UserList($first: Int, $after: String, $last: Int, $before: String) {
-  users(first: $first, after: $after, last: $last, before: $before) {
+query CursorBasedUserList($first: Int, $after: String, $last: Int, $before: String) {
+  usersCursorBased(first: $first, after: $after, last: $last, before: $before) {
     edges {
       cursor
       node {
@@ -7,6 +7,24 @@ query UserList($first: Int, $after: String, $last: Int, $before: String) {
         name
         email
       }
+    }
+  }
+}
+
+query OffsetBasedUserList1($offset: Int, $limit: Int) {
+  usersOffsetBased1(offset: $offset, limit: $limit) {
+    id
+    name
+    email
+  }
+}
+
+query OffsetBasedUserList2($offset: Int, $limit: Int) {
+  usersOffsetBased2(offset: $offset, limit: $limit) {
+    users {
+      id
+      name
+      email
     }
   }
 }
