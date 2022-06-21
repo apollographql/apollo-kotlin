@@ -32,7 +32,7 @@ object DefaultRecordMerger : RecordMerger {
         fields = mergedFields,
         mutationId = incoming.mutationId,
         date = date,
-        arguments = existing.arguments,
+        arguments = existing.arguments + incoming.arguments,
         metadata = existing.metadata + incoming.metadata,
     ) to changedKeys
   }

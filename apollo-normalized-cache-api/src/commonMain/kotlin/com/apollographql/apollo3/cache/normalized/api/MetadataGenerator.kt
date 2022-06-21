@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.Executable
 
 @ApolloExperimental
 interface MetadataGenerator {
-  fun metadataForObject(obj: Map<String, Any?>, context: MetadataGeneratorContext): Map<String, Any?>
+  fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?>
 }
 
 @ApolloExperimental
@@ -17,5 +17,5 @@ class MetadataGeneratorContext(
 
 @ApolloExperimental
 object EmptyMetadataGenerator : MetadataGenerator {
-  override fun metadataForObject(obj: Map<String, Any?>, context: MetadataGeneratorContext): Map<String, Any?> = emptyMap()
+  override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> = emptyMap()
 }

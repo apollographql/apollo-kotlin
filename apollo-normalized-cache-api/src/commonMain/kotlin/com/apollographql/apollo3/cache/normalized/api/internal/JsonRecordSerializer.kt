@@ -78,8 +78,9 @@ object JsonRecordSerializer {
         fields = fields,
         mutationId = null,
         date = emptyMap(),
-        arguments = allFields[KEY_ARGUMENTS] as Map<String, Any?>,
-        metadata = allFields[KEY_METADATA] as Map<String, Any?>)
+        arguments = allFields[KEY_ARGUMENTS] as Map<String, Map<String, Any?>>,
+        metadata = allFields[KEY_METADATA] as Map<String, Map<String, Any?>>
+    )
   }
 
   @Suppress("UNCHECKED_CAST")

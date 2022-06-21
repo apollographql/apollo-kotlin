@@ -1,4 +1,4 @@
-query CursorBasedUserList($first: Int, $after: String, $last: Int, $before: String) {
+query UsersCursorBased($first: Int, $after: String, $last: Int, $before: String) {
   usersCursorBased(first: $first, after: $after, last: $last, before: $before) {
     edges {
       cursor
@@ -11,16 +11,16 @@ query CursorBasedUserList($first: Int, $after: String, $last: Int, $before: Stri
   }
 }
 
-query OffsetBasedUserList1($offset: Int, $limit: Int) {
-  usersOffsetBased1(offset: $offset, limit: $limit) {
+query UsersOffsetBasedWithArray($offset: Int, $limit: Int) {
+  usersOffsetBasedWithArray(offset: $offset, limit: $limit) {
     id
     name
     email
   }
 }
 
-query OffsetBasedUserList2($offset: Int, $limit: Int) {
-  usersOffsetBased2(offset: $offset, limit: $limit) {
+query UsersOffsetBasedWithPage($offset: Int, $limit: Int) {
+  usersOffsetBasedWithPage(offset: $offset, limit: $limit) {
     users {
       id
       name

@@ -1,7 +1,8 @@
-type Query {
+type Query @typePolicy(embeddedFields: "usersCursorBased, usersOffsetBasedWithPage") {
   usersCursorBased(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection!
-  usersOffsetBased1(offset: Int = 0, limit: Int = 10): [User!]!
-  usersOffsetBased2(offset: Int = 0, limit: Int = 10): UserPage!
+
+  usersOffsetBasedWithArray(offset: Int = 0, limit: Int = 10): [User!]!
+  usersOffsetBasedWithPage(offset: Int = 0, limit: Int = 10): UserPage!
 }
 
 type UserConnection @typePolicy(embeddedFields: "pageInfo, edges") {

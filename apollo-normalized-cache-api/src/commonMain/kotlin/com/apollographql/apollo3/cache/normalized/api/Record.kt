@@ -32,17 +32,17 @@ class Record(
     private set
 
   /**
-   * The arguments of the field this Record represents in its parent.
+   * The arguments for each field.
    */
   @ApolloExperimental
-  var arguments: Map<String, Any?> = emptyMap()
+  var arguments: Map<String, Map<String, Any?>> = emptyMap()
     private set
 
   /**
-   * Arbitrary metadata that can be attached to a Record.
+   * Arbitrary metadata that can be attached to each field.
    */
   @ApolloExperimental
-  var metadata: Map<String, Any?> = emptyMap()
+  var metadata: Map<String, Map<String, Any?>> = emptyMap()
     private set
 
   @ApolloInternal
@@ -51,8 +51,8 @@ class Record(
       fields: Map<String, Any?>,
       mutationId: Uuid?,
       date: Map<String, Long?>,
-      arguments: Map<String, Any?>,
-      metadata: Map<String, Any?>,
+      arguments: Map<String, Map<String, Any?>>,
+      metadata: Map<String, Map<String, Any?>>,
   ) : this(key, fields, mutationId) {
     this.date = date
     this.arguments = arguments

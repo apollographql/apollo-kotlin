@@ -31,10 +31,16 @@ internal class Normalizer(
   private val records = mutableMapOf<String, Record>()
 
   fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: CompiledNamedType): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields, null)
+    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields)
 
     return records
   }
+
+  private class FieldInfo(
+      val fieldValue: Any?,
+      val arguments: Map<String, Any?>,
+      val metadata: Map<String, Any?>,
+  )
 
   /**
    *
@@ -50,7 +56,7 @@ internal class Normalizer(
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
-  ): Map<String, Any?> {
+  ): Map<String, FieldInfo> {
 
     val typename = obj["__typename"] as? String
     val allFields = collectFields(selections, typeInScope, typename)
@@ -83,14 +89,16 @@ internal class Normalizer(
       } else {
         key
       }
-
-      fieldKey to replaceObjects(
+      val value = replaceObjects(
           entry.value,
           mergedField,
           mergedField.type,
           base.append(fieldKey),
           embeddedFields
       )
+      val arguments = mergedField.argumentsWithValue(variables)
+      val metadata = metadataGenerator.metadataForObject(entry.value, MetadataGeneratorContext(field = mergedField, variables))
+      fieldKey to FieldInfo(value, arguments, metadata)
     }.toMap()
 
     return fields
@@ -110,16 +118,18 @@ internal class Normalizer(
       selections: List<CompiledSelection>,
       typeInScope: String,
       embeddedFields: List<String>,
-      field: CompiledField?,
   ): CacheKey {
     val fields = buildFields(obj, key, selections, typeInScope, embeddedFields)
+    val fieldValues = fields.mapValues { it.value.fieldValue }
+    val arguments = fields.mapValues { it.value.arguments }
+    val metadata = fields.mapValues { it.value.metadata }
     val record = Record(
         key = key,
-        fields = fields,
+        fields = fieldValues,
         mutationId = null,
         date = emptyMap(),
-        arguments = field?.argumentsWithValue(variables) ?: emptyMap(),
-        metadata = field?.let { metadataGenerator.metadataForObject(obj, MetadataGeneratorContext(field = it, variables)) } ?: emptyMap(),
+        arguments = arguments,
+        metadata = metadata,
     )
 
     val existingRecord = records[key]
@@ -189,8 +199,9 @@ internal class Normalizer(
         }
         if (embeddedFields.contains(field.name)) {
           buildFields(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+              .mapValues { it.value.fieldValue }
         } else {
-          buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields, field)
+          buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
         }
       }
       else -> {

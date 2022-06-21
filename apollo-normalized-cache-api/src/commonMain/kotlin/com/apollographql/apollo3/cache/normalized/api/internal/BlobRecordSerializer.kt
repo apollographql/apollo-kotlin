@@ -54,8 +54,8 @@ object BlobRecordSerializer {
   fun deserialize(key: String, bytes: ByteArray): Record {
     val buffer = Buffer().write(bytes)
 
-    val arguments = buffer.readAny() as Map<String, Any?>
-    val metadata = buffer.readAny() as Map<String, Any?>
+    val arguments = buffer.readAny() as Map<String, Map<String, Any?>>
+    val metadata = buffer.readAny() as Map<String, Map<String, Any?>>
 
     val fields = mutableMapOf<String, Any?>()
     val dates = mutableMapOf<String, Long?>()
