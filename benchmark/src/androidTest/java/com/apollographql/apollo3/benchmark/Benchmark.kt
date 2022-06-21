@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.benchmark
 
-import Utils.bufferedSource
+import Utils.resource
+import android.app.Instrumentation
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
@@ -8,6 +9,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.benchmark.moshi.Query
+import com.apollographql.apollo3.benchmark.test.R
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -28,7 +30,7 @@ class Benchmark {
   @Test
   fun moshi() = benchmarkRule.measureRepeated {
     val bufferedSource = runWithTimingDisabled {
-      bufferedSource()
+      resource(R.raw.largesample)
     }
 
     moshiAdapter.fromJson(bufferedSource)
@@ -37,7 +39,7 @@ class Benchmark {
   @Test
   fun apollo() = benchmarkRule.measureRepeated {
     val bufferedSource = runWithTimingDisabled {
-      bufferedSource()
+      resource(R.raw.largesample)
     }
 
     operation.parseJsonResponse(bufferedSource.jsonReader(), customScalarAdapters)
@@ -46,7 +48,7 @@ class Benchmark {
   @Test
   fun apolloParseAndNormalize() = benchmarkRule.measureRepeated {
     val bufferedSource = runWithTimingDisabled {
-      bufferedSource()
+      resource(R.raw.largesample)
     }
 
     val data = operation.parseJsonResponse(bufferedSource.jsonReader(), customScalarAdapters).data!!
@@ -85,10 +87,10 @@ class Benchmark {
     @BeforeClass
     @JvmStatic
     fun setup() {
-      val data = operation.parseJsonResponse(bufferedSource().jsonReader()).data!!
+      val data = operation.parseJsonResponse(resource(R.raw.largesample).jsonReader()).data!!
       val records = operation.normalize(data, customScalarAdapters, TypePolicyCacheKeyGenerator).values
 
-      sqlStore = ApolloStore(SqlNormalizedCacheFactory(context = InstrumentationRegistry.getInstrumentation().context))
+      sqlStore = ApolloStore(SqlNormalizedCacheFactory())
       runBlocking {
         sqlStore.writeOperation(operation, data)
       }

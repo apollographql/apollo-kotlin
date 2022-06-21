@@ -1,11 +1,12 @@
-
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.apollographql.apollo3.benchmark.test">
-
+    tools:node="replace"
+    >
   <application
+      tools:replace="android:debuggable"
+      android:allowBackup="false"
       android:debuggable="false"
-      tools:ignore="HardcodedDebugMode"
-      tools:replace="android:debuggable"/>
+      tools:ignore="HardcodedDebugMode">
+  </application>
 </manifest>

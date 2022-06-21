@@ -1,0 +1,62 @@
+fragment itemFragment on Item {
+    id
+    title
+    type {
+        id
+        node {
+            ...itemTypeFragment
+        }
+    }
+    icon {
+        id
+        node {
+            ...iconFragment
+        }
+    }
+    category {
+        id
+        node {
+            ...categoryFragment
+        }
+    }
+    start {
+        ...dateTimeFragment
+    }
+    end {
+        ...dateTimeFragment
+    }
+    series {
+        id
+        node {
+            id
+            description
+            rules {
+                frequency
+                count
+                interval
+                weekStart
+                start {
+                    ...dateTimeFragment
+                }
+                until {
+                    ...dateTimeFragment
+                }
+                byDays {
+                    monday
+                    tuesday
+                    wednesday
+                    thursday
+                    friday
+                    saturday
+                    sunday
+                }
+            }
+        }
+    }
+    calendar {
+        id
+        node {
+            ...calendarFragment
+        }
+    }
+}

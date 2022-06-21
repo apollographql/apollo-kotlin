@@ -10,12 +10,12 @@ buildscript {
     }
   }
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.androidPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
     classpath(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
 
     classpath("com.apollographql.apollo3:apollo-gradle-plugin:${properties.get("apolloVersion")}")
-    classpath("androidx.benchmark:benchmark-gradle-plugin:1.0.0")
+    classpath("androidx.benchmark:benchmark-gradle-plugin:1.1.0")
+    classpath("com.android.tools.build:gradle:7.4.0-alpha04")
   }
 }
 
@@ -43,15 +43,17 @@ dependencies {
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   add("ksp", groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
-  add("androidTestImplementation", "androidx.benchmark:benchmark-junit4:1.0.0")
+  add("androidTestImplementation", "androidx.benchmark:benchmark-junit4:1.1.0-rc02")
+  add("androidTestImplementation", "androidx.test:core:1.4.0")
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  namespace = "com.apollographql.apollo3.benchmark"
+  compileSdk = groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt()
 
   defaultConfig {
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
-    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
+    minSdk = groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt()
+    targetSdk = groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt()
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
@@ -59,5 +61,16 @@ configure<com.android.build.gradle.LibraryExtension> {
 }
 
 configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
-  packageNamesFromFilePaths()
+  service("benchmark") {
+    sourceFolder.set("benchmark")
+    packageName.set("com.apollographql.apollo3.benchmark")
+  }
+  service("calendar-response") {
+    sourceFolder.set("calendar")
+    packageName.set("com.apollographql.apollo3.calendar.response")
+  }
+  service("calendar-operation") {
+    sourceFolder.set("calendar")
+    packageName.set("com.apollographql.apollo3.calendar.operation")
+  }
 }

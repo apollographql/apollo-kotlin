@@ -115,7 +115,7 @@ ext.dep = [
     ]
 
 ext.androidConfig = [
-    compileSdkVersion: 30,
+    compileSdkVersion: 31,
     minSdkVersion    : 15,
     targetSdkVersion : 30
 ]

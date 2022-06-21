@@ -1,0 +1,13 @@
+query ItemsQuery($after: String @optional, $endingAfter: String!, $startingBefore: String!) {
+    items(args: { after: $after, filterBy: { endingAfter: $endingAfter, startingBefore: $startingBefore, deleted: false } }) {
+        edges {
+             id
+             node {
+                ...itemFragment
+             }
+        }
+        pageInfo {
+            ...pageInfoFragment
+        }
+    }
+}
