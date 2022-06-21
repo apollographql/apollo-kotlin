@@ -31,16 +31,11 @@ object JsonRecordSerializer {
       for ((key, value) in record.fields) {
         jsonWriter.name(key).writeJsonValue(value)
       }
-      jsonWriter.name(KEY_ARGUMENTS).writeObject {
-        for ((key, value) in record.arguments) {
-          jsonWriter.name(key).writeJsonValue(value)
-        }
-      }
-      jsonWriter.name(KEY_METADATA).writeObject {
-        for ((key, value) in record.metadata) {
-          jsonWriter.name(key).writeJsonValue(value)
-        }
-      }
+      jsonWriter.name(KEY_ARGUMENTS)
+      jsonWriter.writeJsonValue(record.arguments)
+
+      jsonWriter.name(KEY_METADATA)
+      jsonWriter.writeJsonValue(record.metadata)
       jsonWriter.endObject()
     }
     return buffer.readUtf8()
