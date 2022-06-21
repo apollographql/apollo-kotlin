@@ -156,9 +156,11 @@ constructor(
   }
 
   override fun endObject() = apply {
-    if (peek() != JsonReader.Token.END_OBJECT) {
-      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPathAsString()}")
-    }
+    // Do not fail if there are trailing names in buffered readers.
+    // See https://github.com/apollographql/apollo-kotlin/issues/4212
+//    if (peek() != JsonReader.Token.END_OBJECT) {
+//      throw JsonDataException("Expected END_OBJECT but was ${peek()} at path ${getPathAsString()}")
+//    }
     stackSize--
     iteratorStack[stackSize] = null // allow garbage collection
     path[stackSize] = null // allow garbage collection
