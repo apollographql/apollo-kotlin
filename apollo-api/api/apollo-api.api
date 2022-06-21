@@ -248,6 +248,8 @@ public final class com/apollographql/apollo3/api/BooleanExpressions {
 public final class com/apollographql/apollo3/api/CompiledArgument {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getName ()Ljava/lang/String;
 	public final fun getValue ()Ljava/lang/Object;
 	public final fun isKey ()Z

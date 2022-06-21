@@ -4,6 +4,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
 import okio.Buffer
@@ -313,7 +314,19 @@ class CompiledVariable(val name: String)
  *
  * Note: for now, enums are mapped to Strings
  */
-class CompiledArgument(val name: String, val value: Any?, val isKey: Boolean = false, val isPagination: Boolean = false)
+class CompiledArgument(
+    val name: String,
+    val value: Any?,
+    val isKey: Boolean = false,
+    @ApolloExperimental
+    val isPagination: Boolean = false,
+) {
+  constructor(
+      name: String,
+      value: Any?,
+      isKey: Boolean = false,
+  ) : this(name, value, isKey, isPagination = false)
+}
 
 /**
  * Resolve all variables that may be contained inside `value`
