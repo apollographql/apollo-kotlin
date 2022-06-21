@@ -71,6 +71,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "test", false))).selections(__search).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).arguments(Arrays.asList(new CompiledArgument("text", "test", false, false))).selections(__search).build()
   );
 }

@@ -24,6 +24,6 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("episode"), false))).selections(__hero).build()
+    new CompiledField.Builder("hero", Character.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("episode"), false, false))).selections(__hero).build()
   );
 }

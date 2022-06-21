@@ -35,6 +35,6 @@ public class CreateReviewForEpisodeSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false), new CompiledArgument("review", new CompiledVariable("review"), false))).selections(__createReview).build()
+    new CompiledField.Builder("createReview", Review.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("ep"), false, false), new CompiledArgument("review", new CompiledVariable("review"), false, false))).selections(__createReview).build()
   );
 }

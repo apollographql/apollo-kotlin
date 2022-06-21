@@ -35,6 +35,6 @@ public class TestQuerySelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("hero", Character.type).alias("yield").selections(__yield).build(),
-    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).alias("objects").arguments(Arrays.asList(new CompiledArgument("text", "abc", false))).selections(__objects).build()
+    new CompiledField.Builder("search", new CompiledListType(SearchResult.type)).alias("objects").arguments(Arrays.asList(new CompiledArgument("text", "abc", false, false))).selections(__objects).build()
   );
 }

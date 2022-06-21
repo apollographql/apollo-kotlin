@@ -35,6 +35,6 @@ public class TestQuerySelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("__schema", new CompiledNotNullType(CompiledGraphQL.CompiledSchemaType)).selections(____schema).build(),
-    new CompiledField.Builder("__type", new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)).arguments(Arrays.asList(new CompiledArgument("name", "Vehicle", false))).selections(____type).build()
+    new CompiledField.Builder("__type", new CompiledNotNullType(CompiledGraphQL.CompiledTypeType)).arguments(Arrays.asList(new CompiledArgument("name", "Vehicle", false, false))).selections(____type).build()
   );
 }

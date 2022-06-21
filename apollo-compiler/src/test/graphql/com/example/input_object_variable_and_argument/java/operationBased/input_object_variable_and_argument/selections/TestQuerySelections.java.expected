@@ -21,10 +21,10 @@ import java.util.List;
 public class TestQuerySelections {
   private static List<CompiledSelection> __heroWithReview = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument("unit", "FOOT", false))).build()
+    new CompiledField.Builder("height", GraphQLFloat.type).arguments(Arrays.asList(new CompiledArgument("unit", "FOOT", false, false))).build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("heroWithReview", Human.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("episode"), false), new CompiledArgument("listOfInts", Arrays.asList(new CompiledVariable("stars"), new CompiledVariable("stars")), false), new CompiledArgument("review", new ImmutableMapBuilder().put("stars", new CompiledVariable("stars")).put("favoriteColor", new ImmutableMapBuilder().put("red", 0).put("green", new CompiledVariable("greenValue")).put("blue", 0).build()).put("booleanNonOptional", false).put("listOfStringNonOptional", Collections.emptyList()).build(), false))).selections(__heroWithReview).build()
+    new CompiledField.Builder("heroWithReview", Human.type).arguments(Arrays.asList(new CompiledArgument("episode", new CompiledVariable("episode"), false, false), new CompiledArgument("listOfInts", Arrays.asList(new CompiledVariable("stars"), new CompiledVariable("stars")), false, false), new CompiledArgument("review", new ImmutableMapBuilder().put("stars", new CompiledVariable("stars")).put("favoriteColor", new ImmutableMapBuilder().put("red", 0).put("green", new CompiledVariable("greenValue")).put("blue", 0).build()).put("booleanNonOptional", false).put("listOfStringNonOptional", Collections.emptyList()).build(), false, false))).selections(__heroWithReview).build()
   );
 }

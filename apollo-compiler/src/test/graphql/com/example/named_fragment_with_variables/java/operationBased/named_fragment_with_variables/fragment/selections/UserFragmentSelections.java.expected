@@ -18,6 +18,6 @@ public class UserFragmentSelections {
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("firstName", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("lastName", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("avatar", new CompiledNotNullType(GraphQLString.type)).arguments(Arrays.asList(new CompiledArgument("size", new CompiledVariable("size"), false))).build()
+    new CompiledField.Builder("avatar", new CompiledNotNullType(GraphQLString.type)).arguments(Arrays.asList(new CompiledArgument("size", new CompiledVariable("size"), false, false))).build()
   );
 }

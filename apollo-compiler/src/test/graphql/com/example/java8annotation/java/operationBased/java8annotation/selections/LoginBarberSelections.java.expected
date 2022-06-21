@@ -21,6 +21,6 @@ public class LoginBarberSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("login", new CompiledNotNullType(User.type)).arguments(Arrays.asList(new CompiledArgument("input", new CompiledVariable("input"), false))).selections(__login).build()
+    new CompiledField.Builder("login", new CompiledNotNullType(User.type)).arguments(Arrays.asList(new CompiledArgument("input", new CompiledVariable("input"), false, false))).selections(__login).build()
   );
 }

@@ -59,6 +59,6 @@ public class TestQuerySelections {
 
   public static List<CompiledSelection> __root = Arrays.asList(
     new CompiledField.Builder("hero", Character.type).alias("r2").selections(__r2).build(),
-    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument("episode", "EMPIRE", false))).selections(__luke).build()
+    new CompiledField.Builder("hero", Character.type).alias("luke").arguments(Arrays.asList(new CompiledArgument("episode", "EMPIRE", false, false))).selections(__luke).build()
   );
 }

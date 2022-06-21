@@ -34,6 +34,6 @@ public class AllStarshipsSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("allStarships", StarshipsConnection.type).arguments(Arrays.asList(new CompiledArgument("first", 7, false))).selections(__allStarships).build()
+    new CompiledField.Builder("allStarships", StarshipsConnection.type).arguments(Arrays.asList(new CompiledArgument("first", 7, false, false))).selections(__allStarships).build()
   );
 }

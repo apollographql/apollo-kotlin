@@ -23,7 +23,7 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("reviews", new CompiledListType(Review.type)).arguments(Arrays.asList(new CompiledArgument("episode", "JEDI", false), new CompiledArgument("starsFloat", 9.9, false), new CompiledArgument("starsInt", 10, false))).selections(__reviews).build(),
-    new CompiledField.Builder("testNullableArguments", new CompiledNotNullType(GraphQLInt.type)).arguments(Arrays.asList(new CompiledArgument("boolean", null, false), new CompiledArgument("episode", null, false), new CompiledArgument("float", null, false), new CompiledArgument("int", null, false), new CompiledArgument("list", null, false), new CompiledArgument("review", null, false), new CompiledArgument("string", null, false))).build()
+    new CompiledField.Builder("reviews", new CompiledListType(Review.type)).arguments(Arrays.asList(new CompiledArgument("episode", "JEDI", false, false), new CompiledArgument("starsFloat", 9.9, false, false), new CompiledArgument("starsInt", 10, false, false))).selections(__reviews).build(),
+    new CompiledField.Builder("testNullableArguments", new CompiledNotNullType(GraphQLInt.type)).arguments(Arrays.asList(new CompiledArgument("boolean", null, false, false), new CompiledArgument("episode", null, false, false), new CompiledArgument("float", null, false, false), new CompiledArgument("int", null, false, false), new CompiledArgument("list", null, false, false), new CompiledArgument("review", null, false, false), new CompiledArgument("string", null, false, false))).build()
   );
 }

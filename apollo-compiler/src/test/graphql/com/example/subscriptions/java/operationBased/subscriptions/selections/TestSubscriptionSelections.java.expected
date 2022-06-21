@@ -23,6 +23,6 @@ public class TestSubscriptionSelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument("repoFullName", new CompiledVariable("repo"), false))).selections(__commentAdded).build()
+    new CompiledField.Builder("commentAdded", Comment.type).arguments(Arrays.asList(new CompiledArgument("repoFullName", new CompiledVariable("repo"), false, false))).selections(__commentAdded).build()
   );
 }
