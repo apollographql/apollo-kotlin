@@ -138,3 +138,16 @@ query Starship($id: ID!) {
         id
     }
 }
+
+
+fragment NamedFragment on Human {
+  name
+}
+query InlineAndNamedFragment {
+    hero {
+        ...NamedFragment
+        ... on Droid {
+          primaryFunction
+        }
+    }
+}
