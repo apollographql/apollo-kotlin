@@ -24,7 +24,7 @@ import kotlin.math.min
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RecordMergerTest {
+class CursorPaginationTest {
   @Test
   fun cursorBasedMemoryCache() {
     cursorBased(MemoryCacheFactory())
@@ -43,6 +43,16 @@ class RecordMergerTest {
   @Test
   fun offsetBasedMemoryCache() {
     offsetBased(MemoryCacheFactory())
+  }
+
+  @Test
+  fun offsetBasedBlobSqlCache() {
+    offsetBased(SqlNormalizedCacheFactory(name = null, withDates = true))
+  }
+
+  @Test
+  fun offsetBasedJsonSqlCache() {
+    offsetBased(SqlNormalizedCacheFactory(name = null, withDates = false))
   }
 
 
