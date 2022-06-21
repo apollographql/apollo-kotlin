@@ -10,7 +10,17 @@ import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.parseAsGQLSelections
 import okio.Buffer
 
-internal fun GQLTypeDefinition.keyArgs(fieldName: String, schema: Schema): Set<String> {
+internal fun GQLTypeDefinition.keyArgs(
+    fieldName: String,
+    schema: Schema,
+): Set<String> = fieldPolicyArgs(Schema.FIELD_POLICY_KEY_ARGS, fieldName, schema)
+
+internal fun GQLTypeDefinition.paginationArgs(
+    fieldName: String,
+    schema: Schema,
+): Set<String> = fieldPolicyArgs(Schema.FIELD_POLICY_PAGINATION_ARGS, fieldName, schema)
+
+private fun GQLTypeDefinition.fieldPolicyArgs(argumentName: String, fieldName: String, schema: Schema): Set<String> {
   val directives = when (this) {
     is GQLObjectTypeDefinition -> directives
     is GQLInterfaceTypeDefinition -> directives
@@ -20,23 +30,23 @@ internal fun GQLTypeDefinition.keyArgs(fieldName: String, schema: Schema): Set<S
   return directives.filter { schema.originalDirectiveName(it.name) == Schema.FIELD_POLICY }.filter {
     (it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_FOR_FIELD }?.value as GQLStringValue).value == fieldName
   }.flatMap {
-    val keyArgsValue = it.arguments?.arguments?.single { it.name == Schema.FIELD_POLICY_KEY_ARGS }?.value
+    val argValue = it.arguments?.arguments?.singleOrNull { it.name == argumentName }?.value ?: return emptySet()
 
-    if (keyArgsValue !is GQLStringValue) {
-      throw SourceAwareException("Apollo: no keyArgs found or wrong keyArgs type", it.sourceLocation)
+    if (argValue !is GQLStringValue) {
+      throw SourceAwareException("Apollo: no $argumentName found or wrong keyArgs type", it.sourceLocation)
     }
 
-    Buffer().writeUtf8(keyArgsValue.value)
+    Buffer().writeUtf8(argValue.value)
         .parseAsGQLSelections()
         .value
         ?.map {
           if (it !is GQLField) {
-            throw SourceAwareException("Apollo: fragments are not supported in keyArgs", it.sourceLocation)
+            throw SourceAwareException("Apollo: fragments are not supported in $argumentName", it.sourceLocation)
           }
           if (it.selectionSet != null) {
-            throw SourceAwareException("Apollo: composite fields are not supported in keyArgs", it.sourceLocation)
+            throw SourceAwareException("Apollo: composite fields are not supported in $argumentName", it.sourceLocation)
           }
           it.name
-        } ?: throw SourceAwareException("Apollo: keyArgs should be a selectionSet", it.sourceLocation)
+        } ?: throw SourceAwareException("Apollo: $argumentName should be a selectionSet", it.sourceLocation)
   }.toSet()
 }

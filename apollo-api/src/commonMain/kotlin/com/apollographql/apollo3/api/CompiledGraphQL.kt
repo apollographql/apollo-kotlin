@@ -43,6 +43,12 @@ class CompiledField internal constructor(
    * This is mostly used internally to compute records
    */
   fun nameWithArguments(variables: Executable.Variables): String {
+    val filterOutPaginationArguments = arguments.any { it.isPagination }
+    val arguments = if (filterOutPaginationArguments) {
+      this.arguments.filterNot { it.isPagination }
+    } else {
+      this.arguments
+    }
     if (arguments.isEmpty()) {
       return name
     }
@@ -307,7 +313,7 @@ class CompiledVariable(val name: String)
  *
  * Note: for now, enums are mapped to Strings
  */
-class CompiledArgument(val name: String, val value: Any?, val isKey: Boolean = false)
+class CompiledArgument(val name: String, val value: Any?, val isKey: Boolean = false, val isPagination: Boolean = false)
 
 /**
  * Resolve all variables that may be contained inside `value`

@@ -27,12 +27,12 @@ class OffsetBasedWithPagePaginationTest {
 
   @Test
   fun offsetBasedWithPageBlobSqlCache() {
-    offsetBasedWithPage(SqlNormalizedCacheFactory(name = null, withDates = true))
+    offsetBasedWithPage(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
   fun offsetBasedWithPageJsonSqlCache() {
-    offsetBasedWithPage(SqlNormalizedCacheFactory(name = null, withDates = false))
+    offsetBasedWithPage(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   private fun offsetBasedWithPage(cacheFactory: NormalizedCacheFactory) = runTest {
@@ -46,6 +46,7 @@ class OffsetBasedWithPagePaginationTest {
         )
         .serverUrl("unused")
         .build()
+    client.apolloStore.clearAll()
 
     // First page
     val query1 = UsersOffsetBasedWithPageQuery(Optional.Present(42), Optional.Present(2))

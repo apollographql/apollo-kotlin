@@ -24,9 +24,10 @@ directive @nonnull(fields: String! = "") on OBJECT | FIELD
 # embedded in their parent instead. Order is unimportant.
 directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "") on OBJECT | INTERFACE | UNION
 
-# Indicates how to compute a key from a field arguments.
-# `keyArgs` should contain a selection set. Composite args are not supported yet.
-directive @fieldPolicy(forField: String!, keyArgs: String!) repeatable on OBJECT
+# Attach extra information to a given field
+# `keyArgs`: a selection set used to compute a key from a field arguments. Composite args are not supported yet.
+# `paginationArgs` (experimental): a selection set used to compute a pagination key from a field arguments.
+directive @fieldPolicy(forField: String!, keyArgs: String! = "", paginationArgs: String! = "") repeatable on OBJECT
 
 """
 Indicates that the given field, argument, input field or enum value requires

@@ -25,12 +25,12 @@ class CursorPaginationTest {
 
   @Test
   fun cursorBasedBlobSqlCache() {
-    cursorBased(SqlNormalizedCacheFactory(name = null, withDates = true))
+    cursorBased(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
   fun cursorBasedJsonSqlCache() {
-    cursorBased(SqlNormalizedCacheFactory(name = null, withDates = false))
+    cursorBased(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   private fun cursorBased(cacheFactory: NormalizedCacheFactory) = runTest {
@@ -44,6 +44,7 @@ class CursorPaginationTest {
         )
         .serverUrl("unused")
         .build()
+    client.apolloStore.clearAll()
 
     // First page
     val query1 = UsersCursorBasedQuery(Optional.Present(2))
