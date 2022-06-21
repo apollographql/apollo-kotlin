@@ -5,7 +5,6 @@ import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readAny
-import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.Record
 import okio.Buffer
@@ -17,8 +16,8 @@ import okio.use
  */
 @ApolloInternal
 object JsonRecordSerializer {
-  private const val KEY_ARGUMENTS = "__arguments"
-  private const val KEY_METADATA = "__metadata"
+  private const val KEY_ARGUMENTS = "__apa"
+  private const val KEY_METADATA = "__apm"
 
   fun serialize(record: Record): String {
     return toJson(record)
