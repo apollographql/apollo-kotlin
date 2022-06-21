@@ -382,6 +382,63 @@ val apolloClient = apolloClientBuilder.addCustomScalarAdapter(Date.type, dateAda
 
 This method takes a type-safe generated class from `Types`, along with its corresponding adapter.
 
+### Codegen
+
+Apollo Kotlin 3.x provides 3 codegen options:
+
+* **operationBased**: the Kotlin models map the sent GraphQL operation.
+* **responseBased**: the Kotlin models map the received Json response.
+* **compat**: for compatibility with Apollo Kotlin 2.x
+
+The `compat` codegen duplicates some fields and introduce an extra `.fragments` field. While it's an easy way to migrate from 2.x, we recommend migrating to `operationBased` once your project is running in `compat` mode.
+
+`operationBased` codegen is simpler, de-duplicates some fields and removes the intermediate `.fragments` field.
+
+Given the following query:
+
+```graphql
+fragment humanDetails on Human {
+  height
+}
+
+query GetHero {
+  hero {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ...humanDetails
+  }
+}
+```
+
+You can migrate to `operationBased` like so:
+
+```kotlin
+// parent fields are not collected in inline fragments
+// Replace
+hero.asDroid?.name
+// With
+hero.name
+
+// because parent fields are not collected, inline fragments
+// are now named "OnFoo" instead of "AsFoo"
+// Replace
+hero.asDroid?.primaryFunction
+// With
+hero.onDroid?.primaryFunction
+
+// there is no .fragment synthetic field for named fragments
+// Replace
+hero.fragments?.humanDetails?.height
+// With
+hero.humanDetails?.height
+```
+
+We recommend `operationBased` codegen for most projects.
+
+To go further, and if you're you're comfortable with `operationBased` codegen, you can read more about the different codegens (including the tradeoffs of using `responseBased`) in the [design documents](https://github.com/apollographql/apollo-kotlin/blob/main/design-docs/Codegen.md).
+
 ### Normalized Cache
 
 The Apollo Android 2.x runtime has a dependency on the normalized cache APIs, and it's possible to call cache methods even if no cache implementation is in the classpath.
