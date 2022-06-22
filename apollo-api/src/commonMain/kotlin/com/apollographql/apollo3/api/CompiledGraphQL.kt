@@ -314,7 +314,7 @@ class CompiledVariable(val name: String)
  *
  * Note: for now, enums are mapped to Strings
  */
-class CompiledArgument(
+class CompiledArgument @ApolloExperimental constructor(
     val name: String,
     val value: Any?,
     val isKey: Boolean = false,
