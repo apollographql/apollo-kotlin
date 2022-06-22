@@ -3,12 +3,11 @@ package pagination
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
+import com.apollographql.apollo3.cache.normalized.api.FieldRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
@@ -38,7 +37,7 @@ class CursorBasedPaginationTest {
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
         metadataGenerator = CursorPaginationMetadataGenerator(),
         apolloResolver = FieldPolicyApolloResolver,
-        recordMerger = CursorPaginationRecordMerger()
+        recordMerger = FieldRecordMerger(CursorPaginationFieldMerger())
     )
     apolloStore.clearAll()
 
@@ -300,76 +299,56 @@ class CursorBasedPaginationTest {
         return mapOf(
             "startCursor" to startCursor,
             "endCursor" to endCursor,
-            "arguments" to context.allArgumentValues()
+            "before" to context.argumentValue("before"),
+            "after" to context.argumentValue("after"),
         )
       }
       return emptyMap()
     }
   }
 
-  @Suppress("UNCHECKED_CAST")
-  private class CursorPaginationRecordMerger : RecordMerger {
-    override fun merge(existing: Record, incoming: Record, newDate: Long?): Pair<Record, Set<String>> {
-      val changedKeys = mutableSetOf<String>()
-      val mergedFields = existing.fields.toMutableMap()
-      val mergedMetadata = existing.metadata.toMutableMap()
-      val date = existing.date?.toMutableMap() ?: mutableMapOf()
+  private class CursorPaginationFieldMerger : FieldRecordMerger.FieldMerger {
+    @Suppress("UNCHECKED_CAST")
+    override fun mergeFields(existing: FieldRecordMerger.FieldInfo, incoming: FieldRecordMerger.FieldInfo): FieldRecordMerger.FieldInfo {
+      val existingStartCursor = existing.metadata["startCursor"] as? String
+      val existingEndCursor = existing.metadata["endCursor"] as? String
+      val incomingBeforeArgument = incoming.metadata["before"] as? String
+      val incomingAfterArgument = incoming.metadata["after"] as? String
 
-      for ((fieldKey, incomingFieldValue) in incoming.fields) {
-        val hasExistingFieldValue = existing.fields.containsKey(fieldKey)
-        val existingFieldValue = existing.fields[fieldKey]
-        if (!hasExistingFieldValue || existingFieldValue != incomingFieldValue) {
-          val existingStartCursor = existing.metadata[fieldKey]!!["startCursor"] as? String
-          val existingEndCursor = existing.metadata[fieldKey]!!["endCursor"] as? String
-          val incomingBeforeArgument = (incoming.metadata[fieldKey]!!["arguments"] as? Map<*, *>)?.get("before") as? String
-          val incomingAfterArgument = (incoming.metadata[fieldKey]!!["arguments"] as? Map<*, *>)?.get("after") as? String
+      return if (existingStartCursor == null || existingEndCursor == null || incomingBeforeArgument == null && incomingAfterArgument == null) {
+        incoming
+      } else {
+        val existingValue = existing.value as Map<String, Any?>
+        val existingList = existingValue["edges"] as List<*>
+        val incomingList = (incoming.value as Map<String, Any?>)["edges"] as List<*>
 
-          if (existingStartCursor == null || existingEndCursor == null || incomingBeforeArgument == null && incomingAfterArgument == null) {
-            mergedFields[fieldKey] = incomingFieldValue
-            mergedMetadata[fieldKey] = incoming.metadata[fieldKey] as Map<String, Any?>
-          } else {
-            val existingList = (existing[fieldKey] as Map<*, *>)["edges"] as List<*>
-            val incomingList = (incomingFieldValue as Map<*, *>)["edges"] as List<*>
-
-            val mergedList: List<*>
-            val newStartCursor: String
-            val newEndCursor: String
-            if (incomingAfterArgument == existingEndCursor) {
-              mergedList = existingList + incomingList
-              newStartCursor = existingStartCursor
-              newEndCursor = incoming.metadata[fieldKey]!!["endCursor"] as String
-            } else if (incomingBeforeArgument == existingStartCursor) {
-              mergedList = incomingList + existingList
-              newStartCursor = incoming.metadata[fieldKey]!!["startCursor"] as String
-              newEndCursor = existingEndCursor
-            } else {
-              // We received a list which is neither the previous nor the next page.
-              // Handle this case by resetting the cache with this page
-              mergedList = incomingList
-              newStartCursor = incoming.metadata[fieldKey]!!["startCursor"] as String
-              newEndCursor = incoming.metadata[fieldKey]!!["endCursor"] as String
-            }
-
-            val mergedFieldValue = incomingFieldValue.toMutableMap()
-            mergedFieldValue["edges"] = mergedList
-            mergedFields[fieldKey] = mergedFieldValue
-            mergedMetadata[fieldKey] = mapOf("startCursor" to newStartCursor, "endCursor" to newEndCursor)
-          }
-          changedKeys.add("${existing.key}.$fieldKey")
+        val mergedList: List<*>
+        val newStartCursor: String
+        val newEndCursor: String
+        if (incomingAfterArgument == existingEndCursor) {
+          mergedList = existingList + incomingList
+          newStartCursor = existingStartCursor
+          newEndCursor = incoming.metadata["endCursor"] as String
+        } else if (incomingBeforeArgument == existingStartCursor) {
+          mergedList = incomingList + existingList
+          newStartCursor = incoming.metadata["startCursor"] as String
+          newEndCursor = existingEndCursor
+        } else {
+          // We received a list which is neither the previous nor the next page.
+          // Handle this case by resetting the cache with this page
+          mergedList = incomingList
+          newStartCursor = incoming.metadata["startCursor"] as String
+          newEndCursor = incoming.metadata["endCursor"] as String
         }
-        // Even if the value did not change update date
-        if (newDate != null) {
-          date[fieldKey] = newDate
-        }
+
+        val mergedFieldValue = existingValue.toMutableMap()
+        mergedFieldValue["edges"] = mergedList
+        FieldRecordMerger.FieldInfo(
+            value = mergedFieldValue,
+            metadata = mapOf("startCursor" to newStartCursor, "endCursor" to newEndCursor)
+        )
       }
-
-      return Record(
-          key = existing.key,
-          fields = mergedFields,
-          mutationId = incoming.mutationId,
-          date = date,
-          metadata = mergedMetadata,
-      ) to changedKeys
     }
   }
 }
+
