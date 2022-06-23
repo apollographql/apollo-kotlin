@@ -43,6 +43,18 @@ if (relocateJar) {
       exclude("META-INF/versions/9/module-info\\.class")
       exclude("META-INF/kotlin-stdlib.*\\.kotlin_module")
 
+      // Remove the following error:
+      // /Users/mbonnin/.m2/repository/com/apollographql/apollo3/apollo-gradle-plugin/3.3.3-SNAPSHOT/apollo-gradle-plugin-3.3.3-SNAPSHOT.jar!/META-INF/kotlinpoet.kotlin_module:
+      // Module was compiled with an incompatible version of Kotlin. The binary version of its metadata is 1.7.1,
+      // expected version is 1.5.1.
+      exclude("META-INF/kotlinpoet.kotlin_module")
+
+      //Remove the following error:
+      // /Users/mbonnin/git/test-gradle-7-4/src/main/kotlin/Main.kt: (2, 5): Class 'kotlin.Unit' was compiled
+      // with an incompatible version of Kotlin. The binary version of its metadata is 1.7.1, expected version
+      // is 1.5.1.
+      exclude("kotlin/Unit.class")
+
       // Remove proguard rules from dependencies, we'll manage them ourselves
       exclude("META-INF/proguard/.*")
     }
