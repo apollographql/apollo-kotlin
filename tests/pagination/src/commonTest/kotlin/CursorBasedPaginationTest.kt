@@ -1,7 +1,7 @@
 package pagination
 
-import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
@@ -10,8 +10,6 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
 import kotlin.test.Test
@@ -34,17 +32,14 @@ class CursorPaginationTest {
   }
 
   private fun cursorBased(cacheFactory: NormalizedCacheFactory) = runTest {
-    val client = ApolloClient.Builder()
-        .normalizedCache(
-            normalizedCacheFactory = cacheFactory,
-            cacheKeyGenerator = TypePolicyCacheKeyGenerator,
-            metadataGenerator = CursorPaginationMetadataGenerator(),
-            apolloResolver = FieldPolicyApolloResolver,
-            recordMerger = CursorPaginationRecordMerger()
-        )
-        .serverUrl("unused")
-        .build()
-    client.apolloStore.clearAll()
+    val apolloStore = ApolloStore(
+        normalizedCacheFactory = cacheFactory,
+        cacheKeyGenerator = TypePolicyCacheKeyGenerator,
+        metadataGenerator = CursorPaginationMetadataGenerator(),
+        apolloResolver = FieldPolicyApolloResolver,
+        recordMerger = CursorPaginationRecordMerger()
+    )
+    apolloStore.clearAll()
 
     // First page
     val query1 = UsersCursorBasedQuery(Optional.Present(2))
@@ -52,8 +47,8 @@ class CursorPaginationTest {
         UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
     )))
-    client.apolloStore.writeOperation(query1, data1)
-    var dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query1, data1)
+    var dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
 
     // Page after
@@ -62,8 +57,8 @@ class CursorPaginationTest {
         UsersCursorBasedQuery.Edge("xx44", UsersCursorBasedQuery.Node("44", "Peter", "peter@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx45", UsersCursorBasedQuery.Node("45", "Alice", "alice@a.com", "User")),
     )))
-    client.apolloStore.writeOperation(query2, data2)
-    dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query2, data2)
+    dataFromStore = apolloStore.readOperation(query1)
     var expectedData = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
         UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
@@ -78,8 +73,8 @@ class CursorPaginationTest {
         UsersCursorBasedQuery.Edge("xx46", UsersCursorBasedQuery.Node("46", "Bob", "bob@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx47", UsersCursorBasedQuery.Node("47", "Charlie", "charlie@a.com", "User")),
     )))
-    client.apolloStore.writeOperation(query3, data3)
-    dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query3, data3)
+    dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
         UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
@@ -96,8 +91,8 @@ class CursorPaginationTest {
         UsersCursorBasedQuery.Edge("xx40", UsersCursorBasedQuery.Node("40", "Paul", "paul@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx41", UsersCursorBasedQuery.Node("41", "Mary", "mary@a.com", "User")),
     )))
-    client.apolloStore.writeOperation(query4, data4)
-    dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query4, data4)
+    dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
         UsersCursorBasedQuery.Edge("xx40", UsersCursorBasedQuery.Node("40", "Paul", "paul@a.com", "User")),
         UsersCursorBasedQuery.Edge("xx41", UsersCursorBasedQuery.Node("41", "Mary", "mary@a.com", "User")),

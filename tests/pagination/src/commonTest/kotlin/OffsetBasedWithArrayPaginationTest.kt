@@ -1,7 +1,7 @@
 package pagination
 
-import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
@@ -10,8 +10,6 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.apolloStore
-import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
 import kotlin.math.max
@@ -36,17 +34,14 @@ class OffsetBasedWithArrayPaginationTest {
   }
 
   private fun offsetBasedWithArray(cacheFactory: NormalizedCacheFactory) = runTest {
-    val client = ApolloClient.Builder()
-        .normalizedCache(
-            normalizedCacheFactory = cacheFactory,
-            cacheKeyGenerator = TypePolicyCacheKeyGenerator,
-            metadataGenerator = OffsetPaginationMetadataGenerator("usersOffsetBasedWithArray"),
-            apolloResolver = FieldPolicyApolloResolver,
-            recordMerger = OffsetPaginationRecordMerger()
-        )
-        .serverUrl("unused")
-        .build()
-    client.apolloStore.clearAll()
+    val apolloStore = ApolloStore(
+        normalizedCacheFactory = cacheFactory,
+        cacheKeyGenerator = TypePolicyCacheKeyGenerator,
+        metadataGenerator = OffsetPaginationMetadataGenerator("usersOffsetBasedWithArray"),
+        apolloResolver = FieldPolicyApolloResolver,
+        recordMerger = OffsetPaginationRecordMerger()
+    )
+    apolloStore.clearAll()
 
     // First page
     val query1 = UsersOffsetBasedWithArrayQuery(Optional.Present(42), Optional.Present(2))
@@ -54,8 +49,8 @@ class OffsetBasedWithArrayPaginationTest {
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("42", "John", "john@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("43", "Jane", "jane@a.com", "User"),
     ))
-    client.apolloStore.writeOperation(query1, data1)
-    var dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query1, data1)
+    var dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
 
     // Page after
@@ -64,8 +59,8 @@ class OffsetBasedWithArrayPaginationTest {
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("44", "Peter", "peter@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("45", "Alice", "alice@a.com", "User"),
     ))
-    client.apolloStore.writeOperation(query2, data2)
-    dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query2, data2)
+    dataFromStore = apolloStore.readOperation(query1)
     var expectedData = UsersOffsetBasedWithArrayQuery.Data(listOf(
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("42", "John", "john@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("43", "Jane", "jane@a.com", "User"),
@@ -81,8 +76,8 @@ class OffsetBasedWithArrayPaginationTest {
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("45", "Alice", "alice@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("46", "Bob", "bob@a.com", "User"),
     ))
-    client.apolloStore.writeOperation(query3, data3)
-    dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query3, data3)
+    dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersOffsetBasedWithArrayQuery.Data(listOf(
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("42", "John", "john@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("43", "Jane", "jane@a.com", "User"),
@@ -98,8 +93,8 @@ class OffsetBasedWithArrayPaginationTest {
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("40", "Paul", "paul@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("41", "Mary", "mary@a.com", "User"),
     ))
-    client.apolloStore.writeOperation(query4, data4)
-    dataFromStore = client.apolloStore.readOperation(query1)
+    apolloStore.writeOperation(query4, data4)
+    dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersOffsetBasedWithArrayQuery.Data(listOf(
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("40", "Paul", "paul@a.com", "User"),
         UsersOffsetBasedWithArrayQuery.UsersOffsetBasedWithArray("41", "Mary", "mary@a.com", "User"),
