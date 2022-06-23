@@ -139,9 +139,9 @@ class OffsetBasedWithArrayPaginationTest {
           } else {
             val existingList = existing[fieldKey] as List<*>
             val incomingList = incomingFieldValue as List<*>
-            val mergedList = mergeLists(existingList, incomingList, existingOffset, incomingOffset)
+            val (mergedList, mergedOffset) = mergeLists(existingList, incomingList, existingOffset, incomingOffset)
             mergedFields[fieldKey] = mergedList
-            mergedMetadata[fieldKey] = mapOf("offset" to min(existingOffset, incomingOffset))
+            mergedMetadata[fieldKey] = mapOf("offset" to mergedOffset)
           }
           changedKeys.add("${existing.key}.$fieldKey")
         }
@@ -161,15 +161,15 @@ class OffsetBasedWithArrayPaginationTest {
       ) to changedKeys
     }
 
-    private fun <T> mergeLists(existing: List<T>, incoming: List<T>, existingOffset: Int, incomingOffset: Int): List<T> {
+    private fun <T> mergeLists(existing: List<T>, incoming: List<T>, existingOffset: Int, incomingOffset: Int): Pair<List<T>, Int> {
       if (incomingOffset > existingOffset + existing.size) {
         // Incoming list's first item is further than immediately after the existing list's last item: can't merge. Handle it as a reset.
-        return incoming
+        return incoming to incomingOffset
       }
 
       if (incomingOffset + incoming.size < existingOffset) {
         // Incoming list's last item is further than immediately before the existing list's first item: can't merge. Handle it as a reset.
-        return incoming
+        return incoming to incomingOffset
       }
 
       val merged = mutableListOf<T>()
@@ -183,7 +183,7 @@ class OffsetBasedWithArrayPaginationTest {
           merged.add(existing[i - existingOffset])
         }
       }
-      return merged
+      return merged to startOffset
     }
   }
 }
