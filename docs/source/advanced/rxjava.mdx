@@ -35,7 +35,7 @@ Single<ApolloResponse<MyQuery.Data>> queryResponse = Rx2Apollo.single(queryCall)
 queryResponse.subscribe( /* ... */ );
 
 // Mutation
-ApolloCallCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
+ApolloCall<MyMutation.Data> mutationCall = client.mutation(new MyMutation("my-parameter"));
 Single<ApolloResponse<MyMutation.Data>> mutationResponse = Rx2Apollo.single(mutationCall);
 mutationResponse.subscribe( /* ... */ );
 
