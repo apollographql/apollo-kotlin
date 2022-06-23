@@ -25,7 +25,7 @@ class CacheConcurrencyTest {
     val apolloClient = ApolloClient.Builder()
         .networkTransport(QueueTestNetworkTransport())
         .store(store)
-        .requestedDispatcher(dispatcher)
+        .dispatcher(dispatcher)
         .build()
 
     val concurrency = 100
