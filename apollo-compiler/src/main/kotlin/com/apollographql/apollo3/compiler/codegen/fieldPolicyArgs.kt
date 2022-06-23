@@ -33,7 +33,7 @@ private fun GQLTypeDefinition.fieldPolicyArgs(argumentName: String, fieldName: S
     val argValue = it.arguments?.arguments?.singleOrNull { it.name == argumentName }?.value ?: return emptySet()
 
     if (argValue !is GQLStringValue) {
-      throw SourceAwareException("Apollo: no $argumentName found or wrong keyArgs type", it.sourceLocation)
+      throw SourceAwareException("Apollo: no $argumentName found or wrong $argumentName type", it.sourceLocation)
     }
 
     Buffer().writeUtf8(argValue.value)
