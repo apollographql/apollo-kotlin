@@ -27,14 +27,16 @@ class QueueTestNetworkTransport : NetworkTransport {
   private val queue = ArrayDeque<TestResponse>()
 
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    val response = lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
-    if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
-
-    @Suppress("UNCHECKED_CAST")
-    val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
     return flow {
       // "Emulate" a network call
       yield()
+
+      val response = lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
+      if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
+
+      @Suppress("UNCHECKED_CAST")
+      val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
+
       emit(apolloResponse.newBuilder().isLast(true).build())
     }
   }
