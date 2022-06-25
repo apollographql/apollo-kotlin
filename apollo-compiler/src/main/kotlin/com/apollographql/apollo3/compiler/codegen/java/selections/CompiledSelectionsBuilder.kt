@@ -261,13 +261,15 @@ class CompiledSelectionsBuilder(
     val arguments = sortedBy { it.name }.map {
       val argumentBuilder = CodeBlock.builder()
       argumentBuilder.add(
-          "new $T($S, $L, $L, $L)",
+          "new $T($S, $L)",
           JavaClassNames.CompiledArgument,
           it.name,
-          it.value.codeBlock(),
-          if (keyArgs.contains(it.name)) "true" else "false",
-          if (paginationArgs.contains(it.name)) "true" else "false",
+          it.value.codeBlock()
       )
+      if (keyArgs.contains(it.name)) argumentBuilder.add(".isKey(true)")
+      if (paginationArgs.contains(it.name)) argumentBuilder.add(".isPagination(true)")
+      argumentBuilder.add(".build()")
+
       argumentBuilder.build()
     }
     return arguments.toListInitializerCodeblock()

@@ -78,7 +78,7 @@ public object QueryFragmentSelections {
           name = "droid",
           type = Droid.type
         ).arguments(listOf(
-          CompiledArgument("id", 1)
+          CompiledArgument.Builder("id", 1).build()
         ))
         .selections(__droid)
         .build(),
@@ -86,7 +86,7 @@ public object QueryFragmentSelections {
           name = "human",
           type = Human.type
         ).arguments(listOf(
-          CompiledArgument("id", 1)
+          CompiledArgument.Builder("id", 1).build()
         ))
         .selections(__human)
         .build()

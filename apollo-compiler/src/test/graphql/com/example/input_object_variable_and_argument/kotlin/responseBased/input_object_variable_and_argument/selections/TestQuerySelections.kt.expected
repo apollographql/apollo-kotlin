@@ -25,7 +25,7 @@ public object TestQuerySelections {
           name = "height",
           type = GraphQLFloat.type
         ).arguments(listOf(
-          CompiledArgument("unit", "FOOT")
+          CompiledArgument.Builder("unit", "FOOT").build()
         ))
         .build()
       )
@@ -35,12 +35,12 @@ public object TestQuerySelections {
           name = "heroWithReview",
           type = Human.type
         ).arguments(listOf(
-          CompiledArgument("episode", CompiledVariable("episode")),
-          CompiledArgument("listOfInts", listOf(
+          CompiledArgument.Builder("episode", CompiledVariable("episode")).build(),
+          CompiledArgument.Builder("listOfInts", listOf(
             CompiledVariable("stars"),
             CompiledVariable("stars"),
-          )),
-          CompiledArgument("review", mapOf(
+          )).build(),
+          CompiledArgument.Builder("review", mapOf(
             "stars" to CompiledVariable("stars"),
             "favoriteColor" to mapOf(
               "red" to 0,
@@ -49,7 +49,7 @@ public object TestQuerySelections {
             ),
             "booleanNonOptional" to false,
             "listOfStringNonOptional" to emptyList<Nothing>(),
-          ))
+          )).build()
         ))
         .selections(__heroWithReview)
         .build()

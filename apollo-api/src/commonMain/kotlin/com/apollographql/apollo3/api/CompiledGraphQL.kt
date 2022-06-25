@@ -4,6 +4,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
@@ -314,18 +315,44 @@ class CompiledVariable(val name: String)
  *
  * Note: for now, enums are mapped to Strings
  */
-class CompiledArgument @ApolloExperimental constructor(
+class CompiledArgument private constructor(
     val name: String,
     val value: Any?,
     val isKey: Boolean = false,
     @ApolloExperimental
     val isPagination: Boolean = false,
 ) {
+  @Deprecated("Use the Builder instead", ReplaceWith("CompiledArgument.Builder(name = name, value = value).isKey(isKey).build()"))
+  @ApolloDeprecatedSince(v3_3_3)
   constructor(
       name: String,
       value: Any?,
       isKey: Boolean = false,
   ) : this(name, value, isKey, isPagination = false)
+
+  class Builder(
+      private val name: String,
+      private val value: Any?,
+  ) {
+    private var isKey: Boolean = false
+    private var isPagination: Boolean = false
+
+    fun isKey(isKey: Boolean) = apply {
+      this.isKey = isKey
+    }
+
+    @ApolloExperimental
+    fun isPagination(isPagination: Boolean) = apply {
+      this.isPagination = isPagination
+    }
+
+    fun build(): CompiledArgument = CompiledArgument(
+        name = name,
+        value = value,
+        isKey = isKey,
+        isPagination = isPagination,
+    )
+  }
 }
 
 /**

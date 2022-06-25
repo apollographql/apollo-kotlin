@@ -303,19 +303,19 @@ class CompiledSelectionsBuilder(
     val arguments = sortedBy { it.name }.map {
       val argumentBuilder = CodeBlock.builder()
       argumentBuilder.add(
-          "%T(%S,·%L",
+          "%T(%S,·%L)",
           KotlinSymbols.CompiledArgument,
           it.name,
           it.value.codeBlock()
       )
 
       if (keyArgs.contains(it.name)) {
-        argumentBuilder.add(",·isKey·=·true")
+        argumentBuilder.add(".isKey(true)")
       }
       if (paginationArgs.contains(it.name)) {
-        argumentBuilder.add(",·isPagination·=·true")
+        argumentBuilder.add(".isPagination(true)")
       }
-      argumentBuilder.add(")")
+      argumentBuilder.add(".build()")
       argumentBuilder.build()
     }
     builder.add("%L", arguments.joinToCode(",\n"))
