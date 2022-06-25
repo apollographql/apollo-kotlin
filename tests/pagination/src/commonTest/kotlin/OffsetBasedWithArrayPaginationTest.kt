@@ -138,9 +138,7 @@ class OffsetBasedWithArrayPaginationTest {
   private class OffsetPaginationMetadataGenerator(private val fieldName: String) : MetadataGenerator {
     override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
       if (context.field.name == fieldName) {
-        return mapOf(
-            "offset" to context.field.resolveArgument("offset", context.variables) as Int,
-        )
+        return mapOf("offset" to context.argumentValue("offset"))
       }
       return emptyMap()
     }
@@ -159,7 +157,7 @@ class OffsetBasedWithArrayPaginationTest {
         val existingFieldValue = existing.fields[fieldKey]
         if (!hasExistingFieldValue || existingFieldValue != incomingFieldValue) {
           val existingOffset = existing.metadata[fieldKey]!!["offset"] as? Int
-          val incomingOffset = incoming.arguments[fieldKey]!!["offset"] as? Int
+          val incomingOffset = incoming.metadata[fieldKey]!!["offset"] as? Int
           if (existingOffset == null || incomingOffset == null) {
             mergedFields[fieldKey] = incomingFieldValue
             mergedMetadata[fieldKey] = incoming.metadata[fieldKey] as Map<String, Any?>
@@ -183,7 +181,6 @@ class OffsetBasedWithArrayPaginationTest {
           fields = mergedFields,
           mutationId = incoming.mutationId,
           date = date,
-          arguments = existing.arguments + incoming.arguments,
           metadata = mergedMetadata,
       ) to changedKeys
     }

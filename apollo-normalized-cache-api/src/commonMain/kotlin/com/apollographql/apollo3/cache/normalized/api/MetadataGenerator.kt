@@ -13,7 +13,15 @@ interface MetadataGenerator {
 class MetadataGeneratorContext(
     val field: CompiledField,
     val variables: Executable.Variables,
-)
+) {
+  fun argumentValue(argumentName: String): Any? {
+    return field.resolveArgument(argumentName, variables)
+  }
+
+  fun allArgumentValues(): Map<String, Any?> {
+    return field.arguments.associate { it.name to argumentValue(it.name) }
+  }
+}
 
 @ApolloExperimental
 object EmptyMetadataGenerator : MetadataGenerator {

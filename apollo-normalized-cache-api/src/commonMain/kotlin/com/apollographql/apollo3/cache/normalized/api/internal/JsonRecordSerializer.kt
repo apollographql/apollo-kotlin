@@ -16,7 +16,6 @@ import okio.use
  */
 @ApolloInternal
 object JsonRecordSerializer {
-  private const val KEY_ARGUMENTS = "__apa"
   private const val KEY_METADATA = "__apm"
 
   fun serialize(record: Record): String {
@@ -30,9 +29,6 @@ object JsonRecordSerializer {
       for ((key, value) in record.fields) {
         jsonWriter.name(key).writeJsonValue(value)
       }
-      jsonWriter.name(KEY_ARGUMENTS)
-      jsonWriter.writeJsonValue(record.arguments)
-
       jsonWriter.name(KEY_METADATA)
       jsonWriter.writeJsonValue(record.metadata)
       jsonWriter.endObject()
@@ -66,7 +62,7 @@ object JsonRecordSerializer {
 
     val allFields = BufferedSourceJsonReader(buffer).readAny() as Map<String, Any?>
     val fields = allFields
-        .filterKeys { it != KEY_ARGUMENTS && it != KEY_METADATA }
+        .filterKeys { it != KEY_METADATA }
         .deserializeCacheKeys() as? Map<String, Any?>
 
     check(fields != null) {
@@ -78,7 +74,6 @@ object JsonRecordSerializer {
         fields = fields,
         mutationId = null,
         date = emptyMap(),
-        arguments = allFields[KEY_ARGUMENTS] as Map<String, Map<String, Any?>>,
         metadata = allFields[KEY_METADATA] as Map<String, Map<String, Any?>>
     )
   }

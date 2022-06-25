@@ -38,7 +38,6 @@ internal class Normalizer(
 
   private class FieldInfo(
       val fieldValue: Any?,
-      val arguments: Map<String, Any?>,
       val metadata: Map<String, Any?>,
   )
 
@@ -96,9 +95,8 @@ internal class Normalizer(
           base.append(fieldKey),
           embeddedFields
       )
-      val arguments = mergedField.argumentsWithValue(variables)
       val metadata = metadataGenerator.metadataForObject(entry.value, MetadataGeneratorContext(field = mergedField, variables))
-      fieldKey to FieldInfo(value, arguments, metadata)
+      fieldKey to FieldInfo(value, metadata)
     }.toMap()
 
     return fields
@@ -121,14 +119,12 @@ internal class Normalizer(
   ): CacheKey {
     val fields = buildFields(obj, key, selections, typeInScope, embeddedFields)
     val fieldValues = fields.mapValues { it.value.fieldValue }
-    val arguments = fields.mapValues { it.value.arguments }
     val metadata = fields.mapValues { it.value.metadata }
     val record = Record(
         key = key,
         fields = fieldValues,
         mutationId = null,
         date = emptyMap(),
-        arguments = arguments,
         metadata = metadata,
     )
 
@@ -250,8 +246,4 @@ internal class Normalizer(
 
   // The receiver can be null for the root query to save some space in the cache by not storing QUERY_ROOT all over the place
   private fun String?.append(next: String): String = if (this == null) next else "$this.$next"
-
-  private fun CompiledField.argumentsWithValue(variables: Executable.Variables): Map<String, Any?> {
-    return arguments.associate { it.name to resolveArgument(it.name, variables) }
-  }
 }

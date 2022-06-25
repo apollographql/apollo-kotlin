@@ -299,7 +299,8 @@ class CursorBasedPaginationTest {
         val endCursor = edges.last()["cursor"] as String
         return mapOf(
             "startCursor" to startCursor,
-            "endCursor" to endCursor
+            "endCursor" to endCursor,
+            "arguments" to context.allArgumentValues()
         )
       }
       return emptyMap()
@@ -320,8 +321,8 @@ class CursorBasedPaginationTest {
         if (!hasExistingFieldValue || existingFieldValue != incomingFieldValue) {
           val existingStartCursor = existing.metadata[fieldKey]!!["startCursor"] as? String
           val existingEndCursor = existing.metadata[fieldKey]!!["endCursor"] as? String
-          val incomingBeforeArgument = incoming.arguments[fieldKey]!!["before"] as? String
-          val incomingAfterArgument = incoming.arguments[fieldKey]!!["after"] as? String
+          val incomingBeforeArgument = (incoming.metadata[fieldKey]!!["arguments"] as? Map<*, *>)?.get("before") as? String
+          val incomingAfterArgument = (incoming.metadata[fieldKey]!!["arguments"] as? Map<*, *>)?.get("after") as? String
 
           if (existingStartCursor == null || existingEndCursor == null || incomingBeforeArgument == null && incomingAfterArgument == null) {
             mergedFields[fieldKey] = incomingFieldValue
@@ -367,7 +368,6 @@ class CursorBasedPaginationTest {
           fields = mergedFields,
           mutationId = incoming.mutationId,
           date = date,
-          arguments = existing.arguments + incoming.arguments,
           metadata = mergedMetadata,
       ) to changedKeys
     }
