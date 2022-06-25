@@ -25,4 +25,5 @@ kotlin {
 
 apollo {
   packageName.set("pagination")
+  generateTestBuilders.set(true)
 }

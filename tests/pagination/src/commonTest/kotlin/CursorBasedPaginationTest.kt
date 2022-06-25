@@ -12,10 +12,11 @@ import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
+import pagination.test.UsersCursorBasedQuery_TestBuilder.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class CursorPaginationTest {
+class CursorBasedPaginationTest {
   @Test
   fun cursorBasedMemoryCache() {
     cursorBased(MemoryCacheFactory())
@@ -42,68 +43,250 @@ class CursorPaginationTest {
     apolloStore.clearAll()
 
     // First page
-    val query1 = UsersCursorBasedQuery(Optional.Present(2))
-    val data1 = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
-    )))
+    val query1 = UsersCursorBasedQuery(first = Optional.Present(2))
+    val data1 = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx42"
+              node = node {
+                id = "42"
+              }
+            },
+            edge {
+              cursor = "xx43"
+              node = node {
+                id = "43"
+              }
+            },
+        )
+      }
+    }
     apolloStore.writeOperation(query1, data1)
     var dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
 
     // Page after
-    val query2 = UsersCursorBasedQuery(Optional.Present(2), Optional.Present("xx43"))
-    val data2 = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx44", UsersCursorBasedQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx45", UsersCursorBasedQuery.Node("45", "Alice", "alice@a.com", "User")),
-    )))
+    val query2 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
+    val data2 = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx44"
+              node = node {
+                id = "44"
+              }
+            },
+            edge {
+              cursor = "xx45"
+              node = node {
+                id = "45"
+              }
+            },
+        )
+      }
+    }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
-    var expectedData = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx44", UsersCursorBasedQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx45", UsersCursorBasedQuery.Node("45", "Alice", "alice@a.com", "User")),
-    )))
+    var expectedData = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx42"
+              node = node {
+                id = "42"
+              }
+            },
+            edge {
+              cursor = "xx43"
+              node = node {
+                id = "43"
+              }
+            },
+            edge {
+              cursor = "xx44"
+              node = node {
+                id = "44"
+              }
+            },
+            edge {
+              cursor = "xx45"
+              node = node {
+                id = "45"
+              }
+            },
+        )
+      }
+    }
     assertEquals(expectedData, dataFromStore)
 
     // Page after
-    val query3 = UsersCursorBasedQuery(Optional.Present(2), Optional.Present("xx45"))
-    val data3 = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx46", UsersCursorBasedQuery.Node("46", "Bob", "bob@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx47", UsersCursorBasedQuery.Node("47", "Charlie", "charlie@a.com", "User")),
-    )))
+    val query3 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
+    val data3 = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx46"
+              node = node {
+                id = "46"
+              }
+            },
+            edge {
+              cursor = "xx47"
+              node = node {
+                id = "47"
+              }
+            },
+        )
+      }
+    }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx44", UsersCursorBasedQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx45", UsersCursorBasedQuery.Node("45", "Alice", "alice@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx46", UsersCursorBasedQuery.Node("46", "Bob", "bob@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx47", UsersCursorBasedQuery.Node("47", "Charlie", "charlie@a.com", "User")),
-    )))
+    expectedData = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx42"
+              node = node {
+                id = "42"
+              }
+            },
+            edge {
+              cursor = "xx43"
+              node = node {
+                id = "43"
+              }
+            },
+            edge {
+              cursor = "xx44"
+              node = node {
+                id = "44"
+              }
+            },
+            edge {
+              cursor = "xx45"
+              node = node {
+                id = "45"
+              }
+            },
+            edge {
+              cursor = "xx46"
+              node = node {
+                id = "46"
+              }
+            },
+            edge {
+              cursor = "xx47"
+              node = node {
+                id = "47"
+              }
+            },
+        )
+      }
+    }
     assertEquals(expectedData, dataFromStore)
 
     // Page before
-    val query4 = UsersCursorBasedQuery(Optional.Absent, Optional.Absent, Optional.Present(2), Optional.Present("xx42"))
-    val data4 = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx40", UsersCursorBasedQuery.Node("40", "Paul", "paul@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx41", UsersCursorBasedQuery.Node("41", "Mary", "mary@a.com", "User")),
-    )))
+    val query4 = UsersCursorBasedQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
+    val data4 = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx40"
+              node = node {
+                id = "40"
+              }
+            },
+            edge {
+              cursor = "xx41"
+              node = node {
+                id = "41"
+              }
+            },
+        )
+      }
+    }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersCursorBasedQuery.Data(UsersCursorBasedQuery.UsersCursorBased(listOf(
-        UsersCursorBasedQuery.Edge("xx40", UsersCursorBasedQuery.Node("40", "Paul", "paul@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx41", UsersCursorBasedQuery.Node("41", "Mary", "mary@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx42", UsersCursorBasedQuery.Node("42", "John", "john@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx43", UsersCursorBasedQuery.Node("43", "Jane", "jane@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx44", UsersCursorBasedQuery.Node("44", "Peter", "peter@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx45", UsersCursorBasedQuery.Node("45", "Alice", "alice@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx46", UsersCursorBasedQuery.Node("46", "Bob", "bob@a.com", "User")),
-        UsersCursorBasedQuery.Edge("xx47", UsersCursorBasedQuery.Node("47", "Charlie", "charlie@a.com", "User")),
-    )))
+    expectedData = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx40"
+              node = node {
+                id = "40"
+              }
+            },
+            edge {
+              cursor = "xx41"
+              node = node {
+                id = "41"
+              }
+            },
+            edge {
+              cursor = "xx42"
+              node = node {
+                id = "42"
+              }
+            },
+            edge {
+              cursor = "xx43"
+              node = node {
+                id = "43"
+              }
+            },
+            edge {
+              cursor = "xx44"
+              node = node {
+                id = "44"
+              }
+            },
+            edge {
+              cursor = "xx45"
+              node = node {
+                id = "45"
+              }
+            },
+            edge {
+              cursor = "xx46"
+              node = node {
+                id = "46"
+              }
+            },
+            edge {
+              cursor = "xx47"
+              node = node {
+                id = "47"
+              }
+            },
+        )
+      }
+    }
     assertEquals(expectedData, dataFromStore)
+
+    // Non-contiguous page (should reset)
+    val query5 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
+    val data5 = UsersCursorBasedQuery.Data {
+      usersCursorBased = usersCursorBased {
+        edges = listOf(
+            edge {
+              cursor = "xx50"
+              node = node {
+                id = "50"
+              }
+            },
+            edge {
+              cursor = "xx51"
+              node = node {
+                id = "51"
+              }
+            },
+        )
+      }
+    }
+    apolloStore.writeOperation(query5, data5)
+    dataFromStore = apolloStore.readOperation(query1)
+    assertEquals(data5, dataFromStore)
   }
 
   @Suppress("UNCHECKED_CAST")

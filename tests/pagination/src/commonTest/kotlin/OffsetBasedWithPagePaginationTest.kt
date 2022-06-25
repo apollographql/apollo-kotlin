@@ -12,10 +12,12 @@ import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
+import pagination.test.UsersOffsetBasedWithPageQuery_TestBuilder.Data
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.test.Test
 import kotlin.test.assertEquals
+
 
 class OffsetBasedWithPagePaginationTest {
   @Test
@@ -44,67 +46,109 @@ class OffsetBasedWithPagePaginationTest {
     apolloStore.clearAll()
 
     // First page
-    val query1 = UsersOffsetBasedWithPageQuery(Optional.Present(42), Optional.Present(2))
-    val data1 = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("42", "John", "john@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("43", "Jane", "jane@a.com", "User"),
-    )))
+    val query1 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(42), limit = Optional.Present(2))
+    val data1 = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "42" },
+            user { id = "43" },
+        )
+      }
+    }
     apolloStore.writeOperation(query1, data1)
     var dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
 
     // Page after
-    val query2 = UsersOffsetBasedWithPageQuery(Optional.Present(44), Optional.Present(2))
-    val data2 = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("44", "Peter", "peter@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("45", "Alice", "alice@a.com", "User"),
-    )))
+    val query2 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(2))
+    val data2 = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "44" },
+            user { id = "45" },
+        )
+      }
+    }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
-    var expectedData = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("42", "John", "john@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("43", "Jane", "jane@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("44", "Peter", "peter@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("45", "Alice", "alice@a.com", "User"),
-    )))
+    var expectedData = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "42" },
+            user { id = "43" },
+            user { id = "44" },
+            user { id = "45" },
+        )
+      }
+    }
     assertEquals(expectedData, dataFromStore)
 
     // Page in the middle
-    val query3 = UsersOffsetBasedWithPageQuery(Optional.Present(44), Optional.Present(3))
-    val data3 = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("44", "Peter", "peter@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("45", "Alice", "alice@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("46", "Bob", "bob@a.com", "User"),
-    )))
+    val query3 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(3))
+    val data3 = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "44" },
+            user { id = "45" },
+            user { id = "46" },
+        )
+      }
+    }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("42", "John", "john@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("43", "Jane", "jane@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("44", "Peter", "peter@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("45", "Alice", "alice@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("46", "Bob", "bob@a.com", "User"),
-    )))
+    expectedData = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "42" },
+            user { id = "43" },
+            user { id = "44" },
+            user { id = "45" },
+            user { id = "46" },
+        )
+      }
+    }
     assertEquals(expectedData, dataFromStore)
 
     // Page before
-    val query4 = UsersOffsetBasedWithPageQuery(Optional.Present(40), Optional.Present(2))
-    val data4 = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("40", "Paul", "paul@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("41", "Mary", "mary@a.com", "User"),
-    )))
+    val query4 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(40), limit = Optional.Present(2))
+    val data4 = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "40" },
+            user { id = "41" },
+        )
+      }
+    }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersOffsetBasedWithPageQuery.Data(UsersOffsetBasedWithPageQuery.UsersOffsetBasedWithPage(listOf(
-        UsersOffsetBasedWithPageQuery.User("40", "Paul", "paul@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("41", "Mary", "mary@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("42", "John", "john@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("43", "Jane", "jane@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("44", "Peter", "peter@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("45", "Alice", "alice@a.com", "User"),
-        UsersOffsetBasedWithPageQuery.User("46", "Bob", "bob@a.com", "User"),
-    )))
+    expectedData = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "40" },
+            user { id = "41" },
+            user { id = "42" },
+            user { id = "43" },
+            user { id = "44" },
+            user { id = "45" },
+            user { id = "46" },
+        )
+      }
+    }
     assertEquals(expectedData, dataFromStore)
+
+    // Non-contiguous page (should reset)
+    val query5 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(50), limit = Optional.Present(2))
+    val data5 = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = listOf(
+            user { id = "50" },
+            user { id = "51" },
+        )
+      }
+    }
+    apolloStore.writeOperation(query5, data5)
+    dataFromStore = apolloStore.readOperation(query1)
+    assertEquals(data5, dataFromStore)
   }
 
   @Suppress("UNCHECKED_CAST")
