@@ -15,7 +15,7 @@ buildscript {
 
     classpath("com.apollographql.apollo3:apollo-gradle-plugin:${properties.get("apolloVersion")}")
     classpath("androidx.benchmark:benchmark-gradle-plugin:1.1.0")
-    classpath("com.android.tools.build:gradle:7.4.0-alpha04")
+    classpath("com.android.tools.build:gradle:7.4.0-alpha05")
   }
 }
 
