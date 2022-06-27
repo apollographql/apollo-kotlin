@@ -129,10 +129,12 @@ interface Service {
    * @param expression: an expression that will be used by the codegen to get an adapter for the
    * given scalar. [expression] is passed verbatim to JavaPoet/KotlinPoet.
    *
-   * For example:
-   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (an instance property or object)
+   * For example in Kotlin:
+   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (a top level property or object)
    * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter()")` (create a new instance every time)
-   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter.INSTANCE")` (works for Adapters implemented as Kotlin object used in Java code gen)
+   * Or in Java:
+   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter.INSTANCE")` (a top level property or object)
+   * - `mapScalar("Date", "com.example.Date", "new com.example.DateAdapter()")` (create a new instance every time)
    */
   fun mapScalar(graphQLName: String, targetName: String, expression: String)
 
