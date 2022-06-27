@@ -33,7 +33,7 @@ class WriteToCacheAsynchronouslyTest {
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .requestedDispatcher(dispatcher)
+        .dispatcher(dispatcher)
         .store(store)
         .build()
   }

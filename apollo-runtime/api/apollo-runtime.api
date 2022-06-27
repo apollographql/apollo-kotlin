@@ -83,6 +83,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun copy ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun dispatcher (Lkotlinx/coroutines/CoroutineDispatcher;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun executionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/ApolloClient$Builder;

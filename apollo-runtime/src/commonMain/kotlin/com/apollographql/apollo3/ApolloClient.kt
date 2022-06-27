@@ -4,6 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_3
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -54,7 +55,7 @@ private constructor(
     val subscriptionNetworkTransport: NetworkTransport,
     val interceptors: List<ApolloInterceptor>,
     override val executionContext: ExecutionContext,
-    private val requestedDispatcher: CoroutineDispatcher?,
+    private val dispatcher: CoroutineDispatcher?,
     override val httpMethod: HttpMethod?,
     override val httpHeaders: List<HttpHeader>?,
     override val sendApqExtensions: Boolean?,
@@ -66,7 +67,7 @@ private constructor(
   private val concurrencyInfo: ConcurrencyInfo
 
   init {
-    val dispatcher = defaultDispatcher(requestedDispatcher)
+    val dispatcher = defaultDispatcher(dispatcher)
     concurrencyInfo = ConcurrencyInfo(
         dispatcher,
         CoroutineScope(dispatcher))
@@ -186,7 +187,7 @@ private constructor(
     private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
     val interceptors: List<ApolloInterceptor> = _interceptors
     private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
-    private var requestedDispatcher: CoroutineDispatcher? = null
+    private var dispatcher: CoroutineDispatcher? = null
     override var executionContext: ExecutionContext = ExecutionContext.Empty
     private var httpServerUrl: String? = null
     private var httpEngine: HttpEngine? = null
@@ -394,8 +395,21 @@ private constructor(
       this._interceptors += interceptors
     }
 
+    @Deprecated("Use dispatcher instead", ReplaceWith("dispatcher(requestedDispatcher)"))
+    @ApolloDeprecatedSince(v3_3_3)
     fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher?) = apply {
-      this.requestedDispatcher = requestedDispatcher
+      dispatcher(requestedDispatcher)
+    }
+
+    /**
+     * Changes the [CoroutineDispatcher] used for I/O intensive work like reading the
+     * network or the cache
+     * On the JVM the dispatcher is [kotlinx.coroutines.Dispatchers.IO] by default.
+     * On native this function has no effect. Network request use the default NSURLConnection
+     * threads and the cache uses a background dispatch queue.
+     */
+    fun dispatcher(dispatcher: CoroutineDispatcher?) = apply {
+      this.dispatcher = dispatcher
     }
 
     override fun addExecutionContext(executionContext: ExecutionContext) = apply {
@@ -559,7 +573,7 @@ private constructor(
           subscriptionNetworkTransport = subscriptionNetworkTransport,
           customScalarAdapters = customScalarAdaptersBuilder.build(),
           interceptors = _interceptors,
-          requestedDispatcher = requestedDispatcher,
+          dispatcher = dispatcher,
           executionContext = executionContext,
           httpMethod = httpMethod,
           httpHeaders = httpHeaders,
@@ -578,7 +592,7 @@ private constructor(
       val builder = Builder()
           .customScalarAdapters(customScalarAdaptersBuilder.build())
           .interceptors(interceptors)
-          .requestedDispatcher(requestedDispatcher)
+          .dispatcher(dispatcher)
           .executionContext(executionContext)
           .httpMethod(httpMethod)
           .httpHeaders(httpHeaders)

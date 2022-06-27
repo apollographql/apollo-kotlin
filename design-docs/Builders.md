@@ -39,7 +39,7 @@ constructor(
     subscriptionNetworkTransport: NetworkTransport = networkTransport,
     interceptors: List<ApolloInterceptor> = emptyList(),
     executionContext: ExecutionContext = ExecutionContext.Empty,
-    requestedDispatcher: CoroutineDispatcher? = null,
+    dispatcher: CoroutineDispatcher? = null,
 )
 ```
 
@@ -55,7 +55,7 @@ val apolloClient = ApolloClient(
         subscriptionNetworkTransport = ...,
         interceptors = ...,
         executionContext = ...,
-        requestedDispatcher = ... ,
+        dispatcher = ... ,
     )
 ```
 
@@ -89,7 +89,7 @@ val apolloClient = ApolloClient.Builder()
         .serverUrl(...)
         .networkTransport(...)
         .subscriptionNetworkTransport(...)
-        .requestedDispatcher(...)
+        .dispatcher(...)
         .addCustomScalarAdapter(...)
         .addInterceptor(...)
         .addExecutionContext(...)
@@ -121,7 +121,7 @@ class Builder private constructor(
     private var subscriptionNetworkTransport: NetworkTransport?,
     private var customScalarAdapters: MutableMap<String, Adapter<*>>,
     private val interceptors: MutableList<ApolloInterceptor>,
-    private var requestedDispatcher: CoroutineDispatcher?,
+    private var dispatcher: CoroutineDispatcher?,
     override var executionContext: ExecutionContext,
 ) : ExecutionParameters<Builder> {
 
@@ -130,7 +130,7 @@ class Builder private constructor(
     subscriptionNetworkTransport = null,
     customScalarAdapters = mutableMapOf(),
     interceptors = mutableListOf(),
-    requestedDispatcher = null,
+    dispatcher = null,
     executionContext = ExecutionContext.Empty,
   )
 
@@ -161,7 +161,7 @@ class Builder private constructor(
     return this
   }
   
-  fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher): Builder { ... }
+  fun dispatcher(dispatcher: CoroutineDispatcher): Builder { ... }
 
   override fun withExecutionContext(executionContext: ExecutionContext): Builder {
     this.executionContext = this.executionContext + executionContext
