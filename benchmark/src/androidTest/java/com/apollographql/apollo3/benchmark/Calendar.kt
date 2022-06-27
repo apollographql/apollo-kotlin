@@ -4,6 +4,7 @@ import Utils.resource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.benchmark.test.R
@@ -13,7 +14,8 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
-import com.apollographql.apollo3.calendar.response.ItemsQuery
+import com.apollographql.apollo3.calendar.response.ItemsQuery as ItemsQueryResponseBased
+import com.apollographql.apollo3.calendar.operation.ItemsQuery as ItemsQueryOperationBased
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
@@ -23,8 +25,16 @@ class Calendar {
   val benchmarkRule = BenchmarkRule()
 
   @Test
-  fun responseBasedReadFromCache() {
-    val query = ItemsQuery(endingAfter = "", startingBefore = "")
+  fun readFromCacheResponseBased() {
+    readFromCache(ItemsQueryResponseBased(endingAfter = "", startingBefore = ""))
+  }
+
+  @Test
+  fun readFromCacheOperationBased() {
+    readFromCache(ItemsQueryOperationBased(endingAfter = "", startingBefore = ""))
+  }
+
+  fun <D: Query.Data> readFromCache(query: Query<D>) {
     val cache = MemoryCacheFactory().create()
 
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
