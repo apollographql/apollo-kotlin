@@ -8,6 +8,7 @@ dependencies {
   implementation("com.apollographql.apollo3:apollo-mockserver")
   testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
   testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  testImplementation(groovy.util.Eval.x(project, "x.dep.turbine"))
   testImplementation("com.apollographql.apollo3:apollo-testing-support")
 }
 

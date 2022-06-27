@@ -1,9 +1,11 @@
 package testnetworktransport
 
+import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
+import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.runTest
 import com.benasher44.uuid.uuid4
@@ -88,6 +90,17 @@ class QueueTestNetworkTransportHandlerTest {
     assertTrue(actual.hasErrors())
     assertEquals(actual.errors!!.first().message, "There was an error")
     assertEquals(actual.errors!!.first().extensions!!["myExtension"], true)
+  }
+
+  @Test
+  fun enqueueNetworkError() = runTest(before = { setUp() }, after = { tearDown() }) {
+    apolloClient.enqueueTestNetworkError()
+
+    apolloClient.query(GetHeroQuery("001")).toFlow()
+        .test {
+          assertTrue(awaitError().message?.contains("Network error queued") ?: false)
+          cancelAndConsumeRemainingEvents()
+        }
   }
 
   @Test
