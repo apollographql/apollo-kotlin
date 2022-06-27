@@ -132,6 +132,7 @@ interface Service {
    * For example:
    * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter")` (an instance property or object)
    * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter()")` (create a new instance every time)
+   * - `mapScalar("Date", "com.example.Date", "com.example.DateAdapter.INSTANCE")` (works for Adapters implemented as Kotlin object used in Java code gen)
    */
   fun mapScalar(graphQLName: String, targetName: String, expression: String)
 
