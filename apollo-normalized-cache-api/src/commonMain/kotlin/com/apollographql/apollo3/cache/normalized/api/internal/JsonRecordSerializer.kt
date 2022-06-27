@@ -16,6 +16,7 @@ import okio.use
  */
 @ApolloInternal
 object JsonRecordSerializer {
+  // "apm" stands for Apollo Metadata (avoiding "__metadata" for potential clashes)
   private const val KEY_METADATA = "__apm"
 
   fun serialize(record: Record): String {
