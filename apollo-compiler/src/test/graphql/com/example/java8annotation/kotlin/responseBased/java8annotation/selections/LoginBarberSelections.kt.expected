@@ -27,7 +27,7 @@ public object LoginBarberSelections {
           name = "login",
           type = User.type.notNull()
         ).arguments(listOf(
-          CompiledArgument("input", CompiledVariable("input"))
+          CompiledArgument.Builder("input", CompiledVariable("input")).build()
         ))
         .selections(__login)
         .build()

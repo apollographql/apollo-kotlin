@@ -16,18 +16,22 @@ import okio.use
  */
 @ApolloInternal
 object JsonRecordSerializer {
+  // "apm" stands for Apollo Metadata (avoiding "__metadata" for potential clashes)
+  private const val KEY_METADATA = "__apm"
 
-  fun serialize(record: Record): String  {
-    return  toJson(record.fields)
+  fun serialize(record: Record): String {
+    return toJson(record)
   }
 
-  private fun toJson(fields: Map<String, Any?>): String {
+  private fun toJson(record: Record): String {
     val buffer = Buffer()
     BufferedSinkJsonWriter(buffer).use { jsonWriter ->
       jsonWriter.beginObject()
-      for ((key, value) in fields) {
+      for ((key, value) in record.fields) {
         jsonWriter.name(key).writeJsonValue(value)
       }
+      jsonWriter.name(KEY_METADATA)
+      jsonWriter.writeJsonValue(record.metadata)
       jsonWriter.endObject()
     }
     return buffer.readUtf8()
@@ -57,15 +61,22 @@ object JsonRecordSerializer {
   fun deserialize(key: String, jsonFieldSource: String): Record {
     val buffer = Buffer().write(jsonFieldSource.encodeUtf8())
 
-    val fields = BufferedSourceJsonReader(buffer)
-        .readAny()
+    val allFields = BufferedSourceJsonReader(buffer).readAny() as Map<String, Any?>
+    val fields = allFields
+        .filterKeys { it != KEY_METADATA }
         .deserializeCacheKeys() as? Map<String, Any?>
 
-    check (fields != null) {
+    check(fields != null) {
       "error deserializing: $jsonFieldSource"
     }
 
-    return Record(key, fields)
+    return Record(
+        key = key,
+        fields = fields,
+        mutationId = null,
+        date = emptyMap(),
+        metadata = allFields[KEY_METADATA] as Map<String, Map<String, Any?>>
+    )
   }
 
   @Suppress("UNCHECKED_CAST")

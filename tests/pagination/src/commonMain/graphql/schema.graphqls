@@ -1,5 +1,14 @@
-type Query {
-  users(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection!
+type Query
+@typePolicy(embeddedFields: "usersCursorBased, usersOffsetBasedWithPage")
+@fieldPolicy(forField: "usersCursorBased", paginationArgs: "first, after, last, before")
+@fieldPolicy(forField: "usersOffsetBasedWithArray", paginationArgs: "offset, limit")
+@fieldPolicy(forField: "usersOffsetBasedWithPage", paginationArgs: "offset, limit")
+{
+  usersCursorBased(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection!
+
+  usersOffsetBasedWithArray(offset: Int = 0, limit: Int = 10): [User!]!
+
+  usersOffsetBasedWithPage(offset: Int = 0, limit: Int = 10): UserPage!
 }
 
 type UserConnection @typePolicy(embeddedFields: "pageInfo, edges") {
@@ -15,6 +24,10 @@ type PageInfo {
 type UserEdge {
   cursor: String!
   node: User!
+}
+
+type UserPage {
+  users: [User!]!
 }
 
 type User @typePolicy(keyFields: "id") {

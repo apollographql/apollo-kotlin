@@ -1115,6 +1115,7 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public static final field FIELD_POLICY Ljava/lang/String;
 	public static final field FIELD_POLICY_FOR_FIELD Ljava/lang/String;
 	public static final field FIELD_POLICY_KEY_ARGS Ljava/lang/String;
+	public static final field FIELD_POLICY_PAGINATION_ARGS Ljava/lang/String;
 	public static final field NONNULL Ljava/lang/String;
 	public static final field OPTIONAL Ljava/lang/String;
 	public static final field REQUIRES_OPT_IN Ljava/lang/String;

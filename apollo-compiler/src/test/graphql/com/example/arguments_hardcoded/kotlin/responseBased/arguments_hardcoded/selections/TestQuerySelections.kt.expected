@@ -32,9 +32,9 @@ public object TestQuerySelections {
           name = "reviews",
           type = Review.type.list()
         ).arguments(listOf(
-          CompiledArgument("episode", "JEDI"),
-          CompiledArgument("starsFloat", 9.9),
-          CompiledArgument("starsInt", 10)
+          CompiledArgument.Builder("episode", "JEDI").build(),
+          CompiledArgument.Builder("starsFloat", 9.9).build(),
+          CompiledArgument.Builder("starsInt", 10).build()
         ))
         .selections(__reviews)
         .build(),
@@ -42,13 +42,13 @@ public object TestQuerySelections {
           name = "testNullableArguments",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument("boolean", null),
-          CompiledArgument("episode", null),
-          CompiledArgument("float", null),
-          CompiledArgument("int", null),
-          CompiledArgument("list", null),
-          CompiledArgument("review", null),
-          CompiledArgument("string", null)
+          CompiledArgument.Builder("boolean", null).build(),
+          CompiledArgument.Builder("episode", null).build(),
+          CompiledArgument.Builder("float", null).build(),
+          CompiledArgument.Builder("int", null).build(),
+          CompiledArgument.Builder("list", null).build(),
+          CompiledArgument.Builder("review", null).build(),
+          CompiledArgument.Builder("string", null).build()
         ))
         .build()
       )

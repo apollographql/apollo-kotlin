@@ -113,7 +113,7 @@ public object TestQuerySelections {
           type = Character.type
         ).alias("luke")
         .arguments(listOf(
-          CompiledArgument("episode", "EMPIRE")
+          CompiledArgument.Builder("episode", "EMPIRE").build()
         ))
         .selections(__luke)
         .build()

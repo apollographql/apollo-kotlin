@@ -31,6 +31,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.paginationArgs
 import com.apollographql.apollo3.compiler.ir.toIncludeBooleanExpression
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
@@ -294,6 +295,7 @@ class CompiledSelectionsBuilder(
 
     val typeDefinition = schema.typeDefinition(parentType)
     val keyArgs = typeDefinition.keyArgs(fieldName, schema)
+    val paginationArgs = typeDefinition.paginationArgs(fieldName, schema)
 
     val builder = CodeBlock.builder()
     builder.add("listOf(\n")
@@ -301,16 +303,19 @@ class CompiledSelectionsBuilder(
     val arguments = sortedBy { it.name }.map {
       val argumentBuilder = CodeBlock.builder()
       argumentBuilder.add(
-          "%T(%S,·%L",
+          "%T(%S,·%L)",
           KotlinSymbols.CompiledArgument,
           it.name,
           it.value.codeBlock()
       )
 
       if (keyArgs.contains(it.name)) {
-        argumentBuilder.add(",·true")
+        argumentBuilder.add(".isKey(true)")
       }
-      argumentBuilder.add(")")
+      if (paginationArgs.contains(it.name)) {
+        argumentBuilder.add(".isPagination(true)")
+      }
+      argumentBuilder.add(".build()")
       argumentBuilder.build()
     }
     builder.add("%L", arguments.joinToCode(",\n"))

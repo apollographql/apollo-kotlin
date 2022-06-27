@@ -23,7 +23,7 @@ public object TestQuerySelections {
           name = "null",
           type = GraphQLString.type
         ).arguments(listOf(
-          CompiledArgument("fragment", CompiledVariable("operation"))
+          CompiledArgument.Builder("fragment", CompiledVariable("operation")).build()
         ))
         .build(),
         CompiledField.Builder(
@@ -31,10 +31,10 @@ public object TestQuerySelections {
           type = GraphQLString.type
         ).alias("alias")
         .arguments(listOf(
-          CompiledArgument("fragment", """
+          CompiledArgument.Builder("fragment", """
           |A string
           |with a new line
-          """.trimMargin())
+          """.trimMargin()).build()
         ))
         .build()
       )

@@ -91,9 +91,6 @@ internal class DefaultApolloStore(
       data: D,
       customScalarAdapters: CustomScalarAdapters,
   ): Map<String, Record> {
-    // Capture a local reference so as not to freeze "this"
-    val metadataGenerator = metadataGenerator
-
     return operation.normalize(
         data = data,
         customScalarAdapters = customScalarAdapters,

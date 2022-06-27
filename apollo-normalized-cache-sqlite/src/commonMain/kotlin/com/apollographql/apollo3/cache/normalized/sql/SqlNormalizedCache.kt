@@ -179,7 +179,6 @@ class SqlNormalizedCache internal constructor(
         fields = fields,
         mutationId = mutationId,
         date = fields.mapValues { date },
-        arguments = arguments,
         metadata = metadata
     )
 
