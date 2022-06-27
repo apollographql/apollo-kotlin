@@ -40,7 +40,7 @@ class OffsetBasedWithPagePaginationTest {
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
         metadataGenerator = OffsetPaginationMetadataGenerator("UserPage"),
         apolloResolver = FieldPolicyApolloResolver,
-        recordMerger = FieldRecordMerger(OffsetPaginationRecordMerger())
+        recordMerger = FieldRecordMerger(OffsetPaginationFieldMerger())
     )
     apolloStore.clearAll()
 
@@ -159,7 +159,7 @@ class OffsetBasedWithPagePaginationTest {
     }
   }
 
-  private class OffsetPaginationRecordMerger : FieldRecordMerger.FieldMerger {
+  private class OffsetPaginationFieldMerger : FieldRecordMerger.FieldMerger {
     override fun mergeFields(existing: FieldRecordMerger.FieldInfo, incoming: FieldRecordMerger.FieldInfo): FieldRecordMerger.FieldInfo {
       val existingOffset = existing.metadata["offset"] as? Int
       val incomingOffset = incoming.metadata["offset"] as? Int
