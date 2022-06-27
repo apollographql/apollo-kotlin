@@ -1,0 +1,32 @@
+name: benchmarks
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  pull_request:
+
+jobs:
+  benchmarks:
+    runs-on: macos-11
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
+      - run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+          ./gradlew ciBuild
+          ./gradlew --stop
+          # Build the libs
+          ./gradlew publishAllPublicationsToPluginTestRepository
+          # Build the benchmark apks
+          ./gradlew -p benchmarks assembleRelease assembleReleaseAndroidTest
+          ./scripts/run-benchmarks.main.kts
+
