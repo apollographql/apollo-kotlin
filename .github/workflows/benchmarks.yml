@@ -5,6 +5,11 @@ on:
     - cron: '0 3 * * *'
   pull_request:
 
+# Cancel any current or previous job from the same PR
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   benchmarks:
     runs-on: ubuntu-20.04
