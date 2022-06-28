@@ -25,7 +25,7 @@ jobs:
           ./gradlew ciBuild
           ./gradlew --stop
           # Build the libs
-          ./gradlew publishAllPublicationsToPluginTestRepository
+          ./gradlew publishAllPublicationsToPluginTestRepository -xdokkaHtml
           # Build the benchmark apks
           ./gradlew -p benchmarks assembleRelease assembleReleaseAndroidTest
           ./scripts/run-benchmarks.main.kts
