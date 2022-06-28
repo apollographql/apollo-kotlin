@@ -2,7 +2,6 @@
 fun checkGitStatus() {
   val modifiedFiles = runCommand("git", "status", "--porcelain")
   if (modifiedFiles.isNotEmpty()) {
-    println(runCommand("git", "diff"))
     error("The CI modified local files. This is certainly an indication that they should have been included in the PR. Modified files:\n$modifiedFiles")
   }
 }
