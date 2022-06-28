@@ -7,7 +7,7 @@ on:
 
 jobs:
   benchmarks:
-    runs-on: macos-11
+    runs-on: ubuntu-20.04
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - uses: actions/checkout@v3
