@@ -24,9 +24,12 @@ jobs:
           ./gradlew --stop
           ./gradlew ciBuild
           ./gradlew --stop
+      - run: |
           # Build the libs
           ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
+      - run: |
           # Build the benchmark apks
           ./gradlew -p benchmarks assembleRelease assembleReleaseAndroidTest
+      - run: |
           ./scripts/run-benchmarks.main.kts
 

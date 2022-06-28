@@ -273,8 +273,8 @@ More details are available at [https://console.firebase.google.com/project/apoll
 
 fun main() {
   val storage = authenticate()
-  //val testOutput = runTest()
-  val testOutput = fakeOutput
+  val testOutput = runTest()
+  //val testOutput = fakeOutput
   val testResult = getTestResult(testOutput, storage)
   updateOrCreateGithubIssue(testResult)
   println(testResult)
