@@ -30,7 +30,6 @@ jobs:
           COM_APOLLOGRAPHQL_VERSION_KOTLIN_PLUGIN: '1.7.0'
           COM_APOLLOGRAPHQL_VERSION_KSP_GRADLE_PLUGIN: '1.7.0-1.0.6'
           COM_APOLLOGRAPHQL_VERSION_KOTLINXDATETIME: '0.3.3'
-          COM_APOLLOGRAPHQL_CHECK_GIT_STATUS: 'false'
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
