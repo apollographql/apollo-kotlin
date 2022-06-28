@@ -22,8 +22,6 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
-          ./gradlew ciBuild
-          ./gradlew --stop
       - run: |
           # Build the libs
           ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
