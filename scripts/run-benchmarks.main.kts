@@ -41,16 +41,52 @@ import java.util.Date
 fun executeCommand(vararg command: String): CommandResult {
   val process = ProcessBuilder()
       .command(*command)
-      .redirectError(ProcessBuilder.Redirect.INHERIT)
+      .redirectInput(ProcessBuilder.Redirect.INHERIT)
       .start()
 
-  val output = process.inputStream.source().buffer().readUtf8()
+  /**
+   * Read output and error in a thread to not block the process if the output/error
+   * doesn't fit in the buffer
+   */
+  var output: String? = null
+  var error: String? = null
+  val outputThread = Thread {
+    val buffer = process.inputStream.source().buffer()
+    output = buildString {
+      while(true) {
+        val line = buffer.readUtf8Line()
+        if (line == null) {
+          break
+        }
+        println("STDOUT: $line")
+        appendLine(line)
+      }
+    }
+  }
+  outputThread.start()
+  val errorThread = Thread {
+    val buffer = process.errorStream.source().buffer()
+    error = buildString {
+      while(true) {
+        val line = buffer.readUtf8Line()
+        if (line == null) {
+          break
+        }
+        println("STDERR: $line")
+        appendLine(line)
+      }
+    }
+  }
+  errorThread.start()
 
   val exitCode = process.waitFor()
-  return CommandResult(exitCode, output)
+
+  outputThread.join()
+  errorThread.join()
+  return CommandResult(exitCode, output ?: "", error ?: "")
 }
 
-class CommandResult(val code: Int, val output: String)
+class CommandResult(val code: Int, val stdout: String, val stderr: String)
 
 
 /**
@@ -67,7 +103,7 @@ fun authenticate(): GCloud {
     tmpFile.writeText(googleServicesJson)
     val result = executeCommand("gcloud", "auth", "activate-service-account", "--key-file=${tmpFile.absoluteFile}")
     if (result.code != 0) {
-      error("Cannot authenticate: ${result.output}")
+      error("Cannot authenticate")
     }
     credentials = GoogleCredentials.fromStream(tmpFile.inputStream())
         .createScoped(listOf("https://www.googleapis.com/auth/cloud-platform"))
@@ -92,19 +128,22 @@ fun runTest(projectId: String): String {
       "test",
       "android",
       "run",
-      "--type=instrumentation",
+      "--type",
+      "instrumentation",
       "--device",
       "model=redfin,locale=en,orientation=portrait",
-      "--test=benchmark/build/outputs/apk/androidTest/release/benchmark-release-androidTest.apk",
-      "--app=benchmark/build/outputs/apk/release/benchmark-release.apk"
+      "--test",
+      "benchmark/lib/build/outputs/apk/androidTest/release/benchmark-release-androidTest.apk",
+      "--app",
+      "benchmark/app/build/outputs/apk/release/app-release.apk"
   )
 
   check(result.code == 0) {
-    "Test failed: ${result.output}"
+    "Test failed"
   }
 
-  println(result.output)
-  return result.output
+  // Most of the interesting output is in stderr
+  return result.stderr
 }
 
 /**
@@ -236,56 +275,9 @@ fun ghGraphQL(operation: String, variables: Map<String, String> = emptyMap()): M
   ).also { println(it) }.get("data").asMap
 }
 
-val fakeOutput = """
-Activated service account credentials for: [github-actions@apollo-kotlin.iam.gserviceaccount.com]
-
-Have questions, feedback, or issues? Get support by visiting:
-  https://firebase.google.com/support/
-
-Uploading [benchmark/build/outputs/apk/release/benchmark-release.apk] to Firebase Test Lab...
-Uploading [benchmark/build/outputs/apk/androidTest/release/benchmark-release-androidTest.apk] to Firebase Test Lab...
-Raw results will be stored in your GCS bucket at [https://console.developers.google.com/storage/browser/test-lab-nit79qa24t3bm-ki1nv07n9y4q0/2022-06-28_10:46:04.816175_jZBX/]
-
-Test [matrix-2b7jcawyfiov6] has been created in the Google Cloud.
-Firebase Test Lab will execute your instrumentation test on 1 device(s).
-Creating individual test executions...
-...............done.
-
-Test results will be streamed to [https://console.firebase.google.com/project/apollo-kotlin/testlab/histories/bh.5e285b5fb36db2c3/matrices/8660028568169287485].
-10:46:11 Test is Pending
-10:46:35 Starting attempt 1.
-10:46:35 Test is Running
-10:46:47 Started logcat recording.
-10:46:47 Started crash monitoring.
-10:46:47 Preparing device.
-10:47:00 Logging in to Google account on device.
-10:47:00 Installing apps.
-10:47:24 Retrieving Performance Environment information from the device.
-10:47:24 Setting up Android test.
-10:47:24 Started crash detection.
-10:47:24 Started Out of memory detection
-10:47:24 Started performance monitoring.
-10:47:24 Starting Android test.
-11:02:39 Completed Android test.
-11:02:39 Stopped performance monitoring.
-11:02:39 Tearing down Android test.
-11:02:52 Logging out of Google account on device.
-11:02:52 Stopped crash monitoring.
-11:02:52 Stopped logcat recording.
-11:02:52 Done. Test time = 906 (secs)
-11:02:52 Starting results processing. Attempt: 1
-11:02:52 Completed results processing. Time taken = 8 (secs)
-11:02:52 Test is Finished
-
-Instrumentation testing complete.
-
-More details are available at [https://console.firebase.google.com/project/apollo-kotlin/testlab/histories/bh.5e285b5fb36db2c3/matrices/8660028568169287485].
-""".trimIndent()
-
 fun main() {
   val gcloud = authenticate()
   val testOutput = runTest(gcloud.projectId)
-  //val testOutput = fakeOutput
   val testResult = getTestResult(testOutput, gcloud.storage)
   updateOrCreateGithubIssue(testResult)
   println(testResult)

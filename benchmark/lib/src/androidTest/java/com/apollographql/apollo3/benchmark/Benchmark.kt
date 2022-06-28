@@ -1,10 +1,8 @@
 package com.apollographql.apollo3.benchmark
 
 import Utils.resource
-import android.app.Instrumentation
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
-import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
