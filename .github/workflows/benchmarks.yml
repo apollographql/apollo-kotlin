@@ -23,15 +23,15 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
-#      - run: |
-#          ulimit -c unlimited
-#          # Workaround an issue where kotlinNpmInstall outputs
-#          # 'Resolving NPM dependencies using yarn' returns 137
-#          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
-#          ./gradlew --stop
-#      - run: |
-#          # Build the libs
-#          ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
+      - run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+      - run: |
+          # Build the libs
+          ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
       - run: |
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
