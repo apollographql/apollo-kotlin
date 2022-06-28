@@ -3,10 +3,14 @@
 @file:DependsOn("com.squareup.okio:okio:3.2.0")
 @file:DependsOn("com.google.cloud:google-cloud-storage:2.8.1")
 @file:DependsOn("net.mbonnin.bare-graphql:bare-graphql:0.0.2")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import net.mbonnin.bare.graphql.asList
 import net.mbonnin.bare.graphql.asMap
 import net.mbonnin.bare.graphql.cast
@@ -53,7 +57,7 @@ class CommandResult(val code: Int, val output: String)
  * Authenticates the local 'gcloud' and a new [Storage] instance
  * Throws on error
  */
-fun authenticate(): Storage {
+fun authenticate(): GCloud {
   val googleServicesJson = System.getenv("GOOGLE_SERVICES_JSON") ?: error("GOOGLE_SERVICES_JSON is missing")
 
   val tmpFile: File = File.createTempFile("google", "json")
@@ -71,12 +75,19 @@ fun authenticate(): Storage {
   } finally {
     tmpFile.delete()
   }
-  return storage
+
+  val jsonElement = Json.parseToJsonElement(googleServicesJson)
+
+  return GCloud(storage, jsonElement.jsonObject.get("project_id")?.jsonPrimitive?.content ?: error("Cannot find project_id"))
 }
 
-fun runTest(): String {
+data class GCloud(val storage: Storage, val projectId: String)
+
+fun runTest(projectId: String): String {
   val result = executeCommand(
       "gcloud",
+      "--project",
+      projectId,
       "firebase",
       "test",
       "android",
@@ -272,10 +283,10 @@ More details are available at [https://console.firebase.google.com/project/apoll
 """.trimIndent()
 
 fun main() {
-  val storage = authenticate()
-  val testOutput = runTest()
+  val gcloud = authenticate()
+  val testOutput = runTest(gcloud.projectId)
   //val testOutput = fakeOutput
-  val testResult = getTestResult(testOutput, storage)
+  val testResult = getTestResult(testOutput, gcloud.storage)
   updateOrCreateGithubIssue(testResult)
   println(testResult)
 }
