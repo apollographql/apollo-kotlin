@@ -39,4 +39,5 @@ jobs:
           ./scripts/run-benchmarks.main.kts
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GITHUB_TOKEN: ${{ secrets.GOOGLE_SERVICES_JSON }}
 

@@ -279,8 +279,8 @@ fun main() {
   val gcloud = authenticate()
   val testOutput = runTest(gcloud.projectId)
   val testResult = getTestResult(testOutput, gcloud.storage)
-  updateOrCreateGithubIssue(testResult)
   println(testResult)
+  updateOrCreateGithubIssue(testResult)
 }
 
 main()
