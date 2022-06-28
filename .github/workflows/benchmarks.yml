@@ -9,7 +9,7 @@ on:
 
 # Cancel any current or previous job from the same PR
 concurrency:
-  group: ${{ github.head_ref }}
+  group: ${{ github.head_ref }}-benchmark
   cancel-in-progress: true
 
 jobs:
