@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: '0 3 * * *'
   pull_request:
+    branches:
+      - '**'
 
 # Cancel any current or previous job from the same PR
 concurrency:
@@ -35,4 +37,6 @@ jobs:
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
       - run: |
           ./scripts/run-benchmarks.main.kts
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
