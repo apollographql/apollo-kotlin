@@ -133,7 +133,7 @@ fun runTest(projectId: String): String {
       "--device",
       "model=redfin,locale=en,orientation=portrait",
       "--test",
-      "benchmark/lib/build/outputs/apk/androidTest/release/benchmark-release-androidTest.apk",
+      "benchmark/lib/build/outputs/apk/androidTest/release/lib-release-androidTest.apk",
       "--app",
       "benchmark/app/build/outputs/apk/release/app-release.apk"
   )
