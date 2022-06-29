@@ -143,6 +143,15 @@ tasks.register("ciTestsNoGradle") {
     dependsOn(tasks.matching { it.name == "macosX64Test" })
     dependsOn(tasks.matching { it.name == "apiCheck" })
   }
+
+  /**
+   * Update the database schemas in CI
+   */
+  dependsOn(":apollo-normalized-cache-sqlite:generateCommonMainJsonDatabaseSchema")
+  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainJsonDatabaseSchema")
+  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlobDatabaseSchema")
+  dependsOn(":apollo-normalized-cache-sqlite-incubating:generateCommonMainBlob2DatabaseSchema")
+
   doLast {
     checkGitStatus()
   }
