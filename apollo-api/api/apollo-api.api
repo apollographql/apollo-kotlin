@@ -445,6 +445,7 @@ public final class com/apollographql/apollo3/api/DefaultUpload : com/apollograph
 	public fun getContentLength ()J
 	public fun getContentType ()Ljava/lang/String;
 	public fun getFileName ()Ljava/lang/String;
+	public final fun newBuilder ()Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public fun writeTo (Lokio/BufferedSink;)V
 }
 
@@ -452,12 +453,18 @@ public final class com/apollographql/apollo3/api/DefaultUpload$Builder {
 	public fun <init> ()V
 	public final fun build ()Lcom/apollographql/apollo3/api/DefaultUpload;
 	public final fun content (Ljava/lang/String;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
+	public final fun content (Lkotlin/jvm/functions/Function1;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public final fun content (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public final fun content (Lokio/ByteString;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public final fun content ([B)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public final fun contentLength (J)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public final fun contentType (Ljava/lang/String;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public final fun fileName (Ljava/lang/String;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
+}
+
+public final class com/apollographql/apollo3/api/DefaultUploadKt {
+	public static final fun toUpload (Lokio/Path;Ljava/lang/String;Lokio/FileSystem;)Lcom/apollographql/apollo3/api/Upload;
+	public static synthetic fun toUpload$default (Lokio/Path;Ljava/lang/String;Lokio/FileSystem;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/Upload;
 }
 
 public final class com/apollographql/apollo3/api/DeferredFragmentIdentifier {
@@ -566,6 +573,7 @@ public final class com/apollographql/apollo3/api/ExecutionOptions$Companion {
 public final class com/apollographql/apollo3/api/FileUpload {
 	public static final fun content (Lcom/apollographql/apollo3/api/DefaultUpload$Builder;Ljava/io/File;)Lcom/apollographql/apollo3/api/DefaultUpload$Builder;
 	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/api/Upload;
+	public static final fun toUpload (Ljava/io/File;Ljava/lang/String;)Lcom/apollographql/apollo3/api/DefaultUpload;
 }
 
 public abstract interface class com/apollographql/apollo3/api/Fragment : com/apollographql/apollo3/api/Executable {

@@ -1,9 +1,8 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.content
+import com.apollographql.apollo3.api.toUpload
 import com.apollographql.apollo3.integration.upload.SingleUploadTwiceMutation
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -18,16 +17,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class JvmFileUploadTest {
-  private val upload0: Upload = DefaultUpload.Builder()
-      .content(File("src/jvmTest/resources/file0.txt"))
-      .fileName("file0.txt")
-      .contentType("plain/txt")
-      .build()
-  private val upload1: Upload = DefaultUpload.Builder()
-      .content(File("src/jvmTest/resources/file1.jpg"))
-      .fileName("file1.jpg")
-      .contentType("image/jpeg")
-      .build()
+  private val upload0: Upload = File("src/jvmTest/resources/file0.txt").toUpload("plain/txt")
+
+  private val upload1: Upload = File("src/jvmTest/resources/file1.jpg").toUpload("image/jpeg")
 
   private val mutationTwice = SingleUploadTwiceMutation(upload0, upload1)
 
