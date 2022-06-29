@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-
 buildscript {
   project.apply {
     from(rootProject.file("gradle/dependencies.gradle"))
@@ -62,9 +60,7 @@ subprojects {
 }
 
 // See https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-  rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
-}
+rootProject.configureNode()
 
 tasks.register("ciBuild") {
   description = """Execute the 'build' task in subprojects and the `termination:run` task too"""
@@ -75,9 +71,4 @@ tasks.register("ciBuild") {
   doLast {
     checkGitStatus()
   }
-}
-
-plugins.withType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin::class.java) {
-  // graphql-js canarty requires node >= 16.10
-  extensions.findByType(org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension::class.java)?.nodeVersion = "16.10.0"
 }
