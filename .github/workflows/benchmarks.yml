@@ -3,14 +3,6 @@ name: benchmarks
 on:
   schedule:
     - cron: '0 3 * * *'
-  pull_request:
-    branches:
-      - '**'
-
-# Cancel any current or previous job from the same PR
-concurrency:
-  group: ${{ github.head_ref }}-benchmark
-  cancel-in-progress: true
 
 jobs:
   benchmarks:
