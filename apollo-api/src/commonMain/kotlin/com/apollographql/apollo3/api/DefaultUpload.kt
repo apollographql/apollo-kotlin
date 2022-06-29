@@ -48,7 +48,7 @@ class DefaultUpload internal constructor(
       check(writeTo == null) { "content() can only be called once" }
       var consumed = false
       this.writeTo = { sink ->
-        check(!consumed) { "Apollo: DefaultUpload body can only be read once. If you want to read it several times for logging or other purposes, either buffer it in memory or use your own `Upload` implementation." }
+        check(!consumed) { "Apollo: DefaultUpload BufferedSource body can only be read once. If you want to read it several times for logging or other purposes, either use a different kind of body or use your own `Upload` implementation." }
         content.use {
           sink.writeAll(it)
         }
