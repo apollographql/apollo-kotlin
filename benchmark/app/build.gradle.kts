@@ -10,7 +10,7 @@ configure<com.android.build.gradle.AppExtension> {
     targetSdk = groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt()
 
     val debugSigningConfig = signingConfigs.getByName("debug").apply {
-      // This is all public. This app is only
+      // This is all public. This app is only an empty shell to make Firebase happy because it requires an 'app' APK.
       keyAlias = "key"
       keyPassword = "apollo"
       storeFile = file("keystore")
