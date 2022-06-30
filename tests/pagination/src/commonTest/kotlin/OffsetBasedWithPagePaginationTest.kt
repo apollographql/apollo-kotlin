@@ -160,6 +160,18 @@ class OffsetBasedWithPagePaginationTest {
     dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data5, dataFromStore)
     assertChainedCachesAreEqual(apolloStore)
+
+    // Empty page (should keep previous result)
+    val query6 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(52), limit = Optional.Present(2))
+    val data6 = UsersOffsetBasedWithPageQuery.Data {
+      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+        users = emptyList()
+      }
+    }
+    apolloStore.writeOperation(query6, data6)
+    dataFromStore = apolloStore.readOperation(query1)
+    assertEquals(data5, dataFromStore)
+    assertChainedCachesAreEqual(apolloStore)
   }
 
   private class OffsetPaginationMetadataGenerator(private val typeName: String) : MetadataGenerator {
