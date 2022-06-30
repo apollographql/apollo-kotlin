@@ -3,7 +3,7 @@ plugins {
   id("org.jetbrains.kotlin.multiplatform")
 }
 
-configureMppTestsDefaults(withJs = false)
+configureMppTestsDefaults()
 
 kotlin {
   sourceSets {
@@ -17,7 +17,6 @@ kotlin {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-testing-support")
         implementation("com.apollographql.apollo3:apollo-normalized-cache")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
       }
     }
   }
@@ -25,5 +24,4 @@ kotlin {
 
 apollo {
   packageName.set("pagination")
-  generateTestBuilders.set(true)
 }

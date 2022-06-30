@@ -52,7 +52,7 @@ public object AllStarshipsSelections {
           name = "allStarships",
           type = StarshipsConnection.type
         ).arguments(listOf(
-          CompiledArgument.Builder("first", 7).build()
+          CompiledArgument("first", 7)
         ))
         .selections(__allStarships)
         .build()

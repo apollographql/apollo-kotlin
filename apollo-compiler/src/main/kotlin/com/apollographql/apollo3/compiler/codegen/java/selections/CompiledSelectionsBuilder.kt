@@ -35,7 +35,6 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toMapInitializerCodeblock
 import com.apollographql.apollo3.compiler.codegen.keyArgs
-import com.apollographql.apollo3.compiler.codegen.paginationArgs
 import com.apollographql.apollo3.compiler.ir.toIncludeBooleanExpression
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -256,20 +255,16 @@ class CompiledSelectionsBuilder(
   private fun List<GQLArgument>.codeBlock(fieldName: String, parentType: String): CodeBlock {
     val typeDefinition = schema.typeDefinition(parentType)
     val keyArgs = typeDefinition.keyArgs(fieldName, schema)
-    val paginationArgs = typeDefinition.paginationArgs(fieldName, schema)
 
     val arguments = sortedBy { it.name }.map {
       val argumentBuilder = CodeBlock.builder()
       argumentBuilder.add(
-          "new $T($S, $L)",
+          "new $T($S, $L, $L)",
           JavaClassNames.CompiledArgument,
           it.name,
-          it.value.codeBlock()
+          it.value.codeBlock(),
+          if (keyArgs.contains(it.name)) "true" else "false"
       )
-      if (keyArgs.contains(it.name)) argumentBuilder.add(".isKey(true)")
-      if (paginationArgs.contains(it.name)) argumentBuilder.add(".isPagination(true)")
-      argumentBuilder.add(".build()")
-
       argumentBuilder.build()
     }
     return arguments.toListInitializerCodeblock()

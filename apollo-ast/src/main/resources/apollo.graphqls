@@ -24,13 +24,9 @@ directive @nonnull(fields: String! = "") on OBJECT | FIELD
 # embedded in their parent instead. Order is unimportant.
 directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "") on OBJECT | INTERFACE | UNION
 
-# Attach extra information to a given field
-# `keyArgs`: a list of arguments used to compute the cache key of the object this field is pointing to. 
-# The list is parsed as a selection set: both spaces and comas are valid separators.
-# `paginationArgs` (experimental): a list of arguments that vary when requesting different pages. 
-# These arguments are omitted when computing the cache key of this field.
-# The list is parsed as a selection set: both spaces and comas are valid separators.
-directive @fieldPolicy(forField: String!, keyArgs: String! = "", paginationArgs: String! = "") repeatable on OBJECT
+# Indicates how to compute a key from a field arguments.
+# `keyArgs` should contain a selection set. Composite args are not supported yet.
+directive @fieldPolicy(forField: String!, keyArgs: String!) repeatable on OBJECT
 
 """
 Indicates that the given field, argument, input field or enum value requires

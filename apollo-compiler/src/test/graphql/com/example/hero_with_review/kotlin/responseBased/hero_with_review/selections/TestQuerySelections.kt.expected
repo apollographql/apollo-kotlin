@@ -32,8 +32,8 @@ public object TestQuerySelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("ep")).build(),
-          CompiledArgument.Builder("review", mapOf(
+          CompiledArgument("episode", CompiledVariable("ep")),
+          CompiledArgument("review", mapOf(
             "stars" to 5,
             "listOfEnums" to listOf(
               "JEDI",
@@ -49,7 +49,7 @@ public object TestQuerySelections {
               "red" to 1,
               "blue" to 1,
             ),
-          )).build()
+          ))
         ))
         .selections(__createReview)
         .build()

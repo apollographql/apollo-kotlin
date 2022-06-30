@@ -60,8 +60,8 @@ internal object CreateReviewForEpisodeSelections {
           name = "createReview",
           type = Review.type
         ).arguments(listOf(
-          CompiledArgument.Builder("episode", CompiledVariable("ep")).build(),
-          CompiledArgument.Builder("review", CompiledVariable("review")).build()
+          CompiledArgument("episode", CompiledVariable("ep")),
+          CompiledArgument("review", CompiledVariable("review"))
         ))
         .selections(__createReview)
         .build()

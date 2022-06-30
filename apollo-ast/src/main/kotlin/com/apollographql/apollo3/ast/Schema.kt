@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.ast
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import okio.Buffer
 
@@ -197,9 +196,6 @@ class Schema internal constructor(
 
     const val FIELD_POLICY_FOR_FIELD = "forField"
     const val FIELD_POLICY_KEY_ARGS = "keyArgs"
-
-    @ApolloExperimental
-    const val FIELD_POLICY_PAGINATION_ARGS = "paginationArgs"
 
     /**
      * Parses the given [map] and creates a new [Schema].

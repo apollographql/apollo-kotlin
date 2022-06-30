@@ -60,7 +60,7 @@ public object TestQuerySelections {
           name = "__type",
           type = CompiledTypeType.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("name", "Vehicle").build()
+          CompiledArgument("name", "Vehicle")
         ))
         .selections(____type)
         .build()
