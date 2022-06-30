@@ -16,11 +16,9 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.http.get
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
@@ -106,18 +104,6 @@ fun ApolloClient.Builder.normalizedCache(
     writeToCacheAsynchronously: Boolean = false,
 ): ApolloClient.Builder {
   return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver), writeToCacheAsynchronously)
-}
-
-@ApolloExperimental
-@JvmOverloads
-@JvmName("configureApolloClientBuilder2")
-fun ApolloClient.Builder.normalizedCache(
-    normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyGenerator: CacheKeyGenerator,
-    apolloResolver: ApolloResolver,
-    writeToCacheAsynchronously: Boolean = false,
-): ApolloClient.Builder {
-  return store(ApolloStore(normalizedCacheFactory, cacheKeyGenerator, apolloResolver), writeToCacheAsynchronously)
 }
 
 @JvmName("-logCacheMisses")

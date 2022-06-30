@@ -1,19 +1,16 @@
 package com.apollographql.apollo3.cache.normalized.internal
 
 import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
@@ -28,7 +25,7 @@ import kotlin.reflect.KClass
 internal class DefaultApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     private val cacheKeyGenerator: CacheKeyGenerator,
-    private val cacheResolver: Any,
+    private val cacheResolver: CacheResolver,
 ) : ApolloStore {
   private val changedKeysEvents = MutableSharedFlow<Set<String>>(
       // XXX: this is a potential code smell
@@ -105,12 +102,11 @@ internal class DefaultApolloStore(
     val cacheResolver = cacheResolver
 
     return cacheHolder.readAccess { cache ->
-      operation.readDataFromCacheInternal(
+      operation.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
           cacheHeaders = cacheHeaders,
-          cacheKey = CacheKey.rootKey()
       )
     }
   }
@@ -125,7 +121,7 @@ internal class DefaultApolloStore(
     val cacheResolver = cacheResolver
 
     return cacheHolder.readAccess { cache ->
-      fragment.readDataFromCacheInternal(
+      fragment.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
           cacheResolver = cacheResolver,
@@ -134,8 +130,6 @@ internal class DefaultApolloStore(
       )
     }
   }
-
-
 
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
     /**
@@ -283,34 +277,6 @@ internal class DefaultApolloStore(
 
   override fun dispose() {
     cacheHolder.dispose()
-  }
-
-  companion object {
-    private fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
-        cacheKey: CacheKey,
-        customScalarAdapters: CustomScalarAdapters,
-        cache: ReadOnlyNormalizedCache,
-        cacheResolver: Any,
-        cacheHeaders: CacheHeaders,
-    ): D {
-      return when (cacheResolver) {
-        is CacheResolver -> readDataFromCache(
-            cacheKey,
-            customScalarAdapters,
-            cache,
-            cacheResolver,
-            cacheHeaders
-        )
-        is ApolloResolver -> readDataFromCache(
-            cacheKey,
-            customScalarAdapters,
-            cache,
-            cacheResolver,
-            cacheHeaders
-        )
-        else -> throw IllegalStateException()
-      }
-    }
   }
 }
 
