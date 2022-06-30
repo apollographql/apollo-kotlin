@@ -64,11 +64,6 @@ class Schema internal constructor(
       filePath = null
   ).withoutBuiltinDefinitions()
 
-  /**
-   * @param name the current name of the directive (like "kotlin_labs__nonnull")
-   *
-   * @return the original directive name (like "nonnull")
-   */
   fun originalDirectiveName(name: String): String {
     return foreignNames["@$name"]?.substring(1) ?: name
   }

@@ -1209,9 +1209,6 @@ public abstract interface class com/apollographql/apollo3/ast/internal/IssuesSco
 	public abstract fun getIssues ()Ljava/util/List;
 }
 
-public final class com/apollographql/apollo3/ast/internal/SchemaValidationScopeKt {
-}
-
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema {
 	public fun <init> (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;)V
 	public final fun component1 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;

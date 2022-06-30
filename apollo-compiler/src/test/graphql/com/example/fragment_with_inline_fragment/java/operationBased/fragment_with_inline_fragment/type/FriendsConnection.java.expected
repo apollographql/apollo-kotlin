@@ -6,10 +6,11 @@
 package com.example.fragment_with_inline_fragment.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 /**
  * A connection object for a character's friends
  */
 public class FriendsConnection {
-  public static ObjectType type = (new ObjectType.Builder("FriendsConnection")).build();
+  public static ObjectType type = new ObjectType("FriendsConnection", Collections.emptyList(), Collections.emptyList());
 }

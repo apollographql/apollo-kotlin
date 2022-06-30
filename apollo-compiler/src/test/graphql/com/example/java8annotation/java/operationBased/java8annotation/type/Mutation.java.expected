@@ -6,7 +6,8 @@
 package com.example.java8annotation.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 public class Mutation {
-  public static ObjectType type = (new ObjectType.Builder("Mutation")).build();
+  public static ObjectType type = new ObjectType("Mutation", Collections.emptyList(), Collections.emptyList());
 }

@@ -12,6 +12,6 @@ import com.apollographql.apollo3.api.ObjectType
  */
 public class StarshipPilotsEdge {
   public companion object {
-    public val type: ObjectType = ObjectType.Builder(name = "StarshipPilotsEdge").build()
+    public val type: ObjectType = ObjectType(name = "StarshipPilotsEdge")
   }
 }

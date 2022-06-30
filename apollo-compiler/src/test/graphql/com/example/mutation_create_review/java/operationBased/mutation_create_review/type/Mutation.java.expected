@@ -6,10 +6,11 @@
 package com.example.mutation_create_review.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 /**
  * The mutation type, represents all updates we can make to our data
  */
 public class Mutation {
-  public static ObjectType type = (new ObjectType.Builder("Mutation")).build();
+  public static ObjectType type = new ObjectType("Mutation", Collections.emptyList(), Collections.emptyList());
 }

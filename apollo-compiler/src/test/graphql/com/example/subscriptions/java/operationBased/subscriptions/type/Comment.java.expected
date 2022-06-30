@@ -6,10 +6,11 @@
 package com.example.subscriptions.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 /**
  * A comment about an entry, submitted by a user
  */
 public class Comment {
-  public static ObjectType type = (new ObjectType.Builder("Comment")).build();
+  public static ObjectType type = new ObjectType("Comment", Collections.emptyList(), Collections.emptyList());
 }

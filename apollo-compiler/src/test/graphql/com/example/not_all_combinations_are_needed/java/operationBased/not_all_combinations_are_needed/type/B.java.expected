@@ -6,7 +6,8 @@
 package com.example.not_all_combinations_are_needed.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 public class B {
-  public static InterfaceType type = (new InterfaceType.Builder("B")).build();
+  public static InterfaceType type = new InterfaceType("B", Collections.emptyList(), Collections.emptyList());
 }

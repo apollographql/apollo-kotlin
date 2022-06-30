@@ -6,10 +6,11 @@
 package com.example.__schema.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 /**
  * Information for paginating this connection
  */
 public class PageInfo {
-  public static ObjectType type = (new ObjectType.Builder("PageInfo")).build();
+  public static ObjectType type = new ObjectType("PageInfo", Collections.emptyList(), Collections.emptyList());
 }

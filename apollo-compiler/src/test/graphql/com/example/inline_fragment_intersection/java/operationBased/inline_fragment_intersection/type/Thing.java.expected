@@ -6,7 +6,8 @@
 package com.example.inline_fragment_intersection.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 public class Thing {
-  public static InterfaceType type = (new InterfaceType.Builder("Thing")).build();
+  public static InterfaceType type = new InterfaceType("Thing", Collections.emptyList(), Collections.emptyList());
 }

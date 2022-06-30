@@ -6,10 +6,11 @@
 package com.example.nested_named_fragments.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 /**
  * An object with an ID
  */
 public class Node {
-  public static InterfaceType type = (new InterfaceType.Builder("Node")).build();
+  public static InterfaceType type = new InterfaceType("Node", Collections.emptyList(), Collections.emptyList());
 }

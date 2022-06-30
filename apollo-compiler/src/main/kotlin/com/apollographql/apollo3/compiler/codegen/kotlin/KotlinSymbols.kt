@@ -16,9 +16,7 @@ import com.squareup.kotlinpoet.MemberName
  */
 internal object KotlinSymbols {
   val ObjectType = ClassNames.ObjectType.toKotlinPoetClassName()
-  val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toKotlinPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()
-  val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toKotlinPoetClassName()
 
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()

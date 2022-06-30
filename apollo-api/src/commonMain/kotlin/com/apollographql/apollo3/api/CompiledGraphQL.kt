@@ -51,7 +51,7 @@ class CompiledField internal constructor(
     return try {
       val buffer = Buffer()
       val jsonWriter = BufferedSinkJsonWriter(buffer)
-      jsonWriter.writeAny(resolvedArguments)
+      jsonWriter.writeAny(resolvedArguments, )
       jsonWriter.close()
       "${name}(${buffer.readUtf8()})"
     } catch (e: Exception) {
@@ -62,10 +62,10 @@ class CompiledField internal constructor(
   fun newBuilder(): Builder = Builder(this)
 
   class Builder(val name: String, val type: CompiledType) {
-    private var alias: String? = null
-    private var condition: List<CompiledCondition> = emptyList()
-    private var arguments: List<CompiledArgument> = emptyList()
-    private var selections: List<CompiledSelection> = emptyList()
+    internal var alias: String? = null
+    internal var condition: List<CompiledCondition> = emptyList()
+    internal var arguments: List<CompiledArgument> = emptyList()
+    internal var selections: List<CompiledSelection> = emptyList()
 
     constructor(compiledField: CompiledField) : this(compiledField.name, compiledField.type) {
       this.alias = compiledField.alias
@@ -158,113 +158,17 @@ class CustomScalarType(
     val className: String,
 ) : CompiledNamedType(name)
 
-class ObjectType internal constructor(
+class ObjectType(
     name: String,
-    keyFields: List<String>,
-    implements: List<InterfaceType>,
-    embeddedFields: List<String>,
-) : CompiledNamedType(name) {
-  val keyFields = keyFields
-  val implements = implements
-  val embeddedFields = embeddedFields
+    val keyFields: List<String> = emptyList(),
+    val implements: List<InterfaceType> = emptyList(),
+) : CompiledNamedType(name)
 
-  @Deprecated("Use the Builder instead", ReplaceWith("ObjectType.Builder().keyFields(keyFields).implements(implements).build()"))
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
-  constructor(
-      name: String,
-      keyFields: List<String> = emptyList(),
-      implements: List<InterfaceType> = emptyList(),
-  ) : this(name, keyFields, implements, emptyList())
-
-  fun newBuilder(): Builder = Builder(this)
-
-  class Builder(internal val name: String) {
-    private var keyFields: List<String> = emptyList()
-    private var implements: List<InterfaceType> = emptyList()
-    private var embeddedFields: List<String> = emptyList()
-
-    constructor(objectType: ObjectType) : this(objectType.name) {
-      this.keyFields = objectType.keyFields
-      this.implements = objectType.implements
-      this.embeddedFields = objectType.embeddedFields
-    }
-
-    fun keyFields(keyFields: List<String>) = apply {
-      this.keyFields = keyFields
-    }
-
-    // This method is named "interfaces" and not "implements" to avoid using a reserved Java keyword
-    fun interfaces(implements: List<InterfaceType>) = apply {
-      this.implements = implements
-    }
-
-    fun embeddedFields(embeddedFields: List<String>) = apply {
-      this.embeddedFields = embeddedFields
-    }
-
-
-    fun build(): ObjectType = ObjectType(
-        name = name,
-        keyFields = keyFields,
-        implements = implements,
-        embeddedFields = embeddedFields
-    )
-  }
-}
-
-class InterfaceType internal constructor(
+class InterfaceType(
     name: String,
-    keyFields: List<String>,
-    implements: List<InterfaceType>,
-    embeddedFields: List<String>,
-) : CompiledNamedType(name) {
-  val keyFields = keyFields
-  val implements = implements
-  val embeddedFields = embeddedFields
-
-  @Deprecated("Use the Builder instead", ReplaceWith("InterfaceType.Builder().keyFields(keyFields).implements(implements).build()"))
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
-  constructor(
-      name: String,
-      keyFields: List<String> = emptyList(),
-      implements: List<InterfaceType> = emptyList(),
-  ) : this(name, keyFields, implements, emptyList())
-
-  fun newBuilder(): Builder = Builder(this)
-
-  class Builder(internal val name: String) {
-    private var keyFields: List<String> = emptyList()
-    private var implements: List<InterfaceType> = emptyList()
-    private var embeddedFields: List<String> = emptyList()
-
-    constructor(interfaceType: InterfaceType) : this(interfaceType.name) {
-      this.keyFields = interfaceType.keyFields
-      this.implements = interfaceType.implements
-      this.embeddedFields = interfaceType.embeddedFields
-    }
-
-    fun keyFields(keyFields: List<String>) = apply {
-      this.keyFields = keyFields
-    }
-
-    // This method is named "interfaces" and not "implements" to avoid using a reserved Java keyword
-    fun interfaces(implements: List<InterfaceType>) = apply {
-      this.implements = implements
-    }
-
-    fun embeddedFields(embeddedFields: List<String>) = apply {
-      this.embeddedFields = embeddedFields
-    }
-
-
-    fun build(): InterfaceType = InterfaceType(
-        name = name,
-        keyFields = keyFields,
-        implements = implements,
-        embeddedFields = embeddedFields
-    )
-  }
-}
+    val keyFields: List<String> = emptyList(),
+    val implements: List<InterfaceType> = emptyList(),
+) : CompiledNamedType(name)
 
 class UnionType(
     name: String,
@@ -286,7 +190,6 @@ class ScalarType(
 
 @JvmName("-notNull")
 fun CompiledType.notNull() = CompiledNotNullType(this)
-
 @JvmName("-list")
 fun CompiledType.list() = CompiledListType(this)
 
@@ -368,27 +271,27 @@ val CompiledIDType = ScalarType("ID")
 
 @SharedImmutable
 @JvmField
-val CompiledSchemaType = ObjectType.Builder("__Schema").build()
+val CompiledSchemaType = ObjectType("__Schema")
 
 @SharedImmutable
 @JvmField
-val CompiledTypeType = ObjectType.Builder("__Type").build()
+val CompiledTypeType = ObjectType("__Type")
 
 @SharedImmutable
 @JvmField
-val CompiledFieldType = ObjectType.Builder("__Field").build()
+val CompiledFieldType = ObjectType("__Field")
 
 @SharedImmutable
 @JvmField
-val CompiledInputValueType = ObjectType.Builder("__InputValue").build()
+val CompiledInputValueType = ObjectType("__InputValue")
 
 @SharedImmutable
 @JvmField
-val CompiledEnumValueType = ObjectType.Builder("__EnumValue").build()
+val CompiledEnumValueType = ObjectType("__EnumValue")
 
 @SharedImmutable
 @JvmField
-val CompiledDirectiveType = ObjectType.Builder("__Directive").build()
+val CompiledDirectiveType = ObjectType("__Directive")
 
 fun CompiledNamedType.isComposite(): Boolean {
   return when (this) {

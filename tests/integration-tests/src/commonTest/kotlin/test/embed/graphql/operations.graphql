@@ -1,7 +1,0 @@
-query GetHero {
-  hero {
-    friends {
-      name
-    }
-  }
-}

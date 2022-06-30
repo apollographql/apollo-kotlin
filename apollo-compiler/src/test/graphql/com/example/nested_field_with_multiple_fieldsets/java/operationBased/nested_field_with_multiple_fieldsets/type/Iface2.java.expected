@@ -6,7 +6,8 @@
 package com.example.nested_field_with_multiple_fieldsets.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 public class Iface2 {
-  public static InterfaceType type = (new InterfaceType.Builder("Iface2")).build();
+  public static InterfaceType type = new InterfaceType("Iface2", Collections.emptyList(), Collections.emptyList());
 }

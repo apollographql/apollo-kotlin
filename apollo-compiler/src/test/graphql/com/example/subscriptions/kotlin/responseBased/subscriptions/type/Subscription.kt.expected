@@ -9,6 +9,6 @@ import com.apollographql.apollo3.api.ObjectType
 
 public class Subscription {
   public companion object {
-    public val type: ObjectType = ObjectType.Builder(name = "Subscription").build()
+    public val type: ObjectType = ObjectType(name = "Subscription")
   }
 }

@@ -6,10 +6,11 @@
 package com.example.custom_scalar_type.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 /**
  * A character from the Star Wars universe
  */
 public class Character {
-  public static InterfaceType type = (new InterfaceType.Builder("Character")).build();
+  public static InterfaceType type = new InterfaceType("Character", Collections.emptyList(), Collections.emptyList());
 }

@@ -221,7 +221,6 @@ data class IrObject(
     val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
-    val embeddedFields: Set<String>,
 ) : IrSchemaType
 
 data class IrInterface(
@@ -230,7 +229,6 @@ data class IrInterface(
     val keyFields: Set<String>,
     val description: String?,
     val deprecationReason: String?,
-    val embeddedFields: Set<String>,
 ) : IrSchemaType
 
 data class IrUnion(

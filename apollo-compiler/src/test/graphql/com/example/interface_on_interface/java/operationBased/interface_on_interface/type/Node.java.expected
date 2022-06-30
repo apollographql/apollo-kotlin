@@ -6,7 +6,8 @@
 package com.example.interface_on_interface.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 public class Node {
-  public static InterfaceType type = (new InterfaceType.Builder("Node")).build();
+  public static InterfaceType type = new InterfaceType("Node", Collections.emptyList(), Collections.emptyList());
 }

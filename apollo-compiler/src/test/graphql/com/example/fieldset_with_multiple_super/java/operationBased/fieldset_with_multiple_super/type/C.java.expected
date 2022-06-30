@@ -6,7 +6,8 @@
 package com.example.fieldset_with_multiple_super.type;
 
 import com.apollographql.apollo3.api.InterfaceType;
+import java.util.Collections;
 
 public class C {
-  public static InterfaceType type = (new InterfaceType.Builder("C")).build();
+  public static InterfaceType type = new InterfaceType("C", Collections.emptyList(), Collections.emptyList());
 }

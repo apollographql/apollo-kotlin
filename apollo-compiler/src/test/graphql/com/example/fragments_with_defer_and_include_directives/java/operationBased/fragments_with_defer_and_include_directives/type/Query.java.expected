@@ -6,10 +6,11 @@
 package com.example.fragments_with_defer_and_include_directives.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 /**
  * The query type, represents all of the entry points into our object graph
  */
 public class Query {
-  public static ObjectType type = (new ObjectType.Builder("Query")).build();
+  public static ObjectType type = new ObjectType("Query", Collections.emptyList(), Collections.emptyList());
 }

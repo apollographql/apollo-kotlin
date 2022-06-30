@@ -6,10 +6,11 @@
 package com.example.input_object_type.type;
 
 import com.apollographql.apollo3.api.ObjectType;
+import java.util.Collections;
 
 /**
  * Represents a review for a movie
  */
 public class Review {
-  public static ObjectType type = (new ObjectType.Builder("Review")).build();
+  public static ObjectType type = new ObjectType("Review", Collections.emptyList(), Collections.emptyList());
 }
