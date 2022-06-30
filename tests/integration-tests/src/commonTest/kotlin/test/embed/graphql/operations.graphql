@@ -2,9 +2,6 @@ query GetHero {
   hero {
     friends {
       name
-      pet {
-        name
-      }
     }
   }
 }

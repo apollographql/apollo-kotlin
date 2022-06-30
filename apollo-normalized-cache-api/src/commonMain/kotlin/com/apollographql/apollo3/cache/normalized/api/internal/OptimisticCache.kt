@@ -1,13 +1,11 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.Record.Companion.changedKeys
-import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.benasher44.uuid.Uuid
 import kotlin.math.max
 import kotlin.reflect.KClass
@@ -38,16 +36,6 @@ class OptimisticCache : NormalizedCache() {
 
   override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     return nextCache?.merge(records, cacheHeaders) ?: emptySet()
-  }
-
-  @ApolloExperimental
-  override fun merge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
-    return nextCache?.merge(record, cacheHeaders, recordMerger) ?: emptySet()
-  }
-
-  @ApolloExperimental
-  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
-    return nextCache?.merge(records, cacheHeaders, recordMerger) ?: emptySet()
   }
 
   override fun clearAll() {

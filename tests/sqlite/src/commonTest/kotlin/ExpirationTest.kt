@@ -6,8 +6,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
-import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
-import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.ExpireDateCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.ReceiveDateApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
@@ -38,9 +36,7 @@ class ExpirationTest {
         .normalizedCache(
             normalizedCacheFactory = SqlNormalizedCacheFactory(name = null, withDates = true),
             cacheKeyGenerator = TypePolicyCacheKeyGenerator,
-            apolloResolver = ReceiveDateApolloResolver(maxAge),
-            recordMerger = DefaultRecordMerger,
-            metadataGenerator = EmptyMetadataGenerator,
+            apolloResolver = ReceiveDateApolloResolver(maxAge)
         )
         .storeReceiveDate(true)
         .serverUrl("unused")

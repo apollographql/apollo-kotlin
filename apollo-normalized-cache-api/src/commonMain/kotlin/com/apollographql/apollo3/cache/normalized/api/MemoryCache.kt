@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheLock
 import com.apollographql.apollo3.cache.normalized.api.internal.LruCache
 import com.apollographql.apollo3.mpp.currentTimeMillis
@@ -80,7 +79,7 @@ class MemoryCache(
     var total = 0
     val keys = HashSet(lruCache.keys()) // local copy to avoid concurrent modification
     keys.forEach {
-      if (regex.matches(it)) {
+      if (regex.matches(it)){
         lruCache.remove(it)
         total++
       }
@@ -91,15 +90,6 @@ class MemoryCache(
   }
 
   override fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return merge(record, cacheHeaders, DefaultRecordMerger)
-  }
-
-  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
-    return merge(records, cacheHeaders, DefaultRecordMerger)
-  }
-
-  @ApolloExperimental
-  override fun merge(record: Record, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
@@ -112,7 +102,7 @@ class MemoryCache(
       )
       record.fieldKeys()
     } else {
-      val (mergedRecord, changedKeys) = recordMerger.merge(existing = oldRecord, incoming = record, newDate = null)
+      val (mergedRecord, changedKeys) = oldRecord.mergeWith(record)
       lruCache[record.key] = CacheEntry(
           record = mergedRecord,
           expireAfterMillis = expireAfterMillis
@@ -123,12 +113,11 @@ class MemoryCache(
     return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
   }
 
-  @ApolloExperimental
-  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders, recordMerger: RecordMerger): Set<String> {
+  override fun merge(records: Collection<Record>, cacheHeaders: CacheHeaders): Set<String> {
     if (cacheHeaders.hasHeader(ApolloCacheHeaders.DO_NOT_STORE)) {
       return emptySet()
     }
-    return records.flatMap { record -> merge(record, cacheHeaders, recordMerger) }.toSet()
+    return records.flatMap { record -> merge(record, cacheHeaders) }.toSet()
   }
 
   override fun dump(): Map<KClass<*>, Map<String, Record>> {
@@ -143,7 +132,7 @@ class MemoryCache(
 
   private class CacheEntry(
       val record: Record,
-      val expireAfterMillis: Long,
+      val expireAfterMillis: Long
   ) {
     val cachedAtMillis: Long = currentTimeMillis()
 
