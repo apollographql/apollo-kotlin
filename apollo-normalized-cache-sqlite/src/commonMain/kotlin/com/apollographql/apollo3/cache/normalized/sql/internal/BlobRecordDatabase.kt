@@ -1,8 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.internal.blob.BlobQueries
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.BlobRecordSerializer
+import com.apollographql.apollo3.cache.internal.blob.BlobQueries
 
 internal class BlobRecordDatabase(private val blobQueries: BlobQueries): RecordDatabase {
   override fun select(key: String): Record? {
@@ -51,8 +52,6 @@ internal class BlobRecordDatabase(private val blobQueries: BlobQueries): RecordD
   }
 
   override fun selectAll(): List<Record> {
-    return blobQueries.selectRecords().executeAsList().map {
-      BlobRecordSerializer.deserialize(it.key, it.blob)
-    }
+    TODO("Not yet implemented")
   }
 }

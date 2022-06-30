@@ -8,12 +8,9 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
-import com.squareup.sqldelight.internal.AtomicBoolean
 import pagination.test.UsersOffsetBasedWithPageQuery_TestBuilder.Data
 import kotlin.math.max
 import kotlin.math.min
@@ -35,11 +32,6 @@ class OffsetBasedWithPagePaginationTest {
   @Test
   fun offsetBasedWithPageJsonSqlCache() {
     offsetBasedWithPage(SqlNormalizedCacheFactory(name = "json", withDates = false))
-  }
-
-  @Test
-  fun offsetBasedWithPageChainedCache() {
-    offsetBasedWithPage(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
   }
 
   private fun offsetBasedWithPage(cacheFactory: NormalizedCacheFactory) = runTest {
@@ -65,7 +57,6 @@ class OffsetBasedWithPagePaginationTest {
     apolloStore.writeOperation(query1, data1)
     var dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
-    assertChainedCachesAreEqual(apolloStore)
 
     // Page after
     val query2 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(2))
@@ -90,7 +81,6 @@ class OffsetBasedWithPagePaginationTest {
       }
     }
     assertEquals(expectedData, dataFromStore)
-    assertChainedCachesAreEqual(apolloStore)
 
     // Page in the middle
     val query3 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(3))
@@ -117,7 +107,6 @@ class OffsetBasedWithPagePaginationTest {
       }
     }
     assertEquals(expectedData, dataFromStore)
-    assertChainedCachesAreEqual(apolloStore)
 
     // Page before
     val query4 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(40), limit = Optional.Present(2))
@@ -145,7 +134,6 @@ class OffsetBasedWithPagePaginationTest {
       }
     }
     assertEquals(expectedData, dataFromStore)
-    assertChainedCachesAreEqual(apolloStore)
 
     // Non-contiguous page (should reset)
     val query5 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(50), limit = Optional.Present(2))
@@ -160,19 +148,6 @@ class OffsetBasedWithPagePaginationTest {
     apolloStore.writeOperation(query5, data5)
     dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data5, dataFromStore)
-    assertChainedCachesAreEqual(apolloStore)
-
-    // Empty page (should keep previous result)
-    val query6 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(52), limit = Optional.Present(2))
-    val data6 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
-        users = emptyList()
-      }
-    }
-    apolloStore.writeOperation(query6, data6)
-    dataFromStore = apolloStore.readOperation(query1)
-    assertEquals(data5, dataFromStore)
-    assertChainedCachesAreEqual(apolloStore)
   }
 
   private class OffsetPaginationMetadataGenerator(private val typeName: String) : MetadataGenerator {
@@ -228,26 +203,5 @@ class OffsetBasedWithPagePaginationTest {
       }
       return merged to startOffset
     }
-  }
-}
-
-internal suspend fun assertChainedCachesAreEqual(apolloStore: ApolloStore) {
-  val hasNextCache = AtomicBoolean(false)
-  apolloStore.accessCache { cache ->
-    // First cache is always OptimisticCache
-    hasNextCache.set(cache.nextCache!!.nextCache != null)
-  }
-  if (!hasNextCache.get()) return
-  val dump = apolloStore.dump().filterKeys { it != OptimisticCache::class }
-  val caches = dump.values.toList()
-  val cache1: Map<String, Record> = caches[0]
-  val cache2: Map<String, Record> = caches[1]
-  for (key in cache1.keys) {
-    val record1 = cache1[key]!!
-    val record2 = cache2[key]!!
-    assertEquals(record1.key, record2.key)
-    assertEquals(record1.fields, record2.fields)
-    assertEquals(record1.date, record2.date)
-    assertEquals(record1.metadata, record2.metadata)
   }
 }
