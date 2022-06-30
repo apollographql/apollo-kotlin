@@ -31,6 +31,11 @@ class CursorBasedPaginationTest {
     cursorBased(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
+  @Test
+  fun cursorBasedChainedCache() {
+    cursorBased(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
+  }
+
   private fun cursorBased(cacheFactory: NormalizedCacheFactory) = runTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
@@ -64,6 +69,7 @@ class CursorBasedPaginationTest {
     apolloStore.writeOperation(query1, data1)
     var dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data1, dataFromStore)
+    assertChainedCachesAreEqual(apolloStore)
 
     // Page after
     val query2 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
@@ -118,6 +124,7 @@ class CursorBasedPaginationTest {
       }
     }
     assertEquals(expectedData, dataFromStore)
+    assertChainedCachesAreEqual(apolloStore)
 
     // Page after
     val query3 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
@@ -184,6 +191,7 @@ class CursorBasedPaginationTest {
       }
     }
     assertEquals(expectedData, dataFromStore)
+    assertChainedCachesAreEqual(apolloStore)
 
     // Page before
     val query4 = UsersCursorBasedQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
@@ -262,6 +270,7 @@ class CursorBasedPaginationTest {
       }
     }
     assertEquals(expectedData, dataFromStore)
+    assertChainedCachesAreEqual(apolloStore)
 
     // Non-contiguous page (should reset)
     val query5 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
@@ -286,6 +295,7 @@ class CursorBasedPaginationTest {
     apolloStore.writeOperation(query5, data5)
     dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data5, dataFromStore)
+    assertChainedCachesAreEqual(apolloStore)
   }
 
   @Suppress("UNCHECKED_CAST")

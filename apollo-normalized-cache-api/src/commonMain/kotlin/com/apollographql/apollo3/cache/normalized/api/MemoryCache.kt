@@ -120,7 +120,7 @@ class MemoryCache(
       changedKeys
     }
 
-    return changedKeys + nextCache?.merge(record, cacheHeaders).orEmpty()
+    return changedKeys + nextCache?.merge(record, cacheHeaders, recordMerger).orEmpty()
   }
 
   @ApolloExperimental
