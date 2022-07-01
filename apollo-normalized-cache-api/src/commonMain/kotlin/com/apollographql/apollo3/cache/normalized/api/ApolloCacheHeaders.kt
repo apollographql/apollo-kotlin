@@ -20,16 +20,10 @@ object ApolloCacheHeaders {
   const val EVICT_AFTER_READ = "evict-after-read"
 
   /**
-   * The value of this header will be stored in the [Record] fields date
+   * The Records will be stored with this date.
    */
   @ApolloExperimental
   const val DATE = "apollo-date"
-
-  /**
-   * How long to accept stale fields
-   */
-  @ApolloExperimental
-  const val MAX_STALE = "apollo-max-stale"
 
   /**
    * To configure whether to store partial responses, please use the storePartialResponses() extension instead.

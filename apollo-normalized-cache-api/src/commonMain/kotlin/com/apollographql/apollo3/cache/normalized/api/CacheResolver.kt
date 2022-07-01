@@ -43,7 +43,7 @@ interface CacheResolver {
    * }
    * ```
    *
-   * The simple example above isn't very representative as most of the time `@fieldPolicy` can express simple argument mappings in a more
+   * The simple example above isn't very representative as most of the times `@fieldPolicy` can express simple argument mappings in a more
    * concise way but still demonstrates how [resolveField] works.
    *
    * [resolveField] can also be generalized to return any value:
@@ -79,25 +79,6 @@ interface CacheResolver {
   ): Any?
 }
 
-@ApolloExperimental
-class ResolverContext(
-    val field: CompiledField,
-    val variables: Executable.Variables,
-    val parent: Map<String, @JvmSuppressWildcards Any?>,
-    val parentId: String,
-    val cacheHeaders: CacheHeaders,
-)
-
-/**
- * Same as [CacheResolver] but takes a [ResolverContext] as a parameter that's easier to evolve
- */
-@ApolloExperimental
-interface ApolloResolver {
-  fun resolveField(
-      context: ResolverContext,
-  ): Any?
-}
-
 /**
  * A cache resolver that uses the parent to resolve fields.
  */
@@ -125,14 +106,16 @@ object DefaultCacheResolver : CacheResolver {
  * A cache resolver that uses the cache date as a receive date and expires after a fixed max age
  */
 @ApolloExperimental
-class ReceiveDateApolloResolver(private val maxAge: Int) : ApolloResolver {
-
-  override fun resolveField(context: ResolverContext): Any? {
-    val field = context.field
-    val parent = context.parent
-    val variables = context.variables
-    val parentId = context.parentId
-
+class ReceiveDateCacheResolver(private val maxAge: Int) : CacheResolver {
+  /**
+   * @param parent a [Map] that represent the object containing this field. The map values can have the same types as the ones in  [Record]
+   */
+  override fun resolveField(
+      field: CompiledField,
+      variables: Executable.Variables,
+      parent: Map<String, @JvmSuppressWildcards Any?>,
+      parentId: String,
+  ): Any? {
     val name = field.nameWithArguments(variables)
     if (!parent.containsKey(name)) {
       throw CacheMissException(parentId, name)
@@ -141,13 +124,9 @@ class ReceiveDateApolloResolver(private val maxAge: Int) : ApolloResolver {
     if (parent is Record) {
       val lastUpdated = parent.date?.get(name)
       if (lastUpdated != null) {
-        val maxStale = context.cacheHeaders.headerValue(ApolloCacheHeaders.MAX_STALE)?.toLongOrNull() ?: 0L
-        if (maxStale < Long.MAX_VALUE) {
-          val age = currentTimeMillis() / 1000 - lastUpdated
-          if (maxAge + maxStale - age < 0) {
-            throw CacheMissException(parentId, name, true)
-          }
-
+        val age = currentTimeMillis()/1000 - lastUpdated
+        if (age > maxAge) {
+          throw CacheMissException(parentId, name, true)
         }
       }
     }
@@ -178,7 +157,7 @@ class ExpireDateCacheResolver() : CacheResolver {
     if (parent is Record) {
       val expires = parent.date?.get(name)
       if (expires != null) {
-        if (currentTimeMillis() / 1000 - expires >= 0) {
+        if (currentTimeMillis()/1000 - expires >= 0) {
           throw CacheMissException(parentId, name, true)
         }
       }
@@ -207,15 +186,6 @@ object FieldPolicyCacheResolver : CacheResolver {
     }
 
     return DefaultCacheResolver.resolveField(field, variables, parent, parentId)
-  }
-}
-
-/**
- * A [ApolloResolver] that uses @fieldPolicy annotations to resolve fields and delegates to [DefaultCacheResolver] else
- */
-object FieldPolicyApolloResolver : ApolloResolver {
-  override fun resolveField(context: ResolverContext): Any? {
-    return FieldPolicyCacheResolver.resolveField(context.field, context.variables, context.parent, context.parentId)
   }
 }
 
