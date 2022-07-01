@@ -9,7 +9,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(projects.apolloRuntime)
-        api(projects.apolloNormalizedCacheApi)
+        api(projects.apolloNormalizedCacheApiIncubating)
         api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
       }
     }

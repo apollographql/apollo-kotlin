@@ -31,8 +31,8 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     val commonMain by getting {
       dependencies {
         api(projects.apolloApi)
-        api(projects.apolloNormalizedCacheApi)
-        api(projects.apolloNormalizedCache)
+        api(projects.apolloNormalizedCacheApiIncubating)
+        api(projects.apolloNormalizedCacheIncubating)
       }
     }
 
