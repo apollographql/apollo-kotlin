@@ -16,14 +16,21 @@ kotlin {
     val commonTest by getting {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache-incubating")
+        implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite-incubating")
       }
     }
   }
 }
 
 apollo {
-  packageName.set("pagination")
-  generateTestBuilders.set(true)
+  service("pagination") {
+    packageName.set("pagination")
+    sourceFolder.set("pagination")
+    generateTestBuilders.set(true)
+  }
+  service("embed") {
+    packageName.set("embed")
+    sourceFolder.set("embed")
+  }
 }
