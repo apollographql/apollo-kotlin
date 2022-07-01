@@ -70,7 +70,14 @@ com.apollographql.apollo3.cache.normalized
 module:apollo-normalized-cache-api
 com.apollographql.apollo3.cache.normalized.api
 com.apollographql.apollo3.cache.normalized.api.internal
+module:apollo-normalized-cache-api-incubating
+com.apollographql.apollo3.cache.normalized.api
+com.apollographql.apollo3.cache.normalized.api.internal
+module:apollo-normalized-cache-incubating
+com.apollographql.apollo3.cache.normalized
 module:apollo-normalized-cache-sqlite
+com.apollographql.apollo3.cache.normalized.sql
+module:apollo-normalized-cache-sqlite-incubating
 com.apollographql.apollo3.cache.normalized.sql
 module:apollo-runtime
 com.apollographql.apollo3
