@@ -22,7 +22,9 @@ public object __Schema {
             com.example.__schema.type.FriendsConnection.type,
             com.example.__schema.type.FriendsEdge.type, com.example.__schema.type.Human.type,
             com.example.__schema.type.Mutation.type, com.example.__schema.type.PageInfo.type,
-            com.example.__schema.type.Query.type, com.example.__schema.type.Review.type,
+            com.example.__schema.type.Query.type, com.example.__schema.type.RenamedInterface.type,
+            com.example.__schema.type.RenamedObject.type,
+            com.example.__schema.type.RenamedUnion.type, com.example.__schema.type.Review.type,
             com.example.__schema.type.SearchResult.type, com.example.__schema.type.Starship.type,
             com.example.__schema.type.Tree.type,
             com.example.__schema.type.TypeWithGraphQLKeywords.type)

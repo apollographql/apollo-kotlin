@@ -15,7 +15,7 @@ class CustomScalarBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(name = customScalar.name))
+  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(name = customScalar.targetName))
 
   private fun prefixBuiltinScalarNames(name: String): String {
     // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).

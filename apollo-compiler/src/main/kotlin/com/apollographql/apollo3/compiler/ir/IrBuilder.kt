@@ -183,6 +183,7 @@ internal class IrBuilder(
 
     return IrObject(
         name = name,
+        targetName = directives.findTargetName(schema) ?: name,
         implements = implementsInterfaces,
         keyFields = schema.keyFields(name),
         description = description,
@@ -198,6 +199,7 @@ internal class IrBuilder(
 
     return IrInterface(
         name = name,
+        targetName = directives.findTargetName(schema) ?: name,
         implements = implementsInterfaces,
         keyFields = schema.keyFields(name),
         description = description,
@@ -213,6 +215,7 @@ internal class IrBuilder(
 
     return IrUnion(
         name = name,
+        targetName = directives.findTargetName(schema) ?: name,
         members = memberTypes.map { it.name },
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on union definitions
@@ -223,6 +226,7 @@ internal class IrBuilder(
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
     return IrCustomScalar(
         name = name,
+        targetName = directives.findTargetName(schema) ?: name,
         kotlinName = scalarMapping[name]?.targetName,
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
@@ -233,8 +237,9 @@ internal class IrBuilder(
   private fun GQLInputObjectTypeDefinition.toIr(): IrInputObject {
     return IrInputObject(
         name = name,
+        targetName = directives.findTargetName(schema) ?: name,
         description = description,
-        // XXX: this is not spec-compliant. Directive cannot be on inpout objects definitions
+        // XXX: this is not spec-compliant. Directive cannot be on input objects definitions
         deprecationReason = directives.findDeprecationReason(),
         fields = inputFields.map { it.toIrInputField() }
     )
@@ -267,6 +272,7 @@ internal class IrBuilder(
   private fun GQLEnumTypeDefinition.toIr(): IrEnum {
     return IrEnum(
         name = name,
+        targetName = directives.findTargetName(schema) ?: name,
         description = description,
         values = enumValues.map { it.toIr() }
     )

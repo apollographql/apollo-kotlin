@@ -19,7 +19,7 @@ class InputObjectBuilder(
     val inputObject: IrInputObject
 ): CgFileBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject.name)
+  private val simpleName = context.layout.inputObjectName(inputObject.targetName)
 
   override fun build(): CgFile {
     return CgFile(

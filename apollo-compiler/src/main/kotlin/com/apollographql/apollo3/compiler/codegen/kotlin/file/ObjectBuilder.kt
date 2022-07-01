@@ -15,7 +15,7 @@ class ObjectBuilder(
 ): CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = obj.name)
+  private val simpleName = layout.compiledTypeName(name = obj.targetName)
 
   override fun prepare() {
     context.resolver.registerSchemaType(obj.name, ClassName(packageName, simpleName))

@@ -81,7 +81,9 @@ class KotlinCodeGen(
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
-        nameToClassName = { nameToClassName[it] ?: error("unknown schema type: $it") }
+        nameToClassName = { nameToClassName[it] ?:
+        error("unknown schema type: $it")
+        }
     )
 
     val context = KotlinContext(

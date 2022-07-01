@@ -16,7 +16,7 @@ class UnionBuilder(
 ): JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = union.name)
+  private val simpleName = layout.compiledTypeName(name = union.targetName)
 
   override fun prepare() {
     context.resolver.registerSchemaType(union.name, ClassName.get(packageName, simpleName))

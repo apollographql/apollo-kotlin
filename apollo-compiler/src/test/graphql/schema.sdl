@@ -311,7 +311,34 @@ type Query {
   starship(id: ID!): Starship
   tree: Tree
   typeWithGraphQLKeywords: TypeWithGraphQLKeywords
+
+  object(input: ReservedInput): ReservedObject
+  interface: ReservedInterface
+  union: ReservedUnion
+  scalar(scalar: ReservedScalar): ReservedScalar
+  enum(enum: ReservedEnum): ReservedEnum
 }
+
+type ReservedObject @targetName(name: "RenamedObject") {
+  field: String
+}
+
+interface ReservedInterface @targetName(name: "RenamedInterface") {
+  field: String
+}
+
+union ReservedUnion @targetName(name: "RenamedUnion") = ReservedObject | Review
+
+input ReservedInput @targetName(name: "RenamedInput") {
+  field: String
+}
+
+scalar ReservedScalar @targetName(name: "RenamedScalar")
+
+enum ReservedEnum @targetName(name: "RenamedEnum") {
+  VALUE
+}
+
 
 """Represents a review for a movie"""
 type Review {

@@ -26,7 +26,7 @@ class EnumResponseAdapterBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typeAdapterPackageName()
-  private val simpleName = layout.enumResponseAdapterName(enum.name)
+  private val simpleName = layout.enumResponseAdapterName(enum.targetName)
 
   override fun prepare() {
     context.resolver.registerEnumAdapter(
@@ -63,7 +63,7 @@ class EnumResponseAdapterBuilder(
         .build()
 
     return TypeSpec
-        .objectBuilder(layout.enumResponseAdapterName(name))
+        .objectBuilder(layout.enumResponseAdapterName(targetName))
         .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)
