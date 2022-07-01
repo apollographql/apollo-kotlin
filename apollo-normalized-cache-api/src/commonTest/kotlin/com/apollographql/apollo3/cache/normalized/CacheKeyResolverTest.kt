@@ -92,7 +92,7 @@ class CacheKeyResolverTest {
 
   object Fixtures {
 
-    private val TEST_TYPE = ObjectType.Builder(name = "Test").keyFields(keyFields = listOf("id")).build()
+    private val TEST_TYPE = ObjectType.Builder(name = "Test").keyFields(listOf("id")).build()
 
     val TEST_SIMPLE_FIELD = CompiledField.Builder(name = "test", type = TEST_TYPE).build()
 

@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
@@ -12,20 +10,12 @@ import com.apollographql.apollo3.api.variables
 import com.apollographql.apollo3.cache.normalized.api.internal.CacheBatchReader
 import com.apollographql.apollo3.cache.normalized.api.internal.Normalizer
 
+
 fun <D : Operation.Data> Operation<D>.normalize(
     data: D,
     customScalarAdapters: CustomScalarAdapters,
     cacheKeyGenerator: CacheKeyGenerator,
-) = normalize(data, customScalarAdapters, cacheKeyGenerator, EmptyMetadataGenerator, CacheKey.rootKey().key)
-
-@ApolloExperimental
-fun <D : Operation.Data> Operation<D>.normalize(
-    data: D,
-    customScalarAdapters: CustomScalarAdapters,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
-) = normalize(data, customScalarAdapters, cacheKeyGenerator, metadataGenerator, CacheKey.rootKey().key)
-
+) = normalize(data, customScalarAdapters, cacheKeyGenerator, CacheKey.rootKey().key)
 
 @Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.normalize(
@@ -37,26 +27,9 @@ fun <D : Executable.Data> Executable<D>.normalize(
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
   val variables = variables(customScalarAdapters)
-  return Normalizer(variables, rootKey, cacheKeyGenerator, EmptyMetadataGenerator)
-      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.leafType())
+  return Normalizer(variables, rootKey, cacheKeyGenerator)
+      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.leafType().name)
 }
-
-@ApolloExperimental
-@Suppress("UNCHECKED_CAST")
-fun <D : Executable.Data> Executable<D>.normalize(
-    data: D,
-    customScalarAdapters: CustomScalarAdapters,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
-    rootKey: String,
-): Map<String, Record> {
-  val writer = MapJsonWriter()
-  adapter().toJson(writer, customScalarAdapters, data)
-  val variables = variables(customScalarAdapters)
-  return Normalizer(variables, rootKey, cacheKeyGenerator, metadataGenerator)
-      .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.leafType())
-}
-
 
 fun <D : Executable.Data> Executable<D>.readDataFromCache(
     customScalarAdapters: CustomScalarAdapters,
@@ -71,7 +44,6 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
@@ -86,40 +58,11 @@ fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
-fun <D : Executable.Data> Executable<D>.readDataFromCache(
-    cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
-    cache: ReadOnlyNormalizedCache,
-    cacheResolver: CacheResolver,
-    cacheHeaders: CacheHeaders,
-) = readInternal(
-    cacheKey = cacheKey,
-    customScalarAdapters = customScalarAdapters,
-    cache = cache,
-    cacheResolver = cacheResolver,
-    cacheHeaders = cacheHeaders,
-)
-
-fun <D : Executable.Data> Executable<D>.readDataFromCache(
-    cacheKey: CacheKey,
-    customScalarAdapters: CustomScalarAdapters,
-    cache: ReadOnlyNormalizedCache,
-    cacheResolver: ApolloResolver,
-    cacheHeaders: CacheHeaders,
-) = readInternal(
-    cacheKey = cacheKey,
-    customScalarAdapters = customScalarAdapters,
-    cache = cache,
-    cacheResolver = cacheResolver,
-    cacheHeaders = cacheHeaders,
-)
-
-
 private fun <D : Executable.Data> Executable<D>.readInternal(
     cacheKey: CacheKey,
     customScalarAdapters: CustomScalarAdapters,
     cache: ReadOnlyNormalizedCache,
-    cacheResolver: Any,
+    cacheResolver: CacheResolver,
     cacheHeaders: CacheHeaders,
 ): D {
   val map = CacheBatchReader(

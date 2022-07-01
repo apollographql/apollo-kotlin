@@ -1,24 +1,18 @@
 package com.apollographql.apollo3.cache.normalized
 
-import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
+import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
-import com.apollographql.apollo3.cache.normalized.api.DefaultRecordMerger
-import com.apollographql.apollo3.cache.normalized.api.EmptyMetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
-import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.RecordMerger
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -192,25 +186,4 @@ fun ApolloStore(
     normalizedCacheFactory: NormalizedCacheFactory,
     cacheKeyGenerator: CacheKeyGenerator = TypePolicyCacheKeyGenerator,
     cacheResolver: CacheResolver = FieldPolicyCacheResolver,
-): ApolloStore = DefaultApolloStore(
-    normalizedCacheFactory = normalizedCacheFactory,
-    cacheKeyGenerator = cacheKeyGenerator,
-    metadataGenerator = EmptyMetadataGenerator,
-    cacheResolver = cacheResolver,
-    recordMerger = DefaultRecordMerger
-)
-
-@ApolloExperimental
-fun ApolloStore(
-    normalizedCacheFactory: NormalizedCacheFactory,
-    cacheKeyGenerator: CacheKeyGenerator,
-    metadataGenerator: MetadataGenerator,
-    apolloResolver: ApolloResolver,
-    recordMerger: RecordMerger = DefaultRecordMerger,
-): ApolloStore = DefaultApolloStore(
-    normalizedCacheFactory = normalizedCacheFactory,
-    cacheKeyGenerator = cacheKeyGenerator,
-    metadataGenerator = metadataGenerator,
-    cacheResolver = apolloResolver,
-    recordMerger = recordMerger
-)
+): ApolloStore = DefaultApolloStore(normalizedCacheFactory, cacheKeyGenerator, cacheResolver)

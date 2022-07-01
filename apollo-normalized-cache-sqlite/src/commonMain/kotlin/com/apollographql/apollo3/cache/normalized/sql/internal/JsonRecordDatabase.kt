@@ -1,10 +1,11 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.internal.json.JsonQueries
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.JsonRecordSerializer
+import com.apollographql.apollo3.cache.internal.json.JsonQueries
 
-internal class JsonRecordDatabase(private val jsonQueries: JsonQueries) : RecordDatabase {
+internal class JsonRecordDatabase(private val jsonQueries: JsonQueries): RecordDatabase {
   override fun select(key: String): Record? {
     return jsonQueries.recordForKey(key).executeAsList()
         .map {
@@ -51,8 +52,6 @@ internal class JsonRecordDatabase(private val jsonQueries: JsonQueries) : Record
   }
 
   override fun selectAll(): List<Record> {
-    return jsonQueries.selectRecords().executeAsList().map {
-      JsonRecordSerializer.deserialize(it.key, it.record)
-    }
+    TODO("Not yet implemented")
   }
 }

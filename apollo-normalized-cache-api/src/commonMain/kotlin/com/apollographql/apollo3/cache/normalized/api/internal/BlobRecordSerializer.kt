@@ -32,7 +32,6 @@ object BlobRecordSerializer {
   fun serialize(record: Record): ByteArray  {
     val buffer = Buffer()
 
-    buffer.writeAny(record.metadata)
     val keys = record.fields.keys
     buffer.writeInt(keys.size)
     for (key in keys) {
@@ -53,8 +52,6 @@ object BlobRecordSerializer {
   fun deserialize(key: String, bytes: ByteArray): Record {
     val buffer = Buffer().write(bytes)
 
-    val metadata = buffer.readAny() as Map<String, Map<String, Any?>>
-
     val fields = mutableMapOf<String, Any?>()
     val dates = mutableMapOf<String, Long?>()
     val size = buffer.readInt()
@@ -65,7 +62,7 @@ object BlobRecordSerializer {
       fields[name] = buffer.readAny()
     }
 
-    return Record(key, fields, null, dates, metadata)
+    return Record(key, fields, null, dates)
   }
 
   private fun Buffer.writeString(value: String) {

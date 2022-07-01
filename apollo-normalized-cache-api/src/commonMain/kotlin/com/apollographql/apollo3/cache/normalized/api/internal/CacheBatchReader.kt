@@ -5,15 +5,12 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.Executable
-import com.apollographql.apollo3.cache.normalized.api.ApolloResolver
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.normalized.api.ResolverContext
 import com.apollographql.apollo3.exception.CacheMissException
-import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * A resolver that solves the "N+1" problem by batching all SQL queries at a given depth
@@ -25,7 +22,7 @@ internal class CacheBatchReader(
     private val cache: ReadOnlyNormalizedCache,
     private val rootKey: String,
     private val variables: Executable.Variables,
-    private val cacheResolver: Any,
+    private val cacheResolver: CacheResolver,
     private val cacheHeaders: CacheHeaders,
     private val rootSelections: List<CompiledSelection>,
     private val rootTypename: String,
@@ -116,13 +113,8 @@ internal class CacheBatchReader(
             return@mapNotNull null
           }
 
-          val value = when (cacheResolver) {
-            is CacheResolver -> cacheResolver.resolveField(it, variables, record, record.key)
-            is ApolloResolver -> {
-              cacheResolver.resolveField(ResolverContext(it, variables, record, record.key, cacheHeaders))
-            }
-            else -> throw IllegalStateException()
-          }
+          val value = cacheResolver.resolveField(it, variables, record, record.key)
+
           value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.leafType().name)
 
           it.responseName to value
@@ -155,27 +147,6 @@ internal class CacheBatchReader(
         forEachIndexed { index, value ->
           value.registerCacheKeys(path + index, selections, typeInScope)
         }
-      }
-      is Map<*, *> -> {
-        @Suppress("UNCHECKED_CAST")
-        this as Map<String, @JvmSuppressWildcards Any?>
-        val collectedFields = collectAndMergeSameDirectives(selections, typeInScope, get("__typename") as? String)
-        collectedFields.mapNotNull {
-          if (it.shouldSkip(variables.valueMap)) {
-            return@mapNotNull null
-          }
-
-          val value = when (cacheResolver) {
-            is CacheResolver -> cacheResolver.resolveField(it, variables, this, "")
-            is ApolloResolver -> {
-              cacheResolver.resolveField(ResolverContext(it, variables, this, "", cacheHeaders))
-            }
-            else -> throw IllegalStateException()
-          }
-          value.registerCacheKeys(path + it.responseName, it.selections, it.type.leafType().name)
-
-          it.responseName to value
-        }.toMap()
       }
     }
   }

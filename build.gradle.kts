@@ -185,6 +185,13 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "com.apollographql.apollo3.cache.internal",
       )
   )
+  ignoredProjects.addAll(
+      listOf(
+          "apollo-normalized-cache-api-incubating",
+          "apollo-normalized-cache-incubating",
+          "apollo-normalized-cache-sqlite-incubating",
+      )
+  )
   nonPublicMarkers.addAll(
       listOf(
           "com.apollographql.apollo3.annotations.ApolloInternal",

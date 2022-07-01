@@ -31,23 +31,14 @@ class Record(
   var date: Map<String, Long?>? = null
     private set
 
-  /**
-   * Arbitrary metadata that can be attached to each field.
-   */
-  @ApolloExperimental
-  var metadata: Map<String, Map<String, Any?>> = emptyMap()
-    private set
-
   @ApolloInternal
   constructor(
       key: String,
       fields: Map<String, Any?>,
       mutationId: Uuid?,
       date: Map<String, Long?>,
-      metadata: Map<String, Map<String, Any?>>,
   ) : this(key, fields, mutationId) {
     this.date = date
-    this.metadata = metadata
   }
 
   val sizeInBytes: Int
@@ -60,8 +51,35 @@ class Record(
    * Returns a merge result record and a set of field keys which have changed, or were added.
    * A field key incorporates any GraphQL arguments in addition to the field name.
    */
+  @ApolloExperimental
+  fun mergeWith(newRecord: Record, newDate: Long?): Pair<Record, Set<String>> {
+    val changedKeys = mutableSetOf<String>()
+    val mergedFields = fields.toMutableMap()
+    val date = this.date?.toMutableMap() ?: mutableMapOf()
+
+    for ((fieldKey, newFieldValue) in newRecord.fields) {
+      val hasOldFieldValue = fields.containsKey(fieldKey)
+      val oldFieldValue = fields[fieldKey]
+      if (!hasOldFieldValue || oldFieldValue != newFieldValue) {
+        mergedFields[fieldKey] = newFieldValue
+        changedKeys.add("$key.$fieldKey")
+      }
+      // Even if the value did not change update date
+      if (newDate != null) {
+        date[fieldKey] = newDate
+      }
+    }
+
+    return Record(
+        key = key,
+        fields = mergedFields,
+        mutationId = newRecord.mutationId,
+        date = date
+    ) to changedKeys
+  }
+
   fun mergeWith(newRecord: Record): Pair<Record, Set<String>> {
-    return DefaultRecordMerger.merge(existing = this, incoming = newRecord, newDate = null)
+    return mergeWith(newRecord, null)
   }
 
 
