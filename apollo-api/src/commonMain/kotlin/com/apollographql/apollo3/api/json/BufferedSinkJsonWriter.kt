@@ -160,7 +160,7 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
 
   override fun value(value: Long) = jsonValue(value.toString())
 
-  override fun value(value: JsonNumber) = jsonValue(value.toString())
+  override fun value(value: JsonNumber) = jsonValue(value.value)
 
   override fun value(value: Upload) = apply {
     nullValue()
