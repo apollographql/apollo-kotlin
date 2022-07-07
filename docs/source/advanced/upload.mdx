@@ -33,11 +33,13 @@ Create an instance of `Upload` using one of the factory methods:
 
 ```kotlin
 val upload = DefaultUpload.Builder()
+              .fileName("filename.txt")
               .content(okioSource)
               .build()
 
 // or if you're on the JVM
 val upload = DefaultUpload.Builder()
+              .fileName("filename.txt")
               .content(file)
               .build()
 ```
