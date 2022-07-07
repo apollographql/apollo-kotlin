@@ -31,11 +31,11 @@ type Post {
 }
 ```
 
-The fields of the `Mutation` type (such as `upvotePost` above) usually describe the actions that your mutations can take. These fields commonly take one or more arguments, because they help specify the data to create or modify.
+The fields of the `Mutation` type (such as `upvotePost` above) usually describe the actions that mutations can perform. These fields usually take one or more arguments, which specify the data to create or modify.
 
 ### Mutation return types
 
-The return type of a `Mutation` field usually includes the back-end data that's been modified. This enables the requesting client to immediately know about the result of the mutation.
+The return type of a `Mutation` field usually includes the backend data that's been modified. This provides the requesting client with immediate information about the result of the mutation.
 
 In the example above, `upvotePost` returns the `Post` object that's just been upvoted. Here's an example response:
 
@@ -84,7 +84,7 @@ mutation UpvotePost($postId: Int!) {
 
 ## Passing input objects
 
-The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often used for mutation variables, because they give you a compact way to pass in objects to be created:
+The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often used for mutation variables, because they provide a compact way to pass in objects to be created:
 
 ```graphql
 mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
