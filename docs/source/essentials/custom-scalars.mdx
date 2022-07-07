@@ -2,7 +2,7 @@
 title: Custom scalar types in Apollo Kotlin
 ---
 
-In addition to its [built-in scalar types](https://graphql.org/learn/schema/#scalar-types) (`Int`, `String`, etc.), GraphQL supports defining [custom scalars](https://www.apollographql.com/docs/apollo-server/schema/custom-scalars/). For example, your schema might define a custom scalar for `Long`, `Date`, `BigDecimalAdapter`, or `GeoPoint`.
+In addition to its [built-in scalar types](https://graphql.org/learn/schema/#scalar-types) (`Int`, `String`, etc.), GraphQL supports defining [custom scalars](/apollo-server/schema/custom-scalars/). For example, your schema might define a custom scalar for `Long`, `Date`, `BigDecimalAdapter`, or `GeoPoint`.
 
 ## Define class mapping
 
@@ -17,7 +17,7 @@ apollo {
 }
 ```
 
-> If needed, you can also do this with built-in scalars (like `ID`) to override the type used by default.
+> If needed, you can also do this with a built-in scalar (such as `ID`) to override its default type.
 
 ## Define class adapters
 
@@ -58,7 +58,7 @@ val geoPointAdapter = object : Adapter<GeoPoint> {
 }
 ```
 
-If you prefer working with `Maps`, Apollo Kotlin comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
+If you prefer working with `Map`s, Apollo Kotlin comes with `AnyAdapter`, which supports adapting `String`, `Int`, `Double`, `Boolean`, `List`, and `Map`. You can use it in an intermediate step:
 
 ```kotlin
 val geoPointAdapter = object : Adapter<GeoPoint> {
@@ -83,7 +83,7 @@ This solution is more concise but slightly less performant.
 
 After you define your adapters, you need to register them. This can be done either in the `build.gradle[.kts]` file, or at runtime.
 
-### In build.gradle[.kts]
+### In `build.gradle[.kts]`
 
 A third argument can be passed to `mapScalar` to specify the adapter to use:
 
@@ -138,7 +138,7 @@ In addition, the `com.apollographql.apollo3:apollo-adapters` artifact provides t
 | `com.apollographql.apollo3.adapter.DateAdapter`                 | For `java.util.Date` ISO8601 dates                                                                  |
 | `com.apollographql.apollo3.adapter.BigDecimalAdapter`           | For a Multiplatform `com.apollographql.apollo3.adapter.BigDecimal` class holding big decimal values |
 
-> Note: because some adapters use `kotlinx.datetime`, which itself uses `java.time`, you will need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
+> **Note:** Because some adapters use `kotlinx.datetime` (which itself uses `java.time`), you need to enable [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26
 
 For example, to use `DateAdapter`, configure your Gradle scripts like so:
 
