@@ -84,7 +84,7 @@ mutation UpvotePost($postId: Int!) {
 
 ## Passing input objects
 
-The GraphQL type system includes [input types](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input types are often used for mutation variables, because they provide a compact way to pass in objects to be created:
+The GraphQL type system includes [input objects](http://graphql.org/learn/schema/#input-types) as a way to pass complex values to fields. Input objects are often used for mutation variables, because they provide a compact way to pass in objects to be created:
 
 ```graphql
 mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
