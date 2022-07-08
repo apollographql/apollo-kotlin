@@ -1,5 +1,5 @@
 ---
-name: :sparkles: Feature request
+name: ':sparkles: Feature request'
 about: Suggest an idea for this project
 title: ''
 labels: ':sparkles: Type: Feature'

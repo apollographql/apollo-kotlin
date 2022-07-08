@@ -1,5 +1,5 @@
 ---
-name: :bug: Bug report
+name: ':bug: Bug report'
 about: Create a bug report 
 title: ''
 labels: ':bug: Type: Bug'
