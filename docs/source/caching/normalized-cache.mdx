@@ -52,7 +52,7 @@ This query returns a `Book` object, which in turn includes an `Author` object. A
 A normalized cache does _not_ store this response directly. Instead, it breaks it up into the following entries by default:
 
 ```json title="Cache"
-"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
 "favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
 ```
@@ -203,7 +203,7 @@ query GetFavoriteBook {
 ```
 
 ```json title="Cache"
-"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
 "favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}"}
 ```
@@ -223,7 +223,7 @@ query AuthorById($id: String!) {
 After executing this query, our cache looks like this:
 
 ```json {2-3} title="Cache"
-"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"
+"favoriteBook": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{favoriteBook.author}"}
 "favoriteBook.author": {"id": "au456", "name": "Pierre Bordage"}
 "author(\"id\": \"au456\")": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference{favoriteBook}", "author(\"id\": \"au456\")": "ApolloCacheReference{author(\"id\": \"au456\")}"}
@@ -237,7 +237,7 @@ We're now caching two identical entries for the same `Author` object! This is un
 We want to deduplicate entries like these by making sure they're assigned the _same_ cache ID when they're written, resulting in a cache that looks more like this:
 
 ```json title="Cache"
-"Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{Author:au456}"
+"Book:bk123": {"id": "bk123", "title": "Les guerriers du silence", "author": "ApolloCacheReference{Author:au456}"}
 "Author:au456": {"id": "au456", "name": "Pierre Bordage"}
 "QUERY_ROOT": {"favoriteBook": "ApolloCacheReference(Book:bk123)", "author(\"id\": \"au456\")": "ApolloCacheReference{Author:au456}"}
 ```
