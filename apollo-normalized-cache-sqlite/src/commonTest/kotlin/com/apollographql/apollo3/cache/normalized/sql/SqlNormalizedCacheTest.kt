@@ -217,6 +217,19 @@ class SqlNormalizedCacheTest {
   }
 
   @Test
+  fun testManyRecords() {
+    val records = 0.until(1001).map {
+      Record(
+          it.toString(),
+          emptyMap()
+      )
+    }
+
+    cache.merge(records, CacheHeaders.NONE)
+  }
+
+
+  @Test
   fun exceptionCallsExceptionHandler() {
     val badCache = SqlNormalizedCache(JsonRecordDatabase(BadCacheQueries()))
     var throwable: Throwable? = null

@@ -149,7 +149,7 @@ class SqlNormalizedCache internal constructor(
   private fun internalUpdateRecords(records: Collection<Record>, recordMerger: RecordMerger, date: Long?): Set<String> {
     var updatedRecordKeys: Set<String> = emptySet()
     recordDatabase.transaction {
-      val oldRecords = recordDatabase.select(
+      val oldRecords = internalGetRecords(
           keys = records.map { it.key },
       ).associateBy { it.key }
 
