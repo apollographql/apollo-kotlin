@@ -12,7 +12,6 @@ import com.squareup.sqldelight.db.SqlDriver
 
 actual class SqlNormalizedCacheFactory internal constructor(
     private val driver: SqlDriver,
-    private val withDates: Boolean,
 ) : NormalizedCacheFactory() {
 
   /**
@@ -26,22 +25,20 @@ actual class SqlNormalizedCacheFactory internal constructor(
       name: String? = "apollo.db",
       factory: SupportSQLiteOpenHelper.Factory = FrameworkSQLiteOpenHelperFactory(),
       useNoBackupDirectory: Boolean = false,
-      withDates: Boolean = false,
   ) : this(
       AndroidSqliteDriver(
-          getSchema(withDates),
+          getSchema(),
           context.applicationContext,
           name,
           factory,
           useNoBackupDirectory = useNoBackupDirectory
       ),
-      withDates
   )
 
-  actual constructor(name: String?, withDates: Boolean): this(createDriver(name, null, getSchema(withDates)), withDates)
+  actual constructor(name: String?): this(createDriver(name, null, getSchema()))
 
   override fun create(): SqlNormalizedCache {
-    return SqlNormalizedCache(createRecordDatabase(driver, withDates))
+    return SqlNormalizedCache(createRecordDatabase(driver))
   }
 }
 
