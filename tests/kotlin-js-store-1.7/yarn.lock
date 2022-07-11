@@ -415,9 +415,9 @@ graphql-ws@5.5.0:
   integrity sha512-WQepPMGQQoqS2VsrI2I3RMLCVz3CW4/6ZqGV6ABDOwH4R62DzjxwMlwZbj6vhSI/7IM3/C911yITwgs77iO/hw==
 
 graphql@canary-pr-2839:
-  version "17.0.0-alpha.1.canary.pr.2839.db4d0cdea30214fb7bb00724b7827708ca5de8a5"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-17.0.0-alpha.1.canary.pr.2839.db4d0cdea30214fb7bb00724b7827708ca5de8a5.tgz#1193e0633d844b61f573380ef0502a5419ee0133"
-  integrity sha512-KoTp3qsdoWNsTJS3EVmDDhcTO/oHUikYImFS0SvOeSDW61pMvt7v+BB9PnnLkA6QsVq1MscnOhmc7OmO1gB4cA==
+  version "16.4.0-canary.pr.2839.e3a8069cfaa6406186314b62aced6487f417a2e6"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.4.0-canary.pr.2839.e3a8069cfaa6406186314b62aced6487f417a2e6.tgz#432734567fb493d4c011d2bfce5ab63ab3d3b4a3"
+  integrity sha512-hW2I4jmrXzWzHhb3yearV8v688XhX6Fxly+cfC3YH8XpVsp0P/ozQkIudQiR0IfTLfh4IiOOnTeCjrY1ASd+yQ==
 
 growl@1.10.5:
   version "1.10.5"
