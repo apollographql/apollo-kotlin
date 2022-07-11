@@ -3,7 +3,7 @@ def versions = [
     androidPluginMin    : '3.4.2',
     androidxSqlite      : '2.1.0',
     antlr4              : '4.9.3',
-    apollo              : '3.3.3-SNAPSHOT', // This is used by the gradle integration tests to get the artifacts locally
+    apollo              : '3.4.0', // This is used by the gradle integration tests to get the artifacts locally
     cache               : '2.0.2',
     guava               : '28.0-jre',
     javaPoet            : '1.13.0',
