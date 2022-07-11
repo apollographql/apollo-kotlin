@@ -1,4 +1,5 @@
 @file:JvmName("-checkApolloReservedEnumValueNames")
+
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloInternal
@@ -16,9 +17,11 @@ fun checkApolloReservedEnumValueNames(schema: Schema): List<Issue> {
       .values
       .filterIsInstance<GQLEnumTypeDefinition>()
   ) {
+    val enumNames = mutableListOf<String>()
     for (value in enumDefinition.enumValues) {
+      val targetName = value.directives.findTargetName(schema)
+
       if (value.name.isApolloReservedEnumValueName()) {
-        val targetName = value.directives.findTargetName(schema)
         if (targetName == null) {
           issues.add(
               Issue.ReservedEnumValueName(
@@ -26,14 +29,29 @@ fun checkApolloReservedEnumValueNames(schema: Schema): List<Issue> {
                   sourceLocation = value.sourceLocation
               )
           )
-        } else if (targetName.isApolloReservedEnumValueName()) {
+        }
+      }
+
+      if (targetName != null) {
+        if (targetName.isApolloReservedEnumValueName()) {
           issues.add(
               Issue.ReservedEnumValueName(
-                  message = "'${value.name}' is a reserved enum value name, please use a different name",
+                  message = "'${targetName}' is a reserved enum value name, please use a different name",
                   sourceLocation = value.sourceLocation
               )
           )
+        } else if (targetName in enumNames) {
+          issues.add(
+              Issue.ReservedEnumValueName(
+                  message = "'${targetName}' is already defined in this enum, please use a different name",
+                  sourceLocation = value.sourceLocation
+              )
+          )
+        } else {
+          enumNames.add(targetName)
         }
+      } else {
+        enumNames.add(value.name)
       }
     }
   }
