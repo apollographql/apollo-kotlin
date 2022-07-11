@@ -10,10 +10,10 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class ObjectBuilder(
+internal class ObjectBuilder(
     private val context: JavaContext,
-    private val obj: IrObject
-): JavaClassBuilder {
+    private val obj: IrObject,
+) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(name = obj.name)

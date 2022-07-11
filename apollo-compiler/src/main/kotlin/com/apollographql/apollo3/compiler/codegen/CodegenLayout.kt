@@ -72,10 +72,10 @@ abstract class CodegenLayout(
     }
   }
 
-  fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
-  fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
-  fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
-  fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
+  internal fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
+  internal fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
+  internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
+  internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
 
   internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
   internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
@@ -126,7 +126,7 @@ abstract class CodegenLayout(
       }
     }
 
-    fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
+    internal fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()
       } else {
@@ -137,7 +137,7 @@ abstract class CodegenLayout(
       return (if (isOther) "Other" else "") + name
     }
 
-    fun modelName(info: IrFieldInfo): String {
+    internal fun modelName(info: IrFieldInfo): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()
       } else {

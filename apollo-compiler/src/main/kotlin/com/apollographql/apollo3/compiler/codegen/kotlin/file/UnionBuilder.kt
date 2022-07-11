@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class UnionBuilder(
+internal class UnionBuilder(
     private val context: KotlinContext,
-    private val union: IrUnion
-): CgFileBuilder {
+    private val union: IrUnion,
+) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(name = union.name)

@@ -43,7 +43,7 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class CompiledSelectionsBuilder(
+internal class CompiledSelectionsBuilder(
     private val context: JavaContext,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val schema: Schema,

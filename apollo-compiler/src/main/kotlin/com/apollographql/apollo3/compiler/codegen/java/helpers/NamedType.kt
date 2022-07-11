@@ -18,7 +18,7 @@ import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterSpec
 import com.squareup.javapoet.ParameterizedTypeName
 
-class NamedType(
+internal class NamedType(
     val graphQlName: String,
     val description: String?,
     val deprecationReason: String?,
@@ -36,14 +36,14 @@ internal fun NamedType.toParameterSpec(context: JavaContext): ParameterSpec {
 }
 
 
-fun IrInputField.toNamedType() = NamedType(
+internal fun IrInputField.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
     description = description,
     deprecationReason = deprecationReason,
 )
 
-fun IrVariable.toNamedType() = NamedType(
+internal fun IrVariable.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
     description = null,

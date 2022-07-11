@@ -19,7 +19,7 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class SchemaBuilder(
+internal class SchemaBuilder(
     private val context: JavaContext,
     private val generatedSchemaName: String,
     private val objects: List<IrObject>,

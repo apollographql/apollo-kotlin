@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class OperationResponseAdapterBuilder(
+internal class OperationResponseAdapterBuilder(
     val context: JavaContext,
     val operation: IrOperation,
     val flatten: Boolean,

@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 
-class FragmentModelsBuilder(
+internal class FragmentModelsBuilder(
     val context: KotlinContext,
     val fragment: IrNamedFragment,
     modelGroup: IrModelGroup,

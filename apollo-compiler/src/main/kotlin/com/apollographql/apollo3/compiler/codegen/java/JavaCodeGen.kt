@@ -30,7 +30,7 @@ import com.squareup.javapoet.JavaFile
 import java.io.File
 
 
-class JavaCodeGen(
+internal class JavaCodeGen(
     private val ir: Ir,
     private val resolverInfos: List<ResolverInfo>,
     private val useSemanticNaming: Boolean,

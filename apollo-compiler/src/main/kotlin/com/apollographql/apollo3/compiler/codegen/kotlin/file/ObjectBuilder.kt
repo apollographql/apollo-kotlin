@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class ObjectBuilder(
+internal class ObjectBuilder(
     private val context: KotlinContext,
-    private val obj: IrObject
-): CgFileBuilder {
+    private val obj: IrObject,
+) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(name = obj.name)

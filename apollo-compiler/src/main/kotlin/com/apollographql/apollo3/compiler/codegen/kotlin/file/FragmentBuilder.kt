@@ -17,7 +17,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-class FragmentBuilder(
+internal class FragmentBuilder(
     private val context: KotlinContext,
     private val generateFilterNotNull: Boolean,
     private val fragment: IrNamedFragment,

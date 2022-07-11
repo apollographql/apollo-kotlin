@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-fun serializeVariablesFunSpec(
+internal fun serializeVariablesFunSpec(
     adapterClassName: TypeName?,
     emptyMessage: String,
 ): FunSpec {
@@ -44,7 +44,7 @@ fun serializeVariablesFunSpec(
       .build()
 }
 
-fun adapterFunSpec(
+internal fun adapterFunSpec(
     resolver: KotlinResolver,
     property: IrProperty,
 ): FunSpec {
@@ -62,7 +62,7 @@ fun adapterFunSpec(
       .build()
 }
 
-fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClassName: ClassName): FunSpec {
+internal fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClassName: ClassName): FunSpec {
   return FunSpec.builder(rootField)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.CompiledField)
@@ -81,7 +81,7 @@ fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClas
       .build()
 }
 
-fun TypeSpec.maybeAddFilterNotNull(generateFilterNotNull: Boolean): TypeSpec {
+internal fun TypeSpec.maybeAddFilterNotNull(generateFilterNotNull: Boolean): TypeSpec {
   if (!generateFilterNotNull) {
     return this
   }

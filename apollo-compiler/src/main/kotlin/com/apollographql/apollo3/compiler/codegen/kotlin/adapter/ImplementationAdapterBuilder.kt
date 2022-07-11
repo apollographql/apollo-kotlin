@@ -4,7 +4,6 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrModel
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -20,7 +19,7 @@ import com.squareup.kotlinpoet.joinToCode
  * If no typename is present, we can make the generated adapter implement the [Adapter] interface
  * so that extension functions like `.obj(buffered)` can be used.
  */
-class ImplementationAdapterBuilder(
+internal class ImplementationAdapterBuilder(
     private val context: KotlinContext,
     private val model: IrModel,
     private val path: List<String>,

@@ -26,7 +26,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
-import com.apollographql.apollo3.compiler.maybeMakeNamesUnique
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
@@ -35,7 +34,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
 
-class KotlinCodeGen(
+internal class KotlinCodeGen(
     private val ir: Ir,
     private val resolverInfos: List<ResolverInfo>,
     private val generateAsInternal: Boolean = false,
@@ -65,7 +64,7 @@ class KotlinCodeGen(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val nameToClassName: Map<String, String>,
     private val addJvmOverloads: Boolean,
-    private val requiresOptInAnnotation: String?
+    private val requiresOptInAnnotation: String?,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files

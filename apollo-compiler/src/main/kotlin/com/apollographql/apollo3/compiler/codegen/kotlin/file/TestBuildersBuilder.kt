@@ -32,7 +32,7 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-class TestBuildersBuilder(
+internal class TestBuildersBuilder(
     val context: KotlinContext,
     val dataModelGroup: IrModelGroup,
     val operation: IrOperation,

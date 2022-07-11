@@ -9,7 +9,7 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class MonomorphicFieldResponseAdapterBuilder(
+internal class MonomorphicFieldResponseAdapterBuilder(
     val context: JavaContext,
     val model: IrModel,
     val path: List<String>,

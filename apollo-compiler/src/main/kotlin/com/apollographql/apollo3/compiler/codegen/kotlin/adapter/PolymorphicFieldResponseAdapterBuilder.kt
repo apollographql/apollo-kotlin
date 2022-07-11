@@ -18,7 +18,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
 
-class PolymorphicFieldResponseAdapterBuilder(
+internal class PolymorphicFieldResponseAdapterBuilder(
     val context: KotlinContext,
     val modelGroup: IrModelGroup,
     val path: List<String>,

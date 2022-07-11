@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
 import com.squareup.kotlinpoet.TypeSpec
 
-interface ResponseAdapterBuilder {
+internal interface ResponseAdapterBuilder {
 
   fun prepare()
 

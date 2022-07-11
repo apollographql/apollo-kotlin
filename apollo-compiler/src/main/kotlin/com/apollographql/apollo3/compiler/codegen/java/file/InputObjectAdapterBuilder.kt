@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 
-class InputObjectAdapterBuilder(
+internal class InputObjectAdapterBuilder(
     val context: JavaContext,
     val inputObject: IrInputObject,
-): JavaClassBuilder {
+) : JavaClassBuilder {
   val packageName = context.layout.typeAdapterPackageName()
   val simpleName = context.layout.inputObjectAdapterName(inputObject.name)
 

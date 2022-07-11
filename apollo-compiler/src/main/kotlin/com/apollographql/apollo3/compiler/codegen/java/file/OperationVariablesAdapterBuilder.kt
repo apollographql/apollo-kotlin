@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 
-class OperationVariablesAdapterBuilder(
+internal class OperationVariablesAdapterBuilder(
     val context: JavaContext,
-    val operation: IrOperation
-): JavaClassBuilder {
+    val operation: IrOperation,
+) : JavaClassBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.filePath)
   val simpleName = context.layout.operationVariablesAdapterName(operation)
   override fun prepare() {

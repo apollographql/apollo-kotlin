@@ -10,10 +10,10 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class CustomScalarBuilder(
+internal class CustomScalarBuilder(
     private val context: JavaContext,
-    private val customScalar: IrCustomScalar
-): JavaClassBuilder {
+    private val customScalar: IrCustomScalar,
+) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(name = customScalar.name))

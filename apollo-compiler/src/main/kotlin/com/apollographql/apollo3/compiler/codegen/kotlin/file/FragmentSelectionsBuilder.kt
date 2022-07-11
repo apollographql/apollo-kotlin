@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSele
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.kotlinpoet.ClassName
 
-class FragmentSelectionsBuilder(
+internal class FragmentSelectionsBuilder(
     val context: KotlinContext,
     val fragment: IrNamedFragment,
     val schema: Schema,

@@ -16,7 +16,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-class SchemaBuilder(
+internal class SchemaBuilder(
     private val context: KotlinContext,
     private val generatedSchemaName: String,
     private val objects: List<IrObject>,

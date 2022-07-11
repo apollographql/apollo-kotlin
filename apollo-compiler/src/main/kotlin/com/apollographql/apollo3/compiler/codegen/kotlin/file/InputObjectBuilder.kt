@@ -11,7 +11,7 @@ import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class InputObjectBuilder(
+internal class InputObjectBuilder(
     val context: KotlinContext,
     val inputObject: IrInputObject,
 ) : CgFileBuilder {

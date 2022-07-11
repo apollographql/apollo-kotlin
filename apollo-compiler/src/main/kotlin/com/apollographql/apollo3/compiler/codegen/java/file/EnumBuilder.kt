@@ -21,7 +21,7 @@ import com.squareup.javapoet.ParameterSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class EnumBuilder(
+internal class EnumBuilder(
     private val context: JavaContext,
     private val enum: IrEnum,
 ) : JavaClassBuilder {

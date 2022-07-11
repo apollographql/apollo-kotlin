@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.ir.IrCustomScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class CustomScalarBuilder(
+internal class CustomScalarBuilder(
     private val context: KotlinContext,
     private val customScalar: IrCustomScalar,
 ) : CgFileBuilder {
