@@ -18,7 +18,7 @@ actual class SqlNormalizedCacheFactory internal constructor(
    * If [baseDir] is a relative path, it will be interpreted relative to the current working directory
    */
   constructor(name: String?, baseDir: String?) : this(createDriver(name, baseDir, getSchema()))
-  constructor(name: String) : this(name, null)
+  actual constructor(name: String?) : this(name, null)
   constructor() : this("apollo.db")
 
   override fun create(): SqlNormalizedCache {
