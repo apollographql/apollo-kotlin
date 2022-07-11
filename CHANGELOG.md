@@ -1,6 +1,58 @@
 Change Log
 ==========
 
+# Version 3.4.0
+
+_2022-07-11_
+
+This release contains a few important bug fixes (#4214, #4224, #4247, #4256), makes it possible to compile with Gradle
+7.4 and `apollo-gradle-plugin` (#4218).
+
+It also introduces `-incubating` cache artifacts.
+
+## 💙️ External contributors
+
+Many thanks to @ArjanSM, @zebehringer, @mm-kk-experiments, @mune0903, @stengvac, @elenigen, @shamsidinb,
+@StylianosGakis for the awesome contributions 😃!
+
+## ✨️ [new] `-incubating` cache artifacts.
+
+This version introduces the below artifacts:
+
+- `apollo-normalized-cache-incubating`
+- `apollo-normalized-cache-api-incubating`
+- `apollo-normalized-cache-sqlite-incubating`
+
+These artifacts introduce new APIs to work with cache expiration and pagination (as well
+as [other cache improvements](https://github.com/apollographql/apollo-kotlin/issues/2331) in the future).
+
+These artifacts have no backward compatibility guarantees and most likely have worse performance than the non-incubating
+artifacts. Documentation will be added once the API stabilize. In the short term, the best place to look for examples
+are the integration tests:
+
+- [Expiration tests](https://github.com/apollographql/apollo-kotlin/blob/363c73d89f1f0bbe773e98fbfac873c8b93b666d/tests/sqlite/src/commonTest/kotlin/ExpirationTest.kt)
+- [Pagination tests](https://github.com/apollographql/apollo-kotlin/tree/d5b4fc3f12087e8a3585cd63531ccc590dee3098/tests/pagination/src/commonTest/kotlin)
+
+_Note_: The experimental `withDates: Boolean` argument was introduced in 3.3.1 in the regular artifacts and is removed
+as part of this release. Use the `-incubating` artifacts to use it.
+
+## 👷‍ All changes
+
+- add TrimmableNormalizedCacheFactory (#4239)
+- 🚧 remove withDates (#4257)
+- 🗄️ Chunk parameters in large responses (#4256)
+- Fix for improper handling of JsonNumber in BufferedSinkJsonWriter (#4247)
+- Incubating modules for the next gen cache (#4241)
+- Pagination: fixes in FieldRecordMerger and MemoryCache (#4237)
+- make it possible to reuse a File Upload (#4228)
+- Persist Record arguments/metadata with the SQL Json backend (#4211)
+- requestedDispatcher -> dispatcher (#4220)
+- Fix test errors were emitted outside the Flow (#4224)
+- Make it possible to compile with Kotlin 1.5 and apollo-gradle-plugin (#4218)
+- 🏖️ Relax MapJsonReader endObject, fixes reading inline + named fragments with compat models (#4214)
+- Introduce RecordMerger (#4197)
+- Add @typePolicy(embeddedFields: String! = "") (#4196)
+
 # Version 3.3.2
 
 _2022-06-17_
@@ -18,29 +70,42 @@ multimodule setup. It also includes a fix for incorrect generated code when usin
 
 _2022-06-13_
 
-This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test Builders. It also contains a number of other improvements and bug fixes!
+This release introduces `@typePolicy` on interface/enums, improvements on subscription error handling, and on Test
+Builders. It also contains a number of other improvements and bug fixes!
 
 ## ✨️ [new] `@typePolicy` on interfaces and unions (#4131)
-[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be declared on interfaces and unions. Thank you @bubba for the contribution!
+
+[The `@typePolicy` directive](https://www.apollographql.com/docs/kotlin/caching/declarative-ids#typepolicy) can now be
+declared on interfaces and unions. Thank you @bubba for the contribution!
 
 ## 🔌 WebSockets / Subscriptions error handling (#4147)
-An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more generic `ApolloNetworkError` if a subscription fails due to a specific operation error.
+
+An issue where `websocketReopenWhen` was not called in some cases was fixed. Also, this release
+introduces `SubscriptionOperationException`. A `SubscriptionOperationException` will be thrown instead of the more
+generic `ApolloNetworkError` if a subscription fails due to a specific operation error.
 
 ## 📐 Test Builders improvements and fixes
+
 * A DslMarker was added to improve usage with nested builders (#4089)
 * When calling a builder, but not assigning it to a field, an error is now thrown, preventing mistakes (#4122)
 * The error message displayed when `__typename` is missing was made clearer (#4146)
 * Fix: use `rawValue` instead of `name` for enums (#4121)
 
 ## ✨️ [new] ApolloClient implements Closable (#4142)
-`ApolloClient` now implements `okio.Closable` so you can use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @yogurtearl for this contribution!
+
+`ApolloClient` now implements `okio.Closable` so you can
+use [`use`](https://square.github.io/okio/3.x/okio/okio/okio/use.html) with it. Thanks @yogurtearl for this
+contribution!
 
 ## ✨️ [new] experimental `@targetName` directive on enum values (#4144)
-If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the codeGen to use the specified name for the value instead. This directive is experimental for now.
+
+If an enum value name is clashing with a reserved name (e.g. `type`) you can now use this directive to instruct the
+codeGen to use the specified name for the value instead. This directive is experimental for now.
 
 ## ✨️ [new] experimental support for renaming directives (#4174)
 
-As we add more client directives, the risk of nameclash with existing schema directives increases. If this happens, you can now import Apollo client directives using `@link`:
+As we add more client directives, the risk of nameclash with existing schema directives increases. If this happens, you
+can now import Apollo client directives using `@link`:
 
 ```graphql
 # extra.graphqls
@@ -57,9 +122,10 @@ This adds a `@kotlin_labs__` prefix to all Apollo client directives:
 }
 ```
 
-
 ## 🤖 `SqlNormalizedCacheFactory` initialization on Android (#4104)
-It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context` is automatically provided, via [App Startup](https://developer.android.com/topic/libraries/app-startup).
+
+It is no longer necessary to pass a `Context` when initializing the `SqlNormalizedCacheFactory` on Android. A `Context`
+is automatically provided, via [App Startup](https://developer.android.com/topic/libraries/app-startup).
 
 ```kotlin
 // Before
@@ -70,17 +136,20 @@ val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("apollo.db")
 ```
 
 ## 📝 [new] Public API tracking
-This release starts tracking the public API of all modules, including MockServer. Even if the API remains experimental, we'll try to keep the number of breaking changes low in the future.
+
+This release starts tracking the public API of all modules, including MockServer. Even if the API remains experimental,
+we'll try to keep the number of breaking changes low in the future.
 
 ## 👷‍ All changes
-- 🐘  publish `apollo-gradle-plugin-external` (#4078)
+
+- 🐘 publish `apollo-gradle-plugin-external` (#4078)
 - publish the R8 mapping file along the relocated jar (#4085)
 - Fix test directories not cleared (#4083)
 - Do not use 'header' as a enum value name as it breaks the Kotlin compiler (#4086)
 - 🧪 @experimental support (#4091)
 - @experimental -> @requiresOptIn (#4175)
 - Do not buffer entire body in Http Cache (#4076)
-- ⬇️  add SchemaDownloader.download() (#4088)
+- ⬇️ add SchemaDownloader.download() (#4088)
 - add DslMarker for test builders (#4089)
 - MockServer: make MockResponse.body a Flow<ByteString> (#4096)
 - Issue-3909: add ApolloResponse cache headers (#4102)
@@ -101,42 +170,57 @@ This release starts tracking the public API of all modules, including MockServer
 - Do not bypass websocketReopenWhen {} (#4147)
 - SDLWriter: join implemented interfaces with & instead of space (#4151)
 - Escape "type" in enums and sealed classes (#4144)
-- 🧰  introduce apollo-tooling and apollo-cli (#4153)
+- 🧰 introduce apollo-tooling and apollo-cli (#4153)
 - Fix incorrect content-length in MockServer (#4162)
 - Allow capitalized field names if flattenModels is true (#4154)
-- 🏷️  Allow namespacing and renaming of directives (#4174)
+- 🏷️ Allow namespacing and renaming of directives (#4174)
 
 ## ❤️ External contributors
 
-Many thanks to @tajchert, @asimonigh, @hrach, @ArjanSM, @yshrsmz, @ephemient, @bubba, @eboudrant and @yogurtearl for contributing to this release! 🙏
-
+Many thanks to @tajchert, @asimonigh, @hrach, @ArjanSM, @yshrsmz, @ephemient, @bubba, @eboudrant and @yogurtearl for
+contributing to this release! 🙏
 
 # Version 3.3.0
 
 _2022-05-04_
 
-This is the first release with [HMPP](https://kotlinlang.org/docs/multiplatform-hierarchy.html) support. If you're using multiplatform, updating to Kotlin 1.6.21 is strongly encouraged. 
+This is the first release with [HMPP](https://kotlinlang.org/docs/multiplatform-hierarchy.html) support. If you're using
+multiplatform, updating to Kotlin 1.6.21 is strongly encouraged.
 
 This release also brings WebSocket related improvements and other fixes!
 
 ## ✨️ [new] Hierarchical MultiPlatform Project (HMPP) (#4033)
 
-When using Apollo Kotlin on a multiplatform project, this release is compatible with the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to share common code among several targets. Using HMPP in your project also fixes some issues when compiling Kotlin metadata. See https://github.com/apollographql/apollo-kotlin/issues/4019 and https://youtrack.jetbrains.com/issue/KT-51970/ for more details.
+When using Apollo Kotlin on a multiplatform project, this release is compatible with
+the [hierarchical project structure](https://kotlinlang.org/docs/multiplatform-hierarchy.html), which makes it easier to
+share common code among several targets. Using HMPP in your project also fixes some issues when compiling Kotlin
+metadata. See https://github.com/apollographql/apollo-kotlin/issues/4019
+and https://youtrack.jetbrains.com/issue/KT-51970/ for more details.
 
-**✋ Note**: If you're using multiplatform, we strongly encourage updating to Kotlin 1.6.21. If that is not an option, you might have issues resolving dependencies. More infos in [this issue](https://github.com/apollographql/apollo-kotlin/issues/4095#issuecomment-1123571706).
+**✋ Note**: If you're using multiplatform, we strongly encourage updating to Kotlin 1.6.21. If that is not an option,
+you might have issues resolving dependencies. More infos
+in [this issue](https://github.com/apollographql/apollo-kotlin/issues/4095#issuecomment-1123571706).
 
 ## ✨️ [new] `WebSocketNetworkTransport.closeConnection` (#4049)
 
-This new method can be used in conjunction with [`reopenWhen`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/web-socket-reopen-when.html)  to force a reconnection to the server. This could be useful for instance when needing to pass new auth tokens in the headers. If you were using `subscriptionManager.reconnect()` in 2.x, `closeConnection` is a simple way to achieve the same behaviour.
-
+This new method can be used in conjunction
+with [`reopenWhen`](https://apollographql.github.io/apollo-kotlin/kdoc/apollo-runtime/com.apollographql.apollo3/-apollo-client/-builder/web-socket-reopen-when.html)
+to force a reconnection to the server. This could be useful for instance when needing to pass new auth tokens in the
+headers. If you were using `subscriptionManager.reconnect()` in 2.x, `closeConnection` is a simple way to achieve the
+same behaviour.
 
 ## ✨️ [new] `GraphQLWsProtocol.connectionPayload` is now a lambda (#4043)
 
-With `GraphQLWsProtocol`, if you need to pass parameters to the connection payload, previously you would pass them as a static map to the builder. With this change you can now pass a lambda providing them as needed. This facilitates passing fresh auth tokens when connecting.
+With `GraphQLWsProtocol`, if you need to pass parameters to the connection payload, previously you would pass them as a
+static map to the builder. With this change you can now pass a lambda providing them as needed. This facilitates passing
+fresh auth tokens when connecting.
 
 ## ✨️ [new] Add insecure option to download schema (#4021)
 
-You can now use the `--insecure` flag when downloading a schema with [`downloadApolloSchema`](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/#downloading-a-schema), to bypass the certificate check, which can be useful if a server is configured with a self-signed certificate for instance.
+You can now use the `--insecure` flag when downloading a schema
+with [`downloadApolloSchema`](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/#downloading-a-schema)
+, to bypass the certificate check, which can be useful if a server is configured with a self-signed certificate for
+instance.
 
 ## 👷‍ All changes
 
@@ -159,18 +243,23 @@ Many thanks to @CureleaAndrei and @kdk96 for contributing to this release! 🙏
 
 ## ⚙️ Deprecations
 
-- `BearerTokenInterceptor` was provided as an example but is too simple for most use cases, and has therefore been deprecated
+- `BearerTokenInterceptor` was provided as an example but is too simple for most use cases, and has therefore been
+  deprecated
   in this release. [This page](https://www.apollographql.com/docs/kotlin/advanced/authentication) provides more details
   about authentication.
-- The previous ways of passing parameters to the connection payload with `GraphQLWsProtocol` has been deprecated (see above).
+- The previous ways of passing parameters to the connection payload with `GraphQLWsProtocol` has been deprecated (see
+  above).
 
 # Version 3.2.2
 
 _2022-04-11_
 
-A maintenance release to fix the `addJvmOverloads` option added in 3.2.0 as well as other fixes. If you're using APQs, the mutations are now always send using `POST`. See [#4006](https://github.com/apollographql/apollo-kotlin/issues/4006#issuecomment-1092628783) for details and a way to override the behaviour if you really need to.
+A maintenance release to fix the `addJvmOverloads` option added in 3.2.0 as well as other fixes. If you're using APQs,
+the mutations are now always send using `POST`.
+See [#4006](https://github.com/apollographql/apollo-kotlin/issues/4006#issuecomment-1092628783) for details and a way to
+override the behaviour if you really need to.
 
-Many thanks to @benedict-lim, @olivierg13, @konomae and @sproctor for their contributions 💙 
+Many thanks to @benedict-lim, @olivierg13, @konomae and @sproctor for their contributions 💙
 
 ## 👷‍ All changes
 
@@ -179,7 +268,7 @@ Many thanks to @benedict-lim, @olivierg13, @konomae and @sproctor for their cont
 * Add configurable headers to WebSocketNetworkTransport (#3995)
 * Handle SqlNormalizedCache merge APIs Exceptions with ApolloExceptionHandler (#4002)
 * Add adapter for java.time.OffsetDateTime (#4007)
-* ⏰  Add tests for date adapters (#3999)
+* ⏰ Add tests for date adapters (#3999)
 * Fix wrong LocalDate and LocalDateTime formats in JavaTimeAdapters (#3997)
 
 # Version 3.2.1
@@ -190,35 +279,41 @@ This release introduces a few improvements and bug fixes.
 
 ## ✨️ [new] `ApolloCall<D>.emitCacheMisses(Boolean)` (#3980)
 
-When observing the cache with `watch`, the behavior was to not emit cache misses at all, which may not desirable in certain cases. With this new option, you can now choose to emit them: in that case responses will be emitted with a null `data`.
+When observing the cache with `watch`, the behavior was to not emit cache misses at all, which may not desirable in
+certain cases. With this new option, you can now choose to emit them: in that case responses will be emitted with a
+null `data`.
 
 This can be used like so:
 
 ```kotlin
 apolloClient.query(query)
-  .fetchPolicy(FetchPolicy.CacheOnly)
-  .emitCacheMisses(true)
-  .watch()
-  .collect { response ->
-    // response.data will be null in case of cache misses
-  }
+    .fetchPolicy(FetchPolicy.CacheOnly)
+    .emitCacheMisses(true)
+    .watch()
+    .collect { response ->
+      // response.data will be null in case of cache misses
+    }
 ```
 
-This is also closer to the behavior that was in place in v2. Many thanks to @mateuszkwiecinski for the insights and raising the issue!
+This is also closer to the behavior that was in place in v2. Many thanks to @mateuszkwiecinski for the insights and
+raising the issue!
 
 ## ⚙️ [breaking] Allow configuration of frame types used in `SubscriptionWsProtocol` and default to Text (#3992)
 
-When using subscriptions over WebSockets with `SubscriptionWsProtocol` (the default), the frames were sent in the binary format. It was reported that this was not compatible with certain servers ([DGS](https://netflix.github.io/dgs), [graphql-java-kickstart](https://github.com/graphql-java-kickstart/graphql-spring-boot)) that are expecting text frames. This is now fixed and the default is to send text frames.
+When using subscriptions over WebSockets with `SubscriptionWsProtocol` (the default), the frames were sent in the binary
+format. It was reported that this was not compatible with certain servers ([DGS](https://netflix.github.io/dgs)
+, [graphql-java-kickstart](https://github.com/graphql-java-kickstart/graphql-spring-boot)) that are expecting text
+frames. This is now fixed and the default is to send text frames.
 
-> ⚠️ This may be a breaking change if your server expects binary frames only! 
+> ⚠️ This may be a breaking change if your server expects binary frames only!
 
 If that is the case, you can use the new `frameType` option to configure the frame type to be sent:
 
 ```kotlin
 client = ApolloClient.Builder()
-  .webSocketServerUrl("wss://...")
-  .wsProtocol(GraphQLWsProtocol.Factory(frameType = WsFrameType.Binary))
-  .build()
+    .webSocketServerUrl("wss://...")
+    .wsProtocol(GraphQLWsProtocol.Factory(frameType = WsFrameType.Binary))
+    .build()
 ```
 
 Many thanks to @Krillsson and @aviewfromspace1 for the insights and raising the issue!
@@ -229,25 +324,26 @@ Many thanks to @Krillsson and @aviewfromspace1 for the insights and raising the 
 * add `ApolloRequest.newBuilder(operation: Operation<E>)`  (#3988)
 * Add exception handlers to ApolloCacheInterceptor and SqlNormalizedCache (#3989)
 * 📠 Fix some @DeprecatedSince annotations (#3983)
-* 👓  add ApolloCall<D>.emitCacheMisses(Boolean) (#3980)
-* ⚙️  Fix fragments on the root query type in operationBased codegen (#3973)
+* 👓 add ApolloCall<D>.emitCacheMisses(Boolean) (#3980)
+* ⚙️ Fix fragments on the root query type in operationBased codegen (#3973)
 
 ## ❤️ External contributors
 
 Many thanks to @AdamMTGreenberg and @Krillsson for the contributions! 🙏
 
-
 # Version 3.2.0
 
 _2022-03-29_
 
-💙 Thanks to @undermark5, @demoritas, @rkoron007, @akshay253101, @StylianosGakis, @Goooler, @jeffreydecker, @theBradfo, @anderssandven and @olivierg13 for contributing to this release.
+💙 Thanks to @undermark5, @demoritas, @rkoron007, @akshay253101, @StylianosGakis, @Goooler, @jeffreydecker, @theBradfo,
+@anderssandven and @olivierg13 for contributing to this release.
 
 This version adds JS WebSocket support, more options to deal with `__typename` amongst other features and bugfixes.
 
 ## ✨️ [new] JS WebSocket support (#3913)
 
-Version 3.2.0 now has WebSocket support for Javascript targets courtesy of @undermark5! This is a huge milestone and means the JS target is now even closer to its JVM and iOS counterparts.
+Version 3.2.0 now has WebSocket support for Javascript targets courtesy of @undermark5! This is a huge milestone and
+means the JS target is now even closer to its JVM and iOS counterparts.
 
 |  | `jvm` | Apple | `js` | `linuxX64`
 | --- | :---: |:-----:|:----:| :---: |
@@ -258,7 +354,8 @@ Version 3.2.0 now has WebSocket support for Javascript targets courtesy of @unde
 | `apollo-normalized-cache-sqlite` |✅|   ✅   |  🚫  |🚫|
 | `apollo-http-cache` |✅|  🚫   |  🚫  |🚫|
 
-The implementation is based on the [`ws`](https://github.com/websockets/ws) library on Node and the [`WebSocket` API](https://websockets.spec.whatwg.org//) on the browser and inspired by [Ktor](https://ktor.io/).
+The implementation is based on the [`ws`](https://github.com/websockets/ws) library on Node and
+the [`WebSocket` API](https://websockets.spec.whatwg.org//) on the browser and inspired by [Ktor](https://ktor.io/).
 
 ## ✨️ [new] Fine grained `__typename` control (#3939)
 
@@ -307,19 +404,22 @@ In addition, it introduces a `addTypename` Gradle option to have better control 
  */
 ```
 
-You can read more in the corresponding [Typename.md](https://github.com/apollographql/apollo-kotlin/blob/main/design-docs/Typename.md) design document.
-
+You can read more in the
+corresponding [Typename.md](https://github.com/apollographql/apollo-kotlin/blob/main/design-docs/Typename.md) design
+document.
 
 ## ✨️ [new] Maven publishing for multi-module apollo metadata (#3904)
 
-The Apollo Gradle plugin now creates a new "apollo" publication if `maven-publish` is found. This means you can now publish the Apollo metadata to a maven repository:
+The Apollo Gradle plugin now creates a new "apollo" publication if `maven-publish` is found. This means you can now
+publish the Apollo metadata to a maven repository:
 
 ```bash
 # In your producer project
 ./gradlew publishApolloPublicationTo[SomeRepository]
 ``` 
 
-Assuming your producer project is using `com.example:project:version` for maven coordinates, the Apollo metadata will be published at `com.example:project-apollo:version`:
+Assuming your producer project is using `com.example:project:version` for maven coordinates, the Apollo metadata will be
+published at `com.example:project-apollo:version`:
 
 ```kotlin
 // In your consumer project
@@ -329,11 +429,13 @@ dependencies {
 }
 ```
 
-**Note**: There are absolutely no forward/backward compatibility guarantees for Apollo metadata yet. The Apollo version used in the consumer **must** be the same as the one used in the producer.
+**Note**: There are absolutely no forward/backward compatibility guarantees for Apollo metadata yet. The Apollo version
+used in the consumer **must** be the same as the one used in the producer.
 
 ## ✨️ [new] `addJvmOverloads` Gradle option (#3907)
 
-For better Java interop, you can now opt-in `addJvmOverloads`. `addJvmOverloads` will add the `@JvmOverloads` to your Kotlin operations:
+For better Java interop, you can now opt-in `addJvmOverloads`. `addJvmOverloads` will add the `@JvmOverloads` to your
+Kotlin operations:
 
 ```kotlin
 @JvmOverloads
@@ -344,7 +446,7 @@ class GetHeroQuery(val id: String, val episode: Optional<Episode> = Optional.Abs
 
 Meaning you can now create a new query from Java without having to specify `episode`: `new GetHeroQuery("1002")`
 
-## 👷‍ All changes 
+## 👷‍ All changes
 
 * 📖 Add note to tutorial about `graphql-ws` library to tutorial (#3961)
 * Use ApolloCompositeException for HTTP CachePolicies (#3967)
@@ -370,8 +472,8 @@ Meaning you can now create a new query from Java without having to specify `epis
 * 👷 Test Builders: Fix enums in test resolver (#3894)
 * Validation: Detect missing arguments when there are no arguments at all (#3893)
 * Add support for receiving multiple bodies with multipart (#3889)
-* ✅  Validation: allow nullable variables in non-null locations if there is a default value (#3879)
-* 🗄️  HttpCache: do not cache mutations by default (#3873)
+* ✅ Validation: allow nullable variables in non-null locations if there is a default value (#3879)
+* 🗄️ HttpCache: do not cache mutations by default (#3873)
 * Chunked Transfer-Encoding support in MockServer (#3870)
 * Fix -1 body length in BatchingHttpInterceptor (#3874)
 * Fix issue in Java codegen where selectors returned ImmutableMapBuilder instances instead of Map (#3861)
@@ -386,16 +488,19 @@ It also contains bugfixes around the `@include` directives, MemoryCache and Grap
 
 ## ⚙️ [breaking] Fragment package name and `useSchemaPackageNameForFragments` (#3775)
 
-If you're using `packageNamesFromFilePaths()`, the package name of generated fragment classes has changed. 
+If you're using `packageNamesFromFilePaths()`, the package name of generated fragment classes has changed.
 
 Different generated types have different package names:
 
 * Generated types coming from operations are generated based on the operation path
-* Generated types coming from the schema (input objects, custom scalars and enums) are generated based on the schema path
+* Generated types coming from the schema (input objects, custom scalars and enums) are generated based on the schema
+  path
 
-Previously, fragments were using the schema path which is inconsistent because fragments are not defined in the schema but are executable files, like operations. 
+Previously, fragments were using the schema path which is inconsistent because fragments are not defined in the schema
+but are executable files, like operations.
 
-Version 3.1.0 now uses the same logic for fragments as for operations. To revert to the previous behaviour, you can use `useSchemaPackageNameForFragments`:
+Version 3.1.0 now uses the same logic for fragments as for operations. To revert to the previous behaviour, you can
+use `useSchemaPackageNameForFragments`:
 
 ```kotlin
 apollo {
@@ -403,7 +508,11 @@ apollo {
 }
 ```
 
-This is also done automatically if you're using `useVersion2Compat()`. Moving forward, the plan is to remove `useSchemaPackageNameForFragments` in favor of setting a custom `PackageNameGenerator`. If you have use cases that require `useSchemaPackageNameForFragments`, please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Aquestion%3A+Type%3A+Question&template=question.md&title=).
+This is also done automatically if you're using `useVersion2Compat()`. Moving forward, the plan is to
+remove `useSchemaPackageNameForFragments` in favor of setting a custom `PackageNameGenerator`. If you have use cases
+that require `useSchemaPackageNameForFragments`,
+please [reach out](https://github.com/apollographql/apollo-kotlin/issues/new?assignees=&labels=%3Aquestion%3A+Type%3A+Question&template=question.md&title=)
+.
 
 ## ✨ [New] `QueueTestNetworkTransport` (#3757)
 
@@ -434,7 +543,8 @@ assertEquals(testData.hero.name, actual.hero.name)
 
 ## ✨ [New] `MockServerHandler` (#3757)
 
-If you're testing at the HTTP layer, you can now define your own `MockServerHandler` to customize how the server is going to answer to requests:
+If you're testing at the HTTP layer, you can now define your own `MockServerHandler` to customize how the server is
+going to answer to requests:
 
 ```kotlin
 val customHandler = object : MockServerHandler {
@@ -457,27 +567,33 @@ val mockServer = MockServer(customHandler)
 
 ## ✨ [New] `FetchPolicy.CacheAndNetwork` (#3828)
 
-Previously, `FetchPolicy`s were limited to policies that emitted at most **one** response. There was a `executeCacheAndNetwork()` method but it felt asymmetrical. This version introduces `FetchPolicy.CacheAndNetwork` that can emit up to two responses:
+Previously, `FetchPolicy`s were limited to policies that emitted at most **one** response. There was
+a `executeCacheAndNetwork()` method but it felt asymmetrical. This version introduces `FetchPolicy.CacheAndNetwork` that
+can emit up to two responses:
 
 ```kotlin
 apolloClient.query(query)
-  // Check the cache and also use the network (1 or 2 values can be emitted)
-  .fetchPolicy(FetchPolicy.CacheAndNetwork)
-  // Execute the query and collect the responses
-  .toFlow().collect { response ->
+    // Check the cache and also use the network (1 or 2 values can be emitted)
+    .fetchPolicy(FetchPolicy.CacheAndNetwork)
+    // Execute the query and collect the responses
+    .toFlow().collect { response ->
       // ...
-  }
+    }
 ```
 
 ## ✨ [New] `ApolloCall<D>.fetchPolicyInterceptor(interceptor: ApolloInterceptor)` (#3743)
 
-If you need more customized ways to fetch data from the cache or more fine-grained error handling that does not come with the built-in `FetchPolicy`, you can now use `fetchPolicyInterceptor`:
+If you need more customized ways to fetch data from the cache or more fine-grained error handling that does not come
+with the built-in `FetchPolicy`, you can now use `fetchPolicyInterceptor`:
 
 ```kotlin
 // An, interceptor that will only use the network after getting a successful response
 val refetchPolicyInterceptor = object : ApolloInterceptor {
   var hasSeenValidResponse: Boolean = false
-  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+  override fun <D : Operation.Data> intercept(
+      request: ApolloRequest<D>,
+      chain: ApolloInterceptorChain
+  ): Flow<ApolloResponse<D>> {
     return if (!hasSeenValidResponse) {
       CacheOnlyInterceptor.intercept(request, chain).onEach {
         if (it.data != null) {
@@ -510,7 +626,7 @@ apollo {
   customScalarsMapping.set(mapOf(
       "Date" to "java.util.Date"
   ))
-  
+
   // With
   mapScalar("Date", "java.util.Date")
 }
@@ -525,7 +641,8 @@ apollo {
 }
 ```
 
-As an optimization, you can also provide the adapter at compile time. This will avoid a lookup at runtime everytime such a scalar is read:
+As an optimization, you can also provide the adapter at compile time. This will avoid a lookup at runtime everytime such
+a scalar is read:
 
 ```kotlin
 apollo {
@@ -551,11 +668,16 @@ apollo {
 
 ## 🚧 [Changed] `convertApolloSchema` and `downloadApolloSchema` now use paths relative to the root of the project (#3773, #3752)
 
-Apollo Kotlin adds two tasks to help to manage schemas: `convertApolloSchema` and `downloadApolloSchema`. These tasks are meant to be used from the commandline.
+Apollo Kotlin adds two tasks to help to manage schemas: `convertApolloSchema` and `downloadApolloSchema`. These tasks
+are meant to be used from the commandline.
 
-Previously, paths were interpreted using the current working directory with `File(path)`. Unfortunately, this is unreliable because Gradle might change the current working directory in some conditions (see [Gradle#13927](https://github.com/gradle/gradle/issues/13927) or [Gradle#6074](https://github.com/gradle/gradle/issues/6074) for an example).
+Previously, paths were interpreted using the current working directory with `File(path)`. Unfortunately, this is
+unreliable because Gradle might change the current working directory in some conditions (
+see [Gradle#13927](https://github.com/gradle/gradle/issues/13927)
+or [Gradle#6074](https://github.com/gradle/gradle/issues/6074) for an example).
 
-With 3.1.0 and onwards, paths, will be interpreted relative to the root project directory (`project.rootProject.file(path)`):
+With 3.1.0 and onwards, paths, will be interpreted relative to the root project
+directory (`project.rootProject.file(path)`):
 
 ```
 # schema is now interpreted relative to the root project directory and
@@ -568,7 +690,8 @@ With 3.1.0 and onwards, paths, will be interpreted relative to the root project 
 
 ## ❤️ External contributors
 
-Many thanks to @dhritzkiv, @mune0903, @StylianosGakis, @AchrafAmil and @jamesonwilliams for their awesome contributions! You rock 🎸 🤘 !
+Many thanks to @dhritzkiv, @mune0903, @StylianosGakis, @AchrafAmil and @jamesonwilliams for their awesome contributions!
+You rock 🎸 🤘 !
 
 ## 👷 All changes
 
@@ -595,21 +718,32 @@ Many thanks to @dhritzkiv, @mune0903, @StylianosGakis, @AchrafAmil and @jamesonw
 
 _2021-12-15_
 
-This is the first stable release for ~Apollo Android 3~ Apollo Kotlin 3 🎉! 
+This is the first stable release for ~Apollo Android 3~ Apollo Kotlin 3 🎉!
 
-There is [documentation](https://www.apollographql.com/docs/android/), a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/) and a blog post coming soon (we'll update these notes when it's out). 
+There is [documentation](https://www.apollographql.com/docs/android/),
+a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/) and a blog post coming soon (we'll update
+these notes when it's out).
 
 In a nutshell, Apollo Kotlin 3 brings:
 
 * [coroutine APIs](https://www.apollographql.com/docs/android/essentials/queries/) for easier concurrency
-* [multiplatform support](https://www.apollographql.com/docs/android/advanced/kotlin-native/) makes it possible to run the same code on Android, JS, iOS, MacOS and linux
-* [responseBased codegen](https://www.apollographql.com/docs/android/advanced/response-based-codegen/) is a new optional codegen that models fragments as interfaces
+* [multiplatform support](https://www.apollographql.com/docs/android/advanced/kotlin-native/) makes it possible to run
+  the same code on Android, JS, iOS, MacOS and linux
+* [responseBased codegen](https://www.apollographql.com/docs/android/advanced/response-based-codegen/) is a new optional
+  codegen that models fragments as interfaces
 * SQLite batching makes reading from the SQLite cache significantly faster
-* [Test builders](https://www.apollographql.com/docs/android/advanced/test-builders/) offer a simple APIs to build fake models for your tests
-* [The @typePolicy and @fieldPolicy](https://www.apollographql.com/docs/android/caching/declarative-ids/) directives make it easier to define your cache ids at compile time
-* [The @nonnull](https://www.apollographql.com/docs/android/advanced/nonnull/) directive catches null values at parsing time, so you don't have to deal with them in your UI code
+* [Test builders](https://www.apollographql.com/docs/android/advanced/test-builders/) offer a simple APIs to build fake
+  models for your tests
+* [The @typePolicy and @fieldPolicy](https://www.apollographql.com/docs/android/caching/declarative-ids/) directives
+  make it easier to define your cache ids at compile time
+* [The @nonnull](https://www.apollographql.com/docs/android/advanced/nonnull/) directive catches null values at parsing
+  time, so you don't have to deal with them in your UI code
 
-Feel free to ask questions by either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues), [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client) or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your invite [here](https://slack.kotl.in/)).
+Feel free to ask questions by
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+, [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
+or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
+invite [here](https://slack.kotl.in/)).
 
 ### Changes compared to `3.0.0-rc03`:
 
@@ -622,7 +756,6 @@ Feel free to ask questions by either [opening an issue on our GitHub repo](https
 * Promote JsonWriter extensions to public API (#3715)
 * Make customScalarAdapters and subscriptionsNetworkTransport public (#3714)
 
-
 # Version 3.0.0-rc03
 
 _2021-12-13_
@@ -631,8 +764,8 @@ Compared to the previous RC, this version adds a few new convenience API and fix
 
 💙 Many thanks to @ mateuszkwiecinski, @ schoeda and @ fn-jt for all the feedback 💙
 
-
 ## ✨ New APIs
+
 - Make `ApolloCall.operation` public (#3698)
 - Add `SubscriptionWsProtocolAdapter` (#3697)
 - Add `Operation.composeJsonRequest` (#3697)
@@ -643,20 +776,23 @@ Compared to the previous RC, this version adds a few new convenience API and fix
 - Fix incorrect merging of nested objects in JSON (#3672)
 - Fix duplicate query detection (#3699)
 
-
 # Version 3.0.0-rc02
 
 _2021-12-10_
 
-💙 Many thanks to @michgauz, @joeldenke, @rohandhruva, @schoeda, @CoreFloDev and @sproctor for all the feedback 💙  
+💙 Many thanks to @michgauz, @joeldenke, @rohandhruva, @schoeda, @CoreFloDev and @sproctor for all the feedback 💙
 
 ### ⚙️ [breaking] Merge ApolloQueryCall, ApolloSubscriptionCall, ApolloMutationCall (#3676)
 
-In order to simplify the API and keep the symmetry with `ApolloRequest<D>` and `ApolloResponse<D>`, `ApolloQueryCall<D, E>`, `ApolloSubscriptionCall<D, E>`, `ApolloMutationCall<D, E>` are replaced with `ApolloCall<D>`. This change should be mostly transparent but it's technically a breaking change. If you are passing `ApolloQueryCall<D, E>` variables, it is safe to drop the second type parameter and use `ApolloCall<D>` instead.
+In order to simplify the API and keep the symmetry with `ApolloRequest<D>` and `ApolloResponse<D>`
+, `ApolloQueryCall<D, E>`, `ApolloSubscriptionCall<D, E>`, `ApolloMutationCall<D, E>` are replaced with `ApolloCall<D>`.
+This change should be mostly transparent but it's technically a breaking change. If you are
+passing `ApolloQueryCall<D, E>` variables, it is safe to drop the second type parameter and use `ApolloCall<D>` instead.
 
 ### ✨ [New] Add `WebSocketNetworkTransport.reconnectWhen {}` (#3674)
 
-You now have the option to reconnect a WebSocket automatically when an error happens and re-subscribe automatically after the reconnection has happened. To do so, use the `webSocketReconnectWhen` parameter: 
+You now have the option to reconnect a WebSocket automatically when an error happens and re-subscribe automatically
+after the reconnection has happened. To do so, use the `webSocketReconnectWhen` parameter:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
@@ -678,7 +814,8 @@ val apolloClient = ApolloClient.Builder()
 
 ### Better Http Batching API (#3670)
 
-The `HttpBatchingEngine` has been moved to an `HttpInterceptor`. You can now configure Http batching with a specific method:
+The `HttpBatchingEngine` has been moved to an `HttpInterceptor`. You can now configure Http batching with a specific
+method:
 
 ```kotlin
 apolloClient = ApolloClient.Builder()
@@ -689,7 +826,8 @@ apolloClient = ApolloClient.Builder()
 
 ### All changes:
 
-* Add 2.x symbols (`Rx2Apollo`, `prefetch()`, `customAttributes()`, `ApolloIdlingResource.create()`) to help the transition (#3679)
+* Add 2.x symbols (`Rx2Apollo`, `prefetch()`, `customAttributes()`, `ApolloIdlingResource.create()`) to help the
+  transition (#3679)
 * Add canBeBatched var to ExecutionOptions (#3677)
 * Merge ApolloQueryCall, ApolloSubscriptionCall, ApolloMutationCall (#3676)
 * Add `WebSocketNetworkTransport.reconnectWhen {}` (#3674)
@@ -698,25 +836,32 @@ apolloClient = ApolloClient.Builder()
 * fix the name of the downloadServiceApolloSchemaFromRegistry task (#3669)
 * Fix DiskLruHttpCache concurrency (#3667)
 
-
 # Version 3.0.0-rc01
 
 _2021-12-07_
 
-This version is the release candidate for Apollo Android 3 🚀. Please try it and [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose), we'll fix them urgently.
+This version is the release candidate for Apollo Android 3 🚀. Please try it
+and [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose), we'll fix them urgently.
 
-There is [documentation](https://www.apollographql.com/docs/android/) and a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/). More details are coming soon. In a nutshell, Apollo Android 3 brings, amongst other things:
+There is [documentation](https://www.apollographql.com/docs/android/) and
+a [migration guide](https://www.apollographql.com/docs/android/migration/3.0/). More details are coming soon. In a
+nutshell, Apollo Android 3 brings, amongst other things:
 
 * [coroutine APIs](https://www.apollographql.com/docs/android/essentials/queries/) for easier concurrency
-* [multiplatform support](https://www.apollographql.com/docs/android/advanced/kotlin-native/) makes it possible to run the same code on Android, JS, iOS, MacOS and linux
-* [responseBased codegen](https://www.apollographql.com/docs/android/advanced/response-based-codegen/) is a new optional codegen that models fragments as interfaces
+* [multiplatform support](https://www.apollographql.com/docs/android/advanced/kotlin-native/) makes it possible to run
+  the same code on Android, JS, iOS, MacOS and linux
+* [responseBased codegen](https://www.apollographql.com/docs/android/advanced/response-based-codegen/) is a new optional
+  codegen that models fragments as interfaces
 * SQLite batching makes reading from the SQLite cache significantly faster
-* [Test builders](https://www.apollographql.com/docs/android/advanced/test-builders/) offer a simple APIs to build fake models for your tests
-* [The @typePolicy and @fieldPolicy](https://www.apollographql.com/docs/android/caching/declarative-ids/) directives make it easier to define your cache ids at compile time
-* [The @nonnull](https://www.apollographql.com/docs/android/advanced/nonnull/) directive catches null values at parsing time, so you don't have to deal with them in your UI code
+* [Test builders](https://www.apollographql.com/docs/android/advanced/test-builders/) offer a simple APIs to build fake
+  models for your tests
+* [The @typePolicy and @fieldPolicy](https://www.apollographql.com/docs/android/caching/declarative-ids/) directives
+  make it easier to define your cache ids at compile time
+* [The @nonnull](https://www.apollographql.com/docs/android/advanced/nonnull/) directive catches null values at parsing
+  time, so you don't have to deal with them in your UI code
 
-
-Compared to `beta05`, this version changes the default value of `generateOptionalOperationVariables`, is compatible with Gradle configuration cache and fixes a few other issues.
+Compared to `beta05`, this version changes the default value of `generateOptionalOperationVariables`, is compatible with
+Gradle configuration cache and fixes a few other issues.
 
 ## ⚙️ API changes
 
@@ -748,11 +893,15 @@ val query = GetTodosQuery(Optional.Present(100), Optional.Absent)
 
 ```
 
-- If you prefer, you can set `generateOptionalOperationVariables` to `false` to generate non-optional parameters globally
+- If you prefer, you can set `generateOptionalOperationVariables` to `false` to generate non-optional parameters
+  globally
 - This can also be controlled on individual variables with the `@optional` directive
-- More information about this can be found [here](https://www.apollographql.com/docs/android/advanced/operation-variables/)
+- More information about this can be
+  found [here](https://www.apollographql.com/docs/android/advanced/operation-variables/)
 
-We think this change will make more sense to the majority of users (and is consistent with Apollo Android v2's behavior) even though it may be more verbose, which is why it is possible to change the behavior via the `generateOptionalOperationVariables` config.
+We think this change will make more sense to the majority of users (and is consistent with Apollo Android v2's behavior)
+even though it may be more verbose, which is why it is possible to change the behavior via
+the `generateOptionalOperationVariables` config.
 
 To keep the `beta05` behavior, set `generateOptionalOperationVariables` to false in your Gradle configuration:
 
@@ -764,7 +913,8 @@ apollo {
 
 ### ApolloClient.Builder improvements (#3647)
 
-You can now pass WebSocket related options to the `ApolloClient.Builder` directly (previously this would have been done via `NetworkTransport`):
+You can now pass WebSocket related options to the `ApolloClient.Builder` directly (previously this would have been done
+via `NetworkTransport`):
 
 ```kotlin
 // Before
@@ -787,13 +937,14 @@ val apolloClient = ApolloClient.Builder()
 
 ### Upgrade to OkHttp 4 (#3653) (breaking)
 
-This version upgrades OkHttp to `4.9.3` (from `3.12.11`). This means Apollo Android now requires Android `apiLevel` `21`+. As OkHttp 3 enters end of life at the end of the year and the vast majority of devices now support `apiLevel` `21`, we felt this was a reasonable upgrade.
+This version upgrades OkHttp to `4.9.3` (from `3.12.11`). This means Apollo Android now requires Android `apiLevel` `21`
++. As OkHttp 3 enters end of life at the end of the year and the vast majority of devices now support `apiLevel` `21`,
+we felt this was a reasonable upgrade.
 
 ## 🪲 Bug fixes
 
 - Fixed an issue where it was not possible to restart a websocket after a network error (#3646)
 - Fixed an issue where Android Java projects could not use the Apollo Gradle plugin (#3652)
-
 
 ## 👷 All Changes
 
