@@ -42,7 +42,7 @@ on FIELD_DEFINITION
     | INPUT_FIELD_DEFINITION
     | ENUM_VALUE
 
-# Use the specified name for the enum value in the generated code.
+# Use the specified name in the generated code instead of the GraphQL name.
 # Use this for instance when the name would clash with a reserved keyword or field in the generated code.
 # This directive is experimental.
 directive @targetName(name: String!)
