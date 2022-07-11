@@ -21,9 +21,9 @@ jobs:
           distribution: 'temurin'
           java-version: 11
       - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
-      - name: Build with Gradle
         with:
           cache-write-only: true
+      - name: Build with Gradle
         run: |
           ulimit -c unlimited
           # Workaround an issue where kotlinNpmInstall outputs
@@ -49,9 +49,9 @@ jobs:
           distribution: 'temurin'
           java-version: 11
       - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
-      - name: Build with Gradle
         with:
           cache-write-only: true
+      - name: Build with Gradle
         run: |
           ulimit -c unlimited
           # Workaround an issue where kotlinNpmInstall outputs
@@ -77,9 +77,9 @@ jobs:
           distribution: 'temurin'
           java-version: 11
       - uses: gradle/gradle-build-action@v2
-      - name: Build with Gradle
         with:
           cache-write-only: true
+      - name: Build with Gradle
         run: |
           ulimit -c unlimited
           # Workaround an issue where kotlinNpmInstall outputs
