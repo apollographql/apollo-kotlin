@@ -32,15 +32,15 @@ mutation SingleUpload($file: Upload!) {
 Create an instance of `Upload` using one of the factory methods:
 
 ```kotlin
-val upload = DefaultUpload.Builder()
-              .fileName("filename.txt")
-              .content(okioSource)
-              .build()
+// If you're on Android/JVM, you can turn a File into an upload
+val upload = File.toUpload("application/json")
 
-// or if you're on the JVM
+// On multiplatform, you can use `DefaultUpload`
 val upload = DefaultUpload.Builder()
               .fileName("filename.txt")
-              .content(file)
+              .content { sink ->
+                okioSource.use { sink.writeAll(it) }
+              }
               .build()
 ```
 
