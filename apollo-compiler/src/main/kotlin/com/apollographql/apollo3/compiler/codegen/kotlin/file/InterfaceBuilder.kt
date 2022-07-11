@@ -15,7 +15,7 @@ class InterfaceBuilder(
 ): CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = iface.targetName)
+  private val simpleName = layout.compiledTypeName(name = iface.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName(packageName, simpleName))

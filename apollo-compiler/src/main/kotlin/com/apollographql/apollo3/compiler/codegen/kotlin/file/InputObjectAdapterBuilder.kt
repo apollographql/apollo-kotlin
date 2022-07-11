@@ -14,7 +14,7 @@ class InputObjectAdapterBuilder(
     val inputObject: IrInputObject,
 ): CgFileBuilder {
   val packageName = context.layout.typeAdapterPackageName()
-  val simpleName = context.layout.inputObjectAdapterName(inputObject.targetName)
+  val simpleName = context.layout.inputObjectAdapterName(inputObject.name)
 
   override fun prepare() {
     context.resolver.registerInputObjectAdapter(

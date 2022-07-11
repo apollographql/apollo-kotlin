@@ -27,7 +27,7 @@ class EnumAsSealedBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(name = enum.targetName)
+  private val simpleName = layout.enumName(name = enum.name)
 
   private val selfClassName = ClassName(
       packageName,

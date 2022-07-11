@@ -1,13 +1,13 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
@@ -186,8 +186,8 @@ object ApolloCompiler {
      * For Kotlin, we _could_ just change the file name (and not the class name) but
      * that only postpones the issue to later on when .class files are generated.
      */
-    val schemaTypes = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions).map { it.targetName }
-    val nameToClassName = maybeMakeNamesUnique(schemaTypes, outputDir)
+    val schemaTypesToTargetName: Map<String, String> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions).associate { it.name to it.targetName }
+    val nameToClassName: Map<String, String> = maybeMakeNamesUnique(schemaTypesToTargetName, outputDir)
 
     /**
      * Write the generated models
@@ -269,33 +269,33 @@ object ApolloCompiler {
   }
 }
 
-internal fun maybeMakeNamesUnique(names: List<String>, outputDir: File): Map<String, String> {
+internal fun maybeMakeNamesUnique(names: Map<String, String>, outputDir: File): Map<String, String> {
   val isCaseSensitive = isFileSystemCaseSensitive(outputDir)
 
   return if (isCaseSensitive) {
     // Case sensitive, just map to the name
-    names.associateBy { it }
+    names
   } else {
     resolveNameClashes(names)
   }
 }
 
-private fun resolveNameClashes(names: List<String>): Map<String, String> {
+private fun resolveNameClashes(names: Map<String, String>): Map<String, String> {
   val usedNames = mutableSetOf<String>()
 
   /**
    * sort to ensure consistent results.
    */
-  return names.sorted().map {
+  return names.toSortedMap().mapValues { (_, name) ->
     var i = 1
-    var newName = it
+    var newName = name
     while (usedNames.contains(newName.lowercase())) {
-      newName = "${it}$i"
+      newName = "${name}$i"
       i++
     }
     usedNames.add(newName.lowercase())
-    it to newName
-  }.toMap()
+    newName
+  }
 }
 
 private fun isFileSystemCaseSensitive(outputDir: File): Boolean {
