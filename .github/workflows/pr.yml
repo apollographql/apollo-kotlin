@@ -29,6 +29,8 @@ jobs:
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
           ./gradlew ciTestsGradle
+        with:
+          cache-write-only: true
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -55,6 +57,8 @@ jobs:
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy --stacktrace 
           ./gradlew --stop
           ./gradlew ciTestsNoGradle --stacktrace 
+        with:
+          cache-write-only: true
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -81,6 +85,8 @@ jobs:
           ./gradlew compileKotlinJsIr compileKotlinJsLegacy
           ./gradlew --stop
           ./gradlew -p tests ciBuild
+        with:
+          cache-write-only: true
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
