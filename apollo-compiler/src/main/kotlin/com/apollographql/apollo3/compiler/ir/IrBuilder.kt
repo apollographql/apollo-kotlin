@@ -12,7 +12,6 @@ import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -44,8 +43,8 @@ import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findNonnull
+import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
@@ -183,7 +182,7 @@ internal class IrBuilder(
 
     return IrObject(
         name = name,
-        targetName = directives.findTargetName(schema) ?: name,
+        targetName = directives.findTargetName(schema),
         implements = implementsInterfaces,
         keyFields = schema.keyFields(name),
         description = description,
@@ -199,7 +198,7 @@ internal class IrBuilder(
 
     return IrInterface(
         name = name,
-        targetName = directives.findTargetName(schema) ?: name,
+        targetName = directives.findTargetName(schema),
         implements = implementsInterfaces,
         keyFields = schema.keyFields(name),
         description = description,
@@ -215,7 +214,7 @@ internal class IrBuilder(
 
     return IrUnion(
         name = name,
-        targetName = directives.findTargetName(schema) ?: name,
+        targetName = directives.findTargetName(schema),
         members = memberTypes.map { it.name },
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on union definitions
@@ -226,7 +225,7 @@ internal class IrBuilder(
   private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
     return IrCustomScalar(
         name = name,
-        targetName = directives.findTargetName(schema) ?: name,
+        targetName = directives.findTargetName(schema),
         kotlinName = scalarMapping[name]?.targetName,
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
@@ -237,7 +236,7 @@ internal class IrBuilder(
   private fun GQLInputObjectTypeDefinition.toIr(): IrInputObject {
     return IrInputObject(
         name = name,
-        targetName = directives.findTargetName(schema) ?: name,
+        targetName = directives.findTargetName(schema),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on input objects definitions
         deprecationReason = directives.findDeprecationReason(),
@@ -272,7 +271,7 @@ internal class IrBuilder(
   private fun GQLEnumTypeDefinition.toIr(): IrEnum {
     return IrEnum(
         name = name,
-        targetName = directives.findTargetName(schema) ?: name,
+        targetName = directives.findTargetName(schema),
         description = description,
         values = enumValues.map { it.toIr() }
     )

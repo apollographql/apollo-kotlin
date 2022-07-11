@@ -187,7 +187,7 @@ object ApolloCompiler {
      * For Kotlin, we _could_ just change the file name (and not the class name) but
      * that only postpones the issue to later on when .class files are generated.
      */
-    val schemaTypesToTargetName: Map<String, String> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions).associate { it.name to it.targetName }
+    val schemaTypesToTargetName: Map<String, String> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions).associate { it.name to (it.targetName ?: it.name) }
     val nameToClassName: Map<String, String> = maybeMakeNamesUnique(schemaTypesToTargetName, outputDir)
 
     /**

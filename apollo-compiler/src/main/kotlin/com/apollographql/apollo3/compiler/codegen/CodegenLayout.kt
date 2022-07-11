@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo3.compiler.ir.IrSchemaType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.singularize
@@ -52,7 +53,11 @@ abstract class CodegenLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun compiledTypeName(name: String) = capitalizedIdentifier(nameToClassName(name))
+  internal fun compiledTypeName(schemaType: IrSchemaType) = if (schemaType.targetName != null) {
+    regularIdentifier(nameToClassName(schemaType.name))
+  } else {
+    capitalizedIdentifier(nameToClassName(schemaType.name))
+  }
 
   internal fun enumName(name: String) = regularIdentifier(nameToClassName(name))
 

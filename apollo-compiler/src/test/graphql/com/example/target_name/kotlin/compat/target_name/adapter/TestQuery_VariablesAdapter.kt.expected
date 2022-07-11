@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.optional
 import com.example.target_name.TestQuery
-import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter
 import com.example.target_name.type.adapter.RenamedInput_InputAdapter
+import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter
 import kotlin.IllegalStateException
 import kotlin.Unit
 
@@ -40,7 +40,7 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      RenamedEnum_ResponseAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+      renamedEnum_ResponseAdapter.nullable().optional().toJson(writer, customScalarAdapters,
           value.`enum`)
     }
   }

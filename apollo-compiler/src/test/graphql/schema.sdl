@@ -319,23 +319,23 @@ type Query {
   enum(enum: ReservedEnum): ReservedEnum
 }
 
-type ReservedObject @targetName(name: "RenamedObject") {
+type ReservedObject @targetName(name: "renamedObject") {
   field: String
 }
 
-interface ReservedInterface @targetName(name: "RenamedInterface") {
+interface ReservedInterface @targetName(name: "renamedInterface") {
   field: String
 }
 
-union ReservedUnion @targetName(name: "RenamedUnion") = ReservedObject | Review
+union ReservedUnion @targetName(name: "renamedUnion") = ReservedObject | Review
 
-input ReservedInput @targetName(name: "RenamedInput") {
+input ReservedInput @targetName(name: "renamedInput") {
   field: String
 }
 
-scalar ReservedScalar @targetName(name: "RenamedScalar")
+scalar ReservedScalar @targetName(name: "renamedScalar")
 
-enum ReservedEnum @targetName(name: "RenamedEnum") {
+enum ReservedEnum @targetName(name: "renamedEnum") {
   VALUE
 }
 

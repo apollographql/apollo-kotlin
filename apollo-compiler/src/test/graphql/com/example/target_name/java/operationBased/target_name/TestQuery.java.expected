@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.adapter.TestQuery_ResponseAdapter;
 import com.example.target_name.adapter.TestQuery_VariablesAdapter;
 import com.example.target_name.selections.TestQuerySelections;
-import com.example.target_name.type.RenamedEnum;
 import com.example.target_name.type.RenamedInput;
+import com.example.target_name.type.renamedEnum;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
@@ -53,7 +53,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Optional<java.lang.Object> scalar;
 
-  public final Optional<RenamedEnum> enum_;
+  public final Optional<renamedEnum> enum_;
 
   private transient volatile int $hashCode;
 
@@ -62,7 +62,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   private transient volatile String $toString;
 
   public TestQuery(Optional<RenamedInput> input, Optional<java.lang.Object> scalar,
-      Optional<RenamedEnum> enum_) {
+      Optional<renamedEnum> enum_) {
     this.input = input;
     this.scalar = scalar;
     this.enum_ = enum_;
@@ -155,7 +155,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public java.lang.Object scalar;
 
-    public RenamedEnum enum_;
+    public renamedEnum enum_;
 
     private transient volatile int $hashCode;
 
@@ -164,7 +164,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     private transient volatile String $toString;
 
     public Data(Object object, Interface interface_, Union union, java.lang.Object scalar,
-        RenamedEnum enum_) {
+        renamedEnum enum_) {
       this.object = object;
       this.interface_ = interface_;
       this.union = union;

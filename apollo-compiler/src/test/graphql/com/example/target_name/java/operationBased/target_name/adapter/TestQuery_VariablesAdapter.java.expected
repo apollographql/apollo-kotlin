@@ -15,10 +15,10 @@ import com.apollographql.apollo3.api.OptionalAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
-import com.example.target_name.type.RenamedEnum;
 import com.example.target_name.type.RenamedInput;
-import com.example.target_name.type.adapter.RenamedEnum_ResponseAdapter;
 import com.example.target_name.type.adapter.RenamedInput_InputAdapter;
+import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter;
+import com.example.target_name.type.renamedEnum;
 import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Object;
@@ -46,7 +46,7 @@ public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
     }
     if (value.enum_ instanceof Optional.Present) {
       writer.name("enum");
-      new OptionalAdapter<>(new NullableAdapter<>(RenamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, (Optional.Present<RenamedEnum>)value.enum_);
+      new OptionalAdapter<>(new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, (Optional.Present<renamedEnum>)value.enum_);
     }
   }
 }

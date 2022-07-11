@@ -36,7 +36,7 @@ internal data class Ir(
 
 internal data class IrEnum(
     override val name: String,
-    override val targetName: String,
+    override val targetName: String?,
     val description: String?,
     val values: List<Value>,
 ) : IrSchemaType {
@@ -207,12 +207,12 @@ internal data class IrModelGroup(
 
 internal sealed interface IrSchemaType {
   val name: String
-  val targetName: String
+  val targetName: String?
 }
 
 internal data class IrInputObject(
     override val name: String,
-    override val targetName: String,
+    override val targetName: String?,
     val description: String?,
     val deprecationReason: String?,
     val fields: List<IrInputField>,
@@ -220,7 +220,7 @@ internal data class IrInputObject(
 
 internal data class IrObject(
     override val name: String,
-    override val targetName: String,
+    override val targetName: String?,
     val implements: List<String>,
     val keyFields: Set<String>,
     val description: String?,
@@ -230,7 +230,7 @@ internal data class IrObject(
 
 internal data class IrInterface(
     override val name: String,
-    override val targetName: String,
+    override val targetName: String?,
     val implements: List<String>,
     val keyFields: Set<String>,
     val description: String?,
@@ -240,7 +240,7 @@ internal data class IrInterface(
 
 internal data class IrUnion(
     override val name: String,
-    override val targetName: String,
+    override val targetName: String?,
     val members: List<String>,
     val description: String?,
     val deprecationReason: String?,
@@ -248,7 +248,7 @@ internal data class IrUnion(
 
 internal data class IrCustomScalar(
     override val name: String,
-    override val targetName: String,
+    override val targetName: String?,
     val kotlinName: String?, // might be null if no user mapping is provided
     val description: String?,
     val deprecationReason: String?,
