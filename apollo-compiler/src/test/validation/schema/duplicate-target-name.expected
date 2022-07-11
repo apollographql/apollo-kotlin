@@ -1,0 +1,14 @@
+ERROR: ReservedEnumValueName (9:0)
+A type named 'Enum' is already defined, please use a different target name. First definition is: duplicate-target-name.graphql: (5, 1)
+------------
+ERROR: ReservedEnumValueName (17:0)
+A type named 'RenamedEnum' is already defined, please use a different target name. First definition is: duplicate-target-name.graphql: (13, 1)
+------------
+ERROR: ReservedEnumValueName (26:0)
+A type named 'Type' is already defined, please use a different target name. First definition is: duplicate-target-name.graphql: (22, 1)
+------------
+ERROR: ReservedEnumValueName (34:0)
+A type named 'RenamedType' is already defined, please use a different target name. First definition is: duplicate-target-name.graphql: (30, 1)
+------------
+ERROR: ReservedEnumValueName (39:0)
+A type named 'Query' is already defined, please use a different target name. First definition is: duplicate-target-name.graphql: (1, 1)

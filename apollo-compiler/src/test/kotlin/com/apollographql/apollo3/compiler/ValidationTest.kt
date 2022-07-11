@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.TestUtils.checkExpected
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
@@ -45,6 +44,8 @@ class ValidationTest(name: String, private val graphQLFile: File) {
         val schemaResult = parseResult.valueAssertNoErrors().validateAsSchemaAndAddApolloDefinition()
         schemaResult.issues + if (graphQLFile.name == "reserved-enum-value-names.graphql") {
           checkApolloReservedEnumValueNames(schemaResult.value!!)
+        } else if (graphQLFile.name == "duplicate-target-name.graphql") {
+          checkApolloDuplicateTargetNames(schemaResult.value!!)
         } else {
           emptyList()
         }
