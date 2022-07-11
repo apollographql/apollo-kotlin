@@ -12,9 +12,6 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
  * - on the JVM, it will use "System.getProperty("user.home")/.apollo"
  * Default: "apollo.db"
  *
- * @param withDates: whether to store dates (receive dates or expiration dates)
- * Once a database is created, this parameter cannot change
- * Default: false
  */
-expect class SqlNormalizedCacheFactory(name: String? = "apollo.db", withDates: Boolean = false) : NormalizedCacheFactory
+expect class SqlNormalizedCacheFactory(name: String? = "apollo.db") : NormalizedCacheFactory
 

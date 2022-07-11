@@ -9,24 +9,21 @@ import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 
 actual class SqlNormalizedCacheFactory internal constructor(
     private val driver: SqlDriver,
-    private val withDates: Boolean,
 ) : NormalizedCacheFactory() {
 
   /**
    * @param name the name of the database or null for an in-memory database
-   * @param withDates whether to account for dates in the database.
    * @param baseDir the baseDirectory where to store the database.
    * [baseDir] must exist and be a directory
    * If [baseDir] is a relative path, it will be interpreted relative to the current working directory
    */
-  constructor(name: String?, withDates: Boolean, baseDir: String?) : this(createDriver(name, baseDir, getSchema(withDates)), withDates)
-  actual constructor(name: String?, withDates: Boolean) : this(name, withDates, null)
-  constructor(name: String) : this(name, false)
-  constructor() : this("apollo.db", false)
+  constructor(name: String?, baseDir: String?) : this(createDriver(name, baseDir, getSchema()))
+  actual constructor(name: String?) : this(name, null)
+  constructor() : this("apollo.db")
 
   override fun create(): SqlNormalizedCache {
     return SqlNormalizedCache(
-        recordDatabase = createRecordDatabase(driver, withDates)
+        recordDatabase = createRecordDatabase(driver)
     )
   }
 }
