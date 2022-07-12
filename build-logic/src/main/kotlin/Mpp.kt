@@ -36,6 +36,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
         "iosArm64",
         "iosX64",
         "iosSimulatorArm64",
+        "watchosArm32",
         "watchosArm64",
         "watchosSimulatorArm64",
         "tvosArm64",
