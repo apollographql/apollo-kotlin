@@ -27,7 +27,9 @@ internal abstract class CodegenLayout(
     private val useSchemaPackageNameForFragments: Boolean,
 ) {
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
-    val allTypes: List<IrSchemaType> = ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions
+    val allTypes: List<IrSchemaType> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions)
+        // Sort to ensure consistent results.
+        .sortedBy { it.name }
     val usedNames = mutableSetOf<String>()
     // 1. use targetName verbatim for types that define it
     // Note: we know they are unique because of prior validation in checkApolloDuplicateTargetNames
