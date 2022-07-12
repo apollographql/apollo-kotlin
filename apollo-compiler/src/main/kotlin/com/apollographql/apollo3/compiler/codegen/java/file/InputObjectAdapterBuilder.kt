@@ -14,7 +14,7 @@ internal class InputObjectAdapterBuilder(
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   val packageName = context.layout.typeAdapterPackageName()
-  val simpleName = context.layout.inputObjectAdapterName(inputObject.name)
+  val simpleName = context.layout.inputObjectAdapterName(inputObject)
 
   override fun prepare() {
     context.resolver.registerInputObjectAdapter(

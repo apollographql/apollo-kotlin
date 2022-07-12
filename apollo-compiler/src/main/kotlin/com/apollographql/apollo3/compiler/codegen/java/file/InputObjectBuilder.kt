@@ -18,7 +18,7 @@ internal class InputObjectBuilder(
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject.name)
+  private val simpleName = context.layout.inputObjectName(inputObject)
 
   override fun build(): CodegenJavaFile {
     return CodegenJavaFile(
@@ -33,11 +33,12 @@ internal class InputObjectBuilder(
         ClassName.get(packageName, simpleName)
     )
   }
+
   private fun IrInputObject.typeSpec() =
       TypeSpec
           .classBuilder(simpleName)
           .addModifiers(Modifier.PUBLIC)
-          .applyIf(description?.isNotBlank()== true)  { addJavadoc("$L\n", description!!) }
+          .applyIf(description?.isNotBlank() == true) { addJavadoc("$L\n", description!!) }
           .makeDataClassFromParameters(fields.map {
             it.toNamedType().toParameterSpec(context)
           })

@@ -30,7 +30,9 @@ internal fun checkApolloDuplicateTargetNames(schema: Schema): List<Issue> {
 
     val existingTypeWithSameName = visitedTypes.find { visitedType ->
       val visitedTypeTargetName = visitedType.directives.findTargetName(schema)
-      (visitedTypeTargetName ?: visitedType.name) == targetName
+
+      // Ignore case because we assume the file system is case-insensitive.
+      (visitedTypeTargetName ?: visitedType.name).equals(targetName, ignoreCase = true)
     }
     if (existingTypeWithSameName != null) {
       issues.add(

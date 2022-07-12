@@ -3,19 +3,20 @@ package com.apollographql.apollo3.compiler.codegen.java
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.escapeJavaReservedWord
+import com.apollographql.apollo3.compiler.ir.Ir
 
-class JavaCodegenLayout(
+internal class JavaCodegenLayout(
+    ir: Ir,
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,
     useSchemaPackageNameForFragments: Boolean,
-    nameToClassName: (String) -> String
 ) : CodegenLayout(
+    ir,
     packageNameGenerator,
     schemaPackageName,
     useSemanticNaming,
     useSchemaPackageNameForFragments,
-    nameToClassName
 ) {
   override fun escapeReservedWord(word: String): String = word.escapeJavaReservedWord()
 

@@ -126,12 +126,6 @@ public final class com/apollographql/apollo3/compiler/MoshiKt {
 	public static final fun getMOSHI ()Lcom/squareup/moshi/Moshi;
 }
 
-public final class com/apollographql/apollo3/compiler/NameTable {
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
-	public final fun getNameToClassName ()Ljava/util/Map;
-	public final fun getNameToFileName ()Ljava/util/Map;
-}
-
 public abstract interface class com/apollographql/apollo3/compiler/OperationIdGenerator {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/OperationIdGenerator$Companion;
 	public abstract fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
@@ -251,28 +245,6 @@ public final class com/apollographql/apollo3/compiler/VersionKt {
 	public static final field APOLLO_VERSION Ljava/lang/String;
 }
 
-public abstract class com/apollographql/apollo3/compiler/codegen/CodegenLayout {
-	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/CodegenLayout$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZZLkotlin/jvm/functions/Function1;)V
-	public abstract fun escapeReservedWord (Ljava/lang/String;)Ljava/lang/String;
-	public final fun fragmentAdapterPackageName (Ljava/lang/String;)Ljava/lang/String;
-	public final fun fragmentPackageName (Ljava/lang/String;)Ljava/lang/String;
-	public final fun fragmentResponseFieldsPackageName (Ljava/lang/String;)Ljava/lang/String;
-	public final fun operationAdapterPackageName (Ljava/lang/String;)Ljava/lang/String;
-	public final fun operationPackageName (Ljava/lang/String;)Ljava/lang/String;
-	public final fun operationResponseFieldsPackageName (Ljava/lang/String;)Ljava/lang/String;
-	public final fun operationTestBuildersPackageName (Ljava/lang/String;)Ljava/lang/String;
-	protected final fun regularIdentifier (Ljava/lang/String;)Ljava/lang/String;
-	public final fun testBuilder (Ljava/lang/String;)Ljava/lang/String;
-	public final fun typeAdapterPackageName ()Ljava/lang/String;
-	public final fun typePackageName ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/CodegenLayout$Companion {
-	public final fun lowerCamelCaseIgnoringNonLetters (Ljava/util/Collection;)Ljava/lang/String;
-	public final fun upperCamelCaseIgnoringNonLetters (Ljava/util/Collection;)Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
 	public fun <init> (Ljava/lang/String;[Ljava/lang/String;)V
@@ -390,11 +362,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGenKt
 	public static synthetic fun joinToCode$default (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodegenLayout : com/apollographql/apollo3/compiler/codegen/CodegenLayout {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZZLkotlin/jvm/functions/Function1;)V
-	public fun escapeReservedWord (Ljava/lang/String;)Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/java/JavaResolverKt {
 	public static final fun toJavaPoetClassName (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)Lcom/squareup/javapoet/ClassName;
 }
@@ -432,19 +399,6 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/CgFile {
 public abstract interface class com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
 	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
 	public abstract fun prepare ()V
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodegenLayout : com/apollographql/apollo3/compiler/codegen/CodegenLayout {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/PackageNameGenerator;Ljava/lang/String;ZZLkotlin/jvm/functions/Function1;)V
-	public fun escapeReservedWord (Ljava/lang/String;)Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodegenLayout;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Lcom/apollographql/apollo3/compiler/TargetLanguage;)V
-	public final fun getLayout ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinCodegenLayout;
-	public final fun getResolver ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
-	public final fun getTargetLanguageVersion ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
-	public final fun isTargetLanguageVersionAtLeast (Lcom/apollographql/apollo3/compiler/TargetLanguage;)Z
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames {
@@ -494,22 +448,6 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/Dat
 	public static final fun makeDataClass (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;Z)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
 	public static synthetic fun makeDataClass$default (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;ZILjava/lang/Object;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
 	public static final fun makeDataClassFromProperties (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder {
-	public static final field Companion Lcom/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;Ljava/util/Map;Lcom/apollographql/apollo3/ast/Schema;)V
-	public final fun build (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lcom/squareup/kotlinpoet/TypeSpec;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder$Companion {
-	public final fun codeBlock (Lcom/apollographql/apollo3/ast/GQLType;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinContext;)Lcom/squareup/kotlinpoet/CodeBlock;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/selections/CompiledSelectionsBuilder$SelectionResult {
-	public fun <init> (Lcom/squareup/kotlinpoet/CodeBlock;Ljava/util/List;)V
-	public final fun getInitializer ()Lcom/squareup/kotlinpoet/CodeBlock;
-	public final fun getNestedPropertySpecs ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema {

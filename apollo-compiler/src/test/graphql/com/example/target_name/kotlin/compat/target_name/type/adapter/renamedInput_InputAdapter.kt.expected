@@ -12,18 +12,18 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.optional
-import com.example.target_name.type.RenamedInput
+import com.example.target_name.type.renamedInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object RenamedInput_InputAdapter : Adapter<RenamedInput> {
+public object renamedInput_InputAdapter : Adapter<renamedInput> {
   public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      RenamedInput = throw IllegalStateException("Input type used in output position")
+      renamedInput = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
     customScalarAdapters: CustomScalarAdapters,
-    `value`: RenamedInput,
+    `value`: renamedInput,
   ): Unit {
     if (value.`field` is Optional.Present) {
       writer.name("field")

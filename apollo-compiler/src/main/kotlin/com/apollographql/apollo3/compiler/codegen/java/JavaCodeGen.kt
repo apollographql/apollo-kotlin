@@ -53,7 +53,6 @@ internal class JavaCodeGen(
      */
     private val flatten: Boolean,
     private val scalarMapping: Map<String, ScalarInfo>,
-    private val nameToClassName: Map<String, String>,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -65,11 +64,11 @@ internal class JavaCodeGen(
     }
 
     val layout = JavaCodegenLayout(
+        ir = ir,
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
-        nameToClassName = { nameToClassName[it] ?: error("unknown schema type: $it") }
     )
 
     val context = JavaContext(

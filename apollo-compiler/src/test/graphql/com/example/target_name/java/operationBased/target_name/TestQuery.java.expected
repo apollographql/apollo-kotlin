@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.adapter.TestQuery_ResponseAdapter;
 import com.example.target_name.adapter.TestQuery_VariablesAdapter;
 import com.example.target_name.selections.TestQuerySelections;
-import com.example.target_name.type.RenamedInput;
 import com.example.target_name.type.renamedEnum;
+import com.example.target_name.type.renamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
@@ -49,7 +49,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  public final Optional<RenamedInput> input;
+  public final Optional<renamedInput> input;
 
   public final Optional<java.lang.Object> scalar;
 
@@ -61,7 +61,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Optional<RenamedInput> input, Optional<java.lang.Object> scalar,
+  public TestQuery(Optional<renamedInput> input, Optional<java.lang.Object> scalar,
       Optional<renamedEnum> enum_) {
     this.input = input;
     this.scalar = scalar;

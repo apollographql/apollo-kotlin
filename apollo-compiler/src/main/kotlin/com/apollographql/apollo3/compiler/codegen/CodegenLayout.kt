@@ -3,7 +3,10 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.ir.Ir
+import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
+import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
@@ -17,13 +20,62 @@ import com.apollographql.apollo3.compiler.singularize
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-abstract class CodegenLayout(
+internal abstract class CodegenLayout(
+    private val ir: Ir,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val useSchemaPackageNameForFragments: Boolean,
-    private val nameToClassName: (String) -> String,
 ) {
+  private val schemaTypeToClassName: Map<IrSchemaType, String> = computeClassNames()
+
+  private fun computeClassNames(): Map<IrSchemaType, String> {
+    val schemaTypeToClassName = mutableMapOf<IrSchemaType, String>()
+    val allTypes: List<IrSchemaType> = ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions
+    val usedNames = mutableSetOf<String>()
+    for (type in allTypes) {
+      val targetName = type.targetName
+      val className = if (targetName != null) {
+        // If a targetName was specified, honor it verbatim
+        targetName
+      } else {
+        val uniqueName = uniqueName(type.name, usedNames)
+        // Capitalize all types except enums
+        if (type is IrEnum) {
+          regularIdentifier(uniqueName)
+        } else {
+          capitalizedIdentifier(uniqueName)
+        }
+      }
+      schemaTypeToClassName[type] = className
+    }
+    return schemaTypeToClassName
+  }
+
+  /**
+   * On case-insensitive filesystems, we need to make sure two schema types with
+   * different cases like 'Url' and 'URL' are not generated or their files will
+   * overwrite each other.
+   *
+   * For Kotlin, we _could_ just change the file name (and not the class name) but
+   * that only postpones the issue to later on when .class files are generated.
+   *
+   * In order to get predictable results independently of the system, we make the
+   * case-insensitive checks no matter the actual filesystem.
+   */
+  private fun uniqueName(name: String, usedNames: MutableSet<String>): String {
+    var i = 1
+    var uniqueName = name
+    while (uniqueName.lowercase() in usedNames) {
+      uniqueName = "${name}$i"
+      i++
+    }
+    usedNames.add(uniqueName.lowercase())
+    return uniqueName
+  }
+
+  private fun className(schemaType: IrSchemaType) = schemaTypeToClassName[schemaType] ?: error("unknown schema type: $schemaType")
+
   private val typePackageName = "$schemaPackageName.type"
 
   // ------------------------ FileNames ---------------------------------
@@ -53,15 +105,11 @@ abstract class CodegenLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun compiledTypeName(schemaType: IrSchemaType) = if (schemaType.targetName != null) {
-    regularIdentifier(nameToClassName(schemaType.name))
-  } else {
-    capitalizedIdentifier(nameToClassName(schemaType.name))
-  }
+  internal fun compiledTypeName(schemaType: IrSchemaType) = className(schemaType)
 
-  internal fun enumName(name: String) = regularIdentifier(nameToClassName(name))
+  internal fun enumName(enum: IrEnum) = className(enum)
 
-  internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
+  internal fun enumResponseAdapterName(enum: IrEnum) = enumName(enum) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {
     val str = capitalizedIdentifier(operation.name)
@@ -87,8 +135,8 @@ abstract class CodegenLayout(
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
-  internal fun inputObjectName(name: String) = capitalizedIdentifier(nameToClassName(name))
-  internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
+  internal fun inputObjectName(inputObject: IrInputObject) = className(inputObject)
+  internal fun inputObjectAdapterName(inputObject: IrInputObject) = inputObjectName(inputObject) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
   internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")

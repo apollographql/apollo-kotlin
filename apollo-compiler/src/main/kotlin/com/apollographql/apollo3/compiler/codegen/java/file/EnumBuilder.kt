@@ -27,7 +27,7 @@ internal class EnumBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(name = enum.name)
+  private val simpleName = layout.enumName(enum)
   private val selfClassName = ClassName.get(packageName, simpleName)
 
   override fun prepare() {
@@ -82,10 +82,10 @@ internal class EnumBuilder(
                         .beginControlFlow("switch($rawValue)")
                         .apply {
                           values.forEach {
-                            add("case $S: return $L.$L;\n", it.name, layout.enumName(name), layout.enumValueName(it.targetName))
+                            add("case $S: return $L.$L;\n", it.name, layout.enumName(this@typeSpec), layout.enumValueName(it.targetName))
                           }
                         }
-                        .add("default: return new $L.${Identifier.UNKNOWN__}($rawValue);\n", layout.enumName(name))
+                        .add("default: return new $L.${Identifier.UNKNOWN__}($rawValue);\n", layout.enumName(this@typeSpec))
                         .endControlFlow()
                         .build()
                 )

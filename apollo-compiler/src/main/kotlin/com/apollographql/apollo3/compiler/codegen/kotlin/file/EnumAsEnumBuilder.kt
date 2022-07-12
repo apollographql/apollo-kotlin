@@ -25,7 +25,7 @@ internal class EnumAsEnumBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(name = enum.name)
+  private val simpleName = layout.enumName(enum)
 
   private val selfClassName = ClassName(
       packageName,

@@ -180,17 +180,6 @@ object ApolloCompiler {
     }
 
     /**
-     * On case insensitive filesystems, we need to make sure two schema types with
-     * different cases like 'Url' and 'URL' are not generated or their files will
-     * overwrite each other.
-     *
-     * For Kotlin, we _could_ just change the file name (and not the class name) but
-     * that only postpones the issue to later on when .class files are generated.
-     */
-    val schemaTypesToTargetName: Map<String, String> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions).associate { it.name to (it.targetName ?: it.name) }
-    val nameToClassName: Map<String, String> = maybeMakeNamesUnique(schemaTypesToTargetName, outputDir)
-
-    /**
      * Write the generated models
      */
     val outputResolverInfo = when (options.targetLanguage) {
@@ -210,7 +199,6 @@ object ApolloCompiler {
             generatedSchemaName = options.generatedSchemaName,
             flatten = options.flattenModels,
             scalarMapping = options.scalarMapping,
-            nameToClassName = nameToClassName
         ).write(outputDir = outputDir)
       }
       else -> {
@@ -233,7 +221,6 @@ object ApolloCompiler {
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,
             scalarMapping = options.scalarMapping,
-            nameToClassName = nameToClassName,
             addJvmOverloads = options.addJvmOverloads,
             requiresOptInAnnotation = options.requiresOptInAnnotation,
         ).write(outputDir = outputDir, testDir = testDir)
@@ -269,47 +256,3 @@ object ApolloCompiler {
     }
   }
 }
-
-internal fun maybeMakeNamesUnique(names: Map<String, String>, outputDir: File): Map<String, String> {
-  val isCaseSensitive = isFileSystemCaseSensitive(outputDir)
-
-  return if (isCaseSensitive) {
-    // Case sensitive, just map to the name
-    names
-  } else {
-    resolveNameClashes(names)
-  }
-}
-
-private fun resolveNameClashes(names: Map<String, String>): Map<String, String> {
-  val usedNames = mutableSetOf<String>()
-
-  /**
-   * sort to ensure consistent results.
-   */
-  return names.toSortedMap().mapValues { (_, name) ->
-    var i = 1
-    var newName = name
-    while (usedNames.contains(newName.lowercase())) {
-      newName = "${name}$i"
-      i++
-    }
-    usedNames.add(newName.lowercase())
-    newName
-  }
-}
-
-private fun isFileSystemCaseSensitive(outputDir: File): Boolean {
-  val case1 = outputDir.resolve(".casecheck")
-  val case2 = outputDir.resolve(".CASECHECK")
-  case1.createNewFile()
-
-  return !case2.exists().also {
-    case1.delete()
-  }
-}
-
-class NameTable(
-    val nameToFileName: Map<String, String>,
-    val nameToClassName: Map<String, String>,
-)

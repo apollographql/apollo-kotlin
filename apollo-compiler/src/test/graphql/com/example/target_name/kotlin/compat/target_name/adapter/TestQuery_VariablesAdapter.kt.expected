@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.optional
 import com.example.target_name.TestQuery
-import com.example.target_name.type.adapter.RenamedInput_InputAdapter
 import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter
+import com.example.target_name.type.adapter.renamedInput_InputAdapter
 import kotlin.IllegalStateException
 import kotlin.Unit
 
@@ -31,7 +31,7 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
   ): Unit {
     if (value.input is Optional.Present) {
       writer.name("input")
-      RenamedInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
+      renamedInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
           value.input)
     }
     if (value.scalar is Optional.Present) {

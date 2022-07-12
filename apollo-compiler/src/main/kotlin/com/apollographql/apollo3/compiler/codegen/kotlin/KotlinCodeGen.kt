@@ -62,7 +62,6 @@ internal class KotlinCodeGen(
     private val sealedClassesForEnumsMatching: List<String>,
     private val targetLanguageVersion: TargetLanguage,
     private val scalarMapping: Map<String, ScalarInfo>,
-    private val nameToClassName: Map<String, String>,
     private val addJvmOverloads: Boolean,
     private val requiresOptInAnnotation: String?,
 ) {
@@ -76,13 +75,11 @@ internal class KotlinCodeGen(
     }
 
     val layout = KotlinCodegenLayout(
+        ir = ir,
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
-        nameToClassName = { nameToClassName[it] ?:
-        error("unknown schema type: $it")
-        }
     )
 
     val context = KotlinContext(
