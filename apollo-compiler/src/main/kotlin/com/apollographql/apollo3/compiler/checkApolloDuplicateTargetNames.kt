@@ -24,7 +24,7 @@ internal fun checkApolloDuplicateTargetNames(schema: Schema): List<Issue> {
   ) {
     val targetName = type.directives.findTargetName(schema)
     if (targetName == null) {
-      visitedTypes += type
+      visitedTypes.add(type)
       continue
     }
 
