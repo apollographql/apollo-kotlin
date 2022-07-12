@@ -1,0 +1,12 @@
+fragment categoryFragment on Category {
+    id
+    name
+    icon {
+        id
+        node {
+            ...iconFragment
+        }
+    }
+    primaryColor
+    secondaryColor
+}

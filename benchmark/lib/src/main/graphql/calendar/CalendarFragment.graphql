@@ -1,0 +1,10 @@
+fragment calendarFragment on Calendar {
+    id
+    name
+    canCreate
+    provider {
+        node {
+            ...calendarProviderFragment
+        }
+    }
+}

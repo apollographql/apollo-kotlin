@@ -1,0 +1,35 @@
+name: benchmarks
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+
+jobs:
+  benchmarks:
+    runs-on: ubuntu-20.04
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
+      - run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+      - run: |
+          # Build the libs
+          ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
+      - run: |
+          # Build the benchmark apks
+          ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
+      - run: |
+          ./scripts/run-benchmarks.main.kts
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

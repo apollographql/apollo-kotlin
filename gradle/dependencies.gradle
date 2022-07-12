@@ -42,6 +42,8 @@ ext.dep = [
     apolloApi: "com.apollographql.apollo3:apollo-api:$versions.apollo",
     apolloPlugin: "com.apollographql.apollo3:apollo-gradle-plugin:$versions.apollo",
     apolloRuntime: "com.apollographql.apollo3:apollo-runtime:$versions.apollo",
+    apolloNormalizedCache: "com.apollographql.apollo3:apollo-normalized-cache:$versions.apollo",
+    apolloNormalizedCacheSqlite: "com.apollographql.apollo3:apollo-normalized-cache-sqlite:$versions.apollo",
     assertj: "org.assertj:assertj-core:3.21.0",
     atomicfu: "org.jetbrains.kotlinx:atomicfu:0.17.0",
     benManesVersions: "com.github.ben-manes:gradle-versions-plugin:0.33.0",
@@ -115,7 +117,7 @@ ext.dep = [
     ]
 
 ext.androidConfig = [
-    compileSdkVersion: 30,
+    compileSdkVersion: 31,
     minSdkVersion    : 15,
     targetSdkVersion : 30
 ]

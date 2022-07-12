@@ -1,0 +1,561 @@
+type DateTimeInfo {
+  date: String
+  dateTime: String
+  timeZone: String
+}
+
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+}
+
+scalar DateTime
+
+scalar TimeZone
+
+type Icon {
+  id: IconId!
+  name: String!
+}
+
+enum IconId {
+  AlignCenter
+  AlignCenterOutline
+  AlignJustify
+  AlignJustifyOutline
+  AlignLeft
+  AlignLeftOutline
+  AlignRight
+  AlignRightOutline
+  AmericanFootball
+  Android
+  Apple
+  ArrowDown
+  ArrowLeft
+  ArrowRight
+  ArrowUp
+  Art
+  Award
+  Badminton
+  Ballet
+  Baseball
+  Basketball
+  Bath
+  Bbq
+  Beach
+  Bed
+  Bell
+  BellInactive
+  BellInactiveOutline
+  BellOutline
+  Bird
+  Birthday
+  BoardGame
+  Boat
+  Bold
+  Book
+  BookOutline
+  BowlingPins
+  Box
+  Boxing
+  Bug
+  Bus
+  BusOutline
+  Calculator
+  Calendar
+  CalendarOutline
+  Camcorder
+  CamcorderOutline
+  Camera
+  CameraOutline
+  Car
+  Cards
+  Cash
+  Champagne
+  ChevronDown
+  ChevronLeft
+  ChevronRight
+  ChevronUp
+  ChristmasTree
+  Class
+  Cleaning
+  Clock
+  ClockChange
+  ClockOutline
+  Clouds
+  Code
+  Coffee
+  Collapse
+  Confetti
+  Cooking
+  Copy
+  CopyOutline
+  Crane
+  Cricket
+  Cross
+  Cycle
+  Dancing
+  Dartboard
+  Daybridge
+  Diy
+  Dog
+  Drama
+  Drinks
+  Duplicate
+  DuplicateOutline
+  Edit
+  EditOutline
+  Electricity
+  EllipsisHorizontal
+  EllipsisHorizontalOutline
+  EllipsisVertical
+  EllipsisVerticalOutline
+  Envelope
+  EnvelopeOpen
+  Expand
+  FallingSnow
+  FastFood
+  Filter
+  FilterOutline
+  FilterStack
+  FilterStackOutline
+  Fireworks
+  Fishing
+  Flag
+  Flight
+  FuelPump
+  Gas
+  General
+  Glasses
+  GoKart
+  Golf
+  Google
+  Graduation
+  GrandPiano
+  Groceries
+  GroceryCart
+  Guitar
+  Gym
+  Hairdryer
+  Halloween
+  Handbag
+  Hiking
+  Hockey
+  Home
+  IceSkate
+  Immigration
+  Inbox
+  Infinity
+  InfinityOutline
+  Information
+  Invite
+  Italic
+  Key
+  KnifeFork
+  Lab
+  Laptop
+  Lectern
+  LegalScales
+  LightAircraft
+  Lightning
+  Link
+  Makeup
+  Map
+  MapPin
+  MartialArts
+  Meditation
+  Menu
+  Microphone
+  Minus
+  Mountains
+  Movies
+  Museum
+  MusicNotes
+  MuteMicrophone
+  NavigationArrow
+  Night
+  Notification
+  OfficeBuilding
+  Open
+  PadlockLocked
+  PadlockLockedOutline
+  PadlockUnlocked
+  PadlockUnlockedOutline
+  Paper
+  Paperclip
+  Parachute
+  ParentChild
+  Passport
+  Pause
+  Pawprint
+  Pencil
+  People
+  Person
+  PersonRowing
+  Phone
+  PingPong
+  Plant
+  Play
+  Plus
+  Polaroid
+  Praying
+  Printer
+  ProtestSigns
+  QuestionMark
+  RaceFlag
+  Rain
+  Reading
+  Repeat
+  RepeatOutline
+  Reply
+  ReplyOutline
+  Ring
+  RollerSkate
+  Rollercoaster
+  Roses
+  Running
+  RunningHorse
+  Sailboat
+  Scissors
+  Search
+  Send
+  Settings
+  Share
+  ShareOutline
+  Shopfront
+  Shower
+  SignIn
+  SignOut
+  Skateboard
+  Skiing
+  Sleep
+  Smartphone
+  Snowflake
+  Soccer
+  Spa
+  Spade
+  SpeechBubble
+  Stethoscope
+  Stop
+  Strikethrough
+  Suitcase
+  Sun
+  Sunrise
+  Sunset
+  Surfboard
+  Swimming
+  TShirt
+  Taxi
+  Tennis
+  ThoughtBubble
+  Tick
+  Todo
+  Tooth
+  Train
+  TrashEmpty
+  TrashFull
+  Tree
+  TrendDown
+  TrendDownOutline
+  TrendUp
+  TrendUpOutline
+  Trophy
+  Truck
+  Tv
+  Twitter
+  Underline
+  Undo
+  UndoOutline
+  User
+  UserOutline
+  Users
+  UsersOutline
+  Vaccination
+  VideoGames
+  Violin
+  Volunteering
+  Voting
+  Walk
+  Warning
+  WavingHand
+  WeddingCake
+  Wheelchair
+  Wind
+  World
+  Yarn
+  Yoga
+}
+
+type IconEdge {
+  id: IconId!
+  node: Icon!
+}
+
+type Category {
+  id: CategoryId!
+  name: String!
+  icon: IconEdge!
+  primaryColor: Color!
+  secondaryColor: Color!
+}
+
+enum CategoryId {
+  Entertainment
+  ExerciseSport
+  Family
+  General
+  Hobbies
+  HolidaysTourism
+  Learning
+  PersonalCare
+  Social
+  SpecialOccasions
+  Transport
+  Work
+}
+
+enum Color {
+  White
+  Black
+  Current
+  Brand200
+  Brand300
+  Brand400
+  Brand500
+  Brand600
+  Brand700
+  AccentPeach
+  AccentPink
+  AccentBlue
+  Gray20
+  Gray50
+  Gray100
+  Gray200
+  Gray300
+  Gray400
+  Gray500
+  Gray600
+  Gray700
+  Gray800
+  Gray900
+  Gray1000
+  GreenExtraDark
+  RoseDark
+  AmberDark
+  YellowDark
+  GreenDark
+  TealDark
+  CyanDark
+  LightBlueDark
+  BlueDark
+  IndigoDark
+  PurpleDark
+  FuchsiaDark
+  PinkDark
+  RoseMedium
+  AmberMedium
+  YellowMedium
+  GreenMedium
+  TealMedium
+  CyanMedium
+  LightBlueMedium
+  BlueMedium
+  IndigoMedium
+  PurpleMedium
+  FuchsiaMedium
+  PinkMedium
+  RoseLight
+  AmberLight
+  GreenLight
+  LightBlueLight
+  BlueBright
+  GreenBright
+  PinkBright
+  YellowBright
+}
+
+type CategoryEdge {
+  id: CategoryId!
+  node: Category!
+}
+
+type CalendarProvider {
+  id: ID!
+  type: String!
+  displayName: String!
+  username: String
+  canCreate: Boolean
+}
+
+type CalendarProviderEdge {
+  id: ID!
+  node: CalendarProvider!
+}
+
+type Calendar {
+  id: ID!
+  name: String!
+  defaultCategory: CategoryEdge
+  defaultIcon: IconEdge
+  deleted: Boolean!
+  provider: CalendarProviderEdge!
+  canCreate: Boolean
+  canEdit: Boolean
+  canDelete: Boolean
+}
+
+type CalendarEdge {
+  id: ID!
+  node: Calendar!
+}
+
+type ItemType {
+  id: ItemTypeId!
+  name: String!
+  description: String!
+  defaultIcon: IconEdge!
+  defaultCategory: CategoryEdge!
+}
+
+enum ItemTypeId {
+  Event
+  Block
+}
+
+type ItemTypeEdge {
+  id: ItemTypeId!
+  node: ItemType!
+}
+
+type Coordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+type RuleByDaysInfo {
+  monday: Float
+  tuesday: Float
+  wednesday: Float
+  thursday: Float
+  friday: Float
+  saturday: Float
+  sunday: Float
+}
+
+type RuleInfo {
+  frequency: Frequency!
+  start: DateTimeInfo!
+  count: Int
+  until: DateTimeInfo
+  interval: Int!
+  weekStart: Day
+  byDays: RuleByDaysInfo
+  byMonths: [Month!]
+  byDaysOfMonth: [Int!]
+  byDaysOfYear: [Int!]
+  byWeeksOfYear: [Int!]
+  bySetPos: [Int!]
+}
+
+enum Frequency {
+  Daily
+  Weekly
+  Monthly
+  Yearly
+}
+
+enum Day {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
+}
+
+enum Month {
+  January
+  February
+  March
+  April
+  May
+  June
+  July
+  August
+  September
+  October
+  November
+  December
+}
+
+type Series {
+  id: ID!
+  rules: [RuleInfo!]
+  includes: [DateTimeInfo!]
+  excludes: [DateTimeInfo!]
+  description: String!
+}
+
+type SeriesInfo {
+  id: ID!
+  node: Series!
+  instances(args: PageArgs!): ItemConnection!
+  next: ItemEdge
+  previous: ItemEdge
+}
+
+input PageArgs {
+  first: Int
+  after: String
+  last: Int
+  before: String
+}
+
+type Item {
+  id: ID!
+  title: String!
+  type: ItemTypeEdge!
+  icon: IconEdge!
+  category: CategoryEdge!
+  start: DateTimeInfo
+  end: DateTimeInfo
+  series: SeriesInfo
+  calendar: CalendarEdge
+  deleted: Boolean!
+}
+
+type ItemEdge {
+  id: ID!
+  node: Item!
+}
+
+type ItemConnection {
+  edges: [ItemEdge!]!
+  pageInfo: PageInfo
+}
+
+type Query {
+  item(args: ItemArgs!): ItemEdge
+  items(args: ItemsArgs!): ItemConnection
+}
+
+input ItemArgs {
+  id: ID!
+}
+
+input ItemsArgs {
+  first: Int
+  after: String
+  last: Int
+  before: String
+  filterBy: ItemsFilterByArgs
+}
+
+input ItemsFilterByArgs {
+  startingBefore: String
+  endingAfter: String
+  deleted: Boolean
+}
