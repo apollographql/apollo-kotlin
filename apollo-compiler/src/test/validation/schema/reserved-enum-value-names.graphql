@@ -23,3 +23,7 @@ enum Enum5 {
   foo @targetName(name: "bar")
   bar2 @targetName(name: "bar")
 }
+
+enum Enum6 {
+  type @targetName(name: "newType")
+}
