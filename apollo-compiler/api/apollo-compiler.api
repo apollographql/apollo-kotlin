@@ -1,9 +1,3 @@
-public final class com/apollographql/apollo3/compiler/-checkApolloDuplicateTargetNames {
-}
-
-public final class com/apollographql/apollo3/compiler/-checkApolloReservedEnumValueNames {
-}
-
 public final class com/apollographql/apollo3/compiler/-checkCapitalizedFields {
 }
 
