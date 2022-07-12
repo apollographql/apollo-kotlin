@@ -27,7 +27,7 @@ internal class EnumAsSealedBuilder(
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(enum)
+  private val simpleName = layout.enumName(enum.name)
 
   private val selfClassName = ClassName(
       packageName,
@@ -59,7 +59,7 @@ internal class EnumAsSealedBuilder(
         .addProperty(rawValuePropertySpec)
         .addType(companionTypeSpec())
         .addTypes(values.map { value ->
-          value.toObjectTypeSpec(ClassName("", layout.enumName(this)))
+          value.toObjectTypeSpec(ClassName("", layout.enumName(name)))
         })
         .addType(unknownValueTypeSpec())
         .build()
@@ -87,7 +87,7 @@ internal class EnumAsSealedBuilder(
     return TypeSpec.classBuilder("UNKNOWN__")
         .addKdoc("%L", "An enum value that wasn't known at compile time.\n")
         .primaryConstructor(primaryConstructorSpec)
-        .superclass(ClassName("", layout.enumName(this)))
+        .superclass(ClassName("", layout.enumName(name)))
         .addSuperclassConstructorParameter("rawValue·=·rawValue")
         .addFunction(
             FunSpec.builder("equals")

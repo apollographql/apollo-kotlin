@@ -18,7 +18,7 @@ internal class InputObjectBuilder(
     val inputObject: IrInputObject,
 ) : JavaClassBuilder {
   private val packageName = context.layout.typePackageName()
-  private val simpleName = context.layout.inputObjectName(inputObject)
+  private val simpleName = context.layout.inputObjectName(inputObject.name)
 
   override fun build(): CodegenJavaFile {
     return CodegenJavaFile(

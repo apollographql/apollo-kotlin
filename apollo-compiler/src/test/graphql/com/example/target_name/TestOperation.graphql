@@ -1,4 +1,4 @@
-query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum) {
+query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum, $enum2: renamedEnum, $enum3: RenamedEnum) {
   object(input: $input) {
     field
   }
@@ -12,4 +12,6 @@ query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedE
   }
   scalar(scalar: $scalar)
   enum(enum: $enum)
+  enum2(enum2: $enum2)
+  enum3(enum3: $enum3)
 }

@@ -16,7 +16,7 @@ internal class ObjectBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(obj)
+  private val simpleName = layout.compiledTypeName(obj.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(obj.name, ClassName.get(packageName, simpleName))

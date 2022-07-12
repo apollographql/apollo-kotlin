@@ -28,7 +28,7 @@ internal class EnumResponseAdapterBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typeAdapterPackageName()
-  private val simpleName = layout.enumResponseAdapterName(enum)
+  private val simpleName = layout.enumResponseAdapterName(enum.name)
 
   override fun prepare() {
     context.resolver.registerEnumAdapter(
@@ -64,7 +64,7 @@ internal class EnumResponseAdapterBuilder(
         .addCode("$writer.$value($value.rawValue);\n")
         .build()
 
-    return TypeSpec.enumBuilder(layout.enumResponseAdapterName(this))
+    return TypeSpec.enumBuilder(layout.enumResponseAdapterName(name))
         .addModifiers(Modifier.PUBLIC)
         .addEnumConstant("INSTANCE")
         .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))

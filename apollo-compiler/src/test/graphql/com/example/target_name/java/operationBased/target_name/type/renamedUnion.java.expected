@@ -8,5 +8,5 @@ package com.example.target_name.type;
 import com.apollographql.apollo3.api.UnionType;
 
 public class renamedUnion {
-  public static UnionType type = new UnionType("ReservedUnion", renamedObject.type, Review.type);
+  public static UnionType type = new UnionType("ReservedUnion", renamedObject.type);
 }

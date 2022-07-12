@@ -6,7 +6,6 @@ import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
-import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
@@ -21,35 +20,37 @@ import com.apollographql.apollo3.compiler.singularize
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
 internal abstract class CodegenLayout(
-   ir: Ir,
+    ir: Ir,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val useSchemaPackageNameForFragments: Boolean,
 ) {
-  private val schemaTypeToClassName: Map<IrSchemaType, String> = computeClassNames()
-
-  private fun computeClassNames(): Map<IrSchemaType, String> {
-    val schemaTypeToClassName = mutableMapOf<IrSchemaType, String>()
+  private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val allTypes: List<IrSchemaType> = ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions
     val usedNames = mutableSetOf<String>()
-    for (type in allTypes) {
-      val targetName = type.targetName
-      val className = if (targetName != null) {
-        // If a targetName was specified, honor it verbatim
-        targetName
-      } else {
-        val uniqueName = uniqueName(type.name, usedNames)
-        // Capitalize all types except enums
-        if (type is IrEnum) {
-          regularIdentifier(uniqueName)
-        } else {
-          capitalizedIdentifier(uniqueName)
-        }
-      }
-      schemaTypeToClassName[type] = className
+    // 1. use targetName verbatim for types that define it
+    // Note: we know they are unique because of prior validation in checkApolloDuplicateTargetNames
+    for (type in allTypes.filter { it.targetName != null }) {
+      val className = type.targetName!!
+      usedNames.add(className.lowercase())
+      this[type.name] = className
     }
-    return schemaTypeToClassName
+
+    // 2. compute a unique name for types without a targetName
+    for (type in allTypes.filter { it.targetName == null }) {
+      val uniqueName = uniqueName(type.name, usedNames)
+      // Enums are not automatically capitalized for historical reasons, and we keep this behavior for now
+      // as changing it would be breaking. Let's fix it in the next major release.
+      // See: https://github.com/apollographql/apollo-kotlin/issues/4171
+      val className = if (type is IrEnum) {
+        regularIdentifier(uniqueName)
+      } else {
+        capitalizedIdentifier(uniqueName)
+      }
+      usedNames.add(className.lowercase())
+      this[type.name] = className
+    }
   }
 
   /**
@@ -70,11 +71,11 @@ internal abstract class CodegenLayout(
       uniqueName = "${name}$i"
       i++
     }
-    usedNames.add(uniqueName.lowercase())
     return uniqueName
   }
 
-  private fun className(schemaType: IrSchemaType) = schemaTypeToClassName[schemaType] ?: error("unknown schema type: $schemaType")
+  private fun className(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
+      ?: error("unknown schema type: $schemaTypeName")
 
   private val typePackageName = "$schemaPackageName.type"
 
@@ -105,11 +106,11 @@ internal abstract class CodegenLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun compiledTypeName(schemaType: IrSchemaType) = className(schemaType)
+  internal fun compiledTypeName(name: String) = className(name)
 
-  internal fun enumName(enum: IrEnum) = className(enum)
+  internal fun enumName(name: String) = className(name)
 
-  internal fun enumResponseAdapterName(enum: IrEnum) = enumName(enum) + "_ResponseAdapter"
+  internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
   internal fun operationName(operation: IrOperation): String {
     val str = capitalizedIdentifier(operation.name)
@@ -135,8 +136,8 @@ internal abstract class CodegenLayout(
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
-  internal fun inputObjectName(inputObject: IrInputObject) = className(inputObject)
-  internal fun inputObjectAdapterName(inputObject: IrInputObject) = inputObjectName(inputObject) + "_InputAdapter"
+  internal fun inputObjectName(name: String) = className(name)
+  internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
   internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")

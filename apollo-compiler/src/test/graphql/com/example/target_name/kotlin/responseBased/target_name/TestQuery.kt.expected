@@ -15,7 +15,9 @@ import com.apollographql.apollo3.api.obj
 import com.example.target_name.adapter.TestQuery_ResponseAdapter
 import com.example.target_name.adapter.TestQuery_VariablesAdapter
 import com.example.target_name.selections.TestQuerySelections
+import com.example.target_name.type.RenamedEnum2
 import com.example.target_name.type.renamedEnum
+import com.example.target_name.type.renamedEnum1
 import com.example.target_name.type.renamedInput
 import kotlin.Any
 import kotlin.String
@@ -24,7 +26,9 @@ import kotlin.Unit
 public data class TestQuery(
   public val input: Optional<renamedInput?> = Optional.Absent,
   public val scalar: Optional<Any?> = Optional.Absent,
-  public val `enum`: Optional<renamedEnum?> = Optional.Absent,
+  public val `enum`: Optional<renamedEnum1?> = Optional.Absent,
+  public val enum2: Optional<renamedEnum?> = Optional.Absent,
+  public val enum3: Optional<RenamedEnum2?> = Optional.Absent,
 ) : Query<TestQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -51,7 +55,9 @@ public data class TestQuery(
     public val `interface`: Interface?,
     public val union: Union?,
     public val scalar: Any?,
-    public val `enum`: renamedEnum?,
+    public val `enum`: renamedEnum1?,
+    public val enum2: renamedEnum?,
+    public val enum3: RenamedEnum2?,
   ) : Query.Data {
     public data class Object(
       public val `field`: String?,
@@ -81,13 +87,14 @@ public data class TestQuery(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "42f2acf77ef3db730fa970cbbba1ca04133fcea023d8355d4eb0c27ebe51e30f"
+        "c636228860704546b8ce96d096034c1f4477398de3aae6f79b3f5f83a66a287f"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
-     * query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum) {
+     * query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum, $enum2:
+     * renamedEnum, $enum3: RenamedEnum) {
      *   object(input: $input) {
      *     field
      *   }
@@ -102,11 +109,13 @@ public data class TestQuery(
      *   }
      *   scalar(scalar: $scalar)
      *   enum(enum: $enum)
+     *   enum2(enum2: $enum2)
+     *   enum3(enum3: $enum3)
      * }
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query TestQuery(${'$'}input: ReservedInput, ${'$'}scalar: ReservedScalar, ${'$'}enum: ReservedEnum) { object(input: ${'$'}input) { field } interface { field } union { __typename ... on ReservedObject { field } } scalar(scalar: ${'$'}scalar) enum(enum: ${'$'}enum) }"
+          "query TestQuery(${'$'}input: ReservedInput, ${'$'}scalar: ReservedScalar, ${'$'}enum: ReservedEnum, ${'$'}enum2: renamedEnum, ${'$'}enum3: RenamedEnum) { object(input: ${'$'}input) { field } interface { field } union { __typename ... on ReservedObject { field } } scalar(scalar: ${'$'}scalar) enum(enum: ${'$'}enum) enum2(enum2: ${'$'}enum2) enum3(enum3: ${'$'}enum3) }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

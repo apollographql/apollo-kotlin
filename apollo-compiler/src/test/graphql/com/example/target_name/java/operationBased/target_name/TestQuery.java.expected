@@ -15,20 +15,22 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.adapter.TestQuery_ResponseAdapter;
 import com.example.target_name.adapter.TestQuery_VariablesAdapter;
 import com.example.target_name.selections.TestQuerySelections;
+import com.example.target_name.type.RenamedEnum2;
 import com.example.target_name.type.renamedEnum;
+import com.example.target_name.type.renamedEnum1;
 import com.example.target_name.type.renamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "42f2acf77ef3db730fa970cbbba1ca04133fcea023d8355d4eb0c27ebe51e30f";
+  public static final String OPERATION_ID = "c636228860704546b8ce96d096034c1f4477398de3aae6f79b3f5f83a66a287f";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
-   * query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum) {
+   * query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum, $enum2: renamedEnum, $enum3: RenamedEnum) {
    *   object(input: $input) {
    *     field
    *   }
@@ -43,9 +45,11 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    *   scalar(scalar: $scalar)
    *   enum(enum: $enum)
+   *   enum2(enum2: $enum2)
+   *   enum3(enum3: $enum3)
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum) { object(input: $input) { field } interface { field } union { __typename ... on ReservedObject { field } } scalar(scalar: $scalar) enum(enum: $enum) }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum, $enum2: renamedEnum, $enum3: RenamedEnum) { object(input: $input) { field } interface { field } union { __typename ... on ReservedObject { field } } scalar(scalar: $scalar) enum(enum: $enum) enum2(enum2: $enum2) enum3(enum3: $enum3) }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -53,7 +57,11 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Optional<java.lang.Object> scalar;
 
-  public final Optional<renamedEnum> enum_;
+  public final Optional<renamedEnum1> enum_;
+
+  public final Optional<renamedEnum> enum2;
+
+  public final Optional<RenamedEnum2> enum3;
 
   private transient volatile int $hashCode;
 
@@ -62,10 +70,12 @@ public class TestQuery implements Query<TestQuery.Data> {
   private transient volatile String $toString;
 
   public TestQuery(Optional<renamedInput> input, Optional<java.lang.Object> scalar,
-      Optional<renamedEnum> enum_) {
+      Optional<renamedEnum1> enum_, Optional<renamedEnum> enum2, Optional<RenamedEnum2> enum3) {
     this.input = input;
     this.scalar = scalar;
     this.enum_ = enum_;
+    this.enum2 = enum2;
+    this.enum3 = enum3;
   }
 
   @Override
@@ -77,7 +87,9 @@ public class TestQuery implements Query<TestQuery.Data> {
       TestQuery that = (TestQuery) o;
       return ((this.input == null) ? (that.input == null) : this.input.equals(that.input))
        &&((this.scalar == null) ? (that.scalar == null) : this.scalar.equals(that.scalar))
-       &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_));
+       &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_))
+       &&((this.enum2 == null) ? (that.enum2 == null) : this.enum2.equals(that.enum2))
+       &&((this.enum3 == null) ? (that.enum3 == null) : this.enum3.equals(that.enum3));
     }
     return false;
   }
@@ -92,6 +104,10 @@ public class TestQuery implements Query<TestQuery.Data> {
       h ^= (scalar == null) ? 0 : scalar.hashCode();
       h *= 1000003;
       h ^= (enum_ == null) ? 0 : enum_.hashCode();
+      h *= 1000003;
+      h ^= (enum2 == null) ? 0 : enum2.hashCode();
+      h *= 1000003;
+      h ^= (enum3 == null) ? 0 : enum3.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -104,7 +120,9 @@ public class TestQuery implements Query<TestQuery.Data> {
       $toString = "TestQuery{"
         + "input=" + input + ", "
         + "scalar=" + scalar + ", "
-        + "enum_=" + enum_
+        + "enum_=" + enum_ + ", "
+        + "enum2=" + enum2 + ", "
+        + "enum3=" + enum3
         + "}";
     }
     return $toString;
@@ -155,7 +173,11 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     public java.lang.Object scalar;
 
-    public renamedEnum enum_;
+    public renamedEnum1 enum_;
+
+    public renamedEnum enum2;
+
+    public RenamedEnum2 enum3;
 
     private transient volatile int $hashCode;
 
@@ -164,12 +186,14 @@ public class TestQuery implements Query<TestQuery.Data> {
     private transient volatile String $toString;
 
     public Data(Object object, Interface interface_, Union union, java.lang.Object scalar,
-        renamedEnum enum_) {
+        renamedEnum1 enum_, renamedEnum enum2, RenamedEnum2 enum3) {
       this.object = object;
       this.interface_ = interface_;
       this.union = union;
       this.scalar = scalar;
       this.enum_ = enum_;
+      this.enum2 = enum2;
+      this.enum3 = enum3;
     }
 
     @Override
@@ -183,7 +207,9 @@ public class TestQuery implements Query<TestQuery.Data> {
          &&((this.interface_ == null) ? (that.interface_ == null) : this.interface_.equals(that.interface_))
          &&((this.union == null) ? (that.union == null) : this.union.equals(that.union))
          &&((this.scalar == null) ? (that.scalar == null) : this.scalar.equals(that.scalar))
-         &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_));
+         &&((this.enum_ == null) ? (that.enum_ == null) : this.enum_.equals(that.enum_))
+         &&((this.enum2 == null) ? (that.enum2 == null) : this.enum2.equals(that.enum2))
+         &&((this.enum3 == null) ? (that.enum3 == null) : this.enum3.equals(that.enum3));
       }
       return false;
     }
@@ -202,6 +228,10 @@ public class TestQuery implements Query<TestQuery.Data> {
         h ^= (scalar == null) ? 0 : scalar.hashCode();
         h *= 1000003;
         h ^= (enum_ == null) ? 0 : enum_.hashCode();
+        h *= 1000003;
+        h ^= (enum2 == null) ? 0 : enum2.hashCode();
+        h *= 1000003;
+        h ^= (enum3 == null) ? 0 : enum3.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -216,7 +246,9 @@ public class TestQuery implements Query<TestQuery.Data> {
           + "interface_=" + interface_ + ", "
           + "union=" + union + ", "
           + "scalar=" + scalar + ", "
-          + "enum_=" + enum_
+          + "enum_=" + enum_ + ", "
+          + "enum2=" + enum2 + ", "
+          + "enum3=" + enum3
           + "}";
       }
       return $toString;

@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.String
 
-public enum class renamedEnum(
+public enum class RenamedEnum2(
   public val rawValue: String,
 ) {
   VALUE("VALUE"),
@@ -20,15 +20,15 @@ public enum class renamedEnum(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("renamedEnum")
+    public val type: EnumType = EnumType("RenamedEnum")
 
-    public fun safeValueOf(rawValue: String): renamedEnum =
+    public fun safeValueOf(rawValue: String): RenamedEnum2 =
         values().find { it.rawValue == rawValue } ?: UNKNOWN__
 
     /**
-     * Returns all [renamedEnum] known at compile time
+     * Returns all [RenamedEnum2] known at compile time
      */
-    public fun knownValues(): Array<renamedEnum> = arrayOf(
+    public fun knownValues(): Array<RenamedEnum2> = arrayOf(
       VALUE)
   }
 }
