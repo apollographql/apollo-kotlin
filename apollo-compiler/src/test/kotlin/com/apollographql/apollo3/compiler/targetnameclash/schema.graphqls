@@ -1,0 +1,19 @@
+type Query {
+  enum(enum: ReservedEnum): ReservedEnum
+  enum2(enum2: renamedEnum): renamedEnum
+  enum3(enum3: RenamedEnum): RenamedEnum
+}
+
+# Invalid targetName: clashes with renamed enum below
+enum ReservedEnum @targetName(name: "renamedEnum1") {
+  VALUE
+}
+
+enum renamedEnum {
+  VALUE
+}
+
+enum RenamedEnum {
+  VALUE
+}
+

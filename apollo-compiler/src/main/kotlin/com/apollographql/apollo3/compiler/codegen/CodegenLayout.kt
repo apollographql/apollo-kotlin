@@ -31,15 +31,8 @@ internal abstract class CodegenLayout(
         // Sort to ensure consistent results.
         .sortedBy { it.name }
     val usedNames = mutableSetOf<String>()
-    // 1. use targetName verbatim for types that define it
-    // Note: we know they are unique because of prior validation in checkApolloDuplicateTargetNames
-    for (type in allTypes.filter { it.targetName != null }) {
-      val className = type.targetName!!
-      usedNames.add(className.lowercase())
-      this[type.name] = className
-    }
 
-    // 2. compute a unique name for types without a targetName
+    // 1. Compute a unique name for types without a targetName
     for (type in allTypes.filter { it.targetName == null }) {
       val uniqueName = uniqueName(type.name, usedNames)
       // Enums are not automatically capitalized for historical reasons, and we keep this behavior for now
@@ -49,6 +42,18 @@ internal abstract class CodegenLayout(
         regularIdentifier(uniqueName)
       } else {
         capitalizedIdentifier(uniqueName)
+      }
+      usedNames.add(className.lowercase())
+      this[type.name] = className
+    }
+
+    // 2. Use targetName verbatim for types that define it
+    // Note: prior validation in checkApolloDuplicateTargetNames checks for clashes but there may still
+    // be a clash due to step 1.
+    for (type in allTypes.filter { it.targetName != null }) {
+      val className = type.targetName!!
+      if (usedNames.contains(className.lowercase())) {
+        error("Apollo: '$className' cannot be used as a target name for '${type.name}' because it clashes with another class name")
       }
       usedNames.add(className.lowercase())
       this[type.name] = className

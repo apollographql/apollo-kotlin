@@ -12,9 +12,7 @@ import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.target_name.type.GraphQLString;
-import com.example.target_name.type.RenamedEnum2;
 import com.example.target_name.type.renamedEnum;
-import com.example.target_name.type.renamedEnum1;
 import com.example.target_name.type.renamedInterface;
 import com.example.target_name.type.renamedObject;
 import com.example.target_name.type.renamedScalar;
@@ -45,8 +43,6 @@ public class TestQuerySelections {
     new CompiledField.Builder("interface", renamedInterface.type).selections(__interface).build(),
     new CompiledField.Builder("union", renamedUnion.type).selections(__union).build(),
     new CompiledField.Builder("scalar", renamedScalar.type).arguments(Arrays.asList(new CompiledArgument.Builder("scalar", new CompiledVariable("scalar")).build())).build(),
-    new CompiledField.Builder("enum", renamedEnum1.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum", new CompiledVariable("enum")).build())).build(),
-    new CompiledField.Builder("enum2", renamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum2", new CompiledVariable("enum2")).build())).build(),
-    new CompiledField.Builder("enum3", RenamedEnum2.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum3", new CompiledVariable("enum3")).build())).build()
+    new CompiledField.Builder("enum", renamedEnum.type).arguments(Arrays.asList(new CompiledArgument.Builder("enum", new CompiledVariable("enum")).build())).build()
   );
 }

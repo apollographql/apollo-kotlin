@@ -4,8 +4,6 @@ type Query {
   union: ReservedUnion
   scalar(scalar: ReservedScalar): ReservedScalar
   enum(enum: ReservedEnum): ReservedEnum
-  enum2(enum2: renamedEnum): renamedEnum
-  enum3(enum3: RenamedEnum): RenamedEnum
 }
 
 type ReservedObject @targetName(name: "renamedObject") {
@@ -24,15 +22,6 @@ input ReservedInput @targetName(name: "renamedInput") {
 
 scalar ReservedScalar @targetName(name: "renamedScalar")
 
-enum renamedEnum {
-  VALUE
-}
-
-# Should be renamed to "RenamedEnum2" because "renamedEnum1" is already used in the @targetName below
-enum RenamedEnum {
-  VALUE
-}
-
-enum ReservedEnum @targetName(name: "renamedEnum1") {
+enum ReservedEnum @targetName(name: "renamedEnum") {
   VALUE
 }

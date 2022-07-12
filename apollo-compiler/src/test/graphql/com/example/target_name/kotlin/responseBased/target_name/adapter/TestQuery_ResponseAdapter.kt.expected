@@ -16,12 +16,8 @@ import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.target_name.TestQuery
-import com.example.target_name.type.RenamedEnum2
-import com.example.target_name.type.adapter.RenamedEnum2_ResponseAdapter
-import com.example.target_name.type.adapter.renamedEnum1_ResponseAdapter
 import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter
 import com.example.target_name.type.renamedEnum
-import com.example.target_name.type.renamedEnum1
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -30,7 +26,7 @@ import kotlin.collections.List
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("object", "interface", "union", "scalar",
-        "enum", "enum2", "enum3")
+        "enum")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
@@ -38,9 +34,7 @@ public object TestQuery_ResponseAdapter {
       var _interface: TestQuery.Data.Interface? = null
       var _union: TestQuery.Data.Union? = null
       var _scalar: Any? = null
-      var _enum: renamedEnum1? = null
-      var _enum2: renamedEnum? = null
-      var _enum3: RenamedEnum2? = null
+      var _enum: renamedEnum? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -48,12 +42,7 @@ public object TestQuery_ResponseAdapter {
           1 -> _interface = Interface.obj().nullable().fromJson(reader, customScalarAdapters)
           2 -> _union = Union.obj().nullable().fromJson(reader, customScalarAdapters)
           3 -> _scalar = NullableAnyAdapter.fromJson(reader, customScalarAdapters)
-          4 -> _enum = renamedEnum1_ResponseAdapter.nullable().fromJson(reader,
-              customScalarAdapters)
-          5 -> _enum2 = renamedEnum_ResponseAdapter.nullable().fromJson(reader,
-              customScalarAdapters)
-          6 -> _enum3 = RenamedEnum2_ResponseAdapter.nullable().fromJson(reader,
-              customScalarAdapters)
+          4 -> _enum = renamedEnum_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -63,9 +52,7 @@ public object TestQuery_ResponseAdapter {
         `interface` = _interface,
         union = _union,
         scalar = _scalar,
-        `enum` = _enum,
-        enum2 = _enum2,
-        enum3 = _enum3
+        `enum` = _enum
       )
     }
 
@@ -87,13 +74,7 @@ public object TestQuery_ResponseAdapter {
       NullableAnyAdapter.toJson(writer, customScalarAdapters, value.scalar)
 
       writer.name("enum")
-      renamedEnum1_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
-
-      writer.name("enum2")
-      renamedEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum2)
-
-      writer.name("enum3")
-      RenamedEnum2_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.enum3)
+      renamedEnum_ResponseAdapter.nullable().toJson(writer, customScalarAdapters, value.`enum`)
     }
 
     private object Object : Adapter<TestQuery.Data.Object> {

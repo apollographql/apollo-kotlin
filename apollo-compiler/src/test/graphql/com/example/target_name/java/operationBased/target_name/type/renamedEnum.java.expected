@@ -11,7 +11,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class renamedEnum {
-  public static EnumType type = new EnumType("renamedEnum");
+  public static EnumType type = new EnumType("ReservedEnum");
 
   public static renamedEnum VALUE = new renamedEnum("VALUE");
 
