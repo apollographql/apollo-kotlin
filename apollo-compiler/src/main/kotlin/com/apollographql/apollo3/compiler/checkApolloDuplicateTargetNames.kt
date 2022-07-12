@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -15,8 +14,7 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
 
-@ApolloInternal
-fun checkApolloDuplicateTargetNames(schema: Schema): List<Issue> {
+internal fun checkApolloDuplicateTargetNames(schema: Schema): List<Issue> {
   val issues = mutableListOf<Issue>()
 
   val visitedTypes = mutableListOf<GQLTypeDefinition>()
