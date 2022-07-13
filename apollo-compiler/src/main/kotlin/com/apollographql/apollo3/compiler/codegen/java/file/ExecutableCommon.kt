@@ -13,7 +13,6 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaResolver
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -22,7 +21,7 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import javax.lang.model.element.Modifier
 
-fun serializeVariablesMethodSpec(
+internal fun serializeVariablesMethodSpec(
     adapterClassName: TypeName?,
     emptyMessage: String,
 ): MethodSpec {
@@ -42,7 +41,7 @@ fun serializeVariablesMethodSpec(
       .build()
 }
 
-fun adapterMethodSpec(
+internal fun adapterMethodSpec(
     resolver: JavaResolver,
     property: IrProperty,
 ): MethodSpec {
@@ -58,7 +57,7 @@ fun adapterMethodSpec(
       .build()
 }
 
-fun rootFieldMethodSpec(context: JavaContext, typeInScope: String, selectionsClassName: ClassName): MethodSpec {
+internal fun rootFieldMethodSpec(context: JavaContext, typeInScope: String, selectionsClassName: ClassName): MethodSpec {
   return MethodSpec.methodBuilder(rootField)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)

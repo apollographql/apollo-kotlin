@@ -8,7 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.TypeSpec
 
-class OperationResponseAdapterBuilder(
+internal class OperationResponseAdapterBuilder(
     val context: KotlinContext,
     val operation: IrOperation,
     val flatten: Boolean,

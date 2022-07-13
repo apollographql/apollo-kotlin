@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
-class JavaContext(
+internal class JavaContext(
     val layout: JavaCodegenLayout,
     val resolver: JavaResolver,
 )

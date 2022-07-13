@@ -1,0 +1,51 @@
+type Query {
+  enum: Enum
+}
+
+enum Enum {
+  foo
+}
+
+enum Enum2 @targetName(name: "Enum") {
+  foo
+}
+
+enum Enum3 @targetName(name: "RenamedEnum") {
+  foo
+}
+
+enum Enum4 @targetName(name: "RenamedEnum") {
+  foo
+}
+
+enum Foo {
+  foo
+}
+
+enum foo {
+  foo
+}
+
+# Foo1 clashes with foo which is automatically renamed to foo1 because of case insensitivity rules
+enum Bar @targetName(name: "Foo1") {
+  baz
+}
+
+type Type {
+  field: String
+}
+
+type Type2 @targetName(name: "Type") {
+  field: String
+}
+
+type Type3 @targetName(name: "RenamedType") {
+  field: String
+}
+
+type Type4 @targetName(name: "RenamedType") {
+  field: String
+}
+
+
+union Union @targetName(name: "Query") = Type | Type2

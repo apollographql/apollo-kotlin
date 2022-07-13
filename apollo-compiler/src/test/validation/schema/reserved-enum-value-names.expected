@@ -3,3 +3,12 @@ ERROR: ReservedEnumValueName (6:2)
 ------------
 ERROR: ReservedEnumValueName (10:2)
 'type' is a reserved enum value name, please use a different name
+------------
+ERROR: ReservedEnumValueName (14:2)
+'type' is a reserved enum value name, please use a different name
+------------
+ERROR: ReservedEnumValueName (19:2)
+'foo' is already defined in this enum, please use a different name
+------------
+ERROR: ReservedEnumValueName (24:2)
+'bar' is already defined in this enum, please use a different name

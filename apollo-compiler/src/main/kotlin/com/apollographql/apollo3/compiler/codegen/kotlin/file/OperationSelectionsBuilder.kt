@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSele
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 
-class OperationSelectionsBuilder(
+internal class OperationSelectionsBuilder(
     val context: KotlinContext,
     val operation: IrOperation,
     val schema: Schema,

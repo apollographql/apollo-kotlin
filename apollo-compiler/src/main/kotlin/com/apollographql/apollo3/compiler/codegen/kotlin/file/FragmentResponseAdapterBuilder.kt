@@ -8,7 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.kotlinpoet.TypeSpec
 
-class FragmentResponseAdapterBuilder(
+internal class FragmentResponseAdapterBuilder(
     val context: KotlinContext,
     val fragment: IrNamedFragment,
     val flatten: Boolean,

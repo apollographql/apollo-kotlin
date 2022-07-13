@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.TargetLanguage
 
-class KotlinContext(
+internal class KotlinContext(
     val layout: KotlinCodegenLayout,
     val resolver: KotlinResolver,
     val targetLanguageVersion: TargetLanguage,

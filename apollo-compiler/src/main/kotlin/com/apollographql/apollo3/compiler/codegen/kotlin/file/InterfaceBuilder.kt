@@ -9,13 +9,13 @@ import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class InterfaceBuilder(
+internal class InterfaceBuilder(
     private val context: KotlinContext,
-    private val iface: IrInterface
-): CgFileBuilder {
+    private val iface: IrInterface,
+) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = iface.name)
+  private val simpleName = layout.compiledTypeName(iface.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName(packageName, simpleName))

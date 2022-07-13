@@ -11,7 +11,7 @@ import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ParameterSpec
 
-class NamedType(
+internal class NamedType(
     val graphQlName: String,
     val description: String?,
     val deprecationReason: String?,
@@ -35,7 +35,7 @@ internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
 }
 
 
-fun IrInputField.toNamedType() = NamedType(
+internal fun IrInputField.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
     description = description,
@@ -43,7 +43,7 @@ fun IrInputField.toNamedType() = NamedType(
     optInFeature = optInFeature
 )
 
-fun IrVariable.toNamedType() = NamedType(
+internal fun IrVariable.toNamedType() = NamedType(
     graphQlName = name,
     type = type,
     description = null,

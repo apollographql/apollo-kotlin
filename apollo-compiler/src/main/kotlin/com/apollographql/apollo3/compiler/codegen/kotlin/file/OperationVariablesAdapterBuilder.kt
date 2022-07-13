@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class OperationVariablesAdapterBuilder(
+internal class OperationVariablesAdapterBuilder(
     val context: KotlinContext,
-    val operation: IrOperation
-): CgFileBuilder {
+    val operation: IrOperation,
+) : CgFileBuilder {
   val packageName = context.layout.operationAdapterPackageName(operation.filePath)
   val simpleName = context.layout.operationVariablesAdapterName(operation)
   override fun prepare() {

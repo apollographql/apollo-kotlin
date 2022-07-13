@@ -9,13 +9,13 @@ import com.apollographql.apollo3.compiler.ir.IrCustomScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-class CustomScalarBuilder(
+internal class CustomScalarBuilder(
     private val context: KotlinContext,
     private val customScalar: IrCustomScalar,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(name = customScalar.name))
+  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(customScalar.name))
 
   private fun prefixBuiltinScalarNames(name: String): String {
     // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).

@@ -55,7 +55,7 @@ class KotlinResolver(
 
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
-  fun resolveIrType(type: IrType, override: (IrType) -> TypeName? = { null }): TypeName {
+  internal fun resolveIrType(type: IrType, override: (IrType) -> TypeName? = { null }): TypeName {
     if (type is IrNonNullType) {
       return resolveIrType(type.ofType, override).copy(nullable = false)
     }
@@ -93,7 +93,7 @@ class KotlinResolver(
     }
   }
 
-  fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
+  internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)

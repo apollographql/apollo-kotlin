@@ -21,13 +21,13 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
-class EnumAsSealedBuilder(
+internal class EnumAsSealedBuilder(
     private val context: KotlinContext,
     private val enum: IrEnum,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(name = enum.name)
+  private val simpleName = layout.enumName(enum.name)
 
   private val selfClassName = ClassName(
       packageName,
@@ -159,7 +159,7 @@ class EnumAsSealedBuilder(
     return ClassName(packageName, simpleName, "UNKNOWN__")
   }
 
-  fun className(): TypeName {
+  private fun className(): TypeName {
     return ClassName(
         packageName,
         simpleName

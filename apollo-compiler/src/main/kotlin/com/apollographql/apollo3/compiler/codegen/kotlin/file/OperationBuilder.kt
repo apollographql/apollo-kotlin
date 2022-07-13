@@ -28,7 +28,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-class OperationBuilder(
+internal class OperationBuilder(
     private val context: KotlinContext,
     private val generateFilterNotNull: Boolean,
     private val operationId: String,

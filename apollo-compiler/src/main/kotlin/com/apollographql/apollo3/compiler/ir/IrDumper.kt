@@ -5,7 +5,7 @@ import okio.buffer
 import okio.sink
 import java.io.File
 
-fun Ir.dumpTo(file: File) {
+internal fun Ir.dumpTo(file: File) {
   val map = mutableMapOf<String, Any?>()
 
   file.sink().buffer().use {

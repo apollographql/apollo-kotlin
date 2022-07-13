@@ -4,19 +4,20 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.escapeKotlinReservedEnumValueNames
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
+import com.apollographql.apollo3.compiler.ir.Ir
 
-class KotlinCodegenLayout(
+internal class KotlinCodegenLayout(
+    ir: Ir,
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,
     useSchemaPackageNameForFragments: Boolean,
-    nameToClassName: (String) -> String
 ) : CodegenLayout(
+    ir,
     packageNameGenerator,
     schemaPackageName,
     useSemanticNaming,
     useSchemaPackageNameForFragments,
-    nameToClassName
 ) {
   override fun escapeReservedWord(word: String): String = word.escapeKotlinReservedWord()
 

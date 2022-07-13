@@ -10,13 +10,13 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class UnionBuilder(
+internal class UnionBuilder(
     private val context: JavaContext,
-    private val union: IrUnion
-): JavaClassBuilder {
+    private val union: IrUnion,
+) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = union.name)
+  private val simpleName = layout.compiledTypeName(union.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(union.name, ClassName.get(packageName, simpleName))

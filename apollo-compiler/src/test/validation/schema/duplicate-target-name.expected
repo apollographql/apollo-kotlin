@@ -1,0 +1,17 @@
+ERROR: ReservedEnumValueName (30:0)
+'Foo1' cannot be used as a target name for 'Bar' because it clashes with 'foo' defined at duplicate-target-name.graphql: (25, 1)
+------------
+ERROR: ReservedEnumValueName (9:0)
+'Enum' cannot be used as a target name for 'Enum2' because it clashes with 'Enum' defined at duplicate-target-name.graphql: (5, 1)
+------------
+ERROR: ReservedEnumValueName (17:0)
+'RenamedEnum' cannot be used as a target name for 'Enum4' because it clashes with 'Enum3' defined at duplicate-target-name.graphql: (13, 1)
+------------
+ERROR: ReservedEnumValueName (38:0)
+'Type' cannot be used as a target name for 'Type2' because it clashes with 'Type' defined at duplicate-target-name.graphql: (34, 1)
+------------
+ERROR: ReservedEnumValueName (46:0)
+'RenamedType' cannot be used as a target name for 'Type4' because it clashes with 'Type3' defined at duplicate-target-name.graphql: (42, 1)
+------------
+ERROR: ReservedEnumValueName (51:0)
+'Query' cannot be used as a target name for 'Union' because it clashes with 'Query' defined at duplicate-target-name.graphql: (1, 1)

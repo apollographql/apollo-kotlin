@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-class EnumResponseAdapterBuilder(
+internal class EnumResponseAdapterBuilder(
     val context: KotlinContext,
     val enum: IrEnum,
 ) : CgFileBuilder {

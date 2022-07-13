@@ -9,10 +9,10 @@ import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 
-class FragmentVariablesAdapterBuilder(
+internal class FragmentVariablesAdapterBuilder(
     val context: JavaContext,
-    val fragment: IrNamedFragment
-): JavaClassBuilder {
+    val fragment: IrNamedFragment,
+) : JavaClassBuilder {
   private val packageName = context.layout.fragmentAdapterPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentVariablesAdapterName(fragment.name)
 

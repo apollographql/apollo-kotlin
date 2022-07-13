@@ -9,7 +9,7 @@ import com.apollographql.apollo3.compiler.ir.IrNamedFragment
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class FragmentDataAdapterBuilder(
+internal class FragmentDataAdapterBuilder(
     val context: JavaContext,
     val fragment: IrNamedFragment,
     val flatten: Boolean,

@@ -13,10 +13,10 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class InputObjectBuilder(
+internal class InputObjectBuilder(
     val context: JavaContext,
-    val inputObject: IrInputObject
-): JavaClassBuilder {
+    val inputObject: IrInputObject,
+) : JavaClassBuilder {
   private val packageName = context.layout.typePackageName()
   private val simpleName = context.layout.inputObjectName(inputObject.name)
 
@@ -33,11 +33,12 @@ class InputObjectBuilder(
         ClassName.get(packageName, simpleName)
     )
   }
+
   private fun IrInputObject.typeSpec() =
       TypeSpec
           .classBuilder(simpleName)
           .addModifiers(Modifier.PUBLIC)
-          .applyIf(description?.isNotBlank()== true)  { addJavadoc("$L\n", description!!) }
+          .applyIf(description?.isNotBlank() == true) { addJavadoc("$L\n", description!!) }
           .makeDataClassFromParameters(fields.map {
             it.toNamedType().toParameterSpec(context)
           })

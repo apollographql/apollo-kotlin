@@ -10,13 +10,13 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class InterfaceBuilder(
+internal class InterfaceBuilder(
     private val context: JavaContext,
-    private val iface: IrInterface
-): JavaClassBuilder {
+    private val iface: IrInterface,
+) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.compiledTypeName(name = iface.name)
+  private val simpleName = layout.compiledTypeName(iface.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(iface.name, ClassName.get(packageName, simpleName))

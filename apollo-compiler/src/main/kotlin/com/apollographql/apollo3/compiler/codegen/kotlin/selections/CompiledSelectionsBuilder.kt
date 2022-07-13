@@ -41,7 +41,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
-class CompiledSelectionsBuilder(
+internal class CompiledSelectionsBuilder(
     private val context: KotlinContext,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val schema: Schema,

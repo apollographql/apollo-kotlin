@@ -21,7 +21,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.type
 * - registers used types and fragments
 * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
 */
-data class Ir(
+internal data class Ir(
     val operations: List<IrOperation>,
     val fragments: List<IrNamedFragment>,
     val inputObjects: List<IrInputObject>,
@@ -34,8 +34,9 @@ data class Ir(
     val schema: Schema,
 )
 
-data class IrEnum(
+internal data class IrEnum(
     override val name: String,
+    override val targetName: String?,
     val description: String?,
     val values: List<Value>,
 ) : IrSchemaType {
@@ -58,7 +59,7 @@ data class IrEnum(
  * have differences which is why they are different IR models:
  * - [IrVariable] doesn't have a description
  */
-data class IrInputField(
+internal data class IrInputField(
     val name: String,
     val description: String?,
     val deprecationReason: String?,
@@ -70,7 +71,7 @@ data class IrInputField(
 /**
  * @param sourceWithFragments the executableDocument
  */
-data class IrOperation(
+internal data class IrOperation(
     val name: String,
     val operationType: IrOperationType,
     val typeCondition: String,
@@ -84,7 +85,7 @@ data class IrOperation(
     val dataModelGroup: IrModelGroup,
 )
 
-data class IrNamedFragment(
+internal data class IrNamedFragment(
     val name: String,
     val description: String?,
     val filePath: String,
@@ -100,7 +101,7 @@ data class IrNamedFragment(
     val dataModelGroup: IrModelGroup,
 )
 
-enum class IrOperationType {
+internal enum class IrOperationType {
   Query,
   Mutation,
   Subscription
@@ -109,7 +110,7 @@ enum class IrOperationType {
 /**
  * When merging fields, [IrFieldInfo] is the information that is common to all merged fields
  */
-data class IrFieldInfo(
+internal data class IrFieldInfo(
     val responseName: String,
     /**
      * from the fieldDefinition
@@ -132,16 +133,16 @@ data class IrFieldInfo(
     val optInFeature: String?,
 )
 
-sealed class IrAccessor {
+internal sealed class IrAccessor {
   abstract val returnedModelId: String
 }
 
-data class IrFragmentAccessor(
+internal data class IrFragmentAccessor(
     val fragmentName: String,
     override val returnedModelId: String,
 ) : IrAccessor()
 
-data class IrSubtypeAccessor(
+internal data class IrSubtypeAccessor(
     val typeSet: TypeSet,
     override val returnedModelId: String,
 ) : IrAccessor()
@@ -149,7 +150,7 @@ data class IrSubtypeAccessor(
 /**
  * A Kotlin class or interface representing a GraphQL object field
  */
-data class IrModel(
+internal data class IrModel(
     val modelName: String,
     val id: String,
     /**
@@ -178,7 +179,7 @@ data class IrModel(
  * @param condition a condition for reading the property
  * @param requiresBuffering true if this property contains synthetic properties and needs to be buffered
  */
-data class IrProperty(
+internal data class IrProperty(
     val info: IrFieldInfo,
     val override: Boolean,
     val condition: BooleanExpression<BTerm>,
@@ -199,24 +200,27 @@ data class IrProperty(
     get() = condition.containsPossibleTypes()
 }
 
-data class IrModelGroup(
+internal data class IrModelGroup(
     val baseModelId: String,
     val models: List<IrModel>,
 )
 
-sealed interface IrSchemaType {
+internal sealed interface IrSchemaType {
   val name: String
+  val targetName: String?
 }
 
-data class IrInputObject(
+internal data class IrInputObject(
     override val name: String,
+    override val targetName: String?,
     val description: String?,
     val deprecationReason: String?,
     val fields: List<IrInputField>,
 ) : IrSchemaType
 
-data class IrObject(
+internal data class IrObject(
     override val name: String,
+    override val targetName: String?,
     val implements: List<String>,
     val keyFields: Set<String>,
     val description: String?,
@@ -224,8 +228,9 @@ data class IrObject(
     val embeddedFields: Set<String>,
 ) : IrSchemaType
 
-data class IrInterface(
+internal data class IrInterface(
     override val name: String,
+    override val targetName: String?,
     val implements: List<String>,
     val keyFields: Set<String>,
     val description: String?,
@@ -233,15 +238,17 @@ data class IrInterface(
     val embeddedFields: Set<String>,
 ) : IrSchemaType
 
-data class IrUnion(
+internal data class IrUnion(
     override val name: String,
+    override val targetName: String?,
     val members: List<String>,
     val description: String?,
     val deprecationReason: String?,
 ) : IrSchemaType
 
-data class IrCustomScalar(
+internal data class IrCustomScalar(
     override val name: String,
+    override val targetName: String?,
     val kotlinName: String?, // might be null if no user mapping is provided
     val description: String?,
     val deprecationReason: String?,
@@ -252,33 +259,33 @@ data class IrCustomScalar(
 /**
  * See also [IrInputField]
  */
-data class IrVariable(
+internal data class IrVariable(
     val name: String,
     val defaultValue: IrValue?,
     val type: IrType,
 )
 
-sealed class IrValue
+internal sealed class IrValue
 
-data class IrIntValue(val value: Int) : IrValue()
-data class IrFloatValue(val value: Double) : IrValue()
-data class IrStringValue(val value: String) : IrValue()
-data class IrBooleanValue(val value: Boolean) : IrValue()
-data class IrEnumValue(val value: String) : IrValue()
-object IrNullValue : IrValue()
-data class IrObjectValue(val fields: List<Field>) : IrValue() {
+internal data class IrIntValue(val value: Int) : IrValue()
+internal data class IrFloatValue(val value: Double) : IrValue()
+internal data class IrStringValue(val value: String) : IrValue()
+internal data class IrBooleanValue(val value: Boolean) : IrValue()
+internal data class IrEnumValue(val value: String) : IrValue()
+internal object IrNullValue : IrValue()
+internal data class IrObjectValue(val fields: List<Field>) : IrValue() {
   data class Field(val name: String, val value: IrValue)
 }
 
-data class IrListValue(val values: List<IrValue>) : IrValue()
-data class IrVariableValue(val name: String) : IrValue()
+internal data class IrListValue(val values: List<IrValue>) : IrValue()
+internal data class IrVariableValue(val name: String) : IrValue()
 
 
-sealed class IrType {
+internal sealed class IrType {
   open fun leafType() = this
 }
 
-data class IrNonNullType(val ofType: IrType) : IrType() {
+internal data class IrNonNullType(val ofType: IrType) : IrType() {
   init {
     check(ofType !is IrNonNullType)
   }
@@ -286,11 +293,11 @@ data class IrNonNullType(val ofType: IrType) : IrType() {
   override fun leafType() = ofType.leafType()
 }
 
-data class IrOptionalType(val ofType: IrType) : IrType() {
+internal data class IrOptionalType(val ofType: IrType) : IrType() {
   override fun leafType() = ofType.leafType()
 }
 
-data class IrListType(val ofType: IrType) : IrType() {
+internal data class IrListType(val ofType: IrType) : IrType() {
   init {
     check(ofType !is IrOptionalType)
   }
@@ -299,13 +306,13 @@ data class IrListType(val ofType: IrType) : IrType() {
 }
 
 
-interface IrNamedType {
+internal interface IrNamedType {
   val name: String
 }
 
-data class IrScalarType(override val name: String) : IrType(), IrNamedType
-data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
-data class IrEnumType(override val name: String) : IrType(), IrNamedType
+internal data class IrScalarType(override val name: String) : IrType(), IrNamedType
+internal data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
+internal data class IrEnumType(override val name: String) : IrType(), IrNamedType
 
 /**
  * @param path a unique path identifying the model.
@@ -316,29 +323,29 @@ data class IrEnumType(override val name: String) : IrType(), IrNamedType
  * operationData.$operationName.hero.otherFriend
  * ?
  */
-data class IrModelType(val path: String) : IrType()
+internal data class IrModelType(val path: String) : IrType()
 
-const val MODEL_OPERATION_DATA = "operationData"
-const val MODEL_FRAGMENT_DATA = "fragmentData"
-const val MODEL_FRAGMENT_INTERFACE = "fragmentInterface"
-const val MODEL_UNKNOWN = "?"
+internal const val MODEL_OPERATION_DATA = "operationData"
+internal const val MODEL_FRAGMENT_DATA = "fragmentData"
+internal const val MODEL_FRAGMENT_INTERFACE = "fragmentInterface"
+internal const val MODEL_UNKNOWN = "?"
 
-fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
-fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {
+internal fun IrType.makeOptional(): IrType = IrNonNullType(IrOptionalType(this))
+internal fun IrType.makeNullable(): IrType = if (this is IrNonNullType) {
   this.ofType.makeNullable()
 } else {
   this
 }
 
-fun IrType.makeNonNull(): IrType = if (this is IrNonNullType) {
+internal fun IrType.makeNonNull(): IrType = if (this is IrNonNullType) {
   this
 } else {
   IrNonNullType(this)
 }
 
-fun IrType.isOptional() = (this is IrNonNullType) && (this.ofType is IrOptionalType)
+internal fun IrType.isOptional() = (this is IrNonNullType) && (this.ofType is IrOptionalType)
 
-fun IrType.makeNonOptional(): IrType {
+internal fun IrType.makeNonOptional(): IrType {
   return ((this as? IrNonNullType)?.ofType as? IrOptionalType)?.ofType ?: error("$type is not an optional type")
 }
 

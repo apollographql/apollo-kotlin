@@ -3,10 +3,13 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
+import com.apollographql.apollo3.compiler.ir.Ir
+import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
+import com.apollographql.apollo3.compiler.ir.IrSchemaType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.singularize
@@ -16,13 +19,43 @@ import com.apollographql.apollo3.compiler.singularize
  *
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
-abstract class CodegenLayout(
+internal abstract class CodegenLayout(
+    ir: Ir,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val useSchemaPackageNameForFragments: Boolean,
-    private val nameToClassName: (String) -> String,
 ) {
+  private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
+    val allTypes: List<IrSchemaType> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions)
+        // Sort to ensure consistent results.
+        .sortedBy { it.name }
+    val usedNames = mutableSetOf<String>()
+
+    // 1. Compute a unique name for types without a targetName
+    for (type in allTypes.filter { it.targetName == null }) {
+      val uniqueName = uniqueName(type.name, usedNames)
+      // Enums are not automatically capitalized for historical reasons, and we keep this behavior for now
+      // as changing it would be breaking. Let's fix it in the next major release.
+      // See: https://github.com/apollographql/apollo-kotlin/issues/4171
+      val className = if (type is IrEnum) {
+        regularIdentifier(uniqueName)
+      } else {
+        capitalizedIdentifier(uniqueName)
+      }
+      usedNames.add(className.lowercase())
+      this[type.name] = className
+    }
+
+    // 2. Use targetName verbatim for types that define it
+    for (type in allTypes.filter { it.targetName != null }) {
+      this[type.name] = type.targetName!!
+    }
+  }
+
+  private fun className(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
+      ?: error("unknown schema type: $schemaTypeName")
+
   private val typePackageName = "$schemaPackageName.type"
 
   // ------------------------ FileNames ---------------------------------
@@ -52,9 +85,9 @@ abstract class CodegenLayout(
 
   // ------------------------ Names ---------------------------------
 
-  internal fun compiledTypeName(name: String) = capitalizedIdentifier(nameToClassName(name))
+  internal fun compiledTypeName(name: String) = className(name)
 
-  internal fun enumName(name: String) = regularIdentifier(nameToClassName(name))
+  internal fun enumName(name: String) = className(name)
 
   internal fun enumResponseAdapterName(name: String) = enumName(name) + "_ResponseAdapter"
 
@@ -72,17 +105,17 @@ abstract class CodegenLayout(
     }
   }
 
-  fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
-  fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
-  fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
-  fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
+  internal fun operationResponseAdapterWrapperName(operation: IrOperation) = operationName(operation) + "_ResponseAdapter"
+  internal fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
+  internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
+  internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
 
   internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
   internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"
   internal fun fragmentVariablesAdapterName(name: String) = fragmentName(name) + "_VariablesAdapter"
   internal fun fragmentSelectionsName(name: String) = regularIdentifier(name) + "Selections"
 
-  internal fun inputObjectName(name: String) = capitalizedIdentifier(nameToClassName(name))
+  internal fun inputObjectName(name: String) = className(name)
   internal fun inputObjectAdapterName(name: String) = inputObjectName(name) + "_InputAdapter"
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
@@ -126,7 +159,7 @@ abstract class CodegenLayout(
       }
     }
 
-    fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
+    internal fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()
       } else {
@@ -137,13 +170,34 @@ abstract class CodegenLayout(
       return (if (isOther) "Other" else "") + name
     }
 
-    fun modelName(info: IrFieldInfo): String {
+    internal fun modelName(info: IrFieldInfo): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()
       } else {
         info.responseName
       }
       return upperCamelCaseIgnoringNonLetters(setOf(responseName))
+    }
+
+    /**
+     * On case-insensitive filesystems, we need to make sure two schema types with
+     * different cases like 'Url' and 'URL' are not generated or their files will
+     * overwrite each other.
+     *
+     * For Kotlin, we _could_ just change the file name (and not the class name) but
+     * that only postpones the issue to later on when .class files are generated.
+     *
+     * In order to get predictable results independently of the system, we make the
+     * case-insensitive checks no matter the actual filesystem.
+     */
+    internal fun uniqueName(name: String, usedNames: Set<String>): String {
+      var i = 1
+      var uniqueName = name
+      while (uniqueName.lowercase() in usedNames) {
+        uniqueName = "${name}$i"
+        i++
+      }
+      return uniqueName
     }
   }
 }

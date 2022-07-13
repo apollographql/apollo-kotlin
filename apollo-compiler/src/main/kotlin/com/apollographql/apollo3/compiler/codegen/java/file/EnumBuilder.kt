@@ -21,13 +21,13 @@ import com.squareup.javapoet.ParameterSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class EnumBuilder(
+internal class EnumBuilder(
     private val context: JavaContext,
     private val enum: IrEnum,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = layout.enumName(name = enum.name)
+  private val simpleName = layout.enumName(enum.name)
   private val selfClassName = ClassName.get(packageName, simpleName)
 
   override fun prepare() {

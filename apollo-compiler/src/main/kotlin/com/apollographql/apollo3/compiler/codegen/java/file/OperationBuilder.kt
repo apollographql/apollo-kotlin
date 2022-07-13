@@ -30,7 +30,7 @@ import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class OperationBuilder(
+internal class OperationBuilder(
     private val context: JavaContext,
     private val operationId: String,
     private val generateQueryDocument: Boolean,

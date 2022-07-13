@@ -21,7 +21,7 @@ import javax.lang.model.element.Modifier
 /**
  * @param path: the path leading to this model but not including the model name
  */
-class ModelBuilder(
+internal class ModelBuilder(
     private val context: JavaContext,
     private val model: IrModel,
     private val superClassName: ClassName?,

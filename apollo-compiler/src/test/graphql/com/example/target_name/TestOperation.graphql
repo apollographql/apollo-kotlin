@@ -1,0 +1,15 @@
+query TestQuery($input: ReservedInput, $scalar: ReservedScalar, $enum: ReservedEnum) {
+  object(input: $input) {
+    field
+  }
+  interface {
+    field
+  }
+  union {
+    ... on ReservedObject {
+      field
+    }
+  }
+  scalar(scalar: $scalar)
+  enum(enum: $enum)
+}

@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
-class ModelBuilder(
+internal class ModelBuilder(
     private val context: KotlinContext,
     private val model: IrModel,
     private val superClassName: ClassName?,

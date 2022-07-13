@@ -18,7 +18,7 @@ import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-class FragmentBuilder(
+internal class FragmentBuilder(
     private val context: JavaContext,
     private val fragment: IrNamedFragment,
     flatten: Boolean,
