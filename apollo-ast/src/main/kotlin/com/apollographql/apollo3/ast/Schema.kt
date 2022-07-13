@@ -29,6 +29,7 @@ class Schema internal constructor(
     private val keyFields: Map<String, Set<String>>,
     val foreignNames: Map<String, String>,
     private val directivesToStrip: List<String>,
+    val connectionTypes: Set<String>,
 ) {
   /**
    * Creates a new Schema from a list of definition.
@@ -42,7 +43,8 @@ class Schema internal constructor(
       definitions,
       emptyMap(),
       emptyMap(),
-      emptyList()
+      emptyList(),
+      emptySet(),
   )
 
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
@@ -137,7 +139,8 @@ class Schema internal constructor(
         "sdl" to GQLDocument(definitions, null).toUtf8(),
         "keyFields" to keyFields,
         "foreignNames" to foreignNames,
-        "directivesToStrip" to directivesToStrip
+        "directivesToStrip" to directivesToStrip,
+        "connectionTypes" to connectionTypes,
     )
   }
 
@@ -213,6 +216,7 @@ class Schema internal constructor(
           keyFields = (map["keyFields"]!! as Map<String, Collection<String>>).mapValues { it.value.toSet() },
           foreignNames = map["foreignNames"]!! as Map<String, String>,
           directivesToStrip = map["directivesToStrip"]!! as List<String>,
+          connectionTypes = (map["connectionTypes"]!! as List<String>).toSet(),
       )
     }
   }

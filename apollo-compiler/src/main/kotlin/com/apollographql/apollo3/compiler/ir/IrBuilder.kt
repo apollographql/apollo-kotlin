@@ -47,6 +47,7 @@ import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findOptInFeature
 import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
+import com.apollographql.apollo3.ast.internal.toConnectionFields
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.leafType
@@ -188,7 +189,9 @@ internal class IrBuilder(
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on object definitions
         deprecationReason = directives.findDeprecationReason(),
-        embeddedFields = directives.filter { schema.originalDirectiveName(it.name)== TYPE_POLICY }.toEmbeddedFields()
+        embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
+            directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
+            connectionTypeEmbeddedFields(name, schema),
     )
   }
 
@@ -204,8 +207,23 @@ internal class IrBuilder(
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on interfaces
         deprecationReason = directives.findDeprecationReason(),
-        embeddedFields = directives.filter { schema.originalDirectiveName(it.name)== TYPE_POLICY }.toEmbeddedFields()
+        embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
+            directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
+            connectionTypeEmbeddedFields(name, schema),
     )
+  }
+
+  /**
+   * If [typeName] is declared as a Relay Connection type (via the `@typePolicy` directive), return the standard arguments
+   * to be embedded.
+   * Otherwise, return an empty set.
+   */
+  private fun connectionTypeEmbeddedFields(typeName: String, schema: Schema): Set<String> {
+    return if (typeName in schema.connectionTypes) {
+      setOf("edges")
+    } else {
+      emptySet()
+    }
   }
 
   private fun GQLUnionTypeDefinition.toIr(): IrUnion {

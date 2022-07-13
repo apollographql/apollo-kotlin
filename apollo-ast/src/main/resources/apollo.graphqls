@@ -22,7 +22,8 @@ directive @nonnull(fields: String! = "") on OBJECT | FIELD
 # `keyFields`: a selection set containing fields used to compute the cache key of an object. Order is important.
 # `embeddedFields`: a selection set containing fields that shouldn't create a new cache Record and should be
 # embedded in their parent instead. Order is unimportant.
-directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "") on OBJECT | INTERFACE | UNION
+# `connectionFields`: a selection set containing fields that should be treated as Relay Connection fields. Order is unimportant.
+directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "", connectionFields: String! = "") on OBJECT | INTERFACE | UNION
 
 # Attach extra information to a given field
 # `keyArgs`: a list of arguments used to compute the cache key of the object this field is pointing to. 

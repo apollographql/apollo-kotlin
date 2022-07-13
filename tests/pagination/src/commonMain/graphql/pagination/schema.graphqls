@@ -1,10 +1,12 @@
 type Query
-@typePolicy(embeddedFields: "usersCursorBased, usersOffsetBasedWithPage")
+@typePolicy(embeddedFields: "usersCursorBased, usersOffsetBasedWithPage" connectionFields: "usersCursorBased2, usersCursorBased3")
 @fieldPolicy(forField: "usersCursorBased", paginationArgs: "first, after, last, before")
 @fieldPolicy(forField: "usersOffsetBasedWithArray", paginationArgs: "offset, limit")
 @fieldPolicy(forField: "usersOffsetBasedWithPage", paginationArgs: "offset, limit")
 {
   usersCursorBased(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection!
+  usersCursorBased2(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection2!
+  usersCursorBased3(first: Int = 10, after: String = null, last: Int = null, before: String = null): UserConnection3!
 
   usersOffsetBasedWithArray(offset: Int = 0, limit: Int = 10): [User!]!
 
@@ -12,6 +14,16 @@ type Query
 }
 
 type UserConnection @typePolicy(embeddedFields: "pageInfo, edges") {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+}
+
+type UserConnection2 {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+}
+
+type UserConnection3 {
   pageInfo: PageInfo!
   edges: [UserEdge!]!
 }
