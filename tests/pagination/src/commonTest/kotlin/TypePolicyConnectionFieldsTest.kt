@@ -2,11 +2,10 @@ package pagination
 
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.cache.normalized.ApolloStore
+import com.apollographql.apollo3.cache.normalized.api.ConnectionMetadataGenerator
+import com.apollographql.apollo3.cache.normalized.api.ConnectionRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyApolloResolver
-import com.apollographql.apollo3.cache.normalized.api.FieldRecordMerger
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.MetadataGenerator
-import com.apollographql.apollo3.cache.normalized.api.MetadataGeneratorContext
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
@@ -41,9 +40,9 @@ class TypePolicyConnectionFieldsTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
-        metadataGenerator = CursorPaginationMetadataGenerator(Pagination.connectionTypes),
+        metadataGenerator = ConnectionMetadataGenerator(Pagination.connectionTypes),
         apolloResolver = FieldPolicyApolloResolver,
-        recordMerger = FieldRecordMerger(CursorPaginationFieldMerger())
+        recordMerger = ConnectionRecordMerger
     )
     apolloStore.clearAll()
 
@@ -309,78 +308,6 @@ class TypePolicyConnectionFieldsTest {
     dataFromStore = apolloStore.readOperation(query1)
     assertEquals(data5, dataFromStore)
     assertChainedCachesAreEqual(apolloStore)
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private class CursorPaginationMetadataGenerator(private val connectionTypes: Set<String>) : MetadataGenerator {
-    override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
-      if (context.field.type.leafType().name in connectionTypes) {
-        obj as Map<String, Any?>
-        val edges = obj["edges"] as List<Map<String, Any?>>
-        val startCursor = edges.firstOrNull()?.get("cursor") as String?
-        val endCursor = edges.lastOrNull()?.get("cursor") as String?
-        return mapOf(
-            "startCursor" to startCursor,
-            "endCursor" to endCursor,
-            "before" to context.argumentValue("before"),
-            "after" to context.argumentValue("after"),
-        )
-      }
-      return emptyMap()
-    }
-  }
-
-  private class CursorPaginationFieldMerger : FieldRecordMerger.FieldMerger {
-    @Suppress("UNCHECKED_CAST")
-    override fun mergeFields(existing: FieldRecordMerger.FieldInfo, incoming: FieldRecordMerger.FieldInfo): FieldRecordMerger.FieldInfo {
-      val existingStartCursor = existing.metadata["startCursor"] as? String
-      val existingEndCursor = existing.metadata["endCursor"] as? String
-      val incomingStartCursor = incoming.metadata["startCursor"] as? String
-      val incomingEndCursor = incoming.metadata["endCursor"] as? String
-      val incomingBeforeArgument = incoming.metadata["before"] as? String
-      val incomingAfterArgument = incoming.metadata["after"] as? String
-
-      return if (incomingBeforeArgument == null && incomingAfterArgument == null) {
-        // Not a pagination query
-        incoming
-      } else if (existingStartCursor == null || existingEndCursor == null) {
-        // Existing is empty
-        incoming
-      } else if (incomingStartCursor == null || incomingEndCursor == null) {
-        // Incoming is empty
-        existing
-      } else {
-        val existingValue = existing.value as Map<String, Any?>
-        val existingList = existingValue["edges"] as List<*>
-        val incomingList = (incoming.value as Map<String, Any?>)["edges"] as List<*>
-
-        val mergedList: List<*>
-        val newStartCursor: String
-        val newEndCursor: String
-        if (incomingAfterArgument == existingEndCursor) {
-          mergedList = existingList + incomingList
-          newStartCursor = existingStartCursor
-          newEndCursor = incomingEndCursor
-        } else if (incomingBeforeArgument == existingStartCursor) {
-          mergedList = incomingList + existingList
-          newStartCursor = incomingStartCursor
-          newEndCursor = existingEndCursor
-        } else {
-          // We received a list which is neither the previous nor the next page.
-          // Handle this case by resetting the cache with this page
-          mergedList = incomingList
-          newStartCursor = incomingStartCursor
-          newEndCursor = incomingEndCursor
-        }
-
-        val mergedFieldValue = existingValue.toMutableMap()
-        mergedFieldValue["edges"] = mergedList
-        FieldRecordMerger.FieldInfo(
-            value = mergedFieldValue,
-            metadata = mapOf("startCursor" to newStartCursor, "endCursor" to newEndCursor)
-        )
-      }
-    }
   }
 }
 

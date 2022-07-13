@@ -27,3 +27,23 @@ class MetadataGeneratorContext(
 object EmptyMetadataGenerator : MetadataGenerator {
   override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> = emptyMap()
 }
+
+@ApolloExperimental
+class ConnectionMetadataGenerator(private val connectionTypes: Set<String>) : MetadataGenerator {
+  @Suppress("UNCHECKED_CAST")
+  override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
+    if (context.field.type.leafType().name in connectionTypes) {
+      obj as Map<String, Any?>
+      val edges = obj["edges"] as List<Map<String, Any?>>
+      val startCursor = edges.firstOrNull()?.get("cursor") as String?
+      val endCursor = edges.lastOrNull()?.get("cursor") as String?
+      return mapOf(
+          "startCursor" to startCursor,
+          "endCursor" to endCursor,
+          "before" to context.argumentValue("before"),
+          "after" to context.argumentValue("after"),
+      )
+    }
+    return emptyMap()
+  }
+}
