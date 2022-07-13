@@ -44,7 +44,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
         val schemaResult = parseResult.valueAssertNoErrors().validateAsSchemaAndAddApolloDefinition()
         schemaResult.issues +
             (schemaResult.value?.let { checkApolloReservedEnumValueNames(it) } ?: emptyList()) +
-            (schemaResult.value?.let { checkApolloDuplicateTargetNames(it) } ?: emptyList())
+            (schemaResult.value?.let { checkApolloTargetNameClashes(it) } ?: emptyList())
       }
     }
     issues.serialize()

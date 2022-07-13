@@ -1,5 +1,0 @@
-query TestQuery($enum: ReservedEnum, $enum2: renamedEnum, $enum3: RenamedEnum) {
-  enum(enum: $enum)
-  enum2(enum2: $enum2)
-  enum3(enum3: $enum3)
-}

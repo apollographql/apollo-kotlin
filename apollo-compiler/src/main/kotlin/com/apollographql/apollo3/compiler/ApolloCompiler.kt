@@ -92,7 +92,7 @@ object ApolloCompiler {
     }
 
     checkApolloReservedEnumValueNames(schema).checkNoErrors()
-    checkApolloDuplicateTargetNames(schema).checkNoErrors()
+    checkApolloTargetNameClashes(schema).checkNoErrors()
 
     if (!options.flattenModels) {
       checkCapitalizedFields(definitions).checkNoErrors()

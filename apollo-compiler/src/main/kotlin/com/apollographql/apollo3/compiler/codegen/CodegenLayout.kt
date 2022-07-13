@@ -48,8 +48,6 @@ internal abstract class CodegenLayout(
     }
 
     // 2. Use targetName verbatim for types that define it
-    // Note: prior validation in checkApolloDuplicateTargetNames checks for clashes but there may still
-    // be a clash due to step 1.
     for (type in allTypes.filter { it.targetName != null }) {
       val className = type.targetName!!
       if (usedNames.contains(className.lowercase())) {
@@ -58,27 +56,6 @@ internal abstract class CodegenLayout(
       usedNames.add(className.lowercase())
       this[type.name] = className
     }
-  }
-
-  /**
-   * On case-insensitive filesystems, we need to make sure two schema types with
-   * different cases like 'Url' and 'URL' are not generated or their files will
-   * overwrite each other.
-   *
-   * For Kotlin, we _could_ just change the file name (and not the class name) but
-   * that only postpones the issue to later on when .class files are generated.
-   *
-   * In order to get predictable results independently of the system, we make the
-   * case-insensitive checks no matter the actual filesystem.
-   */
-  private fun uniqueName(name: String, usedNames: MutableSet<String>): String {
-    var i = 1
-    var uniqueName = name
-    while (uniqueName.lowercase() in usedNames) {
-      uniqueName = "${name}$i"
-      i++
-    }
-    return uniqueName
   }
 
   private fun className(schemaTypeName: String): String = schemaTypeToClassName[schemaTypeName]
@@ -205,6 +182,27 @@ internal abstract class CodegenLayout(
         info.responseName
       }
       return upperCamelCaseIgnoringNonLetters(setOf(responseName))
+    }
+
+    /**
+     * On case-insensitive filesystems, we need to make sure two schema types with
+     * different cases like 'Url' and 'URL' are not generated or their files will
+     * overwrite each other.
+     *
+     * For Kotlin, we _could_ just change the file name (and not the class name) but
+     * that only postpones the issue to later on when .class files are generated.
+     *
+     * In order to get predictable results independently of the system, we make the
+     * case-insensitive checks no matter the actual filesystem.
+     */
+    internal fun uniqueName(name: String, usedNames: Set<String>): String {
+      var i = 1
+      var uniqueName = name
+      while (uniqueName.lowercase() in usedNames) {
+        uniqueName = "${name}$i"
+        i++
+      }
+      return uniqueName
     }
   }
 }

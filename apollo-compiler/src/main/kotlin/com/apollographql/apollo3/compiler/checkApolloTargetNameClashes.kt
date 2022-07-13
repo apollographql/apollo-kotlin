@@ -13,36 +13,43 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.findTargetName
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 
-internal fun checkApolloDuplicateTargetNames(schema: Schema): List<Issue> {
+/**
+ * Checks that targetNames don't clash with other class name.
+ * Note: case is ignored in comparison because we assume the file system is case-insensitive.
+ */
+internal fun checkApolloTargetNameClashes(schema: Schema): List<Issue> {
   val issues = mutableListOf<Issue>()
 
-  val visitedTypes = mutableListOf<GQLTypeDefinition>()
-  for (type in schema
+  val typesWithTargetName: Map<GQLTypeDefinition, String?> = schema
       .typeDefinitions
       .values
-  ) {
-    val targetName = type.directives.findTargetName(schema)
-    if (targetName == null) {
-      visitedTypes.add(type)
-      continue
-    }
+      // Sort to ensure consistent results
+      .sortedBy { it.name }
+      .associateWith { it.directives.findTargetName(schema) }
+  val usedNames = mutableMapOf<String, GQLTypeDefinition>()
 
-    val existingTypeWithSameName = visitedTypes.find { visitedType ->
-      val visitedTypeTargetName = visitedType.directives.findTargetName(schema)
+  // 1. Collect unique names for types without a targetName
+  for ((type, _) in typesWithTargetName.filterValues { it == null }) {
+    val name = CodegenLayout.uniqueName(type.name, usedNames.keys.toSet())
+    usedNames[name.lowercase()] = type
+  }
 
-      // Ignore case because we assume the file system is case-insensitive.
-      (visitedTypeTargetName ?: visitedType.name).equals(targetName, ignoreCase = true)
-    }
-    if (existingTypeWithSameName != null) {
+  // 2. Check targetName for types that define it
+  for ((type, targetName) in typesWithTargetName.filterValues { it != null }) {
+    val name = targetName!!.lowercase()
+    if (usedNames.containsKey(name)) {
+      val typeForUsedName = usedNames[name]!!
       issues.add(
           Issue.ReservedEnumValueName(
-              message = "A type named '${targetName}' is already defined, please use a different target name. First definition is: ${existingTypeWithSameName.sourceLocation.pretty()}",
+              message = "'${targetName}' cannot be used as a target name for '${type.name}' because it clashes with '${typeForUsedName.name}' defined at ${typeForUsedName.sourceLocation.pretty()}",
               sourceLocation = type.sourceLocation
           )
       )
+    } else {
+      usedNames[name] = type
     }
-    visitedTypes.add(type)
   }
   return issues
 }
