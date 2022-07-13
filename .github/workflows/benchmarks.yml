@@ -3,6 +3,9 @@ name: benchmarks
 on:
   schedule:
     - cron: '0 3 * * *'
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   benchmarks:
@@ -27,9 +30,17 @@ jobs:
       - run: |
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
-      - run: |
-          ./scripts/run-benchmarks.main.kts
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: microbenchmarks
+        uses: martinbonnin/run-benchmarks@main
+        with:
+          google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
+          app_apk: 'benchmark/app/build/outputs/apk/release/app-release.apk'
+          test_apk: 'benchmark/lib/build/outputs/apk/androidTest/release/lib-release-androidTest.apk'
+          device_model: 'redfin,locale=en,orientation=portrait'
+
+          dd_api_key: ${{ secrets.DD_API_KEY }}
+          dd_metric_prefix: 'apollo.kotlin'
+          dd_dashboard_url: 'https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa'
+
+          github_token: ${{ github.token }}
