@@ -3,9 +3,6 @@ name: benchmarks
 on:
   schedule:
     - cron: '0 3 * * *'
-  pull_request:
-    branches:
-      - '*'
 
 jobs:
   benchmarks:
