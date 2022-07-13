@@ -1121,6 +1121,7 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public static final field REQUIRES_OPT_IN Ljava/lang/String;
 	public static final field TYPE_POLICY Ljava/lang/String;
 	public fun <init> (Ljava/util/List;)V
+	public final fun getConnectionTypes ()Ljava/util/Set;
 	public final fun getDirectiveDefinitions ()Ljava/util/Map;
 	public final fun getForeignNames ()Ljava/util/Map;
 	public final fun getMutationTypeDefinition ()Lcom/apollographql/apollo3/ast/GQLTypeDefinition;
