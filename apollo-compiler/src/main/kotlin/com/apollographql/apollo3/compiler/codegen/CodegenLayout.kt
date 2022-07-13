@@ -49,12 +49,7 @@ internal abstract class CodegenLayout(
 
     // 2. Use targetName verbatim for types that define it
     for (type in allTypes.filter { it.targetName != null }) {
-      val className = type.targetName!!
-      if (usedNames.contains(className.lowercase())) {
-        error("Apollo: '$className' cannot be used as a target name for '${type.name}' because it clashes with another class name")
-      }
-      usedNames.add(className.lowercase())
-      this[type.name] = className
+      this[type.name] = type.targetName!!
     }
   }
 
