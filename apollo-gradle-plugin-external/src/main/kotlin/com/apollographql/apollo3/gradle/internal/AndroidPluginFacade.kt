@@ -13,8 +13,10 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.TaskProvider
+import java.io.File
 
-fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir: Provider<Directory>, task: Task) {
+fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   val container = project.container(BaseVariant::class.java)
 
   val extension = project.androidExtensionOrThrow
@@ -58,7 +60,14 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
   container.all {
     if (it.sourceSets.any { it.name == sourceSetName }) {
       if (kotlinSourceSet == null) {
-        it.registerJavaGeneratingTask(task, outputDir.get().asFile)
+        try {
+          // AGP 7.0.0+: do things lazily
+          it.javaClass.getMethod("registerJavaGeneratingTask", TaskProvider::class.java, Array<File>::class.java)
+              .invoke(it, taskProvider, arrayOf(outputDir.get().asFile))
+        } catch (e: Exception) {
+          // Older AGP: do things eagerly
+          it.registerJavaGeneratingTask(taskProvider.get(), outputDir.get().asFile)
+        }
       } else {
         // The kotlinSourceSet carries task dependencies, calling srcDir() above is enough
         // to setup task dependencies
@@ -70,7 +79,7 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
   }
 }
 
-fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>, task: Task) {
+fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   check(variant is BaseVariant) {
     "Apollo: 'variant' must be an instance of an Android [BaseVariant]"
   }
@@ -90,5 +99,5 @@ fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<
     else -> variant.name
   }
 
-  connectToAndroidSourceSet(project, sourceSetName, outputDir, task)
+  connectToAndroidSourceSet(project, sourceSetName, outputDir, taskProvider)
 }
