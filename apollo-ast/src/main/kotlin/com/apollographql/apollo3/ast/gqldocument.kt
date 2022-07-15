@@ -28,7 +28,7 @@ fun GQLDocument.withoutBuiltinDirectives(): GQLDocument {
 @Deprecated("This method is deprecated and will be removed in a future version")
 fun GQLDocument.withApolloDefinitions(): GQLDocument {
   @Suppress("DEPRECATION")
-  return withDefinitions(apolloDefinitions("v0.1"))
+  return withDefinitions(apolloDefinitions())
 }
 
 /**
@@ -46,7 +46,8 @@ fun linkDefinitions() = definitionsFromResources("link.graphqls")
 /**
  * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
-fun apolloDefinitions(version: String) = definitionsFromResources("apollo-$version.graphqls")
+fun apolloDefinitions() = apolloDefinitions("v0.1")
+internal fun apolloDefinitions(version: String) = definitionsFromResources("apollo-$version.graphqls")
 
 private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!

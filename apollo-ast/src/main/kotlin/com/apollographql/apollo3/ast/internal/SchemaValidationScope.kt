@@ -54,7 +54,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = apolloDefinitions("v0.1")
+  val apolloDefinitions = apolloDefinitions()
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
