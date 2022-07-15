@@ -29,6 +29,7 @@ class Schema internal constructor(
     private val keyFields: Map<String, Set<String>>,
     val foreignNames: Map<String, String>,
     private val directivesToStrip: List<String>,
+    @ApolloInternal
     val connectionTypes: Set<String>,
 ) {
   /**
