@@ -1,2 +1,2 @@
-WARNING: ValidationError(6:0)
-Directive 'nonnull' is defined multiple times . First definition is : (apollo - v0.1.graphqls): (19, 1)
+WARNING: ValidationError (6:0)
+Directive 'nonnull' is defined multiple times. First definition is: (apollo-v0.1.graphqls): (19, 1)
