@@ -1,7 +1,7 @@
-# The kotlin_labs directives
-# You can import them with
+# The kotlin_labs v0.1 directives
+# You can import them with:
 #
-# extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@optional", "@nonnull", "@typePolicy", "@fieldPolicy"])
+# extend schema @link(url: "https://specs.apollo.dev/kotlin_labs/v0.1", import: ["@optional", "@nonnull", "@typePolicy", "@fieldPolicy", "requiresOptIn", "targetName"])
 #
 # They are included unconditionally for historical reasons but this will change in a future version
 
@@ -22,8 +22,7 @@ directive @nonnull(fields: String! = "") on OBJECT | FIELD
 # `keyFields`: a selection set containing fields used to compute the cache key of an object. Order is important.
 # `embeddedFields`: a selection set containing fields that shouldn't create a new cache Record and should be
 # embedded in their parent instead. Order is unimportant.
-# `connectionFields`: a selection set containing fields that should be treated as Relay Connection fields. Order is unimportant.
-directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "", connectionFields: String! = "") on OBJECT | INTERFACE | UNION
+directive @typePolicy(keyFields: String! = "", embeddedFields: String! = "") on OBJECT | INTERFACE | UNION
 
 # Attach extra information to a given field
 # `keyArgs`: a list of arguments used to compute the cache key of the object this field is pointing to. 
@@ -48,9 +47,4 @@ on FIELD_DEFINITION
 # This directive is experimental.
 directive @targetName(name: String!)
 on OBJECT
-    | INTERFACE
-    | ENUM
     | ENUM_VALUE
-    | UNION
-    | SCALAR
-    | INPUT_OBJECT

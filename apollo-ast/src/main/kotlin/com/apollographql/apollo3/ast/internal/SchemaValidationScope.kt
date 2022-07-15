@@ -54,7 +54,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = apolloDefinitions()
+  val apolloDefinitions = apolloDefinitions("v0.1")
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
@@ -283,6 +283,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
         }
 
         val foreignName = components[components.size - 2]
+        val version = components[components.size - 1]
 
         if (prefix == null) {
           prefix = foreignName
@@ -320,7 +321,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
 
 
         if (foreignName == "kotlin_labs") {
-          val (definitions, renames) = apolloDefinitions().rename(mappings, prefix)
+          val (definitions, renames) = apolloDefinitions(version).rename(mappings, prefix)
           foreignSchemas.add(
               ForeignSchema(
                   name = foreignName,
