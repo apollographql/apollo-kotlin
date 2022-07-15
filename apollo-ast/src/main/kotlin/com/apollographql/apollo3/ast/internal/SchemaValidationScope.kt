@@ -29,7 +29,6 @@ import com.apollographql.apollo3.ast.GQLTypeSystemExtension
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.Schema.Companion.REQUIRES_OPT_IN
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.apolloDefinitions
@@ -170,8 +169,6 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
   val connectionTypes = mergedScope.computeConnectionTypes()
-
-  mergedScope.validateRequiresOptInOnDirectiveArguments()
 
   return if (issues.containsError()) {
     /**
@@ -528,7 +525,7 @@ internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<Stri
 
 internal fun ValidationScope.computeConnectionTypes(): Set<String> {
   val connectionTypes = mutableSetOf<String>()
-  for (typeDefinition in typeDefinitions.values.filter { it is GQLObjectTypeDefinition || it is GQLInterfaceTypeDefinition }) {
+  for (typeDefinition in typeDefinitions.values) {
     val connectionFields = typeDefinition.directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields()
     for (fieldName in connectionFields) {
       val field = typeDefinition.fields.firstOrNull { it.name == fieldName } ?: continue
@@ -538,40 +535,11 @@ internal fun ValidationScope.computeConnectionTypes(): Set<String> {
   return connectionTypes
 }
 
-internal fun ValidationScope.validateRequiresOptInOnDirectiveArguments() {
-  val directiveArgumentsRequiringOptIn = mutableMapOf<Pair<String, String>, String>() // Directive+Argument -> Feature
-  for (directiveDefinition in directiveDefinitions.values) {
-    for (argument in directiveDefinition.arguments) {
-      val requiresOptInFeature = argument.directives.firstOrNull { originalDirectiveName(it.name) == REQUIRES_OPT_IN }?.arguments?.arguments?.firstOrNull {
-        it.name == "feature"
-      }?.value as? GQLStringValue ?: continue
-      directiveArgumentsRequiringOptIn[directiveDefinition.name to argument.name] = requiresOptInFeature.value
-    }
-  }
-
-  for (typeDefinition in typeDefinitions.values) {
-    for (directive in typeDefinition.directives) {
-      val arguments = directive.arguments?.arguments ?: emptyList()
-      for (argument in arguments) {
-        val requiredFeatureForArgument = directiveArgumentsRequiringOptIn[directive.name to argument.name] ?: continue
-        registerIssue(
-            message = "'${directive.name}' directive argument '${argument.name}' requires opt-in feature '$requiredFeatureForArgument'",
-            sourceLocation = directive.sourceLocation,
-            severity = Issue.Severity.WARNING,
-        )
-      }
-    }
-  }
-}
-
 private val GQLTypeDefinition.directives
   get() = when (this) {
     is GQLObjectTypeDefinition -> directives
     is GQLInterfaceTypeDefinition -> directives
-    is GQLEnumTypeDefinition -> directives
-    is GQLInputObjectTypeDefinition -> directives
-    is GQLScalarTypeDefinition -> directives
-    is GQLUnionTypeDefinition -> directives
+    else -> emptyList()
   }
 
 private val GQLTypeDefinition.fields
