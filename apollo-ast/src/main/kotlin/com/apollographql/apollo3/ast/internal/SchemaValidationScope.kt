@@ -1,9 +1,44 @@
 package com.apollographql.apollo3.ast.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
-import com.apollographql.apollo3.ast.*
+import com.apollographql.apollo3.ast.ConflictResolution
+import com.apollographql.apollo3.ast.GQLDefinition
+import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
+import com.apollographql.apollo3.ast.GQLField
+import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLListValue
+import com.apollographql.apollo3.ast.GQLNamed
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
+import com.apollographql.apollo3.ast.GQLObjectValue
+import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
+import com.apollographql.apollo3.ast.GQLResult
+import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLSchemaExtension
+import com.apollographql.apollo3.ast.GQLStringValue
+import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
+import com.apollographql.apollo3.ast.GQLTypeSystemExtension
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
+import com.apollographql.apollo3.ast.Issue
+import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
+import com.apollographql.apollo3.ast.SourceLocation
+import com.apollographql.apollo3.ast.apolloDefinitions
+import com.apollographql.apollo3.ast.builtinDefinitions
+import com.apollographql.apollo3.ast.canHaveKeyFields
+import com.apollographql.apollo3.ast.combineDefinitions
+import com.apollographql.apollo3.ast.containsError
+import com.apollographql.apollo3.ast.linkDefinitions
+import com.apollographql.apollo3.ast.parseAsGQLSelections
+import com.apollographql.apollo3.ast.transform2
 
 internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
   val issues = mutableListOf<Issue>()
@@ -19,7 +54,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
 
   var directivesToStrip = foreignSchemas.flatMap { it.directivesToStrip }
 
-  val apolloDefinitions = apolloDefinitions()
+  val apolloDefinitions = apolloDefinitions("v0.1")
 
   if (requiresApolloDefinitions && foreignSchemas.none { it.name == "kotlin_labs" }) {
     /**
@@ -133,6 +168,7 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   mergedScope.validateObjects()
 
   val keyFields = mergedScope.validateAndComputeKeyFields()
+  val connectionTypes = mergedScope.computeConnectionTypes()
 
   return if (issues.containsError()) {
     /**
@@ -142,10 +178,11 @@ internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefi
   } else {
     GQLResult(
         Schema(
-            mergedDefinitions,
-            keyFields,
-            foreignNames,
-            directivesToStrip
+            definitions = mergedDefinitions,
+            keyFields = keyFields,
+            foreignNames = foreignNames,
+            directivesToStrip = directivesToStrip,
+            connectionTypes = connectionTypes,
         ),
         issues
     )
@@ -246,6 +283,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
         }
 
         val foreignName = components[components.size - 2]
+        val version = components[components.size - 1]
 
         if (prefix == null) {
           prefix = foreignName
@@ -283,7 +321,7 @@ private fun List<GQLSchemaExtension>.getForeignSchemas(
 
 
         if (foreignName == "kotlin_labs") {
-          val (definitions, renames) = apolloDefinitions().rename(mappings, prefix)
+          val (definitions, renames) = apolloDefinitions(version).rename(mappings, prefix)
           foreignSchemas.add(
               ForeignSchema(
                   name = foreignName,
@@ -452,6 +490,9 @@ private fun List<GQLDirective>.toKeyFields(): Set<String> = extractFields("keyFi
 @ApolloInternal
 fun List<GQLDirective>.toEmbeddedFields(): Set<String> = extractFields("embeddedFields")
 
+@ApolloInternal
+fun List<GQLDirective>.toConnectionFields(): Set<String> = extractFields("connectionFields")
+
 private fun List<GQLDirective>.extractFields(argumentName: String): Set<String> {
   if (isEmpty()) {
     return emptySet()
@@ -482,3 +523,36 @@ internal fun ValidationScope.validateAndComputeKeyFields(): Map<String, Set<Stri
   }
   return keyFieldsCache
 }
+
+internal fun ValidationScope.computeConnectionTypes(): Set<String> {
+  val connectionTypes = mutableSetOf<String>()
+  for (typeDefinition in typeDefinitions.values) {
+    val connectionFields = typeDefinition.directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields()
+    for (fieldName in connectionFields) {
+      val field = typeDefinition.fields.firstOrNull { it.name == fieldName } ?: continue
+      connectionTypes.add(field.type.name)
+    }
+  }
+  return connectionTypes
+}
+
+private val GQLTypeDefinition.directives
+  get() = when (this) {
+    is GQLObjectTypeDefinition -> directives
+    is GQLInterfaceTypeDefinition -> directives
+    else -> emptyList()
+  }
+
+private val GQLTypeDefinition.fields
+  get() = when (this) {
+    is GQLObjectTypeDefinition -> fields
+    is GQLInterfaceTypeDefinition -> fields
+    else -> emptyList()
+  }
+
+private val GQLType.name: String
+  get() = when (this) {
+    is GQLNonNullType -> type.name
+    is GQLListType -> type.name
+    is GQLNamedType -> name
+  }

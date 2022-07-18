@@ -71,6 +71,7 @@ internal object KotlinSymbols {
   val List = ClassName("kotlin.collections", "List")
   val Map = ClassName("kotlin.collections", "Map")
   val Array = ClassName("kotlin", "Array")
+  val Set = ClassName("kotlin.collections", "Set")
 
   val Suppress = ClassName("kotlin", "Suppress")
   val JvmOverloads = ClassName("kotlin.jvm", "JvmOverloads")

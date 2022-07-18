@@ -10,45 +10,46 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.runTest
-import pagination.test.UsersCursorBasedQuery_TestBuilder.Data
+import pagination.pagination.Pagination
+import pagination.test.WithTypePolicyDirectiveQuery_TestBuilder.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class CursorBasedPaginationTest {
+class TypePolicyConnectionFieldsTest {
   @Test
-  fun cursorBasedMemoryCache() {
-    cursorBased(MemoryCacheFactory())
+  fun typePolicyConnectionFieldsMemoryCache() {
+    typePolicyConnectionFields(MemoryCacheFactory())
   }
 
   @Test
-  fun cursorBasedBlobSqlCache() {
-    cursorBased(SqlNormalizedCacheFactory(name = "blob", withDates = true))
+  fun typePolicyConnectionFieldsBlobSqlCache() {
+    typePolicyConnectionFields(SqlNormalizedCacheFactory(name = "blob", withDates = true))
   }
 
   @Test
-  fun cursorBasedJsonSqlCache() {
-    cursorBased(SqlNormalizedCacheFactory(name = "json", withDates = false))
+  fun typePolicyConnectionFieldsJsonSqlCache() {
+    typePolicyConnectionFields(SqlNormalizedCacheFactory(name = "json", withDates = false))
   }
 
   @Test
-  fun cursorBasedChainedCache() {
-    cursorBased(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
+  fun typePolicyConnectionFieldsChainedCache() {
+    typePolicyConnectionFields(MemoryCacheFactory().chain(SqlNormalizedCacheFactory(name = "json", withDates = false)))
   }
 
-  private fun cursorBased(cacheFactory: NormalizedCacheFactory) = runTest {
+  private fun typePolicyConnectionFields(cacheFactory: NormalizedCacheFactory) = runTest {
     val apolloStore = ApolloStore(
         normalizedCacheFactory = cacheFactory,
         cacheKeyGenerator = TypePolicyCacheKeyGenerator,
-        metadataGenerator = ConnectionMetadataGenerator(setOf("UserConnection")),
+        metadataGenerator = ConnectionMetadataGenerator(Pagination.connectionTypes),
         apolloResolver = FieldPolicyApolloResolver,
         recordMerger = ConnectionRecordMerger
     )
     apolloStore.clearAll()
 
     // First page
-    val query1 = UsersCursorBasedQuery(first = Optional.Present(2))
-    val data1 = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    val query1 = WithTypePolicyDirectiveQuery(first = Optional.Present(2))
+    val data1 = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx42"
@@ -71,9 +72,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query2 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
-    val data2 = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    val query2 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx43"))
+    val data2 = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx44"
@@ -92,8 +93,8 @@ class CursorBasedPaginationTest {
     }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
-    var expectedData = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    var expectedData = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx42"
@@ -126,9 +127,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page after
-    val query3 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
-    val data3 = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    val query3 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx45"))
+    val data3 = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx46"
@@ -147,8 +148,8 @@ class CursorBasedPaginationTest {
     }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    expectedData = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx42"
@@ -193,9 +194,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Page before
-    val query4 = UsersCursorBasedQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
-    val data4 = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    val query4 = WithTypePolicyDirectiveQuery(last = Optional.Present(2), before = Optional.Present("xx42"))
+    val data4 = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx40"
@@ -214,8 +215,8 @@ class CursorBasedPaginationTest {
     }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
-    expectedData = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    expectedData = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx40"
@@ -272,9 +273,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Non-contiguous page (should reset)
-    val query5 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
-    val data5 = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    val query5 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx50"))
+    val data5 = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = listOf(
             edge {
               cursor = "xx50"
@@ -297,9 +298,9 @@ class CursorBasedPaginationTest {
     assertChainedCachesAreEqual(apolloStore)
 
     // Empty page (should keep previous result)
-    val query6 = UsersCursorBasedQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
-    val data6 = UsersCursorBasedQuery.Data {
-      usersCursorBased = usersCursorBased {
+    val query6 = WithTypePolicyDirectiveQuery(first = Optional.Present(2), after = Optional.Present("xx51"))
+    val data6 = WithTypePolicyDirectiveQuery.Data {
+      usersCursorBased2 = usersCursorBased2 {
         edges = emptyList()
       }
     }

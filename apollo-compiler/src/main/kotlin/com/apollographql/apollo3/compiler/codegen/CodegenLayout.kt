@@ -81,6 +81,8 @@ internal abstract class CodegenLayout(
   fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
   fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()
 
+  fun paginationPackageName() = "$schemaPackageName.pagination"
+
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
   // ------------------------ Names ---------------------------------
@@ -109,6 +111,8 @@ internal abstract class CodegenLayout(
   internal fun operationTestBuildersWrapperName(operation: IrOperation) = operationName(operation) + "_TestBuilder"
   internal fun operationVariablesAdapterName(operation: IrOperation) = operationName(operation) + "_VariablesAdapter"
   internal fun operationSelectionsName(operation: IrOperation) = operationName(operation) + "Selections"
+
+  internal fun paginationName() = "Pagination"
 
   internal fun fragmentName(name: String) = capitalizedIdentifier(name) + "Impl"
   internal fun fragmentResponseAdapterWrapperName(name: String) = fragmentName(name) + "_ResponseAdapter"

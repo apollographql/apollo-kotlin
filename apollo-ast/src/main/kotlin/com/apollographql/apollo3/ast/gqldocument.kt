@@ -43,10 +43,13 @@ fun builtinDefinitions() = definitionsFromResources("builtins.graphqls")
  */
 fun linkDefinitions() = definitionsFromResources("link.graphqls")
 
+@Deprecated("Use apolloDefinitions(version) instead", ReplaceWith("apolloDefinitions(\"v0.1\")"))
+fun apolloDefinitions() = apolloDefinitions("v0.1")
+
 /**
- * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/v0.1
+ * Extra apollo specific definitions from https://specs.apollo.dev/kotlin_labs/<[version]>
  */
-fun apolloDefinitions() = definitionsFromResources("apollo.graphqls")
+fun apolloDefinitions(version: String) = definitionsFromResources("apollo-$version.graphqls")
 
 private fun definitionsFromResources(name: String): List<GQLDefinition> {
   return GQLDocument::class.java.getResourceAsStream("/$name")!!
