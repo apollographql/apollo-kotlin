@@ -259,6 +259,14 @@ class ServiceTests {
   }
 
   @Test
+  fun `dependencies are using the plugin version by default`() {
+    withTestProject("defaultVersion") { dir ->
+      TestUtils.executeTaskAndAssertSuccess(":module:generateApolloSources", dir)
+    }
+  }
+
+
+  @Test
   fun `operationOutput uses same id as the query`() {
     withSimpleProject("""
       apollo {
