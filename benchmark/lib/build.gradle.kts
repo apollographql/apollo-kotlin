@@ -5,16 +5,11 @@ apply(plugin = "androidx.benchmark")
 apply(plugin = "com.google.devtools.ksp")
 
 dependencies {
-  val apolloVersion = properties["apolloVersion"]?.toString()
-  if (apolloVersion.isNullOrBlank()) {
-    add("implementation", groovy.util.Eval.x(project, "x.dep.apolloRuntime"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.apolloNormalizedCacheSqlite"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.apolloNormalizedCache"))
-  } else {
-    add("implementation", "com.apollographql.apollo3:apollo-runtime:${properties.get("apolloVersion")}")
-    add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:${properties.get("apolloVersion")}")
-    add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:${properties.get("apolloVersion")}")
-  }
+  val apolloVersion = com.apollographql.apollo3.compiler.APOLLO_VERSION
+  add("implementation", "com.apollographql.apollo3:apollo-runtime:$apolloVersion")
+  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:$apolloVersion")
+  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:$apolloVersion")
+
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   add("ksp", groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
