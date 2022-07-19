@@ -1,3 +1,5 @@
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
+
 apply(plugin = "com.android.library")
 apply(plugin = "org.jetbrains.kotlin.android")
 apply(plugin = "com.apollographql.apollo3")
@@ -5,10 +7,9 @@ apply(plugin = "androidx.benchmark")
 apply(plugin = "com.google.devtools.ksp")
 
 dependencies {
-  val apolloVersion = com.apollographql.apollo3.compiler.APOLLO_VERSION
-  add("implementation", "com.apollographql.apollo3:apollo-runtime:$apolloVersion")
-  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:$apolloVersion")
-  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:$apolloVersion")
+  add("implementation", "com.apollographql.apollo3:apollo-runtime:$APOLLO_VERSION")
+  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:$APOLLO_VERSION")
+  add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:$APOLLO_VERSION")
 
   add("implementation", groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   add("ksp", groovy.util.Eval.x(project, "x.dep.moshiKsp"))

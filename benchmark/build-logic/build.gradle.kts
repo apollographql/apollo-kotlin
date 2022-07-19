@@ -26,5 +26,6 @@ dependencies {
     }
     implementation("androidx.benchmark:benchmark-gradle-plugin:1.1.0")
     implementation("com.android.tools.build:gradle:7.4.0-alpha08")
+    implementation("org.ow2.asm:asm-commons:9.2")
   }
 }
