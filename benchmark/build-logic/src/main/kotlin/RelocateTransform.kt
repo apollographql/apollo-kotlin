@@ -34,6 +34,7 @@ abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters>
     val renames = parameters.relocations.get()
 
     val inputFile = inputArtifact.get().asFile
+    println("relocating $inputFile")
     val outputFile = outputs.file(inputFile.nameWithoutExtension + "-relocated.jar")
     // Make sure the output is ready
     outputFile.parentFile.mkdirs()
@@ -43,10 +44,8 @@ abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters>
       Relocation(it.key, it.value)
     }
 
-    val relocator = JarRelocator(inputFile, outputFile, rules)
-
     try {
-      relocator.run()
+      JarRelocator(inputFile, outputFile, rules).run()
     } catch (e: IOException) {
       throw RuntimeException("Unable to relocate", e)
     }

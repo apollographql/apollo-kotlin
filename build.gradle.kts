@@ -191,7 +191,7 @@ configure<kotlinx.validation.ApiValidationExtension> {
            * SQLDelight generated sources are not generated as 'internal'.
            */
           "com.apollographql.apollo3.gradle.internal",
-          "com.apollographql.apollo3.cache.internal",
+          "com.apollographql.apollo3.cache.normalized.sql.internal",
       )
   )
   ignoredProjects.addAll(

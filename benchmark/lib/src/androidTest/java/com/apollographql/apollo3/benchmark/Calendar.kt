@@ -34,7 +34,7 @@ class Calendar {
     readFromCache(ItemsQueryOperationBased(endingAfter = "", startingBefore = ""))
   }
 
-  fun <D: Query.Data> readFromCache(query: Query<D>) {
+  fun <D : Query.Data> readFromCache(query: Query<D>) {
     val cache = MemoryCacheFactory().create()
 
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!

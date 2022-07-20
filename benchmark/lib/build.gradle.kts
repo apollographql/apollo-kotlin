@@ -8,7 +8,6 @@ plugins {
 
 val relocated = Attribute.of("relocated", Boolean::class.javaObjectType)
 val artifactType = Attribute.of("artifactType", String::class.java)
-//val library = objects.named(Category::class, Category.LIBRARY)
 
 dependencies {
   attributesSchema {
@@ -28,30 +27,25 @@ dependencies {
     ))
   }
 
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-api-jvm") {
-    attributes {
-      attribute(relocated, true)
+  implementation("com.apollographql.apollo3:apollo-runtime")
+
+  listOf(
+      "com.apollographql.apollo3:apollo-normalized-cache-api",
+      "com.apollographql.apollo3:apollo-normalized-cache-sqlite",
+      "com.apollographql.apollo3:apollo-normalized-cache"
+  ).forEach {
+    implementation("$it-jvm")
+    implementation("$it-incubating-jvm") {
+      attributes {
+        attribute(relocated, true)
+      }
     }
-    isTransitive = false
   }
-//  implementation("com.apollographql.apollo3:apollo-runtime")
-//  listOf(
-//      "com.apollographql.apollo3:apollo-normalized-cache-api",
-//      "com.apollographql.apollo3:apollo-normalized-cache-sqlite",
-//      "com.apollographql.apollo3:apollo-normalized-cache"
-//  ).forEach {
-//    implementation("$it-jvm")
-//    implementation("$it-incubating-jvm") {
-//      attributes {
-//        attribute(relocated, true)
-//      }
-//    }
-//  }
-//  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-//  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
-//
-//  androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0-rc02")
-//  androidTestImplementation("androidx.test:core:1.4.0")
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
+
+  androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0-rc02")
+  androidTestImplementation("androidx.test:core:1.4.0")
 }
 
 configure<com.android.build.gradle.LibraryExtension> {

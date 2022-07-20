@@ -4,21 +4,24 @@ import Utils.resource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.benchmark.test.R
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheHeaders
+import com.apollographql.apollo3.cache.normalized.incubating.api.CacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.incubating.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.incubating.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.incubating.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.incubating.api.ReadOnlyNormalizedCache
+import com.apollographql.apollo3.cache.normalized.incubating.api.Record
 import com.apollographql.apollo3.cache.normalized.incubating.api.TypePolicyCacheKeyGenerator
-import com.apollographql.apollo3.cache.normalized.incubating.api.normalize
-import com.apollographql.apollo3.cache.normalized.incubating.api.readDataFromCache
-import com.apollographql.apollo3.calendar.response.ItemsQuery as ItemsQueryResponseBased
-import com.apollographql.apollo3.calendar.operation.ItemsQuery as ItemsQueryOperationBased
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
+import com.apollographql.apollo3.calendar.operation.ItemsQuery as ItemsQueryOperationBased
+import com.apollographql.apollo3.calendar.response.ItemsQuery as ItemsQueryResponseBased
 
 class CalendarIncubating {
   @get:Rule
@@ -34,24 +37,41 @@ class CalendarIncubating {
     readFromCache(ItemsQueryOperationBased(endingAfter = "", startingBefore = ""))
   }
 
-  fun <D: Query.Data> readFromCache(query: Query<D>) {
+  fun <D : Query.Data> readFromCache(query: Query<D>) {
     val cache = MemoryCacheFactory().create()
 
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
 
-    com.apollographql.apollo3.cache.normalized.incubating.api.OperationCacheExtensionsKt
-    val records = query.normalize(
-        data = data,
-        customScalarAdapters = CustomScalarAdapters.Empty,
-        cacheKeyGenerator = TypePolicyCacheKeyGenerator,
+    val clazz = Class.forName("com.apollographql.apollo3.cache.normalized.incubating.api.OperationCacheExtensionsKt")
+    val normalizeMethod = clazz.getMethod(
+        "normalize",
+        Operation::class.java,
+        Operation.Data::class.java,
+        CustomScalarAdapters::class.java,
+        CacheKeyGenerator::class.java
     )
+    val readDataFromCacheMethod = clazz.getMethod(
+        "normalize",
+        Operation::class.java,
+        CustomScalarAdapters::class.java,
+        ReadOnlyNormalizedCache::class.java,
+        CacheResolver::class.java,
+        CacheHeaders::class.java
+    )
+    val records = normalizeMethod.invoke(
+        query,
+        data,
+        CustomScalarAdapters.Empty,
+        TypePolicyCacheKeyGenerator,
+    ) as Map<String, Record>
 
     runBlocking {
       cache.merge(records.values.toList(), CacheHeaders.NONE)
     }
 
     benchmarkRule.measureRepeated {
-      query.readDataFromCache(
+      readDataFromCacheMethod.invoke(
+          query,
           CustomScalarAdapters.Empty,
           cache,
           FieldPolicyCacheResolver,

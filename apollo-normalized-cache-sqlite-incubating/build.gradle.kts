@@ -6,17 +6,17 @@ apply(plugin = "com.squareup.sqldelight")
 
 configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   database("JsonDatabase") {
-    packageName = "com.apollographql.apollo3.cache.internal.json"
+    packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.json"
     schemaOutputDirectory = file("sqldelight/json/schema")
     sourceFolders = listOf("sqldelight/json/")
   }
   database("BlobDatabase") {
-    packageName = "com.apollographql.apollo3.cache.internal.blob"
+    packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.blob"
     schemaOutputDirectory = file("sqldelight/blob/schema")
     sourceFolders = listOf("sqldelight/blob/")
   }
   database("Blob2Database") {
-    packageName = "com.apollographql.apollo3.cache.internal.blob2"
+    packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.blob2"
     schemaOutputDirectory = file("src/commonMain/sqldelight/blob2/schema")
     sourceFolders = listOf("sqldelight/blob2/")
   }

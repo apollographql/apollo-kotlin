@@ -3,7 +3,7 @@ package com.apollographql.apollo3.cache.normalized.sql.internal
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.JsonRecordSerializer
-import com.apollographql.apollo3.cache.internal.json.JsonQueries
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonQueries
 
 internal class JsonRecordDatabase(private val jsonQueries: JsonQueries): RecordDatabase {
   override fun select(key: String): Record? {

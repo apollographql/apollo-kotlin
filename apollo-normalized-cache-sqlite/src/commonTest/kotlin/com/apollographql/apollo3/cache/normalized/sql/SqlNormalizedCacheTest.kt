@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
-import com.apollographql.apollo3.cache.internal.json.JsonQueries
-import com.apollographql.apollo3.cache.internal.json.RecordForKey
-import com.apollographql.apollo3.cache.internal.json.Records
-import com.apollographql.apollo3.cache.internal.json.RecordsForKeys
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonQueries
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordForKey
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.Records
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordsForKeys
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
