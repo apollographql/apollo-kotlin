@@ -37,7 +37,7 @@ abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters>
 
     val inputFile = inputArtifact.get().asFile
     val outputFile = outputs.file(inputFile.nameWithoutExtension + "-relocated.jar")
-    println("relocating $inputFile to $outputFile")
+
     // Make sure the output is ready
     outputFile.parentFile.mkdirs()
     outputFile.delete()
