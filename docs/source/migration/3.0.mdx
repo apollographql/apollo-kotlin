@@ -830,3 +830,27 @@ response.executionContext[OkHttpExecutionContext].response.code
 // With
 response.executionContext[HttpInfo]?.statusCode
 ```
+
+### Using models without the runtime
+
+The API have changed to allow streaming use cases. To compose a request body:
+
+```kotlin
+// Replace
+val request = query.composeRequestBody()
+
+// With
+val request = buildJsonString {
+  query.composeJsonRequest(this, CustomScalarAdapters.Empty)
+}
+```
+
+To parse a response body:
+
+```kotlin
+// Replace
+val response = query.parse(bufferedSource);
+
+// With
+val response = query.parseJsonResponse(bufferedSource);
+```

@@ -25,7 +25,7 @@ To compose an HTTP POST request body to be sent to your server, use `composeJson
  * }
  */
 val body = buildJsonString {
-  query.composeJsonRequest()
+  query.composeJsonRequest(this, customScalarAdapters)
 }
 
 /**
@@ -38,7 +38,6 @@ val httpResponse = sendHttpRequest(
   body
 )
 ```
-
 
 ## Parsing an HTTP response body
 
@@ -53,8 +52,7 @@ To parse a network response into the type safe models, use `parseJsonResponse`:
  *  "extensions": ...
  * }
  **/
-val jsonResponse = httpResponse.body.string()
-val jsonReader = Buffer().writeUtf8(jsonResponse).jsonReader()
+val jsonReader = httpResponse.body.source().buffer().jsonReader()
 val response = operation.parseJsonResponse(jsonReader)
 
 println(response.data)
