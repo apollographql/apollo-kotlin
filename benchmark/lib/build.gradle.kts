@@ -19,8 +19,8 @@ dependencies {
   }
 
   registerTransform(RelocateTransform::class) {
-    from.attribute(relocated, false).attribute(artifactType, "jar") //.attribute(Category.CATEGORY_ATTRIBUTE, library)
-    to.attribute(relocated, true).attribute(artifactType, "jar") //.attribute(Category.CATEGORY_ATTRIBUTE, library)
+    from.attribute(relocated, false).attribute(artifactType, "jar")
+    to.attribute(relocated, true).attribute(artifactType, "jar")
 
     parameters.relocations.set(mapOf(
         "com.apollographql.apollo3.cache.normalized" to "com.apollographql.apollo3.cache.normalized.incubating",
@@ -35,6 +35,9 @@ dependencies {
       "com.apollographql.apollo3:apollo-normalized-cache"
   ).forEach {
     implementation("$it-jvm")
+    /**
+     * Because we want to test both artifacts and they contain the same symbols, relocate the incubating ones
+     */
     implementation("$it-incubating-jvm") {
       attributes {
         attribute(relocated, true)

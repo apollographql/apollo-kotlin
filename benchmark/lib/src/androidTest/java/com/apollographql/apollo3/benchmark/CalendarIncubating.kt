@@ -49,9 +49,6 @@ class CalendarIncubating {
      * See https://discuss.kotlinlang.org/t/what-is-the-proper-way-to-repackage-shade-kotlin-dependencies/10869
      */
     val clazz = Class.forName("com.apollographql.apollo3.cache.normalized.incubating.api.OperationCacheExtensionsKt")
-    clazz.methods.forEach {
-      println("method: $it")
-    }
     val normalizeMethod = clazz.getMethod(
         "normalize",
         Operation::class.java,
