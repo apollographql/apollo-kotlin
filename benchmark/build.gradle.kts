@@ -17,10 +17,7 @@ allprojects {
     mavenCentral()
     google()
     maven {
-      url = uri("../build/localMaven")
-    }
-    maven {
-      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+      url = rootProject.uri("../build/localMaven")
     }
   }
 }

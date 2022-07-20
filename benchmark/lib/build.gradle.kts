@@ -54,6 +54,7 @@ configure<com.android.build.gradle.LibraryExtension> {
 
   defaultConfig {
     minSdk = groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt()
+    targetSdk = groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt()
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
@@ -76,9 +77,4 @@ configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
     codegenModels.set("operationBased")
     packageName.set("com.apollographql.apollo3.calendar.operation")
   }
-}
-
-afterEvaluate {
-  println("martin")
-  println(configurations["debugCompileClasspath"].files.filter { it.name.contains("-relocated") }.sorted().joinToString("\n"))
 }

@@ -1,5 +1,6 @@
 import me.lucko.jarrelocator.JarRelocator
 import me.lucko.jarrelocator.Relocation
+import org.gradle.api.artifacts.transform.CacheableTransform
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
@@ -20,6 +21,7 @@ import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 
+@CacheableTransform
 abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters> {
   interface Parameters : TransformParameters {
     @get:Input
@@ -34,8 +36,8 @@ abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters>
     val renames = parameters.relocations.get()
 
     val inputFile = inputArtifact.get().asFile
-    println("relocating $inputFile")
     val outputFile = outputs.file(inputFile.nameWithoutExtension + "-relocated.jar")
+    println("relocating $inputFile to $outputFile")
     // Make sure the output is ready
     outputFile.parentFile.mkdirs()
     outputFile.delete()

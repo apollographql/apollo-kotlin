@@ -4,6 +4,7 @@ import Utils.resource
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.jsonReader
@@ -42,7 +43,15 @@ class CalendarIncubating {
 
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
 
+    /**
+     * There doesn't seem to be a way to relocate Kotlin metdata and kotlin_module files so we rely on reflection to call top-level
+     * methods
+     * See https://discuss.kotlinlang.org/t/what-is-the-proper-way-to-repackage-shade-kotlin-dependencies/10869
+     */
     val clazz = Class.forName("com.apollographql.apollo3.cache.normalized.incubating.api.OperationCacheExtensionsKt")
+    clazz.methods.forEach {
+      println("method: $it")
+    }
     val normalizeMethod = clazz.getMethod(
         "normalize",
         Operation::class.java,
@@ -51,14 +60,15 @@ class CalendarIncubating {
         CacheKeyGenerator::class.java
     )
     val readDataFromCacheMethod = clazz.getMethod(
-        "normalize",
-        Operation::class.java,
+        "readDataFromCache",
+        Executable::class.java,
         CustomScalarAdapters::class.java,
         ReadOnlyNormalizedCache::class.java,
         CacheResolver::class.java,
         CacheHeaders::class.java
     )
     val records = normalizeMethod.invoke(
+        null,
         query,
         data,
         CustomScalarAdapters.Empty,
@@ -71,6 +81,7 @@ class CalendarIncubating {
 
     benchmarkRule.measureRepeated {
       readDataFromCacheMethod.invoke(
+          null,
           query,
           CustomScalarAdapters.Empty,
           cache,
