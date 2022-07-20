@@ -1,0 +1,54 @@
+import me.lucko.jarrelocator.JarRelocator
+import me.lucko.jarrelocator.Relocation
+import org.gradle.api.artifacts.transform.InputArtifact
+import org.gradle.api.artifacts.transform.TransformAction
+import org.gradle.api.artifacts.transform.TransformOutputs
+import org.gradle.api.artifacts.transform.TransformParameters
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import org.objectweb.asm.commons.ClassRemapper
+import org.objectweb.asm.commons.Remapper
+import java.io.IOException
+import java.net.URI
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.Path
+
+abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters> {
+  interface Parameters : TransformParameters {
+    @get:Input
+    val relocations: MapProperty<String, String>
+  }
+
+  @get:PathSensitive(PathSensitivity.NAME_ONLY)
+  @get:InputArtifact
+  abstract val inputArtifact: Provider<FileSystemLocation>
+
+  override fun transform(outputs: TransformOutputs) {
+    val renames = parameters.relocations.get()
+
+    val inputFile = inputArtifact.get().asFile
+    val outputFile = outputs.file(inputFile.nameWithoutExtension + "-relocated.jar")
+    // Make sure the output is ready
+    outputFile.parentFile.mkdirs()
+    outputFile.delete()
+
+    val rules = renames.entries.map {
+      Relocation(it.key, it.value)
+    }
+
+    val relocator = JarRelocator(inputFile, outputFile, rules)
+
+    try {
+      relocator.run()
+    } catch (e: IOException) {
+      throw RuntimeException("Unable to relocate", e)
+    }
+  }
+}
