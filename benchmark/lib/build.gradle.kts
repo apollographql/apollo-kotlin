@@ -1,30 +1,59 @@
-apply(plugin = "com.android.library")
-apply(plugin = "org.jetbrains.kotlin.android")
-apply(plugin = "com.apollographql.apollo3")
-apply(plugin = "androidx.benchmark")
-apply(plugin = "com.google.devtools.ksp")
+plugins {
+  id("com.android.library")
+  id("org.jetbrains.kotlin.android")
+  id("com.apollographql.apollo3")
+  id("androidx.benchmark")
+  id("com.google.devtools.ksp")
+}
+
+val relocated = Attribute.of("relocated", Boolean::class.javaObjectType)
+val artifactType = Attribute.of("artifactType", String::class.java)
 
 dependencies {
-  val apolloVersion = properties["apolloVersion"]?.toString()
-  if (apolloVersion.isNullOrBlank()) {
-    add("implementation", groovy.util.Eval.x(project, "x.dep.apolloRuntime"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.apolloNormalizedCacheSqlite"))
-    add("implementation", groovy.util.Eval.x(project, "x.dep.apolloNormalizedCache"))
-  } else {
-    add("implementation", "com.apollographql.apollo3:apollo-runtime:${properties.get("apolloVersion")}")
-    add("implementation", "com.apollographql.apollo3:apollo-normalized-cache-sqlite:${properties.get("apolloVersion")}")
-    add("implementation", "com.apollographql.apollo3:apollo-normalized-cache:${properties.get("apolloVersion")}")
+  attributesSchema {
+    attribute(relocated)
   }
-  add("implementation", groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  add("ksp", groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
-  add("androidTestImplementation", "androidx.benchmark:benchmark-junit4:1.1.0-rc02")
-  add("androidTestImplementation", "androidx.test:core:1.4.0")
+  artifactTypes.getByName("jar") {
+    attributes.attribute(relocated, false)
+  }
+
+  registerTransform(RelocateTransform::class) {
+    from.attribute(relocated, false).attribute(artifactType, "jar")
+    to.attribute(relocated, true).attribute(artifactType, "jar")
+
+    parameters.relocations.set(mapOf(
+        "com.apollographql.apollo3.cache.normalized" to "com.apollographql.apollo3.cache.normalized.incubating",
+    ))
+  }
+
+  implementation("com.apollographql.apollo3:apollo-runtime")
+
+  listOf(
+      "com.apollographql.apollo3:apollo-normalized-cache-api",
+      "com.apollographql.apollo3:apollo-normalized-cache-sqlite",
+      "com.apollographql.apollo3:apollo-normalized-cache"
+  ).forEach {
+    implementation("$it-jvm")
+    /**
+     * Because we want to test both artifacts and they contain the same symbols, relocate the incubating ones
+     */
+    implementation("$it-incubating-jvm") {
+      attributes {
+        attribute(relocated, true)
+      }
+    }
+  }
+  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
+  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
+
+  androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0-rc02")
+  androidTestImplementation("androidx.test:core:1.4.0")
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
   namespace = "com.apollographql.apollo3.benchmark"
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdk = groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt()
 
   defaultConfig {
     minSdk = groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt()
@@ -32,6 +61,7 @@ configure<com.android.build.gradle.LibraryExtension> {
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
+  @Suppress("UnstableApiUsage")
   useLibrary("android.test.base")
 }
 

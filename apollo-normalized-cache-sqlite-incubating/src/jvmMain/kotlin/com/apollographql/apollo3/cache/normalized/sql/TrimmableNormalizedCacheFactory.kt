@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.cache.normalized.sql
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.cache.internal.blob2.Blob2Database
+import com.apollographql.apollo3.cache.normalized.sql.internal.blob2.Blob2Database
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.sql.internal.Blob2RecordDatabase
 import com.apollographql.apollo3.cache.normalized.sql.internal.maybeCreateOrMigrateSchema

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.internal.json.JsonQueries
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonQueries
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.JsonRecordSerializer
 

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.sql.internal
 
-import com.apollographql.apollo3.cache.internal.json.JsonDatabase
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.db.use

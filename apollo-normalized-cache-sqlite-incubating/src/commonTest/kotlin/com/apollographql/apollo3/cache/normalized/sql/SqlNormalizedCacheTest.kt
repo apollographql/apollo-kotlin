@@ -5,11 +5,11 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.cache.internal.json.JsonDatabase
-import com.apollographql.apollo3.cache.internal.json.JsonQueries
-import com.apollographql.apollo3.cache.internal.json.RecordForKey
-import com.apollographql.apollo3.cache.internal.json.Records
-import com.apollographql.apollo3.cache.internal.json.RecordsForKeys
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonDatabase
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.JsonQueries
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordForKey
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.Records
+import com.apollographql.apollo3.cache.normalized.sql.internal.json.RecordsForKeys
 import com.apollographql.apollo3.cache.normalized.sql.internal.JsonRecordDatabase
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.squareup.sqldelight.Query
