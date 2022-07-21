@@ -7,6 +7,7 @@ import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
 import kotlinx.cinterop.value
+import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.posix.pthread_create
 import platform.posix.pthread_join
 import platform.posix.pthread_tVar
@@ -49,14 +50,13 @@ class SingleThreadWorker<S : Any>(private val producer: () -> S, private val fin
     queue.dispose()
   }
 
-  suspend fun <R> execute(block: (S) -> R) = suspendAndResumeOnMain<R> { mainContinuation, _ ->
-    block.freeze()
+  suspend fun <R> execute(block: (S) -> R) = suspendCancellableCoroutine<R> { continuation ->
     val callback = Callback<S> { s ->
       val result: Result<R> = kotlin.runCatching {
         block(s)
       }
 
-      mainContinuation.resumeWith(result)
+      continuation.resumeWith(result)
     }
 
     enqueue(callback)

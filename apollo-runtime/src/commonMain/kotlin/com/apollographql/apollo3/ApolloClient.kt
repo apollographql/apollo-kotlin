@@ -27,7 +27,6 @@ import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.mpp.freeze
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
@@ -118,8 +117,8 @@ private constructor(
   }
 
   @Deprecated(
-    "Use close() instead or call okio.use { }",
-    replaceWith = ReplaceWith("close()"),
+      "Use close() instead or call okio.use { }",
+      replaceWith = ReplaceWith("close()"),
   )
   @ApolloDeprecatedSince(v3_3_1)
   fun dispose() {
@@ -142,7 +141,6 @@ private constructor(
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
    */
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    assertMainThreadOnNative()
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
     val request = ApolloRequest.Builder(apolloRequest.operation)

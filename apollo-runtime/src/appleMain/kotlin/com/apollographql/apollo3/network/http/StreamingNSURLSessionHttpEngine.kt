@@ -6,12 +6,11 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.exception.ApolloNetworkException
-import com.apollographql.apollo3.internal.suspendAndResumeOnMain
-import com.apollographql.apollo3.mpp.assertMainThreadOnNative
 import com.apollographql.apollo3.network.toNSData
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.BufferedSource
 import okio.Sink
@@ -75,9 +74,7 @@ class StreamingNSURLSessionHttpEngine(
   )
 
   @Suppress("UNCHECKED_CAST")
-  override suspend fun execute(request: HttpRequest) = suspendAndResumeOnMain<HttpResponse> { mainContinuation, invokeOnCancellation ->
-    assertMainThreadOnNative()
-
+  override suspend fun execute(request: HttpRequest): HttpResponse = suspendCancellableCoroutine { continuation ->
     val nsMutableURLRequest = NSMutableURLRequest.requestWithURL(
         URL = NSURL(string = request.url)
     ).apply {
@@ -111,7 +108,7 @@ class StreamingNSURLSessionHttpEngine(
 
     val handler = object : StreamingDataDelegate.Handler {
       override fun onResponse(response: NSHTTPURLResponse) {
-        mainContinuation.resumeWith(
+        continuation.resumeWith(
             buildHttpResponse(
                 data = httpDataSource,
                 httpResponse = response,
@@ -129,7 +126,7 @@ class StreamingNSURLSessionHttpEngine(
 
       override fun onComplete(error: NSError?) {
         httpDataSink.close()
-        if (error != null) mainContinuation.resumeWith(
+        if (error != null) continuation.resumeWith(
             buildHttpResponse(
                 data = httpDataSource,
                 httpResponse = null,
@@ -142,7 +139,7 @@ class StreamingNSURLSessionHttpEngine(
     val task = nsUrlSession.dataTaskWithRequest(nsMutableURLRequest)
     delegate.registerHandlerForTask(task, handler)
 
-    invokeOnCancellation {
+    continuation.invokeOnCancellation {
       task.cancel()
     }
     task.resume()

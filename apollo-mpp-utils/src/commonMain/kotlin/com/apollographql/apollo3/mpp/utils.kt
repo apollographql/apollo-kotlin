@@ -27,8 +27,6 @@ expect fun isFrozen(obj: Any): Boolean
 
 expect fun freeze(obj: Any)
 
-expect fun assertMainThreadOnNative()
-
 enum class Platform {
   Jvm,
   Native,

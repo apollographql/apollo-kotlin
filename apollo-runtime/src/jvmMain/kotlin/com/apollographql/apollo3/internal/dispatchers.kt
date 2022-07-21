@@ -19,6 +19,7 @@ internal actual class BackgroundDispatcher actual constructor() {
   actual fun dispose() {
     if (!disposed) {
       _dispatcher.close()
+      disposed = true
     }
   }
 }
