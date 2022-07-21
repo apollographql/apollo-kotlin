@@ -11,15 +11,13 @@ Use `publishAllPublicationsToPluginTestRepository` from `apollo-kotlin` to use t
 You can run the tests from Android Studio by clicking the "run" icon in the gutter next to `class Benchmark`. This will
 print the results in the `Run` window of Android Studio
 
+## Inspiration
+
+The `largesample` Json parsing data is taken from https://zacsweers.github.io/json-serialization-benchmarking/.
+The `calendar_response` data was provided by @sebj and is a real-life use case.
+
 ## Current results:
 
-Run on a Pixel 3 XL. Feel free to update/commit new results and we can get the history using `git annotate`
+You can get the current results at https://github.com/apollographql/apollo-kotlin/issues/4231
 
-```
-   15,155,158 ns Benchmark.apollo
-   13,326,669 ns Benchmark.moshi
-   19,175,002 ns Benchmark.apolloBatchCacheMemory
-   44,868,183 ns Benchmark.apolloParseAndNormalize
-  134,730,430 ns Benchmark.apolloBatchCacheSql
-```
 

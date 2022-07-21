@@ -17,6 +17,7 @@ repositories {
 dependencies {
   compileOnly(gradleApi())
   implementation(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
+  implementation("com.squareup.okio:okio-jvm:3.2.0")
   implementation(groovy.util.Eval.x(project, "x.dep.kspGradlePlugin"))
   implementation("me.lucko:jar-relocator:1.5")
 

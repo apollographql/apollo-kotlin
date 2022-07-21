@@ -1,3 +1,5 @@
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE
+
 plugins {
   id("com.android.library")
   id("org.jetbrains.kotlin.android")
@@ -7,38 +9,51 @@ plugins {
 }
 
 val relocated = Attribute.of("relocated", Boolean::class.javaObjectType)
-val artifactType = Attribute.of("artifactType", String::class.java)
 
 dependencies {
   attributesSchema {
     attribute(relocated)
   }
-
-  artifactTypes.getByName("jar") {
+  artifactTypes.named("jar").configure {
+    attributes.attribute(relocated, false)
+  }
+  artifactTypes.create("aar") {
     attributes.attribute(relocated, false)
   }
 
-  registerTransform(RelocateTransform::class) {
-    from.attribute(relocated, false).attribute(artifactType, "jar")
-    to.attribute(relocated, true).attribute(artifactType, "jar")
+  val relocations = mapOf(
+      "com.apollographql.apollo3.cache.normalized" to "com.apollographql.apollo3.cache.normalized.incubating",
+  )
 
-    parameters.relocations.set(mapOf(
-        "com.apollographql.apollo3.cache.normalized" to "com.apollographql.apollo3.cache.normalized.incubating",
-    ))
+  registerTransform(JarRelocateTransform::class) {
+    from.attribute(relocated, false).attribute(ARTIFACT_TYPE_ATTRIBUTE, "jar")
+    to.attribute(relocated, true).attribute(ARTIFACT_TYPE_ATTRIBUTE, "jar")
+
+    parameters.relocations.set(relocations)
+  }
+  registerTransform(AarRelocateTransform::class) {
+    from.attribute(relocated, false).attribute(ARTIFACT_TYPE_ATTRIBUTE, "aar")
+    to.attribute(relocated, true).attribute(ARTIFACT_TYPE_ATTRIBUTE, "aar")
+
+    parameters.relocations.set(relocations)
+    parameters.tmpDir.set(layout.buildDirectory.dir("aarTransforms"))
+    parameters.random.set(0) //(Math.random() * 10000).toInt()) // uncomment for debug
   }
 
   implementation("com.apollographql.apollo3:apollo-runtime")
 
-  listOf(
-      "com.apollographql.apollo3:apollo-normalized-cache-api",
-      "com.apollographql.apollo3:apollo-normalized-cache-sqlite",
-      "com.apollographql.apollo3:apollo-normalized-cache"
+  mapOf(
+      "com.apollographql.apollo3:apollo-normalized-cache-api" to "jvm",
+      "com.apollographql.apollo3:apollo-normalized-cache-sqlite" to "android",
+      "com.apollographql.apollo3:apollo-normalized-cache" to "jvm"
   ).forEach {
-    implementation("$it-jvm")
+    val ga = it.key
+    val platform = it.value
+    implementation("$ga-$platform")
     /**
      * Because we want to test both artifacts and they contain the same symbols, relocate the incubating ones
      */
-    implementation("$it-incubating-jvm") {
+    implementation("$ga-incubating-$platform") {
       attributes {
         attribute(relocated, true)
       }
@@ -47,7 +62,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
 
-  androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0-rc02")
+  androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0")
   androidTestImplementation("androidx.test:core:1.4.0")
 }
 

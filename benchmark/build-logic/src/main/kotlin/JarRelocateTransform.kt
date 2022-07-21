@@ -11,18 +11,10 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.commons.ClassRemapper
-import org.objectweb.asm.commons.Remapper
 import java.io.IOException
-import java.net.URI
-import java.nio.file.FileSystems
-import java.nio.file.Files
-import java.nio.file.Path
 
 @CacheableTransform
-abstract class RelocateTransform : TransformAction<RelocateTransform.Parameters> {
+abstract class JarRelocateTransform : TransformAction<JarRelocateTransform.Parameters> {
   interface Parameters : TransformParameters {
     @get:Input
     val relocations: MapProperty<String, String>
