@@ -1,12 +1,12 @@
 package com.apollographql.apollo3.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.newSingleThreadContext
 import okio.Closeable
 
-internal actual val defaultDispatcher: CoroutineDispatcher = newFixedThreadPoolContext(nThreads = 32, name = "Apollo Default Dispatcher")
+internal actual val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 
 internal actual class CloseableSingleThreadDispatcher actual constructor() : Closeable {
   private var closed = false
