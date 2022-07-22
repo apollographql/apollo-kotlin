@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_4_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.Buffer
 import okio.BufferedSink
@@ -123,6 +125,7 @@ private constructor(
       statusCode = statusCode,
   ).apply {
     if (bodySource != null) body(bodySource)
+    @Suppress("DEPRECATION")
     if (bodyString != null) body(bodyString)
     addHeaders(headers)
   }
@@ -148,6 +151,8 @@ private constructor(
      * An immutable body.
      * Prefer [bodySource] so that the response can be streamed.
      */
+    @Deprecated("Use body(BufferedSource) instead", ReplaceWith("body(bodySource)"))
+    @ApolloDeprecatedSince(v3_4_1)
     fun body(bodyString: ByteString) = apply {
       check(!hasBody) { "body() can only be called once" }
       this.bodyString = bodyString

@@ -216,6 +216,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     } else {
       result!!.forEachIndexed { index, byteString ->
         // This works because the server must return the responses in order
+        @Suppress("DEPRECATION")
         pending[index].deferred.complete(
             HttpResponse.Builder(statusCode = 200)
                 .body(byteString)

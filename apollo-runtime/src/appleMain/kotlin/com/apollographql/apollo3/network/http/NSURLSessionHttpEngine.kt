@@ -135,6 +135,7 @@ private fun buildHttpResponse(
           httpHeaders,
       ).apply {
         if (bodyString != null) {
+          @Suppress("DEPRECATION")
           body(
               bodyString = bodyString,
           )
