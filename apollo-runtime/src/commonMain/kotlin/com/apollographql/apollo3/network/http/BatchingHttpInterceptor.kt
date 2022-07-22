@@ -17,7 +17,7 @@ import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.internal.BackgroundDispatcher
+import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -64,7 +64,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     private val maxBatchSize: Int = 10,
     private val exposeErrorBody: Boolean = false,
 ) : HttpInterceptor {
-  private val dispatcher = BackgroundDispatcher()
+  private val dispatcher = CloseableSingleThreadDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = Mutex()
   private var disposed = false
@@ -230,7 +230,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     if (!disposed) {
       interceptorChain = null
       scope.cancel()
-      dispatcher.dispose()
+      dispatcher.close()
       disposed = true
     }
   }

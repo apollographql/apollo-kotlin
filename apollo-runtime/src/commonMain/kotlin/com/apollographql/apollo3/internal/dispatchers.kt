@@ -1,17 +1,14 @@
 package com.apollographql.apollo3.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
+import okio.Closeable
 
 internal expect fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher
 
 /**
- * A coroutine dispatcher that can continue to run in the background. Typically,
- * to handle a WebSocket connection or batched HTTP queries
- *
- * On the JVM, it uses a background thread
- * On native, it uses the main thread
+ * A coroutine dispatcher backed by a single thread that can continue to run in the background
+ * until it is closed. Typically, to handle a WebSocket connection or batched HTTP queries.
  */
-internal expect class BackgroundDispatcher() {
+internal expect class CloseableSingleThreadDispatcher() : Closeable {
   val coroutineDispatcher: CoroutineDispatcher
-  fun dispose()
 }
