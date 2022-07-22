@@ -48,8 +48,6 @@ abstract class AarRelocateTransform : TransformAction<AarRelocateTransform.Param
     tmpFolder.deleteRecursively()
     tmpFolder.mkdirs()
 
-    println("relocating AAR")
-
     ZipOutputStream(outputFile.outputStream()).use output@{ zipOutputStream ->
       ZipInputStream(inputFile.inputStream()).use input@{ zipInputStream ->
         while (true) {
@@ -59,7 +57,6 @@ abstract class AarRelocateTransform : TransformAction<AarRelocateTransform.Param
             return@input
           }
 
-          println("put next entry: ${entry.name}")
           zipOutputStream.putNextEntry(entry)
 
           if (entry.name == "classes.jar") {
@@ -82,6 +79,7 @@ abstract class AarRelocateTransform : TransformAction<AarRelocateTransform.Param
             relocatorOutput.inputStream().use {
               it.transferTo(zipOutputStream)
             }
+            entry.size = relocatorOutput.length()
           } else {
             zipInputStream.transferTo(zipOutputStream)
           }
