@@ -6,11 +6,7 @@ import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.coroutines.newSingleThreadContext
 import okio.Closeable
 
-private val defaultDispatcher = newFixedThreadPoolContext(nThreads = 32, name = "Apollo Default Dispatcher")
-
-internal actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
-  return requested ?: defaultDispatcher
-}
+internal actual val defaultDispatcher: CoroutineDispatcher = newFixedThreadPoolContext(nThreads = 32, name = "Apollo Default Dispatcher")
 
 internal actual class CloseableSingleThreadDispatcher actual constructor() : Closeable {
   private var closed = false

@@ -64,7 +64,7 @@ private constructor(
   private val concurrencyInfo: ConcurrencyInfo
 
   init {
-    val dispatcher = defaultDispatcher(dispatcher)
+    val dispatcher = dispatcher ?: defaultDispatcher
     concurrencyInfo = ConcurrencyInfo(
         dispatcher,
         CoroutineScope(dispatcher))
