@@ -25,17 +25,19 @@ expect fun currentThreadName(): String
 
 @Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
 @ApolloDeprecatedSince(v3_4_1)
-fun ensureNeverFrozen(@Suppress("UNUSED_PARAMETER") obj: Any) {
-}
+expect fun ensureNeverFrozen(@Suppress("UNUSED_PARAMETER") obj: Any)
 
 @Deprecated("With the new Memory Manager this method is no longer needed and always return false", ReplaceWith("false"), level = DeprecationLevel.HIDDEN)
 @ApolloDeprecatedSince(v3_4_1)
-fun isFrozen(@Suppress("UNUSED_PARAMETER") obj: Any): Boolean = false
+expect fun isFrozen(@Suppress("UNUSED_PARAMETER") obj: Any): Boolean
 
 @Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
 @ApolloDeprecatedSince(v3_4_1)
-fun freeze(@Suppress("UNUSED_PARAMETER") obj: Any) {
-}
+expect fun freeze(@Suppress("UNUSED_PARAMETER") obj: Any)
+
+@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
+@ApolloDeprecatedSince(v3_4_1)
+expect fun assertMainThreadOnNative()
 
 enum class Platform {
   Jvm,

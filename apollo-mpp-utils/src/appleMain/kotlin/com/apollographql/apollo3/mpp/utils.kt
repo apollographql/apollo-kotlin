@@ -28,4 +28,14 @@ actual fun currentThreadName(): String {
   }
 }
 
+actual fun ensureNeverFrozen(obj: Any) {
+}
+
+actual fun isFrozen(obj: Any) = false
+actual fun freeze(obj: Any) {
+}
+
+actual fun assertMainThreadOnNative() {
+}
+
 actual fun platform() = Platform.Native
