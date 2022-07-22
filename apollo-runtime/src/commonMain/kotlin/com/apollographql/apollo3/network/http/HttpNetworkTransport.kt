@@ -16,7 +16,6 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
-import com.apollographql.apollo3.internal.NonMainWorker
 import com.apollographql.apollo3.internal.deepCopy
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
@@ -37,8 +36,6 @@ private constructor(
     val interceptors: List<HttpInterceptor>,
     val exposeErrorBody: Boolean,
 ) : NetworkTransport {
-  private val worker = NonMainWorker()
-
   private val engineInterceptor = EngineInterceptor()
 
   override fun <D : Operation.Data> execute(
@@ -99,12 +96,10 @@ private constructor(
       httpResponse: HttpResponse,
   ): ApolloResponse<D> {
     val response = try {
-      worker.doWork {
-        operation.parseJsonResponse(
-            jsonReader = httpResponse.body!!.jsonReader(),
-            customScalarAdapters = customScalarAdapters
-        )
-      }
+      operation.parseJsonResponse(
+          jsonReader = httpResponse.body!!.jsonReader(),
+          customScalarAdapters = customScalarAdapters
+      )
     } catch (e: Exception) {
       throw wrapThrowableIfNeeded(e)
     }
@@ -128,12 +123,10 @@ private constructor(
         val merged = jsonMerger.merge(part).let { if (mustClone) it.deepCopy() else it }
         val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
         val isLast = !jsonMerger.hasNext
-        worker.doWork {
-          operation.parseJsonResponse(
-              jsonReader = merged.jsonReader(),
-              customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
-          ).newBuilder().isLast(isLast).build()
-        }
+        operation.parseJsonResponse(
+            jsonReader = merged.jsonReader(),
+            customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+        ).newBuilder().isLast(isLast).build()
       } catch (e: Exception) {
         throw wrapThrowableIfNeeded(e)
       }
