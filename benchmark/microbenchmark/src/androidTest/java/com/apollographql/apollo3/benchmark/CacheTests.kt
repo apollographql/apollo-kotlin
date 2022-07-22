@@ -67,16 +67,18 @@ class CacheTests {
       cache.merge(records.values.toList(), CacheHeaders.NONE)
     }
 
-    registerCacheSize(testName, dbFile.length())
+    if (sql) {
+      registerCacheSize("CacheTests", testName, dbFile.length())
+    }
 
     benchmarkRule.measureRepeated {
-      val data = query.readDataFromCache(
+      val data2 = query.readDataFromCache(
           CustomScalarAdapters.Empty,
           cache,
           FieldPolicyCacheResolver,
           CacheHeaders.NONE
       )
-      check(data)
+      check(data2)
     }
   }
 }

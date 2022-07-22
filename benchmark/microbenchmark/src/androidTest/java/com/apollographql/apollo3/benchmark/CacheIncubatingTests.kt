@@ -74,17 +74,18 @@ class CacheIncubatingTests {
       cache.merge(records.values.toList(), CacheHeaders.NONE)
     }
 
-    registerCacheSize(testName, Utils.dbFile.length())
-
+    if (sql) {
+      registerCacheSize("CacheIncubatingTests", testName, Utils.dbFile.length())
+    }
     benchmarkRule.measureRepeated {
-      val data = readDataFromCacheMethod.invoke(
+      val data2 = readDataFromCacheMethod.invoke(
           query,
           CustomScalarAdapters.Empty,
           cache,
           com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver,
           com.apollographql.apollo3.cache.normalized.api.CacheHeaders.NONE
       ) as D
-      check(data)
+      check(data2)
     }
   }
 

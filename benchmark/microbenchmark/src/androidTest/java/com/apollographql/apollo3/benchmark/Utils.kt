@@ -40,13 +40,22 @@ object Utils {
     }.peek()
   }
 
-  private val cacheSizes = mutableMapOf<String, Long>()
-  internal fun registerCacheSize(testName: String, size: Long) {
-    cacheSizes.put(testName, size)
+  private val extraMetrics = mutableListOf<Map<String, Any>>()
+  internal fun registerCacheSize(clazz: String, test: String, size: Long) {
+    extraMetrics.add(
+        mapOf(
+            "name" to "bytes",
+            "value" to size,
+            "tags" to listOf(
+                "class:$clazz",
+                "test:$test"
+            )
+        )
+    )
     Outputs.writeFile("cachesSizes.json", "cacheSizes", true) {
       it.writeText(
           buildJsonString {
-            AnyAdapter.toJson(this, CustomScalarAdapters.Empty, cacheSizes)
+            AnyAdapter.toJson(this, CustomScalarAdapters.Empty, extraMetrics)
           }
       )
     }
