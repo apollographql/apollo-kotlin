@@ -2,6 +2,7 @@ package com.apollographql.apollo3.benchmark
 
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
+import androidx.test.platform.app.InstrumentationRegistry
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Operation
@@ -18,6 +19,7 @@ import com.apollographql.apollo3.benchmark.test.R
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.incubating.api.CacheResolver
+import com.apollographql.apollo3.cache.normalized.incubating.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.incubating.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.incubating.api.ReadOnlyNormalizedCache
 import com.apollographql.apollo3.cache.normalized.incubating.api.Record
@@ -58,7 +60,8 @@ class CacheIncubatingTests {
       MemoryCacheFactory().create()
     } else {
       Utils.dbFile.delete()
-      SqlNormalizedCacheFactory(Utils.dbName).create()
+      // Pass context explicitly here because androidx.startup fails due to relocation
+      SqlNormalizedCacheFactory(InstrumentationRegistry.getInstrumentation().context, Utils.dbName).create()
     }
     val data = query.parseJsonResponse(resource(R.raw.calendar_response).jsonReader()).data!!
 
@@ -79,11 +82,12 @@ class CacheIncubatingTests {
     }
     benchmarkRule.measureRepeated {
       val data2 = readDataFromCacheMethod.invoke(
+          null,
           query,
           CustomScalarAdapters.Empty,
           cache,
-          com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver,
-          com.apollographql.apollo3.cache.normalized.api.CacheHeaders.NONE
+          FieldPolicyCacheResolver,
+          CacheHeaders.NONE
       ) as D
       check(data2)
     }

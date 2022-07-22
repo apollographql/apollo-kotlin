@@ -8,9 +8,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 
 /**
@@ -44,7 +42,7 @@ object JavaInstantAdapter : Adapter<Instant> {
  */
 object JavaLocalDateAdapter : Adapter<LocalDate> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDate {
-    return Date(LocalDate.parse(reader.nextString()!!).atStartOfDay().atOffset(ZoneOffset.UTC).toEpochSecond() * 1000)
+    return LocalDate.parse(reader.nextString()!!)
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalDate) {
