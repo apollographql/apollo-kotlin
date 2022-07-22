@@ -104,9 +104,6 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    // Capture a local reference so as not to freeze "this"
-    val cacheResolver = cacheResolver
-
     return cacheHolder.readAccess { cache ->
       operation.readDataFromCacheInternal(
           customScalarAdapters = customScalarAdapters,
@@ -124,9 +121,6 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    // Capture a local reference so as not to freeze "this"
-    val cacheResolver = cacheResolver
-
     return cacheHolder.readAccess { cache ->
       fragment.readDataFromCacheInternal(
           customScalarAdapters = customScalarAdapters,
@@ -170,16 +164,11 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    // Capture a local reference so as not to freeze "this"
-    val objectIdGenerator = cacheKeyGenerator
-    val recordMerger = recordMerger
-    val metadataGenerator = metadataGenerator
-
     val changedKeys = cacheHolder.writeAccess { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = objectIdGenerator,
+          cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
           rootKey = cacheKey.key
       ).values
@@ -201,17 +190,11 @@ internal class DefaultApolloStore(
       publish: Boolean,
       customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
-
-    // Capture a local reference so as not to freeze "this"
-    val objectIdGenerator = cacheKeyGenerator
-    val recordMerger = recordMerger
-    val metadataGenerator = metadataGenerator
-
     val (records, changedKeys) = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = objectIdGenerator,
+          cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
       )
 
@@ -232,16 +215,11 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
-
-    // Capture a local reference so as not to freeze "this"
-    val objectIdGenerator = cacheKeyGenerator
-    val metadataGenerator = metadataGenerator
-
     val changedKeys = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = objectIdGenerator,
+          cacheKeyGenerator = cacheKeyGenerator,
           metadataGenerator = metadataGenerator,
       ).values.map { record ->
         Record(

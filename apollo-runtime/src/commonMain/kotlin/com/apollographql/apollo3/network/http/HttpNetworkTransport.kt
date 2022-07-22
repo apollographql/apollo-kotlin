@@ -16,12 +16,9 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
-import com.apollographql.apollo3.internal.deepCopy
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
-import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
@@ -115,13 +112,8 @@ private constructor(
     val jsonMerger = DeferredJsonMerger()
     return multipartBodyFlow(httpResponse).map { part ->
       try {
-        // On native, we cannot pass `jsonMerger._merge` to `worker.doWork` or it will become frozen making
-        // any subsequent payload merge throw.
-        // So we clone them before they are captured.
-        // XXX: revisit with the new memory model
-        val mustClone = platform() == Platform.Native
-        val merged = jsonMerger.merge(part).let { if (mustClone) it.deepCopy() else it }
-        val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
+        val merged = jsonMerger.merge(part)
+        val deferredFragmentIds = jsonMerger.mergedFragmentIds
         val isLast = !jsonMerger.hasNext
         operation.parseJsonResponse(
             jsonReader = merged.jsonReader(),

@@ -4,7 +4,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
@@ -15,7 +14,6 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.api.readDataFromCache
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -98,9 +96,6 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    // Capture a local reference so as not to freeze "this"
-    val cacheResolver = cacheResolver
-
     return cacheHolder.readAccess { cache ->
       operation.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
@@ -117,9 +112,6 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    // Capture a local reference so as not to freeze "this"
-    val cacheResolver = cacheResolver
-
     return cacheHolder.readAccess { cache ->
       fragment.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
@@ -162,14 +154,11 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    // Capture a local reference so as not to freeze "this"
-    val objectIdGenerator = cacheKeyGenerator
-
     val changedKeys =  cacheHolder.writeAccess { cache ->
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = objectIdGenerator,
+          cacheKeyGenerator = cacheKeyGenerator,
           rootKey = cacheKey.key
       ).values
 
@@ -190,15 +179,11 @@ internal class DefaultApolloStore(
       publish: Boolean,
       customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
-
-    // Capture a local reference so as not to freeze "this"
-    val objectIdGenerator = cacheKeyGenerator
-
     val (records, changedKeys) = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = objectIdGenerator
+          cacheKeyGenerator = cacheKeyGenerator
       )
 
       records to cache.merge(records.values.toList(), cacheHeaders)
@@ -218,15 +203,11 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
-
-    // Capture a local reference so as not to freeze "this"
-    val objectIdGenerator = cacheKeyGenerator
-
     val changedKeys = cacheHolder.writeAccess { cache ->
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = objectIdGenerator
+          cacheKeyGenerator = cacheKeyGenerator
       ).values.map { record ->
         Record(
             key = record.key,

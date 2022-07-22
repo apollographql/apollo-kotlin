@@ -30,7 +30,6 @@ import platform.posix.usleep
 import platform.posix.write
 import kotlin.experimental.and
 import kotlin.native.concurrent.AtomicInt
-import kotlin.native.concurrent.freeze
 
 class Socket(
     private val socketFd: Int,
@@ -131,7 +130,7 @@ class Socket(
         debug("Got request: ${request.method} ${request.path}")
 
         val mockResponse = synchronized(lock) {
-          recordedRequests.addObject(request.freeze())
+          recordedRequests.addObject(request)
           try {
             mockServerHandler.handle(request)
           } catch (e: Exception) {

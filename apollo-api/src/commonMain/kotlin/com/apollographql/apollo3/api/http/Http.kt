@@ -110,8 +110,8 @@ private constructor(
      */
     private val bodySource: BufferedSource?,
     /**
-     * An immutable body that can be freezed when used from Kotlin native.
-     * Prefer [bodySource] on non-native so that the response can be streamed.
+     * An immutable body.
+     * Prefer [bodySource] on so that the response can be streamed.
      */
     private val bodyString: ByteString?,
 ) {
@@ -145,8 +145,8 @@ private constructor(
     }
 
     /**
-     * An immutable body that can be freezed when used from Kotlin native.
-     * Prefer [bodySource] on non-native so that the response can be streamed.
+     * An immutable body.
+     * Prefer [bodySource] so that the response can be streamed.
      */
     fun body(bodyString: ByteString) = apply {
       check(!hasBody) { "body() can only be called once" }

@@ -18,8 +18,6 @@ import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.BackgroundDispatcher
-import com.apollographql.apollo3.mpp.ensureNeverFrozen
-import com.apollographql.apollo3.mpp.freeze
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -76,7 +74,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
   private var interceptorChain: HttpInterceptorChain? = null
 
   init {
-    ensureNeverFrozen(this)
     job = scope.launch {
       while (true) {
         delay(batchIntervalMillis)
@@ -167,8 +164,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         .body(body)
         .headers(commonHeaders)
         .build()
-
-    freeze(request)
 
     var exception: ApolloException? = null
     val result = try {

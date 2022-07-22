@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.mpp
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_4_1
 import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlin.jvm.JvmName
 
@@ -21,11 +23,19 @@ expect fun currentThreadId(): String
 @ApolloInternal
 expect fun currentThreadName(): String
 
-expect fun ensureNeverFrozen(obj: Any)
+@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
+@ApolloDeprecatedSince(v3_4_1)
+fun ensureNeverFrozen(@Suppress("UNUSED_PARAMETER") obj: Any) {
+}
 
-expect fun isFrozen(obj: Any): Boolean
+@Deprecated("With the new Memory Manager this method is no longer needed and always return false", ReplaceWith("false"), level = DeprecationLevel.HIDDEN)
+@ApolloDeprecatedSince(v3_4_1)
+fun isFrozen(@Suppress("UNUSED_PARAMETER") obj: Any): Boolean = false
 
-expect fun freeze(obj: Any)
+@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
+@ApolloDeprecatedSince(v3_4_1)
+fun freeze(@Suppress("UNUSED_PARAMETER") obj: Any) {
+}
 
 enum class Platform {
   Jvm,

@@ -1,13 +1,12 @@
 package com.apollographql.apollo3.mockserver
 
 import platform.Foundation.NSMutableArray
-import kotlin.native.concurrent.freeze
 
 internal actual class QueueMockServerHandler : MockServerHandler {
   private val queue = NSMutableArray()
 
   actual fun enqueue(response: MockResponse) {
-    queue.addObject(response.freeze())
+    queue.addObject(response)
   }
 
   actual override fun handle(request: MockRequest): MockResponse {

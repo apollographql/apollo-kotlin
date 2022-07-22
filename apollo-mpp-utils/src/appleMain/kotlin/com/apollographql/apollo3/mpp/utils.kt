@@ -5,9 +5,6 @@ import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSThread
 import platform.Foundation.timeIntervalSince1970
 import platform.posix.pthread_self
-import kotlin.native.concurrent.ensureNeverFrozen
-import kotlin.native.concurrent.freeze
-import kotlin.native.concurrent.isFrozen
 
 actual fun currentTimeMillis(): Long {
   return (NSDate().timeIntervalSince1970 * 1000).toLong()
@@ -29,16 +26,6 @@ actual fun currentThreadName(): String {
   } else {
     currentThreadId()
   }
-}
-
-actual fun ensureNeverFrozen(obj: Any) {
-  obj.ensureNeverFrozen()
-}
-
-actual fun isFrozen(obj: Any) = obj.isFrozen
-
-actual fun freeze(obj: Any) {
-  obj.freeze()
 }
 
 actual fun platform() = Platform.Native

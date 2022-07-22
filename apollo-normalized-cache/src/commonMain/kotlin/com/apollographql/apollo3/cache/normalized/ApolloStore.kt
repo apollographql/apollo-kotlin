@@ -3,16 +3,16 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCache
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
-import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.internal.DefaultApolloStore
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.SharedFlow
 import kotlin.reflect.KClass
@@ -169,8 +169,7 @@ interface ApolloStore {
   /**
    * Direct access to the cache.
    *
-   * @param block a function that can access the cache. The function and its captured variables will
-   * be called from a background thread and freezed
+   * @param block a function that can access the cache. The function will be called from a background thread
    */
   suspend fun <R> accessCache(block: (NormalizedCache) -> R): R
 
