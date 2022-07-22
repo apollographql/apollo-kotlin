@@ -87,7 +87,7 @@ private constructor(
     }
   }
 
-  private suspend fun <D : Operation.Data> singleResponse(
+  private fun <D : Operation.Data> singleResponse(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
@@ -104,7 +104,7 @@ private constructor(
     return response.newBuilder().isLast(true).build()
   }
 
-  private suspend fun <D : Operation.Data> multipleResponses(
+  private fun <D : Operation.Data> multipleResponses(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
