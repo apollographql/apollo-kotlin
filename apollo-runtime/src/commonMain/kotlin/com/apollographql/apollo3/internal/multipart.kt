@@ -24,7 +24,6 @@ internal fun multipartBodyFlow(response: HttpResponse): Flow<BufferedSource> {
             ?: throw ApolloException("Expected the Content-Type to have a boundary parameter")
     )
     while (true) {
-      // Read the body in a background thread because it is blocking
       val part = multipartReader!!.nextPart() ?: break
       emit(part.body)
     }
