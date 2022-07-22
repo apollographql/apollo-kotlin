@@ -37,7 +37,7 @@ dependencies {
 
     parameters.relocations.set(relocations)
     parameters.tmpDir.set(layout.buildDirectory.dir("aarTransforms"))
-    parameters.random.set(0) //(Math.random() * 10000).toInt()) // uncomment for debug
+    parameters.random.set((Math.random() * 10000).toInt()) // uncomment for debug
   }
 
   implementation("com.apollographql.apollo3:apollo-runtime")

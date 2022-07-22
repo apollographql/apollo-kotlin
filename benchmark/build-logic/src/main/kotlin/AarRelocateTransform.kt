@@ -1,5 +1,7 @@
 import me.lucko.jarrelocator.JarRelocator
 import me.lucko.jarrelocator.Relocation
+import okio.buffer
+import okio.source
 import org.gradle.api.artifacts.transform.CacheableTransform
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
@@ -16,7 +18,10 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
+import java.io.File
 import java.io.IOException
+import java.util.zip.CRC32
+import java.util.zip.ZipEntry.STORED
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
@@ -26,8 +31,10 @@ abstract class AarRelocateTransform : TransformAction<AarRelocateTransform.Param
   interface Parameters : TransformParameters {
     @get:Input
     val relocations: MapProperty<String, String>
+
     @get:Input
     val random: Property<Int>
+
     @get:Internal
     val tmpDir: DirectoryProperty
   }
@@ -57,7 +64,6 @@ abstract class AarRelocateTransform : TransformAction<AarRelocateTransform.Param
             return@input
           }
 
-          zipOutputStream.putNextEntry(entry)
 
           if (entry.name == "classes.jar") {
             val rules = renames.entries.map {
@@ -76,11 +82,21 @@ abstract class AarRelocateTransform : TransformAction<AarRelocateTransform.Param
               throw RuntimeException("Unable to relocate", e)
             }
 
+            entry.size = relocatorOutput.length()
+            entry.method = STORED
+            entry.compressedSize = entry.size
+            entry.crc = CRC32().apply {
+              // CRC32 doesn't support streaming, it wants all the bytes at once
+              val bytes = relocatorOutput.readBytes()
+              update(bytes, 0, bytes.size)
+            }.value
+
+            zipOutputStream.putNextEntry(entry)
             relocatorOutput.inputStream().use {
               it.transferTo(zipOutputStream)
             }
-            entry.size = relocatorOutput.length()
           } else {
+            zipOutputStream.putNextEntry(entry)
             zipInputStream.transferTo(zipOutputStream)
           }
           zipOutputStream.closeEntry()
