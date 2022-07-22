@@ -52,7 +52,7 @@ object Utils {
             )
         )
     )
-    Outputs.writeFile("cachesSizes.json", "cacheSizes", true) {
+    Outputs.writeFile("extraMetrics.json", "extraMetrics", true) {
       it.writeText(
           buildJsonString {
             AnyAdapter.toJson(this, CustomScalarAdapters.Empty, extraMetrics)
