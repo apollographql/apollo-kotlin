@@ -35,6 +35,7 @@ jobs:
           app_apk: 'benchmark/app/build/outputs/apk/release/app-release.apk'
           test_apk: 'benchmark/lib/build/outputs/apk/androidTest/release/lib-release-androidTest.apk'
           device_model: 'redfin,locale=en,orientation=portrait'
+          directories_to_pull: '/storage/emulated/0/Android/media/com.apollographql.apollo3.benchmark.test/'
 
           dd_api_key: ${{ secrets.DD_API_KEY }}
           dd_metric_prefix: 'apollo.kotlin'
