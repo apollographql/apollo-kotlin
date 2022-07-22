@@ -1,8 +1,8 @@
 name: benchmarks
 
 on:
-  pull_request:
-    branches: ['*']
+#  pull_request:
+#    branches: ['*']
   schedule:
     - cron: '0 3 * * *'
 
@@ -30,7 +30,7 @@ jobs:
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
       - name: microbenchmarks
-        uses: martinbonnin/run-benchmarks@main
+        uses: martinbonnin/run-benchmarks@ef9043b9a646a109f7381a4bf20f82ead5cbd382 #main
         with:
           google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
