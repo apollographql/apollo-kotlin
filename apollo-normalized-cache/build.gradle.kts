@@ -11,6 +11,9 @@ kotlin {
         api(projects.apolloRuntime)
         api(projects.apolloNormalizedCacheApi)
         api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
+        implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
+          because("Use of ReentrantLock in DefaultApolloStore for Apple (we don't use the gradle plugin rewrite)")
+        }
       }
     }
   }
