@@ -18,6 +18,8 @@ import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
 
 internal class DefaultApolloStore(
@@ -30,15 +32,12 @@ internal class DefaultApolloStore(
       // If multiple watchers start notifying each other and potentially themselves, the buffer of changedKeysEvent will grow forever.
       // I think as long as the refetchPolicy is [FetchPolicy.CacheOnly] everything should be fine as there is no reentrant emission.
       // If the refetechPolicy is something else, we should certainly try to detect it in the cache interceptor
-      extraBufferCapacity = 10,
-      onBufferOverflow = BufferOverflow.DROP_OLDEST
-  )
+      extraBufferCapacity = 10, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
   override val changedKeys = changedKeysEvents.asSharedFlow()
 
-  private val cacheHolder = Guard("OptimisticCache") {
-    OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
-  }
+  private val cache = OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
+  private val cacheMutex = Mutex()
 
   override suspend fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
@@ -49,8 +48,8 @@ internal class DefaultApolloStore(
   }
 
   override fun clearAll(): Boolean {
-    cacheHolder.writeAndForget {
-      it.clearAll()
+    runBlockingWithMutex(cacheMutex) {
+      cache.clearAll()
     }
     return true
   }
@@ -59,7 +58,7 @@ internal class DefaultApolloStore(
       cacheKey: CacheKey,
       cascade: Boolean,
   ): Boolean {
-    return cacheHolder.writeAccess {
+    return accessCache {
       it.remove(cacheKey, cascade)
     }
   }
@@ -68,7 +67,7 @@ internal class DefaultApolloStore(
       cacheKeys: List<CacheKey>,
       cascade: Boolean,
   ): Int {
-    return cacheHolder.writeAccess {
+    return accessCache {
       var count = 0
       for (cacheKey in cacheKeys) {
         if (it.remove(cacheKey, cascade = cascade)) {
@@ -84,11 +83,7 @@ internal class DefaultApolloStore(
       data: D,
       customScalarAdapters: CustomScalarAdapters,
   ): Map<String, Record> {
-    return operation.normalize(
-        data,
-        customScalarAdapters,
-        cacheKeyGenerator
-    )
+    return operation.normalize(data, customScalarAdapters, cacheKeyGenerator)
   }
 
   override suspend fun <D : Operation.Data> readOperation(
@@ -96,7 +91,7 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    return cacheHolder.readAccess { cache ->
+    return accessCache { cache ->
       operation.readDataFromCache(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
@@ -112,22 +107,13 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    return cacheHolder.readAccess { cache ->
-      fragment.readDataFromCache(
-          customScalarAdapters = customScalarAdapters,
-          cache = cache,
-          cacheResolver = cacheResolver,
-          cacheHeaders = cacheHeaders,
-          cacheKey = cacheKey
-      )
+    return accessCache { cache ->
+      fragment.readDataFromCache(customScalarAdapters = customScalarAdapters, cache = cache, cacheResolver = cacheResolver, cacheHeaders = cacheHeaders, cacheKey = cacheKey)
     }
   }
 
   override suspend fun <R> accessCache(block: (NormalizedCache) -> R): R {
-    /**
-     * We don't know how the cache is going to be used, assume write access
-     */
-    return cacheHolder.writeAccess(block)
+    return cacheMutex.withLock { block(cache) }
   }
 
   override suspend fun <D : Operation.Data> writeOperation(
@@ -137,13 +123,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    return writeOperationWithRecords(
-        operation = operation,
-        operationData = operationData,
-        cacheHeaders = cacheHeaders,
-        publish = publish,
-        customScalarAdapters = customScalarAdapters
-    ).second
+    return writeOperationWithRecords(operation = operation, operationData = operationData, cacheHeaders = cacheHeaders, publish = publish, customScalarAdapters = customScalarAdapters).second
   }
 
   override suspend fun <D : Fragment.Data> writeFragment(
@@ -154,13 +134,8 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys =  cacheHolder.writeAccess { cache ->
-      val records = fragment.normalize(
-          data = fragmentData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator,
-          rootKey = cacheKey.key
-      ).values
+    val changedKeys = accessCache { cache ->
+      val records = fragment.normalize(data = fragmentData, customScalarAdapters = customScalarAdapters, cacheKeyGenerator = cacheKeyGenerator, rootKey = cacheKey.key).values
 
       cache.merge(records, cacheHeaders)
     }
@@ -179,12 +154,8 @@ internal class DefaultApolloStore(
       publish: Boolean,
       customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
-    val (records, changedKeys) = cacheHolder.writeAccess { cache ->
-      val records = operation.normalize(
-          data = operationData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator
-      )
+    val (records, changedKeys) = accessCache { cache ->
+      val records = operation.normalize(data = operationData, customScalarAdapters = customScalarAdapters, cacheKeyGenerator = cacheKeyGenerator)
 
       records to cache.merge(records.values.toList(), cacheHeaders)
     }
@@ -203,23 +174,15 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.writeAccess { cache ->
-      val records = operation.normalize(
-          data = operationData,
-          customScalarAdapters = customScalarAdapters,
-          cacheKeyGenerator = cacheKeyGenerator
-      ).values.map { record ->
-        Record(
-            key = record.key,
-            fields = record.fields,
-            mutationId = mutationId
-        )
+    val changedKeys = accessCache { cache ->
+      val records = operation.normalize(data = operationData, customScalarAdapters = customScalarAdapters, cacheKeyGenerator = cacheKeyGenerator).values.map { record ->
+        Record(key = record.key, fields = record.fields, mutationId = mutationId)
       }
 
       /**
        * TODO: should we forward the cache headers to the optimistic store?
        */
-      cache.addOptimisticUpdates(records)
+      (cache as OptimisticCache).addOptimisticUpdates(records)
     }
 
     if (publish) {
@@ -233,8 +196,8 @@ internal class DefaultApolloStore(
       mutationId: Uuid,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.writeAccess { cache ->
-      cache.removeOptimisticUpdates(mutationId)
+    val changedKeys = accessCache { cache ->
+      (cache as OptimisticCache).removeOptimisticUpdates(mutationId)
     }
 
     if (publish) {
@@ -245,19 +208,16 @@ internal class DefaultApolloStore(
   }
 
   suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return cacheHolder.writeAccess { cache ->
+    return accessCache { cache ->
       cache.merge(record, cacheHeaders)
     }
   }
 
   override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return cacheHolder.readAccess { cache ->
+    return accessCache { cache ->
       cache.dump()
     }
   }
 
-  override fun dispose() {
-    cacheHolder.dispose()
-  }
+  override fun dispose() {}
 }
-
