@@ -29,6 +29,7 @@ class AuthorizationInterceptorTest {
 
                 delay(delayMillis)
 
+                @Suppress("DEPRECATION")
                 return HttpResponse.Builder(
                     statusCode = statusCode
                 ).body(
