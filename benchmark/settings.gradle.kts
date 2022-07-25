@@ -1,3 +1,3 @@
-include(":app", ":lib")
+include(":app", ":microbenchmark")
 
 includeBuild("build-logic")

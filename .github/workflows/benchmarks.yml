@@ -1,6 +1,8 @@
 name: benchmarks
 
 on:
+#  pull_request:
+#    branches: ['*']
   schedule:
     - cron: '0 3 * * *'
 
@@ -28,13 +30,15 @@ jobs:
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
       - name: microbenchmarks
-        uses: martinbonnin/run-benchmarks@9bb7702a9efb057b7f838a1b24612c97a12c4b26 #main
+        uses: martinbonnin/run-benchmarks@ef9043b9a646a109f7381a4bf20f82ead5cbd382 #main
         with:
           google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
 
           app_apk: 'benchmark/app/build/outputs/apk/release/app-release.apk'
-          test_apk: 'benchmark/lib/build/outputs/apk/androidTest/release/lib-release-androidTest.apk'
+          test_apk: 'benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk'
           device_model: 'redfin,locale=en,orientation=portrait'
+          directories_to_pull: '/sdcard/Download'
+          environment_variables: 'clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true'
 
           dd_api_key: ${{ secrets.DD_API_KEY }}
           dd_metric_prefix: 'apollo.kotlin'
