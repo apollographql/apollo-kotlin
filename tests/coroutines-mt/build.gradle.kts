@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-  configureAppleTargets("macosArm64")
+  configureAppleTargets("macosX64", "macosArm64")
 
   sourceSets {
     val commonMain by getting {
