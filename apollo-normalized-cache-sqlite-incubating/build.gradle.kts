@@ -1,6 +1,4 @@
-if (System.getProperty("idea.sync.active") == null) {
-  apply(plugin = "com.android.library")
-}
+apply(plugin = "com.android.library")
 apply(plugin = "org.jetbrains.kotlin.multiplatform")
 apply(plugin = "com.squareup.sqldelight")
 
@@ -26,11 +24,9 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
 configureMppDefaults(withJs = false, withLinux = false)
 
 configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-  if (System.getProperty("idea.sync.active") == null) {
     android {
       publishAllLibraryVariants()
     }
-  }
 
   sourceSets {
     val commonMain by getting {
@@ -60,7 +56,6 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
       }
     }
 
-    if (System.getProperty("idea.sync.active") == null) {
       val androidMain by getting {
         dependsOn(commonMain)
         dependencies {
@@ -74,7 +69,6 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
         dependencies {
           implementation(kotlin("test-junit"))
         }
-      }
     }
     val commonTest by getting {
       dependencies {
@@ -84,7 +78,6 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
   }
 }
 
-if (System.getProperty("idea.sync.active") == null) {
   configure<com.android.build.gradle.LibraryExtension> {
     compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
 
@@ -119,7 +112,7 @@ if (System.getProperty("idea.sync.active") == null) {
       enabled = false
     }
   }
-}
+
 
 val jvmJar by tasks.getting(Jar::class) {
   manifest {
