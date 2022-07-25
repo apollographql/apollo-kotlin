@@ -12,3 +12,5 @@ internal expect val defaultDispatcher: CoroutineDispatcher
 internal expect class CloseableSingleThreadDispatcher() : Closeable {
   val coroutineDispatcher: CoroutineDispatcher
 }
+
+internal expect fun failOnNativeIfLegacyMemoryManager()

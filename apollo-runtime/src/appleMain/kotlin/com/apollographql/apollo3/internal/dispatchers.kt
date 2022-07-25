@@ -24,3 +24,11 @@ internal actual class CloseableSingleThreadDispatcher actual constructor() : Clo
     }
   }
 }
+
+@OptIn(ExperimentalStdlibApi::class)
+internal actual fun failOnNativeIfLegacyMemoryManager() {
+  check(isExperimentalMM()) {
+    "Apollo: The legacy memory manager is no longer supported, please use the new memory manager instead. " +
+        "See https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md for more information."
+  }
+}

@@ -22,3 +22,5 @@ internal actual class CloseableSingleThreadDispatcher actual constructor() : Clo
     }
   }
 }
+
+internal actual fun failOnNativeIfLegacyMemoryManager() {}

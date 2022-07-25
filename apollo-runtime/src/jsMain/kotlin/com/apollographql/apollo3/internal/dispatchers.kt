@@ -14,3 +14,5 @@ internal actual class CloseableSingleThreadDispatcher : Closeable {
   override fun close() {
   }
 }
+
+internal actual fun failOnNativeIfLegacyMemoryManager() {}
