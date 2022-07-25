@@ -1,5 +1,5 @@
 def versions = [
-    androidPlugin       : '7.2.0',
+    androidPlugin       : '7.2.1',
     androidPluginMin    : '3.4.2',
     androidxSqlite      : '2.1.0',
     antlr4              : '4.9.3',
