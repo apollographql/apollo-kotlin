@@ -25,8 +25,8 @@ import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo3.testing.internal.runTestBlocking
 import com.apollographql.apollo3.testing.receiveOrTimeout
-import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancelAndJoin
@@ -80,7 +80,7 @@ class WatcherTest {
    * cache changes
    */
   @Test
-  fun sameQueryTriggersWatcher() = runTest(before = { setUp() }) {
+  fun sameQueryTriggersWatcher() = runTestBlocking(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -107,7 +107,7 @@ class WatcherTest {
   }
 
   @Test
-  fun emitCacheMissesIsWorking() = runTest(before = { setUp() }) {
+  fun emitCacheMissesIsWorking() = runTestBlocking(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -139,7 +139,7 @@ class WatcherTest {
    * Writing to the store out of band should update the watcher
    */
   @Test
-  fun storeWriteTriggersWatcher() = runTest(before = { setUp() }) {
+  fun storeWriteTriggersWatcher() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
     val operation = EpisodeHeroNameWithIdQuery(Episode.EMPIRE)
     apolloClient.enqueueTestResponse(operation, episodeHeroNameWithIdData)
@@ -170,7 +170,7 @@ class WatcherTest {
    * A new query updates the store with data that is the same as the one originally seen by the watcher
    */
   @Test
-  fun noChangeSameQuery() = runTest(before = { setUp() }) {
+  fun noChangeSameQuery() = runTestBlocking(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -197,7 +197,7 @@ class WatcherTest {
    * A new query that contains overlapping fields with the watched query should trigger the watcher
    */
   @Test
-  fun differentQueryTriggersWatcher() = runTest(before = { setUp() }) {
+  fun differentQueryTriggersWatcher() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameWithIdQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -228,7 +228,7 @@ class WatcherTest {
    * Same as noChangeSameQuery with different queries
    */
   @Test
-  fun noChangeDifferentQuery() = runTest(before = { setUp() }) {
+  fun noChangeDifferentQuery() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -259,7 +259,7 @@ class WatcherTest {
    * from the network
    */
   @Test
-  fun networkRefetchPolicy() = runTest(before = { setUp() }) {
+  fun networkRefetchPolicy() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     // The first query should get a "R2-D2" name
@@ -298,7 +298,7 @@ class WatcherTest {
 
 
   @Test
-  fun nothingReceivedWhenCancelled() = runTest(before = { setUp() }) {
+  fun nothingReceivedWhenCancelled() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -321,7 +321,7 @@ class WatcherTest {
    * Doing the initial query as cache only will detect when the query becomes available
    */
   @Test
-  fun cacheOnlyFetchPolicy() = runTest(before = { setUp() }) {
+  fun cacheOnlyFetchPolicy() = runTestBlocking(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -344,7 +344,7 @@ class WatcherTest {
   }
 
   @Test
-  fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runTest(before = { setUp() }) {
+  fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val job = launch {
 
@@ -367,7 +367,7 @@ class WatcherTest {
   }
 
   @Test
-  fun watchCacheOrNetwork() = runTest(before = { setUp() }) {
+  fun watchCacheOrNetwork() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
@@ -411,7 +411,7 @@ class WatcherTest {
    * Demonstrates how watch(Data?) can be used in advanced scenarios.
    */
   @Test
-  fun watchCacheAndNetworkManual() = runTest(before = { setUp() }) {
+  fun watchCacheAndNetworkManual() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
@@ -465,7 +465,7 @@ class WatcherTest {
    * watchCacheAndNetwork() with cached value and no network error
    */
   @Test
-  fun watchCacheAndNetwork() = runTest(before = { setUp() }) {
+  fun watchCacheAndNetwork() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
@@ -502,7 +502,7 @@ class WatcherTest {
    * watchCacheAndNetwork() with a cache miss
    */
   @Test
-  fun watchCacheAndNetworkWithCacheMiss() = runTest(before = { setUp() }) {
+  fun watchCacheAndNetworkWithCacheMiss() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
@@ -529,7 +529,7 @@ class WatcherTest {
   }
 
   @Test
-  fun cacheAndNetworkEmitsCacheImmediately() = runTest {
+  fun cacheAndNetworkEmitsCacheImmediately() = runTestBlocking {
     // This doesn't use TestNetworkTransport because we need timing control
     val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder()
@@ -561,7 +561,7 @@ class WatcherTest {
    * watchCacheAndNetwork() with a network error on the initial call
    */
   @Test
-  fun watchCacheAndNetworkWithNetworkError() = runTest(before = { setUp() }) {
+  fun watchCacheAndNetworkWithNetworkError() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
@@ -596,7 +596,7 @@ class WatcherTest {
    * watchCacheAndNetwork() with a cache error AND a network error on the initial call
    */
   @Test
-  fun watchCacheAndNetworkWithCacheAndNetworkError() = runTest(before = { setUp() }) {
+  fun watchCacheAndNetworkWithCacheAndNetworkError() = runTestBlocking(before = { setUp() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 

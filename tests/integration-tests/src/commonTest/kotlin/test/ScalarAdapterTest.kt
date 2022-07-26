@@ -13,7 +13,7 @@ import com.apollographql.apollo3.integration.fullstack.LaunchDetailsByDateQuery
 import com.apollographql.apollo3.integration.fullstack.type.Date
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import com.example.MyDate
 import testFixtureToUtf8
 import kotlin.test.Test

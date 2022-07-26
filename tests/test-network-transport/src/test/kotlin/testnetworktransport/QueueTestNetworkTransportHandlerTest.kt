@@ -7,29 +7,34 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class QueueTestNetworkTransportHandlerTest {
   private lateinit var apolloClient: ApolloClient
 
-  private fun setUp() {
+  private fun TestScope.setUp() {
     apolloClient = ApolloClient.Builder()
         .networkTransport(QueueTestNetworkTransport())
+        .dispatcher(StandardTestDispatcher(testScheduler))
         .build()
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
-  fun enqueueResponses() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun enqueueResponses() = runTest(before = { (this as TestScope).setUp() }, after = { tearDown() }) {
     val query1 = GetHeroQuery("001")
     val testResponse1 = ApolloResponse.Builder(query1, uuid4(), null)
         .errors(listOf(Error(
@@ -76,7 +81,7 @@ class QueueTestNetworkTransportHandlerTest {
   }
 
   @Test
-  fun enqueueError() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun enqueueError() = runTest(before = { (this as TestScope).setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     apolloClient.enqueueTestResponse(query, errors = listOf(Error(
         message = "There was an error",
@@ -93,7 +98,7 @@ class QueueTestNetworkTransportHandlerTest {
   }
 
   @Test
-  fun enqueueNetworkError() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun enqueueNetworkError() = runTest(before = { (this as TestScope).setUp() }, after = { tearDown() }) {
     apolloClient.enqueueTestNetworkError()
 
     apolloClient.query(GetHeroQuery("001")).toFlow()
@@ -104,7 +109,7 @@ class QueueTestNetworkTransportHandlerTest {
   }
 
   @Test
-  fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun enqueueDataTestBuilder() = runTest(before = { (this as TestScope).setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
       hero = droidHero {

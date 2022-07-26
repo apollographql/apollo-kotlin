@@ -27,8 +27,9 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo3.testing.internal.runTestBlocking
 import com.apollographql.apollo3.testing.receiveOrTimeout
-import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -289,7 +290,7 @@ class FetchPolicyTest {
    * Uses a refetchPolicy that will not go to the network until it has seen a valid response
    */
   @Test
-  fun customRefetchPolicy() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun customRefetchPolicy() = runTestBlocking(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<ApolloResponse<HeroNameQuery.Data>>()
 
     /**

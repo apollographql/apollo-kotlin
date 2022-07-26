@@ -2,7 +2,7 @@
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import graphql.ws.GreetingsSubscription
 import graphql.ws.HelloQuery
 import graphql.ws.SetHelloMutation

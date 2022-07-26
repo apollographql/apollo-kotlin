@@ -1,21 +1,17 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.adapter.BigDecimalAdapter
-import com.apollographql.apollo3.adapter.toNumber
 import com.apollographql.apollo3.api.CustomTypeAdapter
 import com.apollographql.apollo3.api.CustomTypeValue
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import custom.scalars.Address
 import custom.scalars.AddressQuery
 import custom.scalars.BuiltInAdaptersQuery
 import custom.scalars.CompileTimeAdaptersQuery
 import custom.scalars.DecimalQuery
-import custom.scalars.type.Decimal
 import org.junit.Test
-import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 

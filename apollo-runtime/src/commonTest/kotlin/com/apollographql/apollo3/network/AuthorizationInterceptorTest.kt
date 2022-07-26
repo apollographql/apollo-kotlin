@@ -8,7 +8,7 @@ import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.DefaultHttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okio.ByteString.Companion.encodeUtf8

@@ -23,7 +23,7 @@ import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import sqlite.GetUserQuery
 import kotlin.test.Test
 import kotlin.test.assertTrue

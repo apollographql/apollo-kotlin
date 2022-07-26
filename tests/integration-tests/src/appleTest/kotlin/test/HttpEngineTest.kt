@@ -8,7 +8,7 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import com.apollographql.apollo3.network.http.get
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import platform.CFNetwork.kCFErrorDomainCFNetwork
 import platform.CFNetwork.kCFErrorHTTPSProxyConnectionFailure
 import platform.Foundation.CFBridgingRelease

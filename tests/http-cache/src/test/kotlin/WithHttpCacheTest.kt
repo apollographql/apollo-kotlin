@@ -4,7 +4,7 @@ import com.apollographql.apollo3.cache.http.httpCache
 import com.apollographql.apollo3.cache.http.isFromHttpCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import httpcache.GetRandomQuery
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

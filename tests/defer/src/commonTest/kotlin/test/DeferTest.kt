@@ -9,7 +9,7 @@ import com.apollographql.apollo3.mockserver.enqueueMultipart
 import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.mpp.platform
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery

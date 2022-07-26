@@ -9,7 +9,7 @@ import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.okHttpClient
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
 import httpcache.SetRandomMutation

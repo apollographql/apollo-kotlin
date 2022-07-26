@@ -10,7 +10,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesQuery
 import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTestBlocking
 import kotlinx.coroutines.asCoroutineDispatcher
 import testFixtureToUtf8
 import java.util.concurrent.Executors
@@ -47,7 +47,7 @@ class WriteToCacheAsynchronouslyTest {
    * Write to cache asynchronously, make sure records are not in cache when we receive the response
    */
   @Test
-  fun writeToCacheAsynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
+  fun writeToCacheAsynchronously() = runTestBlocking(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))
@@ -64,7 +64,7 @@ class WriteToCacheAsynchronouslyTest {
    * Write to cache synchronously, make sure records are in cache when we receive the response
    */
   @Test
-  fun writeToCacheSynchronously() = runTest(dispatcher, { setUp() }, { tearDown() }) {
+  fun writeToCacheSynchronously() = runTestBlocking(dispatcher, { setUp() }, { tearDown() }) {
     val query = HeroAndFriendsNamesQuery(Episode.JEDI)
 
     mockServer.enqueue(testFixtureToUtf8("HeroAndFriendsNameResponse.json"))

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.asChunked
 import com.apollographql.apollo3.mockserver.createMultipartMixedChunkedResponse
 import com.apollographql.apollo3.mockserver.writeResponse
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.flowOf
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8

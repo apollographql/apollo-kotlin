@@ -7,7 +7,7 @@ import com.apollographql.apollo3.cache.http.httpFetchPolicy
 import com.apollographql.apollo3.mockserver.ChunkedResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import defer.WithFragmentSpreadsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields

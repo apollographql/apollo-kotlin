@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonString
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTestBlocking
 import fake_subscription_engine.RandomSubscription
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.toList
@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 
 class SubscriptionTest {
   @Test
-  fun unknownMessagesDoNotStopTheFlows() = runTest {
+  fun unknownMessagesDoNotStopTheFlows() = runTestBlocking {
     val queuedMessages = Channel<String>(64)
 
     val webSocketEngine = FakeWebSocketEngine(
