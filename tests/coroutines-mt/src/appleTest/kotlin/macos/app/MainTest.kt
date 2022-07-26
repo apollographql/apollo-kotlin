@@ -9,9 +9,7 @@ import com.apollographql.apollo3.mpp.currentThreadId
 import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.native.concurrent.freeze
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 
 class MainTest {
   val json = """
@@ -26,7 +24,7 @@ class MainTest {
   fun coroutinesMtCanWork() = runTest {
     withContext(Dispatchers.Default) {
       println("Dispatchers.Default: ${currentThreadId()}")
-      withContext(Dispatchers.Main) {
+      withContext(Dispatchers.Main.immediate) {
         println("Dispatchers.Main: ${currentThreadId()}")
         val server = MockServer()
         server.enqueue(json)
@@ -41,24 +39,12 @@ class MainTest {
   }
 
   @Test
-  fun startingAQueryFromNonMainThreadAsserts() = runTest {
-    val server = MockServer()
-    server.enqueue(json)
-    val client = ApolloClient.Builder().serverUrl(server.url()).build().freeze()
-    withContext(Dispatchers.Default) {
-      assertFailsWith(IllegalStateException::class) {
-        client.query(GetRandomQuery()).execute()
-      }
-    }
-  }
-
-  @Test
   fun freezingTheStoreIsPossible() = runTest {
     val server = MockServer()
     server.enqueue(json)
     val client = ApolloClient.Builder().serverUrl(server.url()).normalizedCache(MemoryCacheFactory()).build()
     withContext(Dispatchers.Default) {
-      withContext(Dispatchers.Main) {
+      withContext(Dispatchers.Main.immediate) {
         val response = client.query(GetRandomQuery()).execute()
         check(response.dataAssertNoErrors.random == 42)
       }
