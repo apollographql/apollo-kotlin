@@ -8,7 +8,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo/)
 [![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots)](https://oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo/)
 
-> **Apollo Android 3 is available in alpha.** It is still in active development, and we'd love for folks to test it out. [See the v3 documentation](https://www.apollographql.com/docs/android/v3) and please [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose)!
+> **Apollo Kotlin 3 is now available as a replacement for Apollo Android.** [See the documentation](https://www.apollographql.com/docs/kotlin/) including a [migration guide](https://www.apollographql.com/docs/kotlin/migration/3.0) from v2. Please [report any issues](https://github.com/apollographql/apollo-android/issues/new/choose)!
 
 Apollo Android is a GraphQL client that generates Java and Kotlin models from GraphQL queries. These models give you a type-safe API to work with GraphQL servers.  Apollo helps you keep your GraphQL query statements together, organized, and easy to access.
 
