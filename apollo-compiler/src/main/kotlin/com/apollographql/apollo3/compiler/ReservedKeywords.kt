@@ -15,14 +15,21 @@ fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_
 // Does nothing. KotlinPoet will add the backticks
 fun String.escapeKotlinReservedWord() = this
 
-fun String.escapeKotlinReservedEnumValueNames(): String {
+fun String.escapeTypeReservedWord(): String {
   return when {
-    // https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
-    "(?:name|ordinal)_*".toRegex().matches(this) -> "${this}_"
-    // "header" and "impl" are added to this list because of https://youtrack.jetbrains.com/issue/KT-52315
-    this in arrayOf("header", "impl") -> "`${this}`"
-    else -> this
+    // type is forbidden because we use it as a companion property to hold the CompiledType
+    // See https://github.com/apollographql/apollo-kotlin/issues/4293
+    "(?:type)_*".toRegex().matches(this) -> "${this}_"
+    else -> escapeKotlinReservedWord()
   }
 }
 
-internal fun String.isApolloReservedEnumValueName() = this == "type"
+
+fun String.escapeKotlinReservedEnumValueNames(): String {
+  return when {
+    // name and ordinal are forbidden because already used in Kotlin
+    // See https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
+    "(?:name|ordinal)_*".toRegex().matches(this) -> "${this}_"
+    else -> escapeTypeReservedWord()
+  }
+}
