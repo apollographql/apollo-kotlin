@@ -15,21 +15,25 @@ fun String.escapeJavaReservedWord() = if (this in JAVA_RESERVED_WORDS) "${this}_
 // Does nothing. KotlinPoet will add the backticks
 fun String.escapeKotlinReservedWord() = this
 
-fun String.escapeTypeReservedWord(): String {
+internal fun String.escapeTypeReservedWord(): String? {
   return when {
     // type is forbidden because we use it as a companion property to hold the CompiledType
     // See https://github.com/apollographql/apollo-kotlin/issues/4293
     "(?:type)_*".toRegex().matches(this) -> "${this}_"
-    else -> escapeKotlinReservedWord()
+    else -> null
   }
 }
 
 
-fun String.escapeKotlinReservedEnumValueNames(): String {
+fun String.escapeKotlinReservedWordInEnum(): String {
   return when {
     // name and ordinal are forbidden because already used in Kotlin
     // See https://kotlinlang.org/docs/enum-classes.html#working-with-enum-constants:~:text=properties%20for%20obtaining%20its%20name%20and%20position
     "(?:name|ordinal)_*".toRegex().matches(this) -> "${this}_"
-    else -> escapeTypeReservedWord()
+    else -> escapeTypeReservedWord() ?: escapeKotlinReservedWord()
   }
+}
+
+fun String.escapeKotlinReservedWordInSealedClass(): String {
+  return escapeTypeReservedWord() ?: escapeKotlinReservedWord()
 }

@@ -192,8 +192,9 @@ public final class com/apollographql/apollo3/compiler/PackageNameGenerator$Flat 
 
 public final class com/apollographql/apollo3/compiler/ReservedKeywordsKt {
 	public static final fun escapeJavaReservedWord (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun escapeKotlinReservedEnumValueNames (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun escapeKotlinReservedWord (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun escapeKotlinReservedWordInEnum (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun escapeKotlinReservedWordInSealedClass (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/Roots {
