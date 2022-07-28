@@ -24,11 +24,6 @@ public final class com/apollographql/apollo3/testing/RunTestKt {
 public final class com/apollographql/apollo3/testing/TestNetworkTransportKt {
 }
 
-public final class com/apollographql/apollo3/testing/internal/RunTestBlockingKt {
-	public static final fun runTestBlocking (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)V
-	public static synthetic fun runTestBlocking$default (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
-}
-
 public final class com/apollographql/apollo3/testing/internal/RunTestKt {
 }
 
