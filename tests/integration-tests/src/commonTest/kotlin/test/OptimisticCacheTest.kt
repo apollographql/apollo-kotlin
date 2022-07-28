@@ -22,7 +22,6 @@ import com.apollographql.apollo3.integration.normalizer.type.ReviewInput
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.internal.runTestBlocking
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.channels.Channel
@@ -200,7 +199,7 @@ class OptimisticCacheTest {
   }
 
   @Test
-  fun mutation_and_query_watcher() = runTestBlocking(before = { setUp() }, after = { tearDown() }) {
+  fun mutation_and_query_watcher() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(testFixtureToUtf8("ReviewsEmpireEpisodeResponse.json"))
     val channel = Channel<ReviewsByEpisodeQuery.Data?>()
     val job = launch {

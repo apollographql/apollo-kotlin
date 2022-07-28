@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.internal.runTestBlocking
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import okio.Buffer
@@ -55,7 +54,7 @@ class QueryBatchingTest {
   }
 
   @Test
-  fun queriesAreBatchedByDefault() = runTestBlocking(before = { setUp() }, after = { tearDown() }) {
+  fun queriesAreBatchedByDefault() = runTest(before = { setUp() }, after = { tearDown() }) {
     val response = """
     [{"data":{"launch":{"id":"83"}}},{"data":{"launch":{"id":"84"}}}]
     """.trimIndent()
@@ -94,7 +93,7 @@ class QueryBatchingTest {
   }
 
   @Test
-  fun queriesAreNotBatchedIfSubmittedFarAppart() = runTestBlocking(before = { setUp() }, after = { tearDown() }) {
+  fun queriesAreNotBatchedIfSubmittedFarAppart() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""[{"data":{"launch":{"id":"83"}}}]""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()

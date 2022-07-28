@@ -17,7 +17,6 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
-import com.apollographql.apollo3.testing.internal.runTestBlocking
 import com.apollographql.apollo3.testing.receiveOrTimeout
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -104,7 +103,7 @@ class WatcherErrorHandlingTest {
   }
 
   @Test
-  fun refetchIgnoreAllErrors() = runTestBlocking(before = { setUp() }, after = { tearDown() }) {
+  fun refetchIgnoreAllErrors() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
@@ -176,7 +175,7 @@ class WatcherErrorHandlingTest {
   }
 
   @Test
-  fun refetchThrows() = runTestBlocking(before = { setUp() }, after = { tearDown() }) {
+  fun refetchThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)

@@ -7,7 +7,7 @@ import kotlinx.coroutines.promise
 import kotlin.coroutines.CoroutineContext
 
 @OptIn(DelicateCoroutinesApi::class)
-actual fun runTestBlocking(
+internal actual fun runTestBlocking(
     context: CoroutineContext,
     before: suspend CoroutineScope.() -> Unit,
     after: suspend CoroutineScope.() -> Unit,

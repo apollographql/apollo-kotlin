@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext
 
-actual fun runTestBlocking(
+internal actual fun runTestBlocking(
     context: CoroutineContext,
     before: suspend CoroutineScope.() -> Unit,
     after: suspend CoroutineScope.() -> Unit,
