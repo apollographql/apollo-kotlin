@@ -3,7 +3,6 @@ package com.apollographql.apollo3.testing
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_4_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.testing.internal.runTestBlocking
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -17,5 +16,5 @@ fun runTest(
     after: suspend CoroutineScope.() -> Unit = {},
     block: suspend CoroutineScope.() -> Unit,
 ) {
-  runTestBlocking(context, before, after, block)
+  com.apollographql.apollo3.testing.internal.runTest(skipDelays = false, context, before, after, block)
 }

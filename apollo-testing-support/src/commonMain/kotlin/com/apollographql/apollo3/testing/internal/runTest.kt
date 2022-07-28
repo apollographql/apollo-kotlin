@@ -30,13 +30,18 @@ fun runTest(
       }
     }
   } else {
-    runTestBlocking(context, before, after, block)
+    runBlockingOrPromise(context) {
+      before()
+      try {
+        block()
+      } finally {
+        after()
+      }
+    }
   }
 }
 
-internal expect fun runTestBlocking(
+internal expect fun runBlockingOrPromise(
     context: CoroutineContext = EmptyCoroutineContext,
-    before: suspend CoroutineScope.() -> Unit = {},
-    after: suspend CoroutineScope.() -> Unit = {},
     block: suspend CoroutineScope.() -> Unit,
 )

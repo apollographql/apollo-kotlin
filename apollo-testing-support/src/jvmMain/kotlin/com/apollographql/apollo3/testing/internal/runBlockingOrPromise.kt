@@ -4,16 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.CoroutineContext
 
-internal actual fun runTestBlocking(
+internal actual fun runBlockingOrPromise(
     context: CoroutineContext,
-    before: suspend CoroutineScope.() -> Unit,
-    after: suspend CoroutineScope.() -> Unit,
     block: suspend CoroutineScope.() -> Unit,
-) = runBlocking(context) {
-  before()
-  try {
-    block()
-  } finally {
-    after()
-  }
-}
+) = runBlocking(context, block)
