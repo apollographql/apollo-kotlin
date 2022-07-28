@@ -1,5 +1,7 @@
 import JapiCmp.configureJapiCmp
+import kotlinx.validation.sourceSets
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 buildscript {
   repositories {
@@ -169,6 +171,15 @@ repositories {
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
   outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
+}
+
+allprojects {
+  tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaTask>().configureEach {
+    pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
+      customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+      customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+    }
+  }
 }
 
 tasks.named("dependencyUpdates").configure {
