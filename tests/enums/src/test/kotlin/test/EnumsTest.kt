@@ -2,6 +2,8 @@ package test
 
 import enums.type.Direction
 import enums.type.Foo
+import enums.type.FooEnum
+import enums.type.FooSealed
 import enums.type.Gravity
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -14,7 +16,7 @@ class EnumsTest {
     assertEquals(Direction.UNKNOWN__, Direction.safeValueOf("newDirection"))
     assertEquals(Direction.name_, Direction.safeValueOf("name"))
     assertEquals(Direction.ordinal_, Direction.safeValueOf("ordinal"))
-    assertEquals(Direction.type_, Direction.safeValueOf("type"))
+    assertEquals(Direction.type__, Direction.safeValueOf("type"))
   }
 
   @Test
@@ -24,12 +26,20 @@ class EnumsTest {
     assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
-    assertEquals(Gravity.type_, Gravity.safeValueOf("type"))
+    assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
   }
 
   @Test
   fun headerAndImpl() {
     assertEquals(Foo.header.rawValue, "header")
+  }
+
+  @Test
+  fun type() {
+    assertEquals(Direction.type__, Direction.safeValueOf("type"))
+    assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
+    assertEquals(FooSealed.type_, FooSealed.safeValueOf("type"))
+    assertEquals(FooEnum.type_, FooEnum.safeValueOf("type"))
   }
 
   @Test
@@ -47,7 +57,7 @@ class EnumsTest {
             Gravity.RIGHT,
             Gravity.name,
             Gravity.ordinal,
-            Gravity.type_,
+            Gravity.type__,
         ).toList(),
         Gravity.knownValues().toList()
     )

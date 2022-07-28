@@ -8,5 +8,5 @@ enum Enum {
     NORTH
     SOUTH
 
-    type @targetName(name: "type_")
+    type
 }

@@ -13,7 +13,7 @@ enum Gravity {
   is
 
   # a name that clashes with the generated `type` constant
-  type @targetName(name: "type_")
+  type
 
   # an enum value that clashes with the rawValue type
   String

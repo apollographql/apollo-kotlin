@@ -11,5 +11,5 @@ dependencies {
 
 apollo {
   packageName.set("enums")
-  sealedClassesForEnumsMatching.set(listOf(".*avity"))
+  sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed"))
 }

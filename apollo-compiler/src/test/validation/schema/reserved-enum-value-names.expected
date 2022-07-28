@@ -1,14 +1,5 @@
-ERROR: ReservedEnumValueName (6:2)
-'type' is a reserved enum value name, please use the @targetName directive to specify a target name
-------------
-ERROR: ReservedEnumValueName (10:2)
-'type' is a reserved enum value name, please use a different name
-------------
-ERROR: ReservedEnumValueName (14:2)
-'type' is a reserved enum value name, please use a different name
-------------
-ERROR: ReservedEnumValueName (19:2)
+ERROR: ReservedEnumValueName (11:2)
 'foo' is already defined in this enum, please use a different name
 ------------
-ERROR: ReservedEnumValueName (24:2)
+ERROR: ReservedEnumValueName (16:2)
 'bar' is already defined in this enum, please use a different name

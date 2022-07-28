@@ -2,6 +2,8 @@ type Query {
   direction: Direction
   gravity: Gravity
   foo: Foo
+  fooSealed: FooSealed
+  fooEnum: FooEnum
 }
 
 enum Direction {
@@ -11,7 +13,7 @@ enum Direction {
   EAST,
   WEST,
 
-  # Clashes, must be renamed in extra.graphqls
+  # renamed in extra.graphqls
   type,
 
   # Value names should be escaped with _ suffixes when generating enums
@@ -33,7 +35,7 @@ enum Gravity {
   name,
   ordinal,
 
-  # Clashes, must be renamed in extra.graphqls
+  # renamed in extra.graphqls
   type,
 }
 
@@ -41,4 +43,14 @@ enum Gravity {
 enum Foo {
   header,
   footer,
+}
+
+enum FooEnum {
+  # not renamed in extra.graphqls, will be renamed automatically
+  type,
+}
+
+enum FooSealed {
+  # not renamed in extra.graphqls, will be renamed automatically
+  type,
 }

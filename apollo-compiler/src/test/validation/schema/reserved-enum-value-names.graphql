@@ -6,14 +6,6 @@ enum Enum {
   type
 }
 
-enum Enum2 {
-  type @targetName(name: "type")
-}
-
-enum Enum3 {
-  foo @targetName(name: "type")
-}
-
 enum Enum4 {
   foo
   bar @targetName(name: "foo")
