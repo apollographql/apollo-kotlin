@@ -18,6 +18,7 @@ dependencies {
   implementation(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
   implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
   implementation(groovy.util.Eval.x(project, "x.dep.dokka"))
+  implementation(groovy.util.Eval.x(project, "x.dep.dokkaBase"))
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741

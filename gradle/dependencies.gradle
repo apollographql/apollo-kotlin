@@ -49,7 +49,8 @@ ext.dep = [
     benManesVersions: "com.github.ben-manes:gradle-versions-plugin:0.33.0",
     binaryCompatibilityValidator: "org.jetbrains.kotlinx:binary-compatibility-validator:0.10.1",
     clikt: "com.github.ajalt.clikt:clikt:3.4.0",
-    dokka: "org.jetbrains.dokka:dokka-gradle-plugin:1.5.0",
+    dokka: "org.jetbrains.dokka:dokka-gradle-plugin:1.7.10",
+    dokkaBase: "org.jetbrains.dokka:dokka-base:1.7.10",
     gr8: "com.gradleup:gr8-plugin:0.4",
     /**
      * See https://github.com/gradle/gradle/issues/1835
