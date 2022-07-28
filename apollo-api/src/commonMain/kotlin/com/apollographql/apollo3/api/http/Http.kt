@@ -151,7 +151,7 @@ private constructor(
      * An immutable body.
      * Prefer [bodySource] so that the response can be streamed.
      */
-    @Deprecated("Use body(BufferedSource) instead", ReplaceWith("body(bodySource)"))
+    @Deprecated("Use body(BufferedSource) instead", ReplaceWith("Buffer().write(bodyString)", "okio.Buffer"))
     @ApolloDeprecatedSince(v3_4_1)
     fun body(bodyString: ByteString) = apply {
       check(!hasBody) { "body() can only be called once" }
