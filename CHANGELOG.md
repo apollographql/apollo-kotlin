@@ -1,6 +1,31 @@
 Change Log
 ==========
 
+# Version TODO 
+
+_TODO_
+
+TODO
+
+## 💙️ External contributors
+
+TODO
+
+## 🚧 [(slightly) breaking] Automatic detection of `type` enum values.
+
+If you have an enum with a `type` value, this value used to name clash with the generated `type` property. This version now detects this case automatically and escapes `type` to `type_`. If you had previously used `@targetName` to workaround this issue, you can now remove it to avoid it being escaped twice:
+
+```graphql 
+# Remove this
+extend enum SomeEnum {
+  type @targetName(name: "type_")
+}
+```
+
+## 👷‍ All changes
+
+TODO
+
 # Version 3.4.0
 
 _2022-07-11_
