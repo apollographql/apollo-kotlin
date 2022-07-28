@@ -7,7 +7,8 @@ A tentative high level overview of what threads are used and why we came to this
 * Minimize number of threads and context changes
 
 ### Non-goals
-* Atomic cache requests (see the [detailed explanation](#non-goal-atomic-cached-requests) at the end of this document). 
+* Atomic cache requests (see the [detailed explanation](#appendix-1-non-goal-atomic-cached-requests) at the end of this
+  document).
 * Multi-threaded coroutines on native.
 * JS is out of scope so far. It _should_ be easier since it's single threaded but it's left out for now.
 * Linux/Windows is also out of scope. 
@@ -35,11 +36,13 @@ If everything were immutable, we could run each request on a separate thread and
 * HTTP2 connection state with HTTP2 multiplexing, some state is needed there
 * ResponseAdapterCache: This currently caches the `ResponseAdapters` so that they don't have to lookup their field `ResponseAdapters`. The fact that this is mutable and that it doesn't work for recursive models encourages to remove that behaviour and look up the custom scalar adapters every time.
 
-**On the JVM**, synchronization is typically done using locks (or read-write locks for better granularity). 
+**On the JVM**, synchronization is typically done using locks (or read-write locks for better granularity).
 
-**On native**, that doesn't work as mutable data cannot be touched by multiple threads. Synchronization is usually done using a separate isolated thread as in [Stately](https://github.com/touchlab/Stately) or using the primitive [AtomicReference](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.native.concurrent/-atomic-reference/) (or the higher level [atomicfu](https://github.com/Kotlin/kotlinx.atomicfu) that works in multiplatform code). 
+**On native**, with the [new Memory Manager](https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md),
+it is now also possible to mutate states from different threads,
+and [atomicfu](https://github.com/Kotlin/kotlinx.atomicfu) offers locks that work in multiplatform code.
 
-The section below discuss what to use in what situation, starting the bigger constraints.
+The section below discuss what to use in what situation, starting with the bigger constraints.
 
 ## Why coroutines in interceptors?
 
@@ -51,15 +54,21 @@ That last point is important. While cancellation could be implemented manually, 
 
 ## Sync vs Async HTTP requests
 
-**On iOS**, there isn't much choice as NSURLSession only has an async API. While that could theoretically be made synchronous using semaphores, it is hard to do so because that would most likely have to be written in Objective-C. Also that would mean that we pay the context switching price in all cases and also that keeps a thread waiting just doing nothing so a coroutine is way more efficient there. 
+**On iOS**, there isn't much choice as NSURLSession only has an async API. While that could theoretically be made
+synchronous using semaphores, it is hard to do so because that would most likely have to be written in Objective-C. Also
+that would mean that we pay the context switching price in all cases and also that keeps a thread waiting just doing
+nothing so a coroutine is way more efficient there.
 
-The `NSURLSession` takes a queue to dispatch to as a parameter. If we want to use a coroutine to wait on the call, that means the coroutine will have to execute on that queue (because coroutines cannot change thread sunless using `coroutines-mt`, which is out of scope so far). An easy to use queue is the main queue. Doing this means **the request coroutine will run on the main thread on iOS**
-
-**On the JVM**, there are less restrictions. OkHttp has as `synchronous` API that could potentially avoid a context switch. One pitfall is cancellation as it would have to happen from a separate thread but that might actually work. Not reusing the OkHttp threadpool means that it won't be able to be shared with other OkHttp clients but since GraphQL usually connects to a single host, it's not clear what would be shared there.
+**On the JVM**, there are less restrictions. OkHttp has as `synchronous` API that could potentially avoid a context
+switch. One pitfall is cancellation as it would have to happen from a separate thread but that might actually work. Not
+reusing the OkHttp threadpool means that it won't be able to be shared with other OkHttp clients but since GraphQL
+usually connects to a single host, it's not clear what would be shared there.
 
 ## Sync vs Async Cache
 
-**On iOS**, here as well, there isn't much choice as the cache is fundamentally mutable and will need to be run from its own thread. The difference with NSURLSession is that we have more control over where the callback happens. We can decide the thread where the work and callback happen. So we're theoretically not limited to main thread (but since HTTP forces the coroutine to run on the main thread, it will happen there.
+**On iOS**, here as well, there isn't much choice as the cache is fundamentally mutable and will need to be run from its
+own thread. The difference with NSURLSession is that we have more control over where the callback happens. We can decide
+the thread where the work and callback happen.
 
 **On the JVM**, the traditional way to do this would involve ReadWriteLock. ReadWriteLock allow:
 * concurrent reads to the DB
@@ -94,65 +103,7 @@ With all that, the typical flows should be:
     
 Note that plumbing above contains potentially not-cheap operations like normalization or serializing variables.
 
-
-## Appendix-1 Implementation notes
-
-On K/N, the `Stately Isolate` pattern seems to be the way to go. See https://dev.to/touchlab/kotlin-native-isolated-state-50l1 for more details. It has a certain cost and doesn't allow ReadWrite locks for an example so we might want to delegate to something else on the JVM:
-
-``` kotlin
-interface SharedState<T> {
-  fun write(block: (T) -> Unit)
-  fun <R> read(block: (T) -> R): R
-  fun dispose()
-}
-
-class JvmReadWriteSharedState<T>(producer: () -> T): SharedState<T> {
-  private val lock = ReentrantReadWriteLock()
-  private val state: T = producer()
-
-  override fun write(block: (T) -> Unit) = lock.write {
-    block(state)
-  }
-  override fun <R> read(block: (T) -> R): R = lock.read {
-    block(state)
-  }
-  override fun dispose() {}
-}
-
-class JvmSerialSharedState<T>(producer: () -> T): SharedState<T> {
-  private val executor = Executors.newSingleThreadExecutor()
-  private val state: T = producer()
-
-  override fun write(block: (T) -> Unit){
-    executor.submit { block(state) }
-  }
-  override fun <R> read(block: (T) -> R): R = executor.submit(
-    Callable {
-      block(state)
-    }
-  ).get()
-
-  override fun dispose() {
-    executor.shutdown()
-  }
-}
-
-class NativeSerialSharedState<T>(producer: () -> T): SharedState<T> {
-  private val isoState = IsolateState(producer())
-
-  // Could be changed to Fire & Forget
-  override fun write(block: (T) -> Unit) = isoState.access { block(it) }
-  override fun <R> read(block: (T) -> R): R = isoState.access { block(it) }
-
-  override fun dispose() {
-    isoState.shutdown()
-  }
-}
-```
-
-
-
-## Appendix-2 Non-goal: Atomic Cached Requests
+## Appendix-1 Non-goal: Atomic Cached Requests
 
 
 Apollo Kotlin has no concept of "Atomic request". Launching the same request twice in a row will most likely end up in the request being sent to the network twice even if the first one will ultimately cache it (but this is not guaranteed either):
