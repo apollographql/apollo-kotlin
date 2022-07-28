@@ -5,6 +5,7 @@ plugins {
 
 kotlin {
   configureAppleTargets("iosArm64", "iosX64")
+  enableNewMemoryManager()
   sourceSets {
     val commonMain by getting {
       dependencies {

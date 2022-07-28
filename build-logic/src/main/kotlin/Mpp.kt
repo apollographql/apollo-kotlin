@@ -46,6 +46,8 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
     )
 
     addTestDependencies(withJs)
+
+    enableNewMemoryManager()
   }
 }
 
@@ -153,7 +155,7 @@ fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
 }
 
 // See https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md
-private fun KotlinMultiplatformExtension.enableNewMemoryManager() {
+fun KotlinMultiplatformExtension.enableNewMemoryManager() {
   targets.withType(KotlinNativeTarget::class.java) { target ->
     target.binaries.all { binary ->
       binary.binaryOptions["memoryModel"] = "experimental"
