@@ -23,19 +23,19 @@ expect fun currentThreadId(): String
 @ApolloInternal
 expect fun currentThreadName(): String
 
-@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
+@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_4_1)
 expect fun ensureNeverFrozen(@Suppress("UNUSED_PARAMETER") obj: Any)
 
-@Deprecated("With the new Memory Manager this method is no longer needed and always return false", ReplaceWith("false"), level = DeprecationLevel.HIDDEN)
+@Deprecated("With the new Memory Manager this method is no longer needed and always return false", ReplaceWith("false"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_4_1)
 expect fun isFrozen(@Suppress("UNUSED_PARAMETER") obj: Any): Boolean
 
-@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
+@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_4_1)
 expect fun freeze(@Suppress("UNUSED_PARAMETER") obj: Any)
 
-@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.HIDDEN)
+@Deprecated("With the new Memory Manager this method is no longer needed and is a no-op", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_4_1)
 expect fun assertMainThreadOnNative()
 
