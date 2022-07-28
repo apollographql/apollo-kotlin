@@ -43,9 +43,8 @@ internal class DefaultApolloStore(
 
   override val changedKeys = changedKeysEvents.asSharedFlow()
 
-  private val cacheHolder = Guard("OptimisticCache") {
-    OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
-  }
+  private val cache: OptimisticCache = OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
+  private val lock = Lock()
 
   override suspend fun publish(keys: Set<String>) {
     if (keys.isEmpty()) {
@@ -56,8 +55,8 @@ internal class DefaultApolloStore(
   }
 
   override fun clearAll(): Boolean {
-    cacheHolder.writeAndForget {
-      it.clearAll()
+    lock.write {
+      cache.clearAll()
     }
     return true
   }
@@ -66,8 +65,8 @@ internal class DefaultApolloStore(
       cacheKey: CacheKey,
       cascade: Boolean,
   ): Boolean {
-    return cacheHolder.writeAccess {
-      it.remove(cacheKey, cascade)
+    return lock.write {
+      cache.remove(cacheKey, cascade)
     }
   }
 
@@ -75,10 +74,10 @@ internal class DefaultApolloStore(
       cacheKeys: List<CacheKey>,
       cascade: Boolean,
   ): Int {
-    return cacheHolder.writeAccess {
+    return lock.write {
       var count = 0
       for (cacheKey in cacheKeys) {
-        if (it.remove(cacheKey, cascade = cascade)) {
+        if (cache.remove(cacheKey, cascade = cascade)) {
           count++
         }
       }
@@ -104,7 +103,7 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    return cacheHolder.readAccess { cache ->
+    return lock.read {
       operation.readDataFromCacheInternal(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
@@ -121,7 +120,7 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       cacheHeaders: CacheHeaders,
   ): D {
-    return cacheHolder.readAccess { cache ->
+    return lock.read {
       fragment.readDataFromCacheInternal(
           customScalarAdapters = customScalarAdapters,
           cache = cache,
@@ -137,7 +136,7 @@ internal class DefaultApolloStore(
     /**
      * We don't know how the cache is going to be used, assume write access
      */
-    return cacheHolder.writeAccess(block)
+    return lock.write { block(cache) }
   }
 
   override suspend fun <D : Operation.Data> writeOperation(
@@ -164,7 +163,7 @@ internal class DefaultApolloStore(
       cacheHeaders: CacheHeaders,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.writeAccess { cache ->
+    val changedKeys = lock.write {
       val records = fragment.normalize(
           data = fragmentData,
           customScalarAdapters = customScalarAdapters,
@@ -190,7 +189,7 @@ internal class DefaultApolloStore(
       publish: Boolean,
       customScalarAdapters: CustomScalarAdapters,
   ): Pair<Set<Record>, Set<String>> {
-    val (records, changedKeys) = cacheHolder.writeAccess { cache ->
+    val (records, changedKeys) = lock.write {
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
@@ -215,7 +214,7 @@ internal class DefaultApolloStore(
       customScalarAdapters: CustomScalarAdapters,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.writeAccess { cache ->
+    val changedKeys = lock.write {
       val records = operation.normalize(
           data = operationData,
           customScalarAdapters = customScalarAdapters,
@@ -246,7 +245,7 @@ internal class DefaultApolloStore(
       mutationId: Uuid,
       publish: Boolean,
   ): Set<String> {
-    val changedKeys = cacheHolder.writeAccess { cache ->
+    val changedKeys = lock.write {
       cache.removeOptimisticUpdates(mutationId)
     }
 
@@ -258,20 +257,18 @@ internal class DefaultApolloStore(
   }
 
   suspend fun merge(record: Record, cacheHeaders: CacheHeaders): Set<String> {
-    return cacheHolder.writeAccess { cache ->
+    return lock.write {
       cache.merge(record, cacheHeaders, recordMerger)
     }
   }
 
   override suspend fun dump(): Map<KClass<*>, Map<String, Record>> {
-    return cacheHolder.readAccess { cache ->
+    return lock.read {
       cache.dump()
     }
   }
 
-  override fun dispose() {
-    cacheHolder.dispose()
-  }
+  override fun dispose() {}
 
   companion object {
     private fun <D : Executable.Data> Executable<D>.readDataFromCacheInternal(
@@ -289,6 +286,7 @@ internal class DefaultApolloStore(
             cacheResolver,
             cacheHeaders
         )
+
         is ApolloResolver -> readDataFromCache(
             cacheKey,
             customScalarAdapters,
@@ -296,6 +294,7 @@ internal class DefaultApolloStore(
             cacheResolver,
             cacheHeaders
         )
+
         else -> throw IllegalStateException()
       }
     }
