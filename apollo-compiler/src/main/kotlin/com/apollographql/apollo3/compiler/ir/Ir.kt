@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.api.BTerm
+import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.containsPossibleTypes
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -9,11 +10,11 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 
-/*
-* IR.
+/**
+* Intermediate representation (IR)
 *
 * Compared to the GraphQL AST, the IR:
-* - Transforms [GQLField] into [IrProperty] and [IrModel]
+* - Transforms [com.apollographql.apollo3.ast.GQLField] into [IrProperty] and [IrModel]
 * - moves @include/@skip directives on inline fragments and object fields to their children selections
 * - interprets @deprecated directives
 * - coerces argument values and resolves defaultValue
@@ -55,9 +56,8 @@ internal data class IrEnum(
  * An input field
  *
  * Note: [IrInputField], and [IrVariable] are all very similar since they all share
- * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type, but they also
- * have differences which is why they are different IR models:
- * - [IrVariable] doesn't have a description
+ * the [com.apollographql.apollo3.ast.GQLInputValueDefinition] type, but [IrVariable]
+ * so they are modeled differently in the [Ir]
  */
 internal data class IrInputField(
     val name: String,
@@ -68,22 +68,68 @@ internal data class IrInputField(
     val defaultValue: IrValue?,
 )
 
-/**
- * @param sourceWithFragments the executableDocument
- */
 internal data class IrOperation(
     val name: String,
     val operationType: IrOperationType,
     val typeCondition: String,
     val variables: List<IrVariable>,
     val description: String?,
-    val selections: List<GQLSelection>,
+    val gqlSelections: List<GQLSelection>,
+    val selectionSets: List<IrSelectionSet>,
+    /**
+     * the executableDocument sent to the server
+     */
     val sourceWithFragments: String,
     val filePath: String,
     val responseBasedDataModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
 )
+
+internal data class IrSelectionSet(
+    /**
+     * a name for this [IrSelectionSet]. This name is unique across all [IrSelectionSet] for a given operation/fragment definition
+     */
+    val name: String,
+    /**
+     * true if this is the root selection set for this operation/fragment definition
+     */
+    val isRoot: Boolean,
+    val selections: List<IrSelection>
+)
+
+internal sealed interface IrSelection
+
+internal data class IrField(
+    val name: String,
+    val alias: String?,
+    val type: IrType,
+    val condition: BooleanExpression<BVariable>,
+    val arguments: List<IrArgument>,
+    val selectionSetName: String?,
+): IrSelection
+
+internal data class IrArgument(
+    val name: String,
+    val value: IrValue,
+    val isKey: Boolean = false,
+    val isPagination: Boolean = false,
+)
+
+internal data class IrFragment(
+    val typeCondition: String,
+    val possibleTypes: Set<String>,
+    val condition: BooleanExpression<BVariable>,
+    /**
+     * The name of the [IrSelectionSet] that contains the [IrSelection] for this inline fragment
+     * or null for fragments spreads (because the [IrSelectionSet] is defined in the fragment
+     */
+    val selectionSetName: String?,
+    /**
+     * The name of the fragment for fragment spreads or null for inline fragments
+     */
+    val name: String?
+): IrSelection
 
 internal data class IrNamedFragment(
     val name: String,
@@ -96,6 +142,7 @@ internal data class IrNamedFragment(
     val variables: List<IrVariable>,
     val typeCondition: String,
     val selections: List<GQLSelection>,
+    val selectionSets: List<IrSelectionSet>,
     val interfaceModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,

@@ -33,7 +33,7 @@ internal class OperationSelectionsBuilder(
             allFragmentDefinitions = allFragmentDefinitions,
             schema = schema
         ).build(
-            selections = operation.selections,
+            selections = operation.gqlSelections,
             rootName = simpleName,
             parentType = operation.typeCondition
         )
