@@ -1037,6 +1037,12 @@ public final class com/apollographql/apollo3/ast/GqlvalueKt {
 	public static final fun coerceInSchemaContextOrThrow (Lcom/apollographql/apollo3/ast/GQLValue;Lcom/apollographql/apollo3/ast/GQLType;Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/ast/GQLValue;
 }
 
+public final class com/apollographql/apollo3/ast/InferredVariable {
+	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/GQLType;)V
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Lcom/apollographql/apollo3/ast/GQLType;
+}
+
 public abstract class com/apollographql/apollo3/ast/Issue {
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/ast/SourceLocation;Lcom/apollographql/apollo3/ast/Issue$Severity;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getMessage ()Ljava/lang/String;
