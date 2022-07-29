@@ -22,7 +22,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "I",
-          possibleTypes = (listOf("A", "B"))
+          possibleTypes = listOf("A", "B")
         ).selections(iFragmentSelections.__root)
         .build()
       )

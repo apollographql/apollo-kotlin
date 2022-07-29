@@ -34,7 +34,7 @@ internal class CompiledSelectionsBuilder(
   }
 
   private fun IrSelectionSet.fieldSpec(): FieldSpec {
-    val propertyName = if (isRoot) root else context.layout.compiledSelectionsName(name)
+    val propertyName = context.layout.compiledSelectionsName(name)
 
     return FieldSpec.builder(ParameterizedTypeName.get(JavaClassNames.List, JavaClassNames.CompiledSelection), propertyName)
         .initializer(selections.map { it.codeBlock() }.toListInitializerCodeblock(withNewLines = true))
@@ -63,7 +63,7 @@ internal class CompiledSelectionsBuilder(
       builder.add(".arguments($L)", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock())
     }
     if (selectionSetName != null) {
-      builder.add(".selections($L)", selectionSetName)
+      builder.add(".selections($L)", context.layout.compiledSelectionsName(selectionSetName))
     }
     builder.unindent()
     builder.add(".build()")
@@ -77,14 +77,14 @@ internal class CompiledSelectionsBuilder(
         "new $T($S, $L)",
         JavaClassNames.CompiledFragmentBuilder,
         typeCondition,
-        possibleTypes.map { CodeBlock.of(S, it) }.joinToCode(", ")
+        possibleTypes.map { CodeBlock.of(S, it) }.toListInitializerCodeblock(false)
     )
     builder.indent()
     if (condition !is BooleanExpression.True) {
       builder.add(".condition($L)", condition.toCompiledConditionInitializer())
     }
     if (selectionSetName != null) {
-      builder.add(".selections($L)", selectionSetName)
+      builder.add(".selections($L)", context.layout.compiledSelectionsName(selectionSetName))
     } else {
       check(name != null)
       builder.add(".selections($T.$root)", context.resolver.resolveFragmentSelections(name))

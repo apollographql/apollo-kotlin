@@ -23,37 +23,37 @@ public object SpreadMultipleWithDeferAndIncludeSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.__root)
-        .condition(listOf(CompiledCondition("cond1", false)))
+          possibleTypes = listOf("Droid")
+        ).condition(listOf(CompiledCondition("cond1", false)))
+        .selections(DroidDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.__root)
-        .condition(listOf(CompiledCondition("cond2", true)))
+          possibleTypes = listOf("Droid")
+        ).condition(listOf(CompiledCondition("cond2", true)))
+        .selections(DroidDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.__root)
-        .build(),
-        CompiledFragment.Builder(
-          typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(DroidDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(DroidDetailsSelections.__root)
-        .condition(listOf(CompiledCondition("cond3", false)))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
-        ).selections(DroidDetailsSelections.__root)
-        .condition(listOf(CompiledCondition("cond4", true)))
+          possibleTypes = listOf("Droid")
+        ).condition(listOf(CompiledCondition("cond3", false)))
+        .selections(DroidDetailsSelections.__root)
+        .build(),
+        CompiledFragment.Builder(
+          typeCondition = "Droid",
+          possibleTypes = listOf("Droid")
+        ).condition(listOf(CompiledCondition("cond4", true)))
+        .selections(DroidDetailsSelections.__root)
         .build()
       )
 

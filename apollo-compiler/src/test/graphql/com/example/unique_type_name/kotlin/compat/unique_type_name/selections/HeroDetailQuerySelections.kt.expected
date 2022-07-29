@@ -32,7 +32,7 @@ public object HeroDetailQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = (listOf("Droid", "Human"))
+          possibleTypes = listOf("Droid", "Human")
         ).selections(HeroDetailsSelections.__root)
         .build()
       )

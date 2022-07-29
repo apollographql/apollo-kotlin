@@ -38,17 +38,17 @@ public object TestQuerySelections {
           CompiledArgument.Builder("episode", CompiledVariable("episode")).build(),
           CompiledArgument.Builder("listOfInts", listOf(
             CompiledVariable("stars"),
-            CompiledVariable("stars"),
+            CompiledVariable("stars")
           )).build(),
           CompiledArgument.Builder("review", mapOf(
             "stars" to CompiledVariable("stars"),
             "favoriteColor" to mapOf(
               "red" to 0,
               "green" to CompiledVariable("greenValue"),
-              "blue" to 0,
+              "blue" to 0
             ),
             "booleanNonOptional" to false,
-            "listOfStringNonOptional" to emptyList<Nothing>(),
+            "listOfStringNonOptional" to emptyList<Nothing>()
           )).build()
         ))
         .selections(__heroWithReview)

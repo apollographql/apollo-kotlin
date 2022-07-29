@@ -21,12 +21,12 @@ public object aFragmentSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "ANode",
-          possibleTypes = (listOf("ANode"))
+          possibleTypes = listOf("ANode")
         ).selections(fragment1Selections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "ANode",
-          possibleTypes = (listOf("ANode"))
+          possibleTypes = listOf("ANode")
         ).selections(fragment2Selections.__root)
         .build()
       )

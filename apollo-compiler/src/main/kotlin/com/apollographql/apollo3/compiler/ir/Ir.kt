@@ -115,7 +115,7 @@ internal data class IrArgument(
 internal sealed interface IrTypeRef
 internal data class IrNonNullTypeRef(val ofType: IrTypeRef): IrTypeRef
 internal data class IrListTypeRef(val ofType: IrTypeRef): IrTypeRef
-internal data class IrNamedTypeRef(val ofType: IrTypeRef): IrTypeRef
+internal data class IrNamedTypeRef(val name: String): IrTypeRef
 
 internal data class IrFragment(
     val typeCondition: String,

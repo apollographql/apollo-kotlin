@@ -25,7 +25,7 @@ public object HeroDetailsSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(DroidDetailsSelections.__root)
         .build()
       )
@@ -64,7 +64,7 @@ public object HeroDetailsSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = (listOf("Human"))
+          possibleTypes = listOf("Human")
         ).selections(HumanDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(

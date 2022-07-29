@@ -24,17 +24,17 @@ public object SpreadMultipleWithDeferWithIfSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(CharacterDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(CharacterDetails2Selections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(CharacterDetails3Selections.__root)
         .build()
       )

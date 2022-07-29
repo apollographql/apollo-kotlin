@@ -23,12 +23,12 @@ public object AnimalQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Cat",
-          possibleTypes = (listOf("Cat"))
+          possibleTypes = listOf("Cat")
         ).selections(CatFragmentSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Dog",
-          possibleTypes = (listOf("Dog"))
+          possibleTypes = listOf("Dog")
         ).selections(DogFragmentSelections.__root)
         .build()
       )

@@ -17,7 +17,7 @@ import kotlin.collections.List
 public object
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections
     {
-  private val __heroAVeryAVeryAVeryAVeryAVeryAVeryAV: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type.notNull()
@@ -33,7 +33,7 @@ public object
         .arguments(listOf(
           CompiledArgument.Builder("episode", CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build()
         ))
-        .selections(__heroAVeryAVeryAVeryAVeryAVeryAVeryAV)
+        .selections(__hero)
         .build()
       )
 }

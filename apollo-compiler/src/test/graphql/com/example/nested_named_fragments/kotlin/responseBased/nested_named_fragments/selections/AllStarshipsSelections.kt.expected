@@ -26,7 +26,7 @@ public object AllStarshipsSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Starship",
-          possibleTypes = (listOf("Starship"))
+          possibleTypes = listOf("Starship")
         ).selections(starshipFragmentSelections.__root)
         .build()
       )

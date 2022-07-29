@@ -30,7 +30,7 @@ internal class CompiledSelectionsBuilder(
   }
 
   private fun IrSelectionSet.toPropertySpec(): PropertySpec {
-    val propertyName = if (isRoot) root else context.layout.compiledSelectionsName(name)
+    val propertyName = context.layout.compiledSelectionsName(name)
 
     return PropertySpec.builder(propertyName, KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledSelection))
         .initializer(selections.map { it.codeBlock() }.toListInitializerCodeblock(true))
@@ -63,10 +63,10 @@ internal class CompiledSelectionsBuilder(
       builder.add(".condition(%L)\n", condition.toCompiledConditionInitializer())
     }
     if (arguments.isNotEmpty()) {
-      builder.add(".arguments(%L)\n", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock())
+      builder.add(".arguments(%L)\n", arguments.sortedBy { it.name }.map { it.codeBlock() }.toListInitializerCodeblock(true))
     }
     if (selectionSetName != null) {
-      builder.add(".selections(%N)\n", selectionSetName)
+      builder.add(".selections(%N)\n", context.layout.compiledSelectionsName(selectionSetName))
     }
     builder.add(".build()")
 
@@ -78,20 +78,20 @@ internal class CompiledSelectionsBuilder(
     builder.add("%T(\n", KotlinSymbols.CompiledFragmentBuilder)
     builder.indent()
     builder.add("typeCondition·=·%S,\n", typeCondition)
-    builder.add("possibleTypes·=·%L\n", possibleTypes.map { CodeBlock.of("%S") }.joinToCode(", "))
+    builder.add("possibleTypes·=·%L\n", possibleTypes.map { CodeBlock.of("%S", it) }.toListInitializerCodeblock(false))
     builder.unindent()
     builder.add(")")
 
     if (condition !is BooleanExpression.True) {
       builder.add(".condition(%L)\n", condition.toCompiledConditionInitializer())
     }
-
     if (selectionSetName != null) {
-      builder.add(".selections(%N)\n", selectionSetName)
+      builder.add(".selections(%N)\n", context.layout.compiledSelectionsName(selectionSetName))
     } else {
       check (name != null)
       builder.add(".selections(%T.$root)\n", context.resolver.resolveFragmentSelections(name))
     }
+    builder.add(".build()")
 
     return builder.build()
   }

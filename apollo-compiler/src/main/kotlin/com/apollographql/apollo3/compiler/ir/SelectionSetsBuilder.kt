@@ -7,6 +7,7 @@ import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
@@ -21,7 +22,7 @@ internal class SelectionSetsBuilder(
     val schema: Schema,
     val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 ) {
-  private val usedNames = mutableSetOf<String>()
+  private val usedNames = mutableSetOf("root")
 
   private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String): String {
     var i = 0
@@ -35,7 +36,7 @@ internal class SelectionSetsBuilder(
   }
 
   fun build(gqlSelections: List<GQLSelection>, parentType: String): List<IrSelectionSet> {
-    return gqlSelections.walk("unused", true, parentType)
+    return gqlSelections.walk("root", true, parentType)
   }
 
   private class WalkResult(val self: IrSelection, val nested: List<IrSelectionSet>)
@@ -46,7 +47,11 @@ internal class SelectionSetsBuilder(
   private fun List<GQLSelection>.walk(name: String, isRoot: Boolean, parentType: String): List<IrSelectionSet> {
     val results = mapNotNull { it.walk(parentType) }
 
-    return listOf(IrSelectionSet(name, isRoot, results.map { it.self })) + results.flatMap { it.nested }
+    /**
+     * Order is important. The selection set will ultimately reference nested selection sets, so the nested need to come first
+     * to avoid the Kotlin compiler giving an error
+     */
+    return results.flatMap { it.nested } + IrSelectionSet(name, isRoot, results.map { it.self })
   }
 
   private fun GQLSelection.walk(parentType: String): WalkResult? {
@@ -89,15 +94,19 @@ internal class SelectionSetsBuilder(
               }
             },
             condition = expression,
-            selectionSetName = selectionSetName
+            selectionSetName = if (selectionSet != null) selectionSetName else null
         ),
         nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.leafType().name).orEmpty()
     )
   }
 
+  /**
+   * This doesn't register the used types like [IrBuilder.toIr] but since it's going through the same AST, that's not a bad thing
+   */
   private fun GQLType.toIrTypeRef(): IrTypeRef = when(this) {
     is GQLNonNullType -> IrNonNullTypeRef(this.type.toIrTypeRef())
-    is GQLListType
+    is GQLListType -> IrListTypeRef(type.toIrTypeRef())
+    is GQLNamedType -> IrNamedTypeRef(name)
   }
 
   private fun GQLInlineFragment.walk(): WalkResult? {

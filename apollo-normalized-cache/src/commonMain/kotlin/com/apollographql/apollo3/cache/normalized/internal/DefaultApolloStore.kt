@@ -201,6 +201,7 @@ internal class DefaultApolloStore(
           cacheKeyGenerator = objectIdGenerator
       )
 
+      records.flatMap { it.value.fieldKeys() }
       records to cache.merge(records.values.toList(), cacheHeaders)
     }
     if (publish) {
