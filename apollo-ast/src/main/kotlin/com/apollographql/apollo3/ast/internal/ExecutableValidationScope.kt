@@ -138,7 +138,7 @@ internal class ExecutableValidationScope(
     } else if (this !is GQLNonNullType && other is GQLNonNullType) {
       this.mergeWith(other.type)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
     } else if (this is GQLListType && other is GQLListType) {
-      this.type.mergeWith(other.type)
+      this.type.mergeWith(other.type)?.let { GQLListType(SourceLocation.UNKNOWN, it) }
     } else if (this is GQLListType && other !is GQLListType) {
       null
     } else if (this !is GQLListType && other is GQLListType) {
