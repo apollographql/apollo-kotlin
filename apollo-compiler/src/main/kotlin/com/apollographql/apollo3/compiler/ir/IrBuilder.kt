@@ -172,7 +172,6 @@ internal class IrBuilder(
         objects = objects,
         interfaces = interfaces,
         unions = unions,
-        allFragmentDefinitions = allFragmentDefinitions,
         schema = schema
     )
   }
@@ -361,8 +360,7 @@ internal class IrBuilder(
         operationType = operationType.toIrOperationType(),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        gqlSelections = selectionSet.selections,
-        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions) { toIr() }.build(selectionSet.selections, typeDefinition.name),
+        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeDefinition.name),
         sourceWithFragments = sourceWithFragments,
         filePath = sourceLocation.filePath!!,
         dataProperty = dataProperty,
@@ -378,7 +376,7 @@ internal class IrBuilder(
     else -> error("unknown operation $this")
   }
 
-  private fun GQLFragmentDefinition.toIr(): IrNamedFragment {
+  private fun GQLFragmentDefinition.toIr(): IrFragmentDefinition {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
 
     val variableDefinitions = inferVariables(schema, allFragmentDefinitions)
@@ -391,14 +389,13 @@ internal class IrBuilder(
         fragmentName = name
     )
 
-    return IrNamedFragment(
+    return IrFragmentDefinition(
         name = name,
         description = description,
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        selections = selectionSet.selections,
-        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions) { toIr() }.build(selectionSet.selections, typeCondition.name),
+        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeCondition.name),
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,

@@ -5,13 +5,13 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class FragmentDataAdapterBuilder(
     val context: JavaContext,
-    val fragment: IrNamedFragment,
+    val fragment: IrFragmentDefinition,
     val flatten: Boolean,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
@@ -37,7 +37,7 @@ internal class FragmentDataAdapterBuilder(
     )
   }
 
-  private fun IrNamedFragment.responseAdapterTypeSpec(): TypeSpec {
+  private fun IrFragmentDefinition.responseAdapterTypeSpec(): TypeSpec {
     return TypeSpec.classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
         .addTypes(

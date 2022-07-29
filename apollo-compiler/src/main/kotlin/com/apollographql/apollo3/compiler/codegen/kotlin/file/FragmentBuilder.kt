@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.TypeSpec
 internal class FragmentBuilder(
     private val context: KotlinContext,
     private val generateFilterNotNull: Boolean,
-    private val fragment: IrNamedFragment,
+    private val fragment: IrFragmentDefinition,
     flatten: Boolean,
     private val addJvmOverloads: Boolean,
 ) : CgFileBuilder {
@@ -61,7 +61,7 @@ internal class FragmentBuilder(
     )
   }
 
-  private fun IrNamedFragment.typeSpec(): TypeSpec {
+  private fun IrFragmentDefinition.typeSpec(): TypeSpec {
     return TypeSpec.classBuilder(simpleName)
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
@@ -75,13 +75,13 @@ internal class FragmentBuilder(
         .maybeAddFilterNotNull(generateFilterNotNull)
   }
 
-  private fun IrNamedFragment.rootFieldFunSpec(): FunSpec {
+  private fun IrFragmentDefinition.rootFieldFunSpec(): FunSpec {
     return rootFieldFunSpec(
         context, fragment.typeCondition, context.resolver.resolveFragmentSelections(name)
     )
   }
 
-  private fun IrNamedFragment.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
+  private fun IrFragmentDefinition.serializeVariablesFunSpec(): FunSpec = serializeVariablesFunSpec(
       adapterClassName = context.resolver.resolveFragmentVariablesAdapter(name),
       emptyMessage = "This fragment doesn't have any variable",
   )

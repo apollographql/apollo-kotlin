@@ -12,8 +12,6 @@ import com.squareup.javapoet.ClassName
 internal class OperationSelectionsBuilder(
     val context: JavaContext,
     val operation: IrOperation,
-    val schema: Schema,
-    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 ) : JavaClassBuilder {
   private val packageName = context.layout.operationResponseFieldsPackageName(operation.filePath)
   private val simpleName = context.layout.operationSelectionsName(operation)
@@ -30,12 +28,9 @@ internal class OperationSelectionsBuilder(
         packageName = packageName,
         typeSpec = CompiledSelectionsBuilder(
             context = context,
-            allFragmentDefinitions = allFragmentDefinitions,
-            schema = schema
         ).build(
-            selections = operation.gqlSelections,
+            selectionSets = operation.selectionSets,
             rootName = simpleName,
-            parentType = operation.typeCondition
         )
     )
   }

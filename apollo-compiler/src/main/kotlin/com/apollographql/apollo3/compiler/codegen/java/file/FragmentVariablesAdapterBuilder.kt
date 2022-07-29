@@ -5,13 +5,13 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.inputAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 
 internal class FragmentVariablesAdapterBuilder(
     val context: JavaContext,
-    val fragment: IrNamedFragment,
+    val fragment: IrFragmentDefinition,
 ) : JavaClassBuilder {
   private val packageName = context.layout.fragmentAdapterPackageName(fragment.filePath)
   private val simpleName = context.layout.fragmentVariablesAdapterName(fragment.name)

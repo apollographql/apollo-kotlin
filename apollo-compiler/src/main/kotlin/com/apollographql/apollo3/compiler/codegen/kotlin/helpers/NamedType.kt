@@ -19,7 +19,6 @@ internal class NamedType(
     val type: IrType,
 )
 
-
 internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
   return ParameterSpec
       .builder(

@@ -4,8 +4,6 @@ import com.apollographql.apollo3.api.BTerm
 import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.containsPossibleTypes
-import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
@@ -24,14 +22,13 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.type
 */
 internal data class Ir(
     val operations: List<IrOperation>,
-    val fragments: List<IrNamedFragment>,
+    val fragments: List<IrFragmentDefinition>,
     val inputObjects: List<IrInputObject>,
     val enums: List<IrEnum>,
     val customScalars: List<IrCustomScalar>,
     val objects: List<IrObject>,
     val unions: List<IrUnion>,
     val interfaces: List<IrInterface>,
-    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     val schema: Schema,
 )
 
@@ -74,7 +71,6 @@ internal data class IrOperation(
     val typeCondition: String,
     val variables: List<IrVariable>,
     val description: String?,
-    val gqlSelections: List<GQLSelection>,
     val selectionSets: List<IrSelectionSet>,
     /**
      * the executableDocument sent to the server
@@ -103,7 +99,7 @@ internal sealed interface IrSelection
 internal data class IrField(
     val name: String,
     val alias: String?,
-    val type: IrType,
+    val type: IrTypeRef,
     val condition: BooleanExpression<BVariable>,
     val arguments: List<IrArgument>,
     val selectionSetName: String?,
@@ -115,6 +111,11 @@ internal data class IrArgument(
     val isKey: Boolean = false,
     val isPagination: Boolean = false,
 )
+
+internal sealed interface IrTypeRef
+internal data class IrNonNullTypeRef(val ofType: IrTypeRef): IrTypeRef
+internal data class IrListTypeRef(val ofType: IrTypeRef): IrTypeRef
+internal data class IrNamedTypeRef(val ofType: IrTypeRef): IrTypeRef
 
 internal data class IrFragment(
     val typeCondition: String,
@@ -131,7 +132,7 @@ internal data class IrFragment(
     val name: String?
 ): IrSelection
 
-internal data class IrNamedFragment(
+internal data class IrFragmentDefinition(
     val name: String,
     val description: String?,
     val filePath: String,
@@ -141,7 +142,6 @@ internal data class IrNamedFragment(
      */
     val variables: List<IrVariable>,
     val typeCondition: String,
-    val selections: List<GQLSelection>,
     val selectionSets: List<IrSelectionSet>,
     val interfaceModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
@@ -353,7 +353,7 @@ internal data class IrListType(val ofType: IrType) : IrType() {
 }
 
 
-internal interface IrNamedType {
+internal sealed interface IrNamedType {
   val name: String
 }
 

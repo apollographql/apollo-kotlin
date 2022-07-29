@@ -7,11 +7,11 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrModelGroup
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 
 internal class FragmentModelsBuilder(
     val context: JavaContext,
-    val fragment: IrNamedFragment,
+    val fragment: IrFragmentDefinition,
     modelGroup: IrModelGroup,
     private val addSuperInterface: Boolean,
     flatten: Boolean,

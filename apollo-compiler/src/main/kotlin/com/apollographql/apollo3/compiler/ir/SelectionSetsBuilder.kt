@@ -6,6 +6,8 @@ import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
@@ -18,7 +20,6 @@ import com.apollographql.apollo3.compiler.codegen.paginationArgs
 internal class SelectionSetsBuilder(
     val schema: Schema,
     val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    val toIr: GQLType.() -> IrType,
 ) {
   private val usedNames = mutableSetOf<String>()
 
@@ -78,7 +79,7 @@ internal class SelectionSetsBuilder(
         self = IrField(
             name = name,
             alias = alias,
-            type = fieldDefinition.type.toIr(),
+            type = fieldDefinition.type.toIrTypeRef(),
             arguments = arguments?.arguments.orEmpty().let { gqlArguments ->
               val typeDefinition = schema.typeDefinition(parentType)
               val keyArgs = typeDefinition.keyArgs(name, schema)
@@ -92,6 +93,11 @@ internal class SelectionSetsBuilder(
         ),
         nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.leafType().name).orEmpty()
     )
+  }
+
+  private fun GQLType.toIrTypeRef(): IrTypeRef = when(this) {
+    is GQLNonNullType -> IrNonNullTypeRef(this.type.toIrTypeRef())
+    is GQLListType
   }
 
   private fun GQLInlineFragment.walk(): WalkResult? {
