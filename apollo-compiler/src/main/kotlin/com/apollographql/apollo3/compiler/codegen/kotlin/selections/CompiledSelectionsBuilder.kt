@@ -129,7 +129,6 @@ internal class CompiledSelectionsBuilder(
       return null
     }
 
-
     val builder = CodeBlock.builder()
     builder.add("%T(\n", KotlinSymbols.CompiledFieldBuilder)
     builder.indent()

@@ -32,6 +32,11 @@ internal class OperationBasedModelGroupBuilder(
   private val collectAllInlineFragmentFields = compat
   private val mergeTrivialInlineFragments = compat
 
+  /**
+   * This is required for compatibility with v2. There might be ways to isolate that algorithm outside of [OperationBasedModelGroupBuilder]
+   *
+   * Note: we do not handle the case where a fragment has the same name as a field
+   */
   private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String): String {
     if (!compat) {
       return modelName
