@@ -20,7 +20,7 @@ import com.apollographql.apollo3.compiler.codegen.paginationArgs
 
 internal class SelectionSetsBuilder(
     val schema: Schema,
-    val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
 ) {
   private val usedNames = mutableSetOf("root")
 
@@ -121,7 +121,7 @@ internal class SelectionSetsBuilder(
         self = IrFragment(
             typeCondition = typeCondition.name,
             // TODO: restrict the possible types to the possible types in the context of this selection
-            possibleTypes = schema.possibleTypes(typeCondition.name),
+            possibleTypes = schema.possibleTypes(typeCondition.name).toList(),
             condition = expression,
             selectionSetName = selectionSetName,
             name = null
@@ -142,7 +142,7 @@ internal class SelectionSetsBuilder(
         self = IrFragment(
             typeCondition = fragmentDefinition.typeCondition.name,
             // TODO: restrict the possible types to the possible types in the context of this selection
-            possibleTypes = schema.possibleTypes(fragmentDefinition.typeCondition.name),
+            possibleTypes = schema.possibleTypes(fragmentDefinition.typeCondition.name).toList(),
             condition = expression,
             selectionSetName = null,
             name = name

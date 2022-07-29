@@ -198,8 +198,8 @@ internal class KotlinCodeGen(
       builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
     }
 
-    if (ir.schema.connectionTypes.isNotEmpty()) {
-      builders.add(PaginationBuilder(context, ir.schema.connectionTypes))
+    if (ir.connectionTypes.isNotEmpty()) {
+      builders.add(PaginationBuilder(context, ir.connectionTypes))
     }
 
     /**

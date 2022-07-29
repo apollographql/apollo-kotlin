@@ -232,7 +232,7 @@ internal fun IrModel.toTBuilder(layout: KotlinCodegenLayout): TBuilder {
       properties = properties.map { it.tProperty(modelGroups) },
       id = id,
       nestedTBuilders = nestedBuilders,
-      possibleTypes = possibleTypes
+      possibleTypes = possibleTypes.toSet()
   )
 }
 

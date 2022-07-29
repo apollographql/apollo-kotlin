@@ -5,21 +5,22 @@ import com.apollographql.apollo3.api.BVariable
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.containsPossibleTypes
 import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 
 /**
-* Intermediate representation (IR)
-*
-* Compared to the GraphQL AST, the IR:
-* - Transforms [com.apollographql.apollo3.ast.GQLField] into [IrProperty] and [IrModel]
-* - moves @include/@skip directives on inline fragments and object fields to their children selections
-* - interprets @deprecated directives
-* - coerces argument values and resolves defaultValue
-* - infers fragment variables
-* - registers used types and fragments
-* - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
-*/
+ * Intermediate representation (IR)
+ *
+ * Compared to the GraphQL AST, the IR:
+ * - Transforms [com.apollographql.apollo3.ast.GQLField] into [IrProperty] and [IrModel]
+ * - moves @include/@skip directives on inline fragments and object fields to their children selections
+ * - interprets @deprecated directives
+ * - coerces argument values and resolves defaultValue
+ * - infers fragment variables
+ * - registers used types and fragments
+ * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
+ *
+ * In order to ensure reproducibility, prefer using [List] instead of [Set]
+ */
 internal data class Ir(
     val operations: List<IrOperation>,
     val fragments: List<IrFragmentDefinition>,
@@ -29,7 +30,7 @@ internal data class Ir(
     val objects: List<IrObject>,
     val unions: List<IrUnion>,
     val interfaces: List<IrInterface>,
-    val schema: Schema,
+    val connectionTypes: List<String>,
 )
 
 internal data class IrEnum(
@@ -91,7 +92,7 @@ internal data class IrSelectionSet(
      * true if this is the root selection set for this operation/fragment definition
      */
     val isRoot: Boolean,
-    val selections: List<IrSelection>
+    val selections: List<IrSelection>,
 )
 
 internal sealed interface IrSelection
@@ -103,7 +104,7 @@ internal data class IrField(
     val condition: BooleanExpression<BVariable>,
     val arguments: List<IrArgument>,
     val selectionSetName: String?,
-): IrSelection
+) : IrSelection
 
 internal data class IrArgument(
     val name: String,
@@ -113,13 +114,13 @@ internal data class IrArgument(
 )
 
 internal sealed interface IrTypeRef
-internal data class IrNonNullTypeRef(val ofType: IrTypeRef): IrTypeRef
-internal data class IrListTypeRef(val ofType: IrTypeRef): IrTypeRef
-internal data class IrNamedTypeRef(val name: String): IrTypeRef
+internal data class IrNonNullTypeRef(val ofType: IrTypeRef) : IrTypeRef
+internal data class IrListTypeRef(val ofType: IrTypeRef) : IrTypeRef
+internal data class IrNamedTypeRef(val name: String) : IrTypeRef
 
 internal data class IrFragment(
     val typeCondition: String,
-    val possibleTypes: Set<String>,
+    val possibleTypes: List<String>,
     val condition: BooleanExpression<BVariable>,
     /**
      * The name of the [IrSelectionSet] that contains the [IrSelection] for this inline fragment
@@ -129,8 +130,8 @@ internal data class IrFragment(
     /**
      * The name of the fragment for fragment spreads or null for inline fragments
      */
-    val name: String?
-): IrSelection
+    val name: String?,
+) : IrSelection
 
 internal data class IrFragmentDefinition(
     val name: String,
@@ -210,7 +211,7 @@ internal data class IrModel(
      * The possible types
      * Used by the adapters to generate the polymorphic reading code
      */
-    val possibleTypes: Set<String>,
+    val possibleTypes: List<String>,
     val accessors: List<IrAccessor>,
     // A list of paths
     val implements: List<String>,
@@ -269,20 +270,20 @@ internal data class IrObject(
     override val name: String,
     override val targetName: String?,
     val implements: List<String>,
-    val keyFields: Set<String>,
+    val keyFields: List<String>,
     val description: String?,
     val deprecationReason: String?,
-    val embeddedFields: Set<String>,
+    val embeddedFields: List<String>,
 ) : IrSchemaType
 
 internal data class IrInterface(
     override val name: String,
     override val targetName: String?,
     val implements: List<String>,
-    val keyFields: Set<String>,
+    val keyFields: List<String>,
     val description: String?,
     val deprecationReason: String?,
-    val embeddedFields: Set<String>,
+    val embeddedFields: List<String>,
 ) : IrSchemaType
 
 internal data class IrUnion(

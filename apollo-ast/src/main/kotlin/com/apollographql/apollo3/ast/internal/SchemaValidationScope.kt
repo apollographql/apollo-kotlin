@@ -488,10 +488,10 @@ private fun ValidationScope.keyFields(
 private fun List<GQLDirective>.toKeyFields(): Set<String> = extractFields("keyFields")
 
 @ApolloInternal
-fun List<GQLDirective>.toEmbeddedFields(): Set<String> = extractFields("embeddedFields")
+fun List<GQLDirective>.toEmbeddedFields(): List<String> = extractFields("embeddedFields").toList()
 
 @ApolloInternal
-fun List<GQLDirective>.toConnectionFields(): Set<String> = extractFields("connectionFields")
+fun List<GQLDirective>.toConnectionFields(): List<String> = extractFields("connectionFields").toList()
 
 private fun List<GQLDirective>.extractFields(argumentName: String): Set<String> {
   if (isEmpty()) {

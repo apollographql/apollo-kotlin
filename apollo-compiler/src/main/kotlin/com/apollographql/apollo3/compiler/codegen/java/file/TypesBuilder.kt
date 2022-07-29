@@ -49,7 +49,7 @@ internal fun IrEnum.typeFieldSpec(): FieldSpec {
       .build()
 }
 
-private fun Set<String>.toCode(): CodeBlock {
+private fun List<String>.toCode(): CodeBlock {
   return sorted().map { CodeBlock.of(S, it) }.toListInitializerCodeblock()
 }
 

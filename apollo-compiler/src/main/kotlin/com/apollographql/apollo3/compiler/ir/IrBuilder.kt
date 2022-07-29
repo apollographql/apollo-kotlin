@@ -140,7 +140,7 @@ internal class IrBuilder(
       usedTypes.add(it.typeCondition.name)
     }
 
-    // Input objects and Interfaces contain (possible reentrant) references so we need to loop here
+    // Input objects and Interfaces contain (possible reentrant) references, so we need to loop here
     while (usedTypes.isNotEmpty()) {
       val name = usedTypes.removeAt(0)
       if (visitedTypes.contains(name)) {
@@ -172,7 +172,7 @@ internal class IrBuilder(
         objects = objects,
         interfaces = interfaces,
         unions = unions,
-        schema = schema
+        connectionTypes = schema.connectionTypes.toList()
     )
   }
 
@@ -184,7 +184,7 @@ internal class IrBuilder(
         name = name,
         targetName = directives.findTargetName(schema),
         implements = implementsInterfaces,
-        keyFields = schema.keyFields(name),
+        keyFields = schema.keyFields(name).toList(),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on object definitions
         deprecationReason = directives.findDeprecationReason(),
@@ -202,7 +202,7 @@ internal class IrBuilder(
         name = name,
         targetName = directives.findTargetName(schema),
         implements = implementsInterfaces,
-        keyFields = schema.keyFields(name),
+        keyFields = schema.keyFields(name).toList(),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on interfaces
         deprecationReason = directives.findDeprecationReason(),
@@ -270,7 +270,7 @@ internal class IrBuilder(
     var irType = type.toIr()
     if (type !is GQLNonNullType || coercedDefaultValue != null) {
       /**
-       * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user and
+       * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user, and
        * we don't want to force users to fill all values to define an input object
        */
       irType = irType.makeOptional()
@@ -430,10 +430,10 @@ internal class IrBuilder(
       }
       irType !is IrNonNullType -> {
         // The variable is nullable. By the GraphQL spec, it means it's also optional
-        // In practice though, we often want it non optional, because if the user added tha variable in
+        // In practice though, we often want it non-optional, because if the user added tha variable in
         // the first place, there is a high change they're going to use it.
         //
-        // One counter example is bi-directional pagination where 'before' or 'after' could be
+        // One counter example is bidirectional pagination where 'before' or 'after' could be
         // left Absent
         //
         // We default to add the [Optional] wrapper, but this can be overridden by the user globally or individually
@@ -454,7 +454,7 @@ internal class IrBuilder(
   }
 
   /**
-   * Maps to [IrType] and also keep tracks of what types are actually used so we only generate those
+   * Maps to [IrType] and also keep tracks of what types are actually used, so we only generate those
    */
   private fun GQLType.toIr(): IrType {
     return when (this) {
