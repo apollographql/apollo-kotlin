@@ -1,14 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.S
-import com.apollographql.apollo3.compiler.codegen.java.T
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.joinToCode
 
 
-fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
+internal fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
   if (isEmpty()) {
     return CodeBlock.of("emptyList()")
   }
@@ -30,7 +26,7 @@ fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = false): C
   }
 }
 
-fun List<Pair<String, CodeBlock>>.toMapInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
+internal fun List<Pair<String, CodeBlock>>.toMapInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
   if (isEmpty()) {
     return CodeBlock.of("emptyMap()")
   }
