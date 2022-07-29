@@ -35,10 +35,10 @@ import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.TransformResult
-import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
@@ -380,7 +380,7 @@ internal class IrBuilder(
   private fun GQLFragmentDefinition.toIr(): IrNamedFragment {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
 
-    val variableDefinitions = inferVariables(schema, allFragmentDefinitions)
+    val inferredVariables = inferVariables(schema, allFragmentDefinitions)
 
     val interfaceModelGroup = builder.buildFragmentInterface(
         fragmentName = name
@@ -395,7 +395,7 @@ internal class IrBuilder(
         description = description,
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
-        variables = variableDefinitions.map { it.toIr() },
+        variables = inferredVariables.map { it.toIr() },
         selections = selectionSet.selections,
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,
@@ -403,16 +403,16 @@ internal class IrBuilder(
     )
   }
 
-  private fun VariableUsage.toIr(): IrVariable {
-    var type = locationType.toIr()
-    // This is an inferred variable from a fragment
-    if (locationType !is GQLNonNullType) {
-      type = type.makeOptional()
+  private fun InferredVariable.toIr(): IrVariable {
+    var irType = type.toIr()
+    if (type !is GQLNonNullType) {
+      // If the location is non-nullable, the variable might be omitted, make it optional
+      irType = irType.makeOptional()
     }
     return IrVariable(
-        name = this.variable.name,
+        name = name,
         defaultValue = null,
-        type = type,
+        type = irType,
     )
   }
 

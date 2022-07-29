@@ -22,3 +22,4 @@ query WithoutDirectiveNonNullableParams($param1: Int!, $param2: Float!) {
 query WithoutDirectiveDefaultValueParams($param1: Int = 0, $param2: Float! = 0.0) {
   field(param1: $param1, param2: $param2)
 }
+

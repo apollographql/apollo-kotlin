@@ -1,4 +1,6 @@
 type Query {
   field(param1: Int, param2: Float): Int
-}
 
+  field2(mandatory: String!): Int
+  field3(optional: String): Int
+}

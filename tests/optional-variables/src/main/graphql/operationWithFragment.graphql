@@ -1,0 +1,9 @@
+query QueryWithFragment($param1: String!) {
+  ...fragment
+}
+
+fragment fragment on Query {
+  field2(mandatory: $param1)
+  field3(optional: $param1)
+}
+

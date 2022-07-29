@@ -8,3 +8,12 @@ class VariableUsage(
     val locationType: GQLType,
     val hasLocationDefaultValue: Boolean
 )
+
+/**
+ * A variable that is inferred from its usages in fragments
+ * This is used to create executable fragments
+ */
+class InferredVariable(
+    val name: String,
+    val type: GQLType,
+)

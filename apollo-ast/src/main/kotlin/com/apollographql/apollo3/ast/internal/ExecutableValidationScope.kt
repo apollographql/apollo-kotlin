@@ -28,6 +28,7 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLValue
 import com.apollographql.apollo3.ast.GQLVariableValue
+import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
@@ -94,19 +95,63 @@ internal class ExecutableValidationScope(
     return issues
   }
 
-  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<VariableUsage> {
+  /**
+   * Infer variables from a fragment definition. If a variable is used in both a nullable and non-nullable
+   * position, the variable is inferred as non-nullable
+   *
+   * @throws IllegalStateException if some incompatibles types are found. This should never happen
+   * because this should be caught during previous operation-wide validation.
+   */
+  fun inferFragmentVariables(fragment: GQLFragmentDefinition): List<InferredVariable> {
     variableUsages.clear()
     fragment.validate()
 
-    variableUsages.groupBy {
+    return variableUsages.groupBy {
       it.variable.name
-    }.forEach {
-      val types = it.value.map { it.locationType.pretty() }.distinct()
-      check(types.size == 1) {
-        "Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}"
+    }.entries.mapNotNull {
+      val types = it.value.map { it.locationType }
+      val inferredType = types.findCompatibleType()
+      if (inferredType == null) {
+        error("Fragment ${fragment.name} uses different types for variable '${it.key}': ${types.joinToString()}")
+      } else {
+        InferredVariable(it.key, inferredType)
       }
     }
-    return variableUsages.distinctBy { it.variable.name }
+  }
+
+  private fun List<GQLType>.findCompatibleType(): GQLType? {
+    return drop(1).fold<GQLType, GQLType?>(first()) { acc, gqlType ->
+      if (acc == null) {
+        return@fold null
+      }
+
+      acc.mergeWith(gqlType)
+    }
+  }
+
+  @Suppress("KotlinConstantConditions")
+  private fun GQLType.mergeWith(other: GQLType): GQLType? {
+    return if (this is GQLNonNullType && other is GQLNonNullType) {
+      type.mergeWith(other.type)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
+    } else if (this is GQLNonNullType && other !is GQLNonNullType) {
+      type.mergeWith(other)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
+    } else if (this !is GQLNonNullType && other is GQLNonNullType) {
+      this.mergeWith(other.type)?.let { GQLNonNullType(SourceLocation.UNKNOWN, it) }
+    } else if (this is GQLListType && other is GQLListType) {
+      this.type.mergeWith(other.type)
+    } else if (this is GQLListType && other !is GQLListType) {
+      null
+    } else if (this !is GQLListType && other is GQLListType) {
+      null
+    } else if (this is GQLNamedType && other is GQLNamedType){
+      if (name != other.name) {
+        null
+      } else {
+        this
+      }
+    } else {
+      throw IllegalStateException()
+    }
   }
 
   private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
