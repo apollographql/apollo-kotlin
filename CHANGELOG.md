@@ -9,7 +9,7 @@ With this release, Apollo Kotlin now uses Kotlin Native's new memory model. It a
 
 ## 💙️ External contributors
 
-Many thanks to `@glureau` for their contribution!
+Many thanks to `@glureau` for carefully adding new watch targets ⌚💙.
 
 ## ✨️ [new] Kotlin Native: new memory manager (#4287)
 
