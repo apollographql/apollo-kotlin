@@ -27,8 +27,8 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.receiveOrTimeout
-import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

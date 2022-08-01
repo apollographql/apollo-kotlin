@@ -6,7 +6,7 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.asChunked
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.flowOf
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.test.Test

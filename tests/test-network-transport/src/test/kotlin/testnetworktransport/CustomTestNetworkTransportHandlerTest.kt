@@ -6,8 +6,8 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.registerTestResponse
-import com.apollographql.apollo3.testing.runTest
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

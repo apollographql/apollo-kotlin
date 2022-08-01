@@ -8,7 +8,7 @@ import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.okHttpClient
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl

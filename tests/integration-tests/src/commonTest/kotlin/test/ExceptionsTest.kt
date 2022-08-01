@@ -7,7 +7,7 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.single
 import kotlin.test.Test

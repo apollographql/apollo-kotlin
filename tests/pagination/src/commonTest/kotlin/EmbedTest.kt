@@ -9,7 +9,7 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.cache.normalized.apolloStore
 import com.apollographql.apollo3.cache.normalized.normalizedCache
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import embed.GetHeroQuery
 import kotlin.test.Test
 import kotlin.test.assertEquals

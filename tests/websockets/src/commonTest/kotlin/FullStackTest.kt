@@ -1,8 +1,7 @@
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import fullstack.tutorial.TripsBookedSubscription
-import kotlinx.coroutines.flow.collect
 import kotlin.test.Ignore
 import kotlin.test.Test
 

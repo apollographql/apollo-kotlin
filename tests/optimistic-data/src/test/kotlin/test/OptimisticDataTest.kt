@@ -9,12 +9,12 @@ import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.mockserver.MockResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import optimistic.GetAnimalQuery
 import optimistic.UpdateAnimalNameMutation
 import optimistic.UpdateAnimalSpeciesMutation
@@ -46,7 +46,7 @@ class OptimisticDataTest {
   )
 
   @Test
-  fun canRevertAnIntermediateData() = runTest {
+  fun canRevertAnIntermediateData() = runBlocking {
     val server = MockServer()
     val apolloClient = ApolloClient.Builder()
         .serverUrl(server.url())

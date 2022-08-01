@@ -2,8 +2,7 @@ import appsync.CommentsSubscription
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.AppSyncWsProtocol
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import com.apollographql.apollo3.testing.runTest
-import kotlinx.coroutines.flow.collect
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 

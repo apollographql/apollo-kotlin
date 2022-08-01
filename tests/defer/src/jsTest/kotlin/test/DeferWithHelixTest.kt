@@ -2,7 +2,7 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.ws.GraphQLWsProtocol
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import defer.WithFragmentSpreadsQuery
 import defer.WithFragmentSpreadsSubscription
 import defer.WithInlineFragmentsQuery

@@ -2,8 +2,6 @@ package test
 
 import checkTestFixture
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.DefaultUpload
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Upload
@@ -17,7 +15,7 @@ import com.apollographql.apollo3.internal.MultipartReader
 import com.apollographql.apollo3.mockserver.MockRequest
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals

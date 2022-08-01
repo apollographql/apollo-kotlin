@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCache
 import com.apollographql.apollo3.cache.normalized.api.Record
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.delay
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -12,7 +12,7 @@ import kotlin.test.assertNull
 class MemoryCacheTest {
   @Test
   fun testDoesNotExpireBeforeMillis() = runTest {
-    val record =  Record(
+    val record = Record(
         key = "key",
         fields = mapOf(
             "field" to "value"

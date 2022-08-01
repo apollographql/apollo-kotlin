@@ -8,7 +8,7 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import okio.BufferedSink
 import testFixtureToUtf8
 import kotlin.test.Test

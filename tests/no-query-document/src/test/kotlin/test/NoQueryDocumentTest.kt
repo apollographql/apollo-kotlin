@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
 import org.junit.Test
 import reserved.GetRandomQuery

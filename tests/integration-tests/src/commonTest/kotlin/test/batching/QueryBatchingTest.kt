@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import okio.Buffer

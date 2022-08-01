@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
 import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
 import kotlin.test.Test
@@ -25,7 +25,7 @@ class QueueTestNetworkTransportHandlerTest {
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test

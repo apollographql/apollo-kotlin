@@ -12,7 +12,7 @@ import com.apollographql.apollo3.cache.normalized.api.Record
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import com.squareup.sqldelight.internal.AtomicBoolean
 import pagination.test.UsersOffsetBasedWithPageQuery_TestBuilder.Data
 import kotlin.math.max
