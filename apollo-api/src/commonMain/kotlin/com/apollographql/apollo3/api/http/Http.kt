@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api.http
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_4_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import okio.Buffer
 import okio.BufferedSink
@@ -110,8 +112,8 @@ private constructor(
      */
     private val bodySource: BufferedSource?,
     /**
-     * An immutable body that can be freezed when used from Kotlin native.
-     * Prefer [bodySource] on non-native so that the response can be streamed.
+     * An immutable body.
+     * Prefer [bodySource] on so that the response can be streamed.
      */
     private val bodyString: ByteString?,
 ) {
@@ -123,6 +125,7 @@ private constructor(
       statusCode = statusCode,
   ).apply {
     if (bodySource != null) body(bodySource)
+    @Suppress("DEPRECATION")
     if (bodyString != null) body(bodyString)
     addHeaders(headers)
   }
@@ -145,9 +148,11 @@ private constructor(
     }
 
     /**
-     * An immutable body that can be freezed when used from Kotlin native.
-     * Prefer [bodySource] on non-native so that the response can be streamed.
+     * An immutable body.
+     * Prefer [bodySource] so that the response can be streamed.
      */
+    @Deprecated("Use body(BufferedSource) instead", ReplaceWith("Buffer().write(bodyString)", "okio.Buffer"))
+    @ApolloDeprecatedSince(v3_4_1)
     fun body(bodyString: ByteString) = apply {
       check(!hasBody) { "body() can only be called once" }
       this.bodyString = bodyString

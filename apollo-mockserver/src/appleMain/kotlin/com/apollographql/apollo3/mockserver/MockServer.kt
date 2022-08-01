@@ -24,16 +24,23 @@ import platform.posix.pthread_join
 import platform.posix.pthread_tVar
 import platform.posix.sockaddr_in
 import platform.posix.socket
-import kotlin.native.concurrent.freeze
 
 /**
  * @param acceptDelayMillis: an artificial delay introduced before each `accept()`
  * call. Can be used to simulate slow connections.
  */
+@OptIn(ExperimentalStdlibApi::class)
 actual class MockServer(
     private val acceptDelayMillis: Long,
     override val mockServerHandler: MockServerHandler = QueueMockServerHandler(),
 ) : MockServerInterface {
+
+  init {
+    check(isExperimentalMM()) {
+      "Apollo: The legacy memory manager is no longer supported, please use the new memory manager instead. " +
+          "See https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md for more information."
+    }
+  }
 
   actual constructor(mockServerHandler: MockServerHandler) : this(0, mockServerHandler)
 
@@ -73,7 +80,7 @@ actual class MockServer(
 
     socket = Socket(socketFd, acceptDelayMillis, mockServerHandler)
 
-    val stableRef = StableRef.create(socket!!.freeze())
+    val stableRef = StableRef.create(socket!!)
 
     pthread_create(pthreadT.ptr, null, staticCFunction { arg ->
       initRuntimeIfNeeded()

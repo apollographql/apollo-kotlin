@@ -31,6 +31,7 @@ kotlin {
         implementation(groovy.util.Eval.x(project, "x.dep.kotlinxserializationjson").toString()) {
           because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
         }
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${groovy.util.Eval.x(project, "x.versions.kotlinCoroutines")}")
       }
     }
 

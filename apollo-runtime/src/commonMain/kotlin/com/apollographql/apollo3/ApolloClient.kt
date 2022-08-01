@@ -21,14 +21,12 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
 import com.apollographql.apollo3.internal.defaultDispatcher
-import com.apollographql.apollo3.mpp.assertMainThreadOnNative
-import com.apollographql.apollo3.mpp.freeze
+import com.apollographql.apollo3.internal.failOnNativeIfLegacyMemoryManager
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.network.http.BatchingHttpInterceptor
 import com.apollographql.apollo3.network.http.HttpEngine
@@ -67,12 +65,10 @@ private constructor(
   private val concurrencyInfo: ConcurrencyInfo
 
   init {
-    val dispatcher = defaultDispatcher(dispatcher)
+    val dispatcher = dispatcher ?: defaultDispatcher
     concurrencyInfo = ConcurrencyInfo(
         dispatcher,
         CoroutineScope(dispatcher))
-
-    freeze(apolloExceptionHandler)
   }
 
   /**
@@ -118,8 +114,8 @@ private constructor(
   }
 
   @Deprecated(
-    "Use close() instead or call okio.use { }",
-    replaceWith = ReplaceWith("close()"),
+      "Use close() instead or call okio.use { }",
+      replaceWith = ReplaceWith("close()"),
   )
   @ApolloDeprecatedSince(v3_3_1)
   fun dispose() {
@@ -142,7 +138,6 @@ private constructor(
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
    */
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    assertMainThreadOnNative()
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
     val request = ApolloRequest.Builder(apolloRequest.operation)
@@ -197,6 +192,10 @@ private constructor(
     private var httpExposeErrorBody: Boolean? = null
     private var webSocketEngine: WebSocketEngine? = null
     private var webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean)? = null
+
+    init {
+      failOnNativeIfLegacyMemoryManager()
+    }
 
     override var httpMethod: HttpMethod? = null
 

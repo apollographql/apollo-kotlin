@@ -8,7 +8,6 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.AfterClass
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -88,7 +87,6 @@ class BenchmarksTest {
       val durations: List<Duration>,
   )
 
-  @ThreadLocal
   companion object {
     private const val EXECUTION_PER_MEASUREMENT = 200
     private const val MEASUREMENT_COUNT = 10

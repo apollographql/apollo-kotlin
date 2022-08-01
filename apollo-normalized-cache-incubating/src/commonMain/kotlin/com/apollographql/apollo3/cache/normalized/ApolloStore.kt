@@ -175,8 +175,7 @@ interface ApolloStore {
   /**
    * Direct access to the cache.
    *
-   * @param block a function that can access the cache. The function and its captured variables will
-   * be called from a background thread and freezed
+   * @param block a function that can access the cache. The function will be called from a background thread
    */
   suspend fun <R> accessCache(block: (NormalizedCache) -> R): R
 

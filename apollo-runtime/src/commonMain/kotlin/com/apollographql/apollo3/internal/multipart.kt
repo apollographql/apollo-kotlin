@@ -16,7 +16,6 @@ import okio.BufferedSource
  * Closing the individual parts in the Flow doesn't close the overall response.
  */
 internal fun multipartBodyFlow(response: HttpResponse): Flow<BufferedSource> {
-  val worker = NonMainWorker()
   var multipartReader: MultipartReader? = null
   return flow {
     multipartReader = MultipartReader(
@@ -25,8 +24,7 @@ internal fun multipartBodyFlow(response: HttpResponse): Flow<BufferedSource> {
             ?: throw ApolloException("Expected the Content-Type to have a boundary parameter")
     )
     while (true) {
-      // Read the body in a background thread because it is blocking
-      val part = worker.doWork { multipartReader!!.nextPart() } ?: break
+      val part = multipartReader!!.nextPart() ?: break
       emit(part.body)
     }
   }.onCompletion {

@@ -4,7 +4,9 @@ plugins {
 }
 
 kotlin {
-  configureAppleTargets("macosX64")
+  configureAppleTargets("macosX64", "macosArm64")
+
+  enableNewMemoryManager()
 
   sourceSets {
     val commonMain by getting {
@@ -29,7 +31,7 @@ kotlin {
 configurations {
   all {
     resolutionStrategy {
-      force("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
+      force("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3-native-mt")
     }
   }
 }

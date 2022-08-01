@@ -9,7 +9,7 @@ def versions = [
     javaPoet            : '1.13.0',
     jetbrainsAnnotations: '13.0',
     junit               : '4.13.2',
-    kotlinCoroutines    : '1.6.1',
+    kotlinCoroutines    : '1.6.4',
     kotlinPlugin        : System.env.COM_APOLLOGRAPHQL_VERSION_KOTLIN_PLUGIN ?: "1.6.21",
     kotlinxdatetime     : System.env.COM_APOLLOGRAPHQL_VERSION_KOTLINXDATETIME ?: "0.3.1",
     kspGradlePlugin     : System.env.COM_APOLLOGRAPHQL_VERSION_KSP_GRADLE_PLUGIN ?: "1.6.21-1.0.5",

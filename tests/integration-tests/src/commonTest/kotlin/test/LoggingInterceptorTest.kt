@@ -10,9 +10,7 @@ import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
 import com.apollographql.apollo3.testing.runTest
 import okio.BufferedSink
-import test.LoggingInterceptorTest.LoggingInterceptorDoesntConsumeBodyState.uploadRead
 import testFixtureToUtf8
-import kotlin.native.concurrent.ThreadLocal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -135,6 +133,7 @@ class LoggingInterceptorTest {
 
   @Test
   fun dontConsumeBody() = runTest(before = { setUp() }, after = { tearDown() }) {
+    var uploadRead = 0
     // We only test the data that is sent to the server, we don't really mind the response
     mockServer.enqueue("""
       {
@@ -156,11 +155,5 @@ class LoggingInterceptorTest {
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).addHttpInterceptor(LoggingInterceptor()).build()
     apolloClient.mutation(SingleUploadMutation(upload)).execute()
     assertEquals(1, uploadRead)
-  }
-
-  // Trick to make the above test happy on Apple (which freezes the request but we stay on the main thread so mutating works)
-  @ThreadLocal
-  object LoggingInterceptorDoesntConsumeBodyState {
-    var uploadRead = 0
   }
 }

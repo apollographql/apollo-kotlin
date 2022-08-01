@@ -17,9 +17,7 @@ import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
-import com.apollographql.apollo3.internal.BackgroundDispatcher
-import com.apollographql.apollo3.mpp.ensureNeverFrozen
-import com.apollographql.apollo3.mpp.freeze
+import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -66,7 +64,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     private val maxBatchSize: Int = 10,
     private val exposeErrorBody: Boolean = false,
 ) : HttpInterceptor {
-  private val dispatcher = BackgroundDispatcher()
+  private val dispatcher = CloseableSingleThreadDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = Mutex()
   private var disposed = false
@@ -76,7 +74,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
   private var interceptorChain: HttpInterceptorChain? = null
 
   init {
-    ensureNeverFrozen(this)
     job = scope.launch {
       while (true) {
         delay(batchIntervalMillis)
@@ -168,8 +165,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
         .headers(commonHeaders)
         .build()
 
-    freeze(request)
-
     var exception: ApolloException? = null
     val result = try {
       val response = interceptorChain!!.proceed(request)
@@ -221,6 +216,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     } else {
       result!!.forEachIndexed { index, byteString ->
         // This works because the server must return the responses in order
+        @Suppress("DEPRECATION")
         pending[index].deferred.complete(
             HttpResponse.Builder(statusCode = 200)
                 .body(byteString)
@@ -234,7 +230,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     if (!disposed) {
       interceptorChain = null
       scope.cancel()
-      dispatcher.dispose()
+      dispatcher.close()
       disposed = true
     }
   }

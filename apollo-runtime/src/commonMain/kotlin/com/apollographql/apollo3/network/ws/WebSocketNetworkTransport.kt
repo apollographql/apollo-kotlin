@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
-import com.apollographql.apollo3.internal.BackgroundDispatcher
+import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.isDeferred
 import com.apollographql.apollo3.internal.transformWhile
@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
 import kotlinx.coroutines.launch
+import okio.use
 
 /**
  * A [NetworkTransport] that works with WebSockets. Usually it is used with subscriptions but some [WsProtocol]s like [GraphQLWsProtocol]
@@ -85,13 +86,14 @@ private constructor(
 
   val subscriptionCount = mutableEvents.subscriptionCount
 
-  private val backgroundDispatcher = BackgroundDispatcher()
+  private val backgroundDispatcher = CloseableSingleThreadDispatcher()
   private val coroutineScope = CoroutineScope(backgroundDispatcher.coroutineDispatcher)
 
   init {
     coroutineScope.launch {
-      supervise(this)
-      backgroundDispatcher.dispose()
+      backgroundDispatcher.use {
+        supervise(this)
+      }
     }
   }
 

@@ -16,13 +16,9 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
-import com.apollographql.apollo3.internal.NonMainWorker
-import com.apollographql.apollo3.internal.deepCopy
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
-import com.apollographql.apollo3.mpp.Platform
 import com.apollographql.apollo3.mpp.currentTimeMillis
-import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
@@ -37,8 +33,6 @@ private constructor(
     val interceptors: List<HttpInterceptor>,
     val exposeErrorBody: Boolean,
 ) : NetworkTransport {
-  private val worker = NonMainWorker()
-
   private val engineInterceptor = EngineInterceptor()
 
   override fun <D : Operation.Data> execute(
@@ -93,18 +87,16 @@ private constructor(
     }
   }
 
-  private suspend fun <D : Operation.Data> singleResponse(
+  private fun <D : Operation.Data> singleResponse(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): ApolloResponse<D> {
     val response = try {
-      worker.doWork {
-        operation.parseJsonResponse(
-            jsonReader = httpResponse.body!!.jsonReader(),
-            customScalarAdapters = customScalarAdapters
-        )
-      }
+      operation.parseJsonResponse(
+          jsonReader = httpResponse.body!!.jsonReader(),
+          customScalarAdapters = customScalarAdapters
+      )
     } catch (e: Exception) {
       throw wrapThrowableIfNeeded(e)
     }
@@ -112,7 +104,7 @@ private constructor(
     return response.newBuilder().isLast(true).build()
   }
 
-  private suspend fun <D : Operation.Data> multipleResponses(
+  private fun <D : Operation.Data> multipleResponses(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
@@ -120,20 +112,13 @@ private constructor(
     val jsonMerger = DeferredJsonMerger()
     return multipartBodyFlow(httpResponse).map { part ->
       try {
-        // On native, we cannot pass `jsonMerger._merge` to `worker.doWork` or it will become frozen making
-        // any subsequent payload merge throw.
-        // So we clone them before they are captured.
-        // XXX: revisit with the new memory model
-        val mustClone = platform() == Platform.Native
-        val merged = jsonMerger.merge(part).let { if (mustClone) it.deepCopy() else it }
-        val deferredFragmentIds = jsonMerger.mergedFragmentIds.let { if (mustClone) it.toSet() else it }
+        val merged = jsonMerger.merge(part)
+        val deferredFragmentIds = jsonMerger.mergedFragmentIds
         val isLast = !jsonMerger.hasNext
-        worker.doWork {
-          operation.parseJsonResponse(
-              jsonReader = merged.jsonReader(),
-              customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
-          ).newBuilder().isLast(isLast).build()
-        }
+        operation.parseJsonResponse(
+            jsonReader = merged.jsonReader(),
+            customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+        ).newBuilder().isLast(isLast).build()
       } catch (e: Exception) {
         throw wrapThrowableIfNeeded(e)
       }

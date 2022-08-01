@@ -2,15 +2,17 @@ package com.apollographql.apollo3.internal
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okio.Closeable
 
-internal actual fun defaultDispatcher(requested: CoroutineDispatcher?): CoroutineDispatcher {
-  return requested ?: Dispatchers.Default
-}
+internal actual val defaultDispatcher = Dispatchers.Default
+
 
 // We can't use threads in JS, so just fallback to defaultDispatcher()
-internal actual class BackgroundDispatcher {
-  actual val coroutineDispatcher: CoroutineDispatcher = defaultDispatcher(null)
+internal actual class CloseableSingleThreadDispatcher : Closeable {
+  actual val coroutineDispatcher: CoroutineDispatcher = defaultDispatcher
 
-  actual fun dispose() {
+  override fun close() {
   }
 }
+
+internal actual fun failOnNativeIfLegacyMemoryManager() {}

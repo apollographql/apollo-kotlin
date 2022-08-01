@@ -77,6 +77,7 @@ class LoggingInterceptor(
     } else {
       val bodyByteString = responseBody.readByteString()
       log(bodyByteString.utf8())
+      @Suppress("DEPRECATION")
       HttpResponse.Builder(statusCode = httpResponse.statusCode)
           .body(bodyByteString)
           .addHeaders(httpResponse.headers)
