@@ -1,6 +1,74 @@
 Change Log
 ==========
 
+# Version 3.5.0 
+
+_2022-08-01_
+
+With this release, Apollo Kotlin now uses Kotlin Native's new memory model. It also contains a number of other improvements and bug fixes. 
+
+## 💙️ External contributors
+
+Many thanks to `@glureau` for carefully adding new watch targets ⌚💙.
+
+## ✨️ [new] Kotlin Native: new memory manager (#4287)
+
+Apollo Kotlin is now requiring applications to use the [new memory manager, a.k.a. new memory model](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/). Thanks to this change, the restriction that operations had to be executed from the main thread on Apple targets is now removed. You can also use [kotlinx.coroutines.test.runTest](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/run-test.html). Last but not least, benchmarks seem to [indicate](https://github.com/apollographql/apollo-kotlin/pull/4287/files?w=1#diff-aead75359419ef1647be74310bd7093e4cc2d9393917d17029d5fcc5e11ce1ef) that performance is better under the new memory manager!
+
+## ✨️ [new] `@targetName` directive (#4243)
+
+This directive was introduced in v3.3.1 to allow overriding the name of enum values in the generated code. It has now been extended to allow configuring the generated name of Interfaces, Enums, Unions, Scalars and Input objects. This can be used to make the generated code nicer to use, or to avoid name clashes with Kotlin types (e.g. `Long`) in Kotlin Native.
+
+## ✨️ [new] Automatic resolution of Apollo artifacts versions from the plugin version (#4279)
+
+From now on, you no longer need to specify explicitly the versions of Apollo dependencies: if omitted, the same version as the Apollo Gradle plugin will be used. This should facilitate upgrades and avoid potential mistakes:
+
+```kotlin
+plugins {
+  plugins {
+    id("org.jetbrains.kotlin.jvm").version("1.7.10")
+    id("com.apollographql.apollo3").version("3.5.0")
+  }
+
+  dependencies {
+    // Replace this
+    // implementation("com.apollographql.apollo3:apollo-runtime:3.5.0")
+    
+    // with
+    implementation("com.apollographql.apollo3:apollo-runtime")
+  }
+}
+
+```
+
+## 🚧 [deprecated] `runTest` (#4292)
+
+With the new memory model, Apollo's specific `runTest` method from `apollo-testing-support` is no longer useful and has been deprecated. If you were using it, you should now be able to use [Kotlin's `runTest`](https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-test/README.md) instead, or simply `runBlocking`.
+
+
+## 🚧 [breaking] Automatic detection of `type` enum values.
+
+If you have an enum with a `type` value, this value used to name clash with the generated `type` property. This version now detects this case automatically and escapes `type` to `type_`. If you had previously used `@targetName` to workaround this issue, you can now remove it to avoid it being escaped twice:
+
+```graphql 
+# Remove this
+extend enum SomeEnum {
+  type @targetName(name: "type_")
+}
+```
+
+## 👷‍ All changes
+
+- Support watchosArm32 (#4260)
+- Support @targetName on Interfaces, Enums, Unions, Scalars and Input objects (#4243)
+- 🐘  support lazy APIs for newer AGP versions (#4264)
+- Pagination: add connectionFields argument to @typePolicy (#4265)
+- 🐘 Get the dependencies version from the plugin automagically (#4279)
+- Automatically escape `type` in enum values (#4295)
+- Fix inferred variables in both nullable and non-nullable locations (#4306)
+- Native: assume New Memory Manager (#4287)
+- Use internal runTest in all tests (#4292)
+
 # Version 3.4.0
 
 _2022-07-11_
