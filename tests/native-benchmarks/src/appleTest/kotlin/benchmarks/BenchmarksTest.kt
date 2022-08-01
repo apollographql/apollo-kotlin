@@ -5,11 +5,10 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.runTest
+import com.apollographql.apollo3.testing.internal.runTest
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.test.AfterClass
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -18,7 +17,7 @@ import kotlin.time.measureTime
 import kotlin.time.toDuration
 
 @OptIn(ExperimentalTime::class)
-@Ignore
+//@Ignore
 class BenchmarksTest {
   private val server = MockServer()
   private lateinit var client: ApolloClient
