@@ -406,7 +406,7 @@ internal class IrBuilder(
   private fun InferredVariable.toIr(): IrVariable {
     var irType = type.toIr()
     if (type !is GQLNonNullType) {
-      // If the location is non-nullable, the variable might be omitted, make it optional
+      // If the type is nullable, the variable might be omitted, make it optional
       irType = irType.makeOptional()
     }
     return IrVariable(
