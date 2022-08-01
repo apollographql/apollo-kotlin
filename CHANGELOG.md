@@ -1,15 +1,27 @@
 Change Log
 ==========
 
-# Version TODO 
+# Version 3.5.0 
 
-_TODO_
+_2022-08-01_
 
-TODO
+With this release, Apollo Kotlin now uses Kotlin Native's new memory model. It also contains a number of other improvements and bug fixes. 
 
 ## 💙️ External contributors
 
-TODO
+Many thanks to `@glureau` for their contribution!
+
+## ✨️ [new] Kotlin Native: new memory manager (#4287)
+
+Apollo Kotlin is now requiring applications to use the [new memory manager, a.k.a. new memory model](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/). Thanks to this change, the restriction that operations had to be executed from the main thread on Apple targets is now removed. Note that it is still the case that coroutines must be run from the main thread from Swift and Objective-C (see [KT-51297](https://youtrack.jetbrains.com/issue/KT-51297) for more details). As an added benefit, this modernizes and simplifies the library's codebase which should help maintenance. Last but not least, benchmarks seem to [indicate](https://github.com/apollographql/apollo-kotlin/pull/4287/files?w=1#diff-aead75359419ef1647be74310bd7093e4cc2d9393917d17029d5fcc5e11ce1ef) that performance is better under the new memory manager!
+
+## 🚧 [deprecation] `runTest` (#4292)
+
+With the new memory model, Apollo's specific `runTest` method from `apollo-testing-support` is no longer useful and has been deprecated. If you were using it, you should now be able to use [Kotlin's `runTest`](https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-test/README.md) instead, or simply `runBlocking`.
+
+## ✨️ [new and experimental] `@targetName` directive (#4243)
+
+This directive was introduced in v3.3.1 to allow overriding the name of enum values in the generated code. It has now been extended to allow configuring the generated name of Interfaces, Enums, Unions, Scalars and Input objects. This can be used to make the generated code nicer to use, or to avoid name clashes with Kotlin types (e.g. `Long`) in Kotlin Native.
 
 ## 🚧 [(slightly) breaking] Automatic detection of `type` enum values.
 
@@ -22,9 +34,22 @@ extend enum SomeEnum {
 }
 ```
 
+## ✨️ [new] Get the dependencies version from the plugin automagically (#4279)
+
+From now on, you no longer need to specify explicitly the versions of Apollo dependencies: if omitted, the same version as the Apollo Gradle plugin will be used. This should facilitate upgrades and avoid potential mistakes.
+
 ## 👷‍ All changes
 
-TODO
+- Support watchosArm32 (#4260)
+- Support @targetName on Interfaces, Enums, Unions, Scalars and Input objects (#4243)
+- 🐘  support lazy APIs for newer AGP versions (#4264)
+- Pagination: add connectionFields argument to @typePolicy (#4265)
+- 🐘 Get the dependencies version from the plugin automagically (#4279)
+- Remove the AGP workaround (#4290)
+- Automatically escape `type` in enum values (#4295)
+- Fix inferred variables in both nullable and non-nullable locations (#4306)
+- Native: assume New Memory Manager (#4287)
+- Use internal runTest in all tests (#4292)
 
 # Version 3.4.0
 
