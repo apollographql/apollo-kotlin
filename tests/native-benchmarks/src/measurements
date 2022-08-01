@@ -1,8 +1,0 @@
-Simple query:
-Durations: [273.503583ms, 241.524250ms, 232.768334ms, 232.115ms, 231.773208ms, 228.970542ms, 255.463042ms, 228.866833ms, 233.499708ms, 238.935250ms]:
-Average: 239.1ms
-
-Simple query with memory cache:
-Durations: [32.221208ms, 39.828375ms, 32.172750ms, 33.452500ms, 32.037ms, 31.348084ms, 31.614041ms, 47.221291ms, 32.208791ms, 32.410041ms]:
-Average: 34.1ms
-
