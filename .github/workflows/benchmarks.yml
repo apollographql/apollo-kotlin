@@ -1,9 +1,8 @@
 name: benchmarks
 
 on:
-#  TODO Comment this, it's here for testing
-  pull_request:
-    branches: [ '*' ]
+#  pull_request:
+  #    branches: ['*']
   schedule:
     - cron: '0 3 * * *'
 
@@ -18,35 +17,34 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       - uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
-      # TODO Uncomment!
-      #      - run: |
-      #          ulimit -c unlimited
-      #          # Workaround an issue where kotlinNpmInstall outputs
-      #          # 'Resolving NPM dependencies using yarn' returns 137
-      #          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
-      #          ./gradlew --stop
-      #      - run: |
-      #          # Build the libs
-      #          ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
-      #      - run: |
-      #          # Build the benchmark apks
-      #          ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
-      #      - name: microbenchmarks
-      #        uses: martinbonnin/run-benchmarks@ef9043b9a646a109f7381a4bf20f82ead5cbd382 #main
-      #        with:
-      #          google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      #
-      #          app_apk: 'benchmark/app/build/outputs/apk/release/app-release.apk'
-      #          test_apk: 'benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk'
-      #          device_model: 'redfin,locale=en,orientation=portrait'
-      #          directories_to_pull: '/sdcard/Download'
-      #          environment_variables: 'clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true'
-      #
-      #          dd_api_key: ${{ secrets.DD_API_KEY }}
-      #          dd_metric_prefix: 'apollo.kotlin'
-      #          dd_dashboard_url: 'https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa'
-      #
-      #          github_token: ${{ github.token }}
+      - run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          ./gradlew --stop
+      - run: |
+          # Build the libs
+          ./gradlew publishAllPublicationsToPluginTestRepository -x dokkaHtml
+      - run: |
+          # Build the benchmark apks
+          ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
+      - name: microbenchmarks
+        uses: martinbonnin/run-benchmarks@ef9043b9a646a109f7381a4bf20f82ead5cbd382 #main
+        with:
+          google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+          app_apk: 'benchmark/app/build/outputs/apk/release/app-release.apk'
+          test_apk: 'benchmark/microbenchmark/build/outputs/apk/androidTest/release/microbenchmark-release-androidTest.apk'
+          device_model: 'redfin,locale=en,orientation=portrait'
+          directories_to_pull: '/sdcard/Download'
+          environment_variables: 'clearPackageData=true,additionalTestOutputDir=/sdcard/Download,no-isolated-storage=true'
+
+          dd_api_key: ${{ secrets.DD_API_KEY }}
+          dd_metric_prefix: 'apollo.kotlin'
+          dd_dashboard_url: 'https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa'
+
+          github_token: ${{ github.token }}
       - name: nativebenchmarks
         run: |
           # Run the native benchmarks
