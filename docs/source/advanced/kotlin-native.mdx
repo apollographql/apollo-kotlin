@@ -4,9 +4,17 @@ title: Kotlin native
 
 Apollo Kotlin is built for multiplatform and therefore supports iOS, MacOS, and other Darwin targets.
 
-Because the current Kotlin memory model requires freezing objects that are accessed from multiple threads ([docs](https://kotlinlang.org/docs/kmm-concurrency-overview.html)), there are some limitations.
+Since version 3.5.0, the library requires executables to use the [new Kotlin Native Memory Manager](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/). To configure it on your project you can use the following snippet:
 
-In particular, you must create your `ApolloClient` and call `query` and other operations from the main thread. Apollo Kotlin then executes the work on a background thread and returns the result to the main thread.
+```kotlin title="build.gradle.kts"
+kotlin.targets.withType(KotlinNativeTarget::class.java) {
+    binaries.all {
+        binaryOptions["memoryModel"] = "experimental"
+    }
+}
+```
+
+More information is available on the [migration guide](https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md#enable-the-new-mm).
 
 ## Multithreaded coroutines
 
