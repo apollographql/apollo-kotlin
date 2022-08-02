@@ -8,7 +8,7 @@ on:
 
 jobs:
   benchmarks:
-    runs-on: ubuntu-20.04
+    runs-on: macos-11
     if: github.repository == 'apollographql/apollo-kotlin'
     steps:
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28 #v3
@@ -45,3 +45,11 @@ jobs:
           dd_dashboard_url: 'https://p.datadoghq.com/sb/d11002689-48ff7001681977d5a09c3a0775632cfa'
 
           github_token: ${{ github.token }}
+      - name: nativebenchmarks
+        run: |
+          # Run the native benchmarks
+          ./gradlew -p tests :native-benchmarks:allTests
+          # Upload the results to DataDog
+          ./scripts/upload-native-benchmarks.main.kts
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
