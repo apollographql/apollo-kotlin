@@ -29,14 +29,6 @@ The declarative cache makes working with the cache and defining unique object id
 
 Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/) as a new type-safe way to build test data. While this is working, it generates a lot of code, making it hard to include in main source sets. This can be problematic in some cases like Jetpack Compose `@Preview` for an example. We are investigating generating schema-based test builders for simpler and more lightweight APIs.
 
-### Hierarchical Multi Platform Projects (HMPP)
-
-Add support for [HMPP](https://kotlinlang.org/docs/multiplatform-share-on-platforms.html)
-
-### New Kotlin native memory model
-
-As the new [memory model](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/) is becoming the default, adapt Apollo Kotlin to use it.
-
 ### Rel 1.0 Android Studio Plugin
 
 Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to offer better support for Android developers who wish to use our Kotlin Client.
