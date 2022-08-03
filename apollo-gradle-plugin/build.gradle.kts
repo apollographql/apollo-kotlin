@@ -41,7 +41,7 @@ if (relocateJar) {
 
       exclude(".*MANIFEST.MF")
       exclude("META-INF/versions/9/module-info\\.class")
-      exclude("META-INF/kotlin-stdlib.*\\.kotlin_module")
+//      exclude("META-INF/kotlin-stdlib.*\\.kotlin_module")
 
       // Remove the following error:
       // /Users/mbonnin/.m2/repository/com/apollographql/apollo3/apollo-gradle-plugin/3.3.3-SNAPSHOT/apollo-gradle-plugin-3.3.3-SNAPSHOT.jar!/META-INF/kotlinpoet.kotlin_module:

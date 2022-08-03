@@ -10,6 +10,8 @@ def versions = [
     jetbrainsAnnotations: '13.0',
     junit               : '4.13.2',
     kotlinCoroutines    : '1.6.4',
+    kotlinCompatVersion : "1.5",
+    kotlinStdlib        : "1.6.21",
     kotlinPlugin        : "1.7.10",
     kotlinxdatetime     : "0.4.0",
     kspGradlePlugin     : "1.7.10-1.0.6",

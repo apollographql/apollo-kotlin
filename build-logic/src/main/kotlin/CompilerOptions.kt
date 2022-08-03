@@ -24,8 +24,8 @@ fun Project.configureJavaAndKotlinCompilers() {
           // See also https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
           freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=compatibility"
         }
-        apiVersion = "1.5"
-        languageVersion = "1.5"
+        apiVersion = groovy.util.Eval.x(project, "x.versions.kotlinCompatVersion").toString()
+        languageVersion = groovy.util.Eval.x(project, "x.versions.kotlinCompatVersion").toString()
       }
     }
 
