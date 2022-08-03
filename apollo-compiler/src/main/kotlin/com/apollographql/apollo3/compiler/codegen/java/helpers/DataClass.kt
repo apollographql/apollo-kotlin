@@ -13,7 +13,14 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 /**
- * This just adds fields for now. A future version will add toString(), hashCode() and equals()
+ * Given a list of [ParameterSpec]:
+ * - add the fields matching these parameters
+ * - add a constructor that initializes the properties from the parameters
+ * - add a 'hashCode' implementation
+ * - add a 'toString'
+ *
+ * This is named "data class" because it's similar to Kotlin data classes even if technically Java
+ * doesn't have data classes
  */
 fun TypeSpec.Builder.makeDataClassFromParameters(parameters: List<ParameterSpec>): TypeSpec.Builder {
   addMethod(
