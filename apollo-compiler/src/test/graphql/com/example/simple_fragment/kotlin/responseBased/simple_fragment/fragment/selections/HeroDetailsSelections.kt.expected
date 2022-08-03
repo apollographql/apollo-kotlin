@@ -20,7 +20,7 @@ internal object HeroDetailsSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = (listOf("Human"))
+          possibleTypes = listOf("Human")
         ).selections(HumanDetailsSelections.__root)
         .build()
       )

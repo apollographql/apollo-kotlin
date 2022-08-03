@@ -139,7 +139,7 @@ internal class KotlinCodeGen(
               )
           )
 
-          builders.add(FragmentSelectionsBuilder(context, fragment, ir.schema, ir.allFragmentDefinitions))
+          builders.add(FragmentSelectionsBuilder(context, fragment))
 
           if (generateFragmentImplementations || fragment.interfaceModelGroup == null) {
             builders.add(FragmentResponseAdapterBuilder(context, fragment, flatten))
@@ -167,7 +167,7 @@ internal class KotlinCodeGen(
             builders.add(OperationVariablesAdapterBuilder(context, operation))
           }
 
-          builders.add(OperationSelectionsBuilder(context, operation, ir.schema, ir.allFragmentDefinitions))
+          builders.add(OperationSelectionsBuilder(context, operation))
           builders.add(OperationResponseAdapterBuilder(context, operation, flatten))
 
           builders.add(
@@ -198,8 +198,8 @@ internal class KotlinCodeGen(
       builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
     }
 
-    if (ir.schema.connectionTypes.isNotEmpty()) {
-      builders.add(PaginationBuilder(context, ir.schema.connectionTypes))
+    if (ir.connectionTypes.isNotEmpty()) {
+      builders.add(PaginationBuilder(context, ir.connectionTypes))
     }
 
     /**

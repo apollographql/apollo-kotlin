@@ -372,13 +372,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/adapter/Adapt
 	public static synthetic fun singletonAdapterInitializer$default (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/java/helpers/CollectionsKt {
-	public static final fun toArrayInitializerCodeblock (Ljava/util/List;)Lcom/squareup/javapoet/CodeBlock;
-	public static final fun toListInitializerCodeblock (Ljava/util/List;Z)Lcom/squareup/javapoet/CodeBlock;
-	public static synthetic fun toListInitializerCodeblock$default (Ljava/util/List;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
-	public static final fun toMapInitializerCodeblock (Ljava/util/List;)Lcom/squareup/javapoet/CodeBlock;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataClassKt {
 	public static final fun makeDataClass (Lcom/squareup/javapoet/TypeSpec$Builder;)Lcom/squareup/javapoet/TypeSpec$Builder;
 	public static final fun makeDataClassFromParameters (Lcom/squareup/javapoet/TypeSpec$Builder;Ljava/util/List;)Lcom/squareup/javapoet/TypeSpec$Builder;

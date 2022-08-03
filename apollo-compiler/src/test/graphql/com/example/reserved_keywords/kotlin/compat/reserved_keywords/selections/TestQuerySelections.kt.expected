@@ -18,7 +18,7 @@ import com.example.reserved_keywords.type.SearchResult
 import kotlin.collections.List
 
 public object TestQuerySelections {
-  private val __yield: List<CompiledSelection> = listOf(
+  private val __hero: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "id",
           type = GraphQLID.type.notNull()
@@ -38,7 +38,7 @@ public object TestQuerySelections {
         ).build()
       )
 
-  private val __objects: List<CompiledSelection> = listOf(
+  private val __search: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",
           type = GraphQLString.type.notNull()
@@ -55,7 +55,7 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).alias("yield")
-        .selections(__yield)
+        .selections(__hero)
         .build(),
         CompiledField.Builder(
           name = "search",
@@ -64,7 +64,7 @@ public object TestQuerySelections {
         .arguments(listOf(
           CompiledArgument.Builder("text", "abc").build()
         ))
-        .selections(__objects)
+        .selections(__search)
         .build()
       )
 }

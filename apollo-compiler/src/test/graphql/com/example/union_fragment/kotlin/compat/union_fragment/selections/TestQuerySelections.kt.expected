@@ -37,7 +37,7 @@ public object TestQuerySelections {
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Starship",
-          possibleTypes = (listOf("Starship"))
+          possibleTypes = listOf("Starship")
         ).selections(StarshipSelections.__root)
         .build()
       )

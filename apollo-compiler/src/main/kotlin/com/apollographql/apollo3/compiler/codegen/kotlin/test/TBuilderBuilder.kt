@@ -1,5 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.test
 
+import com.apollographql.apollo3.ast.GQLListType
+import com.apollographql.apollo3.ast.GQLNamedType
+import com.apollographql.apollo3.ast.GQLNonNullType
+import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.__map
@@ -13,7 +17,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.TCtor
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TProperty
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.kotlin.selections.CompiledSelectionsBuilder.Companion.codeBlock
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
@@ -115,6 +118,22 @@ internal class TBuilderBuilder(
         }
         .add(")")
         .build()
+  }
+
+  private fun GQLType.codeBlock(context: KotlinContext): CodeBlock {
+    return when (this) {
+      is GQLNonNullType -> {
+        val notNullFun = MemberName("com.apollographql.apollo3.api", "notNull")
+        CodeBlock.of("%L.%M()", type.codeBlock(context), notNullFun)
+      }
+      is GQLListType -> {
+        val listFun = MemberName("com.apollographql.apollo3.api", "list")
+        CodeBlock.of("%L.%M()", type.codeBlock(context), listFun)
+      }
+      is GQLNamedType -> {
+        context.resolver.resolveCompiledType(name)
+      }
+    }
   }
 
   private fun TCtor.funSpec(): FunSpec {

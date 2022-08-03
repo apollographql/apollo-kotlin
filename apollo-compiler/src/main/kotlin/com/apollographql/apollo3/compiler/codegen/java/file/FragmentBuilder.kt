@@ -10,7 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -20,7 +20,7 @@ import javax.lang.model.element.Modifier
 
 internal class FragmentBuilder(
     private val context: JavaContext,
-    private val fragment: IrNamedFragment,
+    private val fragment: IrFragmentDefinition,
     flatten: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
@@ -61,7 +61,7 @@ internal class FragmentBuilder(
     )
   }
 
-  private fun IrNamedFragment.typeSpec(): TypeSpec {
+  private fun IrFragmentDefinition.typeSpec(): TypeSpec {
     return TypeSpec.classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
         .addSuperinterface(superInterfaceType())
@@ -75,13 +75,13 @@ internal class FragmentBuilder(
         .build()
   }
 
-  private fun IrNamedFragment.selectionsMethodSpec(): MethodSpec {
+  private fun IrFragmentDefinition.selectionsMethodSpec(): MethodSpec {
     return rootFieldMethodSpec(
         context, fragment.typeCondition, context.resolver.resolveFragmentSelections(name)
     )
   }
 
-  private fun IrNamedFragment.serializeVariablesMethodSpec(): MethodSpec = serializeVariablesMethodSpec(
+  private fun IrFragmentDefinition.serializeVariablesMethodSpec(): MethodSpec = serializeVariablesMethodSpec(
       adapterClassName = context.resolver.resolveFragmentVariablesAdapter(name),
       emptyMessage = "This fragment doesn't have any variable",
   )

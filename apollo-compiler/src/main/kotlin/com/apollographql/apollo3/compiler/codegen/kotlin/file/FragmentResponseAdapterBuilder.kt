@@ -5,12 +5,12 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.ResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
-import com.apollographql.apollo3.compiler.ir.IrNamedFragment
+import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class FragmentResponseAdapterBuilder(
     val context: KotlinContext,
-    val fragment: IrNamedFragment,
+    val fragment: IrFragmentDefinition,
     val flatten: Boolean,
 ) : CgFileBuilder {
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
@@ -37,7 +37,7 @@ internal class FragmentResponseAdapterBuilder(
     )
   }
 
-  private fun IrNamedFragment.responseAdapterTypeSpec(): TypeSpec {
+  private fun IrFragmentDefinition.responseAdapterTypeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(simpleName)
         .addTypes(
             responseAdapterBuilders.flatMap { it.build() }

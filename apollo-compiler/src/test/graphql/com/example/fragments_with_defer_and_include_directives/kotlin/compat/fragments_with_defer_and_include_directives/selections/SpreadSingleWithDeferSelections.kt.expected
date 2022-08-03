@@ -22,7 +22,7 @@ public object SpreadSingleWithDeferSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
-          possibleTypes = (listOf("Droid"))
+          possibleTypes = listOf("Droid")
         ).selections(DroidDetailsSelections.__root)
         .build()
       )

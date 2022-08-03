@@ -11,7 +11,7 @@ import com.squareup.kotlinpoet.TypeSpec
 
 internal class PaginationBuilder(
     context: KotlinContext,
-    private val connectionTypes: Set<String>,
+    private val connectionTypes: List<String>,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.paginationPackageName()

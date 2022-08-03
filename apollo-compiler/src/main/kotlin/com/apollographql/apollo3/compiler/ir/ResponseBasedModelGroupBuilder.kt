@@ -429,7 +429,7 @@ private class FieldNodeBuilder(
             /**
              * Class-Only
              *
-             * This shape has no descendants. By construction it should be a class.
+             * This shape has no descendants. By construction, it should be a class.
              *
              * For monomorphic fields, the base shape is generated as a class.
              */
@@ -497,7 +497,7 @@ private fun ResponseField.toIrModelGroup(): IrModelGroup? {
 private fun ResponseFieldSet.toIrModel(parentResponseField: ResponseField): IrModel {
   return IrModel(
       modelName = modelName(parentResponseField.info, typeSet, rawTypename, isOther),
-      possibleTypes = possibleTypes,
+      possibleTypes = possibleTypes.toList(),
       modelGroups = responseFields.mapNotNull { it.toIrModelGroup() },
       properties = responseFields.map { it.toIrProperty() },
       implements = implements,

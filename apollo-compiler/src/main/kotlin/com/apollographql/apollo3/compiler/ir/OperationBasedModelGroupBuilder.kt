@@ -32,6 +32,11 @@ internal class OperationBasedModelGroupBuilder(
   private val collectAllInlineFragmentFields = compat
   private val mergeTrivialInlineFragments = compat
 
+  /**
+   * This is required for compatibility with v2. There might be ways to isolate that algorithm outside of [OperationBasedModelGroupBuilder]
+   *
+   * Note: we do not handle the case where a fragment has the same name as a field
+   */
   private fun resolveNameClashes(usedNames: MutableSet<String>, modelName: String): String {
     if (!compat) {
       return modelName
@@ -155,7 +160,7 @@ internal class OperationBasedModelGroupBuilder(
   /**
    * @param path the path up to but not including this field
    * @param info information about this field
-   * @param selections the sub-selections of this fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
+   * @param selections the sub-selections of these fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
    * might not all be on the same parent type. Hence [SelectionWithParent]
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
    * @param usedNames the used names for 2.x compat name conflicts resolution
@@ -468,7 +473,7 @@ private fun OperationFieldSet.toModel(): IrModel {
       isFallback = false,
       isInterface = false,
       modelGroups = fields.mapNotNull { it.toModelGroup() },
-      possibleTypes = emptySet(),
+      possibleTypes = emptyList(),
       typeSet = emptySet(),
   )
 }

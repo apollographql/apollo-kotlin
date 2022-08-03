@@ -23,12 +23,12 @@ public object GetHeroSelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = (listOf("Droid", "Human"))
+          possibleTypes = listOf("Droid", "Human")
         ).selections(characterNameSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = (listOf("Droid", "Human"))
+          possibleTypes = listOf("Droid", "Human")
         ).selections(characterAppearsInSelections.__root)
         .build()
       )

@@ -38,17 +38,17 @@ public object TestQuerySelections {
             "listOfEnums" to listOf(
               "JEDI",
               "EMPIRE",
-              "NEWHOPE",
+              "NEWHOPE"
             ),
             "listOfStringNonOptional" to listOf(
               "1",
               "2",
-              "3",
+              "3"
             ),
             "favoriteColor" to mapOf(
               "red" to 1,
-              "blue" to 1,
-            ),
+              "blue" to 1
+            )
           )).build()
         ))
         .selections(__createReview)

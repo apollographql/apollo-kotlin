@@ -40,7 +40,6 @@ internal object Identifier {
   const val __map = "__map"
   const val __path = "__path"
 
-
   const val OPERATION_DOCUMENT = "OPERATION_DOCUMENT"
   const val OPERATION_NAME = "OPERATION_NAME"
   const val OPERATION_ID = "OPERATION_ID"

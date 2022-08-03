@@ -16,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongNameSelections {
-  private static List<CompiledSelection> __heroAVeryAVeryAVeryAVeryAVeryAVeryAV = Arrays.asList(
+  private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).alias("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName").build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV").arguments(Arrays.asList(new CompiledArgument.Builder("episode", new CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build())).selections(__heroAVeryAVeryAVeryAVeryAVeryAVeryAV).build()
+    new CompiledField.Builder("hero", Character.type).alias("heroAVeryAVeryAVeryAVeryAVeryAVeryAV").arguments(Arrays.asList(new CompiledArgument.Builder("episode", new CompiledVariable("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")).build())).selections(__hero).build()
   );
 }

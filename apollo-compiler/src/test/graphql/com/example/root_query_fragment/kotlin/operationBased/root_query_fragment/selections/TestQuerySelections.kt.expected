@@ -21,7 +21,7 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Query",
-          possibleTypes = (listOf("Query"))
+          possibleTypes = listOf("Query")
         ).selections(QueryFragmentSelections.__root)
         .build()
       )

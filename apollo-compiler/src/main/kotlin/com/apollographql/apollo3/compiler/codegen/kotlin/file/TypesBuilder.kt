@@ -44,7 +44,7 @@ internal fun IrEnum.typePropertySpec(): PropertySpec {
       .build()
 }
 
-private fun Set<String>.toCode(): CodeBlock {
+private fun List<String>.toCode(): CodeBlock {
   val builder = CodeBlock.builder()
   builder.add("listOf(")
   builder.add("%L", sorted().map { CodeBlock.of("%S", it) }.joinToCode(", "))

@@ -7,7 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
 import com.squareup.javapoet.CodeBlock
 
-fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
+internal fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = false): CodeBlock {
   if (isEmpty()) {
     return CodeBlock.of("$T.emptyList()", JavaClassNames.Collections)
   }
@@ -23,7 +23,7 @@ fun List<CodeBlock>.toListInitializerCodeblock(withNewLines: Boolean = false): C
       .build()
 }
 
-fun List<CodeBlock>.toArrayInitializerCodeblock(): CodeBlock {
+internal fun List<CodeBlock>.toArrayInitializerCodeblock(): CodeBlock {
   return CodeBlock.builder()
       .add("{")
       .add(L, joinToCode(", "))
@@ -31,7 +31,7 @@ fun List<CodeBlock>.toArrayInitializerCodeblock(): CodeBlock {
       .build()
 }
 
-fun List<Pair<String, CodeBlock>>.toMapInitializerCodeblock(): CodeBlock {
+internal fun List<Pair<String, CodeBlock>>.toMapInitializerCodeblock(): CodeBlock {
   if (isEmpty()) {
     return CodeBlock.of("$T.emptyMap()", JavaClassNames.Collections)
   }

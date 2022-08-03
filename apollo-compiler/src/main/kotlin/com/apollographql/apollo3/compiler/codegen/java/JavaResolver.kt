@@ -59,13 +59,12 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-      else -> error("$type is not a schema type")
     }
   }
 
   private fun resolveIrScalarType(type: IrScalarType): ClassName {
     // Try mapping first, then built-ins, then fallback to Object
-    return resolveScalarTaget(type.name) ?: when (type.name) {
+    return resolveScalarTarget(type.name) ?: when (type.name) {
       "String" -> JavaClassNames.String
       "ID" -> JavaClassNames.String
       "Float" -> JavaClassNames.Double
@@ -85,7 +84,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
         type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableBooleanAdapter")
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableIntAdapter")
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableDoubleAdapter")
-        type is IrScalarType && resolveScalarTaget(type.name) == null -> {
+        type is IrScalarType && resolveScalarTarget(type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
         else -> {
@@ -96,7 +95,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
     return nonNullableAdapterInitializer(type.ofType, requiresBuffering)
   }
 
-  fun resolveScalarTaget(name: String): ClassName? {
+  private fun resolveScalarTarget(name: String): ClassName? {
     return scalarMapping.get(name)?.targetName?.let {
       ClassName.bestGuess(it)
     }
@@ -121,35 +120,39 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
   }
 
   private fun nonNullableAdapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
-    return when {
-      type is IrNonNullType -> error("")
-      type is IrListType -> {
+    return when (type) {
+      is IrNonNullType -> error("")
+      is IrListType -> {
         CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
-      type is IrScalarType -> {
+
+      is IrScalarType -> {
         nonNullableScalarAdapterInitializer(type)
       }
-      type is IrEnumType -> {
+
+      is IrEnumType -> {
         CodeBlock.of("$T.INSTANCE", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
       }
-      type is IrInputObjectType -> {
+
+      is IrInputObjectType -> {
         singletonAdapterInitializer(
             resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name),
             resolveAndAssert(ResolverKeyKind.SchemaType, type.name),
             requiresBuffering
         )
       }
-      type is IrModelType -> {
+
+      is IrModelType -> {
         singletonAdapterInitializer(
             resolveAndAssert(ResolverKeyKind.ModelAdapter, type.path),
             resolveAndAssert(ResolverKeyKind.Model, type.path),
             requiresBuffering
         )
       }
-      type is IrOptionalType -> {
+
+      is IrOptionalType -> {
         CodeBlock.of("new $T<>($L)", JavaClassNames.OptionalAdapter, adapterInitializer(type.ofType, requiresBuffering))
       }
-      else -> error("Cannot create an adapter for $type")
     }
   }
 
@@ -159,7 +162,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
         CodeBlock.of(adapterInitializer.expression)
       }
       is RuntimeAdapterInitializer -> {
-        val target = resolveScalarTaget(type.name)
+        val target = resolveScalarTarget(type.name)
         CodeBlock.of(
             "($customScalarAdapters.<$T>responseAdapterFor($L))",
             target,
@@ -174,7 +177,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
           "Int" -> adapterCodeBlock("IntAdapter")
           "Float" -> adapterCodeBlock("DoubleAdapter")
           else -> {
-            val target = resolveScalarTaget(type.name)
+            val target = resolveScalarTarget(type.name)
             if (target == null) {
               adapterCodeBlock("AnyAdapter")
             } else {

@@ -23,12 +23,12 @@ public object TestQuerySelections {
         ).build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
-          possibleTypes = (listOf("Droid", "Human"))
+          possibleTypes = listOf("Droid", "Human")
         ).selections(HeroDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
-          possibleTypes = (listOf("Human"))
+          possibleTypes = listOf("Human")
         ).selections(HumanDetailsSelections.__root)
         .build()
       )
