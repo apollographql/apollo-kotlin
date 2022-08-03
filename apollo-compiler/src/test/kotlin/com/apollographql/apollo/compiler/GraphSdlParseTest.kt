@@ -6,7 +6,6 @@ import com.apollographql.apollo.compiler.parser.introspection.IntrospectionSchem
 import com.apollographql.apollo.compiler.parser.introspection.toSDL
 import com.apollographql.apollo.compiler.parser.sdl.GraphSdlSchema
 import com.apollographql.apollo.compiler.parser.sdl.toIntrospectionSchema
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
@@ -82,6 +81,17 @@ class GraphSdlParseTest() {
 
     dumpSchemas(initialSchema, finalSchema)
     assertEquals(initialSchema, finalSchema)
+  }
+
+  @Test
+  fun `defaultValues are correctly written`() {
+    val initialSchema = IntrospectionSchema(File("src/test/sdl/default-values.json")).normalize()
+    val sdlFile = File("build/sdl-test/schema.sdl")
+    sdlFile.parentFile.deleteRecursively()
+    sdlFile.parentFile.mkdirs()
+    initialSchema.toSDL(sdlFile)
+
+    assertEquals(File("src/test/sdl/default-values.sdl").readText(), sdlFile.readText())
   }
 
   /**

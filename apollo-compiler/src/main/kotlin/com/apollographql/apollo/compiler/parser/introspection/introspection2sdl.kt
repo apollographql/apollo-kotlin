@@ -137,7 +137,14 @@ private fun IntrospectionSchema.InputField.toSDL(sink: BufferedSink) {
   sink.writeUtf8("  $name: ${type.asGraphQLType()}")
   if (defaultValue != null) {
     sink.writeUtf8(" = ")
-    sink.writeValue(defaultValue)
+    if (defaultValue is String) {
+      // defaultValue is already encoded as GraphQL, we can pass it verbatim
+      sink.writeUtf8(defaultValue)
+    } else {
+      // legacy mode if we bump into an introspection schema that doesn't encode the default value
+      sink.writeValue(defaultValue)
+    }
+
   }
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
 }
@@ -177,7 +184,13 @@ private fun IntrospectionSchema.Field.Argument.toSDL(sink: BufferedSink) {
   sink.writeUtf8("$name: ${type.asGraphQLType()}")
   if (defaultValue != null) {
     sink.writeUtf8(" = ")
-    sink.writeValue(defaultValue)
+    if (defaultValue is String) {
+      // defaultValue is already encoded as GraphQL, we can pass it verbatim
+      sink.writeUtf8(defaultValue)
+    } else {
+      // legacy mode if we bump into an introspection schema that doesn't encode the default value
+      sink.writeValue(defaultValue)
+    }
   }
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
 }
