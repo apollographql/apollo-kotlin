@@ -3,7 +3,12 @@ package com.apollographql.apollo3.graphql.ast.test
 import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.internal.buffer
+import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
+import com.apollographql.apollo3.ast.introspection.toGQLDocument
+import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.toUtf8
+import com.squareup.moshi.Moshi
 import okio.Buffer
 import org.junit.Test
 import kotlin.test.assertEquals

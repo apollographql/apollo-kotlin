@@ -81,7 +81,7 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(schema),
-        defaultValue = defaultValue?.toUtf8()
+        defaultValue = defaultValue?.toUtf8(indent = "")
     )
   }
 
@@ -101,7 +101,7 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(schema),
-        defaultValue = defaultValue?.toKotlinValue(true),
+        defaultValue = defaultValue?.toUtf8(indent = ""),
     )
   }
 
