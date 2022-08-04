@@ -107,7 +107,7 @@ data class IntrospectionSchema(
         val isDeprecated: Boolean = false,
         val deprecationReason: String?,
         val type: TypeRef,
-        val defaultValue: Any?,
+        val defaultValue: String?,
     )
 
     @JsonClass(generateAdapter = true)
@@ -127,7 +127,7 @@ data class IntrospectionSchema(
           val isDeprecated: Boolean = false,
           val deprecationReason: String?,
           val type: TypeRef,
-          val defaultValue: Any?,
+          val defaultValue: String?,
       )
     }
 
