@@ -5,13 +5,24 @@ import okio.buffer
 import okio.sink
 import java.io.File
 
-fun IntrospectionSchema.toSDL(file: File) {
+/**
+ * Previous versions of this method used to encode defaultValues as Json elements. For an example:
+ * "defaultValue": [0, 1]
+ *
+ * This is wrong. The spec mandates defaultValue to be GraphQL encoded String:
+ * "defaultValue": "[0, 1]"
+ *
+ * For backward compatibility, use [legacyDefaultValues] = true
+ */
+fun IntrospectionSchema.toSDL(file: File, legacyDefaultValues: Boolean) {
   file.sink().buffer().use {
-    toSDL(it)
+    toSDL(it, legacyDefaultValues)
   }
 }
 
-fun IntrospectionSchema.toSDL(sink: BufferedSink) {
+fun IntrospectionSchema.toSDL(file: File) = toSDL(file, true)
+
+fun IntrospectionSchema.toSDL(sink: BufferedSink, legacyDefaultValues: Boolean) {
   val builtinsTypes = setOf(
       "Int", "Float", "String", "Boolean", "ID",
       "__Directive", "__DirectiveLocation", "__EnumValue", "__Field", "__InputValue", "__Schema", "__Type", "__TypeKind"
@@ -25,9 +36,9 @@ fun IntrospectionSchema.toSDL(sink: BufferedSink) {
     when (it) {
       is IntrospectionSchema.Type.Scalar -> it.toSDL(sink)
       is IntrospectionSchema.Type.Enum -> it.toSDL(sink)
-      is IntrospectionSchema.Type.InputObject -> it.toSDL(sink)
-      is IntrospectionSchema.Type.Interface -> it.toSDL(sink)
-      is IntrospectionSchema.Type.Object -> it.toSDL(sink, allInterfaces)
+      is IntrospectionSchema.Type.InputObject -> it.toSDL(sink, legacyDefaultValues)
+      is IntrospectionSchema.Type.Interface -> it.toSDL(sink, legacyDefaultValues)
+      is IntrospectionSchema.Type.Object -> it.toSDL(sink, allInterfaces, legacyDefaultValues)
       is IntrospectionSchema.Type.Union -> it.toSDL(sink)
     }
     // Add a newline as a separation
@@ -39,6 +50,8 @@ fun IntrospectionSchema.toSDL(sink: BufferedSink) {
   subscriptionType?.let { sink.writeUtf8("  subscription: $it\n") }
   sink.writeUtf8("}\n")
 }
+
+fun IntrospectionSchema.toSDL(sink: BufferedSink) = toSDL(sink, true)
 
 private fun BufferedSink.writeDescription(description: String?, indent: String = "") {
   if (!description.isNullOrBlank()) {
@@ -86,11 +99,11 @@ private fun IntrospectionSchema.Type.Enum.Value.toSDL(sink: BufferedSink) {
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
 }
 
-private fun IntrospectionSchema.Type.InputObject.toSDL(sink: BufferedSink) {
+private fun IntrospectionSchema.Type.InputObject.toSDL(sink: BufferedSink, legacyDefaultValues: Boolean) {
   sink.writeDescription(description)
   sink.writeUtf8("input $name {\n")
   inputFields.forEach {
-    it.toSDL(sink)
+    it.toSDL(sink, legacyDefaultValues)
     sink.writeUtf8("\n")
   }
   sink.writeUtf8("}\n")
@@ -132,33 +145,40 @@ private fun BufferedSink.writeValue(value: Any?) {
   }
 }
 
-private fun IntrospectionSchema.InputField.toSDL(sink: BufferedSink) {
+private fun IntrospectionSchema.InputField.toSDL(sink: BufferedSink, legacyDefaultValues: Boolean) {
   sink.writeDescription(description, "  ")
   sink.writeUtf8("  $name: ${type.asGraphQLType()}")
   if (defaultValue != null) {
     sink.writeUtf8(" = ")
-    sink.writeValue(defaultValue)
+    if (!legacyDefaultValues && defaultValue is String) {
+      // defaultValue is already encoded as GraphQL, we can pass it verbatim
+      sink.writeUtf8(defaultValue)
+    } else {
+      // legacy mode if we bump into an introspection schema that doesn't encode the default value
+      sink.writeValue(defaultValue)
+    }
+
   }
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
 }
 
-private fun IntrospectionSchema.Type.Interface.toSDL(sink: BufferedSink) {
+private fun IntrospectionSchema.Type.Interface.toSDL(sink: BufferedSink, legacyDefaultValue: Boolean) {
   sink.writeDescription(description)
   sink.writeUtf8("interface $name {\n")
   fields?.forEach {
-    it.toSDL(sink)
+    it.toSDL(sink, legacyDefaultValue)
     sink.writeUtf8("\n")
   }
   sink.writeUtf8("}\n")
 }
 
-private fun IntrospectionSchema.Field.toSDL(sink: BufferedSink) {
+private fun IntrospectionSchema.Field.toSDL(sink: BufferedSink, legacyDefaultValue: Boolean) {
   sink.writeDescription(description, "  ")
   sink.writeUtf8("  $name")
   if (args.isNotEmpty()) {
     sink.writeUtf8("(")
     args.forEachIndexed { index, arg ->
-      arg.toSDL(sink)
+      arg.toSDL(sink, legacyDefaultValue)
       if (index != args.size - 1) {
         sink.writeUtf8(", ")
       }
@@ -169,7 +189,7 @@ private fun IntrospectionSchema.Field.toSDL(sink: BufferedSink) {
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
 }
 
-private fun IntrospectionSchema.Field.Argument.toSDL(sink: BufferedSink) {
+private fun IntrospectionSchema.Field.Argument.toSDL(sink: BufferedSink, legacyDefaultValue: Boolean) {
   if (!description.isNullOrBlank()) {
     // Write the description inline
     sink.writeUtf8("\"\"\"$description\"\"\" ")
@@ -177,12 +197,18 @@ private fun IntrospectionSchema.Field.Argument.toSDL(sink: BufferedSink) {
   sink.writeUtf8("$name: ${type.asGraphQLType()}")
   if (defaultValue != null) {
     sink.writeUtf8(" = ")
-    sink.writeValue(defaultValue)
+    if (!legacyDefaultValue && defaultValue is String) {
+      // defaultValue is already encoded as GraphQL, we can pass it verbatim
+      sink.writeUtf8(defaultValue)
+    } else {
+      // legacy mode if we bump into an introspection schema that doesn't encode the default value
+      sink.writeValue(defaultValue)
+    }
   }
   sink.writeDeprecatedDirective(isDeprecated, deprecationReason)
 }
 
-private fun IntrospectionSchema.Type.Object.toSDL(sink: BufferedSink, interfaces: List<IntrospectionSchema.Type.Interface>) {
+private fun IntrospectionSchema.Type.Object.toSDL(sink: BufferedSink, interfaces: List<IntrospectionSchema.Type.Interface>, legacyDefaultValue: Boolean) {
   sink.writeDescription(description, "")
   sink.writeUtf8("type $name")
   val implements = interfaces.filter {
@@ -203,7 +229,7 @@ private fun IntrospectionSchema.Type.Object.toSDL(sink: BufferedSink, interfaces
   sink.writeUtf8(" {\n")
 
   fields?.forEach {
-    it.toSDL(sink)
+    it.toSDL(sink, legacyDefaultValue)
     sink.writeUtf8("\n")
   }
 

@@ -43,7 +43,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
     if (schema.extension == "json") {
       schema.writeText(introspection)
     } else {
-      IntrospectionSchema(Buffer().writeUtf8(introspection).inputStream()).toSDL(schema)
+      IntrospectionSchema(Buffer().writeUtf8(introspection).inputStream()).toSDL(schema, legacyDefaultValues = false)
     }
   }
 

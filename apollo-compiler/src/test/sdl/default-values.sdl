@@ -1,0 +1,18 @@
+enum Direction {
+  North
+  South
+}
+
+type Query {
+  someField(arg: SomeInput): Int
+}
+
+input SomeInput {
+  value1: Boolean = false
+  value2: String = "North"
+  value3: Direction = North
+}
+
+schema {
+  query: Query
+}
