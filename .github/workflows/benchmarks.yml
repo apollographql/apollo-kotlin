@@ -1,10 +1,11 @@
 name: benchmarks
 
 on:
-#  pull_request:
-  #    branches: ['*']
-  schedule:
-    - cron: '0 3 * * *'
+  # TODO Testing only, must revert to schedule
+  pull_request:
+    branches: [ '*' ]
+#  schedule:
+#    - cron: '0 3 * * *'
 
 jobs:
   benchmarks:
@@ -29,6 +30,8 @@ jobs:
       - run: |
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@877d4953d2c70a0ba7ef3290ae968eb24af233bb #v0.6.0
       - name: microbenchmarks
         uses: martinbonnin/run-benchmarks@ef9043b9a646a109f7381a4bf20f82ead5cbd382 #main
         with:
