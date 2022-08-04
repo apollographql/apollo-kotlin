@@ -29,7 +29,7 @@ jobs:
       - run: |
           # Build the benchmark apks
           ./gradlew -p benchmark assembleRelease assembleReleaseAndroidTest
-      # Step can be removed if/when gcloud is added to the macos image - See https://github.com/actions/virtual-environments/issues/6020
+      # Step can be removed if/when gcloud is added to the macos image - See https://github.com/actions/virtual-environments/issues/4639
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@877d4953d2c70a0ba7ef3290ae968eb24af233bb #v0.6.0
       - name: microbenchmarks
