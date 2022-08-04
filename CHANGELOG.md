@@ -1,6 +1,139 @@
 Change Log
 ==========
 
+# Version 3.6.0
+
+_2022-09-01_
+
+This version brings initial support for `@defer` as well as data builders.
+
+## 💙️ External contributors
+
+Many thanks to @engdorm, @Goooler, @pt2121 and @StylianosGakis for their contributions!
+
+## ✨️ [new] `@defer` support
+
+`@defer` support is experimental in the Kotlin Client and currently a [Stage 2 GraphQL specification draft](https://github.com/graphql/graphql-spec/blob/main/CONTRIBUTING.md#stage-2-draft) to allow incremental delivery of response payloads. 
+
+`@defer` allows you to specify a fragment as deferrable, meaning it can be omitted in the initial response and delivered as a subsequent payload. This improves latency for all fields that are not in that fragment. You can read more about `@defer` in the [RFC](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md) and contribute/ask question in the [`@defer` working group](https://github.com/robrichard/defer-stream-wg).
+
+Apollo Kotlin supports `@defer` by default and will deliver the successive payloads as `Flow` items. Given the below query:
+
+```graphql
+query GetComputer {
+  computer {
+    __typename
+    id
+    ...ComputerFields @defer
+  }
+}
+
+fragment ComputerFields on Computer {
+  cpu
+  year
+  screen {
+    resolution
+  }
+}
+```
+
+And the following server payloads:
+
+**payload 1**:
+```json
+{
+  "data": {
+    "computer": {
+      "__typename": "Computer",
+      "id": "Computer1"
+    }
+  },
+  "hasNext": true
+}
+```
+
+**payload 2**:
+```json
+{
+  "incremental": [
+    {
+      "data": {
+        "cpu": "386",
+        "year": 1993,
+        "screen": {
+          "resolution": "640x480"
+        }
+      },
+      "path": [
+        "computer",
+      ]
+    }
+  ],
+  "hasNext": true
+}
+```
+
+You can listen to payloads by using `toFlow()`:
+
+```kotlin
+apolloClient.query(query).toFlow().collectIndexed { index, response ->
+  // This will be called twice
+
+  if (index == 0) {
+    // First time without the fragment
+    assertNull(response.data?.computer?.computerFields)
+  } else if (index == 1) {
+    // Second time with the fragment
+    assertNotNull(response.data?.computer?.computerFields)
+  }
+}
+```
+
+You can read more about it in [the documentation](https://www.apollographql.com/docs/kotlin/fetching/defer).
+
+As always, feedback is very welcome. Let us know what you think of the feature by
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+, [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
+or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
+invite [here](https://slack.kotl.in/)).
+
+## ✨️ [new] Data Builders (#4321)
+
+Apollo Kotlin 3.0 introduced [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/). While they are working, they have several limitations. The main one was that being [response based](https://www.apollographql.com/docs/kotlin/advanced/response-based-codegen#the-responsebased-codegen), they could generate a lot of code. Also, they required passing custom scalars using their Json encoding, which is cumbersome. 
+
+The [data builders](https://www.apollographql.com/docs/kotlin/testing/data-builders/) are a simpler version of the test builders that generate builders based on schema types. This means most of the generated code is shared between all your implementations except for a top level `Data {}` function in each of your operation:
+
+```kotlin
+// Replace
+val data = GetHeroQuery.Data {
+  hero = humanHero {
+    name = "Luke"
+  }
+} 
+
+// With
+val data = GetHeroQuery.Data {
+  hero = buildHuman {
+    name = "Luke"
+  }
+} 
+```
+
+## ✨️ [new] Kotlin 1.7 (#4314)
+
+Starting with this release, Apollo Kotlin is built with Kotlin 1.7.10. This doesn't impact Android and JVM projects (the minimum supported version of Kotlin continues to be 1.5) but if you are on a project using Native, you will need to update the Kotlin version to 1.7.0+.
+
+## 👷‍ All changes
+
+* Data builders (#4359, #4338, #4331, #4330, #4328, #4323, #4321)
+* Add a flag to disable fieldsCanMerge validation on disjoint types (#4342)
+* Re-introduce @defer and use new payload format (#4351)
+* Multiplatform: add enableCompatibilityMetadataVariant flag (#4329)
+* Remove an unnecessary `file.source().buffer()` (#4326)
+* Always use String for defaultValue in introspection Json (#4315)
+* Update Kotlin dependency to 1.7.10 (#4314)
+* Remove schema and AST from the IR (#4303)
+
 # Version 3.5.0 
 
 _2022-08-01_

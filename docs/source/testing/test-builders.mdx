@@ -2,7 +2,7 @@
 title: Test builders (experimental)
 ---
 
-> ⚠️ **Test builders are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Test%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+> ⚠️ Test builders are [response based](https://www.apollographql.com/docs/kotlin/advanced/response-based-codegen#the-responsebased-codegen) and may generate a lot of code. Moving forward, we recommend to use [data builders](./data-builders) instead, which are simpler to use. This page is kept as reference only.
 
 Apollo Kotlin provides **test builders** that enable you to instantiate your GraphQL model classes with default values. Test builders are especially helpful for testing models with a large number of fields or a deeply nested hierarchy. They automatically populate the `__typename` field and deduplicate merged fields whenever possible.
 

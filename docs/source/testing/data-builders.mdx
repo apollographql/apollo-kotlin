@@ -1,0 +1,139 @@
+---
+title: Data builders (experimental)
+---
+
+> ⚠️ **Data builders are experimental and subject to change.** If you have feedback on them, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Test%20Builders]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
+Apollo Kotlin generates models for your operations and parsers that create instances of these models from your network responses. Sometimes though, during tests or in other occasions, it is useful to instantiate models manually with known values. Doing so is not as straightforward as it may seem, especially when fragments are used. Creating `operationBased` models requires instantiating every fragment as well as choosing an appropriate `__typename` for each composite type. Data builders make this easier by providing builders that match the structure of the Json document.
+
+__Note: previous versions of Apollo Kotlin used data builders. Data builders are a simpler version of test builders that also plays nicer with custom scalars. If you're looking for the test builders documentation, it's still available [here](./test-builders).__
+
+## Enabling data builders
+
+To enable data, set the `generateDataBuilders` option to `true`:
+
+```kotlin title="build.gradle[.kts]"
+apollo {
+  // ...
+
+  // Enable data builder generation
+  generateDataBuilders.set(true)
+}
+```
+
+This generates a builder for each composite type in your schema as well as a helper `Data {}` function for each of your operations.
+
+## Example usage
+
+Let's say we're building a test that uses a mocked result of the following query:
+
+```graphql
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    firstName
+    lastName
+    age
+    
+    ship {
+      model
+      speed
+    }
+
+    friends {
+      firstName
+      lastName
+    }
+
+    ... on Droid {
+      primaryFunction
+    }
+
+    ... on Human {
+      height
+    }
+  }
+}
+```
+
+Here's how we can use the corresponding data builder for that mocked result:
+
+```kotlin
+@Test
+fun test() {
+  val data = HeroForEpisodeQuery.Data {
+    // Set values for particular fields of the query
+    hero = buildHuman {
+      firstName = "John"
+      age = 42
+      friends = listOf(
+        buildHuman {
+          firstName = "Jane"
+        }, 
+        buildHuman {
+          lastName = "Doe"
+        }
+      )
+      ship = buildStarship {
+        model = "X-Wing"
+      }
+    }
+  }
+
+  assertEquals("John", data.hero.firstName)
+  assertEquals(42, data.hero.age)
+}
+```
+
+In this example, the `hero` field is a `Human` object with specified values for `firstName` and `age`. The values for `lastName`and `height` are automatically populated with mock values.
+Similarly, values for the ship's speed, the 1st friend's last name and 2nd friend's first name are automatically populated.
+
+> You can replace `buildHuman` above with `buildDroid` to create a `Droid` object instead.
+
+## Configuring default field values
+
+To assign default values to fields, data builders use an implementation of the `FakeResolver` interface. By default, they use an instance of `DefaultFakeResolver`.
+
+The `DefaultFakeResolver` gives each `String` field the field's name as its default value, and it increments a counter as it assigns default values for `Int` fields. It defines similar default behavior for other types.
+
+You can create your _own_ `FakeResolver` implementation (optionally delegating to `DefaultTestResolver` for a head start). You then pass this implementation as a parameter to the `Data` function, like so:
+
+```kotlin {6}
+// A TestResolver implementation that assigns -1 to all Int fields
+class MyFakeResolver : FakeResolver {
+  private val delegate = DefaultFakeResolver(__Schema.all)
+  
+  override fun resolveLeaf(context: FakeResolverContext): Any {
+    return when (context.mergedField.type.leafType().name) {
+      "Int" -> -1 // Always use -1 for Ints
+      else -> delegate.resolveLeaf(context) 
+    }
+  }
+
+  override fun resolveListSize(context: FakeResolverContext): Int {
+    // Delegate to the default behaviour
+    return delegate.resolveListSize(context)
+  }
+
+  override fun resolveMaybeNull(context: FakeResolverContext): Boolean {
+    // Never 
+    return false
+  }
+
+  override fun resolveTypename(context: FakeResolverContext): String {
+    // Delegate to the default behaviour
+    return delegate.resolveTypename(context)
+  }
+}
+
+@Test
+fun test() {
+  val data = HeroForEpisodeQuery.Data(resolver = myTestResolver) {
+    hero = buildHuman {
+      firstName = "John"
+    }
+  }
+
+  // Unspecified Int field is -1
+  assertEquals(-1, data.hero.age)
+}
+```

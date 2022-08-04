@@ -38,7 +38,8 @@
       "GraphQL variables": "/advanced/operation-variables",
       "Error handling": "/essentials/errors",
       "Custom scalars": "/essentials/custom-scalars",
-      "Fragments": "/essentials/fragments"
+      "Fragments": "/essentials/fragments",
+      "@defer support (experimental)": "/fetching/defer"
     },
     "Caching": {
       "Introduction": "/caching/introduction",
@@ -64,7 +65,7 @@
       "Overview": "/testing/overview",
       "Mocking HTTP responses": "/testing/mocking-http-responses",
       "Mocking GraphQL responses": "/testing/mocking-graphql-responses",
-      "Test builders": "/testing/test-builders",
+      "Data builders": "/testing/data-builders",
       "UI Tests": "/testing/ui-tests"
     },
     "Advanced": {
