@@ -7,13 +7,13 @@ query WithFragmentSpreads {
 
 fragment ComputerFields on Computer {
   screen {
-    ...ScreenFields @experimental_defer
+    ...ScreenFields @defer
   }
 }
 
 fragment ComputerFields2 on Computer {
   screen {
-    ...ScreenFields @experimental_defer
+    ...ScreenFields @defer
   }
 }
 

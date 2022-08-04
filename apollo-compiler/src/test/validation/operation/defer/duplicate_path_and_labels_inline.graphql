@@ -6,10 +6,10 @@ query WithInlineFragments {
       year
       screen {
         resolution
-        ... on Screen @experimental_defer {
+        ... on Screen @defer {
           isColor
         }
-        ... on HasId @experimental_defer {
+        ... on HasId @defer {
           id
         }
       }

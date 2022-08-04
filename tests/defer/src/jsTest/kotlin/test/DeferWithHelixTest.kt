@@ -24,15 +24,13 @@ import graphql.GraphQLStreamDirective
 import graphql.GraphQLString
 import helix.HelixServer
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import util.dynamicObject
 import util.jsAsyncIterator
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@Ignore
-// TODO These tests are temporarily ignored while @defer has been renamed to @experimental_defer
-// See https://github.com/apollographql/apollo-kotlin/issues/4071
 class DeferWithHelixTest {
   private lateinit var helixServer: HelixServer
   private lateinit var apolloClient: ApolloClient

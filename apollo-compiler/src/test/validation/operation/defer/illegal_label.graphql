@@ -1,6 +1,6 @@
 query GetAnimal {
   animal {
-    ... on Cat @experimental_defer(label: "a/b") {
+    ... on Cat @defer(label: "a/b") {
       meow
     }
   }
