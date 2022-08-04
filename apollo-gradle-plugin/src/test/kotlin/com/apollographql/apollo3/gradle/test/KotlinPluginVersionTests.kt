@@ -13,18 +13,12 @@ class KotlinPluginVersionTests {
   }
 
   /**
-   * Using older versions of Kotlin will fail, but n-1 should still work.
+   * Using the minimum supported versions of Kotlin for JVM should work.
    */
   @Test
-  fun `kotlin n-1 succeeds`() {
-    val currentKotlinVersion = System.getenv("COM_APOLLOGRAPHQL_VERSION_KOTLIN_PLUGIN") ?: "1.6"
-    val kotlinPluginVersionToTest = if (currentKotlinVersion.startsWith("1.7")) {
-      "1.6.0"
-    } else {
-      "1.5.31"
-    }
+  fun `kotlin JVM min version succeeds`() {
     TestUtils.withTestProject("kotlin-plugin-version") { dir ->
-      dir.setKotlinPluginVersion(kotlinPluginVersionToTest)
+      dir.setKotlinPluginVersion("1.5.0")
       val result = TestUtils.executeTask("build", dir)
 
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)

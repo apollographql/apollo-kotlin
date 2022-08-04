@@ -215,7 +215,7 @@ Some platforms have specific requirements:
 For building, it requires:
 
 * Gradle 5.6
-* Kotlin 1.5+ (1.6+ for native)
+* Kotlin 1.5+ (1.7+ for native)
 
 ## Contributing
 
