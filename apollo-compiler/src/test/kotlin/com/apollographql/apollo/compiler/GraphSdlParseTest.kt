@@ -89,7 +89,7 @@ class GraphSdlParseTest() {
     val sdlFile = File("build/sdl-test/schema.sdl")
     sdlFile.parentFile.deleteRecursively()
     sdlFile.parentFile.mkdirs()
-    initialSchema.toSDL(sdlFile)
+    initialSchema.toSDL(sdlFile, legacyDefaultValues = false)
 
     assertEquals(File("src/test/sdl/default-values.sdl").readText(), sdlFile.readText())
   }

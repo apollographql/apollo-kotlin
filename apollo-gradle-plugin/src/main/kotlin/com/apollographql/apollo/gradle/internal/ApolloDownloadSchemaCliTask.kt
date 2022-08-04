@@ -176,7 +176,7 @@ abstract class ApolloDownloadSchemaCliTask : DefaultTask() {
     } else {
       if (sdlSchema == null) {
         val buffer = Buffer()
-        IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSDL(buffer)
+        IntrospectionSchema(introspectionSchema!!.byteInputStream()).toSDL(buffer, legacyDefaultValues = false)
         sdlSchema = buffer.readString(Charset.defaultCharset())
       }
       schema.writeText(sdlSchema)
