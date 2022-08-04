@@ -1,11 +1,10 @@
 name: benchmarks
 
 on:
-  # TODO Testing only, must revert to schedule
-  pull_request:
-    branches: [ '*' ]
-#  schedule:
-#    - cron: '0 3 * * *'
+  #  pull_request:
+  #    branches: [ '*' ]
+  schedule:
+    - cron: '0 3 * * *'
 
 jobs:
   benchmarks:
