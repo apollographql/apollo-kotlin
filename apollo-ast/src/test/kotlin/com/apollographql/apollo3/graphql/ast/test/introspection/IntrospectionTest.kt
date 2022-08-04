@@ -60,7 +60,7 @@ class IntrospectionTest {
 
     assertEquals("false", someInputFields.first { it.name == "value1" }.defaultValue)
     assertEquals("South", someInputFields.first { it.name == "value2" }.defaultValue)
-    assertEquals("{\n  value: true\n  value2: [North,null,South]\n}\n", someInputFields.first { it.name == "value3" }.defaultValue)
+    assertEquals("{\nvalue: true\nvalue2: [North,null,South]\n}\n", someInputFields.first { it.name == "value3" }.defaultValue)
     assertEquals("[0,null,1]", someInputFields.first { it.name == "value4" }.defaultValue)
     assertEquals("\"South\"", someInputFields.first { it.name == "value5" }.defaultValue)
   }
