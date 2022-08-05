@@ -5,9 +5,10 @@
     "docset:android"
   ],
   "sidebar": {
-    "Introduction": "/",
+    "Get Started": "/",
     "Migrating to v3": "/migration/3.0",
     "Kdoc": "https://www.apollographql.com/docs/kotlin/kdoc/",
+    "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Tutorial": {
       "0. Introduction": "/tutorial/00-introduction",
       "1. Configure your project": "/tutorial/01-configure-project",
@@ -22,8 +23,15 @@
       "10. Authenticate your operations": "/tutorial/10-authenticate-your-queries",
       "11. Write your first subscription": "/tutorial/11-subscriptions"
     },
-    "Essentials": {
+
+    "Configuration": {
       "File types": "/essentials/file-types",
+      "Gradle plugin configuration": "/advanced/plugin-configuration",
+      "Batching operations": "/advanced/query-batching",
+      "Client Awareness": "/advanced/client-awareness"
+
+    },
+    "Fetching": {
       "Queries": "/essentials/queries",
       "Mutations": "/essentials/mutations",
       "Subscriptions": "/essentials/subscriptions",
@@ -50,7 +58,7 @@
       "Authentication": "/advanced/authentication",
       "WebSocket errors": "/advanced/websocket-errors"
     },
-    "Testing": {
+    "Development & Testing": {
       "Overview": "/testing/overview",
       "Mocking HTTP responses": "/testing/mocking-http-responses",
       "Mocking GraphQL responses": "/testing/mocking-graphql-responses",
@@ -58,13 +66,10 @@
       "UI Tests": "/testing/ui-tests"
     },
     "Advanced": {
-      "Batching operations": "/advanced/query-batching",
       "Uploading files": "/advanced/upload",
       "Enforcing non-nullability": "/advanced/nonnull",
-      "Gradle plugin configuration": "/advanced/plugin-configuration",
       "Multi Modules": "/advanced/multi-modules",
       "Using aliases": "/advanced/using-aliases",
-      "Client Awareness": "/advanced/client-awareness",
       "Codegen methods": "/advanced/response-based-codegen",
       "Using with Java": "/advanced/java",
       "RxJava support": "/advanced/rxjava",
