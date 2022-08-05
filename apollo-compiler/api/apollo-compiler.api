@@ -884,34 +884,6 @@ public final class com/apollographql/apollo3/compiler/introspection/Schema_to_in
 	public static final fun toKotlinValue (Lcom/apollographql/apollo3/ast/GQLValue;Z)Ljava/lang/Object;
 }
 
-public final class com/apollographql/apollo3/compiler/ir/IrCompositeType2 : com/apollographql/apollo3/compiler/ir/IrType2 {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun getName ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrEnumType2 : com/apollographql/apollo3/compiler/ir/IrType2 {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun getName ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrListType2 : com/apollographql/apollo3/compiler/ir/IrType2 {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType2;)V
-	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType2;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrNonNullType2 : com/apollographql/apollo3/compiler/ir/IrType2 {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/ir/IrType2;)V
-	public final fun getOfType ()Lcom/apollographql/apollo3/compiler/ir/IrType2;
-}
-
-public final class com/apollographql/apollo3/compiler/ir/IrScalarType2 : com/apollographql/apollo3/compiler/ir/IrType2 {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun getName ()Ljava/lang/String;
-}
-
-public abstract interface class com/apollographql/apollo3/compiler/ir/IrType2 {
-}
-
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun getName ()Ljava/lang/String;

@@ -303,12 +303,12 @@ internal data class IrMapProperty(
  * This is a separate type from [IrType] because [IrType] is quite big already. We might
  * want to refactor our type handling at some point
  */
-sealed interface IrType2
-class IrNonNullType2(val ofType: IrType2) : IrType2
-class IrListType2(val ofType: IrType2) : IrType2
-class IrScalarType2(val name: String) : IrType2
-class IrEnumType2(val name: String) : IrType2
-class IrCompositeType2(val name: String) : IrType2
+internal sealed interface IrType2
+internal class IrNonNullType2(val ofType: IrType2) : IrType2
+internal class IrListType2(val ofType: IrType2) : IrType2
+internal class IrScalarType2(val name: String) : IrType2
+internal class IrEnumType2(val name: String) : IrType2
+internal class IrCompositeType2(val name: String) : IrType2
 
 internal data class IrInterface(
     override val name: String,
