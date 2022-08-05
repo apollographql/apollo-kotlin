@@ -26,9 +26,9 @@
 
     "Configuration": {
       "File types": "/essentials/file-types",
-      "Gradle plugin configuration": "/advanced/plugin-configuration",
-      "Batching operations": "/advanced/query-batching",
-      "Client Awareness": "/advanced/client-awareness"
+      "Client Awareness": "/advanced/client-awareness",
+      "Codegen methods": "/advanced/response-based-codegen",
+      "Multi Modules": "/advanced/multi-modules"
 
     },
     "Fetching": {
@@ -56,7 +56,9 @@
       "Custom HTTP clients": "/advanced/http-engine",
       "Using the models without apollo-runtime": "/advanced/no-runtime",
       "Authentication": "/advanced/authentication",
-      "WebSocket errors": "/advanced/websocket-errors"
+      "WebSocket errors": "/advanced/websocket-errors",
+      "Gradle plugin configuration": "/advanced/plugin-configuration",
+      "Batching operations": "/advanced/query-batching"
     },
     "Development & Testing": {
       "Overview": "/testing/overview",
@@ -68,9 +70,7 @@
     "Advanced": {
       "Uploading files": "/advanced/upload",
       "Enforcing non-nullability": "/advanced/nonnull",
-      "Multi Modules": "/advanced/multi-modules",
       "Using aliases": "/advanced/using-aliases",
-      "Codegen methods": "/advanced/response-based-codegen",
       "Using with Java": "/advanced/java",
       "RxJava support": "/advanced/rxjava",
       "Kotlin native": "/advanced/kotlin-native",
