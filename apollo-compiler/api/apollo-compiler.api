@@ -384,21 +384,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/CgFile {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/lang/String;Z)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getFileName ()Ljava/lang/String;
-	public final fun getFunSpecs ()Ljava/util/List;
-	public final fun getPackageName ()Ljava/lang/String;
-	public final fun getTypeSpecs ()Ljava/util/List;
-	public final fun isTest ()Z
-}
-
-public abstract interface class com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
-	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
-	public abstract fun prepare ()V
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames;
 	public final fun getObj ()Lcom/squareup/kotlinpoet/MemberName;

@@ -7,7 +7,7 @@ import com.squareup.kotlinpoet.TypeSpec
 /**
  * A file that is going to be converted to a KotlinPoet [FileSpec]
  */
-class CgFile(
+internal class CgFile(
     val packageName: String,
     val typeSpecs: List<TypeSpec> = emptyList(),
     val funSpecs: List<FunSpec> = emptyList(),
@@ -15,7 +15,7 @@ class CgFile(
     val isTest: Boolean = false
 )
 
-interface CgFileBuilder {
+internal interface CgFileBuilder {
   fun prepare()
   fun build(): CgFile
 }
