@@ -519,7 +519,7 @@ type Film  {
     The ISO 8601 date format of film release at original creator country.
     """
     releaseDate: Date!
-    planetConnection(after: String, first: Int, before: String, last: Int): FilmPlanetsConnection
+    planetConnection(after: String, first: Int, before: String, last: Int): PlanetsConnection
     """
     The ISO 8601 date format of the time that this resource was created.
     """
