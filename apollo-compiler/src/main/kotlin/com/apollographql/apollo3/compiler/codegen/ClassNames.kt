@@ -16,6 +16,7 @@ internal object ClassNames {
   val ObjectTypeBuilder = ResolverClassName(apolloApiPackageName, "ObjectType", "Builder")
   val InterfaceTypeBuilder = ResolverClassName(apolloApiPackageName, "InterfaceType", "Builder")
 
+  val ObjectBuilder = ResolverClassName(apolloApiPackageName, "ObjectBuilder")
   val JsonReader = ResolverClassName(apolloApiJsonPackageName, "JsonReader")
   val JsonWriter = ResolverClassName(apolloApiJsonPackageName, "JsonWriter")
   val CustomScalarAdapters = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters")

@@ -435,7 +435,15 @@ interface Service {
    * Only valid when [generateKotlinModels] is true
    */
   @ApolloExperimental
+  @Deprecated("Test builders are operation based and generate a lot of code. Use data builders instead", ReplaceWith("generateDataBuilders"))
   val generateTestBuilders: Property<Boolean>
+
+  /**
+   * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
+   * cases too.
+   */
+  @ApolloExperimental
+  val generateDataBuilders: Property<Boolean>
 
   /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"

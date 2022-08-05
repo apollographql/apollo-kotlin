@@ -12,6 +12,7 @@ import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
+import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
@@ -191,7 +192,36 @@ internal class IrBuilder(
         embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
             directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
             connectionTypeEmbeddedFields(name, schema),
+        mapProperties = fields.map {
+          it.toIrMapProperty()
+        },
+        superTypes = schema.superTypes(this).toList()
     )
+  }
+
+  private fun GQLFieldDefinition.toIrMapProperty(): IrMapProperty {
+    return IrMapProperty(
+        name,
+        type.toIrType2()
+    )
+  }
+
+  private fun GQLType.toIrType2(): IrType2 {
+    return when(this) {
+      is GQLNonNullType -> IrNonNullType2(type.toIrType2())
+      is GQLListType -> IrListType2(type.toIrType2())
+      is GQLNamedType -> {
+        val typeDefinition = schema.typeDefinition(name)
+        when(typeDefinition) {
+          is GQLScalarTypeDefinition -> return IrScalarType2(name)
+          is GQLEnumTypeDefinition -> return IrEnumType2(name)
+          is GQLInputObjectTypeDefinition -> error("Input objects are not supported in data builders")
+          is GQLInterfaceTypeDefinition,
+          is GQLObjectTypeDefinition,
+          is GQLUnionTypeDefinition -> IrCompositeType2(name)
+        }
+      }
+    }
   }
 
   private fun GQLInterfaceTypeDefinition.toIr(): IrInterface {
@@ -357,7 +387,7 @@ internal class IrBuilder(
     return IrOperation(
         name = name!!,
         description = description,
-        operationType = operationType.toIrOperationType(),
+        operationType = operationType.toIrOperationType(schema.rootTypeNameFor(operationType)),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
         selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeDefinition.name),
@@ -369,10 +399,10 @@ internal class IrBuilder(
     )
   }
 
-  private fun String.toIrOperationType() = when (this) {
-    "query" -> IrOperationType.Query
-    "mutation" -> IrOperationType.Mutation
-    "subscription" -> IrOperationType.Subscription
+  private fun String.toIrOperationType(typeName: String) = when (this) {
+    "query" -> IrOperationType.Query(typeName)
+    "mutation" -> IrOperationType.Mutation(typeName)
+    "subscription" -> IrOperationType.Subscription(typeName)
     else -> error("unknown operation $this")
   }
 

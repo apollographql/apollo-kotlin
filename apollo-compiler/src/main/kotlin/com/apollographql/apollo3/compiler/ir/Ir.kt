@@ -19,7 +19,11 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.type
  * - registers used types and fragments
  * - more generally removes all references to the GraphQL AST and "embeds" type definitions/field definitions
  *
- * In order to ensure reproducibility, prefer using [List] instead of [Set]
+ * Additional notes:
+ * - In order to ensure reproducibility, prefer using [List] instead of [Set] so that the order is guaranteed
+ * - The IR doesn't escape identifiers because different targets might have different escaping rules. The names
+ * found in the IR are as found in the GraphQL documents
+ *
  */
 internal data class Ir(
     val operations: List<IrOperation>,
@@ -149,10 +153,19 @@ internal data class IrFragmentDefinition(
     val dataModelGroup: IrModelGroup,
 )
 
-internal enum class IrOperationType {
-  Query,
-  Mutation,
-  Subscription
+internal sealed class IrOperationType(val typeName: String) {
+  val name: String
+    get() {
+      return when (this) {
+        is Query -> "Query"
+        is Mutation -> "Mutation"
+        is Subscription -> "Subscription"
+      }
+    }
+
+  class Query(name: String) : IrOperationType(name)
+  class Mutation(name: String) : IrOperationType(name)
+  class Subscription(name: String) : IrOperationType(name)
 }
 
 /**
@@ -270,11 +283,32 @@ internal data class IrObject(
     override val name: String,
     override val targetName: String?,
     val implements: List<String>,
+    /**
+     * contrary to [implements], [superTypes] also includes unions
+     */
+    val superTypes: List<String>,
     val keyFields: List<String>,
     val description: String?,
     val deprecationReason: String?,
     val embeddedFields: List<String>,
+    val mapProperties: List<IrMapProperty>,
 ) : IrSchemaType
+
+internal data class IrMapProperty(
+    val name: String,
+    val type: IrType2,
+)
+
+/**
+ * This is a separate type from [IrType] because [IrType] is quite big already. We might
+ * want to refactor our type handling at some point
+ */
+sealed interface IrType2
+class IrNonNullType2(val ofType: IrType2) : IrType2
+class IrListType2(val ofType: IrType2) : IrType2
+class IrScalarType2(val name: String) : IrType2
+class IrEnumType2(val name: String) : IrType2
+class IrCompositeType2(val name: String) : IrType2
 
 internal data class IrInterface(
     override val name: String,

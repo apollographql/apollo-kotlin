@@ -2,9 +2,11 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
+import com.apollographql.apollo3.compiler.codegen.Identifier.block
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
@@ -21,8 +23,11 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
@@ -36,15 +41,16 @@ internal class OperationBuilder(
     private val operation: IrOperation,
     flatten: Boolean,
     private val addJvmOverloads: Boolean,
+    val generateDataBuilders: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.operationPackageName(operation.filePath)
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {
-    IrOperationType.Query -> KotlinSymbols.QueryData
-    IrOperationType.Mutation -> KotlinSymbols.MutationData
-    IrOperationType.Subscription -> KotlinSymbols.SubscriptionData
+    is IrOperationType.Query -> KotlinSymbols.QueryData
+    is IrOperationType.Mutation -> KotlinSymbols.MutationData
+    is IrOperationType.Subscription -> KotlinSymbols.SubscriptionData
   }
 
   private val modelBuilders = operation.dataModelGroup.maybeFlatten(flatten).flatMap {
@@ -105,9 +111,9 @@ internal class OperationBuilder(
 
   private fun superInterfaceType(): TypeName {
     return when (operation.operationType) {
-      IrOperationType.Query -> KotlinSymbols.Query
-      IrOperationType.Mutation -> KotlinSymbols.Mutation
-      IrOperationType.Subscription -> KotlinSymbols.Subscription
+      is IrOperationType.Query -> KotlinSymbols.Query
+      is IrOperationType.Mutation -> KotlinSymbols.Mutation
+      is IrOperationType.Subscription -> KotlinSymbols.Subscription
     }.parameterizedBy(
         context.resolver.resolveModel(operation.dataModelGroup.baseModelId)
     )
@@ -160,12 +166,42 @@ internal class OperationBuilder(
               .build()
           )
         }
+        .applyIf(generateDataBuilders) {
+          addFunction(dataBuilderCtor())
+        }
         .addProperty(PropertySpec
             .builder(OPERATION_NAME, KotlinSymbols.String)
             .addModifiers(KModifier.CONST)
             .initializer("%S", operation.name)
             .build()
         )
+        .build()
+  }
+
+  private fun dataBuilderCtor(): FunSpec {
+    return FunSpec.builder(Identifier.Data)
+        .addParameter(
+            ParameterSpec.builder(
+                block,
+                LambdaTypeName.get(
+                    receiver = context.resolver.resolveBuilderType(operation.operationType.typeName),
+                    parameters = emptyArray<TypeName>(),
+                    returnType = KotlinSymbols.Unit
+                )
+            ).build()
+        )
+        .addCode(
+            CodeBlock.builder()
+                .addStatement(
+                    "return·%L.fromJson(%T(%M($block)),·%T.Empty)",
+                    context.resolver.adapterInitializer(operation.dataProperty.info.type, requiresBuffering = false),
+                    KotlinSymbols.MapJsonReader,
+                    context.resolver.resolveBuilderFun(operation.operationType.typeName),
+                    KotlinSymbols.CustomScalarAdapters
+                )
+                .build()
+        )
+        .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .build()
   }
 

@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /**
@@ -9,6 +10,7 @@ import com.squareup.kotlinpoet.TypeSpec
 class CgFile(
     val packageName: String,
     val typeSpecs: List<TypeSpec> = emptyList(),
+    val funSpecs: List<FunSpec> = emptyList(),
     val fileName: String,
     val isTest: Boolean = false
 )

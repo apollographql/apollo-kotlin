@@ -158,6 +158,7 @@ class Options(
      * Only valid when [targetLanguage] is "kotlin"
      */
     val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
+    val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
     val moduleName: String = defaultModuleName,
 
     /**
@@ -241,6 +242,7 @@ class Options(
       moduleName: String = this.moduleName,
       targetLanguage: TargetLanguage = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
+      generateDataBuilders: Boolean = this.generateDataBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
       addJvmOverloads: Boolean = this.addJvmOverloads,
@@ -275,6 +277,7 @@ class Options(
       generatedSchemaName = generatedSchemaName,
       moduleName = moduleName,
       generateTestBuilders = generateTestBuilders,
+      generateDataBuilders = generateDataBuilders,
       testDir = testDir,
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
@@ -306,6 +309,7 @@ class Options(
     const val defaultGenerateSchema = false
     const val defaultGeneratedSchemaName = "__Schema"
     const val defaultGenerateTestBuilders = false
+    const val defaultGenerateDataBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     const val defaultGenerateOptionalOperationVariables = true
     const val defaultUseSchemaPackageNameForFragments = false

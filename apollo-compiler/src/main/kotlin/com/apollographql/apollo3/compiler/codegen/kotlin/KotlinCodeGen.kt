@@ -30,6 +30,7 @@ import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
@@ -54,6 +55,7 @@ internal class KotlinCodeGen(
     private val generateSchema: Boolean,
     private val generatedSchemaName: String,
     private val generateTestBuilders: Boolean,
+    private val generateDataBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
      * want to flatten at depth 1 to avoid name clashes, but it's ok to flatten fragment response adapters at
@@ -109,17 +111,17 @@ internal class KotlinCodeGen(
     ir.objects
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { obj ->
-          builders.add(ObjectBuilder(context, obj))
+          builders.add(ObjectBuilder(context, obj, generateDataBuilders))
         }
     ir.interfaces
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { iface ->
-          builders.add(InterfaceBuilder(context, iface))
+          builders.add(InterfaceBuilder(context, iface, generateDataBuilders))
         }
     ir.unions
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { union ->
-          builders.add(UnionBuilder(context, union))
+          builders.add(UnionBuilder(context, union, generateDataBuilders))
         }
     ir.customScalars
         .filter { !context.resolver.canResolveSchemaType(it.name) }
@@ -179,6 +181,7 @@ internal class KotlinCodeGen(
                   operation,
                   flatten,
                   addJvmOverloads,
+                  generateDataBuilders
               )
           )
 
@@ -228,6 +231,9 @@ internal class KotlinCodeGen(
           cgFile.typeSpecs.map { typeSpec -> typeSpec.internal(generateAsInternal) }.forEach { typeSpec ->
             builder.addType(typeSpec)
           }
+          cgFile.funSpecs.map { funSpec -> funSpec.internal(generateAsInternal) }.forEach { funSpec ->
+            builder.addFunction(funSpec)
+          }
 
           val dir = if (cgFile.isTest) {
             testDir
@@ -248,6 +254,14 @@ internal class KotlinCodeGen(
   }
 
   private fun TypeSpec.internal(generateAsInternal: Boolean): TypeSpec {
+    return if (generateAsInternal) {
+      this.toBuilder().addModifiers(KModifier.INTERNAL).build()
+    } else {
+      this
+    }
+  }
+
+  private fun FunSpec.internal(generateAsInternal: Boolean): FunSpec {
     return if (generateAsInternal) {
       this.toBuilder().addModifiers(KModifier.INTERNAL).build()
     } else {

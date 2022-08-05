@@ -15,6 +15,7 @@ internal object Identifier {
   const val reader = "reader"
   const val writer = "writer"
   const val toJson = "toJson"
+  const val build = "build"
   const val fromJson = "fromJson"
   const val getPath = "getPath"
   const val serializeVariables = "serializeVariables"
@@ -39,6 +40,7 @@ internal object Identifier {
   const val field = "field"
   const val __map = "__map"
   const val __path = "__path"
+  const val __fields = "__fields"
 
   const val OPERATION_DOCUMENT = "OPERATION_DOCUMENT"
   const val OPERATION_NAME = "OPERATION_NAME"

@@ -1,0 +1,9 @@
+query GetStuff {
+  nullableInt
+  nonNullableInt
+  alias: nullableInt
+}
+
+mutation PutStuff {
+  nullableInt
+}

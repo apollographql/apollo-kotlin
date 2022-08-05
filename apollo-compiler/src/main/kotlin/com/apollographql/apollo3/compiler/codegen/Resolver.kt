@@ -29,7 +29,10 @@ enum class ResolverKeyKind {
   Fragment,
   FragmentVariablesAdapter,
   FragmentSelections,
-  TestBuilder
+  TestBuilder,
+  MapType,
+  BuilderType,
+  BuilderFun
 }
 
 @JsonClass(generateAdapter = true)
