@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-adapters")
-  testImplementation("com.apollographql.apollo3:apollo-testing-support")
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.adapters)
+  testImplementation(libs.apollo.testingSupport)
   testImplementation(libs.kotlin.test)
 }
 

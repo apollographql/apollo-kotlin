@@ -11,8 +11,8 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache")
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.normalizedCache)
       }
     }
 
@@ -21,9 +21,9 @@ kotlin {
         implementation(libs.kotlin.test.common)
         implementation(libs.kotlin.test.annotations.common)
 
-        implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation("com.apollographql.apollo3:apollo-mockserver")
-        implementation("com.apollographql.apollo3:apollo-mpp-utils")
+        implementation(libs.apollo.testingSupport)
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.mppUtils)
       }
     }
   }

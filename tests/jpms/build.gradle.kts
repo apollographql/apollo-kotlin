@@ -9,9 +9,9 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-rx2-support")
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.rx2)
+  implementation(libs.apollo.normalizedCache.sqlite)
   testImplementation(libs.junit)
 }
 

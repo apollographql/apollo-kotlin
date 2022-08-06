@@ -6,8 +6,8 @@ plugins {
 
 dependencies {
   implementation(libs.androidx.espresso.idlingResource)
-  implementation("com.apollographql.apollo3:apollo-idling-resource")
-  testImplementation("com.apollographql.apollo3:apollo-mockserver")
+  implementation(libs.apollo.idlingResource)
+  testImplementation(libs.apollo.mockserver)
   testImplementation(libs.android.support.annotations)
   testImplementation(libs.android.test.runner)
 }

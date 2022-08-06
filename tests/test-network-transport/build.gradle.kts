@@ -4,12 +4,12 @@ plugins {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-mockserver")
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.mockserver)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
   testImplementation(libs.turbine)
-  testImplementation("com.apollographql.apollo3:apollo-testing-support")
+  testImplementation(libs.apollo.testingSupport)
 }
 
 apollo {

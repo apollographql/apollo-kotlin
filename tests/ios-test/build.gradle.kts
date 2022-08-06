@@ -9,15 +9,15 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
-        implementation("com.apollographql.apollo3:apollo-mockserver")
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.mockserver)
       }
     }
 
     val commonTest by getting {
       dependencies {
         implementation(libs.kotlin.test.junit)
-        implementation("com.apollographql.apollo3:apollo-testing-support")
+        implementation(libs.apollo.testingSupport)
       }
     }
   }

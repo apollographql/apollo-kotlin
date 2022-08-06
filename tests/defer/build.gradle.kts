@@ -16,15 +16,15 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache")
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.normalizedCache)
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-mockserver")
-        implementation("com.apollographql.apollo3:apollo-testing-support")
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.testingSupport)
         implementation(libs.kotlin.test)
       }
     }
@@ -43,7 +43,7 @@ kotlin {
 
     val jvmTest by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-http-cache")
+        implementation(libs.apollo.httpCache)
       }
     }
   }
