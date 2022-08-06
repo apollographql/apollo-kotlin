@@ -27,24 +27,24 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlinxserializationjson").toString()) {
+        implementation(libs.kotlinx.coroutines)
+        implementation(libs.kotlinx.serialization.json.get().toString()) {
           because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
         }
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${groovy.util.Eval.x(project, "x.versions.kotlinCoroutines")}")
+        implementation(libs.kotlinx.coroutines.test)
       }
     }
 
     val javaCodegenTest by getting {
       dependencies {
         // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(kotlin("test-junit"))
+        implementation(libs.kotlin.test.junit)
       }
     }
 
     val jvmTest by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttpLogging"))
+        implementation(libs.okHttp.logging)
       }
     }
   }

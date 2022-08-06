@@ -7,7 +7,7 @@ dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime")
   implementation("com.apollographql.apollo3:apollo-adapters")
   testImplementation("com.apollographql.apollo3:apollo-testing-support")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
+  testImplementation(libs.kotlin.test)
 }
 
 apollo {

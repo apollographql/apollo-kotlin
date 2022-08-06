@@ -25,7 +25,7 @@ kotlin {
       dependencies {
         implementation("com.apollographql.apollo3:apollo-mockserver")
         implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
+        implementation(libs.kotlin.test)
       }
     }
 

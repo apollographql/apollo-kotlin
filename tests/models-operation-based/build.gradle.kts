@@ -33,7 +33,7 @@ kotlin {
     val javaCodegenTest by getting {
       dependencies {
         // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(kotlin("test-junit"))
+        implementation(libs.kotlin.test.junit)
       }
     }
   }

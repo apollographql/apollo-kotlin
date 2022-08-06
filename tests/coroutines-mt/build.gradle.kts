@@ -21,8 +21,8 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(kotlin("test-common"))
-        implementation(kotlin("test-annotations-common"))
+        implementation(libs.kotlin.test.common)
+        implementation(libs.kotlin.test.annotations.common)
       }
     }
   }

@@ -10,8 +10,8 @@ dependencies {
   implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
   implementation("com.apollographql.apollo3:apollo-mockserver")
   implementation("com.apollographql.apollo3:apollo-rx2-support")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
 }
 
 apollo {

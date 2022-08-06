@@ -16,7 +16,7 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(kotlin("test-junit"))
+        implementation(libs.kotlin.test.junit)
         implementation("com.apollographql.apollo3:apollo-testing-support")
       }
     }

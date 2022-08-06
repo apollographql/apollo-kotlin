@@ -8,7 +8,7 @@ dependencies {
   implementation("com.apollographql.apollo3:apollo-normalized-cache")
   implementation("com.apollographql.apollo3:apollo-mockserver")
   implementation("com.apollographql.apollo3:apollo-rx2-support")
-  testImplementation(kotlin("test-junit"))
+  testImplementation(libs.kotlin.test.junit)
 }
 
 apollo {
