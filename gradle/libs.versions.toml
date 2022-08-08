@@ -5,7 +5,7 @@ android-sdkVersion-compile = "31"
 android-sdkVersion-min = "15"
 android-sdkVersion-target = "30"
 androidx-sqlite = "2.1.0"
-antlr4 = "4.9.3"
+antlr = "4.9.3"
 # This is used by the gradle integration tests to get the artifacts locally
 apollo = "3.5.1-SNAPSHOT"
 cache = "2.0.2"
@@ -18,8 +18,10 @@ kotlinx-coroutines = "1.6.4"
 kotlin-compatVersion = "1.5"
 kotlin-stdlib = "1.6.21"
 kotlin-plugin = "1.7.10"
+kotlin-plugin-duringIdeaSync = "1.6.10"
 kotlinx-datetime = "0.4.0"
-ksp-gradlePlugin = "1.7.10-1.0.6"
+ksp = "1.7.10-1.0.6"
+ksp-duringIdeaSync = "1.6.10-1.0.2"
 ktor = "2.0.2"
 moshi = "1.12.0"
 moshix = "0.14.1"
@@ -31,8 +33,8 @@ sqldelight = "1.5.3"
 truth = "1.1.3"
 
 [libraries]
-android-plugin-min = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin-min" }
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
+android-plugin-min = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin-min" }
 android-support-annotations = { group = "com.android.support", name = "support-annotations", version = "28.0.0" }
 android-test-runner = { group = "com.android.support.test", name = "runner", version = "1.0.2" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.1.0" }
@@ -41,8 +43,8 @@ androidx-recyclerView = { group = "androidx.recyclerview", name = "recyclerview"
 androidx-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "androidx-sqlite" }
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "androidx-sqlite" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
-antlr-antlr = { group = "org.antlr", name = "antlr4", version.ref = "antlr4" }
-antlr-runtime = { group = "org.antlr", name = "antlr4-runtime", version.ref = "antlr4" }
+antlr = { group = "org.antlr", name = "antlr4", version.ref = "antlr" }
+antlr-runtime = { group = "org.antlr", name = "antlr4-runtime", version.ref = "antlr" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-adapters = { group = "com.apollographql.apollo3", name = "apollo-adapters", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo3", name = "apollo-http-cache", version.ref = "apollo" }
@@ -93,7 +95,7 @@ kotlin-test-annotations-common = { group = "org.jetbrains.kotlin", name = "kotli
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
 # See https://youtrack.jetbrains.com/issue/KTIJ-21583/HMPP:-1.6.20-breaks-autocomplete-in-multiplatform-composite-buil#focus=Comments-27-6022244.0-0
-kotlin-plugin-duringIdeaSync = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = "1.6.10" }
+kotlin-plugin-duringIdeaSync = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-duringIdeaSync" }
 # For Gradle integration tests to make sure we stay compatible with 1.5.0
 kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = "1.5.0" }
 # Used by the Apollo Gradle plugin because the Kotlin plugin is in the buildscript classpath already so there's no need to
@@ -110,8 +112,8 @@ kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx3", version.ref = "kotlinx-coroutines" }
 kotlinx-nodejs = { group = "org.jetbrains.kotlinx", name = "kotlinx-nodejs", version = "0.0.7" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.3.2" }
-ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp-gradlePlugin" }
-ksp-gradlePlugin-duringIdeaSync = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version = "1.6.10-1.0.2" }
+ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+ksp-duringIdeaSync = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp.duringIdeaSync" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
