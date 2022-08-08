@@ -2,8 +2,6 @@ plugins {
   `embedded-kotlin`
 }
 
-apply(from = "../gradle/dependencies.gradle")
-
 repositories {
   mavenCentral()
   google()
