@@ -68,11 +68,11 @@ dependencies {
 
 configure<com.android.build.gradle.LibraryExtension> {
   namespace = "com.apollographql.apollo3.benchmark"
-  compileSdk = groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt()
+  compileSdkVersion(libs.versions.android.sdkVersion.compile.get().toInt())
 
   defaultConfig {
-    minSdk = groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt()
-    targetSdk = groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt()
+    minSdkVersion(libs.versions.android.sdkVersion.min.get())
+    targetSdkVersion(libs.versions.android.sdkVersion.target.get())
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
