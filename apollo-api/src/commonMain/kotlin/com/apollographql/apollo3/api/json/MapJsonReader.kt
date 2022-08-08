@@ -76,7 +76,7 @@ constructor(
     is JsonNumber -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
-    else -> error("Unsupported value $any")
+    else -> JsonReader.Token.ANY
   }
 
   /**
@@ -316,6 +316,14 @@ constructor(
       is JsonNumber -> value
       else -> error("Expected JsonNumber but got $value instead")
     }.also {
+      advanceIterator()
+    }
+  }
+
+  fun nextValue(): Any {
+    val data = peekedData ?: throw JsonDataException("Expected a non-null value at path ${getPathAsString()}")
+
+    return data.also {
       advanceIterator()
     }
   }

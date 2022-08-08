@@ -193,7 +193,7 @@ internal class OperationBuilder(
         .addCode(
             CodeBlock.builder()
                 .addStatement(
-                    "return·%L.fromJson(%T(%M($block)),·%T.Empty)",
+                    "return·%L.fromJson(%T(%M($block)),·%T.Unsafe)",
                     context.resolver.adapterInitializer(operation.dataProperty.info.type, requiresBuffering = false),
                     KotlinSymbols.MapJsonReader,
                     context.resolver.resolveBuilderFun(operation.operationType.typeName),

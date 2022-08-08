@@ -10,6 +10,9 @@ type Query {
   cat: Cat!
   animal: Animal!
   feline: Feline!
+  long1: Long1
+  long2: Long2
+  long3: Long3
 }
 
 enum Direction {
@@ -43,3 +46,7 @@ interface Animal2 {
   species: String!
 }
 union Feline2 = Cat | Lion
+
+scalar Long1
+scalar Long2
+scalar Long3

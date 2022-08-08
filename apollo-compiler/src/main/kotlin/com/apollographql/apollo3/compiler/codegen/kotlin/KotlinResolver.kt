@@ -36,7 +36,7 @@ class KotlinResolver(
     entries: List<ResolverEntry>,
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
-    private val requiresOptInAnnotation: String?
+    private val requiresOptInAnnotation: String?,
 ) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
@@ -67,7 +67,7 @@ class KotlinResolver(
 
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
-  private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName): Unit{
+  private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName): Unit {
     check(memberName.enclosingClassName == null) {
       "enclosingClassName is not supported"
     }
@@ -122,6 +122,49 @@ class KotlinResolver(
     }
   }
 
+  private fun CodeBlock.nullable(): CodeBlock {
+    val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
+    return CodeBlock.of("%L.%M()", this, nullableFun)
+  }
+
+  internal fun adapterInitializer2(type: IrType2): CodeBlock? {
+    if (type !is IrNonNullType2) {
+      return if (type is IrScalarType2) {
+        val mapping = scalarMapping.get(type.name)
+        when {
+          mapping == null -> null // Any or builtin Int/Double/Boolean/String
+          mapping.adapterInitializer is RuntimeAdapterInitializer -> null // Will go through the Any path
+          mapping.adapterInitializer is ExpressionAdapterInitializer -> adapterInitializer2(IrNonNullType2(type))?.nullable()
+          else -> error("")
+        }
+      } else {
+        adapterInitializer2(IrNonNullType2(type))?.nullable()
+      }
+    }
+    return nonNullableAdapterInitializer2(type.ofType)
+  }
+
+  private fun CodeBlock.list(): CodeBlock {
+    val listFun = MemberName("com.apollographql.apollo3.api", "list")
+    return CodeBlock.of("%L.%M()", this, listFun)
+  }
+
+  private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {
+    return when (type) {
+      is IrNonNullType2 -> error("")
+      is IrListType2 -> adapterInitializer2(type.ofType)?.list()
+      is IrScalarType2 -> {
+        when (scalarMapping.get(type.name)?.adapterInitializer) {
+          null -> null
+          is ExpressionAdapterInitializer -> nonNullableScalarAdapterInitializer(IrScalarType(type.name))
+          RuntimeAdapterInitializer -> null
+        }
+      }
+      is IrEnumType2 -> nonNullableAdapterInitializer(IrEnumType(type.name), false)
+      is IrCompositeType2 -> null
+    }
+  }
+
   internal fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
     if (type !is IrNonNullType) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
@@ -135,6 +178,7 @@ class KotlinResolver(
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
           CodeBlock.of("%M", KotlinSymbols.NullableAnyAdapter)
         }
+
         else -> {
           val nullableFun = MemberName("com.apollographql.apollo3.api", "nullable")
           CodeBlock.of("%L.%M()", adapterInitializer(IrNonNullType(type), requiresBuffering), nullableFun)
@@ -169,22 +213,28 @@ class KotlinResolver(
         val listFun = MemberName("com.apollographql.apollo3.api", "list")
         CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), listFun)
       }
+
       type is IrScalarType -> {
         nonNullableScalarAdapterInitializer(type)
       }
+
       type is IrEnumType -> {
         CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name))
       }
+
       type is IrInputObjectType -> {
         CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.SchemaTypeAdapter, type.name)).obj(requiresBuffering)
       }
+
       type is IrModelType -> {
         CodeBlock.of("%T", resolveAndAssert(ResolverKeyKind.ModelAdapter, type.path)).obj(requiresBuffering)
       }
+
       type is IrOptionalType -> {
         val optionalFun = MemberName("com.apollographql.apollo3.api", "optional")
         CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), optionalFun)
       }
+
       else -> error("Cannot create an adapter for $type")
     }
   }
@@ -194,6 +244,7 @@ class KotlinResolver(
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(adapterInitializer.expression)
       }
+
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
@@ -202,6 +253,7 @@ class KotlinResolver(
             resolveCompiledType(type.name)
         )
       }
+
       else -> {
         when (type.name) {
           "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanAdapter)

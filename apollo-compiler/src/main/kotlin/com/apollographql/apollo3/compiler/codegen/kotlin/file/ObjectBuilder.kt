@@ -91,7 +91,14 @@ internal class ObjectBuilder(
   private fun IrMapProperty.toPropertySpec(): PropertySpec {
     return PropertySpec.builder(layout.propertyName(name), context.resolver.resolveIrType2(type))
         .mutable(true)
-        .delegate(CodeBlock.of(Identifier.__fields))
+        .apply {
+          val initializer = context.resolver.adapterInitializer2(type)
+          if (initializer == null) {
+            delegate(CodeBlock.of(Identifier.__fields))
+          } else {
+            delegate(CodeBlock.of("%T(%L)", KotlinSymbols.BuilderProperty, initializer))
+          }
+        }
         .build()
   }
 

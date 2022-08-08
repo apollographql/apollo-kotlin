@@ -3,6 +3,16 @@ query GetInt {
   nonNullableInt
 }
 
+query GetCustomScalar {
+  long1
+  long2
+  long3
+}
+
+query GetDirection {
+  direction
+}
+
 mutation PutInt {
   nullableInt
 }
@@ -22,6 +32,14 @@ query GetAnimal {
     species
     ... on Lion {
       roar
+    }
+  }
+}
+
+query GetFeline {
+  feline {
+    ... on Cat {
+      mustaches
     }
   }
 }

@@ -245,6 +245,13 @@ public final class com/apollographql/apollo3/api/BooleanExpressions {
 	public static final fun variable (Ljava/lang/String;)Lcom/apollographql/apollo3/api/BooleanExpression;
 }
 
+public final class com/apollographql/apollo3/api/BuilderProperty {
+	public fun <init> (Lcom/apollographql/apollo3/api/Adapter;)V
+	public final fun getAdapter ()Lcom/apollographql/apollo3/api/Adapter;
+	public final fun getValue (Lcom/apollographql/apollo3/api/ObjectBuilder;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun setValue (Lcom/apollographql/apollo3/api/ObjectBuilder;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
 public final class com/apollographql/apollo3/api/CompiledArgument {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -370,7 +377,8 @@ public final class com/apollographql/apollo3/api/CompiledVariable {
 public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Empty Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo3/api/CustomScalarAdapters$Key;
-	public synthetic fun <init> (Ljava/util/Map;Lcom/apollographql/apollo3/api/AdapterContext;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final field Unsafe Lcom/apollographql/apollo3/api/CustomScalarAdapters;
+	public synthetic fun <init> (Ljava/util/Map;Lcom/apollographql/apollo3/api/AdapterContext;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
 	public final fun getAdapterContext ()Lcom/apollographql/apollo3/api/AdapterContext;
@@ -390,6 +398,7 @@ public final class com/apollographql/apollo3/api/CustomScalarAdapters$Builder {
 	public final fun addAll (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public final fun clear ()V
+	public final fun unsafe (Z)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 	public final fun variables (Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/CustomScalarAdapters$Builder;
 }
 
@@ -671,7 +680,7 @@ public final class com/apollographql/apollo3/api/ObjectAdapter : com/apollograph
 
 public abstract class com/apollographql/apollo3/api/ObjectBuilder {
 	public fun <init> ()V
-	protected final fun get__fields ()Ljava/util/Map;
+	public final fun get__fields ()Ljava/util/Map;
 	public final fun get__typename ()Ljava/lang/String;
 	public final fun set (Ljava/lang/String;Ljava/lang/Object;)V
 	public final fun set__typename (Ljava/lang/String;)V
@@ -998,6 +1007,7 @@ public abstract interface class com/apollographql/apollo3/api/json/JsonReader : 
 }
 
 public final class com/apollographql/apollo3/api/json/JsonReader$Token : java/lang/Enum {
+	public static final field ANY Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public static final field BEGIN_ARRAY Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public static final field BEGIN_OBJECT Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public static final field BOOLEAN Lcom/apollographql/apollo3/api/json/JsonReader$Token;
@@ -1060,6 +1070,7 @@ public final class com/apollographql/apollo3/api/json/MapJsonReader : com/apollo
 	public fun nextNull ()Ljava/lang/Void;
 	public fun nextNumber ()Lcom/apollographql/apollo3/api/json/JsonNumber;
 	public fun nextString ()Ljava/lang/String;
+	public final fun nextValue ()Ljava/lang/Object;
 	public fun peek ()Lcom/apollographql/apollo3/api/json/JsonReader$Token;
 	public fun rewind ()V
 	public fun selectName (Ljava/util/List;)I

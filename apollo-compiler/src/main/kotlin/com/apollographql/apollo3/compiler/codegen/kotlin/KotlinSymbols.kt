@@ -21,6 +21,7 @@ internal object KotlinSymbols {
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()
   val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toKotlinPoetClassName()
   val ObjectBuilder = ClassNames.ObjectBuilder.toKotlinPoetClassName()
+  val BuilderProperty = ClassNames.BuilderProperty.toKotlinPoetClassName()
 
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
