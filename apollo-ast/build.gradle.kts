@@ -7,7 +7,7 @@ plugins {
 }
 
 dependencies {
-  antlr(groovy.util.Eval.x(project, "x.dep.antlrAntlr"))
+  antlr(libs.antlr)
   implementation(libs.antlr.runtime)
   api(okio())
   api(projects.apolloAnnotations)

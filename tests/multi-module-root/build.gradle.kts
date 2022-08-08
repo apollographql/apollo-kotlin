@@ -1,6 +1,6 @@
 plugins {
-  id(libs.plugins.apollo.get().toString())
-  id(libs.plugins.kotlin.jvm.get().toString())
+  id("com.apollographql.apollo3")
+  kotlin("jvm")
 }
 
 

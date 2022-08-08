@@ -1,6 +1,6 @@
 plugins {
-  id(libs.plugins.apollo.get().toString())
   java
+  id("com.apollographql.apollo3")
 }
 
 dependencies {

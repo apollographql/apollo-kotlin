@@ -1,8 +1,8 @@
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 
 plugins {
-  id(libs.plugins.apollo.get().toString())
-  id(libs.plugins.kotlin.multiplatform.get().toString())
+  kotlin("multiplatform")
+  id("com.apollographql.apollo3")
 }
 
 configureMppTestsDefaults()

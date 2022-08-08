@@ -1,6 +1,6 @@
 plugins {
-  id(libs.plugins.kotlin.jvm.get().toString())
-  id(libs.plugins.kotlin.spring.get().toString())
+  kotlin("jvm")
+  kotlin("plugin.spring")
   application
 }
 

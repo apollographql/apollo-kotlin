@@ -135,12 +135,3 @@ truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "0.7.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.3.1" }
 vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5" }
-
-[plugins]
-android-library = { id = "com.android.library" }
-apollo = { id = "com.apollographql.apollo3" }
-apolloExternal = { id = "com.apollographql.apollo3.external" }
-kotlin-android = { id = "org.jetbrains.kotlin.android" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform" }
-kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring" }
