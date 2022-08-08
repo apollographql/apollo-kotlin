@@ -1,7 +1,7 @@
 plugins {
-  id("org.jetbrains.kotlin.jvm")
-  id("org.jetbrains.kotlin.plugin.spring")
-  id("application")
+  id(libs.plugins.kotlin.jvm.get().toString())
+  id(libs.plugins.kotlin.spring.get().toString())
+  application
 }
 
 dependencies {

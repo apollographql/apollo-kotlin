@@ -1,6 +1,6 @@
 plugins {
-  id("com.apollographql.apollo3")
-  kotlin("multiplatform")
+  id(libs.plugins.apollo.get().toString())
+  id(libs.plugins.kotlin.multiplatform.get().toString())
 }
 
 configureMppTestsDefaults()

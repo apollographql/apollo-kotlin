@@ -1,6 +1,6 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id(libs.plugins.kotlin.multiplatform.get().toString())
+  id(libs.plugins.apollo.get().toString())
 }
 
 configureMppTestsDefaults()

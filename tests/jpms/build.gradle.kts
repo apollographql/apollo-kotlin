@@ -1,7 +1,7 @@
 plugins {
-  id("java")
-  id("application")
-  id("com.apollographql.apollo3")
+  java
+  application
+  id(libs.plugins.apollo.get().toString())
 }
 
 repositories {

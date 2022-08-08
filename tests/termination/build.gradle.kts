@@ -1,7 +1,7 @@
 plugins {
-  id("application")
-  id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  application
+  id(libs.plugins.kotlin.jvm.get().toString())
+  id(libs.plugins.apollo.get().toString())
 }
 
 dependencies {
