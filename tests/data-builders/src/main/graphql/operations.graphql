@@ -1,9 +1,27 @@
-query GetStuff {
+query GetInt {
   nullableInt
   nonNullableInt
-  alias: nullableInt
 }
 
-mutation PutStuff {
+mutation PutInt {
   nullableInt
+}
+
+query GetAliases {
+  aliasedNullableInt: nullableInt
+  cat {
+    species
+  }
+  aliasedCat: cat {
+    species
+  }
+}
+
+query GetAnimal {
+  animal {
+    species
+    ... on Lion {
+      roar
+    }
+  }
 }

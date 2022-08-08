@@ -73,6 +73,7 @@ internal class IrBuilder(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
+    private val generateDataBuilders: Boolean,
 ) : FieldMerger {
   private val usedTypes = mutableListOf<String>()
 
@@ -156,9 +157,53 @@ internal class IrBuilder(
 
       when (typeDefinition) {
         is GQLEnumTypeDefinition -> enums.add(typeDefinition.toIr())
-        is GQLObjectTypeDefinition -> objects.add(typeDefinition.toIr())
-        is GQLUnionTypeDefinition -> unions.add(typeDefinition.toIr())
-        is GQLInterfaceTypeDefinition -> interfaces.add(typeDefinition.toIr())
+        is GQLObjectTypeDefinition -> {
+          objects.add(typeDefinition.toIr())
+          if (generateDataBuilders) {
+            // Add all direct super types because they are used in the MapTypes hierarchy
+            // class HumanMap(map: Map<String, Any?>): CharacterMap, Map<String, Any?> by map
+            usedTypes.addAll(typeDefinition.implementsInterfaces)
+            schema.typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach {
+              if (it.memberTypes.map { it.name }.contains(typeDefinition.name)) {
+                usedTypes.add(it.name)
+              }
+            }
+            // Add all fields types
+            typeDefinition.fields.forEach {
+              usedTypes.add(it.type.leafType().name)
+            }
+          }
+        }
+        is GQLUnionTypeDefinition -> {
+          unions.add(typeDefinition.toIr())
+          if (generateDataBuilders) {
+            usedTypes.addAll(typeDefinition.memberTypes.map { it.name })
+          }
+        }
+        is GQLInterfaceTypeDefinition -> {
+          interfaces.add(typeDefinition.toIr())
+          if (generateDataBuilders) {
+            // Add all direct super types
+            usedTypes.addAll(typeDefinition.implementsInterfaces)
+
+            // Add all direct sub types because the user might want to use any of them
+            // GetHeroQuery.Data {
+            //   hero = buildHuman {}  // or buildDroid {}
+            // }
+            schema.typeDefinitions.values.forEach {
+              if (it is GQLInterfaceTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)) {
+                usedTypes.add(it.name)
+              }
+              if (it is GQLObjectTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)) {
+                usedTypes.add(it.name)
+              }
+            }
+            // Add all fields types
+            typeDefinition.fields.forEach {
+              usedTypes.add(it.type.leafType().name)
+            }
+          }
+        }
         is GQLScalarTypeDefinition -> customScalars.add(typeDefinition.toIr())
         is GQLInputObjectTypeDefinition -> inputObjects.add(typeDefinition.toIr())
       }
