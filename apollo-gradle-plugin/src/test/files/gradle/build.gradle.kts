@@ -1,10 +1,8 @@
 plugins {
-  id("com.apollographql.apollo3")
+  alias(libs.plugins.apollo)
 }
 
 buildscript {
-  apply(from = "../../../gradle/dependencies.gradle")
-
   repositories {
     maven {
       url = uri("../../../build/localMaven")
@@ -13,7 +11,7 @@ buildscript {
   }
 
   dependencies {
-    classpath(groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
+    classpath(libs.kotlin.plugin)
   }
 }
 

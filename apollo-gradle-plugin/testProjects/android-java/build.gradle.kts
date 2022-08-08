@@ -1,5 +1,5 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.android.build.gradle.BaseExtension
+import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 buildscript {
   apply(from = "../../testProjects/buildscript.gradle.kts")
@@ -9,15 +9,15 @@ apply(plugin = "com.android.application")
 apply(plugin = "com.apollographql.apollo3")
 
 dependencies {
-  add("implementation", groovy.util.Eval.x(project, "x.dep.apolloApi"))
+  add("implementation", libs.apollo.api)
 }
 
 configure<BaseExtension> {
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdkVersion(libs.versions.android.sdkVersion.compile.get().toInt())
 
   defaultConfig {
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
-    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
+    minSdkVersion(libs.versions.android.sdkVersion.min.get())
+    targetSdkVersion(libs.versions.android.sdkVersion.target.get())
   }
 }
 

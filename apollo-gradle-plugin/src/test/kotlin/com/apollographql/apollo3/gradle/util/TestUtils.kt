@@ -13,11 +13,11 @@ import java.io.File
 object TestUtils {
   class Plugin(val artifact: String?, val id: String)
 
-  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "androidPlugin")
-  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "androidPlugin")
-  val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "kotlinPlugin")
-  val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "kotlinPlugin")
-  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apolloPlugin")
+  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "android.plugin")
+  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "android.plugin")
+  val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "kotlin.plugin")
+  val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "kotlin.plugin")
+  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apollo.plugin")
 
   fun withDirectory(block: (File) -> Unit) {
     val dest = File(File(System.getProperty("user.dir")), "build/testProject")
@@ -58,7 +58,7 @@ object TestUtils {
     if (usesKotlinDsl) {
       val applyLines = plugins.map { "apply(plugin = \"${it.id}\")" }.joinToString("\n")
       val classPathLines = plugins.filter { it.artifact != null }
-          .map { "classpath(classpathDep(\"${it.artifact!!}\"))" }
+          .map { "classpath(libs.${it.artifact!!})" }
           .joinToString("\n")
 
       var buildscript = File(source, "gradle/build.gradle.kts.template")
@@ -82,7 +82,7 @@ object TestUtils {
       File(dest, "build.gradle.kts").writeText(buildscript)
     } else {
       val applyLines = plugins.map { "apply plugin: \"${it.id}\"" }.joinToString("\n")
-      val classPathLines = plugins.filter { it.artifact != null }.map { "classpath(dep.${it.artifact})" }.joinToString("\n")
+      val classPathLines = plugins.filter { it.artifact != null }.map { "classpath(libs.${it.artifact})" }.joinToString("\n")
 
       var buildscript = File(source, "gradle/build.gradle.template")
           .readText()
@@ -93,7 +93,7 @@ object TestUtils {
       if (isAndroid) {
         var androidConfiguration = """
         |android {
-        |  compileSdkVersion androidConfig.compileSdkVersion
+        |  compileSdkVersion libs.versions.android.sdkVersion.compile.get().toInteger()
         |
       """.trimMargin()
 

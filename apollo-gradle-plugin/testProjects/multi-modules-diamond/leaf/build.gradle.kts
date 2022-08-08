@@ -7,7 +7,7 @@ plugins {
 dependencies {
   implementation(kotlin("stdlib"))
   testImplementation(libs.kotlin.test.junit)
-  implementation(groovy.util.Eval.x(project, "x.dep.apolloApi"))
+  implementation(libs.apollo.api)
 
   implementation(project(":node1"))
   implementation(project(":node2"))
