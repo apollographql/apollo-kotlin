@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader.Token.NAME
 import com.apollographql.apollo3.api.json.JsonReader.Token.NULL
 import com.apollographql.apollo3.api.json.JsonReader.Token.NUMBER
 import com.apollographql.apollo3.api.json.JsonReader.Token.STRING
+import com.apollographql.apollo3.api.json.JsonReader.Token.ANY
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import okio.Buffer
 import okio.ByteString.Companion.encodeUtf8
@@ -79,6 +80,7 @@ class PathTest {
         LONG -> jsonReader.nextLong()
         BOOLEAN -> jsonReader.nextBoolean()
         NULL -> jsonReader.nextNull()
+        ANY -> jsonReader.skipValue()
 
         END_DOCUMENT -> break@loop
       }
