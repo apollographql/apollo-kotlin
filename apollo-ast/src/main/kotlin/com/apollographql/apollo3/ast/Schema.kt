@@ -92,6 +92,9 @@ class Schema internal constructor(
           definitions.filterIsInstance<GQLObjectTypeDefinition>().single { it.name == namedType }
         }
   }
+  fun rootTypeNameFor(operationType: String): String {
+    return rootOperationTypeDefinition(operationType)?.name ?: operationType.replaceFirstChar { it.uppercaseChar() }
+  }
 
   fun typeDefinition(name: String): GQLTypeDefinition {
     return typeDefinitions[name]
@@ -152,10 +155,10 @@ class Schema internal constructor(
     val typeDefinition = typeDefinition(name)
     return when (typeDefinition) {
       is GQLObjectTypeDefinition -> {
-        val enums = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
+        val unions = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
           it.memberTypes.map { it.name }.toSet().contains(typeDefinition.name)
         }.map { it.name }
-        typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name + enums
+        typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name + unions
       }
       is GQLInterfaceTypeDefinition -> typeDefinition.implementsInterfaces.flatMap { implementedTypes(it) }.toSet() + name
       is GQLUnionTypeDefinition,
@@ -164,6 +167,16 @@ class Schema internal constructor(
       -> setOf(name)
       else -> error("Cannot determine implementedTypes of $name")
     }
+  }
+
+  /**
+   * List all direct super types (interfaces, unions) implemented by a given object type
+   */
+  fun superTypes(objectTypeDefinition: GQLObjectTypeDefinition): Set<String> {
+    val unions = typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
+      it.memberTypes.map { it.name }.toSet().contains(objectTypeDefinition.name)
+    }.map { it.name }
+    return (objectTypeDefinition.implementsInterfaces + unions).toSet()
   }
 
   /**

@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.normalized.ApolloStore
-import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGeneratorContext
@@ -15,8 +14,8 @@ import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.example.one.Issue2818Query
-import com.example.one.fragment.SectionFragment
 import com.example.one.Issue3672Query
+import com.example.one.fragment.SectionFragment
 import com.example.two.NestedFragmentQuery
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
@@ -31,7 +30,7 @@ internal object IdBasedCacheKeyResolver : CacheResolver, CacheKeyGenerator {
       FieldPolicyCacheResolver.resolveField(field, variables, parent, parentId)
 }
 
-class NormalizationTest() {
+class NormalizationTest {
 
   @Test
   fun issue3672() = runBlocking {

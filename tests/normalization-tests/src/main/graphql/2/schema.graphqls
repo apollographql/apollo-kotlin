@@ -24,3 +24,7 @@ type Author {
   id: String!
   name: String!
 }
+
+type Home {
+  address: String
+}

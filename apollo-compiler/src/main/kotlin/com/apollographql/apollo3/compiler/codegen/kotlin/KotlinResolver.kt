@@ -13,12 +13,18 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrListType
+import com.apollographql.apollo3.compiler.ir.IrListType2
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNamedType
+import com.apollographql.apollo3.compiler.ir.IrCompositeType2
+import com.apollographql.apollo3.compiler.ir.IrEnumType2
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
+import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
+import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.IrType2
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
@@ -51,9 +57,22 @@ class KotlinResolver(
     return result
   }
 
+  private fun resolveMemberNameAndAssert(kind: ResolverKeyKind, id: String): MemberName {
+    val className = resolveAndAssert(kind, id)
+
+    return MemberName(className.packageName, className.simpleName)
+  }
+
   fun canResolveSchemaType(name: String) = resolve(ResolverKey(ResolverKeyKind.SchemaType, name)) != null
 
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
+
+  private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName): Unit{
+    check(memberName.enclosingClassName == null) {
+      "enclosingClassName is not supported"
+    }
+    classNames.put(ResolverKey(kind, id), ClassName(memberName.packageName, memberName.simpleName))
+  }
 
   internal fun resolveIrType(type: IrType, override: (IrType) -> TypeName? = { null }): TypeName {
     if (type is IrNonNullType) {
@@ -90,6 +109,16 @@ class KotlinResolver(
   private fun resolveScalarTarget(name: String): ClassName? {
     return scalarMapping[name]?.targetName?.let {
       ClassName.bestGuess(it)
+    }
+  }
+
+  internal fun resolveIrType2(type: IrType2): TypeName {
+    return when (type) {
+      is IrNonNullType2 -> resolveIrType2(type.ofType).copy(nullable = false)
+      is IrListType2 -> KotlinSymbols.List.parameterizedBy(resolveIrType2(type.ofType))
+      is IrCompositeType2 -> resolveAndAssert(ResolverKeyKind.MapType, type.name).copy(nullable = true)
+      is IrEnumType2 -> resolveIrType(IrEnumType(type.name))
+      is IrScalarType2 -> resolveIrType(IrScalarType(type.name))
     }
   }
 
@@ -236,12 +265,21 @@ class KotlinResolver(
   fun resolveFragmentSelections(name: String) = resolveAndAssert(ResolverKeyKind.FragmentSelections, name)
 
   fun entries() = classNames.map { ResolverEntry(it.key, ResolverClassName(it.value.packageName, it.value.simpleNames)) }
+
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
+  fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
 
   fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
   fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)
+
+  fun registerBuilderType(name: String, className: ClassName) = register(ResolverKeyKind.BuilderType, name, className)
+  fun resolveBuilderType(name: String) = resolveAndAssert(ResolverKeyKind.BuilderType, name)
+
+  fun registerBuilderFun(name: String, memberName: MemberName) = register(ResolverKeyKind.BuilderFun, name, memberName)
+  fun resolveBuilderFun(name: String) = resolveMemberNameAndAssert(ResolverKeyKind.BuilderFun, name)
+
   fun resolveRequiresOptInAnnotation(): ClassName? {
     if (requiresOptInAnnotation == "none") {
       return null

@@ -42,9 +42,9 @@ internal class OperationBuilder(
   private val simpleName = layout.operationName(operation)
 
   private val dataSuperClassName = when (operation.operationType) {
-    IrOperationType.Query -> JavaClassNames.QueryData
-    IrOperationType.Mutation -> JavaClassNames.MutationData
-    IrOperationType.Subscription -> JavaClassNames.SubscriptionData
+    is IrOperationType.Query -> JavaClassNames.QueryData
+    is IrOperationType.Mutation -> JavaClassNames.MutationData
+    is IrOperationType.Subscription -> JavaClassNames.SubscriptionData
   }
 
   private val modelBuilders = operation.dataModelGroup.maybeFlatten(
@@ -137,9 +137,9 @@ internal class OperationBuilder(
 
   private fun superInterfaceType(): TypeName {
     return when (operation.operationType) {
-      IrOperationType.Query -> JavaClassNames.Query
-      IrOperationType.Mutation -> JavaClassNames.Mutation
-      IrOperationType.Subscription -> JavaClassNames.Subscription
+      is IrOperationType.Query -> JavaClassNames.Query
+      is IrOperationType.Mutation -> JavaClassNames.Mutation
+      is IrOperationType.Subscription -> JavaClassNames.Subscription
     }.let {
       ParameterizedTypeName.get(it, context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
     }

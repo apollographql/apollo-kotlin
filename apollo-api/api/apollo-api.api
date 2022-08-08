@@ -669,6 +669,14 @@ public final class com/apollographql/apollo3/api/ObjectAdapter : com/apollograph
 	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 }
 
+public abstract class com/apollographql/apollo3/api/ObjectBuilder {
+	public fun <init> ()V
+	protected final fun get__fields ()Ljava/util/Map;
+	public final fun get__typename ()Ljava/lang/String;
+	public final fun set (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun set__typename (Ljava/lang/String;)V
+}
+
 public final class com/apollographql/apollo3/api/ObjectType : com/apollographql/apollo3/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiTestPackag
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 /**
  * A list of constant symbols from apollo-api referenced from codegen.
@@ -19,6 +20,7 @@ internal object KotlinSymbols {
   val ObjectTypeBuilder = ClassNames.ObjectTypeBuilder.toKotlinPoetClassName()
   val InterfaceType = ClassNames.InterfaceType.toKotlinPoetClassName()
   val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toKotlinPoetClassName()
+  val ObjectBuilder = ClassNames.ObjectBuilder.toKotlinPoetClassName()
 
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
@@ -72,6 +74,8 @@ internal object KotlinSymbols {
   val Map = ClassName("kotlin.collections", "Map")
   val Array = ClassName("kotlin", "Array")
   val Set = ClassName("kotlin.collections", "Set")
+
+  val MapOfStringToNullableAny = Map.parameterizedBy(String, Any.copy(nullable = true))
 
   val Suppress = ClassName("kotlin", "Suppress")
   val JvmOverloads = ClassName("kotlin.jvm", "JvmOverloads")

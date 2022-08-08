@@ -142,6 +142,18 @@ internal abstract class CodegenLayout(
     return "${modelName}Builder"
   }
 
+  fun objectBuilderName(name: String): String {
+    return "${name.capitalizeFirstLetter()}Builder"
+  }
+
+  fun mapName(name: String): String {
+    return "${name.capitalizeFirstLetter()}Map"
+  }
+
+  fun builderFunName(name: String): String {
+    return "build${name.capitalizeFirstLetter()}"
+  }
+
   companion object {
     fun upperCamelCaseIgnoringNonLetters(strings: Collection<String>): String {
       return strings.map {

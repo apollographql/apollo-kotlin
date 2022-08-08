@@ -316,9 +316,12 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyJsonAda
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : java/lang/Enum {
+	public static final field BuilderFun Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field BuilderType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Fragment Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field MapType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Model Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field ModelAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Operation Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
@@ -381,20 +384,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/CgFile {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Z)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getFileName ()Ljava/lang/String;
-	public final fun getPackageName ()Ljava/lang/String;
-	public final fun getTypeSpecs ()Ljava/util/List;
-	public final fun isTest ()Z
-}
-
-public abstract interface class com/apollographql/apollo3/compiler/codegen/kotlin/CgFileBuilder {
-	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/CgFile;
-	public abstract fun prepare ()V
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames;
 	public final fun getObj ()Lcom/squareup/kotlinpoet/MemberName;
@@ -407,11 +396,14 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun canResolveSchemaType (Ljava/lang/String;)Z
 	public final fun entries ()Ljava/util/List;
 	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
+	public final fun registerBuilderFun (Ljava/lang/String;Lcom/squareup/kotlinpoet/MemberName;)V
+	public final fun registerBuilderType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerEnumAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerFragment (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerFragmentSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerFragmentVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerInputObjectAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerMapType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerModel (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerModelAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerOperation (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
@@ -420,6 +412,8 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun registerSchemaType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerTestBuilder (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveBuilderFun (Ljava/lang/String;)Lcom/squareup/kotlinpoet/MemberName;
+	public final fun resolveBuilderType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveCompiledType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/CodeBlock;
 	public final fun resolveFragment (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragmentSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;

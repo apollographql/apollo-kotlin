@@ -217,6 +217,7 @@ object ApolloCompiler {
             generateSchema = options.generateSchema,
             generatedSchemaName = options.generatedSchemaName,
             generateTestBuilders = options.generateTestBuilders,
+            generateDataBuilders = options.generateDataBuilders,
             flatten = options.flattenModels,
             sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
             targetLanguageVersion = options.targetLanguage,

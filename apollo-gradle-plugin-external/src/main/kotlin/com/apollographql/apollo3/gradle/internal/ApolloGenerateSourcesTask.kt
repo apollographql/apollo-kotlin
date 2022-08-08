@@ -17,6 +17,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateDataBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateOptionalOperationVariables
@@ -188,6 +189,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val generateDataBuilders: Property<Boolean>
+
+  @get:Input
+  @get:Optional
   abstract val useSchemaPackageNameForFragments: Property<Boolean>
 
   @get:Inject
@@ -299,6 +304,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
+        generateDataBuilders = generateDataBuilders.getOrElse(defaultGenerateDataBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),

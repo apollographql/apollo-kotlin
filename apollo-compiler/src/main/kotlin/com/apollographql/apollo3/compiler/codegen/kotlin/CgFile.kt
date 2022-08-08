@@ -1,19 +1,21 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /**
  * A file that is going to be converted to a KotlinPoet [FileSpec]
  */
-class CgFile(
+internal class CgFile(
     val packageName: String,
     val typeSpecs: List<TypeSpec> = emptyList(),
+    val funSpecs: List<FunSpec> = emptyList(),
     val fileName: String,
     val isTest: Boolean = false
 )
 
-interface CgFileBuilder {
+internal interface CgFileBuilder {
   fun prepare()
   fun build(): CgFile
 }
