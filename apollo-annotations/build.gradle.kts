@@ -8,13 +8,13 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(kotlin("stdlib", groovy.util.Eval.x(project, "x.versions.kotlinStdlib").toString()))
+        api(libs.kotlin.stdlib)
       }
     }
 
     val jsMain by getting {
       dependencies {
-        api(kotlin("stdlib-js", groovy.util.Eval.x(project, "x.versions.kotlinStdlib").toString()))
+        api(libs.kotlin.stdlib.js)
       }
     }
 

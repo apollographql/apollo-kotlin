@@ -8,8 +8,8 @@ plugins {
 dependencies {
   implementation(projects.apolloTooling)
   implementation(projects.apolloAnnotations)
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlinxserializationjson"))
-  implementation(groovy.util.Eval.x(project, "x.dep.clikt"))
+  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.clikt)
 }
 
 tasks.withType(KotlinCompile::class.java) {

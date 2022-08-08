@@ -5,10 +5,10 @@ plugins {
 }
 
 dependencies {
-  compileOnly(groovy.util.Eval.x(project, "x.dep.minGradleApi"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlinPluginMin"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.androidMinPlugin"))
-  
+  compileOnly(libs.gradle.api.min)
+  compileOnly(libs.kotlin.plugin.min)
+  compileOnly(libs.android.plugin.min)
+
   api(projects.apolloCompiler)
   implementation(projects.apolloTooling)
   implementation(projects.apolloAst)

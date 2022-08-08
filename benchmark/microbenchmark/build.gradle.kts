@@ -59,8 +59,8 @@ dependencies {
       }
     }
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
+  implementation(libs.moshi)
+  ksp(libs.moshix.ksp)
 
   androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0")
   androidTestImplementation("androidx.test:core:1.4.0")

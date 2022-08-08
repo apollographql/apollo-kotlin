@@ -4,16 +4,16 @@ plugins {
 }
 
 dependencies {
-  implementation(groovy.util.Eval.x(project, "x.dep.androidxEspressoIdlingResource"))
+  implementation(libs.androidx.espresso.idlingResource)
   api(projects.apolloRuntime)
 }
 
 android {
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdk = libs.versions.android.sdkVersion.compile.get().toInt()
 
   defaultConfig {
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt())
-    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt())
+    minSdk = libs.versions.android.sdkVersion.min.get().toInt()
+    targetSdk = libs.versions.android.sdkVersion.target.get().toInt()
   }
 }
 

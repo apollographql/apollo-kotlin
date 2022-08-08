@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
   implementation(projects.apolloApi)
-  api(groovy.util.Eval.x(project, "x.dep.rx2"))
-  api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutinesRx2"))
+  api(libs.rx.java2)
+  api(libs.kotlinx.coroutines.rx2)
 
   api(projects.apolloRuntime)
   api(projects.apolloNormalizedCache)

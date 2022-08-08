@@ -30,34 +30,34 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
     val jvmMain by getting {
       dependsOn(commonMain)
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.sqldelightJvm"))
+        implementation(libs.sqldelight.jvm)
       }
     }
 
     val appleMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.sqldelightNative"))
+        implementation(libs.sqldelight.native)
       }
     }
 
     val jvmTest by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+        implementation(libs.truth)
       }
     }
 
     val androidMain by getting {
       dependsOn(commonMain)
       dependencies {
-        api(groovy.util.Eval.x(project, "x.dep.androidxSqlite"))
-        implementation(groovy.util.Eval.x(project, "x.dep.sqldelightAndroid"))
-        implementation(groovy.util.Eval.x(project, "x.dep.androidxSqliteFramework"))
-        implementation(groovy.util.Eval.x(project, "x.dep.androidxStartupRuntime"))
+        api(libs.androidx.sqlite)
+        implementation(libs.sqldelight.android)
+        implementation(libs.androidx.sqlite.framework)
+        implementation(libs.androidx.startup.runtime)
       }
     }
     val androidTest by getting {
       dependencies {
-        implementation(kotlin("test-junit"))
+        implementation(libs.kotlin.test.junit)
       }
     }
 
@@ -70,11 +70,11 @@ configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdk = libs.versions.android.sdkVersion.compile.get().toInt()
 
   defaultConfig {
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString())
-    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString())
+    minSdk = libs.versions.android.sdkVersion.min.get().toInt()
+    targetSdk = libs.versions.android.sdkVersion.target.get().toInt()
   }
 }
 

@@ -10,16 +10,16 @@ kotlin {
       dependencies {
         api(projects.apolloAnnotations)
         api(okio())
-        implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
+        implementation(libs.atomicfu.get().toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
+        implementation(libs.kotlinx.coroutines)
       }
     }
 
     val jsMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlinNodejs"))
+        implementation(libs.kotlinx.nodejs)
       }
     }
 

@@ -25,11 +25,11 @@ dependencies {
   add("shade", projects.apolloGradlePluginExternal)
 
   testImplementation(projects.apolloAst)
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttpMockWebServer"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttpTls"))
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
+  testImplementation(libs.assertj)
+  testImplementation(libs.okHttp.mockWebServer)
+  testImplementation(libs.okHttp.tls)
 }
 
 if (relocateJar) {

@@ -10,23 +10,23 @@ dependencies {
   implementation(projects.apolloApi) {
     because("For BooleanExpression")
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.poetKotlin").toString()) {
+  implementation(libs.poet.kotlin.get().toString()) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.poetJava"))
+  implementation(libs.poet.java)
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiSealedRuntime"))
+  implementation(libs.moshi)
+  implementation(libs.moshix.sealed.runtime)
 
-  ksp(groovy.util.Eval.x(project, "x.dep.moshiSealedCodegen"))
-  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
+  ksp(libs.moshix.sealed.codegen)
+  ksp(libs.moshix.ksp)
 
-  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinCompileTesting"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.javaCompileTesting"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
-  testImplementation(kotlin("test-junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.testParameterInjector"))
+  testImplementation(libs.kotlin.compileTesting)
+  testImplementation(libs.google.testing.compile)
+  testImplementation(libs.truth)
+  testImplementation(libs.kotlin.test.junit)
+  testImplementation(libs.google.testParameterInjector)
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

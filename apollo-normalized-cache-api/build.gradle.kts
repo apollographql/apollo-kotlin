@@ -11,7 +11,7 @@ kotlin {
         api(projects.apolloApi)
         api(projects.apolloMppUtils)
         implementation(okio())
-        api(groovy.util.Eval.x(project, "x.dep.uuid"))
+        api(libs.uuid)
       }
     }
   }

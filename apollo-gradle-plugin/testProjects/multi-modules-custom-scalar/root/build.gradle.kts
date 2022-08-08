@@ -8,7 +8,7 @@ dependencies {
   implementation(kotlin("stdlib"))
   implementation(groovy.util.Eval.x(project, "x.dep.apolloApi"))
 
-  testImplementation(kotlin("test-junit"))
+  testImplementation(libs.kotlin.test.junit)
 }
 
 apollo {

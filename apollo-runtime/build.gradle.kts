@@ -11,8 +11,8 @@ kotlin {
         api(projects.apolloApi)
         api(projects.apolloMppUtils)
         api(okio())
-        api(groovy.util.Eval.x(project, "x.dep.uuid"))
-        api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
+        api(libs.uuid)
+        api(libs.kotlinx.coroutines)
       }
     }
 
@@ -25,13 +25,13 @@ kotlin {
 
     val jvmMain by getting {
       dependencies {
-        api(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
+        api(libs.okHttp)
       }
     }
 
     val jsMain by getting {
       dependencies {
-        api(groovy.util.Eval.x(project, "x.dep.ktorClientJs"))
+        api(libs.ktor.client.js)
       }
     }
 
@@ -42,9 +42,9 @@ kotlin {
 
     val jvmTest by getting {
       dependencies {
-        implementation(kotlin("test-junit"))
-        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
-        implementation(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
+        implementation(libs.kotlin.test.junit)
+        implementation(libs.truth)
+        implementation(libs.okHttp)
       }
     }
   }
