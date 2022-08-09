@@ -9,9 +9,6 @@ buildscript {
     google()
     gradlePluginPortal()
   }
-  project.apply {
-    from(rootProject.file("gradle/dependencies.gradle"))
-  }
   dependencies {
     classpath("com.apollographql.apollo3:build-logic")
   }
@@ -24,10 +21,6 @@ apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 version = property("VERSION_NAME")!!
 
 subprojects {
-  apply {
-    from(rootProject.file("gradle/dependencies.gradle"))
-  }
-
   configureJavaAndKotlinCompilers()
 
   tasks.withType<Test> {
