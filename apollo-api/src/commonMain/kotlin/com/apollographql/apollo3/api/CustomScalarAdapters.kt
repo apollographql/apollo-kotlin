@@ -16,6 +16,7 @@ class CustomScalarAdapters private constructor(
     // Ideally it should be passed as its own parameter but we're avoiding a breaking change.
     // See https://github.com/apollographql/apollo-kotlin/pull/3813
     val adapterContext: AdapterContext,
+    private val unsafe: Boolean
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = customScalarAdapters
@@ -53,6 +54,7 @@ class CustomScalarAdapters private constructor(
       customScalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
         AnyAdapter
       }
+      unsafe -> UnsafeAdapter()
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     } as Adapter<T>
   }
@@ -70,6 +72,9 @@ class CustomScalarAdapters private constructor(
      */
     @JvmField
     val Empty = Builder().build()
+
+    @JvmField
+    val Unsafe = Builder().unsafe(true).build()
   }
 
   fun newBuilder() = Builder().addAll(this)
@@ -77,6 +82,7 @@ class CustomScalarAdapters private constructor(
   class Builder {
     private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
     private var adapterContext: AdapterContext = AdapterContext.Builder().build()
+    private var unsafe = false
 
     fun <T> add(
         customScalarType: CustomScalarType,
@@ -99,12 +105,16 @@ class CustomScalarAdapters private constructor(
       this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }
 
+    fun unsafe(unsafe: Boolean) = apply {
+      this.unsafe = unsafe
+    }
+
     fun clear() {
       adaptersMap.clear()
     }
 
     @Suppress("DEPRECATION")
-    fun build() = CustomScalarAdapters(adaptersMap, adapterContext)
+    fun build() = CustomScalarAdapters(adaptersMap, adapterContext, unsafe)
 
     fun adapterContext(adapterContext: AdapterContext): Builder = apply {
       this.adapterContext = adapterContext

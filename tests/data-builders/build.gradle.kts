@@ -12,4 +12,6 @@ dependencies {
 apollo {
   packageName.set("data.builders")
   generateDataBuilders.set(true)
+  mapScalar("Long1", "MyLong", "MyLongAdapter")
+  mapScalar("Long2", "MyLong")
 }

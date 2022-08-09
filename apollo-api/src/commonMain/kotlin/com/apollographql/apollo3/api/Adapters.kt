@@ -4,6 +4,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonReader.Companion.buffer
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
@@ -179,6 +180,21 @@ val AnyAdapter = object : Adapter<Any> {
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Any) {
     toJson(writer, value)
+  }
+}
+
+internal class UnsafeAdapter<T>: Adapter<T> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+    check (reader is MapJsonReader) {
+      "UnsafeAdapter only supports MapJsonReader"
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    return reader.nextValue() as T
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+    error("UnsafeAdapter.toJson is not implemented")
   }
 }
 

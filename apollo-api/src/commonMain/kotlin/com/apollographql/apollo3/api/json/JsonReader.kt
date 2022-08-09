@@ -236,6 +236,11 @@ interface JsonReader : Closeable {
      * The end of the JSON stream. This sentinel value is returned by [JsonReader.peek] to signal that the JSON-encoded value has no
      * more tokens.
      */
-    END_DOCUMENT
+    END_DOCUMENT,
+
+    /**
+     * A reference to an in-memory value that is reader-specific. Not all readers may support this
+     */
+    ANY
   }
 }

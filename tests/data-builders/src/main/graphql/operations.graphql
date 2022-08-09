@@ -1,9 +1,45 @@
-query GetStuff {
+query GetInt {
   nullableInt
   nonNullableInt
-  alias: nullableInt
 }
 
-mutation PutStuff {
+query GetCustomScalar {
+  long1
+  long2
+  long3
+}
+
+query GetDirection {
+  direction
+}
+
+mutation PutInt {
   nullableInt
+}
+
+query GetAliases {
+  aliasedNullableInt: nullableInt
+  cat {
+    species
+  }
+  aliasedCat: cat {
+    species
+  }
+}
+
+query GetAnimal {
+  animal {
+    species
+    ... on Lion {
+      roar
+    }
+  }
+}
+
+query GetFeline {
+  feline {
+    ... on Cat {
+      mustaches
+    }
+  }
 }

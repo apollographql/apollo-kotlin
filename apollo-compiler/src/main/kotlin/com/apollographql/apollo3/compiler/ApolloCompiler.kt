@@ -153,7 +153,8 @@ object ApolloCompiler {
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         scalarMapping = options.scalarMapping,
         codegenModels = options.codegenModels,
-        generateOptionalOperationVariables = options.generateOptionalOperationVariables
+        generateOptionalOperationVariables = options.generateOptionalOperationVariables,
+        generateDataBuilders = options.generateDataBuilders
     ).build()
 
     if (debugDir != null) {

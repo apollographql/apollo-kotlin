@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
+import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -70,7 +71,7 @@ internal class ObjectBuilder(
                 )
                 .build()
         )
-        .addSuperinterfaces(superTypes.map { context.resolver.resolveIrType2(IrCompositeType2(it)) })
+        .addSuperinterfaces(superTypes.map { context.resolver.resolveIrType2(IrNonNullType2(IrCompositeType2(it))) })
         .addSuperinterface(
             superinterface = MapOfStringToNullableAny,
             delegate = CodeBlock.of(Identifier.__fields)
@@ -90,7 +91,14 @@ internal class ObjectBuilder(
   private fun IrMapProperty.toPropertySpec(): PropertySpec {
     return PropertySpec.builder(layout.propertyName(name), context.resolver.resolveIrType2(type))
         .mutable(true)
-        .delegate(CodeBlock.of(Identifier.__fields))
+        .apply {
+          val initializer = context.resolver.adapterInitializer2(type)
+          if (initializer == null) {
+            delegate(CodeBlock.of(Identifier.__fields))
+          } else {
+            delegate(CodeBlock.of("%T(%L)", KotlinSymbols.BuilderProperty, initializer))
+          }
+        }
         .build()
   }
 

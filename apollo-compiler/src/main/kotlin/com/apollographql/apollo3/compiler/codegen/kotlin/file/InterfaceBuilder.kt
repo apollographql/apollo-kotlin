@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
+import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -40,7 +41,7 @@ internal class InterfaceBuilder(
   private fun IrInterface.mapTypeSpec(): TypeSpec {
     return TypeSpec
         .interfaceBuilder(layout.mapName(name))
-        .addSuperinterfaces(implements.map { context.resolver.resolveIrType2(IrCompositeType2(it)) })
+        .addSuperinterfaces(implements.map { context.resolver.resolveIrType2(IrNonNullType2(IrCompositeType2(it))) })
         .build()
   }
 
