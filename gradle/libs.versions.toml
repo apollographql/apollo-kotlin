@@ -133,3 +133,4 @@ vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5"
 
 [plugins]
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
