@@ -25,7 +25,7 @@ kotlin {
 
     val jvmMain by getting {
       dependencies {
-        api(libs.okHttp)
+        api(libs.okhttp)
       }
     }
 
@@ -44,7 +44,7 @@ kotlin {
       dependencies {
         implementation(libs.kotlin.test.junit)
         implementation(libs.truth)
-        implementation(libs.okHttp)
+        implementation(libs.okhttp)
       }
     }
   }

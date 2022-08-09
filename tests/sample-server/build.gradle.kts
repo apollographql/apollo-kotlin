@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-  api(libs.graphqlKotlin)
+  api(libs.graphqlkotlin)
   api(libs.kotlin.reflect.get().toString()) {
     because("graphqlKotlin pull kotlin-reflect and that triggers a warning like" +
         "Runtime JAR files in the classpath should have the same version.")

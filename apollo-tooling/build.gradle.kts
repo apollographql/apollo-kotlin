@@ -10,7 +10,7 @@ dependencies {
   api(projects.apolloCompiler)
   implementation(libs.moshi)
   implementation(libs.moshix.sealed.runtime)
-  implementation(libs.okHttp)
+  implementation(libs.okhttp)
 
   implementation(libs.moshi)
   testImplementation(libs.junit)

@@ -93,7 +93,7 @@ object TestUtils {
       if (isAndroid) {
         var androidConfiguration = """
         |android {
-        |  compileSdkVersion libs.versions.android.sdkVersion.compile.get().toInteger()
+        |  compileSdkVersion libs.versions.android.sdkversion.compile.get().toInteger()
         |
       """.trimMargin()
 

@@ -5,8 +5,8 @@ plugins {
 
 dependencies {
   implementation(libs.apollo.runtime)
-  implementation(libs.apollo.normalizedCache)
-  testImplementation(libs.apollo.testingSupport)
+  implementation(libs.apollo.normalizedcache)
+  testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)
 }

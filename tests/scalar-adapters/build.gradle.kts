@@ -6,7 +6,7 @@ plugins {
 dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.adapters)
-  testImplementation(libs.apollo.testingSupport)
+  testImplementation(libs.apollo.testingsupport)
   testImplementation(libs.kotlin.test)
 }
 

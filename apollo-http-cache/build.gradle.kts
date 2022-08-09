@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-  api(libs.okHttp)
+  api(libs.okhttp)
   api(projects.apolloApi)
   api(projects.apolloRuntime)
   implementation(libs.moshi)

@@ -12,7 +12,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(libs.apollo.runtime)
-        implementation(libs.apollo.normalizedCache)
+        implementation(libs.apollo.normalizedcache)
       }
     }
 
@@ -21,9 +21,9 @@ kotlin {
         implementation(libs.kotlin.test.common)
         implementation(libs.kotlin.test.annotations.common)
 
-        implementation(libs.apollo.testingSupport)
+        implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.mockserver)
-        implementation(libs.apollo.mppUtils)
+        implementation(libs.apollo.mpputils)
       }
     }
   }

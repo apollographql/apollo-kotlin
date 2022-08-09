@@ -22,11 +22,11 @@ dependencies {
   ksp(libs.moshix.sealed.codegen)
   ksp(libs.moshix.ksp)
 
-  testImplementation(libs.kotlin.compileTesting)
+  testImplementation(libs.kotlin.compiletesting)
   testImplementation(libs.google.testing.compile)
   testImplementation(libs.truth)
   testImplementation(libs.kotlin.test.junit)
-  testImplementation(libs.google.testParameterInjector)
+  testImplementation(libs.google.testparameterinjector)
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

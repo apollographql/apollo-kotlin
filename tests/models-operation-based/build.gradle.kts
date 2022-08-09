@@ -19,14 +19,14 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(libs.apollo.runtime)
-        implementation(libs.apollo.normalizedCache)
+        implementation(libs.apollo.normalizedcache)
         implementation(libs.apollo.adapters)
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(libs.apollo.testingSupport)
+        implementation(libs.apollo.testingsupport)
       }
     }
 

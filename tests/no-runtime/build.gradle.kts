@@ -6,10 +6,10 @@ plugins {
 dependencies {
   implementation(libs.apollo.api)
   implementation(projects.sampleServer)
-  implementation(libs.apollo.testingSupport)
+  implementation(libs.apollo.testingsupport)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.junit)
-  testImplementation(libs.okHttp)
+  testImplementation(libs.okhttp)
 }
 
 apollo {

@@ -28,8 +28,8 @@ dependencies {
   testImplementation(libs.junit)
   testImplementation(libs.truth)
   testImplementation(libs.assertj)
-  testImplementation(libs.okHttp.mockWebServer)
-  testImplementation(libs.okHttp.tls)
+  testImplementation(libs.okhttp.mockwebserver)
+  testImplementation(libs.okhttp.tls)
 }
 
 if (relocateJar) {

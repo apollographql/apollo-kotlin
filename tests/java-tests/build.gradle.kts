@@ -6,8 +6,8 @@ plugins {
 dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.httpCache)
-  implementation(libs.apollo.normalizedCache)
-  implementation(libs.apollo.normalizedCache.sqlite)
+  implementation(libs.apollo.normalizedcache)
+  implementation(libs.apollo.normalizedcache.sqlite)
   implementation(libs.apollo.mockserver)
   implementation(libs.apollo.rx2)
   testImplementation(libs.junit)

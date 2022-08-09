@@ -17,8 +17,8 @@ kotlin {
     val commonMain by getting {
       dependencies {
         implementation(libs.apollo.api)
-        implementation(libs.apollo.normalizedCache)
-        implementation(libs.apollo.testingSupport)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.adapters)
         implementation(libs.apollo.runtime)
@@ -44,7 +44,7 @@ kotlin {
 
     val jvmTest by getting {
       dependencies {
-        implementation(libs.okHttp.logging)
+        implementation(libs.okhttp.logging)
       }
     }
   }

@@ -8,7 +8,7 @@ dependencies {
   implementation(libs.apollo.httpCache)
   implementation(libs.apollo.mockserver)
   testImplementation(libs.kotlin.test.junit)
-  testImplementation(libs.apollo.testingSupport)
+  testImplementation(libs.apollo.testingsupport)
 }
 
 apollo {

@@ -13,11 +13,11 @@ dependencies {
 }
 
 configure<BaseExtension> {
-  compileSdkVersion(libs.versions.android.sdkVersion.compile.get().toInt())
+  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
 
   defaultConfig {
-    minSdkVersion(libs.versions.android.sdkVersion.min.get())
-    targetSdkVersion(libs.versions.android.sdkVersion.target.get())
+    minSdkVersion(libs.versions.android.sdkversion.min.get())
+    targetSdkVersion(libs.versions.android.sdkversion.target.get())
   }
 }
 

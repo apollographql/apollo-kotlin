@@ -13,7 +13,7 @@ group = "com.apollographql.apollo3"
 dependencies {
   compileOnly(libs.gradle.api)
 
-  implementation(libs.okHttp)
+  implementation(libs.okhttp)
   implementation(libs.moshi)
   implementation(libs.dokka.plugin)
   implementation(libs.dokka.base)
@@ -31,18 +31,18 @@ dependencies {
     implementation(libs.kotlin.plugin)
     runtimeOnly(libs.ksp)
   } else {
-    implementation(libs.kotlin.plugin.duringIdeaSync)
-    runtimeOnly(libs.ksp.duringIdeaSync)
+    implementation(libs.kotlin.plugin.duringideasync)
+    runtimeOnly(libs.ksp.duringideasync)
   }
 
   runtimeOnly(libs.sqldelight.plugin)
   runtimeOnly(libs.gradle.publish.plugin)
-  runtimeOnly(libs.benManes.versions)
+  runtimeOnly(libs.benmanes.versions)
   runtimeOnly(libs.gr8)
-  runtimeOnly(libs.binaryCompatibilityValidator)
+  runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
   // XXX: This is only needed for tests. We could have different build logic for different
   // builds but this seems just overkill for now
-  runtimeOnly(libs.kotlin.allOpen)
+  runtimeOnly(libs.kotlin.allopen)
 }
 
 // This shuts down a warning in Kotlin 1.5.30:

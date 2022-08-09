@@ -15,8 +15,8 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(libs.apollo.testingSupport)
-        implementation(libs.apollo.normalizedCache)
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.normalizedcache)
         implementation(libs.turbine)
       }
     }

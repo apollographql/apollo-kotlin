@@ -11,7 +11,7 @@ repositories {
 dependencies {
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.rx2)
-  implementation(libs.apollo.normalizedCache.sqlite)
+  implementation(libs.apollo.normalizedcache.sqlite)
   testImplementation(libs.junit)
 }
 

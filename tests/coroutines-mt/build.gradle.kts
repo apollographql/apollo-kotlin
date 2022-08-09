@@ -11,10 +11,10 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.testingSupport)
+        implementation(libs.apollo.testingsupport)
         implementation(libs.apollo.mockserver)
-        implementation(libs.apollo.normalizedCache)
-        implementation(libs.apollo.mppUtils)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.mpputils)
         implementation(libs.apollo.runtime)
       }
     }

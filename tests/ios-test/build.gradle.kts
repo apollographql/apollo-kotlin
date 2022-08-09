@@ -17,7 +17,7 @@ kotlin {
     val commonTest by getting {
       dependencies {
         implementation(libs.kotlin.test.junit)
-        implementation(libs.apollo.testingSupport)
+        implementation(libs.apollo.testingsupport)
       }
     }
   }
