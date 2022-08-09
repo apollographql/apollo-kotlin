@@ -1,6 +1,5 @@
 plugins {
-  id("com.android.library")
-  id("org.jetbrains.kotlin.android")
+  id("apollo.library.android")
 }
 
 dependencies {
@@ -14,11 +13,5 @@ android {
   defaultConfig {
     minSdk = libs.versions.android.sdkversion.min.get().toInt()
     targetSdk = libs.versions.android.sdkversion.target.get().toInt()
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
   }
 }

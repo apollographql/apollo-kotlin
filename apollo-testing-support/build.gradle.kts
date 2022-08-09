@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library.multiplatform")
 }
 
 configureMppDefaults(withLinux = false)

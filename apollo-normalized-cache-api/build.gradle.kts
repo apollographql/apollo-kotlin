@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library.multiplatform")
 }
 
 configureMppDefaults(withLinux = false)
@@ -17,14 +17,6 @@ kotlin {
   }
 }
 
-val jvmJar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.cache.normalized.api")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
+apolloConvention {
+  javaModuleName.set("com.apollographql.apollo3.cache.normalized.api")
 }

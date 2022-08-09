@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library.jvm")
 }
 
 dependencies {
@@ -14,14 +14,6 @@ dependencies {
   testImplementation(libs.truth)
 }
 
-val jar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.cache.http")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
+apolloConvention {
+  javaModuleName.set("com.apollographql.apollo3.cache.http")
 }

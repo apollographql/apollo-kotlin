@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library.multiplatform")
 }
 
 configureMppDefaults()
@@ -22,14 +22,6 @@ kotlin {
   }
 }
 
-val jvmJar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.annotations")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
+apolloConvention {
+  javaModuleName.set("com.apollographql.apollo3.annotations")
 }
