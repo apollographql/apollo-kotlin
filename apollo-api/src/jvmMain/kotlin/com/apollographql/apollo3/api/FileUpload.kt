@@ -12,7 +12,6 @@ import java.io.File
 @Deprecated("Use File.toUpload() instead")
 @ApolloDeprecatedSince(v3_3_3)
 fun DefaultUpload.Builder.content(file: File): DefaultUpload.Builder {
-  file.source().buffer()
   return content { sink ->
     file.source().buffer().use { sink.writeAll(it) }
   }.contentLength(file.length())
