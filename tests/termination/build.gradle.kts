@@ -1,6 +1,6 @@
 plugins {
-  application
-  kotlin("jvm")
+  id("application")
+  id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
 }
 

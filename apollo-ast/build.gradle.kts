@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   antlr
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
   id("com.google.devtools.ksp")
 }
 

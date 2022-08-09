@@ -1,5 +1,5 @@
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
   id("maven-publish")
 }

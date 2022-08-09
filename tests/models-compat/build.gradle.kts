@@ -1,7 +1,7 @@
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
 }
 

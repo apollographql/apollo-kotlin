@@ -1,5 +1,5 @@
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 configureMppDefaults()

@@ -2,7 +2,7 @@
  * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
  */
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
