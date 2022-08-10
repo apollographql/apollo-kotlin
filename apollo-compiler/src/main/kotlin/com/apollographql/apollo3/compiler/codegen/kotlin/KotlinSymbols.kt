@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
-import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
@@ -98,9 +97,9 @@ internal object KotlinSymbols {
   val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
 }
 
-fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
+internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
 
-object KotlinMemberNames {
+internal object KotlinMemberNames {
   val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")

@@ -327,6 +327,7 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : 
 	public static final field Operation Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field OperationSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field OperationVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field Schema Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaTypeAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field TestBuilder Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
@@ -384,13 +385,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames {
-	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinMemberNames;
-	public final fun getObj ()Lcom/squareup/kotlinpoet/MemberName;
-	public final fun getReadTypename ()Lcom/squareup/kotlinpoet/MemberName;
-	public final fun getWithTestResolver ()Lcom/squareup/kotlinpoet/MemberName;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
 	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;)V
 	public final fun canResolveSchemaType (Ljava/lang/String;)Z
@@ -409,6 +403,7 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun registerOperation (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerOperationSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerOperationVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerSchema (Lcom/squareup/kotlinpoet/ClassName;)V
 	public final fun registerSchemaType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerTestBuilder (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/kotlinpoet/ClassName;
@@ -424,12 +419,9 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun resolveOperationSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveOperationVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveRequiresOptInAnnotation ()Lcom/squareup/kotlinpoet/ClassName;
+	public final fun resolveSchema ()Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveSchemaType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveTestBuilder (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinSymbolsKt {
-	public static final fun toKotlinPoetClassName (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)Lcom/squareup/kotlinpoet/ClassName;
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {
