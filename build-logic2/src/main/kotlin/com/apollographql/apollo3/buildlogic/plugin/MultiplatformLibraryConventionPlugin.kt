@@ -1,26 +1,26 @@
-package com.apollographql.apollo3.buildlogic.convention
+package com.apollographql.apollo3.buildlogic.plugin
 
+import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
+import com.apollographql.apollo3.buildlogic.configureMppDefaults
+import com.apollographql.apollo3.buildlogic.treatWarningsAsErrors
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class MultiplatformLibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
-      val extension: Extension = extensions.create("apolloConvention", Extension::class.java)
+      val extension = extensions.create("apolloConvention", Extension::class.java)
 
       pluginManager.apply {
         apply("org.jetbrains.kotlin.multiplatform")
       }
 
-      tasks.withType(KotlinCompile::class.java) {
-        kotlinOptions {
-          allWarningsAsErrors = true
-        }
-      }
+      configureJavaAndKotlinCompilers()
+
+      treatWarningsAsErrors()
 
       tasks.withType(Jar::class.java).configureEach {
         extension.javaModuleName.orNull?.let { javaModuleName ->

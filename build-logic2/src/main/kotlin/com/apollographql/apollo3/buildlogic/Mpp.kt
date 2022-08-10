@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.buildlogic.convention
+package com.apollographql.apollo3.buildlogic
 
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension

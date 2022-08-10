@@ -1,7 +1,5 @@
 import JapiCmp.configureJapiCmp
-import kotlinx.validation.sourceSets
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 buildscript {
   repositories {
@@ -21,7 +19,6 @@ apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 version = property("VERSION_NAME")!!
 
 subprojects {
-  configureJavaAndKotlinCompilers()
 
   tasks.withType<Test> {
     systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))

@@ -1,25 +1,25 @@
-package com.apollographql.apollo3.buildlogic.convention
+package com.apollographql.apollo3.buildlogic.plugin
 
+import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
+import com.apollographql.apollo3.buildlogic.treatWarningsAsErrors
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.bundling.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-class JvmLibraryConventionPlugin : Plugin<Project> {
+class AndroidLibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
-      val extension: MultiplatformLibraryConventionPlugin.Extension = extensions.create("apolloConvention", MultiplatformLibraryConventionPlugin.Extension::class.java)
+      val extension = extensions.create("apolloConvention", Extension::class.java)
 
       pluginManager.apply {
-        apply("org.jetbrains.kotlin.jvm")
+        apply("com.android.library")
+        apply("org.jetbrains.kotlin.android")
       }
 
-      tasks.withType(KotlinCompile::class.java) {
-        kotlinOptions {
-          allWarningsAsErrors = true
-        }
-      }
+      configureJavaAndKotlinCompilers()
+
+      treatWarningsAsErrors()
 
       tasks.withType(Jar::class.java).configureEach {
         extension.javaModuleName.orNull?.let { javaModuleName ->

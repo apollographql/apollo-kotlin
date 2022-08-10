@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library.jvm")
   id("java-gradle-plugin")
   id("com.gradleup.gr8") // Only used for removeGradleApiFromApi()
 }
@@ -28,4 +28,11 @@ gradlePlugin {
 
 gr8 {
   removeGradleApiFromApi()
+}
+
+// Override convention plugin behavior
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
+  kotlinOptions {
+    allWarningsAsErrors = false
+  }
 }

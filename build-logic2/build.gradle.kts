@@ -48,17 +48,17 @@ gradlePlugin {
   plugins {
     register("apollo.library.multiplatform") {
       id = "apollo.library.multiplatform"
-      implementationClass = "com.apollographql.apollo3.buildlogic.convention.MultiplatformLibraryConventionPlugin"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.MultiplatformLibraryConventionPlugin"
     }
 
     register("apollo.library.jvm") {
       id = "apollo.library.jvm"
-      implementationClass = "com.apollographql.apollo3.buildlogic.convention.JvmLibraryConventionPlugin"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmLibraryConventionPlugin"
     }
 
     register("apollo.library.android") {
       id = "apollo.library.android"
-      implementationClass = "com.apollographql.apollo3.buildlogic.convention.AndroidLibraryConventionPlugin"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.AndroidLibraryConventionPlugin"
     }
   }
 }
