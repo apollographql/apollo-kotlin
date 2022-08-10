@@ -23,59 +23,61 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
 }
 
-// https://github.com/cashapp/sqldelight/pull/1486
-configureMppDefaults(withJs = false, withLinux = false)
+apolloConvention {
+  javaModuleName.set("com.apollographql.apollo3.cache.normalized.sql")
 
-configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-  android {
-    publishAllLibraryVariants()
-  }
-
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        api(projects.apolloApi)
-        api(projects.apolloNormalizedCacheApiIncubating)
-        api(projects.apolloNormalizedCacheIncubating)
-      }
+  // https://github.com/cashapp/sqldelight/pull/1486
+  kotlin(withJs = false, withLinux = false) {
+    android {
+      publishAllLibraryVariants()
     }
 
-    val jvmMain by getting {
-      dependsOn(commonMain)
-      dependencies {
-        implementation(libs.sqldelight.jvm)
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          api(projects.apolloApi)
+          api(projects.apolloNormalizedCacheApiIncubating)
+          api(projects.apolloNormalizedCacheIncubating)
+        }
       }
-    }
 
-    val appleMain by getting {
-      dependencies {
-        implementation(libs.sqldelight.native)
+      val jvmMain by getting {
+        dependsOn(commonMain)
+        dependencies {
+          implementation(libs.sqldelight.jvm)
+        }
       }
-    }
 
-    val jvmTest by getting {
-      dependencies {
-        implementation(libs.truth)
+      val appleMain by getting {
+        dependencies {
+          implementation(libs.sqldelight.native)
+        }
       }
-    }
 
-    val androidMain by getting {
-      dependsOn(commonMain)
-      dependencies {
-        api(libs.androidx.sqlite)
-        implementation(libs.sqldelight.android)
-        implementation(libs.androidx.sqlite.framework)
-        implementation(libs.androidx.startup.runtime)
+      val jvmTest by getting {
+        dependencies {
+          implementation(libs.truth)
+        }
       }
-    }
-    val androidTest by getting {
-      dependencies {
-        implementation(libs.kotlin.test.junit)
+
+      val androidMain by getting {
+        dependsOn(commonMain)
+        dependencies {
+          api(libs.androidx.sqlite)
+          implementation(libs.sqldelight.android)
+          implementation(libs.androidx.sqlite.framework)
+          implementation(libs.androidx.startup.runtime)
+        }
       }
-    }
-    val commonTest by getting {
-      dependencies {
-        implementation(projects.apolloTestingSupport)
+      val androidTest by getting {
+        dependencies {
+          implementation(libs.kotlin.test.junit)
+        }
+      }
+      val commonTest by getting {
+        dependencies {
+          implementation(projects.apolloTestingSupport)
+        }
       }
     }
   }
@@ -114,8 +116,4 @@ tasks.configureEach {
      */
     enabled = false
   }
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.cache.normalized.sql")
 }

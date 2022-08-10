@@ -2,18 +2,16 @@ plugins {
   id("apollo.library.multiplatform")
 }
 
-configureMppDefaults(withLinux = false)
+apolloConvention {
+  javaModuleName.set("com.apollographql.apollo3.mpp")
 
-kotlin {
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        api(projects.apolloAnnotations)
+  kotlin(withLinux = false) {
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          api(projects.apolloAnnotations)
+        }
       }
     }
   }
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.mpp")
 }

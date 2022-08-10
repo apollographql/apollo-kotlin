@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.bundling.Jar
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class MultiplatformLibraryConventionPlugin : Plugin<Project> {
@@ -31,7 +32,14 @@ class MultiplatformLibraryConventionPlugin : Plugin<Project> {
     }
   }
 
-  interface Extension {
-    val javaModuleName: Property<String>
+  abstract class Extension(private val project: Project) {
+    abstract val javaModuleName: Property<String>
+
+    fun kotlin(withJs: Boolean = true, withLinux: Boolean = true, configure: KotlinMultiplatformExtension.() -> Unit) {
+      project.configureMppDefaults(withJs, withLinux)
+
+      val kotlinExtension = project.extensions.findByName("kotlin") as KotlinMultiplatformExtension
+      kotlinExtension.configure()
+    }
   }
 }
