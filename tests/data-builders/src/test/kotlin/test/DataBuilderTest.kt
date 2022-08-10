@@ -121,7 +121,7 @@ class DataBuilderTest {
 
   @Test
   fun fakeValues() {
-    val data = GetEverythingQuery.Data {}
+    val data = GetEverythingQuery.Data()
 
     assertEquals(Direction.SOUTH, data.direction)
     assertEquals(0, data.nullableInt)
