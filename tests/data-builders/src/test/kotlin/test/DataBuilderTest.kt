@@ -168,7 +168,7 @@ class DataBuilderTest {
 
   class MyFakeResolver : FakeResolver {
     override fun resolveLeaf(context: FakeResolverContext): Any {
-      return when (val name = context.mergedField.type.leafType().name) {
+      return when (context.mergedField.type.leafType().name) {
         "Long1" -> "45" // build-time => this needs to be resolved to Json
         "Long2" -> MyLong(46) // run-time
         "Long3" -> 47L // mapped to Any
@@ -181,7 +181,7 @@ class DataBuilderTest {
     }
 
     override fun resolveMaybeNull(context: FakeResolverContext): Boolean {
-      TODO("Not yet implemented")
+      return false
     }
 
     override fun resolveTypename(context: FakeResolverContext): String {
@@ -195,6 +195,6 @@ class DataBuilderTest {
 
     assertEquals(45L, data.long1?.value)
     assertEquals(46L, data.long2?.value)
-    assertEquals(47L, data.long3)
+    assertEquals(47, data.long3) // AnyAdapter will try to fit the smallest possible number
   }
 }
