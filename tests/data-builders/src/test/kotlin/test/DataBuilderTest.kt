@@ -170,7 +170,7 @@ class DataBuilderTest {
       }
     }
 
-    override fun resolveListsSize(context: FakeResolverContext): Int {
+    override fun resolveListSize(context: FakeResolverContext): Int {
       TODO("Not yet implemented")
     }
 

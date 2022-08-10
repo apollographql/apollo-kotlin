@@ -9,7 +9,7 @@ class FakeResolverContext(
 
 interface FakeResolver {
   fun resolveLeaf(context: FakeResolverContext): Any
-  fun resolveListsSize(context: FakeResolverContext): Int
+  fun resolveListSize(context: FakeResolverContext): Int
   fun resolveMaybeNull(context: FakeResolverContext): Boolean
   fun resolveTypename(context: FakeResolverContext): String
 }
@@ -125,7 +125,7 @@ private fun buildFieldOfNonNullType(
           buildFieldOfType(path + index, mergedField, resolver, Optional.Present(item), type.ofType)
         }
       } else {
-        0.until(resolver.resolveListsSize(FakeResolverContext(path, mergedField))).map {
+        0.until(resolver.resolveListSize(FakeResolverContext(path, mergedField))).map {
           buildFieldOfType(path + it, mergedField, resolver, Optional.Absent, type.ofType)
         }
       }
@@ -194,7 +194,7 @@ class DefaultFakeResolver(val types: List<CompiledNamedType>) : FakeResolver {
     else -> toString()
   }
 
-  override fun resolveListsSize(context: FakeResolverContext): Int {
+  override fun resolveListSize(context: FakeResolverContext): Int {
     return 3
   }
 

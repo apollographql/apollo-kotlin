@@ -454,7 +454,7 @@ public final class com/apollographql/apollo3/api/DefaultFakeResolver : com/apoll
 	public fun <init> (Ljava/util/List;)V
 	public final fun getTypes ()Ljava/util/List;
 	public fun resolveLeaf (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/Object;
-	public fun resolveListsSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
+	public fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
 	public fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
 	public fun resolveTypename (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/String;
 }
@@ -592,7 +592,7 @@ public final class com/apollographql/apollo3/api/ExecutionOptions$Companion {
 
 public abstract interface class com/apollographql/apollo3/api/FakeResolver {
 	public abstract fun resolveLeaf (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/Object;
-	public abstract fun resolveListsSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
+	public abstract fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
 	public abstract fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
 	public abstract fun resolveTypename (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/String;
 }

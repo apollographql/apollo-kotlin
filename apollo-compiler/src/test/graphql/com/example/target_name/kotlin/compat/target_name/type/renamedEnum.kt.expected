@@ -20,7 +20,7 @@ public enum class renamedEnum(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("ReservedEnum")
+    public val type: EnumType = EnumType("ReservedEnum", listOf("VALUE"))
 
     public fun safeValueOf(rawValue: String): renamedEnum =
         values().find { it.rawValue == rawValue } ?: UNKNOWN__

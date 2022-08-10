@@ -26,7 +26,7 @@ public enum class Enum(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("Enum")
+    public val type: EnumType = EnumType("Enum", listOf("north", "North", "NORTH", "SOUTH"))
 
     public fun safeValueOf(rawValue: String): Enum = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__

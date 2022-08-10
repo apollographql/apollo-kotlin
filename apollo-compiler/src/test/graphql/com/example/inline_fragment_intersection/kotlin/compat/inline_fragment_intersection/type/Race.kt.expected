@@ -22,7 +22,7 @@ public enum class Race(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("Race")
+    public val type: EnumType = EnumType("Race", listOf("WOOKIE", "GUMGAN", "EWOK"))
 
     public fun safeValueOf(rawValue: String): Race = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__
