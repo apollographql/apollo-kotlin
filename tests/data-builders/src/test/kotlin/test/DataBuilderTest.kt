@@ -141,7 +141,13 @@ class DataBuilderTest {
   @Test
   fun partialFakeValues() {
     val data = GetPartialQuery.Data {
-      listOfListOfAnimal = listOf(listOf(buildLion {  }))
+      listOfListOfAnimal = listOf(
+          listOf(
+              buildLion {
+                species = "FooSpecies"
+              }
+          )
+      )
     }
 
     assertEquals(
@@ -150,7 +156,7 @@ class DataBuilderTest {
                 listOf(
                     GetPartialQuery.ListOfListOfAnimal(
                         __typename = "Lion",
-                        species = "species",
+                        species = "FooSpecies",
                         onLion = GetPartialQuery.OnLion("roar")
                     )
                 )
@@ -160,9 +166,9 @@ class DataBuilderTest {
     )
   }
 
-  class MyFakeResolver: FakeResolver {
+  class MyFakeResolver : FakeResolver {
     override fun resolveLeaf(context: FakeResolverContext): Any {
-      return when (val name = context.mergedField.type.leafType().name ) {
+      return when (val name = context.mergedField.type.leafType().name) {
         "Long1" -> "45" // build-time => this needs to be resolved to Json
         "Long2" -> MyLong(46) // run-time
         "Long3" -> 47L // mapped to Any

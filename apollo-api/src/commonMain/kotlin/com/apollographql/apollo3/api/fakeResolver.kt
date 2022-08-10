@@ -2,15 +2,55 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.MapJsonReader
 
+/**
+ * @property path the path to the element being resolved. [path] is a list of [String] or [Int]
+ * @property mergedField the field being resolved
+ */
 class FakeResolverContext(
     val path: List<Any>,
     val mergedField: CompiledField,
 )
 
+/**
+ * Provides fakes values for Data builders
+ */
 interface FakeResolver {
+  /**
+   * Resolves a leaf (scalar or enum) type. Note that because of list and not-nullable
+   * types, the type of `context.mergedField` is not always the leaf type.
+   * You can get the type of the leaf type with:
+   *
+   * ```
+   * context.mergedField.type.leafType()
+   * ```
+   *
+   * @return a kotlin value representing the value at path `context.path`. Possible values include
+   * - Boolean
+   * - Int
+   * - Double
+   * - Strings
+   * - Custom scalar targets (see below)
+   *
+   * Custom scalars: for custom scalars whose adapter is registered at build time, [resolveLeaf] **must**
+   * return a Json representation of the scalar (using Map, List, Boolean, Int, Double, String).
+   * Target instances such as `Date`, `BigDecimal`, etc... are not supported because they would require [CustomScalarAdapters] to decode.
+   */
   fun resolveLeaf(context: FakeResolverContext): Any
+
+  /**
+   * Resolves the size of a list. Note that lists might be nested. You can use `context.path` to get
+   * the current nesting depth
+   */
   fun resolveListSize(context: FakeResolverContext): Int
+
+  /**
+   * @return true if the current value should return null
+   */
   fun resolveMaybeNull(context: FakeResolverContext): Boolean
+
+  /**
+   * @return a concrete type that implements the type in `context.mergedField.type.leafType()`
+   */
   fun resolveTypename(context: FakeResolverContext): String
 }
 
@@ -130,6 +170,7 @@ private fun buildFieldOfNonNullType(
         }
       }
     }
+
     is CompiledNamedType -> {
       if (value is Optional.Present) {
         if (mergedField.selections.isNotEmpty()) {
@@ -156,6 +197,7 @@ private fun buildFieldOfNonNullType(
         }
       }
     }
+
     is CompiledNotNullType -> error("")
   }
 }
@@ -220,8 +262,8 @@ fun <T> buildData(
     selections: List<CompiledSelection>,
     typename: String,
     map: Map<String, Any?>,
-    resolver: FakeResolver
-    ): T {
+    resolver: FakeResolver,
+): T {
   return adapter.obj(false).fromJson(
       MapJsonReader(
           buildFakeObject(selections, typename, map, resolver)
