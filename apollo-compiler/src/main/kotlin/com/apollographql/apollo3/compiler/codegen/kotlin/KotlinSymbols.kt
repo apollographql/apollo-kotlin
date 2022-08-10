@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
@@ -22,7 +23,7 @@ internal object KotlinSymbols {
   val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toKotlinPoetClassName()
   val ObjectBuilder = ClassNames.ObjectBuilder.toKotlinPoetClassName()
   val BuilderProperty = ClassNames.BuilderProperty.toKotlinPoetClassName()
-
+  val FakeResolver = ClassNames.FakeResolver.toKotlinPoetClassName()
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toKotlinPoetClassName()
@@ -55,6 +56,7 @@ internal object KotlinSymbols {
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toKotlinPoetClassName()
   val TestResolver = ClassNames.TestResolver.toKotlinPoetClassName()
   val DefaultTestResolver = ClassNames.DefaultTestResolver.toKotlinPoetClassName()
+  val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toKotlinPoetClassName()
   val MapJsonReader = ClassNames.MapJsonReader.toKotlinPoetClassName()
   val MapBuilder = ClassNames.MapBuilder.toKotlinPoetClassName()
   val StubbedProperty = ClassNames.StubbedProperty.toKotlinPoetClassName()
@@ -102,4 +104,5 @@ object KotlinMemberNames {
   val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
+  val buildData = MemberName(apolloApiPackageName, "buildData")
 }

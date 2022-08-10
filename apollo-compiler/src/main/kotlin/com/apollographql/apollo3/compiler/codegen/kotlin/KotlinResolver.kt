@@ -338,4 +338,10 @@ class KotlinResolver(
     }
     return requiresOptInAnnotation?.let { ClassName.bestGuess(it) }
   }
+
+  fun registerSchema(className: ClassName) {
+    register(ResolverKeyKind.Schema, "", className)
+  }
+
+  fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
 }

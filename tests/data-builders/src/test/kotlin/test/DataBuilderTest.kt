@@ -1,6 +1,8 @@
 package test
 
 import MyLong
+import com.apollographql.apollo3.api.FakeResolver
+import com.apollographql.apollo3.api.FakeResolverContext
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
 import data.builders.GetCustomScalarQuery
@@ -8,8 +10,10 @@ import data.builders.GetDirectionQuery
 import data.builders.GetEverythingQuery
 import data.builders.GetFelineQuery
 import data.builders.GetIntQuery
+import data.builders.GetPartialQuery
 import data.builders.PutIntMutation
 import data.builders.type.Direction
+import data.builders.type.Lion
 import data.builders.type.buildCat
 import data.builders.type.buildLion
 import kotlin.test.Test
@@ -119,5 +123,72 @@ class DataBuilderTest {
   fun fakeValues() {
     val data = GetEverythingQuery.Data {}
 
+    assertEquals(Direction.SOUTH, data.direction)
+    assertEquals(0, data.nullableInt)
+    assertEquals(1, data.nonNullableInt)
+    assertEquals(listOf(
+        listOf(2, 3, 4),
+        listOf(5, 6, 7),
+        listOf(8, 9, 10)
+    ), data.listOfListOfInt)
+    assertEquals(11, data.cat.mustaches)
+    assertEquals("Lion", data.animal.__typename)
+    assertEquals("Cat", data.feline.__typename)
+
+    println(data)
+  }
+
+  @Test
+  fun partialFakeValues() {
+    val data = GetPartialQuery.Data {
+      listOfListOfAnimal = listOf(listOf(buildLion {  }))
+    }
+
+    assertEquals(
+        GetPartialQuery.Data(
+            listOfListOfAnimal = listOf(
+                listOf(
+                    GetPartialQuery.ListOfListOfAnimal(
+                        __typename = "Lion",
+                        species = "species",
+                        onLion = GetPartialQuery.OnLion("roar")
+                    )
+                )
+            ),
+        ),
+        data
+    )
+  }
+
+  class MyFakeResolver: FakeResolver {
+    override fun resolveLeaf(context: FakeResolverContext): Any {
+      return when (val name = context.mergedField.type.leafType().name ) {
+        "Long1" -> "45" // build-time => this needs to be resolved to Json
+        "Long2" -> MyLong(46) // run-time
+        "Long3" -> 47L // mapped to Any
+        else -> error("")
+      }
+    }
+
+    override fun resolveListsSize(context: FakeResolverContext): Int {
+      TODO("Not yet implemented")
+    }
+
+    override fun resolveMaybeNull(context: FakeResolverContext): Boolean {
+      TODO("Not yet implemented")
+    }
+
+    override fun resolveTypename(context: FakeResolverContext): String {
+      TODO("Not yet implemented")
+    }
+  }
+
+  @Test
+  fun customScalarFakeValues() {
+    val data = GetCustomScalarQuery.Data(MyFakeResolver())
+
+    assertEquals(45L, data.long1?.value)
+    assertEquals(46L, data.long2?.value)
+    assertEquals(47L, data.long3)
   }
 }

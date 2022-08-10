@@ -285,7 +285,12 @@ class InputObjectType(
 
 class EnumType(
     name: String,
-) : CompiledNamedType(name)
+    val values: List<String>
+) : CompiledNamedType(name) {
+  @Deprecated("Use the primary constructor instead")
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_5_1)
+  constructor(name: String): this(name, emptyList())
+}
 
 class ScalarType(
     name: String,

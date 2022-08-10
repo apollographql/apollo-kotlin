@@ -47,19 +47,29 @@ query GetFeline {
 query GetEverything {
   nullableInt
   nonNullableInt
+  listOfListOfInt
   direction
-#  cat {
-#    mustaches
-#  }
-#  animal {
-#    species
-#  }
-#  feline {
-#    ... on Lion {
-#      roar
-#    }
-#  }
-#  long1
-#  long2
-#  long3
+  listOfListOfAnimal {
+    species
+  }
+  cat {
+    mustaches
+  }
+  animal {
+    species
+  }
+  feline {
+    ... on Lion {
+      roar
+    }
+  }
+}
+
+query GetPartial {
+  listOfListOfAnimal {
+    species
+    ... on Lion {
+      roar
+    }
+  }
 }

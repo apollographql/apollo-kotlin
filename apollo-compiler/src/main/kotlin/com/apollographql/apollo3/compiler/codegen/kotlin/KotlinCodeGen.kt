@@ -198,7 +198,7 @@ internal class KotlinCodeGen(
         }
 
     if (generateSchema) {
-      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
+      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions, ir.enums))
     }
 
     if (ir.connectionTypes.isNotEmpty()) {
