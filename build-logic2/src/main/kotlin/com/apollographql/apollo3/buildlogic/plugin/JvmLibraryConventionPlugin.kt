@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
 import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
+import com.apollographql.apollo3.buildlogic.configurePublishing
 import com.apollographql.apollo3.buildlogic.treatWarningsAsErrors
 import configureTesting
 import org.gradle.api.Plugin
@@ -17,11 +18,16 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
         apply("org.jetbrains.kotlin.jvm")
       }
 
+      group = property("GROUP")!!
+      version = property("VERSION_NAME")!!
+
       configureJavaAndKotlinCompilers()
 
       treatWarningsAsErrors()
 
       configureTesting()
+
+      configurePublishing()
 
       tasks.withType(Jar::class.java).configureEach {
         extension.javaModuleName.orNull?.let { javaModuleName ->

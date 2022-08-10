@@ -29,11 +29,6 @@ subprojects {
     }
   }
 
-  group = property("GROUP")!!
-  version = property("VERSION_NAME")!!
-
-  configurePublishing()
-
   /**
    * Type `echo "apollographql_android_hack=true\n" >> ~/.gradle/gradle.properties` on your development machine
    * to make MPP modules publish an Android artifact so that IntelliJ can resolve the symbols
