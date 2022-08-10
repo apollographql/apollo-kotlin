@@ -1,5 +1,4 @@
 import JapiCmp.configureJapiCmp
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 buildscript {
   repositories {
@@ -19,18 +18,6 @@ apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 version = property("VERSION_NAME")!!
 
 subprojects {
-
-  tasks.withType<Test> {
-    systemProperty("updateTestFixtures", System.getProperty("updateTestFixtures"))
-    systemProperty("testFilter", System.getProperty("testFilter"))
-    systemProperty("codegenModels", System.getProperty("codegenModels"))
-  }
-  tasks.withType<AbstractTestTask> {
-    testLogging {
-      exceptionFormat = TestExceptionFormat.FULL
-    }
-  }
-
   repositories {
     mavenCentral()
     google()

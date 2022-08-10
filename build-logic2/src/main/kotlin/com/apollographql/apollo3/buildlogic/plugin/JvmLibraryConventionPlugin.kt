@@ -2,6 +2,7 @@ package com.apollographql.apollo3.buildlogic.plugin
 
 import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
 import com.apollographql.apollo3.buildlogic.treatWarningsAsErrors
+import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
@@ -19,6 +20,8 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
       configureJavaAndKotlinCompilers()
 
       treatWarningsAsErrors()
+
+      configureTesting()
 
       tasks.withType(Jar::class.java).configureEach {
         extension.javaModuleName.orNull?.let { javaModuleName ->
