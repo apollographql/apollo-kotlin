@@ -43,3 +43,23 @@ query GetFeline {
     }
   }
 }
+
+query GetEverything {
+  nullableInt
+  nonNullableInt
+  direction
+#  cat {
+#    mustaches
+#  }
+#  animal {
+#    species
+#  }
+#  feline {
+#    ... on Lion {
+#      roar
+#    }
+#  }
+#  long1
+#  long2
+#  long3
+}

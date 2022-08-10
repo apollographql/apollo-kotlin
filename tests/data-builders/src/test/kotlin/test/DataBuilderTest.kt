@@ -5,6 +5,7 @@ import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
 import data.builders.GetCustomScalarQuery
 import data.builders.GetDirectionQuery
+import data.builders.GetEverythingQuery
 import data.builders.GetFelineQuery
 import data.builders.GetIntQuery
 import data.builders.PutIntMutation
@@ -112,5 +113,11 @@ class DataBuilderTest {
     assertEquals(42, data.long1?.value)
     assertEquals(43, data.long2?.value)
     assertEquals(44, data.long3)
+  }
+
+  @Test
+  fun fakeValues() {
+    val data = GetEverythingQuery.Data {}
+
   }
 }
