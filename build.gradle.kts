@@ -17,38 +17,6 @@ apply(plugin = "org.jetbrains.kotlinx.binary-compatibility-validator")
 
 version = property("VERSION_NAME")!!
 
-subprojects {
-  repositories {
-    mavenCentral()
-    google()
-    jcenter {
-      content {
-        // https://github.com/Kotlin/kotlinx-nodejs/issues/16
-        includeModule("org.jetbrains.kotlinx", "kotlinx-nodejs")
-      }
-    }
-  }
-
-  /**
-   * Type `echo "apollographql_android_hack=true\n" >> ~/.gradle/gradle.properties` on your development machine
-   * to make MPP modules publish an Android artifact so that IntelliJ can resolve the symbols
-   *
-   * See https://youtrack.jetbrains.com/issue/KTIJ-14471
-   */
-  if (properties["apollographql_android_hack"] == "true") {
-    pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
-      // Hack for autocomplete to work with android projects
-      // See https://youtrack.jetbrains.com/issue/KTIJ-14471
-      if (System.getProperty("idea.sync.active") != null) {
-        apply(plugin = "com.android.library")
-        (extensions.findByName("kotlin") as? org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension)?.apply {
-          android()
-        }
-      }
-    }
-  }
-}
-
 fun subprojectTasks(name: String): List<Task> {
   return subprojects.flatMap { subproject ->
     subproject.tasks.matching { it.name == name }
@@ -143,15 +111,6 @@ repositories {
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
   outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))
-}
-
-allprojects {
-  tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaTask>().configureEach {
-    pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
-      customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
-      customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
-    }
-  }
 }
 
 tasks.named("dependencyUpdates").configure {

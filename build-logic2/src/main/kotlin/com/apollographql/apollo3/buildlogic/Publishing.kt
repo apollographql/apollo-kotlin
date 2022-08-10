@@ -12,6 +12,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
+import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
@@ -44,6 +45,13 @@ fun Project.configureDokka() {
   tasks.withType(DokkaTaskPartial::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
     dependsOn("assemble")
+  }
+
+  tasks.withType(AbstractDokkaTask::class.java).configureEach {
+    pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
+      customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+      customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+    }
   }
 }
 

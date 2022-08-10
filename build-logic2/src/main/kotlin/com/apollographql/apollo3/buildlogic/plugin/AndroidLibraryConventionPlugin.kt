@@ -2,7 +2,7 @@ package com.apollographql.apollo3.buildlogic.plugin
 
 import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
 import com.apollographql.apollo3.buildlogic.configurePublishing
-import com.apollographql.apollo3.buildlogic.treatWarningsAsErrors
+import com.apollographql.apollo3.buildlogic.configureRepositories
 import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -12,6 +12,11 @@ import org.gradle.api.tasks.bundling.Jar
 class AndroidLibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
+      group = property("GROUP")!!
+      version = property("VERSION_NAME")!!
+
+      configureRepositories()
+
       val extension = extensions.create("apolloConvention", Extension::class.java)
 
       pluginManager.apply {
@@ -19,12 +24,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         apply("org.jetbrains.kotlin.android")
       }
 
-      group = property("GROUP")!!
-      version = property("VERSION_NAME")!!
-
       configureJavaAndKotlinCompilers()
-
-      treatWarningsAsErrors()
 
       configureTesting()
 

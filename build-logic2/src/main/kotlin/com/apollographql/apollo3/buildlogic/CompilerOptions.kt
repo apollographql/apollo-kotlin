@@ -48,9 +48,11 @@ fun Project.configureJavaAndKotlinCompilers() {
     // Ensure "org.gradle.jvm.version" is set to "8" in Gradle metadata of jvm-only modules.
     options.release.set(8)
   }
+
+  treatWarningsAsErrors()
 }
 
-fun Project.treatWarningsAsErrors() {
+private fun Project.treatWarningsAsErrors() {
   tasks.withType(KotlinCompile::class.java) {
     kotlinOptions {
       allWarningsAsErrors = true

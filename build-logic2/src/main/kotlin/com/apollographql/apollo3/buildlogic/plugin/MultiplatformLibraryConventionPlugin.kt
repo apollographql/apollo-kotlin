@@ -3,7 +3,7 @@ package com.apollographql.apollo3.buildlogic.plugin
 import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
 import com.apollographql.apollo3.buildlogic.configureMppDefaults
 import com.apollographql.apollo3.buildlogic.configurePublishing
-import com.apollographql.apollo3.buildlogic.treatWarningsAsErrors
+import com.apollographql.apollo3.buildlogic.configureRepositories
 import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,18 +14,18 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 class MultiplatformLibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
+      group = property("GROUP")!!
+      version = property("VERSION_NAME")!!
+
+      configureRepositories()
+
       val extension = extensions.create("apolloConvention", Extension::class.java)
 
       pluginManager.apply {
         apply("org.jetbrains.kotlin.multiplatform")
       }
 
-      group = property("GROUP")!!
-      version = property("VERSION_NAME")!!
-
       configureJavaAndKotlinCompilers()
-
-      treatWarningsAsErrors()
 
       configureTesting()
 
