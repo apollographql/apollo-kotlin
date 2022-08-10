@@ -54,7 +54,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
 fun Project.okio(): String {
   val okioVersion = when (getKotlinPluginVersion()) {
     "1.6.10" -> "3.0.0"
-    else -> "3.1.0"
+    else -> "3.2.0"
   }
 
   return "${groovy.util.Eval.x(project, "x.dep.okio")}:$okioVersion"
@@ -63,7 +63,7 @@ fun Project.okio(): String {
 fun Project.okioNodeJs(): String {
   val okioVersion = when (getKotlinPluginVersion()) {
     "1.6.10" -> "3.0.0"
-    else -> "3.1.0"
+    else -> "3.2.0"
   }
 
   return "${groovy.util.Eval.x(project, "x.dep.okioNodeJs")}:$okioVersion"
