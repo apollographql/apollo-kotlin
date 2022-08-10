@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.squareup.kotlinpoet.ClassName
 
 /**
@@ -56,6 +57,4 @@ internal object ClassNames {
   val MapBuilder = ResolverClassName(apolloApiTestPackageName, "MapBuilder")
   val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
-
-  val ApolloExperimental = ClassName(apolloAnnotationsPackageName, "ApolloExperimental")
 }

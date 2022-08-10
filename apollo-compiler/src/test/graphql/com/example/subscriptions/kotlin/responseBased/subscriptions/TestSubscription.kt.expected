@@ -5,6 +5,7 @@
 //
 package com.example.subscriptions
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -41,6 +42,7 @@ public data class TestSubscription(
   .selections(selections = TestSubscriptionSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(TestSubscription_ResponseAdapter.Data::class)
   public data class Data(
     /**
      * Subscription fires on every comment added

@@ -5,6 +5,7 @@
 //
 package com.example.antlr_tokens
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -41,6 +42,7 @@ public data class TestQuery(
   .selections(selections = TestQuerySelections.__root)
   .build()
 
+  @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
     public val typeWithGraphQLKeywords: TypeWithGraphQLKeywords?,
   ) : Query.Data {

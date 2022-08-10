@@ -57,7 +57,7 @@ internal class OperationBuilder(
         context = context,
         model = it,
         superClassName = if (it.id == operation.dataModelGroup.baseModelId) dataSuperClassName else null,
-        path = listOf(packageName, simpleName)
+        path = listOf(packageName, simpleName),
     )
   }
 

@@ -5,6 +5,7 @@
 //
 package com.example.simple_union
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -46,6 +47,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
   .selections(selections = AnimalQuerySelections.__root)
   .build()
 
+  @ApolloAdaptableWith(AnimalQuery_ResponseAdapter.Data::class)
   public data class Data(
     public val animal: Animal?,
   ) : Query.Data {

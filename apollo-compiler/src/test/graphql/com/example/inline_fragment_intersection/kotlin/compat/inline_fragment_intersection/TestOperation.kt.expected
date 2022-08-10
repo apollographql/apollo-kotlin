@@ -5,6 +5,7 @@
 //
 package com.example.inline_fragment_intersection
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -47,6 +48,7 @@ public class TestOperation() : Query<TestOperation.Data> {
   .selections(selections = TestOperationSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(TestOperation_ResponseAdapter.Data::class)
   public data class Data(
     public val random: Random,
   ) : Query.Data

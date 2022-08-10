@@ -5,6 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -44,6 +45,7 @@ public class InlineMultipleWithDefer() : Query<InlineMultipleWithDefer.Data> {
   .selections(selections = InlineMultipleWithDeferSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(InlineMultipleWithDefer_ResponseAdapter.Data::class)
   public data class Data(
     public val hero: Hero?,
   ) : Query.Data

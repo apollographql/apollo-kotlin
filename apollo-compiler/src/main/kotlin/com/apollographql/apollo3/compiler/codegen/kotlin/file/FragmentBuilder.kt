@@ -36,6 +36,7 @@ internal class FragmentBuilder(
           superClassName = if (it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
           path = listOf(packageName, simpleName),
           hasSubclassesInSamePackage = false,
+          adaptableWith = null
       )
     }
   } else {

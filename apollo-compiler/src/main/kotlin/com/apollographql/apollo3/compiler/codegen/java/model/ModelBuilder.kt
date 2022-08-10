@@ -8,6 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
@@ -16,6 +17,8 @@ import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.CodeBlock
 import javax.lang.model.element.Modifier
 
 /**
@@ -33,7 +36,7 @@ internal class ModelBuilder(
           context,
           it,
           null,
-          path + model.modelName
+          path + model.modelName,
       )
     }
   }

@@ -5,6 +5,7 @@
 //
 package com.example.deprecated_merged_field
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -45,6 +46,7 @@ public class CatQuery() : Query<CatQuery.Data> {
   .selections(selections = CatQuerySelections.__root)
   .build()
 
+  @ApolloAdaptableWith(CatQuery_ResponseAdapter.Data::class)
   public data class Data(
     public val cat: Cat?,
   ) : Query.Data

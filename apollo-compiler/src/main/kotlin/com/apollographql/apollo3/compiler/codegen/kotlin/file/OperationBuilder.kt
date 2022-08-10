@@ -65,6 +65,7 @@ internal class OperationBuilder(
         superClassName = if (it.id == operation.dataModelGroup.baseModelId) dataSuperClassName else null,
         path = listOf(packageName, simpleName),
         hasSubclassesInSamePackage = true,
+        adaptableWith = if (it.id == operation.dataModelGroup.baseModelId) it.id else null,
     )
   }
 
