@@ -23,7 +23,7 @@ class JvmLibraryConventionPlugin : Plugin<Project> {
         apply("org.jetbrains.kotlin.jvm")
       }
 
-      configureJavaAndKotlinCompilers()
+      configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
 
       configureTesting()
 

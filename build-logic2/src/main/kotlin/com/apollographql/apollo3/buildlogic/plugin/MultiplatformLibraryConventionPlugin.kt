@@ -25,7 +25,7 @@ class MultiplatformLibraryConventionPlugin : Plugin<Project> {
         apply("org.jetbrains.kotlin.multiplatform")
       }
 
-      configureJavaAndKotlinCompilers()
+      configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
 
       configureTesting()
 

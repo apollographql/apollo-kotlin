@@ -7,7 +7,7 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-fun Project.configureJavaAndKotlinCompilers() {
+fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = false) {
   // For Kotlin JVM projects
   tasks.withType(KotlinCompile::class.java) {
     kotlinOptions {
@@ -49,13 +49,29 @@ fun Project.configureJavaAndKotlinCompilers() {
     options.release.set(8)
   }
 
-  treatWarningsAsErrors()
+  if (treatWarningsAsErrors) treatWarningsAsErrors()
 }
 
 private fun Project.treatWarningsAsErrors() {
   tasks.withType(KotlinCompile::class.java) {
     kotlinOptions {
       allWarningsAsErrors = true
+    }
+  }
+}
+
+// Workaround for https://youtrack.jetbrains.com/issue/KT-51970
+fun Project.workaroundForIssueKT51970() {
+  afterEvaluate {
+    afterEvaluate {
+      tasks.configureEach {
+        if (
+            name.startsWith("compile")
+            && name.endsWith("KotlinMetadata")
+        ) {
+          enabled = false
+        }
+      }
     }
   }
 }
