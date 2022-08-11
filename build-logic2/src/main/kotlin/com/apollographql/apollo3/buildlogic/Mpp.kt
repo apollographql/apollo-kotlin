@@ -46,7 +46,7 @@ fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean) {
         "tvosSimulatorArm64",
     ))
 
-    addTestDependencies(withJs = withJs, withJvm = true)
+    addTestDependencies()
 
     enableNewMemoryManager()
   }
@@ -116,31 +116,16 @@ fun Project.configureMppTestsDefaults(
 
     configureAppleTargets(appleTargets)
 
-    addTestDependencies(withJs = withJs, withJvm = withJvm)
+    addTestDependencies()
 
     if (newMemoryManager) enableNewMemoryManager()
   }
 }
 
-private fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean, withJvm: Boolean) {
+private fun KotlinMultiplatformExtension.addTestDependencies() {
   sourceSets.getByName("commonTest") {
     dependencies {
-      implementation(kotlin("test-common"))
-      implementation(kotlin("test-annotations-common"))
-    }
-  }
-  if (withJs) {
-    sourceSets.getByName("jsTest") {
-      dependencies {
-        implementation(kotlin("test-js"))
-      }
-    }
-  }
-  if (withJvm) {
-    sourceSets.getByName("jvmTest") {
-      dependencies {
-        implementation(kotlin("test-junit"))
-      }
+      implementation(kotlin("test"))
     }
   }
 }
