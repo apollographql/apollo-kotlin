@@ -1,5 +1,6 @@
 plugins {
   id("java")
+  id("apollo.test.vanilla")
   id("com.apollographql.apollo3")
 }
 
