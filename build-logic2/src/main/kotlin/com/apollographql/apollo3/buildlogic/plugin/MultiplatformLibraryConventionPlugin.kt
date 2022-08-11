@@ -45,7 +45,7 @@ class MultiplatformLibraryConventionPlugin : Plugin<Project> {
     abstract val javaModuleName: Property<String>
 
     fun kotlin(withJs: Boolean = true, withLinux: Boolean = true, configure: KotlinMultiplatformExtension.() -> Unit) {
-      project.configureMppDefaults(withJs, withLinux)
+      project.configureMppDefaults(withJs = withJs, withLinux = withLinux)
 
       val kotlinExtension = project.extensions.findByName("kotlin") as KotlinMultiplatformExtension
       kotlinExtension.configure()

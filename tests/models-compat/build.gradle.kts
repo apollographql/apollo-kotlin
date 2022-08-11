@@ -1,25 +1,24 @@
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("apollo.test.multiplatform")
 }
 
-configureMppTestsDefaults()
-
-kotlin {
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        implementation(libs.apollo.runtime)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.adapters)
+apolloConvention {
+  kotlin {
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          implementation(libs.apollo.runtime)
+          implementation(libs.apollo.normalizedcache)
+          implementation(libs.apollo.adapters)
+        }
       }
-    }
 
-    val commonTest by getting {
-      dependencies {
-        implementation(libs.apollo.testingsupport)
+      val commonTest by getting {
+        dependencies {
+          implementation(libs.apollo.testingsupport)
+        }
       }
     }
   }

@@ -6,13 +6,14 @@ import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class JvmTestConventionPlugin : Plugin<Project> {
+class AndroidTestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
       configureRepositories()
 
       pluginManager.apply {
-        apply("org.jetbrains.kotlin.jvm")
+        apply("com.android.library")
+        apply("org.jetbrains.kotlin.android")
         apply("com.apollographql.apollo3")
       }
 

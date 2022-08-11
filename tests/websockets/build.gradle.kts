@@ -1,29 +1,28 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("apollo.test.multiplatform")
 }
 
-configureMppTestsDefaults()
-
-kotlin {
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        implementation(libs.apollo.runtime)
+apolloConvention {
+  kotlin {
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          implementation(libs.apollo.runtime)
+        }
       }
-    }
 
-    val commonTest by getting {
-      dependencies {
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.turbine)
+      val commonTest by getting {
+        dependencies {
+          implementation(libs.apollo.testingsupport)
+          implementation(libs.apollo.normalizedcache)
+          implementation(libs.turbine)
+        }
       }
-    }
 
-    val jvmTest by getting {
-      dependencies {
-        implementation(projects.sampleServer)
+      val jvmTest by getting {
+        dependencies {
+          implementation(projects.sampleServer)
+        }
       }
     }
   }

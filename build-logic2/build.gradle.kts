@@ -65,5 +65,15 @@ gradlePlugin {
       id = "apollo.test.jvm"
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmTestConventionPlugin"
     }
+
+    register("apollo.test.multiplatform") {
+      id = "apollo.test.multiplatform"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.MultiplatformTestConventionPlugin"
+    }
+
+    register("apollo.test.android") {
+      id = "apollo.test.android"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.AndroidTestConventionPlugin"
+    }
   }
 }

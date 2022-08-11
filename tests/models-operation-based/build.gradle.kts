@@ -1,39 +1,38 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("apollo.test.multiplatform")
 }
 
-configureMppTestsDefaults()
-
-kotlin {
-  /**
-   * Extra target to test the java codegen. There will be 2 JVM tasks:
-   * - compileKotlinJvm
-   * - compileKotlinJavaCodegen
-   */
-  jvm("javaCodegen") {
-    withJava()
-  }
-
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        implementation(libs.apollo.runtime)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.adapters)
-      }
+apolloConvention {
+  kotlin {
+    /**
+     * Extra target to test the java codegen. There will be 2 JVM tasks:
+     * - compileKotlinJvm
+     * - compileKotlinJavaCodegen
+     */
+    jvm("javaCodegen") {
+      withJava()
     }
 
-    val commonTest by getting {
-      dependencies {
-        implementation(libs.apollo.testingsupport)
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          implementation(libs.apollo.runtime)
+          implementation(libs.apollo.normalizedcache)
+          implementation(libs.apollo.adapters)
+        }
       }
-    }
 
-    val javaCodegenTest by getting {
-      dependencies {
-        // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(libs.kotlin.test.junit)
+      val commonTest by getting {
+        dependencies {
+          implementation(libs.apollo.testingsupport)
+        }
+      }
+
+      val javaCodegenTest by getting {
+        dependencies {
+          // Add test-junit manually because configureMppTestsDefaults did not do it for us
+          implementation(libs.kotlin.test.junit)
+        }
       }
     }
   }

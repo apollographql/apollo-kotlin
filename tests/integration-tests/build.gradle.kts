@@ -1,50 +1,49 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("apollo.test.multiplatform")
 }
 
-configureMppTestsDefaults()
-
-kotlin {
-  /**
-   * Extra target to test the java codegen
-   */
-  jvm("javaCodegen") {
-    withJava()
-  }
-
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        implementation(libs.apollo.api)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.mockserver)
-        implementation(libs.apollo.adapters)
-        implementation(libs.apollo.runtime)
-      }
+apolloConvention {
+  kotlin {
+    /**
+     * Extra target to test the java codegen
+     */
+    jvm("javaCodegen") {
+      withJava()
     }
 
-    val commonTest by getting {
-      dependencies {
-        implementation(libs.kotlinx.coroutines)
-        implementation(libs.kotlinx.serialization.json.get().toString()) {
-          because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          implementation(libs.apollo.api)
+          implementation(libs.apollo.normalizedcache)
+          implementation(libs.apollo.testingsupport)
+          implementation(libs.apollo.mockserver)
+          implementation(libs.apollo.adapters)
+          implementation(libs.apollo.runtime)
         }
-        implementation(libs.kotlinx.coroutines.test)
       }
-    }
 
-    val javaCodegenTest by getting {
-      dependencies {
-        // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(libs.kotlin.test.junit)
+      val commonTest by getting {
+        dependencies {
+          implementation(libs.kotlinx.coroutines)
+          implementation(libs.kotlinx.serialization.json.get().toString()) {
+            because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
+          }
+          implementation(libs.kotlinx.coroutines.test)
+        }
       }
-    }
 
-    val jvmTest by getting {
-      dependencies {
-        implementation(libs.okhttp.logging)
+      val javaCodegenTest by getting {
+        dependencies {
+          // Add test-junit manually because configureMppTestsDefaults did not do it for us
+          implementation(libs.kotlin.test.junit)
+        }
+      }
+
+      val jvmTest by getting {
+        dependencies {
+          implementation(libs.okhttp.logging)
+        }
       }
     }
   }

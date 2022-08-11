@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = true) {
+fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
@@ -32,7 +32,7 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
       linuxX64("linux")
     }
 
-    configureAppleTargets(
+    configureAppleTargets(setOf(
         "macosX64",
         "macosArm64",
         "iosArm64",
@@ -44,15 +44,15 @@ fun Project.configureMppDefaults(withJs: Boolean = true, withLinux: Boolean = tr
         "tvosArm64",
         "tvosX64",
         "tvosSimulatorArm64",
-    )
+    ))
 
-    addTestDependencies(withJs)
+    addTestDependencies(withJs = withJs, withJvm = true)
 
     enableNewMemoryManager()
   }
 }
 
-fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: String) {
+private fun KotlinMultiplatformExtension.configureAppleTargets(presetNames: Set<String>) {
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
     // Try to guess the dev machine to make sure the tests are running smoothly
@@ -82,10 +82,15 @@ fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: Strin
 }
 
 /**
- * Same as [configureMppDefaults] but without iOS or Linux targets.
+ * Same as [configureMppDefaults] but without Linux targets. Apple targets can be configured.
  * Tests only run on the JVM, JS and MacOS
  */
-fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
+fun Project.configureMppTestsDefaults(
+    withJs: Boolean,
+    withJvm: Boolean,
+    newMemoryManager: Boolean,
+    appleTargets: Set<String>,
+) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
@@ -94,7 +99,8 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
     /**
      * configure targets
      */
-    jvm()
+    if (withJvm) jvm()
+
     if (withJs) {
       js(IR) {
         nodejs {
@@ -108,15 +114,15 @@ fun Project.configureMppTestsDefaults(withJs: Boolean = true) {
       }
     }
 
-    configureAppleTargets("macosX64", "macosArm64")
+    configureAppleTargets(appleTargets)
 
-    addTestDependencies(withJs)
+    addTestDependencies(withJs = withJs, withJvm = withJvm)
 
-    enableNewMemoryManager()
+    if (newMemoryManager) enableNewMemoryManager()
   }
 }
 
-fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
+private fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean, withJvm: Boolean) {
   sourceSets.getByName("commonTest") {
     dependencies {
       implementation(kotlin("test-common"))
@@ -130,15 +136,17 @@ fun KotlinMultiplatformExtension.addTestDependencies(withJs: Boolean) {
       }
     }
   }
-  sourceSets.getByName("jvmTest") {
-    dependencies {
-      implementation(kotlin("test-junit"))
+  if (withJvm) {
+    sourceSets.getByName("jvmTest") {
+      dependencies {
+        implementation(kotlin("test-junit"))
+      }
     }
   }
 }
 
 // See https://github.com/JetBrains/kotlin/blob/master/kotlin-native/NEW_MM.md
-fun KotlinMultiplatformExtension.enableNewMemoryManager() {
+private fun KotlinMultiplatformExtension.enableNewMemoryManager() {
   targets.withType(KotlinNativeTarget::class.java) {
     binaries.all {
       binaryOptions["memoryModel"] = "experimental"

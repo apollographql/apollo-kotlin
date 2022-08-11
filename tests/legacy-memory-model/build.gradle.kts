@@ -1,22 +1,14 @@
 plugins {
-  id("org.jetbrains.kotlin.multiplatform")
-  id("com.apollographql.apollo3")
+  id("apollo.test.multiplatform")
 }
 
-kotlin {
-  configureAppleTargets("macosX64", "macosArm64")
-
-  sourceSets {
-    val commonMain by getting {
-      dependencies {
-        implementation(libs.apollo.runtime)
-      }
-    }
-
-    val commonTest by getting {
-      dependencies {
-        implementation(libs.kotlin.test.common)
-        implementation(libs.kotlin.test.annotations.common)
+apolloConvention {
+  kotlin(withJs = false, withJvm = false, newMemoryManager = false) {
+    sourceSets {
+      val commonMain by getting {
+        dependencies {
+          implementation(libs.apollo.runtime)
+        }
       }
     }
   }
@@ -25,4 +17,3 @@ kotlin {
 apollo {
   packageName.set("test")
 }
-
