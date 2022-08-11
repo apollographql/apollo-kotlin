@@ -1,6 +1,6 @@
 plugins {
-  id("apollo.library")
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library")
 }
 
 apply(plugin = "com.android.library")

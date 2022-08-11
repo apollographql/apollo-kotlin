@@ -1,5 +1,10 @@
 plugins {
-  id("apollo.library.jvm")
+  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
+}
+
+apolloLibrary {
+  javaModuleName.set("com.apollographql.apollo3.cache.http")
 }
 
 dependencies {
@@ -12,8 +17,4 @@ dependencies {
   testImplementation(projects.apolloMockserver)
   testImplementation(libs.kotlin.test.junit)
   testImplementation(libs.truth)
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.cache.http")
 }

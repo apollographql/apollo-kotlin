@@ -2,8 +2,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   antlr
-  id("apollo.library.jvm")
+  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("com.google.devtools.ksp")
+}
+
+apolloLibrary {
+  javaModuleName.set("com.apollographql.apollo3.ast")
 }
 
 dependencies {
@@ -31,8 +36,4 @@ tasks.withType(KotlinCompile::class.java) {
   // This used to work and fails now. Strangely enough, it fails on both `dev-3.x` and `main` as of writing while both these branches have
   // compiled successfully before...
   dependsOn("generateGrammarSource")
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.ast")
 }

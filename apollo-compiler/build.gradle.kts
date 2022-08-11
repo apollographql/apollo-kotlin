@@ -1,8 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  id("apollo.library.jvm")
+  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("com.google.devtools.ksp")
+}
+
+apolloLibrary {
+  javaModuleName.set("com.apollographql.apollo3.compiler")
 }
 
 dependencies {
@@ -70,8 +75,4 @@ tasks.withType<Test>().configureEach {
   inputs.dir("src/test/typename")
   inputs.dir("src/test/usedtypes")
   inputs.dir("src/test/validation")
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.compiler")
 }

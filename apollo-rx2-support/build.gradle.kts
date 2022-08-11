@@ -1,5 +1,10 @@
 plugins {
-  id("apollo.library.jvm")
+  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
+}
+
+apolloLibrary {
+  javaModuleName.set("com.apollographql.apollo3.rx2")
 }
 
 dependencies {
@@ -9,8 +14,4 @@ dependencies {
 
   api(projects.apolloRuntime)
   api(projects.apolloNormalizedCache)
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.rx2")
 }

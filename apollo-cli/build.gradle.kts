@@ -1,5 +1,6 @@
 plugins {
-  id("apollo.library.jvm")
+  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("application")
 }
 

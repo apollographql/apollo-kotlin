@@ -2,7 +2,12 @@
  * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
  */
 plugins {
-  id("apollo.library.jvm")
+  id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
+}
+
+apolloLibrary {
+  javaModuleName.set("com.apollographql.apollo3.rx3")
 }
 
 dependencies {
@@ -12,8 +17,4 @@ dependencies {
 
   api(projects.apolloRuntime)
   api(projects.apolloNormalizedCache)
-}
-
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.rx3")
 }

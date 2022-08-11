@@ -22,10 +22,6 @@ class LibraryConventionPlugin : Plugin<Project> {
 
       val extension = extensions.create("apolloLibrary", Extension::class.java)
 
-      pluginManager.apply {
-        apply("org.jetbrains.kotlin.multiplatform")
-      }
-
       configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
 
       configureTesting()
