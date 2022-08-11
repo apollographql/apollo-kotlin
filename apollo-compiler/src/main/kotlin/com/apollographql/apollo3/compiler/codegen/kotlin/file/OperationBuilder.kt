@@ -10,9 +10,12 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.block
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
+import com.apollographql.apollo3.compiler.codegen.Identifier.resolver
+import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -182,23 +185,33 @@ internal class OperationBuilder(
     return FunSpec.builder(Identifier.Data)
         .addParameter(
             ParameterSpec.builder(
+                resolver,
+                KotlinSymbols.FakeResolver
+            ).defaultValue(
+                CodeBlock.of("%T(%T.all)", KotlinSymbols.DefaultFakeResolver, context.resolver.resolveSchema())
+            ).build()
+        ).addParameter(
+            ParameterSpec.builder(
                 block,
                 LambdaTypeName.get(
                     receiver = context.resolver.resolveBuilderType(operation.operationType.typeName),
                     parameters = emptyArray<TypeName>(),
                     returnType = KotlinSymbols.Unit
                 )
-            ).build()
+            ).defaultValue(CodeBlock.of("{}"))
+                .build()
         )
         .addCode(
             CodeBlock.builder()
-                .addStatement(
-                    "return·%L.fromJson(%T(%M($block)),·%T.Unsafe)",
-                    context.resolver.adapterInitializer(operation.dataProperty.info.type, requiresBuffering = false),
-                    KotlinSymbols.MapJsonReader,
-                    context.resolver.resolveBuilderFun(operation.operationType.typeName),
-                    KotlinSymbols.CustomScalarAdapters
-                )
+                .add("return·%M(\n", KotlinMemberNames.buildData)
+                .indent()
+                .add("%T,\n", context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId))
+                .add("%T.$root,\n", context.resolver.resolveOperationSelections(operation.name))
+                .add("%S,\n", operation.operationType.typeName)
+                .add("%M($block),\n", context.resolver.resolveBuilderFun(operation.operationType.typeName))
+                .add("$resolver\n", )
+                .unindent()
+                .add(")\n")
                 .build()
         )
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))

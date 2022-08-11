@@ -22,7 +22,7 @@ internal object KotlinSymbols {
   val InterfaceTypeBuilder = ClassNames.InterfaceTypeBuilder.toKotlinPoetClassName()
   val ObjectBuilder = ClassNames.ObjectBuilder.toKotlinPoetClassName()
   val BuilderProperty = ClassNames.BuilderProperty.toKotlinPoetClassName()
-
+  val FakeResolver = ClassNames.FakeResolver.toKotlinPoetClassName()
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toKotlinPoetClassName()
@@ -55,6 +55,7 @@ internal object KotlinSymbols {
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toKotlinPoetClassName()
   val TestResolver = ClassNames.TestResolver.toKotlinPoetClassName()
   val DefaultTestResolver = ClassNames.DefaultTestResolver.toKotlinPoetClassName()
+  val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toKotlinPoetClassName()
   val MapJsonReader = ClassNames.MapJsonReader.toKotlinPoetClassName()
   val MapBuilder = ClassNames.MapBuilder.toKotlinPoetClassName()
   val StubbedProperty = ClassNames.StubbedProperty.toKotlinPoetClassName()
@@ -96,10 +97,11 @@ internal object KotlinSymbols {
   val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
 }
 
-fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
+internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)
 
-object KotlinMemberNames {
+internal object KotlinMemberNames {
   val withTestResolver = MemberName(apolloApiTestPackageName, "withTestResolver")
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
+  val buildData = MemberName(apolloApiPackageName, "buildData")
 }

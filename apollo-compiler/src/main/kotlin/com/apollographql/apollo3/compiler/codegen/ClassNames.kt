@@ -50,6 +50,8 @@ internal object ClassNames {
   val CompiledFragmentBuilder = ResolverClassName(apolloApiPackageName, "CompiledFragment", "Builder")
   val TestResolver = ResolverClassName(apolloApiTestPackageName, "TestResolver")
   val DefaultTestResolver = ResolverClassName(apolloApiTestPackageName, "DefaultTestResolver")
+  val DefaultFakeResolver = ResolverClassName(apolloApiPackageName, "DefaultFakeResolver")
+  val FakeResolver = ResolverClassName(apolloApiPackageName, "FakeResolver")
   val MapJsonReader = ResolverClassName(apolloApiJsonPackageName, "MapJsonReader")
   val MapBuilder = ResolverClassName(apolloApiTestPackageName, "MapBuilder")
   val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")

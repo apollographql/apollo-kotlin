@@ -24,7 +24,7 @@ public enum class hero_type(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("hero_type")
+    public val type: EnumType = EnumType("hero_type", listOf("human", "droid"))
 
     public fun safeValueOf(rawValue: String): hero_type = values().find { it.rawValue == rawValue }
         ?: UNKNOWN__

@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toListInitializerCodeblock
 import com.apollographql.apollo3.compiler.ir.IrCustomScalar
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
@@ -40,7 +41,7 @@ private fun builtinScalarKotlinName(name: String): String? = when (name) {
 internal fun IrEnum.typePropertySpec(): PropertySpec {
   return PropertySpec
       .builder(Identifier.type, KotlinSymbols.EnumType)
-      .initializer("%T(%S)", KotlinSymbols.EnumType, name)
+      .initializer("%T(%S,·%L)", KotlinSymbols.EnumType, name, this.values.map { CodeBlock.of("%S", it.name) }.toListInitializerCodeblock())
       .build()
 }
 

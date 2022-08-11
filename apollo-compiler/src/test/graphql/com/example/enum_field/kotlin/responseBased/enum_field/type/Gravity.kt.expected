@@ -27,7 +27,8 @@ public enum class Gravity(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("Gravity")
+    public val type: EnumType = EnumType("Gravity", listOf("TOP", "CENTER", "BOTTOM", "bottom",
+        "is", "type", "String"))
 
     public fun safeValueOf(rawValue: kotlin.String): Gravity =
         values().find { it.rawValue == rawValue } ?: UNKNOWN__

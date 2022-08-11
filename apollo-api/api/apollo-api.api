@@ -450,6 +450,15 @@ public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLString :
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public final class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollographql/apollo3/api/FakeResolver {
+	public fun <init> (Ljava/util/List;)V
+	public final fun getTypes ()Ljava/util/List;
+	public fun resolveLeaf (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/Object;
+	public fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
+	public fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
+	public fun resolveTypename (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo3/api/DefaultUpload : com/apollographql/apollo3/api/Upload {
 	public fun getContentLength ()J
 	public fun getContentType ()Ljava/lang/String;
@@ -491,6 +500,8 @@ public final class com/apollographql/apollo3/api/DeferredFragmentIdentifier {
 
 public final class com/apollographql/apollo3/api/EnumType : com/apollographql/apollo3/api/CompiledNamedType {
 	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public final fun getValues ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/api/Error {
@@ -577,6 +588,23 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionOptions {
 
 public final class com/apollographql/apollo3/api/ExecutionOptions$Companion {
 	public static final field CAN_BE_BATCHED Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/api/FakeResolver {
+	public abstract fun resolveLeaf (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/Object;
+	public abstract fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
+	public abstract fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
+	public abstract fun resolveTypename (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/api/FakeResolverContext {
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/api/CompiledField;)V
+	public final fun getMergedField ()Lcom/apollographql/apollo3/api/CompiledField;
+	public final fun getPath ()Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/api/FakeResolverKt {
+	public static final fun buildData (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo3/api/FakeResolver;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/FileUpload {

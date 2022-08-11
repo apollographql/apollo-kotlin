@@ -45,7 +45,8 @@ public enum class Episode(
   ;
 
   public companion object {
-    public val type: EnumType = EnumType("Episode")
+    public val type: EnumType = EnumType("Episode", listOf("NEWHOPE", "EMPIRE", "JEDI",
+        "DEPRECATED", "new"))
 
     public fun safeValueOf(rawValue: String): Episode = values().find { it.rawValue == rawValue } ?:
         UNKNOWN__

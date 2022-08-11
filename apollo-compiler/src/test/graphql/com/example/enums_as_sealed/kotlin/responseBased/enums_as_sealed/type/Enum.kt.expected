@@ -17,7 +17,7 @@ public sealed class Enum(
   public val rawValue: String,
 ) {
   public companion object {
-    public val type: EnumType = EnumType("Enum")
+    public val type: EnumType = EnumType("Enum", listOf("north", "North", "NORTH", "SOUTH", "type"))
 
     /**
      * Returns the [Enum] that represents the specified [rawValue].

@@ -6,9 +6,11 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrUnion
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.MemberName
@@ -22,11 +24,13 @@ internal class SchemaBuilder(
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
+    private val enums: List<IrEnum>
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
 
   override fun prepare() {
+    context.resolver.registerSchema(ClassName(packageName, generatedSchemaName))
   }
 
   override fun build(): CgFile {
@@ -38,7 +42,7 @@ internal class SchemaBuilder(
   }
 
   private fun typesPropertySpec(): PropertySpec {
-    val allTypenames = interfaces.map { it.name } + objects.map { it.name } + unions.map { it.name }
+    val allTypenames = interfaces.map { it.name } + objects.map { it.name } + unions.map { it.name } + enums.map { it.name }
     val builder = CodeBlock.builder()
     builder.add("listOf(\n")
     builder.indent()
@@ -50,14 +54,14 @@ internal class SchemaBuilder(
     builder.unindent()
     builder.add(")\n")
 
-    return PropertySpec.builder("all", KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledType))
+    return PropertySpec.builder("all", KotlinSymbols.List.parameterizedBy(KotlinSymbols.CompiledNamedType))
         .initializer(builder.build())
         .build()
   }
 
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(generatedSchemaName)
-        .addKdoc("A ___Schema object containing all the composite types and a possibleTypes helper function")
+        .addKdoc("A __Schema object containing all the composite types and a possibleTypes helper function")
         .addProperty(typesPropertySpec())
         .addFunction(possibleTypesFunSpec())
         .build()

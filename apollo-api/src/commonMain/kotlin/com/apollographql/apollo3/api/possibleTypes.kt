@@ -33,6 +33,9 @@ private fun possibleTypesInternal(allTypes: List<CompiledType>, type: CompiledNa
   }
 }
 
+/**
+ * Returns all objects that implement [type]
+ */
 fun possibleTypes(allTypes: List<CompiledType>, type: CompiledNamedType): List<ObjectType> {
   return possibleTypesInternal(allTypes, type).distinctBy { it.name }.sortedBy { it.name }
 }

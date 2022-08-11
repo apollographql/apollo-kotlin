@@ -32,7 +32,8 @@ enum class ResolverKeyKind {
   TestBuilder,
   MapType,
   BuilderType,
-  BuilderFun
+  BuilderFun,
+  Schema
 }
 
 @JsonClass(generateAdapter = true)
