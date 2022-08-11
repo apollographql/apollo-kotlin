@@ -23,6 +23,7 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
       }
       apiVersion = "1.5"
       languageVersion = "1.5"
+      jvmTarget = "1.8"
     }
   }
 
