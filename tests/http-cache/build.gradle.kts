@@ -13,4 +13,5 @@ dependencies {
 
 apollo {
   packageName.set("httpcache")
+  generateDataBuilders.set(true)
 }

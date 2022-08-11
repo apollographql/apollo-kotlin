@@ -73,6 +73,10 @@ class CustomScalarAdapters private constructor(
     @JvmField
     val Empty = Builder().build()
 
+    /**
+     * Unsafe [CustomScalarAdapters]. They can only be used with `MapJsonReader` and will passthrough the values using
+     * `MapJsonReader.readAny`
+     */
     @JvmField
     val Unsafe = Builder().unsafe(true).build()
   }

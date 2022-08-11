@@ -13,5 +13,5 @@ dependencies {
 
 apollo {
   packageName.set("com.example")
-  generateTestBuilders.set(true)
+  generateDataBuilders.set(true)
 }

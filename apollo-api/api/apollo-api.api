@@ -822,6 +822,8 @@ public abstract interface class com/apollographql/apollo3/api/Subscription$Data 
 public final class com/apollographql/apollo3/api/ToJsonKt {
 	public static final fun toJson (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/String;
 	public static synthetic fun toJson$default (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun toResponseJson (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/String;
+	public static synthetic fun toResponseJson$default (Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/UnionType : com/apollographql/apollo3/api/CompiledNamedType {

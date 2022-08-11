@@ -11,3 +11,10 @@ expect fun Operation.Data.toJson(jsonWriter: JsonWriter, customScalarAdapters: C
 fun Operation.Data.toJson(customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty): String = buildJsonString {
   toJson(this, customScalarAdapters)
 }
+
+fun Operation.Data.toResponseJson(customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty): String = buildJsonString {
+  beginObject()
+  name("data")
+  toJson(this, customScalarAdapters)
+  endObject()
+}
