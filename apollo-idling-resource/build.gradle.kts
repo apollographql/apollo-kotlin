@@ -1,5 +1,7 @@
 plugins {
-  id("apollo.library.android")
+  id("com.android.library")
+  id("org.jetbrains.kotlin.android")
+  id("apollo.library")
 }
 
 dependencies {

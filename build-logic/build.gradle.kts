@@ -61,11 +61,6 @@ gradlePlugin {
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.LibraryConventionPlugin"
     }
 
-    register("apollo.library.android") {
-      id = "apollo.library.android"
-      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.AndroidLibraryConventionPlugin"
-    }
-
     register("apollo.test.jvm") {
       id = "apollo.test.jvm"
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmTestConventionPlugin"
