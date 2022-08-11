@@ -1,25 +1,20 @@
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
+import ios.test.type.buildQuery
 import kotlin.test.Test
 
 class iOSTest {
   @Test
-  fun canRunIOSTest() = runTest() {
+  fun canRunIOSTest() = runTest {
     val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder().serverUrl(mockServer.url()).build()
-    val response = """
-    {
-      "data": {
-        "random": 42
-      }
-    }
-  """.trimIndent()
-    mockServer.enqueue(response)
 
-    apolloClient.dispose()
+    mockServer.enqueueData(buildQuery { random = 42 })
+
+    apolloClient.close()
     mockServer.stop()
   }
 }

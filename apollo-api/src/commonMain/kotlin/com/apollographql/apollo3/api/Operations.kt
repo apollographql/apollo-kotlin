@@ -2,10 +2,13 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.writeObject
+import okio.Buffer
 import okio.use
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -64,6 +67,15 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
               .build())
           .build()
   )
+}
+
+@JvmOverloads
+@ApolloExperimental
+fun <D : Operation.Data> Operation<D>.parseJsonResponse(
+    json: String,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+): ApolloResponse<D> {
+  return parseJsonResponse(Buffer().writeUtf8(json).jsonReader(), customScalarAdapters)
 }
 
 /**

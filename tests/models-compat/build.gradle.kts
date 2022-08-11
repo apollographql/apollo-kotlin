@@ -30,6 +30,7 @@ apollo {
     srcDir(file("../models-fixtures/graphql"))
     packageName.set("codegen.models")
     generateFragmentImplementations.set(true)
+    generateDataBuilders.set(true)
     codegenModels.set("compat")
   }
 
@@ -40,6 +41,7 @@ apollo {
           srcDir(it)
           packageName.set(it.name)
           codegenModels.set(MODELS_COMPAT)
+          generateDataBuilders.set(true)
         }
       }
 }

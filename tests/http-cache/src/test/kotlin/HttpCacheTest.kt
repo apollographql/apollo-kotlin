@@ -9,6 +9,7 @@ import com.apollographql.apollo3.exception.HttpCacheMissException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
@@ -27,21 +28,13 @@ class HttpCacheTest {
   lateinit var mockServer: MockServer
   lateinit var apolloClient: ApolloClient
 
-  private val response = """
-    {
-      "data": {
-        "random": 42
-      }
-    }
-  """.trimIndent()
+  private val data = GetRandomQuery.Data {
+    random = 42
+  }
 
-  private val response2 = """
-    {
-      "data": {
-        "random2": 42
-      }
-    }
-  """.trimIndent()
+  private val data2 = GetRandom2Query.Data {
+    random2 = 42
+  }
 
   private suspend fun before() {
     mockServer = MockServer()
@@ -60,7 +53,7 @@ class HttpCacheTest {
 
   @Test
   fun CacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueue(response)
+    mockServer.enqueueData(data)
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery()).execute()
@@ -75,7 +68,7 @@ class HttpCacheTest {
 
   @Test
   fun NetworkOnly() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueue(response)
+    mockServer.enqueueData(data)
     mockServer.enqueue(statusCode = 500)
 
     runBlocking {
@@ -93,7 +86,7 @@ class HttpCacheTest {
 
   @Test
   fun NetworkFirst() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueue(response)
+    mockServer.enqueueData(data)
     mockServer.enqueue(statusCode = 500)
 
     runBlocking {
@@ -112,7 +105,7 @@ class HttpCacheTest {
 
   @Test
   fun Timeout() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueue(response)
+    mockServer.enqueueData(data)
 
     runBlocking {
       var response = apolloClient.query(GetRandomQuery()).execute()
@@ -135,8 +128,8 @@ class HttpCacheTest {
 
   @Test
   fun DifferentQueriesDoNotOverlap() = runTest(before = { before() }, after = { tearDown() }) {
-    mockServer.enqueue(response)
-    mockServer.enqueue(response2)
+    mockServer.enqueueData(data)
+    mockServer.enqueueData(data2)
 
     runBlocking {
       val response = apolloClient.query(GetRandomQuery()).execute()

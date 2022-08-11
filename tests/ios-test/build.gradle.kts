@@ -25,4 +25,5 @@ kotlin {
 
 apollo {
   packageName.set("ios.test")
+  generateDataBuilders.set(true)
 }
