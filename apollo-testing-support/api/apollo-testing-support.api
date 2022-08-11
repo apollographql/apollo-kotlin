@@ -10,6 +10,10 @@ public final class com/apollographql/apollo3/testing/ChannelsKt {
 public final class com/apollographql/apollo3/testing/MockserverKt {
 	public static final fun enqueue (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;J)V
 	public static synthetic fun enqueue$default (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JILjava/lang/Object;)V
+	public static final fun enqueueData (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JI)V
+	public static final fun enqueueData (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JI)V
+	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo3/mockserver/MockServer;Lcom/apollographql/apollo3/api/Operation$Data;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JIILjava/lang/Object;)V
+	public static synthetic fun enqueueData$default (Lcom/apollographql/apollo3/mockserver/MockServer;Ljava/util/Map;Lcom/apollographql/apollo3/api/CustomScalarAdapters;JIILjava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo3/testing/ReadFileJvmKt {
