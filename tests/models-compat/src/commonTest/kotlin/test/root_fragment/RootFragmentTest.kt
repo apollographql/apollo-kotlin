@@ -3,8 +3,10 @@ package test.root_fragment
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import root_fragment.SearchSomethingQuery
+import root_fragment.type.buildSearch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -22,8 +24,7 @@ class RootFragmentTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
-    // This is important. JS will hang if the BatchingHttpInterceptor scope is not cancelled
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -32,16 +33,13 @@ class RootFragmentTest {
         .serverUrl(mockServer.url())
         .build()
 
-    mockServer.enqueue("""
-      {
-        "data": {
-          "__typename": "Search",
-          "searchSomething": {
-            "name": "foo"
+    mockServer.enqueueData(
+        SearchSomethingQuery.Data {
+          searchSomething = buildSearch {
+            name = "foo"
           }
         }
-      }
-    """.trimIndent())
+    )
 
     val fragments = apolloClient.query(SearchSomethingQuery()).execute().data?.fragments
     assertEquals("foo", fragments?.something?.searchSomething?.name)

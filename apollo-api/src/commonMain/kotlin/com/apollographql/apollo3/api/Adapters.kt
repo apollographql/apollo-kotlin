@@ -183,7 +183,7 @@ val AnyAdapter = object : Adapter<Any> {
   }
 }
 
-internal class UnsafeAdapter<T>: Adapter<T> {
+internal class PassThroughAdapter<T>: Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
     check (reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
@@ -194,7 +194,11 @@ internal class UnsafeAdapter<T>: Adapter<T> {
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-    error("UnsafeAdapter.toJson is not implemented")
+    check (writer is MapJsonWriter) {
+      "UnsafeAdapter only supports MapJsonWriter"
+    }
+
+    writer.value(value)
   }
 }
 

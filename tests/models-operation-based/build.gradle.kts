@@ -46,6 +46,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
       srcDir(file("../models-fixtures/graphql"))
       packageName.set("codegen.models")
       generateFragmentImplementations.set(true)
+
       codegenModels.set("operationBased")
       this.generateTestBuilders.set(generateKotlinModels)
       this.generateKotlinModels.set(generateKotlinModels)

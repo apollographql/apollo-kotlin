@@ -171,7 +171,14 @@ internal class OperationBuilder(
           )
         }
         .applyIf(generateDataBuilders) {
-          addFunction(dataBuilderCtor())
+          addFunction(
+              dataBuilderCtor(
+                  context,
+                  operation.dataModelGroup.baseModelId,
+                  context.resolver.resolveOperationSelections(operation.name),
+                  operation.operationType.typeName
+              )
+          )
         }
         .addProperty(PropertySpec
             .builder(OPERATION_NAME, KotlinSymbols.String)
@@ -182,42 +189,6 @@ internal class OperationBuilder(
         .build()
   }
 
-  private fun dataBuilderCtor(): FunSpec {
-    return FunSpec.builder(Identifier.Data)
-        .addParameter(
-            ParameterSpec.builder(
-                resolver,
-                KotlinSymbols.FakeResolver
-            ).defaultValue(
-                CodeBlock.of("%T(%T.all)", KotlinSymbols.DefaultFakeResolver, context.resolver.resolveSchema())
-            ).build()
-        ).addParameter(
-            ParameterSpec.builder(
-                block,
-                LambdaTypeName.get(
-                    receiver = context.resolver.resolveBuilderType(operation.operationType.typeName),
-                    parameters = emptyArray<TypeName>(),
-                    returnType = KotlinSymbols.Unit
-                )
-            ).defaultValue(CodeBlock.of("{}"))
-                .build()
-        )
-        .addCode(
-            CodeBlock.builder()
-                .add("return·%M(\n", KotlinMemberNames.buildData)
-                .indent()
-                .add("%T,\n", context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId))
-                .add("%T.$root,\n", context.resolver.resolveOperationSelections(operation.name))
-                .add("%S,\n", operation.operationType.typeName)
-                .add("%M($block),\n", context.resolver.resolveBuilderFun(operation.operationType.typeName))
-                .add("$resolver\n", )
-                .unindent()
-                .add(")\n")
-                .build()
-        )
-        .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
-        .build()
-  }
 
   /**
    * Things like `[${'$'}oo]` do not compile. See https://youtrack.jetbrains.com/issue/KT-43906
@@ -232,6 +203,55 @@ internal class OperationBuilder(
         operation.typeCondition,
         context.resolver.resolveOperationSelections(operation.name)
     )
+  }
+
+  companion object {
+    private fun dataBuilderCtor(
+        context: KotlinContext,
+        modelId: String,
+        selectionsClassName: ClassName,
+        typename: String,
+
+        ): FunSpec {
+      return FunSpec.builder(Identifier.Data)
+          .addParameter(
+              ParameterSpec.builder(
+                  Identifier.resolver,
+                  KotlinSymbols.FakeResolver
+              ).defaultValue(
+                  CodeBlock.of("%T(%T.all)", KotlinSymbols.DefaultFakeResolver, context.resolver.resolveSchema())
+              ).build()
+          ).addParameter(
+              ParameterSpec.builder(
+                  Identifier.block,
+                  LambdaTypeName.get(
+                      receiver = context.resolver.resolveBuilderType(typename),
+                      parameters = emptyArray<TypeName>(),
+                      returnType = KotlinSymbols.Unit
+                  )
+              ).defaultValue(CodeBlock.of("{}"))
+                  .build()
+          )
+          .addCode(
+              CodeBlock.builder()
+                  .add("return·%M(\n", KotlinMemberNames.buildData)
+                  .indent()
+                  .add("%T,\n", context.resolver.resolveModelAdapter(modelId))
+                  .add("%T.$root,\n", selectionsClassName)
+                  .add("%S,\n", typename)
+                  .add(
+                      "%M.%M(${Identifier.block}),\n",
+                      KotlinMemberNames.GlobalBuilder,
+                      context.resolver.resolveBuilderFun(typename),
+                  )
+                  .add("${Identifier.resolver}\n")
+                  .unindent()
+                  .add(")\n")
+                  .build()
+          )
+          .returns(context.resolver.resolveModel(modelId))
+          .build()
+    }
   }
 }
 

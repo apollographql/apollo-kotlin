@@ -54,7 +54,7 @@ class CustomScalarAdapters private constructor(
       customScalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
         AnyAdapter
       }
-      unsafe -> UnsafeAdapter()
+      unsafe -> PassThroughAdapter()
       else -> error("Can't map GraphQL type: `${customScalar.name}` to: `${customScalar.className}`. Did you forget to add a CustomScalarAdapter?")
     } as Adapter<T>
   }
@@ -74,11 +74,11 @@ class CustomScalarAdapters private constructor(
     val Empty = Builder().build()
 
     /**
-     * Unsafe [CustomScalarAdapters]. They can only be used with `MapJsonReader` and will passthrough the values using
-     * `MapJsonReader.readAny`
+     * Unsafe [CustomScalarAdapters]. They can only be used with `MapJsonReader` and `MapJsonWriter`. It will passthrough the values using
+     * `MapJsonReader.nextValue` and `MapJsonWriter.value()`
      */
     @JvmField
-    val Unsafe = Builder().unsafe(true).build()
+    val PassThrough = Builder().unsafe(true).build()
   }
 
   fun newBuilder() = Builder().addAll(this)

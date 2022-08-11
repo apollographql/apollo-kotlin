@@ -83,6 +83,12 @@ internal class ObjectBuilder(
     return TypeSpec
         .classBuilder(layout.objectBuilderName(name))
         .superclass(KotlinSymbols.ObjectBuilder)
+        .addSuperclassConstructorParameter(CodeBlock.of(Identifier.customScalarAdapters))
+        .primaryConstructor(
+            FunSpec.constructorBuilder()
+                .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+                .build()
+        )
         .addProperties(mapProperties.map { it.toPropertySpec() })
         .addFunction(buildFunSpec())
         .build()
@@ -94,6 +100,7 @@ internal class ObjectBuilder(
         .apply {
           val initializer = context.resolver.adapterInitializer2(type)
           if (initializer == null) {
+            // Composite or no mapping registered (Int/Boolean/String/...)
             delegate(CodeBlock.of(Identifier.__fields))
           } else {
             delegate(CodeBlock.of("%T(%L)", KotlinSymbols.BuilderProperty, initializer))
@@ -117,9 +124,10 @@ internal class ObjectBuilder(
                 )
             ).build()
         )
+        .receiver(KotlinSymbols.BuilderScope)
         .addCode(
             CodeBlock.builder()
-                .addStatement("val·builder·=·%T()", builderClassName)
+                .addStatement("val·builder·=·%T(${Identifier.customScalarAdapters})", builderClassName)
                 .addStatement("builder.__typename·=·%S", name)
                 .addStatement("builder.${Identifier.block}()")
                 .addStatement("return·builder.build()")

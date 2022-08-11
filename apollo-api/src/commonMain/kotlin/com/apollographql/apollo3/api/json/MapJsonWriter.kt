@@ -171,6 +171,8 @@ class MapJsonWriter : JsonWriter {
 
   override fun value(value: Upload) = valueInternal(null)
 
+  fun value(value: Any?) = valueInternal(value)
+
   override fun nullValue() = valueInternal(null)
 
   override fun close() {

@@ -31,5 +31,6 @@ kotlin {
 
 apollo {
   packageName.set("benchmarks")
+  generateDataBuilders.set(true)
 }
 
