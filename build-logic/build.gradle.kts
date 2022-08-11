@@ -61,6 +61,11 @@ gradlePlugin {
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.MultiplatformLibraryConventionPlugin"
     }
 
+    register("apollo.library") {
+      id = "apollo.library"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.LibraryConventionPlugin"
+    }
+
     register("apollo.library.jvm") {
       id = "apollo.library.jvm"
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmLibraryConventionPlugin"

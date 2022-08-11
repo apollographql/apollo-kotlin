@@ -1,9 +1,19 @@
 plugins {
-  id("apollo.library.multiplatform")
+  id("apollo.library")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 apply(plugin = "com.android.library")
 apply(plugin = "com.squareup.sqldelight")
+
+apolloLibrary {
+  javaModuleName.set("com.apollographql.apollo3.cache.normalized.sql")
+  mpp {
+    withLinux.set(false)
+    // https://github.com/cashapp/sqldelight/pull/1486
+    withJs.set(false)
+  }
+}
 
 configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   database("JsonDatabase") {
@@ -23,61 +33,56 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
 }
 
-apolloConvention {
-  javaModuleName.set("com.apollographql.apollo3.cache.normalized.sql")
+kotlin {
+  android {
+    publishAllLibraryVariants()
+  }
 
-  // https://github.com/cashapp/sqldelight/pull/1486
-  kotlin(withJs = false, withLinux = false) {
-    android {
-      publishAllLibraryVariants()
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        api(projects.apolloApi)
+        api(projects.apolloNormalizedCacheApiIncubating)
+        api(projects.apolloNormalizedCacheIncubating)
+      }
     }
 
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          api(projects.apolloApi)
-          api(projects.apolloNormalizedCacheApiIncubating)
-          api(projects.apolloNormalizedCacheIncubating)
-        }
+    val jvmMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        implementation(libs.sqldelight.jvm)
       }
+    }
 
-      val jvmMain by getting {
-        dependsOn(commonMain)
-        dependencies {
-          implementation(libs.sqldelight.jvm)
-        }
+    val appleMain by getting {
+      dependencies {
+        implementation(libs.sqldelight.native)
       }
+    }
 
-      val appleMain by getting {
-        dependencies {
-          implementation(libs.sqldelight.native)
-        }
+    val jvmTest by getting {
+      dependencies {
+        implementation(libs.truth)
       }
+    }
 
-      val jvmTest by getting {
-        dependencies {
-          implementation(libs.truth)
-        }
+    val androidMain by getting {
+      dependsOn(commonMain)
+      dependencies {
+        api(libs.androidx.sqlite)
+        implementation(libs.sqldelight.android)
+        implementation(libs.androidx.sqlite.framework)
+        implementation(libs.androidx.startup.runtime)
       }
-
-      val androidMain by getting {
-        dependsOn(commonMain)
-        dependencies {
-          api(libs.androidx.sqlite)
-          implementation(libs.sqldelight.android)
-          implementation(libs.androidx.sqlite.framework)
-          implementation(libs.androidx.startup.runtime)
-        }
+    }
+    val androidTest by getting {
+      dependencies {
+        implementation(libs.kotlin.test.junit)
       }
-      val androidTest by getting {
-        dependencies {
-          implementation(libs.kotlin.test.junit)
-        }
-      }
-      val commonTest by getting {
-        dependencies {
-          implementation(projects.apolloTestingSupport)
-        }
+    }
+    val commonTest by getting {
+      dependencies {
+        implementation(projects.apolloTestingSupport)
       }
     }
   }

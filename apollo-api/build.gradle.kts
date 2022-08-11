@@ -1,19 +1,22 @@
 plugins {
-  id("apollo.library.multiplatform")
+  id("apollo.library")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
-apolloConvention {
+apolloLibrary {
   javaModuleName.set("com.apollographql.apollo3.api")
+  mpp {}
+}
 
-  kotlin {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          api(okio())
-          api(libs.uuid)
-          api(projects.apolloAnnotations)
-        }
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        api(okio())
+        api(libs.uuid)
+        api(projects.apolloAnnotations)
       }
     }
   }
 }
+

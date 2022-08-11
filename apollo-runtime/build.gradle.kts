@@ -1,52 +1,56 @@
 plugins {
-  id("apollo.library.multiplatform")
+  id("apollo.library")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
-apolloConvention {
+apolloLibrary {
   javaModuleName.set("com.apollographql.apollo3.runtime")
+  mpp {
+    withLinux.set(false)
+  }
+}
 
-  kotlin(withLinux = false) {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          api(projects.apolloApi)
-          api(projects.apolloMppUtils)
-          api(okio())
-          api(libs.uuid)
-          api(libs.kotlinx.coroutines)
-        }
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        api(projects.apolloApi)
+        api(projects.apolloMppUtils)
+        api(okio())
+        api(libs.uuid)
+        api(libs.kotlinx.coroutines)
       }
+    }
 
-      val commonTest by getting {
-        dependencies {
-          implementation(projects.apolloMockserver)
-          implementation(projects.apolloTestingSupport)
-        }
+    val commonTest by getting {
+      dependencies {
+        implementation(projects.apolloMockserver)
+        implementation(projects.apolloTestingSupport)
       }
+    }
 
-      val jvmMain by getting {
-        dependencies {
-          api(libs.okhttp)
-        }
+    val jvmMain by getting {
+      dependencies {
+        api(libs.okhttp)
       }
+    }
 
-      val jsMain by getting {
-        dependencies {
-          api(libs.ktor.client.js)
-        }
+    val jsMain by getting {
+      dependencies {
+        api(libs.ktor.client.js)
       }
+    }
 
-      val appleMain by getting {
-        dependencies {
-        }
+    val appleMain by getting {
+      dependencies {
       }
+    }
 
-      val jvmTest by getting {
-        dependencies {
-          implementation(libs.kotlin.test.junit)
-          implementation(libs.truth)
-          implementation(libs.okhttp)
-        }
+    val jvmTest by getting {
+      dependencies {
+        implementation(libs.kotlin.test.junit)
+        implementation(libs.truth)
+        implementation(libs.okhttp)
       }
     }
   }
