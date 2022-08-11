@@ -1,13 +1,13 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
-import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
-import com.apollographql.apollo3.buildlogic.configureMppTestsDefaults
-import com.apollographql.apollo3.buildlogic.configureRepositories
-import com.apollographql.apollo3.buildlogic.workaroundForIssueKT51970
+import configureJavaAndKotlinCompilers
+import configureMppTestsDefaults
+import configureRepositories
 import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import workaroundForIssueKT51970
 
 class MultiplatformTestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {

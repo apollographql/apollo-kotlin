@@ -1,19 +1,18 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
-import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
-import com.apollographql.apollo3.buildlogic.configureRepositories
+import configureJavaAndKotlinCompilers
+import configureRepositories
 import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class AndroidTestConventionPlugin : Plugin<Project> {
+class JvmTestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
       configureRepositories()
 
       pluginManager.apply {
-        apply("com.android.library")
-        apply("org.jetbrains.kotlin.android")
+        apply("org.jetbrains.kotlin.jvm")
         apply("com.apollographql.apollo3")
       }
 

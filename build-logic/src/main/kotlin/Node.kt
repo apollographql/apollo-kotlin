@@ -7,16 +7,14 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 fun Project.configureNode() {
   tasks.withType(org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask::class.java).configureEach {
-    it.apply {
-      args.addAll(
-          listOf(
-              "--network-concurrency",
-              "1",
-              "--mutex",
-              "network"
-          )
-      )
-    }
+    args.addAll(
+        listOf(
+            "--network-concurrency",
+            "1",
+            "--mutex",
+            "network"
+        )
+    )
   }
 
   // See https://youtrack.jetbrains.com/issue/KT-47215

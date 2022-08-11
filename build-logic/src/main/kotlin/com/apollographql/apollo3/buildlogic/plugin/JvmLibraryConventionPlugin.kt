@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
-import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
-import com.apollographql.apollo3.buildlogic.configurePublishing
-import com.apollographql.apollo3.buildlogic.configureRepositories
+import configureJavaAndKotlinCompilers
+import configurePublishing
+import configureRepositories
 import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project

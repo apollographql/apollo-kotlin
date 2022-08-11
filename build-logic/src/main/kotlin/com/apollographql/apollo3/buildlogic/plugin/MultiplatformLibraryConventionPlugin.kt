@@ -1,15 +1,17 @@
 package com.apollographql.apollo3.buildlogic.plugin
 
-import com.apollographql.apollo3.buildlogic.configureJavaAndKotlinCompilers
-import com.apollographql.apollo3.buildlogic.configurePublishing
-import com.apollographql.apollo3.buildlogic.configureRepositories
+import configureJavaAndKotlinCompilers
+import configureMppDefaults
+import configurePublishing
+import configureRepositories
 import configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.bundling.Jar
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-class AndroidLibraryConventionPlugin : Plugin<Project> {
+class MultiplatformLibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
       group = property("GROUP")!!
@@ -20,8 +22,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
       val extension = extensions.create("apolloConvention", Extension::class.java)
 
       pluginManager.apply {
-        apply("com.android.library")
-        apply("org.jetbrains.kotlin.android")
+        apply("org.jetbrains.kotlin.multiplatform")
       }
 
       configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
@@ -40,7 +41,14 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
     }
   }
 
-  interface Extension {
-    val javaModuleName: Property<String>
+  abstract class Extension(private val project: Project) {
+    abstract val javaModuleName: Property<String>
+
+    fun kotlin(withJs: Boolean = true, withLinux: Boolean = true, configure: KotlinMultiplatformExtension.() -> Unit) {
+      project.configureMppDefaults(withJs = withJs, withLinux = withLinux)
+
+      val kotlinExtension = project.extensions.findByName("kotlin") as KotlinMultiplatformExtension
+      kotlinExtension.configure()
+    }
   }
 }

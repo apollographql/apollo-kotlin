@@ -1,11 +1,14 @@
+import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
+import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
+
 plugins {
   `embedded-kotlin`
+  id("java-gradle-plugin")
 }
 
-repositories {
-  mavenCentral()
-  google()
-  gradlePluginPortal()
+plugins.apply(SamWithReceiverGradleSubplugin::class.java)
+extensions.configure(SamWithReceiverExtension::class.java) {
+  annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
 
 group = "com.apollographql.apollo3"
@@ -14,7 +17,7 @@ dependencies {
   compileOnly(libs.gradle.api)
 
   implementation(libs.okhttp)
-  implementation(libs.moshi)
+
   implementation(libs.dokka.plugin)
   implementation(libs.dokka.base)
 
@@ -51,8 +54,41 @@ java {
   toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
+gradlePlugin {
+  plugins {
+    register("apollo.library.multiplatform") {
+      id = "apollo.library.multiplatform"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.MultiplatformLibraryConventionPlugin"
+    }
+
+    register("apollo.library.jvm") {
+      id = "apollo.library.jvm"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmLibraryConventionPlugin"
+    }
+
+    register("apollo.library.android") {
+      id = "apollo.library.android"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.AndroidLibraryConventionPlugin"
+    }
+
+    register("apollo.test.jvm") {
+      id = "apollo.test.jvm"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmTestConventionPlugin"
+    }
+
+    register("apollo.test.multiplatform") {
+      id = "apollo.test.multiplatform"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.MultiplatformTestConventionPlugin"
+    }
+
+    register("apollo.test.android") {
+      id = "apollo.test.android"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.AndroidTestConventionPlugin"
+    }
+
+    register("apollo.test.vanilla") {
+      id = "apollo.test.vanilla"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.VanillaTestConventionPlugin"
+    }
   }
 }
