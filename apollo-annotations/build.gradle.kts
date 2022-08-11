@@ -1,5 +1,5 @@
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 configureMppDefaults()
@@ -8,13 +8,14 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(kotlin("stdlib", groovy.util.Eval.x(project, "x.versions.kotlinStdlib").toString()))
+        api(libs.kotlin.stdlib)
       }
     }
 
     val jsMain by getting {
       dependencies {
-        api(kotlin("stdlib-js", groovy.util.Eval.x(project, "x.versions.kotlinStdlib").toString()))
+        // See https://youtrack.jetbrains.com/issue/KT-53471
+        api(libs.kotlin.stdlib.js)
       }
     }
 

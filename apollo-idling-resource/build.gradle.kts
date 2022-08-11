@@ -1,19 +1,19 @@
 plugins {
   id("com.android.library")
-  kotlin("android")
+  id("org.jetbrains.kotlin.android")
 }
 
 dependencies {
-  implementation(groovy.util.Eval.x(project, "x.dep.androidxEspressoIdlingResource"))
+  implementation(libs.androidx.espresso.idlingresource)
   api(projects.apolloRuntime)
 }
 
 android {
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
 
   defaultConfig {
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt())
-    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt())
+    minSdk = libs.versions.android.sdkversion.min.get().toInt()
+    targetSdk = libs.versions.android.sdkversion.target.get().toInt()
   }
 }
 

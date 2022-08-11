@@ -4,12 +4,12 @@ plugins {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-mockserver")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.turbine"))
-  testImplementation("com.apollographql.apollo3:apollo-testing-support")
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.mockserver)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.junit)
+  testImplementation(libs.turbine)
+  testImplementation(libs.apollo.testingsupport)
 }
 
 apollo {

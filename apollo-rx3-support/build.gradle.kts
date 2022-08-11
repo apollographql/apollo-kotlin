@@ -2,13 +2,13 @@
  * This file is auto generated from apollo-rx2-support by rxjava3.main.kts, do not edit manually.
  */
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
   implementation(projects.apolloApi)
-  api(groovy.util.Eval.x(project, "x.dep.rx3"))
-  api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutinesRx3"))
+  api(libs.rx.java3)
+  api(libs.kotlinx.coroutines.rx3)
 
   api(projects.apolloRuntime)
   api(projects.apolloNormalizedCache)

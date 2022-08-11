@@ -1,12 +1,6 @@
 import com.apollographql.apollo3.gradle.api.ApolloExtension
 
 buildscript {
-  apply("../../../gradle/dependencies.gradle")
-
-  val classpathDep = {artifact: String ->
-    (extra["dep"] as Map<String, *>)[artifact]!!
-  }
-
   repositories {
     maven {
       url = uri("../../../build/localMaven")
@@ -17,10 +11,6 @@ buildscript {
   dependencies {
     // ADD BUILDSCRIPT DEPENDENCIES HERE
   }
-}
-
-fun kotlinDep(artifact: String): Any {
-  return (extra["dep"] as Map<String, *>)[artifact]!!
 }
 
 // ADD PLUGINS HERE
@@ -37,8 +27,8 @@ repositories {
 
 dependencies {
   // ADD DEPENDENCIES HERE
-  add("implementation", kotlinDep("jetbrainsAnnotations"))
-  add("implementation", kotlinDep("apolloApi"))
+  add("implementation", libs.jetbrains.annotations)
+  add("implementation", libs.apollo.api)
 }
 
 // ADD ANDROID CONFIGURATION HERE

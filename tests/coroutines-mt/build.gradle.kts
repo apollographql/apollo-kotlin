@@ -1,6 +1,6 @@
 plugins {
+  id("org.jetbrains.kotlin.multiplatform")
   id("com.apollographql.apollo3")
-  kotlin("multiplatform")
 }
 
 kotlin {
@@ -11,18 +11,18 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation("com.apollographql.apollo3:apollo-mockserver")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache")
-        implementation("com.apollographql.apollo3:apollo-mpp-utils")
-        implementation("com.apollographql.apollo3:apollo-runtime")
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.mpputils)
+        implementation(libs.apollo.runtime)
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(kotlin("test-common"))
-        implementation(kotlin("test-annotations-common"))
+        implementation(libs.kotlin.test.common)
+        implementation(libs.kotlin.test.annotations.common)
       }
     }
   }

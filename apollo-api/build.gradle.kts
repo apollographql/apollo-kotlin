@@ -1,5 +1,5 @@
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 configureMppDefaults()
@@ -9,7 +9,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(okio())
-        api(groovy.util.Eval.x(project, "x.dep.uuid"))
+        api(libs.uuid)
         api(projects.apolloAnnotations)
       }
     }

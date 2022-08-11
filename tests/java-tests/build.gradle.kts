@@ -1,17 +1,17 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("java")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-http-cache")
-  implementation("com.apollographql.apollo3:apollo-normalized-cache")
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
-  implementation("com.apollographql.apollo3:apollo-mockserver")
-  implementation("com.apollographql.apollo3:apollo-rx2-support")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.httpCache)
+  implementation(libs.apollo.normalizedcache)
+  implementation(libs.apollo.normalizedcache.sqlite)
+  implementation(libs.apollo.mockserver)
+  implementation(libs.apollo.rx2)
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
 }
 
 apollo {

@@ -1,14 +1,14 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.jvm")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-http-cache")
-  implementation("com.apollographql.apollo3:apollo-mockserver")
-  testImplementation(kotlin("test-junit"))
-  testImplementation("com.apollographql.apollo3:apollo-testing-support")
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.httpCache)
+  implementation(libs.apollo.mockserver)
+  testImplementation(libs.kotlin.test.junit)
+  testImplementation(libs.apollo.testingsupport)
 }
 
 apollo {

@@ -1,17 +1,17 @@
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
-  api(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
+  api(libs.okhttp)
   api(projects.apolloApi)
   api(projects.apolloRuntime)
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
+  implementation(libs.moshi)
+  implementation(libs.kotlinx.datetime)
 
   testImplementation(projects.apolloMockserver)
-  testImplementation(kotlin("test-junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  testImplementation(libs.kotlin.test.junit)
+  testImplementation(libs.truth)
 }
 
 val jar by tasks.getting(Jar::class) {

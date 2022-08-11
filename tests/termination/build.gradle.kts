@@ -5,9 +5,9 @@ plugins {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.kotlinJunit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  implementation(libs.apollo.runtime)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.junit)
 }
 
 apollo {

@@ -1,5 +1,5 @@
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 configureMppDefaults(withLinux = false)
@@ -11,30 +11,30 @@ kotlin {
         api(projects.apolloApi)
         api(projects.apolloRuntime)
         api(projects.apolloMockserver)
-        api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
-        implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
+        api(libs.kotlinx.coroutines)
+        implementation(libs.atomicfu.get().toString()) {
           because("We need locks in TestNetworkTransportHandler (we don't use the gradle plugin rewrite)")
         }
-        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${groovy.util.Eval.x(project, "x.versions.kotlinCoroutines")}")
+        implementation(libs.kotlinx.coroutines.test)
       }
     }
 
     val jvmTest by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.truth"))
+        implementation(libs.truth)
       }
     }
 
     val jsMain by getting {
       dependencies {
-        implementation(groovy.util.Eval.x(project, "x.dep.kotlinNodejs"))
-        implementation(kotlin("test-js"))
+        implementation(libs.kotlinx.nodejs)
+        implementation(libs.kotlin.test.js)
         api(okioNodeJs())
       }
     }
     val jsTest by getting {
       dependencies {
-        implementation(kotlin("test-js"))
+        implementation(libs.kotlin.test.js)
       }
     }
   }

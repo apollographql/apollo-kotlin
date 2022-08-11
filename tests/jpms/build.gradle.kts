@@ -9,10 +9,10 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation("com.apollographql.apollo3:apollo-rx2-support")
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
+  implementation(libs.apollo.runtime)
+  implementation(libs.apollo.rx2)
+  implementation(libs.apollo.normalizedcache.sqlite)
+  testImplementation(libs.junit)
 }
 
 application {

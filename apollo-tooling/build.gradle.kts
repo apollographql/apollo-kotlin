@@ -1,20 +1,20 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
   implementation(projects.apolloAnnotations)
   implementation(projects.apolloAst)
   api(projects.apolloCompiler)
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiSealedRuntime"))
-  implementation(groovy.util.Eval.x(project, "x.dep.okHttpOkHttp"))
+  implementation(libs.moshi)
+  implementation(libs.moshix.sealed.runtime)
+  implementation(libs.okhttp)
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
+  implementation(libs.moshi)
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
 }
 
 tasks.withType(KotlinCompile::class.java) {

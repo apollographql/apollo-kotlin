@@ -1,6 +1,6 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.multiplatform")
+  id("com.apollographql.apollo3")
 }
 
 configureMppTestsDefaults(withJs = false)
@@ -9,15 +9,15 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
+        implementation(libs.apollo.runtime)
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache-incubating")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite-incubating")
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.normalizedcache.incubating)
+        implementation(libs.apollo.normalizedcache.sqlite.incubating)
       }
     }
   }

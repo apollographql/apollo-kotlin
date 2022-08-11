@@ -3,11 +3,11 @@ apply(plugin = "org.jetbrains.kotlin.android")
 
 configure<com.android.build.gradle.AppExtension> {
   namespace = "com.apollographql.apollo3.emptyapp"
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
 
   defaultConfig {
-    minSdk = groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt()
-    targetSdk = groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt()
+    minSdkVersion(libs.versions.android.sdkversion.min.get())
+    targetSdkVersion(libs.versions.android.sdkversion.target.get())
 
     val debugSigningConfig = signingConfigs.getByName("debug").apply {
       // This is all public. This app is only an empty shell to make Firebase happy because it requires an 'app' APK.

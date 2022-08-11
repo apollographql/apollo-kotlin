@@ -1,6 +1,6 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.multiplatform")
+  id("com.apollographql.apollo3")
 }
 
 configureMppTestsDefaults()
@@ -18,22 +18,22 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache")
-        implementation("com.apollographql.apollo3:apollo-adapters")
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.adapters)
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-testing-support")
+        implementation(libs.apollo.testingsupport)
       }
     }
 
     val javaCodegenTest by getting {
       dependencies {
         // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(kotlin("test-junit"))
+        implementation(libs.kotlin.test.junit)
       }
     }
   }

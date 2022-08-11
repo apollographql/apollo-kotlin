@@ -1,21 +1,17 @@
 rootProject.name="testProject"
 
-apply("../../../gradle/dependencies.gradle")
-
+dependencyResolutionManagement {
+  versionCatalogs {
+    create("libs") {
+      from(files("../../../gradle/libs.versions.toml"))
+    }
+  }
+}
 pluginManagement {
   repositories {
     maven {
       url = uri("../../../build/localMaven")
     }
     gradlePluginPortal()
-  }
-
-
-  resolutionStrategy {
-    eachPlugin {
-      if (requested.id.id == "com.apollographql.apollo3") {
-        useModule(groovy.util.Eval.x(extra, "x.dep.apolloPlugin"))
-      }
-    }
   }
 }

@@ -59,8 +59,8 @@ dependencies {
       }
     }
   }
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
+  implementation(libs.moshi)
+  ksp(libs.moshix.ksp)
 
   androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0")
   androidTestImplementation("androidx.test:core:1.4.0")
@@ -68,11 +68,11 @@ dependencies {
 
 configure<com.android.build.gradle.LibraryExtension> {
   namespace = "com.apollographql.apollo3.benchmark"
-  compileSdk = groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt()
+  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
 
   defaultConfig {
-    minSdk = groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt()
-    targetSdk = groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt()
+    minSdkVersion(libs.versions.android.sdkversion.min.get())
+    targetSdkVersion(libs.versions.android.sdkversion.target.get())
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 

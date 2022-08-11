@@ -57,7 +57,7 @@ fun Project.okio(): String {
     else -> "3.1.0"
   }
 
-  return "${groovy.util.Eval.x(project, "x.dep.okio")}:$okioVersion"
+  return "com.squareup.okio:okio:$okioVersion"
 }
 
 fun Project.okioNodeJs(): String {
@@ -66,7 +66,7 @@ fun Project.okioNodeJs(): String {
     else -> "3.1.0"
   }
 
-  return "${groovy.util.Eval.x(project, "x.dep.okioNodeJs")}:$okioVersion"
+  return "com.squareup.okio:okio-nodefilesystem:$okioVersion"
 }
 
 fun KotlinMultiplatformExtension.configureAppleTargets(vararg presetNames: String) {

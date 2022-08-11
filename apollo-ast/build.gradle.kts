@@ -2,23 +2,23 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   antlr
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
   id("com.google.devtools.ksp")
 }
 
 dependencies {
-  antlr(groovy.util.Eval.x(project, "x.dep.antlrAntlr"))
-  implementation(groovy.util.Eval.x(project, "x.dep.antlrRuntime"))
+  antlr(libs.antlr)
+  implementation(libs.antlr.runtime)
   api(okio())
   api(projects.apolloAnnotations)
 
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiMoshi"))
-  implementation(groovy.util.Eval.x(project, "x.dep.moshiSealedRuntime"))
+  implementation(libs.moshi)
+  implementation(libs.moshix.sealed.runtime)
 
-  ksp(groovy.util.Eval.x(project, "x.dep.moshiSealedCodegen"))
-  ksp(groovy.util.Eval.x(project, "x.dep.moshiKsp"))
+  ksp(libs.moshix.sealed.codegen)
+  ksp(libs.moshix.ksp)
 
-  testImplementation(kotlin("test-junit"))
+  testImplementation(libs.kotlin.test.junit)
 }
 
 // Only expose the antlr runtime dependency

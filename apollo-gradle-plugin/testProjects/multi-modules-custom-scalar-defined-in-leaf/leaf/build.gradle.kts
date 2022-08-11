@@ -1,12 +1,12 @@
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
   id("com.apollographql.apollo3")
 }
 
 dependencies {
   implementation(kotlin("stdlib"))
-  implementation(groovy.util.Eval.x(project, "x.dep.apolloApi"))
-  testImplementation(kotlin("test-junit"))
+  implementation(libs.apollo.api)
+  testImplementation(libs.kotlin.test.junit)
 
   implementation(project(":root"))
   apolloMetadata(project(":root"))

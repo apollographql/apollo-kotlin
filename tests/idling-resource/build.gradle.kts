@@ -1,23 +1,23 @@
 plugins {
   id("com.android.library")
-  kotlin("android")
+  id("org.jetbrains.kotlin.android")
   id("com.apollographql.apollo3")
 }
 
 dependencies {
-  implementation(groovy.util.Eval.x(project, "x.dep.androidxEspressoIdlingResource"))
-  implementation("com.apollographql.apollo3:apollo-idling-resource")
-  testImplementation("com.apollographql.apollo3:apollo-mockserver")
-  testImplementation(groovy.util.Eval.x(project, "x.dep.androidSupportAnnotations"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.androidTestRunner"))
+  implementation(libs.androidx.espresso.idlingresource)
+  implementation(libs.apollo.idlingresource)
+  testImplementation(libs.apollo.mockserver)
+  testImplementation(libs.android.support.annotations)
+  testImplementation(libs.android.test.runner)
 }
 
 android {
-  compileSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.compileSdkVersion").toString().toInt())
+  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
 
   defaultConfig {
-    minSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.minSdkVersion").toString().toInt())
-    targetSdkVersion(groovy.util.Eval.x(project, "x.androidConfig.targetSdkVersion").toString().toInt())
+    minSdk = libs.versions.android.sdkversion.min.get().toInt()
+    targetSdk = libs.versions.android.sdkversion.target.get().toInt()
   }
 }
 

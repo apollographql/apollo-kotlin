@@ -1,6 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.apollographql.apollo3.gradle.api.ApolloExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 buildscript {
     apply(from = "../../testProjects/buildscript.gradle.kts")
@@ -26,7 +25,7 @@ configure<KotlinMultiplatformExtension> {
     sourceSets {
         get("commonMain").apply {
             dependencies {
-                implementation(groovy.util.Eval.x(project, "x.dep.apolloApi"))
+                implementation(libs.apollo.api)
             }
         }
     }

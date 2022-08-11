@@ -1,6 +1,6 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.multiplatform")
+  id("com.apollographql.apollo3")
 }
 
 configureMppTestsDefaults()
@@ -9,15 +9,15 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-runtime")
+        implementation(libs.apollo.runtime)
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation("com.apollographql.apollo3:apollo-testing-support")
-        implementation("com.apollographql.apollo3:apollo-normalized-cache")
-        implementation(groovy.util.Eval.x(project, "x.dep.turbine"))
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.turbine)
       }
     }
 

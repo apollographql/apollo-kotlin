@@ -71,14 +71,14 @@ fun setCurrentVersion(version: String) {
   }.joinToString(separator = "\n", postfix = "\n")
   gradleProperties.writeText(newContent)
 
-  val dependencies = File("gradle/dependencies.gradle")
-  //    apollo                : '1.2.2', // This should only be used by apollo-gradle-plugin-incubating:test to get the artifacts locally
-  newContent = dependencies.readLines().map {
-    it.replace(Regex("( *apollo *: *').*('.*)")) {
+  val versionCatalog = File("gradle/libs.versions.toml")
+  // apollo = "3.5.1"
+  newContent = versionCatalog.readLines().map {
+    it.replace(Regex("( *apollo *= *\").*(\".*)")) {
       "${it.groupValues[1]}$version${it.groupValues[2]}"
     }
   }.joinToString(separator = "\n", postfix = "\n")
-  dependencies.writeText(newContent)
+  versionCatalog.writeText(newContent)
 }
 
 fun getCurrentVersion(): String {

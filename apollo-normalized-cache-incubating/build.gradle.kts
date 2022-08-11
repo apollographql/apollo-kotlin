@@ -1,5 +1,5 @@
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 configureMppDefaults(withLinux = false)
@@ -10,8 +10,8 @@ kotlin {
       dependencies {
         api(projects.apolloRuntime)
         api(projects.apolloNormalizedCacheApiIncubating)
-        api(groovy.util.Eval.x(project, "x.dep.kotlinCoroutines"))
-        implementation(groovy.util.Eval.x(project, "x.dep.atomicfu").toString()) {
+        api(libs.kotlinx.coroutines)
+        implementation(libs.atomicfu.get().toString()) {
           because("Use of ReentrantLock in DefaultApolloStore for Apple (we don't use the gradle plugin rewrite)")
         }
       }

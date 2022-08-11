@@ -1,5 +1,5 @@
 plugins {
-  kotlin("multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
 }
 
 configureMppDefaults(withLinux = false)
@@ -9,7 +9,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(projects.apolloApi)
-        api(groovy.util.Eval.x(project, "x.dep.kotlinxdatetime"))
+        api(libs.kotlinx.datetime)
       }
     }
     val jsMain by getting {

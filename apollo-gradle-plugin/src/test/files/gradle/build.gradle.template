@@ -1,6 +1,4 @@
 buildscript {
-  apply from: "../../../gradle/dependencies.gradle"
-
   repositories {
     maven {
       url = uri("../../../build/localMaven")
@@ -29,8 +27,8 @@ repositories {
 
 dependencies {
   // ADD DEPENDENCIES HERE
-  implementation dep.jetbrainsAnnotations
-  implementation dep.apolloApi
+  implementation libs.jetbrains.annotations
+  implementation libs.apollo.api
 }
 
 // ADD ANDROID CONFIGURATION HERE

@@ -4,8 +4,6 @@ val apolloDepth = try {
   "../../.."
 }
 
-apply(from = "$apolloDepth/gradle/dependencies.gradle")
-
 project.buildscript.repositories {
   maven {
     url = uri("$apolloDepth/build/localMaven")
@@ -15,9 +13,9 @@ project.buildscript.repositories {
 }
 
 project.buildscript.dependencies.apply {
-  add("classpath", groovy.util.Eval.x(project, "x.dep.kotlinPlugin"))
-  add("classpath", groovy.util.Eval.x(project, "x.dep.apolloPlugin"))
-  add("classpath", groovy.util.Eval.x(project, "x.dep.androidPlugin"))
+  add("classpath", libs.kotlin.plugin)
+  add("classpath", libs.apollo.plugin)
+  add("classpath", libs.android.plugin)
 }
 
 allprojects {

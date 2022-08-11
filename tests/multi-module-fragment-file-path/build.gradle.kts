@@ -1,13 +1,13 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.jvm")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime")
-  implementation(project(":multi-module-root"))
-  apolloMetadata(project(":multi-module-root"))
-  testImplementation(kotlin("test-junit"))
+  implementation(libs.apollo.runtime)
+  implementation(projects.multiModuleRoot)
+  apolloMetadata(projects.multiModuleRoot)
+  testImplementation(libs.kotlin.test.junit)
 }
 
 apollo {

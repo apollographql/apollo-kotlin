@@ -1,14 +1,14 @@
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
   id("com.gradleup.gr8") // Only used for removeGradleApiFromApi()
 }
 
 dependencies {
-  compileOnly(groovy.util.Eval.x(project, "x.dep.minGradleApi"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.kotlinPluginMin"))
-  compileOnly(groovy.util.Eval.x(project, "x.dep.androidMinPlugin"))
-  
+  compileOnly(libs.gradle.api.min)
+  compileOnly(libs.kotlin.plugin.min)
+  compileOnly(libs.android.plugin.min)
+
   api(projects.apolloCompiler)
   implementation(projects.apolloTooling)
   implementation(projects.apolloAst)

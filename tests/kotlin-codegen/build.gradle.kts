@@ -1,11 +1,11 @@
 plugins {
-  id("com.apollographql.apollo3")
   id("org.jetbrains.kotlin.jvm")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-api")
-  testImplementation(kotlin("test-junit"))
+  implementation(libs.apollo.api)
+  testImplementation(libs.kotlin.test.junit)
 }
 
 apollo {

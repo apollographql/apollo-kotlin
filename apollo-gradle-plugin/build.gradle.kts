@@ -1,5 +1,5 @@
 plugins {
-  kotlin("jvm")
+  id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
   id("com.gradleup.gr8")
@@ -25,11 +25,11 @@ dependencies {
   add("shade", projects.apolloGradlePluginExternal)
 
   testImplementation(projects.apolloAst)
-  testImplementation(groovy.util.Eval.x(project, "x.dep.junit"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.truth"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.assertj"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttpMockWebServer"))
-  testImplementation(groovy.util.Eval.x(project, "x.dep.okHttpTls"))
+  testImplementation(libs.junit)
+  testImplementation(libs.truth)
+  testImplementation(libs.assertj)
+  testImplementation(libs.okhttp.mockwebserver)
+  testImplementation(libs.okhttp.tls)
 }
 
 if (relocateJar) {

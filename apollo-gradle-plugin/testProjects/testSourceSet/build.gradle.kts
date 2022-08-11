@@ -8,7 +8,7 @@ apply(plugin = "org.jetbrains.kotlin.jvm")
 apply(plugin = "com.apollographql.apollo3")
 
 dependencies {
-  add("testImplementation", groovy.util.Eval.x(project, "x.dep.apolloApi"))
+  add("testImplementation", libs.apollo.api)
 }
 
 configure<ApolloExtension> {
