@@ -1,6 +1,5 @@
 plugins {
-  id("com.apollographql.apollo3")
-  id("org.jetbrains.kotlin.jvm")
+  id("apollo.test.jvm")
 }
 
 dependencies {
