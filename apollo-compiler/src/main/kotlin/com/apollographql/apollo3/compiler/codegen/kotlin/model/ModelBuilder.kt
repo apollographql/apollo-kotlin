@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
@@ -14,7 +15,9 @@ import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
@@ -26,6 +29,7 @@ internal class ModelBuilder(
     private val superClassName: ClassName?,
     private val path: List<String>,
     private val hasSubclassesInSamePackage: Boolean,
+    private val adaptableWith: String?
 ) {
   private val nestedBuilders = model.modelGroups.flatMap {
     it.models.map {
@@ -35,6 +39,7 @@ internal class ModelBuilder(
           superClassName = null,
           path = path + model.modelName,
           hasSubclassesInSamePackage = hasSubclassesInSamePackage,
+          adaptableWith = null
       )
     }
   }
@@ -83,6 +88,12 @@ internal class ModelBuilder(
     val nestedTypes = nestedBuilders.map { it.build() }
 
     return typeSpecBuilder
+        .applyIf(adaptableWith != null) {
+          val annotationSpec: AnnotationSpec = AnnotationSpec.builder(KotlinSymbols.ApolloAdaptableWith)
+              .addMember(CodeBlock.of("%T::class", context.resolver.resolveModelAdapter(adaptableWith!!)))
+              .build ()
+          addAnnotation(annotationSpec)
+        }
         .addTypes(nestedTypes)
         .applyIf(accessors.isNotEmpty()) {
           addType(companionTypeSpec(this@typeSpec))

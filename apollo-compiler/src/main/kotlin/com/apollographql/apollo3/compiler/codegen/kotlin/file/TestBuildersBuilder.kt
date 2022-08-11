@@ -65,7 +65,7 @@ internal class TestBuildersBuilder(
 
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(simpleName)
-        .addAnnotation(ClassNames.ApolloExperimental)
+        .addAnnotation(KotlinSymbols.ApolloExperimental)
         .addTypes(
             testBuildersBuilder.map { it.build() }
         )

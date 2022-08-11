@@ -5,6 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -46,6 +47,7 @@ public class GetHero() : Query<GetHero.Data> {
   .selections(selections = GetHeroSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(GetHero_ResponseAdapter.Data::class)
   public data class Data(
     public val hero: Hero?,
   ) : Query.Data

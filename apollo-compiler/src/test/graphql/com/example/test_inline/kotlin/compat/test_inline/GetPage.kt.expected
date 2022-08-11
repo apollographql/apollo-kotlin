@@ -5,6 +5,7 @@
 //
 package com.example.test_inline
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -45,6 +46,7 @@ public class GetPage() : Query<GetPage.Data> {
   .selections(selections = GetPageSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(GetPage_ResponseAdapter.Data::class)
   public data class Data(
     public val collection: Collection,
   ) : Query.Data

@@ -5,6 +5,7 @@
 //
 package com.example.java8annotation
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -41,6 +42,7 @@ public data class LoginBarber(
   .selections(selections = LoginBarberSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(LoginBarber_ResponseAdapter.Data::class)
   public data class Data(
     public val login: Login,
   ) : Mutation.Data {

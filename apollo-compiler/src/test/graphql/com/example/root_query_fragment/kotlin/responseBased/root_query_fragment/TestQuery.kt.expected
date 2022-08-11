@@ -5,6 +5,7 @@
 //
 package com.example.root_query_fragment
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -45,6 +46,7 @@ public class TestQuery() : Query<TestQuery.Data> {
   .selections(selections = TestQuerySelections.__root)
   .build()
 
+  @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
     public override val __typename: String,
     public override val hero: Hero?,

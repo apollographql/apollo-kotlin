@@ -5,6 +5,7 @@
 //
 package com.example.nested_named_fragments
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -47,6 +48,7 @@ public class AllStarships() : Query<AllStarships.Data> {
   .selections(selections = AllStarshipsSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(AllStarships_ResponseAdapter.Data::class)
   public data class Data(
     public val allStarships: AllStarships?,
   ) : Query.Data

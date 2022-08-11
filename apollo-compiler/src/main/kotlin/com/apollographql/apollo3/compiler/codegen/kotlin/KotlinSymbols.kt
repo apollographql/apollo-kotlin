@@ -95,6 +95,10 @@ internal object KotlinSymbols {
   val NullableDoubleAdapter = MemberName(apolloApiPackageName, "NullableDoubleAdapter")
   val NullableIntAdapter = MemberName(apolloApiPackageName, "NullableIntAdapter")
   val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
+
+  val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
+  val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
+
 }
 
 internal fun ResolverClassName.toKotlinPoetClassName(): ClassName = ClassName(packageName, simpleNames)

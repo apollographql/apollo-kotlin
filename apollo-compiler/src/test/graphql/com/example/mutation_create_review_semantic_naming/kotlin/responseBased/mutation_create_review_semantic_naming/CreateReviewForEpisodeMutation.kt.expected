@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming
 
+import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -45,6 +46,7 @@ public data class CreateReviewForEpisodeMutation(
   .selections(selections = CreateReviewForEpisodeMutationSelections.__root)
   .build()
 
+  @ApolloAdaptableWith(CreateReviewForEpisodeMutation_ResponseAdapter.Data::class)
   public data class Data(
     public val createReview: CreateReview?,
   ) : Mutation.Data {

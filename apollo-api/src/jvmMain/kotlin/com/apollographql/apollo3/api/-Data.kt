@@ -23,7 +23,7 @@ private fun Operation.Data.adapter(): Adapter<Operation.Data> {
   return adapter.obj()
 }
 
-fun Operation.Data.toJson(jsonWriter: JsonWriter, customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty) {
+actual fun Operation.Data.toJson(jsonWriter: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
   adapter().toJson(jsonWriter, customScalarAdapters, this)
 }
 
@@ -33,3 +33,4 @@ fun Operation.Data.toJsonString(customScalarAdapters: CustomScalarAdapters = Cus
     toJson(this, customScalarAdapters)
   }
 }
+
