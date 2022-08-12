@@ -112,6 +112,7 @@ class DataBuilderTest {
       long1 = MyLong(42)
       long2 = MyLong(43)
       long3 = 44
+      listOfListOfLong1 = listOf(listOf(MyLong(42)))
     }
 
     assertEquals(42, data.long1?.value)
@@ -177,7 +178,7 @@ class DataBuilderTest {
     }
 
     override fun resolveListSize(context: FakeResolverContext): Int {
-      TODO("Not yet implemented")
+      return 1
     }
 
     override fun resolveMaybeNull(context: FakeResolverContext): Boolean {

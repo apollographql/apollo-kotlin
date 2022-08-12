@@ -265,9 +265,39 @@ fun <T> buildData(
     resolver: FakeResolver,
 ): T {
   return adapter.obj(false).fromJson(
-      MapJsonReader(
-          buildFakeObject(selections, typename, map, resolver)
-      ),
-      CustomScalarAdapters.Unsafe
+      MapJsonReader(buildFakeObject(selections, typename, map, resolver)),
+      CustomScalarAdapters.PassThrough
+  )
+}
+
+fun <T> buildFragmentData(
+    adapter: Adapter<T>,
+    selections: List<CompiledSelection>,
+    typename: String,
+    block: Any? = null,
+    resolver: FakeResolver,
+    type: CompiledType
+): T {
+  val map = if (block == null) {
+    mapOf(
+        "__typename" to resolver.resolveTypename(
+            FakeResolverContext(
+                emptyList(),
+                CompiledField.Builder("__fragmentRoot", type).build()
+            )
+        )
+    )
+  } else {
+    @Suppress("UNCHECKED_CAST")
+    block as (BuilderScope.() -> Map<String, Any?>)
+    block.invoke(GlobalBuilder)
+  }
+
+  return buildData(
+      adapter,
+      selections,
+      typename,
+      map,
+      resolver
   )
 }

@@ -96,6 +96,9 @@ internal object KotlinSymbols {
   val NullableIntAdapter = MemberName(apolloApiPackageName, "NullableIntAdapter")
   val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
 
+
+  val BuilderScope = ClassName(apolloApiPackageName, "BuilderScope")
+
   val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
 
@@ -108,4 +111,6 @@ internal object KotlinMemberNames {
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
+  val buildFragmentData = MemberName(apolloApiPackageName, "buildFragmentData")
+  val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
 }

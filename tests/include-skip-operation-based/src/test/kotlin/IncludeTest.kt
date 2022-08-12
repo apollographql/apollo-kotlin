@@ -2,6 +2,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.api.GlobalBuilder
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery
@@ -25,7 +26,7 @@ class IncludeTest {
   fun includeVariableTrue() = runBlocking {
     val operation = GetCatIncludeVariableQuery(withCat = true)
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -40,7 +41,7 @@ class IncludeTest {
   fun includeVariableFalse() = runBlocking {
     val operation = GetCatIncludeVariableQuery(withCat = false)
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -55,7 +56,7 @@ class IncludeTest {
   fun includeHardcodedTrue() = runBlocking {
     val operation = GetCatIncludeTrueQuery()
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -70,7 +71,7 @@ class IncludeTest {
   fun includeHardcodedFalse() = runBlocking {
     val operation = GetCatIncludeFalseQuery()
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildCat {
         meow = "meeoooowwwww"
       }
@@ -85,7 +86,7 @@ class IncludeTest {
   fun skipVariableTrue() = runBlocking {
     val operation = GetDogSkipVariableQuery(withoutDog = true)
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -100,7 +101,7 @@ class IncludeTest {
   fun skipVariableFalse() = runBlocking {
     val operation = GetDogSkipVariableQuery(withoutDog = false)
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -115,7 +116,7 @@ class IncludeTest {
   fun skipHardcodedTrue() = runBlocking {
     val operation = GetDogSkipTrueQuery()
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }
@@ -130,7 +131,7 @@ class IncludeTest {
   fun skipHardcodedFalse() = runBlocking {
     val operation = GetDogSkipFalseQuery()
 
-    val data = buildQuery {
+    val data = GlobalBuilder.buildQuery {
       animal = buildDog {
         barf = "ouaf"
       }

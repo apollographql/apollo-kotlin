@@ -155,6 +155,7 @@ internal class KotlinCodeGen(
                     fragment,
                     flatten,
                     addJvmOverloads,
+                    generateDataBuilders
                 )
             )
             if (fragment.variables.isNotEmpty()) {

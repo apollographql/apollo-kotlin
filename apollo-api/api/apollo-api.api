@@ -252,6 +252,10 @@ public final class com/apollographql/apollo3/api/BuilderProperty {
 	public final fun setValue (Lcom/apollographql/apollo3/api/ObjectBuilder;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
 }
 
+public abstract interface class com/apollographql/apollo3/api/BuilderScope {
+	public abstract fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
+}
+
 public final class com/apollographql/apollo3/api/CompiledArgument {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Z)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -377,7 +381,7 @@ public final class com/apollographql/apollo3/api/CompiledVariable {
 public final class com/apollographql/apollo3/api/CustomScalarAdapters : com/apollographql/apollo3/api/ExecutionContext$Element {
 	public static final field Empty Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public static final field Key Lcom/apollographql/apollo3/api/CustomScalarAdapters$Key;
-	public static final field Unsafe Lcom/apollographql/apollo3/api/CustomScalarAdapters;
+	public static final field PassThrough Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public synthetic fun <init> (Ljava/util/Map;Lcom/apollographql/apollo3/api/AdapterContext;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
 	public fun get (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext$Element;
@@ -605,6 +609,8 @@ public final class com/apollographql/apollo3/api/FakeResolverContext {
 
 public final class com/apollographql/apollo3/api/FakeResolverKt {
 	public static final fun buildData (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo3/api/FakeResolver;)Ljava/lang/Object;
+	public static final fun buildFragmentData (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/lang/Object;Lcom/apollographql/apollo3/api/FakeResolver;Lcom/apollographql/apollo3/api/CompiledType;)Ljava/lang/Object;
+	public static synthetic fun buildFragmentData$default (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/lang/Object;Lcom/apollographql/apollo3/api/FakeResolver;Lcom/apollographql/apollo3/api/CompiledType;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/FileUpload {
@@ -706,12 +712,18 @@ public final class com/apollographql/apollo3/api/ObjectAdapter : com/apollograph
 	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 }
 
-public abstract class com/apollographql/apollo3/api/ObjectBuilder {
-	public fun <init> ()V
+public abstract class com/apollographql/apollo3/api/ObjectBuilder : com/apollographql/apollo3/api/BuilderScope {
+	public fun <init> (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
+	public fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public final fun get__fields ()Ljava/util/Map;
 	public final fun get__typename ()Ljava/lang/String;
 	public final fun set (Ljava/lang/String;Ljava/lang/Object;)V
 	public final fun set__typename (Ljava/lang/String;)V
+}
+
+public final class com/apollographql/apollo3/api/ObjectBuilderKt {
+	public static final fun Builder (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/BuilderScope;
+	public static final fun getGlobalBuilder ()Lcom/apollographql/apollo3/api/BuilderScope;
 }
 
 public final class com/apollographql/apollo3/api/ObjectType : com/apollographql/apollo3/api/CompiledNamedType {
@@ -1139,6 +1151,7 @@ public final class com/apollographql/apollo3/api/json/MapJsonWriter : com/apollo
 	public fun value (Lcom/apollographql/apollo3/api/Upload;)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
 	public synthetic fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/json/JsonWriter;
 	public fun value (Lcom/apollographql/apollo3/api/json/JsonNumber;)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
+	public final fun value (Ljava/lang/Object;)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
 	public synthetic fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/JsonWriter;
 	public fun value (Ljava/lang/String;)Lcom/apollographql/apollo3/api/json/MapJsonWriter;
 	public synthetic fun value (Z)Lcom/apollographql/apollo3/api/json/JsonWriter;

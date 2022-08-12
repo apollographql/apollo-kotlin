@@ -115,10 +115,10 @@ class KotlinResolver(
   internal fun resolveIrType2(type: IrType2): TypeName {
     return when (type) {
       is IrNonNullType2 -> resolveIrType2(type.ofType).copy(nullable = false)
-      is IrListType2 -> KotlinSymbols.List.parameterizedBy(resolveIrType2(type.ofType))
+      is IrListType2 -> KotlinSymbols.List.parameterizedBy(resolveIrType2(type.ofType)).copy(nullable = true)
       is IrCompositeType2 -> resolveAndAssert(ResolverKeyKind.MapType, type.name).copy(nullable = true)
-      is IrEnumType2 -> resolveIrType(IrEnumType(type.name))
-      is IrScalarType2 -> resolveIrType(IrScalarType(type.name))
+      is IrEnumType2 -> resolveIrType(IrEnumType(type.name)).copy(nullable = true)
+      is IrScalarType2 -> resolveIrType(IrScalarType(type.name)).copy(nullable = true)
     }
   }
 
@@ -129,17 +129,7 @@ class KotlinResolver(
 
   internal fun adapterInitializer2(type: IrType2): CodeBlock? {
     if (type !is IrNonNullType2) {
-      return if (type is IrScalarType2) {
-        val mapping = scalarMapping.get(type.name)
-        when {
-          mapping == null -> null // Any or builtin Int/Double/Boolean/String
-          mapping.adapterInitializer is RuntimeAdapterInitializer -> null // Will go through the Any path
-          mapping.adapterInitializer is ExpressionAdapterInitializer -> adapterInitializer2(IrNonNullType2(type))?.nullable()
-          else -> error("")
-        }
-      } else {
-        adapterInitializer2(IrNonNullType2(type))?.nullable()
-      }
+      return adapterInitializer2(IrNonNullType2(type))?.nullable()
     }
     return nonNullableAdapterInitializer2(type.ofType)
   }
@@ -154,13 +144,15 @@ class KotlinResolver(
       is IrNonNullType2 -> error("")
       is IrListType2 -> adapterInitializer2(type.ofType)?.list()
       is IrScalarType2 -> {
-        when (scalarMapping.get(type.name)?.adapterInitializer) {
-          null -> null
-          is ExpressionAdapterInitializer -> nonNullableScalarAdapterInitializer(IrScalarType(type.name))
-          RuntimeAdapterInitializer -> null
+        if (scalarMapping.containsKey(type.name)) {
+          nonNullableScalarAdapterInitializer(IrScalarType(type.name))
+        } else {
+          null
         }
       }
-      is IrEnumType2 -> nonNullableAdapterInitializer(IrEnumType(type.name), false)
+      is IrEnumType2 -> {
+        nonNullableAdapterInitializer(IrEnumType(type.name), false)
+      }
       is IrCompositeType2 -> null
     }
   }
