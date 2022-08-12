@@ -9,12 +9,13 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 /**
  * The episodes in the Star Wars trilogy
  */
 public class Episode {
-  public static EnumType type = new EnumType("Episode");
+  public static EnumType type = new EnumType("Episode", Arrays.asList("NEWHOPE", "EMPIRE", "JEDI", "DEPRECATED", "new"));
 
   public static Episode NEWHOPE = new Episode("NEWHOPE");
 

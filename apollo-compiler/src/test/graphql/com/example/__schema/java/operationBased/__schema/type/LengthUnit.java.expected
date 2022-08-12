@@ -9,12 +9,13 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 /**
  * Units of height
  */
 public class LengthUnit {
-  public static EnumType type = new EnumType("LengthUnit");
+  public static EnumType type = new EnumType("LengthUnit", Arrays.asList("METER", "FOOT"));
 
   public static LengthUnit METER = new LengthUnit("METER");
 

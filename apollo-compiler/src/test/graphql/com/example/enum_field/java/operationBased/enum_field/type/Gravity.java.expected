@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 public class Gravity {
-  public static EnumType type = new EnumType("Gravity");
+  public static EnumType type = new EnumType("Gravity", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "is", "type", "String"));
 
   public static Gravity TOP = new Gravity("TOP");
 

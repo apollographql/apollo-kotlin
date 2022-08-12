@@ -1,10 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
+import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
+import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.codegen.kotlin.toKotlinPoetClassName
 import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.ParameterizedTypeName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
@@ -45,6 +50,10 @@ internal object JavaClassNames {
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toJavaPoetClassName()
   val CompiledFragment = ClassNames.CompiledFragment.toJavaPoetClassName()
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toJavaPoetClassName()
+  val FakeResolver = ClassNames.FakeResolver.toJavaPoetClassName()
+  val FakeResolverKt = ClassName.get(apolloApiPackageName, "FakeResolverKt")
+  val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toJavaPoetClassName()
+  val JavaObjectBuilder = ClassName.get(apolloApiPackageName, "JavaObjectBuilder")
 
   /**
    * ClassNames that we don't use in Kotlin because we use extension functions instead
@@ -92,4 +101,11 @@ internal object JavaClassNames {
   val Arrays = ClassName.get("java.util", "Arrays")
   val Collections = ClassName.get("java.util", "Collections")
   val IllegalStateException = ClassName.get("java.lang", "IllegalStateException")
+  val HashMap = ClassName.get("java.util", "HashMap")
+  val Map: ClassName = ClassName.get("java.util", "Map")
+  val MapOfStringToObject = ParameterizedTypeName.get(Map, String, Object)
+
+  val ObjectBuilderKt = ClassName.get(apolloApiPackageName, "ObjectBuilderKt")
+  val ObjectMap = ClassName.get(apolloApiPackageName, "ObjectMap")
+
 }

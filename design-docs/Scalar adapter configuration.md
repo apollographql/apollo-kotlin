@@ -88,7 +88,7 @@ apollo {
 
   mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
   
-  mapScalar("MyLong", "kotlin.Long")
+  mapScalar("data.builders.MyLong", "kotlin.Long")
 }
 ```
 
@@ -166,7 +166,7 @@ public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomSca
 // Before:
   0 -> myDate = customScalarAdapters.responseAdapterFor<MyDate>(com.example.type.MyDate.type).nullable().fromJson(reader, customScalarAdapters)
   1 -> id = StringAdapter.fromJson(reader, customScalarAdapters)
-  2 -> myLong = customScalarAdapters.responseAdapterFor<Long>(MyLong.type).nullable().fromJson(reader, customScalarAdapters)
+  2 -> myLong = customScalarAdapters.responseAdapterFor<Long>(data.builders.MyLong.type).nullable().fromJson(reader, customScalarAdapters)
 
 // After:
   0 -> myDate = com.example.MyDateAdapter().nullable().fromJson(reader, customScalarAdapters)

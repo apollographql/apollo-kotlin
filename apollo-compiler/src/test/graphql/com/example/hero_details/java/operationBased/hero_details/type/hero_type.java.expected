@@ -9,12 +9,13 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 /**
  * Lower case enum type name
  */
 public class hero_type {
-  public static EnumType type = new EnumType("hero_type");
+  public static EnumType type = new EnumType("hero_type", Arrays.asList("human", "droid"));
 
   public static hero_type human = new hero_type("human");
 

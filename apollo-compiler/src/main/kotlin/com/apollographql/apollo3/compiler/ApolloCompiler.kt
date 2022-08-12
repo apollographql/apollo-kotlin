@@ -206,6 +206,7 @@ object ApolloCompiler {
             generatedSchemaName = options.generatedSchemaName,
             flatten = options.flattenModels,
             scalarMapping = options.scalarMapping,
+            generateDataBuilders = options.generateDataBuilders
         ).write(outputDir = outputDir)
       }
       else -> {

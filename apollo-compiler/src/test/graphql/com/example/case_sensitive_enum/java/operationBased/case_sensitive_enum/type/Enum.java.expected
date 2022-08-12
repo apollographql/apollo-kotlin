@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 public class Enum {
-  public static EnumType type = new EnumType("Enum");
+  public static EnumType type = new EnumType("Enum", Arrays.asList("north", "North", "NORTH", "SOUTH"));
 
   public static Enum north = new Enum("north");
 
