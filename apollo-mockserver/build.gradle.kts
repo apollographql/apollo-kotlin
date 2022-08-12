@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.mockserver")
+  javaModuleName("com.apollographql.apollo3.mockserver")
   mpp {
     withLinux.set(false)
   }

@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.cache.normalized")
+  javaModuleName("com.apollographql.apollo3.cache.normalized")
   mpp {
     withLinux.set(false)
   }

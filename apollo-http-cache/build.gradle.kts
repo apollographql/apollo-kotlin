@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.cache.http")
+  javaModuleName("com.apollographql.apollo3.cache.http")
 }
 
 dependencies {

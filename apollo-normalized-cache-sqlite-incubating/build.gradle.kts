@@ -7,7 +7,7 @@ apply(plugin = "com.android.library")
 apply(plugin = "com.squareup.sqldelight")
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.cache.normalized.sql")
+  javaModuleName("com.apollographql.apollo3.cache.normalized.sql")
   mpp {
     withLinux.set(false)
     // https://github.com/cashapp/sqldelight/pull/1486

@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.runtime")
+  javaModuleName("com.apollographql.apollo3.runtime")
   mpp {
     withLinux.set(false)
   }

@@ -20,21 +20,13 @@ class LibraryConventionPlugin : Plugin<Project> {
 
       configureRepositories()
 
-      val extension = extensions.create("apolloLibrary", Extension::class.java)
+      extensions.create("apolloLibrary", Extension::class.java)
 
       configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
 
       configureTesting()
 
       configurePublishing()
-
-      tasks.withType(Jar::class.java).configureEach {
-        extension.javaModuleName.orNull?.let { javaModuleName ->
-          manifest {
-            attributes(mapOf("Automatic-Module-Name" to javaModuleName))
-          }
-        }
-      }
     }
   }
 
@@ -43,8 +35,6 @@ class LibraryConventionPlugin : Plugin<Project> {
       val withJs: Property<Boolean>
       val withLinux: Property<Boolean>
     }
-
-    abstract val javaModuleName: Property<String>
 
     @get:Nested
     abstract val mppConfiguration: MppConfiguration
@@ -55,6 +45,14 @@ class LibraryConventionPlugin : Plugin<Project> {
           withJs = mppConfiguration.withJs.getOrElse(true),
           withLinux = mppConfiguration.withLinux.getOrElse(true)
       )
+    }
+
+    fun javaModuleName(javaModuleName: String) {
+      project.tasks.withType(Jar::class.java).configureEach {
+        manifest {
+          attributes(mapOf("Automatic-Module-Name" to javaModuleName))
+        }
+      }
     }
   }
 }

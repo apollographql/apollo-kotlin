@@ -7,7 +7,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.compiler")
+  javaModuleName("com.apollographql.apollo3.compiler")
 }
 
 dependencies {

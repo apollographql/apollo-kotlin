@@ -4,7 +4,7 @@ plugins {
 }
 
 apolloLibrary {
-  javaModuleName.set("com.apollographql.apollo3.api")
+  javaModuleName("com.apollographql.apollo3.api")
   mpp {}
 }
 
