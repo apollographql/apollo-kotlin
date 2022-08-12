@@ -1,13 +1,13 @@
 :root {
-	--keyword-color: #f687b3;
-	--property-color: #9876aa;
+	--keyword-color: #07a;
+	--property-color: #905;
 	--function-color: #DD4A68;
 }
 
 :root.theme-dark {
-	--keyword-color: #f687b3;
+	--keyword-color: #cc7832;
 	--property-color: #9876aa;
-	--function-color: #ffc18f;
+	--function-color: #ffc66d;
 }
 
 code .token {
@@ -54,7 +54,7 @@ https://prismjs.com/download.html#themes=prism&languages=clike+java+javadoclike+
 .token.builtin,
 .token.annotation,
 .token.inserted {
-	color: #ad9bf6;
+	color: #690;
 }
 
 .token.operator,
