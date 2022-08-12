@@ -6,6 +6,10 @@ plugins {
   id("com.gradleup.gr8")
 }
 
+apolloLibrary {
+  treatWarningsAsErrors(false)
+}
+
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated
 configurations.create("gr8Classpath")
 // Configuration dependencies that will be shadowed
