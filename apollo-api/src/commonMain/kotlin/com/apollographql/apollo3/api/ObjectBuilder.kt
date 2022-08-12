@@ -2,7 +2,6 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
-import kotlin.jvm.JvmField
 
 @Suppress("PropertyName")
 abstract class ObjectBuilder(override val customScalarAdapters: CustomScalarAdapters): BuilderScope {
