@@ -1,14 +1,22 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin(withJs = false, withJvm = false, newMemoryManager = false) {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.runtime)
-        }
+apolloTest {
+  mpp {
+    withJs.set(false)
+    withJvm.set(false)
+    newMemoryManager.set(false)
+  }
+}
+
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.runtime)
       }
     }
   }

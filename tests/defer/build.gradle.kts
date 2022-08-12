@@ -1,47 +1,51 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin {
-    /**
-     * Extra target to test the java codegen
-     */
-    jvm("javaCodegen") {
-      withJava()
+apolloTest {
+  mpp {}
+}
+
+kotlin {
+  /**
+   * Extra target to test the java codegen
+   */
+  jvm("javaCodegen") {
+    withJava()
+  }
+
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.normalizedcache)
+      }
     }
 
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.runtime)
-          implementation(libs.apollo.normalizedcache)
-        }
+    val commonTest by getting {
+      dependencies {
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.testingsupport)
       }
+    }
 
-      val commonTest by getting {
-        dependencies {
-          implementation(libs.apollo.mockserver)
-          implementation(libs.apollo.testingsupport)
-        }
+    val jsTest by getting {
+      dependencies {
+        implementation(npm("graphql-helix", "1.12.0"))
+        implementation(npm("express", "4.17.3"))
+        implementation(npm("ws", "8.2.2"))
+        implementation(npm("graphql-ws", "5.5.0"))
+        // Depend on a more recent 'canary' version of graphql-js (version graphql-helix depends on by default is older).
+        // This corresponds to this PR: https://github.com/graphql/graphql-js/pull/2839/
+        implementation(npm("graphql", "canary-pr-2839"))
       }
+    }
 
-      val jsTest by getting {
-        dependencies {
-          implementation(npm("graphql-helix", "1.12.0"))
-          implementation(npm("express", "4.17.3"))
-          implementation(npm("ws", "8.2.2"))
-          implementation(npm("graphql-ws", "5.5.0"))
-          // Depend on a more recent 'canary' version of graphql-js (version graphql-helix depends on by default is older).
-          // This corresponds to this PR: https://github.com/graphql/graphql-js/pull/2839/
-          implementation(npm("graphql", "canary-pr-2839"))
-        }
-      }
-
-      val jvmTest by getting {
-        dependencies {
-          implementation(libs.apollo.httpCache)
-        }
+    val jvmTest by getting {
+      dependencies {
+        implementation(libs.apollo.httpCache)
       }
     }
   }

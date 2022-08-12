@@ -1,49 +1,53 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin {
-    /**
-     * Extra target to test the java codegen
-     */
-    jvm("javaCodegen") {
-      withJava()
+apolloTest {
+  mpp {}
+}
+
+kotlin {
+  /**
+   * Extra target to test the java codegen
+   */
+  jvm("javaCodegen") {
+    withJava()
+  }
+
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.api)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.adapters)
+        implementation(libs.apollo.runtime)
+      }
     }
 
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.api)
-          implementation(libs.apollo.normalizedcache)
-          implementation(libs.apollo.testingsupport)
-          implementation(libs.apollo.mockserver)
-          implementation(libs.apollo.adapters)
-          implementation(libs.apollo.runtime)
+    val commonTest by getting {
+      dependencies {
+        implementation(libs.kotlinx.coroutines)
+        implementation(libs.kotlinx.serialization.json.get().toString()) {
+          because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
         }
+        implementation(libs.kotlinx.coroutines.test)
       }
+    }
 
-      val commonTest by getting {
-        dependencies {
-          implementation(libs.kotlinx.coroutines)
-          implementation(libs.kotlinx.serialization.json.get().toString()) {
-            because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
-          }
-          implementation(libs.kotlinx.coroutines.test)
-        }
+    val javaCodegenTest by getting {
+      dependencies {
+        // Add test-junit manually because configureMppTestsDefaults did not do it for us
+        implementation(libs.kotlin.test.junit)
       }
+    }
 
-      val javaCodegenTest by getting {
-        dependencies {
-          // Add test-junit manually because configureMppTestsDefaults did not do it for us
-          implementation(libs.kotlin.test.junit)
-        }
-      }
-
-      val jvmTest by getting {
-        dependencies {
-          implementation(libs.okhttp.logging)
-        }
+    val jvmTest by getting {
+      dependencies {
+        implementation(libs.okhttp.logging)
       }
     }
   }
@@ -64,11 +68,13 @@ fun configureApollo(generateKotlinModels: Boolean) {
                     "Date" to "kotlinx.datetime.LocalDate"
                 ))
               }
+
               "upload" -> {
                 customScalarsMapping.set(mapOf(
                     "Upload" to "com.apollographql.apollo3.api.Upload"
                 ))
               }
+
               "normalizer" -> {
                 generateFragmentImplementations.set(true)
                 mapScalar("Date", "kotlinx.datetime.LocalDate")
@@ -79,6 +85,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 }
                 sealedClassesForEnumsMatching.set(listOf("Episode"))
               }
+
               "fullstack" -> {
                 customScalarsMapping.set(mapOf(
                     "Date" to "com.example.MyDate"
@@ -115,6 +122,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
         }
   }
 }
+
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (System.getProperty("idea.sync.active") == null) {

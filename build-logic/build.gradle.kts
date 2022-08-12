@@ -61,14 +61,14 @@ gradlePlugin {
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.LibraryConventionPlugin"
     }
 
+    register("apollo.test") {
+      id = "apollo.test"
+      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.TestConventionPlugin"
+    }
+
     register("apollo.test.jvm") {
       id = "apollo.test.jvm"
       implementationClass = "com.apollographql.apollo3.buildlogic.plugin.JvmTestConventionPlugin"
-    }
-
-    register("apollo.test.multiplatform") {
-      id = "apollo.test.multiplatform"
-      implementationClass = "com.apollographql.apollo3.buildlogic.plugin.MultiplatformTestConventionPlugin"
     }
 
     register("apollo.test.android") {

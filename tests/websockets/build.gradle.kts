@@ -1,28 +1,32 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.runtime)
-        }
-      }
+apolloTest {
+  mpp {}
+}
 
-      val commonTest by getting {
-        dependencies {
-          implementation(libs.apollo.testingsupport)
-          implementation(libs.apollo.normalizedcache)
-          implementation(libs.turbine)
-        }
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.runtime)
       }
+    }
 
-      val jvmTest by getting {
-        dependencies {
-          implementation(projects.sampleServer)
-        }
+    val commonTest by getting {
+      dependencies {
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.turbine)
+      }
+    }
+
+    val jvmTest by getting {
+      dependencies {
+        implementation(projects.sampleServer)
       }
     }
   }

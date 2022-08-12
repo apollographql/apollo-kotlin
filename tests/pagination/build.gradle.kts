@@ -1,22 +1,28 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin(withJs = false) {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.runtime)
-        }
-      }
+apolloTest {
+  mpp {
+    withJs.set(false)
+  }
+}
 
-      val commonTest by getting {
-        dependencies {
-          implementation(libs.apollo.testingsupport)
-          implementation(libs.apollo.normalizedcache.incubating)
-          implementation(libs.apollo.normalizedcache.sqlite.incubating)
-        }
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.runtime)
+      }
+    }
+
+    val commonTest by getting {
+      dependencies {
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.normalizedcache.incubating)
+        implementation(libs.apollo.normalizedcache.sqlite.incubating)
       }
     }
   }

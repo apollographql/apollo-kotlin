@@ -1,21 +1,29 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin(withJs = false, withJvm = false, appleTargets = setOf("iosArm64", "iosX64")) {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.runtime)
-          implementation(libs.apollo.mockserver)
-        }
-      }
+apolloTest {
+  mpp {
+    withJs.set(false)
+    withJvm.set(false)
+    appleTargets.set(setOf("iosArm64", "iosX64"))
+  }
+}
 
-      val commonTest by getting {
-        dependencies {
-          implementation(libs.apollo.testingsupport)
-        }
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.runtime)
+        implementation(libs.apollo.mockserver)
+      }
+    }
+
+    val commonTest by getting {
+      dependencies {
+        implementation(libs.apollo.testingsupport)
       }
     }
   }

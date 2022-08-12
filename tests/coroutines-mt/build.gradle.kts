@@ -1,18 +1,25 @@
 plugins {
-  id("apollo.test.multiplatform")
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
-apolloConvention {
-  kotlin(withJs = false, withJvm = false) {
-    sourceSets {
-      val commonMain by getting {
-        dependencies {
-          implementation(libs.apollo.testingsupport)
-          implementation(libs.apollo.mockserver)
-          implementation(libs.apollo.normalizedcache)
-          implementation(libs.apollo.mpputils)
-          implementation(libs.apollo.runtime)
-        }
+apolloTest {
+  mpp {
+    withJs.set(false)
+    withJvm.set(false)
+  }
+}
+
+kotlin {
+  sourceSets {
+    val commonMain by getting {
+      dependencies {
+        implementation(libs.apollo.testingsupport)
+        implementation(libs.apollo.mockserver)
+        implementation(libs.apollo.normalizedcache)
+        implementation(libs.apollo.mpputils)
+        implementation(libs.apollo.runtime)
       }
     }
   }
@@ -26,6 +33,7 @@ configurations {
     }
   }
 }
+
 apollo {
   packageName.set("macos.app")
   generateDataBuilders.set(true)
