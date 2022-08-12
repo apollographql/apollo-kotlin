@@ -1,5 +1,8 @@
 plugins {
-  id("apollo.test.android")
+  id("com.android.library")
+  id("org.jetbrains.kotlin.android")
+  id("apollo.test")
+  id("com.apollographql.apollo3")
 }
 
 dependencies {
