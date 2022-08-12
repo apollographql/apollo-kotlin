@@ -129,10 +129,3 @@ tasks.withType<Test> {
   inputs.dir("src/test/files")
   inputs.dir("testProjects")
 }
-
-// Override convention plugin behavior
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = false
-  }
-}
