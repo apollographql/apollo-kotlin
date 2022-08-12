@@ -1,7 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("java-gradle-plugin")
   id("com.gradleup.gr8") // Only used for removeGradleApiFromApi()
+}
+
+apolloLibrary {
+  treatWarningsAsErrors(false)
 }
 
 dependencies {

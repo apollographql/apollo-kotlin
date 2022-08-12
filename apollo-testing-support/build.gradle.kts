@@ -1,8 +1,13 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library")
 }
 
-configureMppDefaults(withLinux = false)
+apolloLibrary {
+  mpp {
+    withLinux.set(false)
+  }
+}
 
 kotlin {
   sourceSets {

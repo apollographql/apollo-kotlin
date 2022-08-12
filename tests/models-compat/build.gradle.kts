@@ -2,10 +2,13 @@ import com.apollographql.apollo3.compiler.MODELS_COMPAT
 
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-configureMppTestsDefaults()
+apolloTest {
+  mpp {}
+}
 
 kotlin {
   sourceSets {

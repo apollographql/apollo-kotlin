@@ -1,13 +1,17 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
+apolloTest {
+  mpp {
+    withJs.set(false)
+    withJvm.set(false)
+  }
+}
+
 kotlin {
-  configureAppleTargets("macosX64", "macosArm64")
-
-  enableNewMemoryManager()
-
   sourceSets {
     val commonMain by getting {
       dependencies {
@@ -16,13 +20,6 @@ kotlin {
         implementation(libs.apollo.normalizedcache)
         implementation(libs.apollo.mpputils)
         implementation(libs.apollo.runtime)
-      }
-    }
-
-    val commonTest by getting {
-      dependencies {
-        implementation(libs.kotlin.test.common)
-        implementation(libs.kotlin.test.annotations.common)
       }
     }
   }
@@ -36,6 +33,7 @@ configurations {
     }
   }
 }
+
 apollo {
   packageName.set("macos.app")
   generateDataBuilders.set(true)

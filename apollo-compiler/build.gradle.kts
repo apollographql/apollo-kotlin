@@ -2,7 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("com.google.devtools.ksp")
+}
+
+apolloLibrary {
+  javaModuleName("com.apollographql.apollo3.compiler")
 }
 
 dependencies {
@@ -63,12 +68,6 @@ tasks.withType(KotlinCompile::class.java) {
   dependsOn(pluginVersionTaskProvider)
 }
 
-tasks.withType(KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
-}
-
 // since test/graphql is not an input to Test tasks, they're not run with the changes made in there.
 tasks.withType<Test>().configureEach {
   inputs.dir("src/test/graphql")
@@ -76,10 +75,4 @@ tasks.withType<Test>().configureEach {
   inputs.dir("src/test/typename")
   inputs.dir("src/test/usedtypes")
   inputs.dir("src/test/validation")
-}
-
-val jar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.compiler")
-  }
 }

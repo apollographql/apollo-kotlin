@@ -1,9 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-configureMppTestsDefaults()
+apolloTest {
+  mpp {}
+}
 
 kotlin {
   /**
@@ -65,11 +68,13 @@ fun configureApollo(generateKotlinModels: Boolean) {
                     "Date" to "kotlinx.datetime.LocalDate"
                 ))
               }
+
               "upload" -> {
                 customScalarsMapping.set(mapOf(
                     "Upload" to "com.apollographql.apollo3.api.Upload"
                 ))
               }
+
               "normalizer" -> {
                 generateFragmentImplementations.set(true)
                 mapScalar("Date", "kotlinx.datetime.LocalDate")
@@ -80,6 +85,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 }
                 sealedClassesForEnumsMatching.set(listOf("Episode"))
               }
+
               "fullstack" -> {
                 customScalarsMapping.set(mapOf(
                     "Date" to "com.example.MyDate"
@@ -116,6 +122,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
         }
   }
 }
+
 fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKotlinModels: Boolean) {
   outputDirConnection {
     if (System.getProperty("idea.sync.active") == null) {

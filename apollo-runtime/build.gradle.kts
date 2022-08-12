@@ -1,8 +1,14 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library")
 }
 
-configureMppDefaults(withLinux = false)
+apolloLibrary {
+  javaModuleName("com.apollographql.apollo3.runtime")
+  mpp {
+    withLinux.set(false)
+  }
+}
 
 kotlin {
   sourceSets {
@@ -57,17 +63,5 @@ tasks.register("iOSSimTest") {
     exec {
       commandLine = listOf("xcrun", "simctl", "spawn", "iPhone 8", binary.absolutePath)
     }
-  }
-}
-
-val jvmJar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.runtime")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
   }
 }

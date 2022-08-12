@@ -1,9 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-configureMppTestsDefaults()
+apolloTest {
+  mpp {}
+}
 
 kotlin {
   /**
@@ -25,7 +28,6 @@ kotlin {
       dependencies {
         implementation(libs.apollo.mockserver)
         implementation(libs.apollo.testingsupport)
-        implementation(libs.kotlin.test)
       }
     }
 

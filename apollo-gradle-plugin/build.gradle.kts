@@ -1,8 +1,13 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("java-gradle-plugin")
   id("com.gradle.plugin-publish")
   id("com.gradleup.gr8")
+}
+
+apolloLibrary {
+  treatWarningsAsErrors(false)
 }
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated

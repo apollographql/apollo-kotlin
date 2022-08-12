@@ -1,9 +1,12 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.test")
   id("com.apollographql.apollo3")
 }
 
-configureMppTestsDefaults()
+apolloTest {
+  mpp {}
+}
 
 kotlin {
   /**
@@ -38,6 +41,7 @@ kotlin {
     }
   }
 }
+
 
 fun configureApollo(generateKotlinModels: Boolean) {
   val extra = if (generateKotlinModels) "kotlin" else "java"

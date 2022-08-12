@@ -1,6 +1,19 @@
+plugins {
+  id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library")
+}
+
 apply(plugin = "com.android.library")
-apply(plugin = "org.jetbrains.kotlin.multiplatform")
 apply(plugin = "com.squareup.sqldelight")
+
+apolloLibrary {
+  javaModuleName("com.apollographql.apollo3.cache.normalized.sql")
+  mpp {
+    withLinux.set(false)
+    // https://github.com/cashapp/sqldelight/pull/1486
+    withJs.set(false)
+  }
+}
 
 configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   database("JsonDatabase") {
@@ -10,10 +23,7 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
 }
 
-// https://github.com/cashapp/sqldelight/pull/1486
-configureMppDefaults(withJs = false, withLinux = false)
-
-configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+kotlin {
   android {
     publishAllLibraryVariants()
   }
@@ -104,14 +114,3 @@ tasks.configureEach {
   }
 }
 
-val jvmJar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.cache.normalized.sql")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
-}

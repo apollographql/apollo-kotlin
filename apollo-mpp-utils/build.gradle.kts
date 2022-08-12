@@ -1,8 +1,14 @@
 plugins {
   id("org.jetbrains.kotlin.multiplatform")
+  id("apollo.library")
 }
 
-configureMppDefaults(withLinux = false)
+apolloLibrary {
+  javaModuleName("com.apollographql.apollo3.mpp")
+  mpp {
+    withLinux.set(false)
+  }
+}
 
 kotlin {
   sourceSets {
@@ -14,14 +20,3 @@ kotlin {
   }
 }
 
-val jvmJar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.mpp")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
-}

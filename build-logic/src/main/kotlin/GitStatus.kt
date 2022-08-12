@@ -1,4 +1,3 @@
-
 fun checkGitStatus() {
   val modifiedFiles = runCommand("git", "status", "--porcelain")
   if (modifiedFiles.isNotEmpty()) {

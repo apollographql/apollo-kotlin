@@ -10,15 +10,16 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
 import org.gradle.plugins.signing.SigningExtension
+import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 
 fun Project.configurePublishing() {
   apply {
-    it.plugin("signing")
+    plugin("signing")
   }
   apply {
-    it.plugin("maven-publish")
+    plugin("maven-publish")
   }
 
   pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
@@ -27,24 +28,28 @@ fun Project.configurePublishing() {
   pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
     configureDokka()
   }
-  // Not sure if we still need that afterEvaluate
-  afterEvaluate {
-    configurePublishingDelayed()
-  }
+  configurePublishingInternal()
 }
 
 fun Project.configureDokka() {
   apply {
-    it.plugin("org.jetbrains.dokka")
+    plugin("org.jetbrains.dokka")
   }
 
   tasks.withType(DokkaTask::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
-    it.dependsOn("assemble")
+    dependsOn("assemble")
   }
   tasks.withType(DokkaTaskPartial::class.java).configureEach {
     //https://github.com/Kotlin/dokka/issues/1455
-    it.dependsOn("assemble")
+    dependsOn("assemble")
+  }
+
+  tasks.withType(AbstractDokkaTask::class.java).configureEach {
+    pluginConfiguration<org.jetbrains.dokka.base.DokkaBase, org.jetbrains.dokka.base.DokkaBaseConfiguration> {
+      customAssets = listOf("apollo.svg").map { rootProject.file("dokka/$it") }
+      customStyleSheets = listOf("style.css", "prism.css", "logo-styles.css").map { rootProject.file("dokka/$it") }
+    }
   }
 }
 
@@ -74,19 +79,19 @@ fun Project.getOssStagingUrl(): String {
   }
 }
 
-private fun Project.configurePublishingDelayed() {
+private fun Project.configurePublishingInternal() {
   /**
    * Javadoc
    */
   val dokkaJarTaskProvider = tasks.register("defaultJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-    it.archiveClassifier.set("javadoc")
+    archiveClassifier.set("javadoc")
 
     runCatching {
-      it.from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
+      from(tasks.named("dokkaHtml").flatMap { (it as DokkaTask).outputDirectory })
     }
   }
   val emptyJavadocJarTaskProvider = tasks.register("emptyJavadocJar", org.gradle.jvm.tasks.Jar::class.java) {
-    it.archiveClassifier.set("javadoc")
+    archiveClassifier.set("javadoc")
   }
 
   /**
@@ -100,73 +105,76 @@ private fun Project.configurePublishingDelayed() {
   }
 
   tasks.withType(Jar::class.java) {
-    it.manifest {
-      it.attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
-      it.attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
-      it.attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
-      it.attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
-      it.attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
+    manifest {
+      attributes["Built-By"] = findProperty("POM_DEVELOPER_ID") as String?
+      attributes["Build-Jdk"] = "${System.getProperty("java.version")} (${System.getProperty("java.vendor")} ${System.getProperty("java.vm.version")})"
+      attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+      attributes["Implementation-Title"] = findProperty("POM_NAME") as String?
+      attributes["Implementation-Version"] = findProperty("VERSION_NAME") as String?
     }
   }
 
-  extensions.configure(PublishingExtension::class.java) { publishingExtension ->
-    publishingExtension.publications { publicationContainer ->
+  extensions.configure(PublishingExtension::class.java) {
+    publications {
       when {
         plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> {
           /**
            * Kotlin MPP creates nice publications.
            * It only misses the javadoc
            */
-          publicationContainer.withType(MavenPublication::class.java).configureEach {
-            if (it.name == "kotlinMultiplatform") {
+          withType(MavenPublication::class.java).configureEach {
+            if (name == "kotlinMultiplatform") {
               // Add the javadoc to the multiplatform publications
-              it.artifact(javadocJarTaskProvider.get())
+              artifact(javadocJarTaskProvider.get())
             } else {
               // And an empty one for others so as to save some space
-              it.artifact(emptyJavadocJarTaskProvider.get())
+              artifact(emptyJavadocJarTaskProvider.get())
             }
           }
         }
+
         plugins.hasPlugin("java-gradle-plugin") -> {
           /**
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
            */
-          publicationContainer.withType(MavenPublication::class.java) { mavenPublication ->
-            mavenPublication.artifact(javadocJarTaskProvider.get())
+          withType(MavenPublication::class.java) {
+            artifact(javadocJarTaskProvider.get())
             // Only add sources for the main publication
             // XXX: is there a nicer way to do this?
-            if (!mavenPublication.name.lowercase().contains("marker")) {
-              mavenPublication.artifact(createJavaSourcesTask())
+            if (!name.lowercase().contains("marker")) {
+              artifact(createJavaSourcesTask())
             }
           }
         }
+
         extensions.findByName("android") != null -> {
           /**
            * Android projects do not create publications (yet?). Do it ourselves.
            */
-          publicationContainer.create("default", MavenPublication::class.java) { mavenPublication ->
+          create("default", MavenPublication::class.java) {
             afterEvaluate {
               // afterEvaluate is required for Android
-              mavenPublication.from(components.findByName("release"))
+              from(components.findByName("release"))
             }
 
-            mavenPublication.artifact(javadocJarTaskProvider.get())
-            mavenPublication.artifact(createAndroidSourcesTask().get())
+            artifact(javadocJarTaskProvider.get())
+            artifact(createAndroidSourcesTask().get())
 
-            mavenPublication.artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            artifactId = findProperty("POM_ARTIFACT_ID") as String?
           }
         }
+
         else -> {
           /**
            * Kotlin JVM do not create publications (yet?). Do it ourselves.
            */
-          publicationContainer.create("default", MavenPublication::class.java) { mavenPublication ->
+          create("default", MavenPublication::class.java) {
 
-            mavenPublication.from(components.findByName("java"))
-            mavenPublication.artifact(javadocJarTaskProvider.get())
-            mavenPublication.artifact(createJavaSourcesTask().get())
+            from(components.findByName("java"))
+            artifact(javadocJarTaskProvider.get())
+            artifact(createJavaSourcesTask().get())
 
-            mavenPublication.artifactId = findProperty("POM_ARTIFACT_ID") as String?
+            artifactId = findProperty("POM_ARTIFACT_ID") as String?
           }
         }
       }
@@ -174,57 +182,57 @@ private fun Project.configurePublishingDelayed() {
       /**
        * In all cases, configure the pom
        */
-      publicationContainer.withType(MavenPublication::class.java).configureEach { mavenPublication ->
-        setDefaultPomFields(mavenPublication)
+      withType(MavenPublication::class.java).configureEach {
+        setDefaultPomFields(this)
       }
     }
 
-    publishingExtension.repositories { repositoryHandler ->
-      repositoryHandler.maven { repository ->
-        repository.name = "pluginTest"
-        repository.url = uri("file://${rootProject.buildDir}/localMaven")
+    repositories {
+      maven {
+        name = "pluginTest"
+        url = uri("file://${rootProject.buildDir}/localMaven")
       }
 
-      repositoryHandler.maven { repository ->
-        repository.name = "ossSnapshots"
-        repository.url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        repository.credentials { credentials ->
-          credentials.username = System.getenv("SONATYPE_NEXUS_USERNAME")
-          credentials.password = System.getenv("SONATYPE_NEXUS_PASSWORD")
+      maven {
+        name = "ossSnapshots"
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        credentials {
+          username = System.getenv("SONATYPE_NEXUS_USERNAME")
+          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
         }
       }
 
-      repositoryHandler.maven { repository ->
-        repository.name = "ossStaging"
-        repository.setUrl {
+      maven {
+        name = "ossStaging"
+        setUrl {
           uri(rootProject.getOssStagingUrl())
         }
-        repository.credentials { credentials ->
-          credentials.username = System.getenv("SONATYPE_NEXUS_USERNAME")
-          credentials.password = System.getenv("SONATYPE_NEXUS_PASSWORD")
+        credentials {
+          username = System.getenv("SONATYPE_NEXUS_USERNAME")
+          password = System.getenv("SONATYPE_NEXUS_PASSWORD")
         }
       }
 
-      repositoryHandler.maven { repository ->
-        repository.name = "repsy"
-        repository.setUrl("https://repo.repsy.io/mvn/mbonnin/default")
-        repository.credentials { credentials ->
-          credentials.username = System.getenv("REPSY_USERNAME")
-          credentials.password = System.getenv("REPSY_PASSWORD")
+      maven {
+        name = "repsy"
+        setUrl("https://repo.repsy.io/mvn/mbonnin/default")
+        credentials {
+          username = System.getenv("REPSY_USERNAME")
+          password = System.getenv("REPSY_PASSWORD")
         }
       }
     }
   }
 
-  extensions.configure(SigningExtension::class.java) { signingExtension ->
+  extensions.configure(SigningExtension::class.java) {
     // GPG_PRIVATE_KEY should contain the armoured private key that starts with -----BEGIN PGP PRIVATE KEY BLOCK-----
     // It can be obtained with gpg --armour --export-secret-keys KEY_ID
-    signingExtension.useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
+    useInMemoryPgpKeys(System.getenv("GPG_PRIVATE_KEY"), System.getenv("GPG_PRIVATE_KEY_PASSWORD"))
     val publicationsContainer = (extensions.getByName("publishing") as PublishingExtension).publications
-    signingExtension.sign(publicationsContainer)
+    sign(publicationsContainer)
   }
   tasks.withType(Sign::class.java).configureEach {
-    it.isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()
+    isEnabled = !System.getenv("GPG_PRIVATE_KEY").isNullOrBlank()
   }
 }
 
@@ -236,57 +244,57 @@ private fun Project.setDefaultPomFields(mavenPublication: MavenPublication) {
   mavenPublication.groupId = findProperty("GROUP") as String?
   mavenPublication.version = findProperty("VERSION_NAME") as String?
 
-  mavenPublication.pom { mavenPom ->
-    mavenPom.name.set(findProperty("POM_NAME") as String?)
+  mavenPublication.pom {
+    name.set(findProperty("POM_NAME") as String?)
     (findProperty("POM_PACKAGING") as String?)?.let {
       // Do not overwrite packaging if already set by the multiplatform plugin
-      mavenPom.packaging = it
+      packaging = it
     }
 
-    mavenPom.description.set(findProperty("POM_DESCRIPTION") as String?)
-    mavenPom.url.set(findProperty("POM_URL") as String?)
+    description.set(findProperty("POM_DESCRIPTION") as String?)
+    url.set(findProperty("POM_URL") as String?)
 
-    mavenPom.scm { scm ->
-      scm.url.set(findProperty("POM_SCM_URL") as String?)
-      scm.connection.set(findProperty("POM_SCM_CONNECTION") as String?)
-      scm.developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
+    scm {
+      url.set(findProperty("POM_SCM_URL") as String?)
+      connection.set(findProperty("POM_SCM_CONNECTION") as String?)
+      developerConnection.set(findProperty("POM_SCM_DEV_CONNECTION") as String?)
     }
 
-    mavenPom.licenses { licenseSpec ->
-      licenseSpec.license { license ->
-        license.name.set(findProperty("POM_LICENCE_NAME") as String?)
-        license.url.set(findProperty("POM_LICENCE_URL") as String?)
+    licenses {
+      license {
+        name.set(findProperty("POM_LICENCE_NAME") as String?)
+        url.set(findProperty("POM_LICENCE_URL") as String?)
       }
     }
 
-    mavenPom.developers { developerSpec ->
-      developerSpec.developer { developer ->
-        developer.id.set(findProperty("POM_DEVELOPER_ID") as String?)
-        developer.name.set(findProperty("POM_DEVELOPER_NAME") as String?)
+    developers {
+      developer {
+        id.set(findProperty("POM_DEVELOPER_ID") as String?)
+        name.set(findProperty("POM_DEVELOPER_NAME") as String?)
       }
     }
   }
 }
 
 private fun Project.createJavaSourcesTask(): TaskProvider<Jar> {
-  return tasks.register("javaSourcesJar", Jar::class.java) { jar ->
+  return tasks.register("javaSourcesJar", Jar::class.java) {
     /**
      * Add a dependency on the compileKotlin task to make sure the generated sources like
      * antlr or SQLDelight get included
      * See also https://youtrack.jetbrains.com/issue/KT-47936
      */
-    jar.dependsOn("compileKotlin")
+    dependsOn("compileKotlin")
 
-    jar.archiveClassifier.set("sources")
+    archiveClassifier.set("sources")
     val sourceSets = project.extensions.getByType(JavaPluginExtension::class.java).sourceSets
-    jar.from(sourceSets.getByName("main").allSource)
+    from(sourceSets.getByName("main").allSource)
   }
 }
 
 private fun Project.createAndroidSourcesTask(): TaskProvider<Jar> {
-  return tasks.register("javaSourcesJar", Jar::class.java) { jar ->
-    val android = extensions.findByName("android") as BaseExtension
-    jar.from(android.sourceSets.getByName("main").java.getSourceFiles())
-    jar.archiveClassifier.set("sources")
+  return tasks.register("javaSourcesJar", Jar::class.java) {
+    val android = project.extensions.findByName("android") as BaseExtension
+    from(android.sourceSets.getByName("main").java.getSourceFiles())
+    archiveClassifier.set("sources")
   }
 }

@@ -3,6 +3,11 @@
  */
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
+}
+
+apolloLibrary {
+  javaModuleName("com.apollographql.apollo3.rx3")
 }
 
 dependencies {
@@ -12,16 +17,4 @@ dependencies {
 
   api(projects.apolloRuntime)
   api(projects.apolloNormalizedCache)
-}
-
-val jar by tasks.getting(Jar::class) {
-  manifest {
-    attributes("Automatic-Module-Name" to "com.apollographql.apollo3.rx3")
-  }
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
 }

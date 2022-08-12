@@ -1,7 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
 }
 
 dependencies {
@@ -15,10 +14,4 @@ dependencies {
   implementation(libs.moshi)
   testImplementation(libs.junit)
   testImplementation(libs.truth)
-}
-
-tasks.withType(KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
 }

@@ -1,7 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   id("org.jetbrains.kotlin.jvm")
+  id("apollo.library")
   id("application")
 }
 
@@ -10,12 +9,6 @@ dependencies {
   implementation(projects.apolloAnnotations)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.clikt)
-}
-
-tasks.withType(KotlinCompile::class.java) {
-  kotlinOptions {
-    allWarningsAsErrors = true
-  }
 }
 
 application {
