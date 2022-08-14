@@ -83,7 +83,7 @@ object ApolloCompiler {
     val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
         filePath = null
-    ).validateAsExecutable(options.schema)
+    ).validateAsExecutable(options.schema, options.fieldOnDisjointTypesMustMerge)
 
     validationResult.issues.checkNoErrors()
 
@@ -160,7 +160,8 @@ object ApolloCompiler {
         scalarMapping = options.scalarMapping,
         codegenModels = options.codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables,
-        generateDataBuilders = options.generateDataBuilders
+        generateDataBuilders = options.generateDataBuilders,
+        fieldOnDisjointTypesMustMerge = options.fieldOnDisjointTypesMustMerge
     ).build()
 
     if (debugDir != null) {

@@ -189,7 +189,14 @@ class Options(
      */
     val addJvmOverloads: Boolean = false,
     val addTypename: String = defaultAddTypename,
-    val requiresOptInAnnotation: String? = defaultRequiresOptInAnnotation
+    val requiresOptInAnnotation: String? = defaultRequiresOptInAnnotation,
+
+    /**
+     * Whether to merge fields in disjoint types without the FieldsInSetCanMerge validate.
+     *
+     * If true, disable the FieldsInSetCanMerge validation.
+     */
+    val fieldOnDisjointTypesMustMerge: Boolean = defaultFieldOnDisjointTypesMustMerge
 ) {
 
   /**
@@ -247,7 +254,8 @@ class Options(
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
       addJvmOverloads: Boolean = this.addJvmOverloads,
       addTypename: String = this.addTypename,
-      requiresOptInAnnotation: String? = this.requiresOptInAnnotation
+      requiresOptInAnnotation: String? = this.requiresOptInAnnotation,
+      fieldOnDisjointTypesMustMerge: Boolean = this.fieldOnDisjointTypesMustMerge
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -284,6 +292,7 @@ class Options(
       addJvmOverloads = addJvmOverloads,
       addTypename = addTypename,
       requiresOptInAnnotation = requiresOptInAnnotation,
+      fieldOnDisjointTypesMustMerge = fieldOnDisjointTypesMustMerge
   )
 
   companion object {
@@ -314,6 +323,7 @@ class Options(
     const val defaultGenerateOptionalOperationVariables = true
     const val defaultUseSchemaPackageNameForFragments = false
     const val defaultAddJvmOverloads = false
+    const val defaultFieldOnDisjointTypesMustMerge = false
   }
 }
 

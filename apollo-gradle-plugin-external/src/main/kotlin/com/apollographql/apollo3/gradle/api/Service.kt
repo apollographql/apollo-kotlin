@@ -543,6 +543,14 @@ interface Service {
   val requiresOptInAnnotation: Property<String>
 
   /**
+   * Whether to merge fields in disjoint types without the FieldsInSetCanMerge validate.
+   * If true, disable the FieldsInSetCanMerge validation.
+   *
+   * Default value: false
+   */
+  val fieldOnDisjointTypesMustMerge: Property<Boolean>
+
+  /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen
    *
    * In practice, it does the following:

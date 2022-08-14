@@ -44,10 +44,13 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
 /**
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
  * This is required to check the type conditions as well as fields merging
+ *
+ * @param fieldOnDisjointTypesMustMerge if true, the FieldsInSetCanMerge validation is not run.
  */
 internal class ExecutableValidationScope(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
+    private val fieldOnDisjointTypesMustMerge: Boolean,
 ) : ValidationScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
@@ -507,6 +510,9 @@ internal class ExecutableValidationScope(
   }
 
   private fun fieldsInSetCanMerge(fieldsWithParent: List<FieldWithParent>) {
+    if (fieldOnDisjointTypesMustMerge) {
+      return
+    }
     fieldsWithParent.groupBy { it.field.responseName() }
         .values
         .forEach { fieldsForName ->

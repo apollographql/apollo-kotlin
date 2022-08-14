@@ -12,4 +12,5 @@ fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationT
 fun GQLOperationDefinition.validate(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableValidationScope(schema, fragments).validateOperation(this)
+    fieldOnDisjointTypesMustMerge: Boolean,
+) = ExecutableValidationScope(schema, fragments, fieldOnDisjointTypesMustMerge).validateOperation(this)

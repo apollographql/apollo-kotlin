@@ -67,7 +67,7 @@ internal object TestUtils {
     return File(parentFile, "$nameWithoutExtension.$newExtension")
   }
 
-  private fun findSchema(dir: File): Schema? {
+  fun findSchema(dir: File): Schema? {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
