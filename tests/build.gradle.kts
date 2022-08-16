@@ -15,7 +15,6 @@ repositories {
   mavenCentral()
 }
 
-// See https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0
 rootProject.configureNode()
 
 tasks.register("ciBuild") {
