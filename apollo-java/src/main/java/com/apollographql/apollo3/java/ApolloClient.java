@@ -11,6 +11,10 @@ import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpMethod;
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
+import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator;
+import com.apollographql.apollo3.cache.normalized.api.CacheResolver;
+import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,15 +29,15 @@ public class ApolloClient implements ExecutionOptions, Closeable {
     this.wrappedApolloClient = wrappedApolloClient;
   }
 
-  public <D extends Query.Data> ApolloCall<D> query(Query<D> query) {
+  public <D extends Query.Data> ApolloCall<D> query(@NotNull Query<D> query) {
     return new ApolloCall(wrappedApolloClient.query(query));
   }
 
-  public <D extends Mutation.Data> ApolloCall<D> mutation(Mutation<D> mutation) {
+  public <D extends Mutation.Data> ApolloCall<D> mutation(@NotNull Mutation<D> mutation) {
     return new ApolloCall(wrappedApolloClient.mutation(mutation));
   }
 
-  public <D extends Subscription.Data> ApolloCall<D> subscription(Subscription<D> subscription) {
+  public <D extends Subscription.Data> ApolloCall<D> subscription(@NotNull Subscription<D> subscription) {
     return new ApolloCall(wrappedApolloClient.subscription(subscription));
   }
 
@@ -69,6 +73,9 @@ public class ApolloClient implements ExecutionOptions, Closeable {
     wrappedApolloClient.close();
   }
 
+  // TODO
+// @NotNull
+//  public ApolloStore getApolloStore() {}
 
   public static class Builder implements MutableExecutionOptions<Builder> {
     private com.apollographql.apollo3.ApolloClient.Builder builder = new com.apollographql.apollo3.ApolloClient.Builder();
@@ -177,8 +184,8 @@ public class ApolloClient implements ExecutionOptions, Closeable {
     // TODO
 //    public Builder webSocketEngine(@NotNull WebSocketEngine webSocketEngine) {}
 
-    public Builder webSocketReopenWhen(@NotNull WebSocketReopenWhenListener webSocketReopenWhenListener) {
-      ApolloClientUtils.webSocketReopenWhen(builder, webSocketReopenWhenListener);
+    public Builder webSocketReopenWhen(@NotNull RetryPredicate reopenWhen) {
+      ApolloClientUtils.webSocketReopenWhen(builder, reopenWhen);
       return this;
     }
 
@@ -207,7 +214,11 @@ public class ApolloClient implements ExecutionOptions, Closeable {
     // TODO
 //    public Builder interceptors(@NotNull List<ApolloInterceptor> interceptors) {}
 
-    public Builder autoPersistedQueries(@NotNull HttpMethod httpMethodForHashedQueries, @NotNull HttpMethod httpMethodForDocumentQueries, boolean enableByDefault) {
+    public Builder autoPersistedQueries(
+        @NotNull HttpMethod httpMethodForHashedQueries,
+        @NotNull HttpMethod httpMethodForDocumentQueries,
+        boolean enableByDefault
+    ) {
       builder.autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, enableByDefault);
       return this;
     }
@@ -226,9 +237,24 @@ public class ApolloClient implements ExecutionOptions, Closeable {
       builder.httpBatching();
       return this;
     }
+
+    public Builder normalizedCache(
+        @NotNull NormalizedCacheFactory normalizedCacheFactory,
+        @NotNull CacheKeyGenerator cacheKeyGenerator,
+        @NotNull CacheResolver cacheResolver,
+        boolean writeToCacheAsynchronously
+    ) {
+      NormalizedCache.configureApolloClientBuilder(builder, normalizedCacheFactory, cacheKeyGenerator, cacheResolver, writeToCacheAsynchronously);
+      return this;
+    }
+
+    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory) {
+      NormalizedCache.configureApolloClientBuilder(builder, normalizedCacheFactory);
+      return this;
+    }
+
+    // TODO
+//    public Builder store(@NotNull ApolloStore store, boolean writeToCacheAsynchronously) {}
   }
 
-  public interface WebSocketReopenWhenListener {
-    boolean shouldReopen(Throwable throwable, long attempt);
-  }
 }

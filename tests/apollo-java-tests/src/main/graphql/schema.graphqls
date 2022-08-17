@@ -1,0 +1,47 @@
+type Query {
+  random: Int!
+  animal: Animal
+  location: GeoPoint
+}
+
+type Mutation {
+  createAnimal(input: AnimalInput!): Animal
+}
+
+type Subscription {
+  animalCreated: Animal
+}
+
+interface Animal {
+  species: String
+  habitat: Habitat
+}
+
+type Habitat {
+  kind: String
+  temperature: Float
+}
+
+type Dog implements Animal {
+  species: String
+  habitat: Habitat
+}
+
+type Cat implements Animal {
+  species: String
+  habitat: Habitat
+}
+
+input AnimalInput {
+  class: AnimalClass!
+  name: String!
+}
+
+enum AnimalClass {
+  MAMMAL
+  FISH
+  BIRD
+  INSECT
+}
+
+scalar GeoPoint

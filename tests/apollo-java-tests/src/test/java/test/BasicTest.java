@@ -1,4 +1,4 @@
-package test.apollojava;
+package test;
 
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
@@ -7,8 +7,6 @@ import com.apollographql.apollo3.java.ApolloClient;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.google.common.truth.Truth;
-import javatest.CreateCatMutation;
-import javatest.GetRandomQuery;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
@@ -18,9 +16,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ClientTest {
+public class BasicTest {
   MockServer mockServer;
   String serverUrl;
 
@@ -39,7 +38,7 @@ public class ClientTest {
 
   @Test
   public void simpleQueryAsyncSuccess() throws Exception {
-    ApolloClient apolloClient = new ApolloClient.Builder().enableAutoPersistedQueries(true).serverUrl(serverUrl).build();
+    ApolloClient apolloClient = new ApolloClient.Builder().serverUrl(serverUrl).build();
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     final AtomicReference<ApolloResponse<GetRandomQuery.Data>> responseRef = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
@@ -54,7 +53,7 @@ public class ClientTest {
           @Override public void onFailure(Throwable throwable) {
           }
         });
-    latch.await();
+    latch.await(500, TimeUnit.MILLISECONDS);
     Truth.assertThat(responseRef.get().dataAssertNoErrors().random).isEqualTo(42);
     Truth.assertThat(mockServer.takeRequest().getHeaders().get("my-header")).isEqualTo("my-value");
   }
@@ -67,6 +66,7 @@ public class ClientTest {
     apolloClient.query(new GetRandomQuery())
         .execute(new ApolloCallback<GetRandomQuery.Data>() {
           @Override public void onResponse(ApolloResponse<GetRandomQuery.Data> response) {
+            Assert.fail();
           }
 
           @Override public void onFailure(Throwable throwable) {
@@ -74,7 +74,7 @@ public class ClientTest {
             latch.countDown();
           }
         });
-    latch.await();
+    latch.await(500, TimeUnit.MILLISECONDS);
     Truth.assertThat(throwableRef.get()).isInstanceOf(ApolloNetworkException.class);
   }
 
@@ -117,7 +117,7 @@ public class ClientTest {
           @Override public void onFailure(Throwable throwable) {
           }
         });
-    latch.await();
+    latch.await(500, TimeUnit.MILLISECONDS);
     Truth.assertThat(responseRef.get().dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
     Truth.assertThat(mockServer.takeRequest().getHeaders().get("my-header")).isEqualTo("my-value");
   }

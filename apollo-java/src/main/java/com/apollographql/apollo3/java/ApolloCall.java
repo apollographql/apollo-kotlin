@@ -3,13 +3,16 @@ package com.apollographql.apollo3.java;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.ExecutionContext;
 import com.apollographql.apollo3.api.MutableExecutionOptions;
+import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpMethod;
+import com.apollographql.apollo3.cache.normalized.FetchPolicy;
+import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.Closeable;
 import java.util.List;
 
 public class ApolloCall<D extends Operation.Data> implements MutableExecutionOptions<ApolloCall<D>> {
@@ -87,15 +90,78 @@ public class ApolloCall<D extends Operation.Data> implements MutableExecutionOpt
     return this;
   }
 
-  public Closeable subscribe(ApolloCallback<D> callback) {
-    return ApolloCallUtils.subscribe(wrappedApolloCall, callback);
-  }
-
-  public void execute(ApolloCallback<D> callback) {
-    ApolloCallUtils.execute(wrappedApolloCall, callback);
+  public Subscription execute(@NotNull ApolloCallback<D> callback) {
+    return ApolloCallUtils.execute(wrappedApolloCall, callback);
   }
 
   public ApolloResponse<D> executeBlocking() {
     return ApolloCallUtils.executeBlocking(wrappedApolloCall);
   }
+
+
+  /*
+   * Normalized cache.
+   */
+
+  public ApolloCall<D> fetchPolicy(@NotNull FetchPolicy fetchPolicy) {
+    NormalizedCache.fetchPolicy(wrappedApolloCall, fetchPolicy);
+    return this;
+  }
+
+  public ApolloCall<D> refetchPolicy(@NotNull FetchPolicy fetchPolicy) {
+    NormalizedCache.refetchPolicy(wrappedApolloCall, fetchPolicy);
+    return this;
+  }
+
+  public ApolloCall<D> doNotStore(boolean doNotStore) {
+    NormalizedCache.doNotStore(wrappedApolloCall, doNotStore);
+    return this;
+  }
+
+  public ApolloCall<D> emitCacheMisses(boolean emitCacheMisses) {
+    NormalizedCache.emitCacheMisses(wrappedApolloCall, emitCacheMisses);
+    return this;
+  }
+
+  public ApolloCall<D> storePartialResponses(boolean storePartialResponses) {
+    NormalizedCache.storePartialResponses(wrappedApolloCall, storePartialResponses);
+    return this;
+  }
+
+  public <T extends Mutation.Data> ApolloCall<D> optimisticUpdates(@NotNull T data) {
+    //noinspection unchecked
+    NormalizedCache.optimisticUpdates((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data);
+    return this;
+  }
+
+  public <T extends Query.Data> Subscription watch(boolean fetchThrows, boolean refetchThrows, @NotNull ApolloCallback<T> callback) {
+    //noinspection unchecked
+    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, fetchThrows, refetchThrows, callback);
+  }
+
+  public <T extends Query.Data> Subscription watch(@NotNull ApolloCallback<T> callback) {
+    //noinspection unchecked
+    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, callback);
+  }
+
+  public <T extends Query.Data> Subscription watch(@Nullable T data, @NotNull RetryPredicate reopenWhen, @NotNull ApolloCallback<T> callback) {
+    //noinspection unchecked
+    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data, reopenWhen, callback);
+  }
+
+  public <T extends Query.Data> Subscription watch(@Nullable T data, @NotNull ApolloCallback<T> callback) {
+    //noinspection unchecked
+    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data, callback);
+  }
+
+  public <T extends Query.Data> Subscription executeCacheAndNetwork(@NotNull ApolloCallback<T> callback) {
+    //noinspection unchecked
+    return ApolloCallUtils.executeCacheAndNetwork((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, callback);
+  }
+
+
+  public interface Subscription {
+    void cancel();
+  }
+
 }

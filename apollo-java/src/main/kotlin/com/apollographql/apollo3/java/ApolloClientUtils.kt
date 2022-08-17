@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.java
 
-fun com.apollographql.apollo3.ApolloClient.Builder.webSocketReopenWhen(webSocketReopenWhenListener: ApolloClient.WebSocketReopenWhenListener): com.apollographql.apollo3.ApolloClient.Builder {
-  return apply { webSocketReopenWhen { throwable, attempt -> webSocketReopenWhenListener.shouldReopen(throwable, attempt) } }
+import com.apollographql.apollo3.ApolloClient as ApolloKotlinClient
+
+fun ApolloKotlinClient.Builder.webSocketReopenWhen(reopenWhen: RetryPredicate): ApolloKotlinClient.Builder {
+  return apply { webSocketReopenWhen { cause, attempt -> reopenWhen.shouldRetry(cause, attempt) } }
 }
