@@ -26,9 +26,9 @@ fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocume
  * See [parseAsGQLDocument] and [validateAsExecutable] for more granular error reporting
  */
 @ApolloExperimental
-fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = null, fieldOnDisjointTypesMustMerge: Boolean = false): List<GQLDefinition> = parseAsGQLDocument(filePath)
+fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = null, fieldsOnDisjointTypesMustMerge: Boolean = true): List<GQLDefinition> = parseAsGQLDocument(filePath)
     .valueAssertNoErrors()
-    .validateAsExecutable(schema, fieldOnDisjointTypesMustMerge)
+    .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
     .valueAssertNoErrors()
 
 /**
@@ -87,14 +87,14 @@ fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
 /**
  * Validates the given document as an executable document.
  *
- * @param fieldOnDisjointTypesMustMerge if true, the FieldsInSetCanMerge validation is not run.
+ * @param fieldsOnDisjointTypesMustMerge Whether fields with different shape are disallowed to be merged in disjoint types.
  *
  * @return  a [GQLResult] containing the operation and fragment definitions in 'value', along with any potential issues
  */
 @ApolloExperimental
-fun GQLDocument.validateAsExecutable(schema: Schema, fieldOnDisjointTypesMustMerge: Boolean): GQLResult<List<GQLDefinition>> {
+fun GQLDocument.validateAsExecutable(schema: Schema, fieldsOnDisjointTypesMustMerge: Boolean = true): GQLResult<List<GQLDefinition>> {
   val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
-  val issues = ExecutableValidationScope(schema, fragments, fieldOnDisjointTypesMustMerge).validate(this)
+  val issues = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).validate(this)
   return GQLResult(definitions, issues)
 }
 
@@ -105,7 +105,7 @@ fun GQLDocument.validateAsExecutable(schema: Schema, fieldOnDisjointTypesMustMer
 fun GQLFragmentDefinition.inferVariables(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-    fieldOnDisjointTypesMustMerge: Boolean
-) = ExecutableValidationScope(schema, fragments, fieldOnDisjointTypesMustMerge).inferFragmentVariables(this)
+    fieldsOnDisjointTypesMustMerge: Boolean
+) = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).inferFragmentVariables(this)
 
 

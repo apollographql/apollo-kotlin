@@ -16,7 +16,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerat
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
-import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldOnDisjointTypesMustMerge
+import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldsOnDisjointTypesMustMerge
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateDataBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
@@ -212,7 +212,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val fieldOnDisjointTypesMustMerge: Property<Boolean>
+  abstract val fieldsOnDisjointTypesMustMerge: Property<Boolean>
 
   @TaskAction
   fun taskAction() {
@@ -314,7 +314,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
         requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
-        fieldOnDisjointTypesMustMerge = fieldOnDisjointTypesMustMerge.getOrElse(defaultFieldOnDisjointTypesMustMerge)
+        fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge)
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

@@ -45,12 +45,12 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
  * This is required to check the type conditions as well as fields merging
  *
- * @param fieldOnDisjointTypesMustMerge if true, the FieldsInSetCanMerge validation is not run.
+ * @param fieldsOnDisjointTypesMustMerge Whether fields with different shape are disallowed to be merged in disjoint types.
  */
 internal class ExecutableValidationScope(
     private val schema: Schema,
     private val fragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val fieldOnDisjointTypesMustMerge: Boolean,
+    private val fieldsOnDisjointTypesMustMerge: Boolean,
 ) : ValidationScope {
   override val typeDefinitions = schema.typeDefinitions
   override val directiveDefinitions = schema.directiveDefinitions
@@ -510,9 +510,6 @@ internal class ExecutableValidationScope(
   }
 
   private fun fieldsInSetCanMerge(fieldsWithParent: List<FieldWithParent>) {
-    if (fieldOnDisjointTypesMustMerge) {
-      return
-    }
     fieldsWithParent.groupBy { it.field.responseName() }
         .values
         .forEach { fieldsForName ->
@@ -643,6 +640,9 @@ internal class ExecutableValidationScope(
 
   // 5.3.2 2.1
   private fun haveSameResponseShape(fieldWithParentA: FieldWithParent, fieldWithParentB: FieldWithParent): Boolean {
+    if (!fieldsOnDisjointTypesMustMerge) {
+      return true
+    }
     val fieldA = fieldWithParentA.field
     val fieldB = fieldWithParentB.field
 

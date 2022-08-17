@@ -74,7 +74,7 @@ internal class IrBuilder(
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
     private val generateDataBuilders: Boolean,
-    private val fieldOnDisjointTypesMustMerge: Boolean,
+    private val fieldsOnDisjointTypesMustMerge: Boolean,
 ) : FieldMerger {
   private val usedTypes = mutableListOf<String>()
 
@@ -455,7 +455,7 @@ internal class IrBuilder(
   private fun GQLFragmentDefinition.toIr(): IrFragmentDefinition {
     val typeDefinition = schema.typeDefinition(typeCondition.name)
 
-    val inferredVariables = inferVariables(schema, allFragmentDefinitions, fieldOnDisjointTypesMustMerge)
+    val inferredVariables = inferVariables(schema, allFragmentDefinitions, fieldsOnDisjointTypesMustMerge)
 
     val interfaceModelGroup = builder.buildFragmentInterface(
         fragmentName = name

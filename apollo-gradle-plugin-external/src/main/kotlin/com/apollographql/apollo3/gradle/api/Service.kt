@@ -548,7 +548,7 @@ interface Service {
    *
    * Default value: false
    */
-  val fieldOnDisjointTypesMustMerge: Property<Boolean>
+  val fieldsOnDisjointTypesMustMerge: Property<Boolean>
 
   /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen

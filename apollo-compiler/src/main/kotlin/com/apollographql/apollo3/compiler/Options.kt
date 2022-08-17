@@ -192,11 +192,16 @@ class Options(
     val requiresOptInAnnotation: String? = defaultRequiresOptInAnnotation,
 
     /**
-     * Whether to merge fields in disjoint types without the FieldsInSetCanMerge validate.
+     * Whether fields with different shape are disallowed to be merged in disjoint types.
      *
-     * If true, disable the FieldsInSetCanMerge validation.
+     * Note: setting this to `false` relaxes the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge()) validation which may still be
+     * run on the backend.
+     *
+     * See also [issue 4320](https://github.com/apollographql/apollo-kotlin/issues/4320)
+     *
+     * Default: true.
      */
-    val fieldOnDisjointTypesMustMerge: Boolean = defaultFieldOnDisjointTypesMustMerge
+    val fieldsOnDisjointTypesMustMerge: Boolean = defaultFieldsOnDisjointTypesMustMerge,
 ) {
 
   /**
@@ -255,7 +260,7 @@ class Options(
       addJvmOverloads: Boolean = this.addJvmOverloads,
       addTypename: String = this.addTypename,
       requiresOptInAnnotation: String? = this.requiresOptInAnnotation,
-      fieldOnDisjointTypesMustMerge: Boolean = this.fieldOnDisjointTypesMustMerge
+      fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -292,7 +297,7 @@ class Options(
       addJvmOverloads = addJvmOverloads,
       addTypename = addTypename,
       requiresOptInAnnotation = requiresOptInAnnotation,
-      fieldOnDisjointTypesMustMerge = fieldOnDisjointTypesMustMerge
+      fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge
   )
 
   companion object {
@@ -323,7 +328,7 @@ class Options(
     const val defaultGenerateOptionalOperationVariables = true
     const val defaultUseSchemaPackageNameForFragments = false
     const val defaultAddJvmOverloads = false
-    const val defaultFieldOnDisjointTypesMustMerge = false
+    const val defaultFieldsOnDisjointTypesMustMerge = true
   }
 }
 

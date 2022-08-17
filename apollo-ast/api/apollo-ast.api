@@ -1010,6 +1010,8 @@ public final class com/apollographql/apollo3/ast/GqlnodeKt {
 public final class com/apollographql/apollo3/ast/GqloperationdefinitionKt {
 	public static final fun rootTypeDefinition (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/ast/GQLTypeDefinition;
 	public static final fun validate (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;)Ljava/util/List;
+	public static final fun validate (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;Z)Ljava/util/List;
+	public static synthetic fun validate$default (Lcom/apollographql/apollo3/ast/GQLOperationDefinition;Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;ZILjava/lang/Object;)Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/ast/GqlstringsKt {

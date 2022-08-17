@@ -572,7 +572,7 @@ abstract class DefaultApolloExtension(
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
       task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)
-      task.fieldOnDisjointTypesMustMerge.set(service.fieldOnDisjointTypesMustMerge)
+      task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
     }
   }
 
