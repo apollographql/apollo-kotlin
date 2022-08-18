@@ -1,0 +1,14 @@
+query GetFoo {
+  foo {
+    ...PropertyValue
+  }
+}
+fragment PropertyValue on PropertyValue {
+  __typename
+  ... on PropertyValueBoolean {
+      value
+  }
+  ... on PropertyValueInt {
+      value
+  }
+}

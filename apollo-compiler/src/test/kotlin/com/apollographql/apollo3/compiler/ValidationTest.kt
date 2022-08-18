@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.TestUtils.checkExpected
+import com.apollographql.apollo3.compiler.TestUtils.serialize
 import com.apollographql.apollo3.compiler.TestUtils.testParametersForGraphQLFilesIn
 import okio.buffer
 import okio.source
@@ -16,11 +16,6 @@ import java.io.File
 @Suppress("UNUSED_PARAMETER")
 @RunWith(Parameterized::class)
 class ValidationTest(name: String, private val graphQLFile: File) {
-  private val separator = "\n------------\n"
-
-  private fun List<Issue>.serialize() = joinToString(separator) {
-    "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.position})\n${it.message}"
-  }
 
   @Test
   fun testValidation() = checkExpected(graphQLFile) { schema ->

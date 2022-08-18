@@ -1,0 +1,13 @@
+type Query {
+  foo: PropertyValue
+}
+union PropertyValue = PropertyValueBoolean | PropertyValueInt
+
+type PropertyValueBoolean {
+  name: String!
+  value: Boolean
+}
+type PropertyValueInt {
+  name: String!
+  value: Int
+}
