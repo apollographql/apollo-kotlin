@@ -543,10 +543,14 @@ interface Service {
   val requiresOptInAnnotation: Property<String>
 
   /**
-   * Whether to merge fields in disjoint types without the FieldsInSetCanMerge validate.
-   * If true, disable the FieldsInSetCanMerge validation.
+   * Whether fields with different shape are disallowed to be merged in disjoint types.
    *
-   * Default value: false
+   * Note: setting this to `false` relaxes the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge()) validation which may still be
+   * run on the backend.
+   *
+   * See also [issue 4320](https://github.com/apollographql/apollo-kotlin/issues/4320)
+   *
+   * Default: true.
    */
   val fieldsOnDisjointTypesMustMerge: Property<Boolean>
 
