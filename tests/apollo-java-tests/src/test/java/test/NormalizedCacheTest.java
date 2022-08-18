@@ -4,9 +4,9 @@ import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.cache.normalized.FetchPolicy;
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory;
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory;
-import com.apollographql.apollo3.java.ApolloCall;
 import com.apollographql.apollo3.java.ApolloCallback;
 import com.apollographql.apollo3.java.ApolloClient;
+import com.apollographql.apollo3.java.Subscription;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.google.common.truth.Truth;
@@ -17,10 +17,11 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class NormalizedCacheTest {
   MockServer mockServer;
@@ -47,8 +48,7 @@ public class NormalizedCacheTest {
   }
 
   private void addDataToTheCache(int value) {
-    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": " + value + "}}").build());
-    apolloClient.query(new GetRandomQuery()).fetchPolicy(FetchPolicy.NetworkOnly).executeBlocking();
+    apolloClient.getApolloStore().writeOperation(new GetRandomQuery(), new GetRandomQuery.Data(value));
   }
 
   @Test
@@ -93,15 +93,14 @@ public class NormalizedCacheTest {
   public void cacheAndNetworkPolicy() throws Exception {
     addDataToTheCache(42);
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 43}}").build());
-    final AtomicReferenceArray<ApolloResponse<GetRandomQuery.Data>> responseRef = new AtomicReferenceArray<>(2);
-    CountDownLatch latch = new CountDownLatch(2);
+    final List<ApolloResponse<GetRandomQuery.Data>> responses = new ArrayList<>();
+    int expectedCount = 2;
+    CountDownLatch latch = new CountDownLatch(expectedCount);
     apolloClient.query(new GetRandomQuery())
         .fetchPolicy(FetchPolicy.CacheAndNetwork)
         .execute(new ApolloCallback<GetRandomQuery.Data>() {
-          private int i = 0;
-
           @Override public void onResponse(ApolloResponse<GetRandomQuery.Data> response) {
-            responseRef.set(i++, response);
+            responses.add(response);
             latch.countDown();
           }
 
@@ -109,24 +108,24 @@ public class NormalizedCacheTest {
           }
         });
     latch.await(500, TimeUnit.MILLISECONDS);
+    Truth.assertThat(responses.size()).isEqualTo(expectedCount);
     // Cache
-    Truth.assertThat(responseRef.get(0).dataAssertNoErrors().random).isEqualTo(42);
+    Truth.assertThat(responses.get(0).dataAssertNoErrors().random).isEqualTo(42);
     // Network
-    Truth.assertThat(responseRef.get(1).dataAssertNoErrors().random).isEqualTo(43);
+    Truth.assertThat(responses.get(1).dataAssertNoErrors().random).isEqualTo(43);
   }
 
   @Test
   public void executeCacheAndNetwork() throws Exception {
     addDataToTheCache(42);
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 43}}").build());
-    final AtomicReferenceArray<ApolloResponse<GetRandomQuery.Data>> responseRef = new AtomicReferenceArray<>(2);
-    CountDownLatch latch = new CountDownLatch(2);
+    final List<ApolloResponse<GetRandomQuery.Data>> responses = new ArrayList<>();
+    int expectedCount = 2;
+    CountDownLatch latch = new CountDownLatch(expectedCount);
     apolloClient.query(new GetRandomQuery())
         .executeCacheAndNetwork(new ApolloCallback<GetRandomQuery.Data>() {
-          private int i = 0;
-
           @Override public void onResponse(ApolloResponse<GetRandomQuery.Data> response) {
-            responseRef.set(i++, response);
+            responses.add(response);
             latch.countDown();
           }
 
@@ -134,32 +133,36 @@ public class NormalizedCacheTest {
           }
         });
     latch.await(500, TimeUnit.MILLISECONDS);
+    Truth.assertThat(responses.size()).isEqualTo(expectedCount);
     // Cache
-    Truth.assertThat(responseRef.get(0).dataAssertNoErrors().random).isEqualTo(42);
+    Truth.assertThat(responses.get(0).dataAssertNoErrors().random).isEqualTo(42);
     // Network
-    Truth.assertThat(responseRef.get(1).dataAssertNoErrors().random).isEqualTo(43);
+    Truth.assertThat(responses.get(1).dataAssertNoErrors().random).isEqualTo(43);
   }
 
   @Test
   public void watch() throws Exception {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 43}}").build());
-    final AtomicReferenceArray<ApolloResponse<GetRandomQuery.Data>> responseRef = new AtomicReferenceArray<>(3);
-    CountDownLatch latch = new CountDownLatch(3);
+    final List<ApolloResponse<GetRandomQuery.Data>> responses = new ArrayList<>();
+    int expectedCount = 3;
+    CountDownLatch latch = new CountDownLatch(expectedCount);
     apolloClient.query(new GetRandomQuery())
         .watch(new ApolloCallback<GetRandomQuery.Data>() {
           private int i = 0;
 
           @Override public void onResponse(ApolloResponse<GetRandomQuery.Data> response) {
-            responseRef.set(i++, response);
+            responses.add(response);
             latch.countDown();
 
             // After receiving the network response, another thread updates the cache twice
-            if (i == 1) {
+            if (i == 0) {
               new Thread(() -> {
                 addDataToTheCache(44);
+                sleep(100);
                 addDataToTheCache(45);
               }).start();
             }
+            i++;
           }
 
           @Override public void onFailure(Throwable throwable) {
@@ -167,40 +170,43 @@ public class NormalizedCacheTest {
         });
 
     latch.await(500, TimeUnit.MILLISECONDS);
+    Truth.assertThat(responses.size()).isEqualTo(expectedCount);
     // Network
-    Truth.assertThat(responseRef.get(0).dataAssertNoErrors().random).isEqualTo(43);
+    Truth.assertThat(responses.get(0).dataAssertNoErrors().random).isEqualTo(43);
     // Cache
-    Truth.assertThat(responseRef.get(1).dataAssertNoErrors().random).isEqualTo(44);
-    Truth.assertThat(responseRef.get(2).dataAssertNoErrors().random).isEqualTo(45);
+    Truth.assertThat(responses.get(1).dataAssertNoErrors().random).isEqualTo(44);
+    Truth.assertThat(responses.get(2).dataAssertNoErrors().random).isEqualTo(45);
   }
-
 
   @Test
   public void watchCloseSubscription() throws Exception {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 43}}").build());
-    final AtomicReferenceArray<ApolloResponse<GetRandomQuery.Data>> responseRef = new AtomicReferenceArray<>(3);
-    CountDownLatch latch = new CountDownLatch(3);
-    AtomicReference<ApolloCall.Subscription> subscription = new AtomicReference<>();
+    final List<ApolloResponse<GetRandomQuery.Data>> responses = new ArrayList<>();
+    int expectedCount = 3;
+    CountDownLatch latch = new CountDownLatch(expectedCount);
+    AtomicReference<Subscription> subscription = new AtomicReference<>();
     subscription.set(apolloClient.query(new GetRandomQuery())
         .watch(new ApolloCallback<GetRandomQuery.Data>() {
           private int i = 0;
 
           @Override public void onResponse(ApolloResponse<GetRandomQuery.Data> response) {
-            responseRef.set(i++, response);
+            responses.add(response);
             latch.countDown();
 
             // After receiving the network response, another thread updates the cache twice
-            if (i == 1) {
+            if (i == 0) {
               new Thread(() -> {
                 addDataToTheCache(44);
+                sleep(100);
                 addDataToTheCache(45);
               }).start();
             }
 
             // After receiving the 2nd response, cancel the subscription
-            if (i == 2) {
+            if (i == 1) {
               subscription.get().cancel();
             }
+            i++;
           }
 
           @Override public void onFailure(Throwable throwable) {
@@ -210,11 +216,48 @@ public class NormalizedCacheTest {
     boolean timeout = !latch.await(500, TimeUnit.MILLISECONDS);
     // We never received the 3rd response so the latch should timeout
     Truth.assertThat(timeout).isTrue();
+    Truth.assertThat(responses.size()).isEqualTo(expectedCount - 1);
     // Network
-    Truth.assertThat(responseRef.get(0).dataAssertNoErrors().random).isEqualTo(43);
+    Truth.assertThat(responses.get(0).dataAssertNoErrors().random).isEqualTo(43);
     // Cache
-    Truth.assertThat(responseRef.get(1).dataAssertNoErrors().random).isEqualTo(44);
-    Truth.assertThat(responseRef.get(2)).isNull();
+    Truth.assertThat(responses.get(1).dataAssertNoErrors().random).isEqualTo(44);
+  }
+
+  @Test
+  public void watchNoNetwork() throws Exception {
+    final List<ApolloResponse<GetRandomQuery.Data>> responses = new ArrayList<>();
+    int expectedCount = 2;
+    CountDownLatch latch = new CountDownLatch(expectedCount);
+    apolloClient.query(new GetRandomQuery())
+        .watch(null, new ApolloCallback<GetRandomQuery.Data>() {
+          @Override public void onResponse(ApolloResponse<GetRandomQuery.Data> response) {
+            System.out.println("onResponse " + response.data.random);
+            responses.add(response);
+            latch.countDown();
+          }
+
+          @Override public void onFailure(Throwable throwable) {
+          }
+        });
+
+    // Another thread updates the cache twice
+    new Thread(() -> {
+      addDataToTheCache(44);
+      sleep(100);
+      addDataToTheCache(45);
+    }).start();
+
+    latch.await(500, TimeUnit.MILLISECONDS);
+    Truth.assertThat(responses.size()).isEqualTo(expectedCount);
+    Truth.assertThat(responses.get(0).dataAssertNoErrors().random).isEqualTo(44);
+    Truth.assertThat(responses.get(1).dataAssertNoErrors().random).isEqualTo(45);
+  }
+
+  private static void sleep(int delay) {
+    try {
+      Thread.sleep(delay);
+    } catch (InterruptedException ignored) {
+    }
   }
 
 }

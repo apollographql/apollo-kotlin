@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.cache.normalized.FetchPolicy;
 import com.apollographql.apollo3.cache.normalized.NormalizedCache;
+import com.apollographql.apollo3.java.internal.ApolloCallAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,11 +92,11 @@ public class ApolloCall<D extends Operation.Data> implements MutableExecutionOpt
   }
 
   public Subscription execute(@NotNull ApolloCallback<D> callback) {
-    return ApolloCallUtils.execute(wrappedApolloCall, callback);
+    return ApolloCallAdapter.execute(wrappedApolloCall, callback);
   }
 
   public ApolloResponse<D> executeBlocking() {
-    return ApolloCallUtils.executeBlocking(wrappedApolloCall);
+    return ApolloCallAdapter.executeBlocking(wrappedApolloCall);
   }
 
 
@@ -136,32 +137,27 @@ public class ApolloCall<D extends Operation.Data> implements MutableExecutionOpt
 
   public <T extends Query.Data> Subscription watch(boolean fetchThrows, boolean refetchThrows, @NotNull ApolloCallback<T> callback) {
     //noinspection unchecked
-    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, fetchThrows, refetchThrows, callback);
+    return ApolloCallAdapter.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, fetchThrows, refetchThrows, callback);
   }
 
   public <T extends Query.Data> Subscription watch(@NotNull ApolloCallback<T> callback) {
     //noinspection unchecked
-    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, callback);
+    return ApolloCallAdapter.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, callback);
   }
 
   public <T extends Query.Data> Subscription watch(@Nullable T data, @NotNull RetryPredicate reopenWhen, @NotNull ApolloCallback<T> callback) {
     //noinspection unchecked
-    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data, reopenWhen, callback);
+    return ApolloCallAdapter.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data, reopenWhen, callback);
   }
 
   public <T extends Query.Data> Subscription watch(@Nullable T data, @NotNull ApolloCallback<T> callback) {
     //noinspection unchecked
-    return ApolloCallUtils.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data, callback);
+    return ApolloCallAdapter.watch((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, data, callback);
   }
 
   public <T extends Query.Data> Subscription executeCacheAndNetwork(@NotNull ApolloCallback<T> callback) {
     //noinspection unchecked
-    return ApolloCallUtils.executeCacheAndNetwork((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, callback);
-  }
-
-
-  public interface Subscription {
-    void cancel();
+    return ApolloCallAdapter.executeCacheAndNetwork((com.apollographql.apollo3.ApolloCall<T>) wrappedApolloCall, callback);
   }
 
 }

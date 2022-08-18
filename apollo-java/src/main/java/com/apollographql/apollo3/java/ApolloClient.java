@@ -15,6 +15,9 @@ import com.apollographql.apollo3.cache.normalized.NormalizedCache;
 import com.apollographql.apollo3.cache.normalized.api.CacheKeyGenerator;
 import com.apollographql.apollo3.cache.normalized.api.CacheResolver;
 import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory;
+import com.apollographql.apollo3.java.cache.normalized.ApolloStore;
+import com.apollographql.apollo3.java.cache.normalized.internal.ApolloStoreAdapter;
+import com.apollographql.apollo3.java.internal.ApolloClientAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,9 +76,10 @@ public class ApolloClient implements ExecutionOptions, Closeable {
     wrappedApolloClient.close();
   }
 
-  // TODO
-// @NotNull
-//  public ApolloStore getApolloStore() {}
+  @NotNull
+  public ApolloStore getApolloStore() {
+    return new ApolloStoreAdapter(NormalizedCache.getApolloStore(wrappedApolloClient));
+  }
 
   public static class Builder implements MutableExecutionOptions<Builder> {
     private com.apollographql.apollo3.ApolloClient.Builder builder = new com.apollographql.apollo3.ApolloClient.Builder();
@@ -185,7 +189,7 @@ public class ApolloClient implements ExecutionOptions, Closeable {
 //    public Builder webSocketEngine(@NotNull WebSocketEngine webSocketEngine) {}
 
     public Builder webSocketReopenWhen(@NotNull RetryPredicate reopenWhen) {
-      ApolloClientUtils.webSocketReopenWhen(builder, reopenWhen);
+      ApolloClientAdapter.webSocketReopenWhen(builder, reopenWhen);
       return this;
     }
 
