@@ -26,8 +26,8 @@ fun Project.configureNode() {
     }
   }
 
-  // See https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0
+  // See https://youtrack.jetbrains.com/issue/KT-49774/KJS-Gradle-Errors-during-NPM-dependencies-resolution-in-parallel-build-lead-to-unfriendly-error-messages-like-Projects-must-be#focus=Comments-27-6271456.0-0
   rootProject.plugins.withType(NodeJsRootPlugin::class.java) {
-    project.extensions.getByType(NodeJsRootExtension::class.java).nodeVersion = "16.10.0"
+    project.extensions.getByType(NodeJsRootExtension::class.java).nodeVersion = "16.17.0"
   }
 }
