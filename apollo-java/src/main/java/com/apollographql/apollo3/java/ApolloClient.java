@@ -116,109 +116,109 @@ public class ApolloClient implements ExecutionOptions, Closeable {
       return builder.getCanBeBatched();
     }
 
-    @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {
+    @NotNull @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {
       builder.addExecutionContext(executionContext);
       return this;
     }
 
-    @Override public Builder httpMethod(@Nullable HttpMethod httpMethod) {
+    @NotNull @Override public Builder httpMethod(@Nullable HttpMethod httpMethod) {
       builder.httpMethod(httpMethod);
       return this;
     }
 
-    @Override public Builder httpHeaders(@Nullable List<HttpHeader> httpHeaders) {
+    @NotNull @Override public Builder httpHeaders(@Nullable List<HttpHeader> httpHeaders) {
       builder.httpHeaders(httpHeaders);
       return this;
     }
 
-    @Override public Builder addHttpHeader(@NotNull String name, @NotNull String value) {
+    @NotNull @Override public Builder addHttpHeader(@NotNull String name, @NotNull String value) {
       builder.addHttpHeader(name, value);
       return this;
     }
 
-    @Override public Builder sendApqExtensions(@Nullable Boolean sendApqExtensions) {
+    @NotNull @Override public Builder sendApqExtensions(@Nullable Boolean sendApqExtensions) {
       builder.sendApqExtensions(sendApqExtensions);
       return this;
     }
 
-    @Override public Builder sendDocument(@Nullable Boolean sendDocument) {
+    @NotNull @Override public Builder sendDocument(@Nullable Boolean sendDocument) {
       builder.sendDocument(sendDocument);
       return this;
     }
 
-    @Override public Builder enableAutoPersistedQueries(@Nullable Boolean enableAutoPersistedQueries) {
+    @NotNull @Override public Builder enableAutoPersistedQueries(@Nullable Boolean enableAutoPersistedQueries) {
       builder.enableAutoPersistedQueries(enableAutoPersistedQueries);
       return this;
     }
 
-    @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
+    @NotNull @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
       builder.canBeBatched(canBeBatched);
       return this;
     }
 
-    public Builder serverUrl(@NotNull String url) {
+    @NotNull public Builder serverUrl(@NotNull String url) {
       builder.serverUrl(url);
       return this;
     }
 
     // TODO
-//    public Builder httpEngine(HttpEngine httpEngine) {}
+//    @NotNull public Builder httpEngine(HttpEngine httpEngine) {}
 
-    public Builder httpExposeErrorBody(boolean httpExposeErrorBody) {
+    @NotNull public Builder httpExposeErrorBody(boolean httpExposeErrorBody) {
       builder.httpExposeErrorBody(httpExposeErrorBody);
       return this;
     }
 
     // TODO
-//    public Builder addHttpInterceptor(HttpInterceptor httpInterceptor) {}
+// @NotNull public Builder addHttpInterceptor(HttpInterceptor httpInterceptor) {}
 
-    public Builder webSocketServerUrl(@NotNull String webSocketServerUrl) {
+    @NotNull public Builder webSocketServerUrl(@NotNull String webSocketServerUrl) {
       builder.webSocketServerUrl(webSocketServerUrl);
       return this;
     }
 
-    public Builder webSocketIdleTimeoutMillis(long webSocketIdleTimeoutMillis) {
+    @NotNull public Builder webSocketIdleTimeoutMillis(long webSocketIdleTimeoutMillis) {
       builder.webSocketIdleTimeoutMillis(webSocketIdleTimeoutMillis);
       return this;
     }
 
     // TODO
-//    public Builder wsProtocol(@NotNull WsProtocol.Factory wsProtocolFactory) {}
+//    @NotNull public Builder wsProtocol(@NotNull WsProtocol.Factory wsProtocolFactory) {}
 
     // TODO
-//    public Builder webSocketEngine(@NotNull WebSocketEngine webSocketEngine) {}
+//    @NotNull public Builder webSocketEngine(@NotNull WebSocketEngine webSocketEngine) {}
 
-    public Builder webSocketReopenWhen(@NotNull RetryPredicate reopenWhen) {
+    @NotNull public Builder webSocketReopenWhen(@NotNull RetryPredicate reopenWhen) {
       ApolloClientAdapter.webSocketReopenWhen(builder, reopenWhen);
       return this;
     }
 
     // TODO
-//    public Builder networkTransport(@NotNull NetworkTransport networkTransport) {}
+//    @NotNull public Builder networkTransport(@NotNull NetworkTransport networkTransport) {}
 
     // TODO
-//    public Builder subscriptionNetworkTransport(@NotNull NetworkTransport subscriptionNetworkTransport) {}
+//    @NotNull public Builder subscriptionNetworkTransport(@NotNull NetworkTransport subscriptionNetworkTransport) {}
 
-    public Builder customScalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
+    @NotNull public Builder customScalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
       builder.customScalarAdapters(customScalarAdapters);
       return this;
     }
 
-    public <T> Builder addCustomScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
+    @NotNull public <T> Builder addCustomScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
       builder.addCustomScalarAdapter(customScalarType, customScalarAdapter);
       return this;
     }
 
     // TODO
-//    public Builder addInterceptor(@NotNull ApolloInterceptor interceptor) {}
+//    @NotNull public Builder addInterceptor(@NotNull ApolloInterceptor interceptor) {}
 
     // TODO
-//    public Builder addInterceptors(@NotNull List<ApolloInterceptor> interceptors) {}
+//    @NotNull public Builder addInterceptors(@NotNull List<ApolloInterceptor> interceptors) {}
 
     // TODO
-//    public Builder interceptors(@NotNull List<ApolloInterceptor> interceptors) {}
+//    @NotNull public Builder interceptors(@NotNull List<ApolloInterceptor> interceptors) {}
 
-    public Builder autoPersistedQueries(
+    @NotNull public Builder autoPersistedQueries(
         @NotNull HttpMethod httpMethodForHashedQueries,
         @NotNull HttpMethod httpMethodForDocumentQueries,
         boolean enableByDefault
@@ -227,22 +227,22 @@ public class ApolloClient implements ExecutionOptions, Closeable {
       return this;
     }
 
-    public Builder autoPersistedQueries() {
+    @NotNull public Builder autoPersistedQueries() {
       builder.autoPersistedQueries();
       return this;
     }
 
-    public Builder httpBatching(long batchIntervalMillis, int maxBatchSize, boolean enableByDefault) {
+    @NotNull public Builder httpBatching(long batchIntervalMillis, int maxBatchSize, boolean enableByDefault) {
       builder.httpBatching(batchIntervalMillis, maxBatchSize, enableByDefault);
       return this;
     }
 
-    public Builder httpBatching() {
+    @NotNull public Builder httpBatching() {
       builder.httpBatching();
       return this;
     }
 
-    public Builder normalizedCache(
+    @NotNull public Builder normalizedCache(
         @NotNull NormalizedCacheFactory normalizedCacheFactory,
         @NotNull CacheKeyGenerator cacheKeyGenerator,
         @NotNull CacheResolver cacheResolver,
@@ -252,13 +252,20 @@ public class ApolloClient implements ExecutionOptions, Closeable {
       return this;
     }
 
-    public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory) {
+    @NotNull public Builder normalizedCache(@NotNull NormalizedCacheFactory normalizedCacheFactory) {
       NormalizedCache.configureApolloClientBuilder(builder, normalizedCacheFactory);
       return this;
     }
 
-    // TODO
-//    public Builder store(@NotNull ApolloStore store, boolean writeToCacheAsynchronously) {}
+    @NotNull public Builder store(@NotNull ApolloStore store, boolean writeToCacheAsynchronously) {
+      ApolloClientAdapter.store(builder, store, writeToCacheAsynchronously);
+      return this;
+    }
+
+    @NotNull public Builder store(@NotNull ApolloStore store) {
+      ApolloClientAdapter.store(builder, store);
+      return this;
+    }
   }
 
 }

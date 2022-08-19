@@ -18,7 +18,7 @@ import java.util.UUID
 import java.util.function.Function
 import com.apollographql.apollo3.cache.normalized.ApolloStore as ApolloKotlinStore
 
-internal class ApolloStoreAdapter(private val apolloKotlinStore: ApolloKotlinStore) : ApolloStore {
+internal class ApolloStoreAdapter(val apolloKotlinStore: ApolloKotlinStore) : ApolloStore {
   override fun observeChangedKeys(callback: Function<Set<String>, Void>): Subscription {
     return launchToSubscription {
       apolloKotlinStore.changedKeys.collect {

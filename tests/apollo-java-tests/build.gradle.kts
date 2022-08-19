@@ -13,4 +13,5 @@ dependencies {
 
 apollo {
   packageName.set("test")
+  generateFragmentImplementations.set(true)
 }
