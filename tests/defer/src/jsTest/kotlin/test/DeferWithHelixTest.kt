@@ -24,10 +24,9 @@ import graphql.GraphQLStreamDirective
 import graphql.GraphQLString
 import helix.HelixServer
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.test.runTest
 import util.dynamicObject
 import util.jsAsyncIterator
-import kotlin.test.Ignore
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -36,7 +35,7 @@ class DeferWithHelixTest {
   private lateinit var apolloClient: ApolloClient
 
   private suspend fun setUp() {
-    helixServer = HelixServer(schema)
+    helixServer = HelixServer(schema, port = Random.nextInt(1024, 65535))
     apolloClient = ApolloClient.Builder()
         .serverUrl(helixServer.url())
         .webSocketServerUrl(helixServer.webSocketUrl())
