@@ -6,6 +6,9 @@ import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.readAny
 import okio.BufferedSource
 
+private typealias JsonMap = Map<String, Any?>
+private typealias MutableJsonMap = MutableMap<String, Any?>
+
 /**
  * Utility class for merging GraphQL JSON payloads received in multiple chunks when using the `@defer` directive.
  *
@@ -19,8 +22,8 @@ import okio.BufferedSource
  */
 @ApolloInternal
 class DeferredJsonMerger {
-  private val _merged = mutableMapOf<String, Any?>()
-  val merged: Map<String, Any?> = _merged
+  private val _merged: MutableJsonMap = mutableMapOf()
+  val merged: JsonMap = _merged
 
   private val _mergedFragmentIds = mutableSetOf<DeferredFragmentIdentifier>()
   val mergedFragmentIds: Set<DeferredFragmentIdentifier> = _mergedFragmentIds
@@ -28,56 +31,64 @@ class DeferredJsonMerger {
   var hasNext: Boolean = true
     private set
 
-  fun merge(payload: BufferedSource): Map<String, Any?> {
+  fun merge(payload: BufferedSource): JsonMap {
     val payloadMap = jsonToMap(payload)
     return merge(payloadMap)
   }
 
-  fun merge(payload: Map<String, Any?>): Map<String, Any?> {
+  @Suppress("UNCHECKED_CAST")
+  fun merge(payload: JsonMap): JsonMap {
     if (merged.isEmpty()) {
       // Initial payload, no merging needed
       _merged += payload
       return merged
     }
 
-    mergeData(payload)
-    if (payload.containsKey("errors")) {
-      _merged["errors"] = payload["errors"]
-    } else {
-      _merged.remove("errors")
+    val incrementalList = payload["incremental"] as? List<JsonMap>
+    if (incrementalList != null) {
+      for (incrementalItem in incrementalList) {
+        mergeData(incrementalItem)
+        // Keep only the last errors and extensions, if any
+        if (incrementalItem.containsKey("errors")) {
+          _merged["errors"] = incrementalItem["errors"]
+        } else {
+          _merged.remove("errors")
+        }
+        if (incrementalItem.containsKey("extensions")) {
+          _merged["extensions"] = incrementalItem["extensions"]
+        } else {
+          _merged.remove("extensions")
+        }
+      }
     }
-    if (payload.containsKey("extensions")) {
-      _merged["extensions"] = payload["extensions"]
-    } else {
-      _merged.remove("extensions")
-    }
+
+    hasNext = payload["hasNext"] as Boolean? ?: false
 
     return merged
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun mergeData(payloadMap: Map<String, Any?>) {
-    val payloadData = payloadMap["data"] as Map<String, Any?>?
-    val payloadPath = payloadMap["path"] as List<Any>
-    val mergedData = merged["data"] as Map<String, Any?>
-    hasNext = payloadMap["hasNext"] as Boolean? ?: false
+  private fun mergeData(incrementalItem: JsonMap) {
+    val data = incrementalItem["data"] as JsonMap?
+    val path = incrementalItem["path"] as List<Any>
+    val mergedData = merged["data"] as JsonMap
 
     // payloadData can be null if there are errors
-    if (payloadData != null) {
-      val nodeToMergeInto = nodeAtPath(mergedData, payloadPath) as MutableMap<String, Any?>
-      deepMerge(nodeToMergeInto, payloadData)
+    if (data != null) {
+      val nodeToMergeInto = nodeAtPath(mergedData, path) as MutableJsonMap
+      deepMerge(nodeToMergeInto, data)
 
-      _mergedFragmentIds += DeferredFragmentIdentifier(path = payloadPath, label = payloadMap["label"] as String?)
+      _mergedFragmentIds += DeferredFragmentIdentifier(path = path, label = incrementalItem["label"] as String?)
     }
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun deepMerge(destination: MutableMap<String, Any?>, map: Map<String, Any?>) {
+  private fun deepMerge(destination: MutableJsonMap, map: JsonMap) {
     for ((key, value) in map) {
       if (destination.containsKey(key) && destination[key] is MutableMap<*, *>) {
         // Objects: merge recursively
-        val fieldDestination = destination[key] as MutableMap<String, Any?>
-        val fieldMap = value as? Map<String, Any?> ?: error("'$key' is an object in destination but not in map")
+        val fieldDestination = destination[key] as MutableJsonMap
+        val fieldMap = value as? JsonMap ?: error("'$key' is an object in destination but not in map")
         deepMerge(destination = fieldDestination, map = fieldMap)
       } else {
         // Other types: add / overwrite
@@ -87,21 +98,21 @@ class DeferredJsonMerger {
   }
 
   @Suppress("UNCHECKED_CAST")
-  private fun jsonToMap(json: BufferedSource): Map<String, Any?> = BufferedSourceJsonReader(json).readAny() as Map<String, Any?>
+  private fun jsonToMap(json: BufferedSource): JsonMap = BufferedSourceJsonReader(json).readAny() as JsonMap
 
 
   /**
    * Find the node in the [map] at the given [path].
    * @param path The path to the node to find, as a list of either `String` (name of field in object) or `Int` (index of element in array).
    */
-  private fun nodeAtPath(map: Map<String, Any?>, path: List<Any>): Any? {
+  private fun nodeAtPath(map: JsonMap, path: List<Any>): Any? {
     var node: Any? = map
     for (key in path) {
       node = if (node is List<*>) {
         node[key as Int]
       } else {
         @Suppress("UNCHECKED_CAST")
-        node as Map<String, Any?>
+        node as JsonMap
         node[key]
       }
     }
@@ -115,6 +126,6 @@ class DeferredJsonMerger {
   }
 }
 
-internal fun Map<String, Any?>.isDeferred(): Boolean {
+internal fun JsonMap.isDeferred(): Boolean {
   return keys.contains("hasNext")
 }

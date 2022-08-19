@@ -27,9 +27,14 @@ import kotlinx.coroutines.flow.toList
 import util.dynamicObject
 import util.jsAsyncIterator
 import kotlin.random.Random
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@Ignore
+// TODO These tests are temporarily ignored as the latest version of graphql-js
+// uses a package format which is incompatible with Kotlin/JS.
+// See https://youtrack.jetbrains.com/issue/KT-12784
 class DeferWithHelixTest {
   private lateinit var helixServer: HelixServer
   private lateinit var apolloClient: ApolloClient

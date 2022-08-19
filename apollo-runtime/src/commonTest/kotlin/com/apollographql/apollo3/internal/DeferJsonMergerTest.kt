@@ -44,25 +44,29 @@ class DeferJsonMergerTest {
 
     val payload2 = """
       {
-        "data": {
-          "cpu": "386",
-          "year": 1993,
-          "screen": {
-            "resolution": "640x480"
+        "incremental": [
+          {
+            "data": {
+              "cpu": "386",
+              "year": 1993,
+              "screen": {
+                "resolution": "640x480"
+              }
+            },
+            "path": [
+              "computers",
+              0
+            ],
+            "label": "query:Query1:0",
+            "extensions": {
+              "duration": {
+                "amount": 100,
+                "unit": "ms"
+              }
+            }
           }
-        },
-        "path": [
-          "computers",
-          0
         ],
-        "label": "query:Query1:0",
-        "hasNext": true,
-        "extensions": {
-          "duration": {
-            "amount": 100,
-            "unit": "ms"
-          }
-        }
+        "hasNext": true
       }
     """
     val mergedPayloads_1_2 = """
@@ -103,28 +107,33 @@ class DeferJsonMergerTest {
 
 
     val payload3 = """
-      {
-        "data": {
-          "cpu": "486",
-          "year": 1996,
-          "screen": {
-            "resolution": "640x480"
-          }
-        },
-        "path": [
-          "computers",
-          1
-        ],
-        "label": "query:Query1:0",
-        "hasNext": true,
-        "extensions": {
-          "duration": {
-            "amount": 25,
-            "unit": "ms"
-          }
+        {
+          "incremental": [
+            {
+              "data": {
+                "cpu": "486",
+                "year": 1996,
+                "screen": {
+                  "resolution": "640x480"
+                }
+              },
+              "path": [
+                "computers",
+                1
+              ],
+              "label": "query:Query1:0",
+              "extensions": {
+                "duration": {
+                  "amount": 25,
+                  "unit": "ms"
+                }
+              }
+            }
+          ],
+          "hasNext": true
         }
-      }
     """
+
     val mergedPayloads_1_2_3 = """
       {
         "data": {
@@ -167,33 +176,37 @@ class DeferJsonMergerTest {
 
 
     val payload4 = """
-      {
-        "data": null,
-        "path": [
-          "computers",
-          0,
-          "screen"
-        ],
-        "errors": [
-          {
-            "message": "Cannot resolve isColor",
-            "locations": [
-              {
-                "line": 12,
-                "column": 11
-              }
-            ],
-            "path": [
-              "computers",
-              0,
-              "screen",
-              "isColor"
-            ]
-          }
-        ],
-        "label": "fragment:ComputerFields:0",
-        "hasNext": true
-      }
+        {
+          "incremental": [
+            {
+              "data": null,
+              "path": [
+                "computers",
+                0,
+                "screen"
+              ],
+              "errors": [
+                {
+                  "message": "Cannot resolve isColor",
+                  "locations": [
+                    {
+                      "line": 12,
+                      "column": 11
+                    }
+                  ],
+                  "path": [
+                    "computers",
+                    0,
+                    "screen",
+                    "isColor"
+                  ]
+                }
+              ],
+              "label": "fragment:ComputerFields:0"
+            }
+          ],
+          "hasNext": true
+        }
     """
     val mergedPayloads_1_2_3_4 = """
       {
@@ -247,36 +260,40 @@ class DeferJsonMergerTest {
     ), deferredJsonMerger.mergedFragmentIds)
 
     val payload5 = """
-      {
-        "data": {
-          "isColor": false
-        },
-        "path": [
-          "computers",
-          1,
-          "screen"
-        ],
-        "errors": [
-          {
-            "message": "Another error",
-            "locations": [
-              {
-                "line": 1,
-                "column": 1
+        {
+          "incremental": [
+            {
+              "data": {
+                "isColor": false
+              },
+              "path": [
+                "computers",
+                1,
+                "screen"
+              ],
+              "errors": [
+                {
+                  "message": "Another error",
+                  "locations": [
+                    {
+                      "line": 1,
+                      "column": 1
+                    }
+                  ]
+                }
+              ],
+              "label": "fragment:ComputerFields:0",
+              "extensions": {
+                "value": 42,
+                "duration": {
+                  "amount": 130,
+                  "unit": "ms"
+                }
               }
-            ]
-          }
-        ],
-        "label": "fragment:ComputerFields:0",
-        "hasNext": false,
-        "extensions": {
-          "value": 42,
-          "duration": {
-            "amount": 130,
-            "unit": "ms"
-          }
+            }
+          ],
+          "hasNext": false
         }
-      }
     """
     val mergedPayloads_1_2_3_4_5 = """
       {
