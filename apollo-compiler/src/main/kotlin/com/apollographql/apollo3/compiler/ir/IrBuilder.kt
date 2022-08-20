@@ -278,6 +278,7 @@ internal class IrBuilder(
         name = name,
         targetName = directives.findTargetName(schema),
         implements = implementsInterfaces,
+        possibleTypes = schema.possibleTypes(name).toList(),
         keyFields = schema.keyFields(name).toList(),
         description = description,
         // XXX: this is not spec-compliant. Directive cannot be on interfaces

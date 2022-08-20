@@ -6,6 +6,8 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperC
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.from
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.addPossibleTypesEnumField
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.shouldAddPossibleTypesEnumField
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -86,8 +88,10 @@ internal class ModelBuilder(
     }
 
     val nestedTypes = nestedBuilders.map { it.build() }
-
     return typeSpecBuilder
+        .applyIf(shouldAddPossibleTypesEnumField()) {
+          addPossibleTypesEnumField(context, this@typeSpec)
+        }
         .applyIf(adaptableWith != null) {
           val annotationSpec: AnnotationSpec = AnnotationSpec.builder(KotlinSymbols.ApolloAdaptableWith)
               .addMember(CodeBlock.of("%T::class", context.resolver.resolveModelAdapter(adaptableWith!!)))

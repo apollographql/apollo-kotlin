@@ -61,6 +61,8 @@ internal object Identifier {
   const val block = "block"
   const val resolver = "resolver"
 
+  const val PossibleTypes = "PossibleTypes"
+
   /**
    * Kotlin language identifiers
    */

@@ -234,6 +234,11 @@ internal data class IrModel(
     val modelGroups: List<IrModelGroup>,
     val isInterface: Boolean,
     val isFallback: Boolean,
+
+    /**
+     * Generate compute field __type: Polymorphic.PossibleTypes
+     */
+    val polymorphicTypeName: String?
 )
 
 /**
@@ -314,6 +319,7 @@ internal data class IrInterface(
     override val name: String,
     override val targetName: String?,
     val implements: List<String>,
+    val possibleTypes: List<String>,
     val keyFields: List<String>,
     val description: String?,
     val deprecationReason: String?,

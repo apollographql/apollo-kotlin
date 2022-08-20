@@ -18,6 +18,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.FragmentVariablesA
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.InputObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.InterfaceBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.InterfacePossibleTypeEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.ObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationResponseAdapterBuilder
@@ -27,6 +28,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionPossibleTypeEnumBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -119,11 +121,13 @@ internal class KotlinCodeGen(
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { iface ->
           builders.add(InterfaceBuilder(context, iface, generateDataBuilders))
+          builders.add(InterfacePossibleTypeEnumBuilder(context, iface))
         }
     ir.unions
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { union ->
           builders.add(UnionBuilder(context, union, generateDataBuilders))
+          builders.add(UnionPossibleTypeEnumBuilder(context, union))
         }
     ir.customScalars
         .filter { !context.resolver.canResolveSchemaType(it.name) }

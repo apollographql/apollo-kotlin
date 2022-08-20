@@ -11,9 +11,11 @@ import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
 import com.apollographql.apollo3.ast.GQLInlineFragment
+import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
 import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
+import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
@@ -368,6 +370,7 @@ internal class OperationBasedModelGroupBuilder(
           id = childPath,
           // No need to resolve the nameclashes here, "Fragments" are never flattened
           modelName = modelName(fragmentsFieldInfo),
+          polymorphicTypeName = null,
           fields = fragmentSpreadFields,
       )
 
@@ -412,6 +415,13 @@ internal class OperationBasedModelGroupBuilder(
         id = selfPath,
         modelName = modelName,
         fields = fields + inlineFragmentsFields + fragmentsFields,
+        polymorphicTypeName = parentTypeConditions.lastOrNull()
+            ?.let { schema.typeDefinitions[it] }
+            ?.takeIf {
+              it is GQLInterfaceTypeDefinition ||
+                it is GQLUnionTypeDefinition
+            }?.name
+
     )
 
     val patchedInfo = info.copy(
@@ -448,6 +458,7 @@ private class OperationField(
 private data class OperationFieldSet(
     val id: String,
     val modelName: String,
+    val polymorphicTypeName: String?,
     val fields: List<OperationField>,
 )
 
@@ -475,6 +486,7 @@ private fun OperationFieldSet.toModel(): IrModel {
       modelGroups = fields.mapNotNull { it.toModelGroup() },
       possibleTypes = emptyList(),
       typeSet = emptySet(),
+      polymorphicTypeName = polymorphicTypeName
   )
 }
 

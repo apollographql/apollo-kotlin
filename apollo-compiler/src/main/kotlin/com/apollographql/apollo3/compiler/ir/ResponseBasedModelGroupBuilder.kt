@@ -506,6 +506,7 @@ private fun ResponseFieldSet.toIrModel(parentResponseField: ResponseField): IrMo
       typeSet = typeSet,
       isInterface = isInterface,
       isFallback = isFallback,
+      polymorphicTypeName = null
   )
 }
 
