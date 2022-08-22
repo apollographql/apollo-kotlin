@@ -1,0 +1,53 @@
+---
+title: @defer support
+---
+
+Apollo Kotlin supports [the `@defer` directive](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md), which allows receiving the fields of certain fragments of a query asynchronously.
+
+For instance consider a service where retrieving basic information from a user is fast, but retrieving the user's friends may take more time. In that case it would make sense to display the basic information in the UI as soon as they arrive, and display a loading indicator in the UI while waiting for the friends.
+
+Applying the `@defer` directive to the fragment selecting the friends fields indicates that we are ready to receive them later, asynchronously:
+
+```graphql
+query PersonQuery($personId: ID!) {
+  person(id: $personId) {
+    # Basic fields (fast)
+    id
+    firstName
+    lastName
+    
+    # Friends (slow)
+    ... on User @defer {
+      friends {
+        id
+      }
+    }
+  }
+}
+```
+
+In the generated code for this query, the `onUser` field for the fragment will be nullable. That is because when the initial payload is received from the server, the fields of the fragment are not yet present. A `Person` will be emitted with only the basic fields filled in.
+
+When the fields of the fragment are available, a new `Person` will be emitted, this time with the `onUser` field present and filled with the fields of the fragment.
+
+```kotlin
+apolloClient.query(PersonQuery(personId)).toFlow().collect {
+  println("Received: $it")
+  if (it.dataAssertNoErrors.person.onUser == null) {
+    // Initial payload: basic info only
+    // ...
+  } else {
+    // Subsequent payload: with friends
+    // ...
+  }
+}
+```
+
+Will print something like this:
+
+```
+Received: Person(id=1, firstName=John, lastName=Doe, onUser=null))
+Received: Person(id=1, firstName=John, lastName=Doe, onUser=OnUser(friends=[Friend(id=2), Friend(id=3)]))
+```
+
+Note: currently, `@defer` can be used only with the [the `operationBased` codegen](../advanced/response-based-codegen/).

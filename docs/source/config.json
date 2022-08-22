@@ -38,7 +38,8 @@
       "GraphQL variables": "/advanced/operation-variables",
       "Error handling": "/essentials/errors",
       "Custom scalars": "/essentials/custom-scalars",
-      "Fragments": "/essentials/fragments"
+      "Fragments": "/essentials/fragments",
+      "@defer support": "/fetching/defer"
     },
     "Caching": {
       "Introduction": "/caching/introduction",
