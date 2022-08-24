@@ -2,7 +2,11 @@ package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.CompiledFragment
+import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.http.internal.urlEncode
@@ -36,10 +40,20 @@ class DefaultHttpRequestComposer(
     val operation = apolloRequest.operation
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
-    val requestHeaders = listOf(
+    val requestHeaders = mutableListOf(
         HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()),
         HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name())
-    ) + (apolloRequest.httpHeaders ?: emptyList())
+    )
+    apolloRequest.httpHeaders?.let { requestHeaders.addAll(it) }
+
+    // If a @defer directive is present and batching is enabled, disable it
+    if (requestHeaders.any { it.name == ExecutionOptions.CAN_BE_BATCHED && it.value == "true" }) {
+      val hasDeferDirective = operation.rootField().hasDeferDirective()
+      if (hasDeferDirective) {
+        requestHeaders.removeAll { it.name == ExecutionOptions.CAN_BE_BATCHED }
+        requestHeaders.add(HttpHeader(ExecutionOptions.CAN_BE_BATCHED, "false"))
+      }
+    }
 
     val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
     val sendDocument = apolloRequest.sendDocument ?: true
@@ -52,6 +66,7 @@ class DefaultHttpRequestComposer(
         ).addHeaders(requestHeaders)
             .build()
       }
+
       HttpMethod.Post -> {
         val query = if (sendDocument) operation.document() else null
         HttpRequest.Builder(
@@ -253,6 +268,18 @@ class DefaultHttpRequestComposer(
         composePostParams(this, operation, customScalarAdapters, sendApqExtensions, query)
       } as Map<String, Any?>
     }
+  }
+
+  private fun CompiledSelection.hasDeferDirective(): Boolean {
+    val directives = when (this) {
+      is CompiledField -> directives
+      is CompiledFragment -> directives
+    }
+    val selections = when (this) {
+      is CompiledField -> selections
+      is CompiledFragment -> selections
+    }
+    return directives.any { it.name == "defer" } || selections.any { it.hasDeferDirective() }
   }
 }
 

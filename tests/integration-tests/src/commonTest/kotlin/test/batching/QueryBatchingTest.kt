@@ -2,6 +2,7 @@ package test.batching
 
 import batching.GetLaunch2Query
 import batching.GetLaunchQuery
+import batching.GetLaunchWithDeferQuery
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -119,7 +120,7 @@ class QueryBatchingTest {
 
   @Test
   fun queriesCanBeOptOutOfBatching() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("""{"data":{"launch":{"id":"83"}}}""")
+    mockServer.enqueue("""{"data":{"launch":{"__typename":"Launch","id":"83"}}}""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -127,7 +128,7 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(GetLaunchQuery()).canBeBatched(false).execute()
+      apolloClient.query(GetLaunchWithDeferQuery()).execute()
     }
     val result2 = async {
       // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise
@@ -135,7 +136,7 @@ class QueryBatchingTest {
       apolloClient.query(GetLaunch2Query()).execute()
     }
 
-    assertEquals("83", result1.await().data?.launch?.id)
+    assertEquals("83", result1.await().data?.launch?.onLaunch?.id)
     assertEquals("84", result2.await().data?.launch?.id)
 
     mockServer.takeRequest()

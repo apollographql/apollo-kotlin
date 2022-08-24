@@ -10,3 +10,10 @@ query GetLaunch2 {
   }
 }
 
+query GetLaunchWithDefer {
+  launch(id: "84") {
+    ... on Launch @defer {
+      id
+    }
+  }
+}
