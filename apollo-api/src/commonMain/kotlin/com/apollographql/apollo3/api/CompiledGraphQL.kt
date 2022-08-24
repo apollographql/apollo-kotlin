@@ -25,6 +25,7 @@ class CompiledField internal constructor(
     val condition: List<CompiledCondition>,
     val arguments: List<CompiledArgument>,
     val selections: List<CompiledSelection>,
+    val directives: List<CompiledDirective>,
 ) : CompiledSelection() {
   val responseName: String
     get() = alias ?: name
@@ -74,6 +75,7 @@ class CompiledField internal constructor(
     private var condition: List<CompiledCondition> = emptyList()
     private var arguments: List<CompiledArgument> = emptyList()
     private var selections: List<CompiledSelection> = emptyList()
+    private var directives: List<CompiledDirective> = emptyList()
 
     constructor(compiledField: CompiledField) : this(compiledField.name, compiledField.type) {
       this.alias = compiledField.alias
@@ -98,16 +100,26 @@ class CompiledField internal constructor(
       this.selections = selections
     }
 
+    fun directives(directives: List<CompiledDirective>) = apply {
+      this.directives = directives
+    }
+
     fun build(): CompiledField = CompiledField(
         name = name,
         alias = alias,
         type = type,
         condition = condition,
         arguments = arguments,
-        selections = selections
+        selections = selections,
+        directives = directives,
     )
   }
 }
+
+class CompiledDirective(
+    val name: String,
+    val arguments: List<CompiledArgument>,
+)
 
 /**
  * A compiled inline fragment or fragment spread
@@ -117,11 +129,13 @@ class CompiledFragment internal constructor(
     val possibleTypes: List<String>,
     val condition: List<CompiledCondition>,
     val selections: List<CompiledSelection>,
+    val directives: List<CompiledDirective>,
 ) : CompiledSelection() {
 
   class Builder(val typeCondition: String, val possibleTypes: List<String>) {
-    var condition: List<CompiledCondition> = emptyList()
-    var selections: List<CompiledSelection> = emptyList()
+    private var condition: List<CompiledCondition> = emptyList()
+    private var selections: List<CompiledSelection> = emptyList()
+    private var directives: List<CompiledDirective> = emptyList()
 
     fun condition(condition: List<CompiledCondition>) = apply {
       this.condition = condition
@@ -131,7 +145,11 @@ class CompiledFragment internal constructor(
       this.selections = selections
     }
 
-    fun build() = CompiledFragment(typeCondition, possibleTypes, condition, selections)
+    fun directives(directives: List<CompiledDirective>) = apply {
+      this.directives = directives
+    }
+
+    fun build() = CompiledFragment(typeCondition, possibleTypes, condition, selections, directives)
   }
 }
 
@@ -285,11 +303,11 @@ class InputObjectType(
 
 class EnumType(
     name: String,
-    val values: List<String>
+    val values: List<String>,
 ) : CompiledNamedType(name) {
   @Deprecated("Use the primary constructor instead")
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_5_1)
-  constructor(name: String): this(name, emptyList())
+  constructor(name: String) : this(name, emptyList())
 }
 
 class ScalarType(
@@ -370,6 +388,7 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
     is CompiledVariable -> {
       variables.valueMap[value.name]
     }
+
     is Map<*, *> -> {
       value as Map<String, Any?>
       value.mapValues {
@@ -378,11 +397,13 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
           .sortedBy { it.first }
           .toMap()
     }
+
     is List<*> -> {
       value.map {
         resolveVariables(it, variables)
       }
     }
+
     else -> value
   }
 }
@@ -447,6 +468,7 @@ fun CompiledNamedType.isComposite(): Boolean {
     is InterfaceType,
     is ObjectType,
     -> true
+
     else
     -> false
   }

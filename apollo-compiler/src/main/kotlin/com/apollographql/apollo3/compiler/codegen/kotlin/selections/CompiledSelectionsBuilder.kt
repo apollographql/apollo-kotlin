@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toListInitializerCodeblock
 import com.apollographql.apollo3.compiler.ir.IrArgument
+import com.apollographql.apollo3.compiler.ir.IrDirective
 import com.apollographql.apollo3.compiler.ir.IrField
 import com.apollographql.apollo3.compiler.ir.IrFragment
 import com.apollographql.apollo3.compiler.ir.IrSelection
@@ -40,7 +41,7 @@ internal class CompiledSelectionsBuilder(
         .build()
   }
 
-  private fun IrSelection.codeBlock() = when(this) {
+  private fun IrSelection.codeBlock() = when (this) {
     is IrField -> this.codeBlock()
     is IrFragment -> this.codeBlock()
   }
@@ -68,6 +69,9 @@ internal class CompiledSelectionsBuilder(
     if (selectionSetName != null) {
       builder.add(".selections(%N)\n", context.layout.compiledSelectionsName(selectionSetName))
     }
+    if (directives.isNotEmpty()) {
+      builder.add(".directives(%L)\n", directives.map { it.codeBlock() }.toListInitializerCodeblock(true))
+    }
     builder.add(".build()")
 
     return builder.build()
@@ -88,12 +92,23 @@ internal class CompiledSelectionsBuilder(
     if (selectionSetName != null) {
       builder.add(".selections(%N)\n", context.layout.compiledSelectionsName(selectionSetName))
     } else {
-      check (name != null)
+      check(name != null)
       builder.add(".selections(%T.$root)\n", context.resolver.resolveFragmentSelections(name))
+    }
+    if (directives.isNotEmpty()) {
+      builder.add(".directives(%L)\n", directives.map { it.codeBlock() }.toListInitializerCodeblock(true))
     }
     builder.add(".build()")
 
     return builder.build()
+  }
+
+  private fun IrDirective.codeBlock(): CodeBlock {
+    return CodeBlock.of("%T(name·=·%S,·arguments·=·%L)",
+        KotlinSymbols.CompiledDirective,
+        name,
+        arguments.map { it.codeBlock() }.toListInitializerCodeblock(true)
+    )
   }
 
   private fun BooleanExpression<BVariable>.toCompiledConditionInitializer(): CodeBlock {

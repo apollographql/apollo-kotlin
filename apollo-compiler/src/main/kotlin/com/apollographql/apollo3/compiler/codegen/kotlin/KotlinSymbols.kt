@@ -53,6 +53,7 @@ internal object KotlinSymbols {
   val CompiledFieldBuilder = ClassNames.CompiledFieldBuilder.toKotlinPoetClassName()
   val CompiledFragment = ClassNames.CompiledFragment.toKotlinPoetClassName()
   val CompiledFragmentBuilder = ClassNames.CompiledFragmentBuilder.toKotlinPoetClassName()
+  val CompiledDirective = ClassNames.CompiledDirective.toKotlinPoetClassName()
   val TestResolver = ClassNames.TestResolver.toKotlinPoetClassName()
   val DefaultTestResolver = ClassNames.DefaultTestResolver.toKotlinPoetClassName()
   val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toKotlinPoetClassName()

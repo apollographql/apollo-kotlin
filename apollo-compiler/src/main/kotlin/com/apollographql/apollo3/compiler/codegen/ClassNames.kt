@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.squareup.kotlinpoet.ClassName
-
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
  */
@@ -49,6 +46,7 @@ internal object ClassNames {
   val CompiledFieldBuilder = ResolverClassName(apolloApiPackageName, "CompiledField", "Builder")
   val CompiledFragment = ResolverClassName(apolloApiPackageName, "CompiledFragment")
   val CompiledFragmentBuilder = ResolverClassName(apolloApiPackageName, "CompiledFragment", "Builder")
+  val CompiledDirective = ResolverClassName(apolloApiPackageName, "CompiledDirective")
   val TestResolver = ResolverClassName(apolloApiTestPackageName, "TestResolver")
   val DefaultTestResolver = ResolverClassName(apolloApiTestPackageName, "DefaultTestResolver")
   val DefaultFakeResolver = ResolverClassName(apolloApiPackageName, "DefaultFakeResolver")

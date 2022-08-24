@@ -108,7 +108,13 @@ internal data class IrField(
     val condition: BooleanExpression<BVariable>,
     val arguments: List<IrArgument>,
     val selectionSetName: String?,
+    val directives: List<IrDirective>,
 ) : IrSelection
+
+internal data class IrDirective(
+    val name: String,
+    val arguments: List<IrArgument>,
+)
 
 internal data class IrArgument(
     val name: String,
@@ -135,6 +141,7 @@ internal data class IrFragment(
      * The name of the fragment for fragment spreads or null for inline fragments
      */
     val name: String?,
+    val directives: List<IrDirective>,
 ) : IrSelection
 
 internal data class IrFragmentDefinition(

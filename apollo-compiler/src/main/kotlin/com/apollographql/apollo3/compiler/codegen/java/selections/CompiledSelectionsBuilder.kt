@@ -10,8 +10,8 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.codegen.java.joinToCode
 import com.apollographql.apollo3.compiler.ir.IrArgument
+import com.apollographql.apollo3.compiler.ir.IrDirective
 import com.apollographql.apollo3.compiler.ir.IrField
 import com.apollographql.apollo3.compiler.ir.IrFragment
 import com.apollographql.apollo3.compiler.ir.IrSelection
@@ -65,6 +65,9 @@ internal class CompiledSelectionsBuilder(
     if (selectionSetName != null) {
       builder.add(".selections($L)", context.layout.compiledSelectionsName(selectionSetName))
     }
+    if (directives.isNotEmpty()) {
+      builder.add(".directives($L)\n", directives.map { it.codeBlock() }.toListInitializerCodeblock(true))
+    }
     builder.unindent()
     builder.add(".build()")
 
@@ -89,11 +92,22 @@ internal class CompiledSelectionsBuilder(
       check(name != null)
       builder.add(".selections($T.$root)", context.resolver.resolveFragmentSelections(name))
     }
+    if (directives.isNotEmpty()) {
+      builder.add(".directives($L)\n", directives.map { it.codeBlock() }.toListInitializerCodeblock(true))
+    }
 
     builder.unindent()
     builder.add(".build()")
 
     return builder.build()
+  }
+
+  private fun IrDirective.codeBlock(): CodeBlock {
+    return CodeBlock.of("new $T($S, $L)",
+        JavaClassNames.CompiledDirective,
+        name,
+        arguments.map { it.codeBlock() }.toListInitializerCodeblock(true)
+    )
   }
 
   private fun BooleanExpression<BVariable>.toCompiledConditionInitializer(): CodeBlock {

@@ -284,10 +284,17 @@ public final class com/apollographql/apollo3/api/CompiledCondition {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/api/CompiledDirective {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public final fun getArguments ()Ljava/util/List;
+	public final fun getName ()Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo3/api/CompiledField : com/apollographql/apollo3/api/CompiledSelection {
 	public final fun getAlias ()Ljava/lang/String;
 	public final fun getArguments ()Ljava/util/List;
 	public final fun getCondition ()Ljava/util/List;
+	public final fun getDirectives ()Ljava/util/List;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getResponseName ()Ljava/lang/String;
 	public final fun getSelections ()Ljava/util/List;
@@ -304,6 +311,7 @@ public final class com/apollographql/apollo3/api/CompiledField$Builder {
 	public final fun arguments (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/CompiledField;
 	public final fun condition (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
+	public final fun directives (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/api/CompiledType;
 	public final fun selections (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledField$Builder;
@@ -311,6 +319,7 @@ public final class com/apollographql/apollo3/api/CompiledField$Builder {
 
 public final class com/apollographql/apollo3/api/CompiledFragment : com/apollographql/apollo3/api/CompiledSelection {
 	public final fun getCondition ()Ljava/util/List;
+	public final fun getDirectives ()Ljava/util/List;
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public final fun getSelections ()Ljava/util/List;
 	public final fun getTypeCondition ()Ljava/lang/String;
@@ -320,13 +329,10 @@ public final class com/apollographql/apollo3/api/CompiledFragment$Builder {
 	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
 	public final fun build ()Lcom/apollographql/apollo3/api/CompiledFragment;
 	public final fun condition (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
-	public final fun getCondition ()Ljava/util/List;
+	public final fun directives (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
 	public final fun getPossibleTypes ()Ljava/util/List;
-	public final fun getSelections ()Ljava/util/List;
 	public final fun getTypeCondition ()Ljava/lang/String;
 	public final fun selections (Ljava/util/List;)Lcom/apollographql/apollo3/api/CompiledFragment$Builder;
-	public final fun setCondition (Ljava/util/List;)V
-	public final fun setSelections (Ljava/util/List;)V
 }
 
 public final class com/apollographql/apollo3/api/CompiledGraphQL {

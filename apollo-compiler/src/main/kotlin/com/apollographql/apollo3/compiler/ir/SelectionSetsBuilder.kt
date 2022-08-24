@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.ir
 
 import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLArgument
+import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -94,7 +95,8 @@ internal class SelectionSetsBuilder(
               }
             },
             condition = expression,
-            selectionSetName = if (selectionSet != null) selectionSetName else null
+            selectionSetName = if (selectionSet != null) selectionSetName else null,
+            directives = directives.toIrDirectives(),
         ),
         nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.leafType().name).orEmpty()
     )
@@ -124,7 +126,8 @@ internal class SelectionSetsBuilder(
             possibleTypes = schema.possibleTypes(typeCondition.name).toList(),
             condition = expression,
             selectionSetName = selectionSetName,
-            name = null
+            name = null,
+            directives = directives.toIrDirectives(),
         ),
         nested = selectionSet.selections.walk(selectionSetName, false, typeCondition.name)
     )
@@ -145,9 +148,19 @@ internal class SelectionSetsBuilder(
             possibleTypes = schema.possibleTypes(fragmentDefinition.typeCondition.name).toList(),
             condition = expression,
             selectionSetName = null,
-            name = name
+            name = name,
+            directives = directives.toIrDirectives(),
         ),
         nested = emptyList()
     )
+  }
+
+  private fun List<GQLDirective>.toIrDirectives(): List<IrDirective> {
+    return map { directive ->
+      IrDirective(
+          name = directive.name,
+          arguments = directive.arguments?.arguments?.map { gqlArgument -> gqlArgument.toIr(emptySet(), emptySet()) } ?: emptyList()
+      )
+    }
   }
 }
