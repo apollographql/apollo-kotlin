@@ -2,6 +2,8 @@
 title: @defer support
 ---
 
+> ⚠️ **Defer support is experimental and subject to change.** If you have feedback on it, please let us know via [GitHub issues](https://github.com/apollographql/apollo-android/issues/new?assignees=&labels=Type%3A+Bug&template=bug_report.md&title=[Defer%20Support]) or in the [Kotlin Slack community](https://slack.kotl.in/).
+
 Apollo Kotlin supports [the `@defer` directive](https://github.com/graphql/graphql-wg/blob/main/rfcs/DeferStream.md), which allows receiving the fields of certain fragments of a query asynchronously.
 
 For instance consider a service where retrieving basic information from a user is fast, but retrieving the user's friends may take more time. In that case it would make sense to display the basic information in the UI as soon as they arrive, and display a loading indicator in the UI while waiting for the friends.
