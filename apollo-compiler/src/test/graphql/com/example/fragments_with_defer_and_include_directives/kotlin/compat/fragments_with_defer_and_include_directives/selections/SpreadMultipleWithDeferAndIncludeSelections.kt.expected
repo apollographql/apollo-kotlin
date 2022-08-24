@@ -5,10 +5,13 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.DroidDetailsSelections
 import com.example.fragments_with_defer_and_include_directives.type.Character
@@ -26,34 +29,70 @@ public object SpreadMultipleWithDeferAndIncludeSelections {
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond1", false)))
         .selections(DroidDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("cond1")).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond2", true)))
         .selections(DroidDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "skip", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("cond2")).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(DroidDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "b_first").build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(DroidDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "b_second").build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond3", false)))
         .selections(DroidDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "b_third").build()
+          )),
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("cond3")).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("cond4", true)))
         .selections(DroidDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "b_fourth").build()
+          )),
+          CompiledDirective(name = "skip", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("cond4")).build()
+          ))
+        ))
         .build()
       )
 

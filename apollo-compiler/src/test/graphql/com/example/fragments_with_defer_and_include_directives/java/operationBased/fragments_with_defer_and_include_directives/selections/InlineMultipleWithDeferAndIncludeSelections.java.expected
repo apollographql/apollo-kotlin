@@ -5,11 +5,14 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections;
 
+import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledCondition;
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.fragments_with_defer_and_include_directives.type.Character;
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLID;
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLString;
@@ -43,12 +46,48 @@ public class InlineMultipleWithDeferAndIncludeSelections {
 
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond1", false))).selections(__onDroid).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond2", true))).selections(__onDroid1).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(__onDroid2).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(__onDroid3).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond3", false))).selections(__onDroid4).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond4", true))).selections(__onDroid5).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond1", false))).selections(__onDroid).directives(Arrays.asList(
+        new CompiledDirective("include", Arrays.asList(
+          new CompiledArgument.Builder("if", new CompiledVariable("cond1")).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond2", true))).selections(__onDroid1).directives(Arrays.asList(
+        new CompiledDirective("skip", Arrays.asList(
+          new CompiledArgument.Builder("if", new CompiledVariable("cond2")).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(__onDroid2).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "e_first").build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(__onDroid3).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "e_second").build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond3", false))).selections(__onDroid4).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "e_third").build()
+        )),
+        new CompiledDirective("include", Arrays.asList(
+          new CompiledArgument.Builder("if", new CompiledVariable("cond3")).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("cond4", true))).selections(__onDroid5).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "e_fourth").build()
+        )),
+        new CompiledDirective("skip", Arrays.asList(
+          new CompiledArgument.Builder("if", new CompiledVariable("cond4")).build()
+        ))
+      ))
+    .build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

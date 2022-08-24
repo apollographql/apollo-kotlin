@@ -5,9 +5,12 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.fragments_with_defer_and_include_directives.type.Character
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLID
@@ -45,16 +48,34 @@ public object InlineMultipleWithDeferWithIfSelections {
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).selections(__onCharacter)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "f_first").build(),
+            CompiledArgument.Builder("if", false).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).selections(__onCharacter1)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "f_second").build(),
+            CompiledArgument.Builder("if", true).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).selections(__onCharacter2)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "f_third").build(),
+            CompiledArgument.Builder("if", CompiledVariable("cond")).build()
+          ))
+        ))
         .build()
       )
 

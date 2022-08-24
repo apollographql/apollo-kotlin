@@ -5,10 +5,13 @@
 //
 package com.example.field_with_include_directive.selections;
 
+import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledCondition;
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.field_with_include_directive.type.Character;
 import com.example.field_with_include_directive.type.FriendsConnection;
 import com.example.field_with_include_directive.type.GraphQLInt;
@@ -22,8 +25,18 @@ public class TestQuerySelections {
   );
 
   private static List<CompiledSelection> __hero = Arrays.asList(
-    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).condition(Arrays.asList(new CompiledCondition("includeName", false))).build(),
-    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).condition(Arrays.asList(new CompiledCondition("skipFriends", true))).selections(__friendsConnection).build()
+    new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).condition(Arrays.asList(new CompiledCondition("includeName", false))).directives(Arrays.asList(
+        new CompiledDirective("include", Arrays.asList(
+          new CompiledArgument.Builder("if", new CompiledVariable("includeName")).build()
+        ))
+      ))
+    .build(),
+    new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).condition(Arrays.asList(new CompiledCondition("skipFriends", true))).selections(__friendsConnection).directives(Arrays.asList(
+        new CompiledDirective("skip", Arrays.asList(
+          new CompiledArgument.Builder("if", new CompiledVariable("skipFriends")).build()
+        ))
+      ))
+    .build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

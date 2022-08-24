@@ -5,12 +5,14 @@
 //
 package com.example.nonnull.selections;
 
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
 import com.example.nonnull.type.Character;
 import com.example.nonnull.type.GraphQLString;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TestQuerySelections {
@@ -19,6 +21,9 @@ public class TestQuerySelections {
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).selections(__hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(__hero).directives(Arrays.asList(
+        new CompiledDirective("nonnull", Collections.emptyList())
+      ))
+    .build()
   );
 }

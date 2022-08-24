@@ -5,6 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections;
 
+import com.apollographql.apollo3.api.CompiledArgument;
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledNotNullType;
@@ -18,8 +20,18 @@ import java.util.List;
 public class SpreadMultipleWithDeferSelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.__root).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.__root).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.__root).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "a_first").build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(DroidDetailsSelections.__root).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "a_second").build()
+        ))
+      ))
+    .build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

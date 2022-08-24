@@ -5,6 +5,7 @@
 //
 package com.example.optional.selections;
 
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledListType;
 import com.apollographql.apollo3.api.CompiledNotNullType;
@@ -13,12 +14,16 @@ import com.example.optional.type.Character;
 import com.example.optional.type.Episode;
 import com.example.optional.type.GraphQLString;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class TestQuerySelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledField.Builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).build()
+    new CompiledField.Builder("appearsIn", new CompiledNotNullType(new CompiledListType(Episode.type))).directives(Arrays.asList(
+        new CompiledDirective("optional", Collections.emptyList())
+      ))
+    .build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

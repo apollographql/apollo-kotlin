@@ -5,10 +5,13 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections;
 
+import com.apollographql.apollo3.api.CompiledArgument;
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.fragments_with_defer_and_include_directives.type.Character;
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLID;
 import com.example.fragments_with_defer_and_include_directives.type.GraphQLString;
@@ -30,9 +33,27 @@ public class InlineMultipleWithDeferWithIfSelections {
 
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter1).build(),
-    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter2).build()
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "f_first").build(),
+          new CompiledArgument.Builder("if", false).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter1).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "f_second").build(),
+          new CompiledArgument.Builder("if", true).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).selections(__onCharacter2).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "f_third").build(),
+          new CompiledArgument.Builder("if", new CompiledVariable("cond")).build()
+        ))
+      ))
+    .build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

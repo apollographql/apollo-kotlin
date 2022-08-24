@@ -5,6 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -38,11 +40,21 @@ public object InlineMultipleWithDeferSelections {
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(__onDroid)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "d_first").build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(__onDroid1)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "d_second").build()
+          ))
+        ))
         .build()
       )
 

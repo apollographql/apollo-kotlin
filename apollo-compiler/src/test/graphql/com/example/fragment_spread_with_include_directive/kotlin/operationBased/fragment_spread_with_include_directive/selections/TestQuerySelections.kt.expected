@@ -5,10 +5,13 @@
 //
 package com.example.fragment_spread_with_include_directive.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.fragment_spread_with_include_directive.fragment.selections.HeroDetailsSelections
 import com.example.fragment_spread_with_include_directive.fragment.selections.HumanDetailsSelections
@@ -33,12 +36,25 @@ public object TestQuerySelections {
         ).condition(listOf(CompiledCondition("withDetails", false),
             CompiledCondition("skipHumanDetails", true)))
         .selections(HeroDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("withDetails")).build()
+          )),
+          CompiledDirective(name = "skip", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("skipHumanDetails")).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Human",
           possibleTypes = listOf("Human")
         ).condition(listOf(CompiledCondition("withDetails", false)))
         .selections(HumanDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("withDetails")).build()
+          ))
+        ))
         .build()
       )
 

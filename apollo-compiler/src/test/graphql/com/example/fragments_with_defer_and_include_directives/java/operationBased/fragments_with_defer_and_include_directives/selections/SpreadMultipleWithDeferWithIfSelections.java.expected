@@ -5,10 +5,13 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections;
 
+import com.apollographql.apollo3.api.CompiledArgument;
+import com.apollographql.apollo3.api.CompiledDirective;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledVariable;
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetails2Selections;
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetails3Selections;
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetailsSelections;
@@ -20,9 +23,27 @@ import java.util.List;
 public class SpreadMultipleWithDeferWithIfSelections {
   private static List<CompiledSelection> __hero = Arrays.asList(
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(CharacterDetailsSelections.__root).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(CharacterDetails2Selections.__root).build(),
-    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(CharacterDetails3Selections.__root).build()
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(CharacterDetailsSelections.__root).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "c_first").build(),
+          new CompiledArgument.Builder("if", false).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(CharacterDetails2Selections.__root).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "c_second").build(),
+          new CompiledArgument.Builder("if", true).build()
+        ))
+      ))
+    .build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).selections(CharacterDetails3Selections.__root).directives(Arrays.asList(
+        new CompiledDirective("defer", Arrays.asList(
+          new CompiledArgument.Builder("label", "c_third").build(),
+          new CompiledArgument.Builder("if", new CompiledVariable("cond")).build()
+        ))
+      ))
+    .build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(

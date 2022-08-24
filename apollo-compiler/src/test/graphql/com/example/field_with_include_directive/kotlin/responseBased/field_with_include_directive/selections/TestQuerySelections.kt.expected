@@ -5,9 +5,12 @@
 //
 package com.example.field_with_include_directive.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.field_with_include_directive.type.Character
 import com.example.field_with_include_directive.type.FriendsConnection
@@ -28,12 +31,22 @@ public object TestQuerySelections {
           name = "name",
           type = GraphQLString.type.notNull()
         ).condition(listOf(CompiledCondition("includeName", false)))
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("includeName")).build()
+          ))
+        ))
         .build(),
         CompiledField.Builder(
           name = "friendsConnection",
           type = FriendsConnection.type.notNull()
         ).condition(listOf(CompiledCondition("skipFriends", true)))
         .selections(__friendsConnection)
+        .directives(listOf(
+          CompiledDirective(name = "skip", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("skipFriends")).build()
+          ))
+        ))
         .build()
       )
 

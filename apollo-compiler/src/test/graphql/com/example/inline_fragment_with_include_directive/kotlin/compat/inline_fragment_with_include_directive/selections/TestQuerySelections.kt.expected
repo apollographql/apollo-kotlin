@@ -5,10 +5,13 @@
 //
 package com.example.inline_fragment_with_include_directive.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledCondition
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.inline_fragment_with_include_directive.type.Character
 import com.example.inline_fragment_with_include_directive.type.GraphQLID
@@ -60,18 +63,36 @@ public object TestQuerySelections {
         ).condition(listOf(CompiledCondition("withDetails", false),
             CompiledCondition("skipHumanDetails", true)))
         .selections(__onHuman)
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("withDetails")).build()
+          )),
+          CompiledDirective(name = "skip", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("skipHumanDetails")).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).condition(listOf(CompiledCondition("withDetails", false)))
         .selections(__onDroid)
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("withDetails")).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Character",
           possibleTypes = listOf("Droid", "Human")
         ).condition(listOf(CompiledCondition("withDetails", false)))
         .selections(__onCharacter)
+        .directives(listOf(
+          CompiledDirective(name = "include", arguments = listOf(
+            CompiledArgument.Builder("if", CompiledVariable("withDetails")).build()
+          ))
+        ))
         .build()
       )
 

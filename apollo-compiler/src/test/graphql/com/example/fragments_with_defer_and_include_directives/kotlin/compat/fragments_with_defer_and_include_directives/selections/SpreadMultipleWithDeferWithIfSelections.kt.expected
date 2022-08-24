@@ -5,9 +5,12 @@
 //
 package com.example.fragments_with_defer_and_include_directives.selections
 
+import com.apollographql.apollo3.api.CompiledArgument
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
+import com.apollographql.apollo3.api.CompiledVariable
 import com.apollographql.apollo3.api.notNull
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetails2Selections
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetails3Selections
@@ -26,16 +29,34 @@ public object SpreadMultipleWithDeferWithIfSelections {
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(CharacterDetailsSelections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "c_first").build(),
+            CompiledArgument.Builder("if", false).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(CharacterDetails2Selections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "c_second").build(),
+            CompiledArgument.Builder("if", true).build()
+          ))
+        ))
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
         ).selections(CharacterDetails3Selections.__root)
+        .directives(listOf(
+          CompiledDirective(name = "defer", arguments = listOf(
+            CompiledArgument.Builder("label", "c_third").build(),
+            CompiledArgument.Builder("if", CompiledVariable("cond")).build()
+          ))
+        ))
         .build()
       )
 

@@ -5,6 +5,7 @@
 //
 package com.example.nonnull.selections
 
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.notNull
@@ -25,6 +26,9 @@ public object TestQuerySelections {
           name = "hero",
           type = Character.type
         ).selections(__hero)
+        .directives(listOf(
+          CompiledDirective(name = "nonnull", arguments = emptyList())
+        ))
         .build()
       )
 }

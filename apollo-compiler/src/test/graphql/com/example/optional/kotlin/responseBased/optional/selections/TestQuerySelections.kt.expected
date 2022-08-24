@@ -5,6 +5,7 @@
 //
 package com.example.optional.selections
 
+import com.apollographql.apollo3.api.CompiledDirective
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.list
@@ -23,7 +24,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "appearsIn",
           type = Episode.type.list().notNull()
-        ).build()
+        ).directives(listOf(
+          CompiledDirective(name = "optional", arguments = emptyList())
+        ))
+        .build()
       )
 
   public val __root: List<CompiledSelection> = listOf(
