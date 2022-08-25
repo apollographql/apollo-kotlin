@@ -46,9 +46,7 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     }
     val nestedResponseWriter = RealResponseWriter(operationVariables, scalarTypeAdapters)
     marshaller.marshal(nestedResponseWriter)
-    buffer.compute(field.responseName) { _, oldFieldDescriptor ->
-      deepMergeObjects(field, oldFieldDescriptor?.value, nestedResponseWriter.buffer)
-    }
+    buffer[field.responseName] = deepMergeObjects(field, buffer[field.responseName]?.value, nestedResponseWriter.buffer)
   }
 
   private fun deepMergeObjects(field: ResponseField, oldValue: Any?, newValue: Map<String, FieldDescriptor>): FieldDescriptor {
