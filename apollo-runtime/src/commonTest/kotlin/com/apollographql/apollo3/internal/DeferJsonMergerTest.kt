@@ -12,11 +12,10 @@ import kotlin.test.assertEquals
 
 class DeferJsonMergerTest {
   @Test
-  @Suppress("UNCHECKED_CAST")
-  fun mergeJson() {
-    val deferredJsonMerger = DeferredJsonMerger()
+  fun mergeJsonSingleIncrementalItem() {
+      val deferredJsonMerger = DeferredJsonMerger()
 
-    val payload1 = """
+      val payload1 = """
       {
         "data": {
           "computers": [
@@ -133,7 +132,6 @@ class DeferJsonMergerTest {
           "hasNext": true
         }
     """
-
     val mergedPayloads_1_2_3 = """
       {
         "data": {
@@ -259,6 +257,7 @@ class DeferJsonMergerTest {
         DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
     ), deferredJsonMerger.mergedFragmentIds)
 
+
     val payload5 = """
         {
           "incremental": [
@@ -341,14 +340,264 @@ class DeferJsonMergerTest {
         ]
       }
     """
-    deferredJsonMerger.merge(payload5.buffer())
-    assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
-    assertEquals(setOf(
-        DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-        DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-        DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
-    ), deferredJsonMerger.mergedFragmentIds)
+      deferredJsonMerger.merge(payload5.buffer())
+      assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+      assertEquals(setOf(
+          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+          DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+      ), deferredJsonMerger.mergedFragmentIds)
   }
+
+    @Test
+    fun mergeJsonMultipleIncrementalItems() {
+        val deferredJsonMerger = DeferredJsonMerger()
+
+        val payload1 = """
+      {
+        "data": {
+          "computers": [
+            {
+              "id": "Computer1",
+              "screen": {
+                "isTouch": true
+              }
+            },
+            {
+              "id": "Computer2",
+              "screen": {
+                "isTouch": false
+              }
+            }
+          ]
+        },
+        "hasNext": true
+      }
+    """
+        deferredJsonMerger.merge(payload1.buffer())
+        assertEquals(jsonToMap(payload1), deferredJsonMerger.merged)
+        assertEquals(setOf(), deferredJsonMerger.mergedFragmentIds)
+
+
+        val payload2_3 = """
+    {
+      "incremental": [
+        {
+          "data": {
+            "cpu": "386",
+            "year": 1993,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "path": [
+            "computers",
+            0
+          ],
+          "label": "query:Query1:0",
+          "extensions": {
+            "duration": {
+              "amount": 100,
+              "unit": "ms"
+            }
+          }
+        },
+        {
+          "data": {
+            "cpu": "486",
+            "year": 1996,
+            "screen": {
+              "resolution": "640x480"
+            }
+          },
+          "path": [
+            "computers",
+            1
+          ],
+          "label": "query:Query1:0",
+          "extensions": {
+            "duration": {
+              "amount": 25,
+              "unit": "ms"
+            }
+          }
+        }
+      ],
+      "hasNext": true
+    }
+    """
+        val mergedPayloads_1_2_3 = """
+      {
+        "data": {
+          "computers": [
+            {
+              "id": "Computer1",
+              "cpu": "386",
+              "year": 1993,
+              "screen": {
+                "isTouch": true,
+                "resolution": "640x480"
+              }
+            },
+            {
+              "id": "Computer2",
+              "cpu": "486",
+              "year": 1996,
+              "screen": {
+                "isTouch": false,
+                "resolution": "640x480"
+              }
+            }
+          ]
+        },
+        "hasNext": true,
+        "extensions": {
+          "duration": {
+            "amount": 25,
+            "unit": "ms"
+          }
+        }
+      }
+    """
+        deferredJsonMerger.merge(payload2_3.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2_3), deferredJsonMerger.merged)
+        assertEquals(setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+        ), deferredJsonMerger.mergedFragmentIds)
+
+
+        val payload4_5 = """
+      {
+        "incremental": [
+          {
+            "data": null,
+            "path": [
+              "computers",
+              0,
+              "screen"
+            ],
+            "errors": [
+              {
+                "message": "Cannot resolve isColor",
+                "locations": [
+                  {
+                    "line": 12,
+                    "column": 11
+                  }
+                ],
+                "path": [
+                  "computers",
+                  0,
+                  "screen",
+                  "isColor"
+                ]
+              }
+            ],
+            "label": "fragment:ComputerFields:0"
+          },
+          {
+            "data": {
+              "isColor": false
+            },
+            "path": [
+              "computers",
+              1,
+              "screen"
+            ],
+            "errors": [
+              {
+                "message": "Another error",
+                "locations": [
+                  {
+                    "line": 1,
+                    "column": 1
+                  }
+                ]
+              }
+            ],
+            "label": "fragment:ComputerFields:0",
+            "extensions": {
+              "value": 42,
+              "duration": {
+                "amount": 130,
+                "unit": "ms"
+              }
+            }
+          }
+        ],
+        "hasNext": true
+      }
+    """
+        val mergedPayloads_1_2_3_4_5 = """
+      {
+        "data": {
+          "computers": [
+            {
+              "id": "Computer1",
+              "cpu": "386",
+              "year": 1993,
+              "screen": {
+                "isTouch": true,
+                "resolution": "640x480"
+              }
+            },
+            {
+              "id": "Computer2",
+              "cpu": "486",
+              "year": 1996,
+              "screen": {
+                "isTouch": false,
+                "resolution": "640x480",
+                "isColor": false
+              }
+            }
+          ]
+        },
+        "hasNext": true,
+        "extensions": {
+          "value": 42,
+          "duration": {
+            "amount": 130,
+            "unit": "ms"
+          }
+        },
+        "errors": [
+          {
+            "message": "Cannot resolve isColor",
+            "locations": [
+              {
+                "line": 12,
+                "column": 11
+              }
+            ],
+            "path": [
+              "computers",
+              0,
+              "screen",
+              "isColor"
+            ]
+          },
+          {
+            "message": "Another error",
+            "locations": [
+              {
+                "line": 1,
+                "column": 1
+              }
+            ]
+          }
+        ]
+      }
+    """
+        deferredJsonMerger.merge(payload4_5.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+        assertEquals(setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+        ), deferredJsonMerger.mergedFragmentIds)
+    }
 }
 
 private fun String.buffer() = Buffer().writeUtf8(this)

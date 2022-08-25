@@ -46,19 +46,24 @@ class DeferredJsonMerger {
 
     val incrementalList = payload["incremental"] as? List<JsonMap>
     if (incrementalList != null) {
+      val mergedErrors = mutableListOf<JsonMap>()
+      val mergedExtensions: MutableJsonMap = mutableMapOf()
       for (incrementalItem in incrementalList) {
         mergeData(incrementalItem)
-        // Keep only the last errors and extensions, if any
-        if (incrementalItem.containsKey("errors")) {
-          _merged["errors"] = incrementalItem["errors"]
-        } else {
-          _merged.remove("errors")
-        }
-        if (incrementalItem.containsKey("extensions")) {
-          _merged["extensions"] = incrementalItem["extensions"]
-        } else {
-          _merged.remove("extensions")
-        }
+        // Merge errors and extensions (if any) of the incremental list
+        (incrementalItem["errors"] as? List<JsonMap>)?.let { mergedErrors += it }
+        (incrementalItem["extensions"] as? JsonMap)?.let { mergedExtensions += it }
+      }
+      // Keep only this payload's errors and extensions, if any
+      if (mergedErrors.isNotEmpty()) {
+        _merged["errors"] = mergedErrors
+      } else {
+        _merged.remove("errors")
+      }
+      if (mergedExtensions.isNotEmpty()) {
+        _merged["extensions"] = mergedExtensions
+      } else {
+        _merged.remove("extensions")
       }
     }
 
