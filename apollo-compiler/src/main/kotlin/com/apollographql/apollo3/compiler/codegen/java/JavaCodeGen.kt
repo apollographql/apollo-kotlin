@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.BuilderFactoryBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.EnumBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.FragmentBuilder
@@ -15,13 +16,17 @@ import com.apollographql.apollo3.compiler.codegen.java.file.FragmentVariablesAda
 import com.apollographql.apollo3.compiler.codegen.java.file.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InputObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.ObjectBuilderBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.ObjectMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationSelectionsBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.UnionMapBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -53,6 +58,7 @@ internal class JavaCodeGen(
      */
     private val flatten: Boolean,
     private val scalarMapping: Map<String, ScalarInfo>,
+    private val generateDataBuilders: Boolean
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -93,23 +99,32 @@ internal class JavaCodeGen(
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { obj ->
           builders.add(ObjectBuilder(context, obj))
+          if (generateDataBuilders) {
+            builders.add(ObjectBuilderBuilder(context, obj))
+            builders.add(ObjectMapBuilder(context, obj))
+          }
         }
     ir.interfaces
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { iface ->
           builders.add(InterfaceBuilder(context, iface))
+          if (generateDataBuilders) {
+            builders.add(InterfaceMapBuilder(context, iface))
+          }
         }
     ir.unions
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { union ->
           builders.add(UnionBuilder(context, union))
+          if (generateDataBuilders) {
+            builders.add(UnionMapBuilder(context, union))
+          }
         }
     ir.customScalars
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { customScalar ->
           builders.add(CustomScalarBuilder(context, customScalar))
         }
-
     ir.fragments
         .forEach { fragment ->
           builders.add(
@@ -153,17 +168,21 @@ internal class JavaCodeGen(
 
           builders.add(
               OperationBuilder(
-                  context,
-                  operationOutput.findOperationId(operation.name),
-                  generateQueryDocument,
-                  operation,
-                  flatten,
+                  context = context,
+                  operationId = operationOutput.findOperationId(operation.name),
+                  generateQueryDocument = generateQueryDocument,
+                  operation = operation,
+                  flatten = flatten,
+                  generateDataBuilders = generateDataBuilders
               )
           )
         }
 
     if (generateSchema) {
-      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions))
+      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions, ir.enums))
+    }
+    if (generateDataBuilders) {
+      builders.add(BuilderFactoryBuilder(context, ir.objects))
     }
 
     builders.forEach { it.prepare() }

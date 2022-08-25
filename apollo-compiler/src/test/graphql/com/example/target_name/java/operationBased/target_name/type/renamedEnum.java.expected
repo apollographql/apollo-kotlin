@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 public class renamedEnum {
-  public static EnumType type = new EnumType("ReservedEnum");
+  public static EnumType type = new EnumType("ReservedEnum", Arrays.asList("VALUE"));
 
   public static renamedEnum VALUE = new renamedEnum("VALUE");
 

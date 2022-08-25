@@ -45,7 +45,7 @@ private fun builtinScalarJavaName(name: String): String? = when (name) {
 internal fun IrEnum.typeFieldSpec(): FieldSpec {
   return FieldSpec
       .builder(JavaClassNames.EnumType, Identifier.type, Modifier.STATIC, Modifier.PUBLIC)
-      .initializer("new $T($S)", JavaClassNames.EnumType, name)
+      .initializer("new $T($S, $L)", JavaClassNames.EnumType, name, this.values.map { CodeBlock.of(S, it.name) }.toListInitializerCodeblock())
       .build()
 }
 
@@ -96,7 +96,6 @@ internal fun IrInterface.typeFieldSpec(resolver: JavaResolver): FieldSpec {
       .initializer(builder.build())
       .build()
 }
-
 
 internal fun IrUnion.typeFieldSpec(resolver: JavaResolver): FieldSpec {
   val builder = CodeBlock.builder()

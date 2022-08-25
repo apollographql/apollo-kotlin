@@ -6,7 +6,6 @@
 package com.example.__schema.type;
 
 import com.apollographql.apollo3.api.CompiledNamedType;
-import com.apollographql.apollo3.api.CompiledType;
 import com.apollographql.apollo3.api.ObjectType;
 import com.apollographql.apollo3.api.PossibleTypes;
 import java.util.Arrays;
@@ -16,17 +15,19 @@ import java.util.List;
  * A Schema object containing all the composite types and a possibleTypes helper function
  */
 public class __Schema {
-  public static List<CompiledType> types = Arrays.asList(
+  public static List<CompiledNamedType> types = Arrays.asList(
     Bar.type,
     BarObject.type,
     Character.type,
     Droid.type,
+    Episode.type,
     Foo.type,
     FooBar.type,
     FooObject.type,
     FriendsConnection.type,
     FriendsEdge.type,
     Human.type,
+    LengthUnit.type,
     Mutation.type,
     PageInfo.type,
     Query.type,
@@ -34,7 +35,8 @@ public class __Schema {
     SearchResult.type,
     Starship.type,
     Tree.type,
-    TypeWithGraphQLKeywords.type
+    TypeWithGraphQLKeywords.type,
+    hero_type.type
   );
 
   public static List<ObjectType> possibleTypes(CompiledNamedType type) {

@@ -2,18 +2,21 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
+import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
+import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
@@ -23,6 +26,7 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
@@ -35,6 +39,7 @@ internal class OperationBuilder(
     private val operationId: String,
     private val generateQueryDocument: Boolean,
     private val operation: IrOperation,
+    private val generateDataBuilders: Boolean,
     flatten: Boolean,
 ) : JavaClassBuilder {
   private val layout = context.layout
@@ -88,6 +93,10 @@ internal class OperationBuilder(
         .addMethod(serializeVariablesMethodSpec())
         .addMethod(adapterMethodSpec(context.resolver, operation.dataProperty))
         .addMethod(rootFieldMethodSpec())
+        .applyIf(generateDataBuilders) {
+          addMethod(buildDataMethod())
+          addMethod(buildDataOverloadMethod())
+        }
         .addTypes(dataTypeSpecs())
         .addField(
             FieldSpec.builder(JavaClassNames.String, OPERATION_ID)
@@ -123,6 +132,55 @@ internal class OperationBuilder(
         )
         .build()
   }
+
+  //  public static Data buildData(QueryMap queryMap, FakeResolver resolver) {
+//    return FakeResolverKt.buildData(
+//        GetIntQuery_ResponseAdapter.Data.INSTANCE,
+//        GetIntQuerySelections.__root,
+//        "Query",
+//        queryMap,
+//        resolver
+//    );
+//  }
+//
+//  public static Data buildData(QueryMap queryMap) {
+//    return buildData(queryMap, new DefaultFakeResolver(__Schema.types));
+//  }
+  private fun buildDataMethod(): MethodSpec {
+    return MethodSpec.methodBuilder(Identifier.buildData)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(JavaClassNames.FakeResolver, Identifier.resolver)
+        .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
+        .addCode(
+            CodeBlock.builder()
+                .add("return $T.buildData(\n", JavaClassNames.FakeResolverKt)
+                .indent()
+                .add("$L.INSTANCE,\n", context.resolver.resolveModelAdapter(operation.dataModelGroup.baseModelId))
+                .add("$T.$root,\n", context.resolver.resolveOperationSelections(operation.name))
+                .add("$S,\n", operation.operationType.typeName)
+                .add("${Identifier.map},\n")
+                .add("${Identifier.resolver}\n")
+                .unindent()
+                .add(");")
+                .build()
+        )
+        .build()
+  }
+
+  private fun buildDataOverloadMethod(): MethodSpec {
+    return MethodSpec.methodBuilder(Identifier.buildData)
+        .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
+        .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
+        .addStatement(
+            "return buildData(${Identifier.map}, new $T($T.types))",
+            JavaClassNames.DefaultFakeResolver,
+            context.resolver.resolveSchema()
+        )
+        .build()
+  }
+
 
   private fun serializeVariablesMethodSpec(): MethodSpec = serializeVariablesMethodSpec(
       adapterClassName = context.resolver.resolveOperationVariablesAdapter(operation.name),

@@ -9,9 +9,10 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 
 public class Race {
-  public static EnumType type = new EnumType("Race");
+  public static EnumType type = new EnumType("Race", Arrays.asList("WOOKIE", "GUMGAN", "EWOK"));
 
   public static Race WOOKIE = new Race("WOOKIE");
 

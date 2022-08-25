@@ -65,4 +65,10 @@ internal object Identifier {
    * Kotlin language identifiers
    */
   const val Companion = "Companion"
+
+  /**
+   * Java only
+   */
+  const val buildData = "buildData"
+  const val map = "map"
 }

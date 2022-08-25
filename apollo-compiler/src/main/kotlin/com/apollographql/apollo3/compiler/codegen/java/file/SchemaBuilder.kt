@@ -9,9 +9,11 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
+import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrUnion
+import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
@@ -25,11 +27,13 @@ internal class SchemaBuilder(
     private val objects: List<IrObject>,
     private val interfaces: List<IrInterface>,
     private val unions: List<IrUnion>,
+    private val enums: List<IrEnum>
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
 
   override fun prepare() {
+    context.resolver.registerSchema(ClassName.get(packageName, generatedSchemaName))
   }
 
   override fun build(): CodegenJavaFile {
@@ -40,13 +44,13 @@ internal class SchemaBuilder(
   }
 
   private fun typesFieldSpec(): FieldSpec {
-    val allTypenames = interfaces.map { it.name } + objects.map { it.name } + unions.map { it.name }
+    val allTypenames = interfaces.map { it.name } + objects.map { it.name } + unions.map { it.name } + enums.map { it.name }
     val initilizer = allTypenames.sortedBy { it }.map {
       CodeBlock.of("$T.$type", context.resolver.resolveSchemaType(it))
     }.toListInitializerCodeblock(withNewLines = true)
 
     return FieldSpec.builder(
-        ParameterizedTypeName.get(JavaClassNames.List, JavaClassNames.CompiledType),
+        ParameterizedTypeName.get(JavaClassNames.List, JavaClassNames.CompiledNamedType),
         types,
     )
         .addModifiers(Modifier.STATIC)

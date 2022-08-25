@@ -10,19 +10,26 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
+import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
+import com.apollographql.apollo3.compiler.ir.IrEnumType2
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrListType
+import com.apollographql.apollo3.compiler.ir.IrListType2
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNamedType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
+import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrScalarType
+import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.IrType2
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
+import com.squareup.kotlinpoet.MemberName
 
 
 internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
@@ -123,7 +130,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
     return when (type) {
       is IrNonNullType -> error("")
       is IrListType -> {
-        CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, adapterInitializer(type.ofType, requiresBuffering))
+        adapterInitializer(type.ofType, requiresBuffering).listAdapter()
       }
 
       is IrScalarType -> {
@@ -240,6 +247,50 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
+
+  internal fun resolveIrType2(type: IrType2): TypeName {
+    return when (type) {
+      is IrNonNullType2 -> resolveIrType2(type.ofType)
+      is IrListType2 -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType2(type.ofType))
+      is IrCompositeType2 -> resolveAndAssert(ResolverKeyKind.MapType, type.name)
+      is IrEnumType2 -> resolveIrType(IrEnumType(type.name))
+      is IrScalarType2 -> resolveIrType(IrScalarType(type.name))
+    }
+  }
+
+  internal fun adapterInitializer2(type: IrType2): CodeBlock? {
+    if (type !is IrNonNullType2) {
+      return adapterInitializer2(IrNonNullType2(type))
+    }
+    return nonNullableAdapterInitializer2(type.ofType)
+  }
+
+  fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
+
+  private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {
+    return when (type) {
+      is IrNonNullType2 -> error("")
+      is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter()
+      is IrScalarType2 -> {
+        if (scalarMapping.containsKey(type.name)) {
+          nonNullableScalarAdapterInitializer(IrScalarType(type.name))
+        } else {
+          null
+        }
+      }
+      is IrEnumType2 -> {
+        nonNullableAdapterInitializer(IrEnumType(type.name), false)
+      }
+      is IrCompositeType2 -> null
+    }
+  }
+
+  private fun CodeBlock.listAdapter(): CodeBlock {
+    return CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, this)
+  }
+
+  fun registerSchema(className: ClassName) = register(ResolverKeyKind.Schema, "", className)
+  fun resolveSchema():ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
 }
 
 fun ResolverClassName.toJavaPoetClassName(): ClassName = ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())

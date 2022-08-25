@@ -127,16 +127,17 @@ class KotlinResolver(
     return CodeBlock.of("%L.%M()", this, nullableFun)
   }
 
+
+  private fun CodeBlock.list(): CodeBlock {
+    val listFun = MemberName("com.apollographql.apollo3.api", "list")
+    return CodeBlock.of("%L.%M()", this, listFun)
+  }
+
   internal fun adapterInitializer2(type: IrType2): CodeBlock? {
     if (type !is IrNonNullType2) {
       return adapterInitializer2(IrNonNullType2(type))?.nullable()
     }
     return nonNullableAdapterInitializer2(type.ofType)
-  }
-
-  private fun CodeBlock.list(): CodeBlock {
-    val listFun = MemberName("com.apollographql.apollo3.api", "list")
-    return CodeBlock.of("%L.%M()", this, listFun)
   }
 
   private fun nonNullableAdapterInitializer2(type: IrType2): CodeBlock? {

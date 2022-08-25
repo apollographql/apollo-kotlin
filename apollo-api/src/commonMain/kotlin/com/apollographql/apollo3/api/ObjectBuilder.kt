@@ -9,7 +9,7 @@ abstract class ObjectBuilder(override val customScalarAdapters: CustomScalarAdap
 
   var __typename: String by __fields
 
-  operator fun set(key: String, value: Any) {
+  operator fun set(key: String, value: Any?) {
     __fields[key] = value
   }
 }
@@ -49,5 +49,10 @@ class BuilderProperty<T>(val adapter: Adapter<T>) {
   }
 }
 
+fun <T> adaptValue(adapter: Adapter<T>, value: T): Any? {
+  return MapJsonWriter().apply {
+    adapter.toJson(this, CustomScalarAdapters.Empty, value)
+  }.root()
+}
 
-
+abstract class ObjectMap(__fields: Map<String, Any?>): Map<String, Any?> by __fields
