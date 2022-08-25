@@ -337,4 +337,10 @@ class KotlinResolver(
   }
 
   fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
+
+  fun registerCustomScalarAdapters(className: ClassName) {
+    register(ResolverKeyKind.CustomScalarAdapters, "", className)
+  }
+
+  fun resolveCustomScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.CustomScalarAdapters, "")
 }

@@ -154,6 +154,10 @@ sealed class CompiledNamedType(val name: String) : CompiledType() {
   override fun leafType() = this
 }
 
+/**
+ * A type
+ * TODO v4: rename this to ScalarType
+ */
 class CustomScalarType(
     /**
      * GraphQL schema custom scalar type name (e.g. `ID`, `URL`, `DateTime` etc.)
@@ -292,6 +296,9 @@ class EnumType(
   constructor(name: String): this(name, emptyList())
 }
 
+/**
+ * TODO v4: remove (see also [CustomScalarType] above
+ */
 class ScalarType(
     name: String,
 ) : CompiledNamedType(name)
