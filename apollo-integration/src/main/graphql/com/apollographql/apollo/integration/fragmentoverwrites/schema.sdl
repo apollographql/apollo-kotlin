@@ -1,0 +1,13 @@
+type Query {
+  home: Home!
+}
+
+type Home {
+  sectionA: SectionA
+}
+
+type SectionA {
+  id: String!
+  name: String!
+  imageUrl: String
+}

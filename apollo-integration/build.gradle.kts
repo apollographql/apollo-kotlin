@@ -57,6 +57,11 @@ configure<ApolloExtension> {
     rootPackageName.set("com.apollographql.apollo.integration.directives")
     generateKotlinModels.set(true)
   }
+  service("fragmentoverwrites") {
+    sourceFolder.set("com/apollographql/apollo/integration/fragmentoverwrites")
+    rootPackageName.set("com.apollographql.apollo.integration.fragmentoverwrites")
+    generateKotlinModels.set(true)
+  }
   service("sealedclasses") {
     sealedClassesForEnumsMatching.set(listOf(".*"))
     generateKotlinModels.set(true)
