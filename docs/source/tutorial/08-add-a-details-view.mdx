@@ -9,6 +9,10 @@ In this section, you'll write a second GraphQL query that requests details about
 In `LaunchListAdapter.kt`, add a click listener:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = LaunchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
     var onEndOfListReached: (() -> Unit)? = null
     var onItemClicked: ((LaunchListQuery.Launch) -> Unit)? = null
 
