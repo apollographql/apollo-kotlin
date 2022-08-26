@@ -91,10 +91,14 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "duration": {
-            "amount": 100,
-            "unit": "ms"
-          }
+          "incremental": [
+            {
+              "duration": {
+                "amount": 100,
+                "unit": "ms"
+              }
+            }
+          ]
         }
       }      
     """
@@ -158,10 +162,14 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "duration": {
-            "amount": 25,
-            "unit": "ms"
-          }
+          "incremental": [
+            {
+              "duration": {
+                "amount": 25,
+                "unit": "ms"
+              }
+            }
+          ]
         }
       }
     """
@@ -321,11 +329,15 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "value": 42,
-          "duration": {
-            "amount": 130,
-            "unit": "ms"
-          }
+          "incremental": [
+            {
+              "value": 42,
+              "duration": {
+                "amount": 130,
+                "unit": "ms"
+              }
+            }
+          ]
         },
         "errors": [
           {
@@ -452,10 +464,20 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "duration": {
-            "amount": 25,
-            "unit": "ms"
-          }
+          "incremental": [
+            {
+              "duration": {
+                "amount": 100,
+                "unit": "ms"
+              }
+            },
+            {
+              "duration": {
+                "amount": 25,
+                "unit": "ms"
+              }
+            }
+          ]
         }
       }
     """
@@ -556,11 +578,15 @@ class DeferJsonMergerTest {
         },
         "hasNext": true,
         "extensions": {
-          "value": 42,
-          "duration": {
-            "amount": 130,
-            "unit": "ms"
-          }
+          "incremental": [
+            {
+              "value": 42,
+              "duration": {
+                "amount": 130,
+                "unit": "ms"
+              }
+            }
+          ]
         },
         "errors": [
           {

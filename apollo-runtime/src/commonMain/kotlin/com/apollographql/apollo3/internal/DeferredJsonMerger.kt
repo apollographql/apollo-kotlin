@@ -18,7 +18,10 @@ private typealias MutableJsonMap = MutableMap<String, Any?>
  * The fields in `data` are merged into the node found in [merged] at `path` (for the first call to [merge], the payload is
  * copied to [merged] as-is).
  *
- * `errors` and `extensions` fields are not merged: they are copied as-is (if present) to the [merged] Map at each call to [merge].
+ * `errors` in incremental items (if present) are merged together in an array and then set to the `errors` field of the [merged] Map,
+ * at each call to [merge].
+ * `extensions` in incremental items (if present) are merged together in an array and then set to the `extensions/incremental` field of the
+ * [merged] Map, at each call to [merge].
  */
 @ApolloInternal
 class DeferredJsonMerger {
@@ -47,7 +50,7 @@ class DeferredJsonMerger {
     val incrementalList = payload["incremental"] as? List<JsonMap>
     if (incrementalList != null) {
       val mergedErrors = mutableListOf<JsonMap>()
-      val mergedExtensions: MutableJsonMap = mutableMapOf()
+      val mergedExtensions = mutableListOf<JsonMap>()
       for (incrementalItem in incrementalList) {
         mergeData(incrementalItem)
         // Merge errors and extensions (if any) of the incremental list
@@ -61,7 +64,7 @@ class DeferredJsonMerger {
         _merged.remove("errors")
       }
       if (mergedExtensions.isNotEmpty()) {
-        _merged["extensions"] = mergedExtensions
+        _merged["extensions"] = mapOf("incremental" to mergedExtensions)
       } else {
         _merged.remove("extensions")
       }
