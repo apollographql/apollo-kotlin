@@ -66,8 +66,8 @@ class DeferNormalizedCacheTest {
     // Fill the cache by doing a network only request
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
@@ -93,8 +93,8 @@ class DeferNormalizedCacheTest {
     // Fill the cache by doing a first request
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
     apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.NetworkOnly).toFlow().collect()
@@ -128,8 +128,8 @@ class DeferNormalizedCacheTest {
 
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
 
@@ -168,8 +168,8 @@ class DeferNormalizedCacheTest {
 
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
 
@@ -208,8 +208,8 @@ class DeferNormalizedCacheTest {
 
     val jsonList1 = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList1)
 
@@ -235,8 +235,8 @@ class DeferNormalizedCacheTest {
 
     val jsonList2 = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer2"}]},"hasNext":true}""",
-        """{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":{"isColor":true},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"486","year":1996,"screen":{"__typename":"Screen","resolution":"800x600"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":true},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList2)
 
@@ -271,8 +271,8 @@ class DeferNormalizedCacheTest {
 
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true}""",
-        """{"data":null,"path":["computers",0,"screen"],"label":"b","errors":[{"message":"Cannot resolve isColor","locations":[{"line":1,"column":119}],"path":["computers",0,"screen","isColor"]}],"hasNext":false}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0]}],"hasNext":true}""",
+        """{"incremental": [{"data":null,"path":["computers",0,"screen"],"label":"b","errors":[{"message":"Cannot resolve isColor","locations":[{"line":1,"column":119}],"path":["computers",0,"screen","isColor"]}]}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
 
@@ -402,8 +402,8 @@ class DeferNormalizedCacheTest {
   fun mutation() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true,"label":"c"}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"label":"c"}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
     val networkActual = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataAssertNoErrors }
@@ -441,8 +441,8 @@ class DeferNormalizedCacheTest {
   fun mutationWithOptimisticDataFails() = runTest(before = { setUp() }, after = { tearDown() }) {
     val jsonList = listOf(
         """{"data":{"computers":[{"__typename":"Computer","id":"Computer1"}]},"hasNext":true}""",
-        """{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"hasNext":true,"label":"c"}""",
-        """{"data":{"isColor":false},"path":["computers",0,"screen"],"hasNext":false,"label":"a"}""",
+        """{"incremental": [{"data":{"cpu":"386","year":1993,"screen":{"__typename":"Screen","resolution":"640x480"}},"path":["computers",0],"label":"c"}],"hasNext":true}""",
+        """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
     val responses = apolloClient.mutation(WithFragmentSpreadsMutation()).optimisticUpdates(

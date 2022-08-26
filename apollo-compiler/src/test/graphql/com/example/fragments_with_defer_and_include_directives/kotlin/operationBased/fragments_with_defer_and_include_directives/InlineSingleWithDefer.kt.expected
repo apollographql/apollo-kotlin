@@ -67,7 +67,7 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
 
   public companion object {
     public const val OPERATION_ID: String =
-        "da1ea6b7b54f4bc6e0754b9bbe45a002500fef00de7f3605a4efd02133c20def"
+        "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -76,15 +76,14 @@ public class InlineSingleWithDefer() : Query<InlineSingleWithDefer.Data> {
      * query InlineSingleWithDefer {
      *   hero {
      *     __typename
-     *     ... on Droid @experimental_defer {
+     *     ... on Droid @defer {
      *       name
      *     }
      *   }
      * }
      */
     public val OPERATION_DOCUMENT: String
-      get() =
-          "query InlineSingleWithDefer { hero { __typename ... on Droid @experimental_defer { name } } }"
+      get() = "query InlineSingleWithDefer { hero { __typename ... on Droid @defer { name } } }"
 
     public const val OPERATION_NAME: String = "InlineSingleWithDefer"
   }

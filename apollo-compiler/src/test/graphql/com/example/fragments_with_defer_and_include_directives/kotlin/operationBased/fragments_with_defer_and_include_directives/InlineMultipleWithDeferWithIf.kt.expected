@@ -87,7 +87,7 @@ public data class InlineMultipleWithDeferWithIf(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "3e777ab8534ca2847df43e92a828787127e9536d7c1ab8136985620443c2b991"
+        "9dc79c78df7375c3d860d16df3ea839ea45c7f8420976f63414610d338f0caf1"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -96,13 +96,13 @@ public data class InlineMultipleWithDeferWithIf(
      * query InlineMultipleWithDeferWithIf($cond: Boolean!) {
      *   hero {
      *     __typename
-     *     ... on Character @experimental_defer(label: "f_first", if: false) {
+     *     ... on Character @defer(label: "f_first", if: false) {
      *       id
      *     }
-     *     ... on Character @experimental_defer(label: "f_second", if: true) {
+     *     ... on Character @defer(label: "f_second", if: true) {
      *       name
      *     }
-     *     ... on Character @experimental_defer(label: "f_third", if: $cond) {
+     *     ... on Character @defer(label: "f_third", if: $cond) {
      *       name
      *     }
      *   }
@@ -110,7 +110,7 @@ public data class InlineMultipleWithDeferWithIf(
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @experimental_defer(label: \"f_first\", if: false) { id } ... on Character @experimental_defer(label: \"f_second\", if: true) { name } ... on Character @experimental_defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
+          "query InlineMultipleWithDeferWithIf(${'$'}cond: Boolean!) { hero { __typename ... on Character @defer(label: \"f_first\", if: false) { id } ... on Character @defer(label: \"f_second\", if: true) { name } ... on Character @defer(label: \"f_third\", if: ${'$'}cond) { name } } }"
 
     public const val OPERATION_NAME: String = "InlineMultipleWithDeferWithIf"
   }

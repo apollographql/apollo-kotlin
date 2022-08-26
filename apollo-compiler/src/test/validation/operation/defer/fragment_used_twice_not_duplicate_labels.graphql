@@ -1,14 +1,14 @@
 query Query1 {
   computers {
     id
-    ...ComputerFields @experimental_defer
+    ...ComputerFields @defer
   }
 }
 
 query Query2 {
   computers {
     id
-    ...ComputerFields @experimental_defer
+    ...ComputerFields @defer
   }
 }
 
@@ -18,7 +18,7 @@ fragment ComputerFields on Computer {
   screen {
     resolution
     # This is traversed twice, but it's not a duplicate label
-    ...ScreenFields @experimental_defer(label: "a")
+    ...ScreenFields @defer(label: "a")
   }
 }
 

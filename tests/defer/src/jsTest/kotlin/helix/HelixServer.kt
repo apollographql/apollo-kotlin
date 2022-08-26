@@ -35,7 +35,7 @@ class HelixServer(
       if (shouldRenderGraphiQL(request)) {
         res.send(
             renderGraphiQL(dynamicObject {
-              subscriptionsEndpoint = "ws://localhost:4000/graphql"
+              subscriptionsEndpoint = "ws://localhost:$port/graphql"
             })
         )
         return@use null

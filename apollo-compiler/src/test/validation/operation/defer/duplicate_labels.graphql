@@ -1,12 +1,12 @@
 query WithFragmentSpreads {
   computers {
-    ...ComputerFields @experimental_defer(label: "foobar")
+    ...ComputerFields @defer(label: "foobar")
   }
 }
 
 fragment ComputerFields on Computer {
   screen {
-    ...ScreenFields @experimental_defer(label: "foobar")
+    ...ScreenFields @defer(label: "foobar")
   }
 }
 

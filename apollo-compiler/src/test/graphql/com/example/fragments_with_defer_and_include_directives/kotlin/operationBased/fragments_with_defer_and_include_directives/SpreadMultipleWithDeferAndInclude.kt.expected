@@ -62,7 +62,7 @@ public data class SpreadMultipleWithDeferAndInclude(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "de31db86e7b05f57e3d3d700a4811e4aba6c56860dc18f94879165a5e04fcfe8"
+        "1c9d61b4af65df2bfed92353244efbb66d20a35daf747507e66ed9d20dcd1517"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -74,10 +74,10 @@ public data class SpreadMultipleWithDeferAndInclude(
      *     __typename
      *     ...DroidDetails @include(if: $cond1)
      *     ...DroidDetails @skip(if: $cond2)
-     *     ...DroidDetails @experimental_defer(label: "b_first")
-     *     ...DroidDetails @experimental_defer(label: "b_second")
-     *     ...DroidDetails @experimental_defer(label: "b_third") @include(if: $cond3)
-     *     ...DroidDetails @experimental_defer(label: "b_fourth") @skip(if: $cond4)
+     *     ...DroidDetails @defer(label: "b_first")
+     *     ...DroidDetails @defer(label: "b_second")
+     *     ...DroidDetails @defer(label: "b_third") @include(if: $cond3)
+     *     ...DroidDetails @defer(label: "b_fourth") @skip(if: $cond4)
      *   }
      * }
      *
@@ -87,7 +87,7 @@ public data class SpreadMultipleWithDeferAndInclude(
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query SpreadMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ...DroidDetails @include(if: ${'$'}cond1) ...DroidDetails @skip(if: ${'$'}cond2) ...DroidDetails @experimental_defer(label: \"b_first\") ...DroidDetails @experimental_defer(label: \"b_second\") ...DroidDetails @experimental_defer(label: \"b_third\") @include(if: ${'$'}cond3) ...DroidDetails @experimental_defer(label: \"b_fourth\") @skip(if: ${'$'}cond4) } }  fragment DroidDetails on Droid { name }"
+          "query SpreadMultipleWithDeferAndInclude(${'$'}cond1: Boolean!, ${'$'}cond2: Boolean!, ${'$'}cond3: Boolean!, ${'$'}cond4: Boolean!) { hero { __typename ...DroidDetails @include(if: ${'$'}cond1) ...DroidDetails @skip(if: ${'$'}cond2) ...DroidDetails @defer(label: \"b_first\") ...DroidDetails @defer(label: \"b_second\") ...DroidDetails @defer(label: \"b_third\") @include(if: ${'$'}cond3) ...DroidDetails @defer(label: \"b_fourth\") @skip(if: ${'$'}cond4) } }  fragment DroidDetails on Droid { name }"
 
     public const val OPERATION_NAME: String = "SpreadMultipleWithDeferAndInclude"
   }

@@ -1,6 +1,6 @@
 query GetAnimal($label: String) {
   animal {
-    ... on Cat @experimental_defer(label: $label) {
+    ... on Cat @defer(label: $label) {
       meow
     }
   }

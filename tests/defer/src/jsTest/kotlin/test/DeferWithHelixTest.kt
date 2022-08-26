@@ -26,19 +26,21 @@ import helix.HelixServer
 import kotlinx.coroutines.flow.toList
 import util.dynamicObject
 import util.jsAsyncIterator
+import kotlin.random.Random
 import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @Ignore
-// TODO These tests are temporarily ignored while @defer has been renamed to @experimental_defer
-// See https://github.com/apollographql/apollo-kotlin/issues/4071
+// TODO These tests are temporarily ignored as the latest version of graphql-js
+// uses a package format which is incompatible with Kotlin/JS.
+// See https://youtrack.jetbrains.com/issue/KT-12784
 class DeferWithHelixTest {
   private lateinit var helixServer: HelixServer
   private lateinit var apolloClient: ApolloClient
 
   private suspend fun setUp() {
-    helixServer = HelixServer(schema)
+    helixServer = HelixServer(schema, port = Random.nextInt(1024, 65535))
     apolloClient = ApolloClient.Builder()
         .serverUrl(helixServer.url())
         .webSocketServerUrl(helixServer.webSocketUrl())

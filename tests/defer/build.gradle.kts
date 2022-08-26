@@ -33,7 +33,7 @@ kotlin {
 
     val jsTest by getting {
       dependencies {
-        implementation(npm("graphql-helix", "1.12.0"))
+        implementation(npm("graphql-helix", "1.13.0"))
         implementation(npm("express", "4.17.3"))
         implementation(npm("ws", "8.2.2"))
         implementation(npm("graphql-ws", "5.5.0"))

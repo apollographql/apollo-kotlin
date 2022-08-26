@@ -19,7 +19,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Data> {
-  public static final String OPERATION_ID = "9811408b41402ad913abcd7bb5ce221d926a3c545f3f401706b25aefa816081e";
+  public static final String OPERATION_ID = "9331f0c719bafb010d29f76c720d4488f45c5196bf3fb8908b2be30bc546e355";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,16 +28,16 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
    * query InlineMultipleWithDefer {
    *   hero {
    *     __typename
-   *     ... on Droid @experimental_defer(label: "d_first") {
+   *     ... on Droid @defer(label: "d_first") {
    *       name
    *     }
-   *     ... on Droid @experimental_defer(label: "d_second") {
+   *     ... on Droid @defer(label: "d_second") {
    *       id
    *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDefer { hero { __typename ... on Droid @experimental_defer(label: \"d_first\") { name } ... on Droid @experimental_defer(label: \"d_second\") { id } } }";
+  public static final String OPERATION_DOCUMENT = "query InlineMultipleWithDefer { hero { __typename ... on Droid @defer(label: \"d_first\") { name } ... on Droid @defer(label: \"d_second\") { id } } }";
 
   public static final String OPERATION_NAME = "InlineMultipleWithDefer";
 

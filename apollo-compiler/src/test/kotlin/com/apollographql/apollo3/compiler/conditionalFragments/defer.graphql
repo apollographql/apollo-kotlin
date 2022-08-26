@@ -1,6 +1,6 @@
 query QueryWithDefer($withDetails: Boolean!) {
   field1
-  ... on Query @experimental_defer(if: $withDetails) {
+  ... on Query @defer(if: $withDetails) {
     field2
   }
 }
