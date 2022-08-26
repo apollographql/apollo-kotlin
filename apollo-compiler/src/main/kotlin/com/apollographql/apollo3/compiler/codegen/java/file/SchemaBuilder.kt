@@ -89,6 +89,7 @@ internal class SchemaBuilder(
                   }
                 }
                 .add(".build()")
+                .unindent()
                 .build()
         )
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
