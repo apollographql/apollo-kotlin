@@ -1,15 +1,16 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.google.common.truth.Truth.assertThat
 import okio.Buffer
 import java.io.File
 
 internal object TestUtils {
+  private const val separator = "\n------------\n"
+
   internal fun shouldUpdateTestFixtures(): Boolean {
     if (System.getenv("updateTestFixtures") != null) {
       return true
@@ -67,7 +68,7 @@ internal object TestUtils {
     return File(parentFile, "$nameWithoutExtension.$newExtension")
   }
 
-  private fun findSchema(dir: File): Schema? {
+  fun findSchema(dir: File): Schema? {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
@@ -113,6 +114,10 @@ internal object TestUtils {
     } else {
       assertThat(actual).isEqualTo(expected)
     }
+  }
+
+  fun List<Issue>.serialize() = joinToString(separator) {
+    "${it.severity}: ${it.javaClass.simpleName} (${it.sourceLocation.line}:${it.sourceLocation.position})\n${it.message}"
   }
 }
 

@@ -9,7 +9,9 @@ fun GQLOperationDefinition.rootTypeDefinition(schema: Schema) = when (operationT
   else -> null
 }
 
+@JvmOverloads
 fun GQLOperationDefinition.validate(
     schema: Schema,
     fragments: Map<String, GQLFragmentDefinition>,
-) = ExecutableValidationScope(schema, fragments).validateOperation(this)
+    fieldsOnDisjointTypesMustMerge: Boolean = true,
+) = ExecutableValidationScope(schema, fragments, fieldsOnDisjointTypesMustMerge).validateOperation(this)
