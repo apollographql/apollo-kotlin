@@ -17,12 +17,14 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.codegen.java.model.ModelBuilder
 import com.apollographql.apollo3.compiler.codegen.maybeFlatten
+import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.javapoet.ClassName
@@ -87,6 +89,7 @@ internal class OperationBuilder(
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
         .makeDataClassFromParameters(operation.variables.map { it.toNamedType().toParameterSpec(context) })
+        .addBuilder(context)
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))
         .addMethod(nameMethodSpec())
@@ -244,5 +247,39 @@ internal class OperationBuilder(
         context.resolver.resolveOperationSelections(operation.name)
     )
   }
-}
 
+  private fun TypeSpec.Builder.addBuilder(context: JavaContext): TypeSpec.Builder {
+    addMethod(Builder.builderFactoryMethod())
+
+    val operationClassName = ClassName.get("", simpleName)
+
+    if (operation.variables.isEmpty()) {
+      return addType(
+        Builder(
+          targetObjectClassName = operationClassName,
+          fields = emptyList(),
+          fieldDefaultValues = emptyMap(),
+          fieldJavaDocs = emptyMap(),
+          context = context
+        ).build()
+      )
+    }
+
+    operation.variables
+      .map {
+        context.layout.propertyName(it.name.decapitalizeFirstLetter()) to context.resolver.resolveIrType(it.type)
+      }
+      .let {
+        Builder(
+          targetObjectClassName = operationClassName,
+          fields = it,
+          fieldDefaultValues = emptyMap(),
+          fieldJavaDocs = emptyMap(),
+          context = context
+        )
+      }
+      .let { addType(it.build()) }
+
+    return this
+  }
+}

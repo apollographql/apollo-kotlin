@@ -108,6 +108,10 @@ public class AllStarships implements Query<AllStarships.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -142,6 +146,15 @@ public class AllStarships implements Query<AllStarships.Data> {
     )
     .selections(AllStarshipsSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public AllStarships build() {
+      return new AllStarships();
+    }
   }
 
   public static class Data implements Query.Data {

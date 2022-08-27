@@ -108,6 +108,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -142,6 +146,15 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestQuery build() {
+      return new TestQuery();
+    }
   }
 
   public static class Data implements Query.Data {
@@ -189,6 +202,32 @@ public class TestQuery implements Query<TestQuery.Data> {
           + "}";
       }
       return $toString;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.hero = hero;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Hero hero;
+
+      Builder() {
+      }
+
+      public Builder hero(Hero hero) {
+        this.hero = hero;
+        return this;
+      }
+
+      public Data build() {
+        return new Data(hero);
+      }
     }
   }
 
@@ -267,6 +306,56 @@ public class TestQuery implements Query<TestQuery.Data> {
           + "}";
       }
       return $toString;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.name = name;
+      builder.appearsIn = appearsIn;
+      builder.heroDetails = heroDetails;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private String __typename;
+
+      private String name;
+
+      private List<Episode> appearsIn;
+
+      private HeroDetails heroDetails;
+
+      Builder() {
+      }
+
+      public Builder __typename(String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder name(String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Builder appearsIn(List<Episode> appearsIn) {
+        this.appearsIn = appearsIn;
+        return this;
+      }
+
+      public Builder heroDetails(HeroDetails heroDetails) {
+        this.heroDetails = heroDetails;
+        return this;
+      }
+
+      public Hero build() {
+        return new Hero(__typename, name, appearsIn, heroDetails);
+      }
     }
   }
 }

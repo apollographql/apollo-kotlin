@@ -84,6 +84,10 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -118,6 +122,22 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     )
     .selections(TestSubscriptionSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private String repo;
+
+    Builder() {
+    }
+
+    public Builder repo(String repo) {
+      this.repo = repo;
+      return this;
+    }
+
+    public TestSubscription build() {
+      return new TestSubscription(repo);
+    }
   }
 
   public static class Data implements Subscription.Data {

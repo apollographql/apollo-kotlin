@@ -87,6 +87,10 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -121,6 +125,15 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     )
     .selections(AnimalQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public AnimalQuery build() {
+      return new AnimalQuery();
+    }
   }
 
   public static class Data implements Query.Data {

@@ -68,18 +68,18 @@ public class ClientTest {
   public void simple() {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     ApolloResponse<GetRandomQuery.Data> queryResponse = Rx2Apollo.single(
-        apolloClient.query(new GetRandomQuery())
+        apolloClient.query(GetRandomQuery.builder().build())
     ).blockingGet();
     Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
     ApolloResponse<CreateCatMutation.Data> mutationResponse = Rx2Apollo.single(
-        apolloClient.mutation(new CreateCatMutation())
+        apolloClient.mutation(CreateCatMutation.builder().build())
     ).blockingGet();
     Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
 
     Disposable disposable = Rx2Apollo.flowable(
-        apolloClient.subscription(new AnimalCreatedSubscription())
+        apolloClient.subscription(AnimalCreatedSubscription.builder().build())
     ).subscribe(result -> {
       String species = result.dataAssertNoErrors().animalCreated.catFragment.species;
     });
@@ -99,7 +99,7 @@ public class ClientTest {
     BatchingHttpInterceptor.configureApolloClientBuilder(apolloClientBuilder, false);
     apolloClient = apolloClientBuilder.build();
 
-    ApolloCall<GetRandomQuery.Data> call = apolloClient.query(new GetRandomQuery());
+    ApolloCall<GetRandomQuery.Data> call = apolloClient.query(GetRandomQuery.builder().build());
     BatchingHttpInterceptor.configureApolloCall(call, true);
     ApolloResponse<GetRandomQuery.Data> result = Rx2Apollo.single(call).blockingGet();
   }

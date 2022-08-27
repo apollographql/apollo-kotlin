@@ -446,6 +446,14 @@ interface Service {
   val generateDataBuilders: Property<Boolean>
 
   /**
+   * Whether to generate response model builders for Java.
+   *
+   * Default: false
+   */
+  @ApolloExperimental
+  val generateModelBuilder: Property<Boolean>
+
+  /**
    * What codegen to use. One of "operationBased", "responseBased" or "compat"
    *
    * Default value: "operationBased"

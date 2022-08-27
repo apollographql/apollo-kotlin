@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "197e186cfb461d1c38c0be4da7b182eff42e304043973b994c8c2de3535daea6";
@@ -85,6 +86,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -119,6 +124,22 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Optional<String> operation = Optional.absent();
+
+    Builder() {
+    }
+
+    public Builder operation(@Nullable String operation) {
+      this.operation = Optional.fromNullable(operation);
+      return this;
+    }
+
+    public TestQuery build() {
+      return new TestQuery(operation);
+    }
   }
 
   public static class Data implements Query.Data {

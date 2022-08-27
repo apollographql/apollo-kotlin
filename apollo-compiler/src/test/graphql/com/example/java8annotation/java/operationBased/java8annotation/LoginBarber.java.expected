@@ -82,6 +82,10 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -116,6 +120,22 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
     )
     .selections(LoginBarberSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private com.example.java8annotation.type.Login input;
+
+    Builder() {
+    }
+
+    public Builder input(com.example.java8annotation.type.Login input) {
+      this.input = input;
+      return this;
+    }
+
+    public LoginBarber build() {
+      return new LoginBarber(input);
+    }
   }
 
   public static class Data implements Mutation.Data {

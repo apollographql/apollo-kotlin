@@ -23,6 +23,7 @@ internal object JavaClassNames {
   val JsonReader = ClassNames.JsonReader.toJavaPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toJavaPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toJavaPoetClassName()
+  val Input = ClassNames.Input.toJavaPoetClassName()
   val Optional = ClassNames.Optional.toJavaPoetClassName()
   val Absent = ClassNames.Absent.toJavaPoetClassName()
   val Present = ClassNames.Present.toJavaPoetClassName()
@@ -35,6 +36,7 @@ internal object JavaClassNames {
   val FragmentData = ClassNames.FragmentData.toJavaPoetClassName()
   val Query = ClassNames.Query.toJavaPoetClassName()
   val Mutation = ClassNames.Mutation.toJavaPoetClassName()
+  val Mutator = ClassNames.Mutator.toJavaPoetClassName()
   val Subscription = ClassNames.Subscription.toJavaPoetClassName()
   val QueryData = ClassNames.QueryData.toJavaPoetClassName()
   val MutationData = ClassNames.MutationData.toJavaPoetClassName()
@@ -55,12 +57,14 @@ internal object JavaClassNames {
   val DefaultFakeResolver = ClassNames.DefaultFakeResolver.toJavaPoetClassName()
   val JavaObjectBuilder = ClassName.get(apolloApiPackageName, "JavaObjectBuilder")
 
+  val Builder = ClassName.get("", "Builder")
+
   /**
    * ClassNames that we don't use in Kotlin because we use extension functions instead
    */
   val CompiledNotNullType = ClassName.get(apolloApiPackageName, "CompiledNotNullType")
   val CompiledListType = ClassName.get(apolloApiPackageName, "CompiledListType")
-  val ObjectAdapter  = ClassName.get(apolloApiPackageName, "ObjectAdapter")
+  val ObjectAdapter = ClassName.get(apolloApiPackageName, "ObjectAdapter")
   val And = ClassName.get(apolloApiPackageName, "BooleanExpression", "And")
   val Or = ClassName.get(apolloApiPackageName, "BooleanExpression", "Or")
   val Not = ClassName.get(apolloApiPackageName, "BooleanExpression", "Not")
@@ -98,6 +102,7 @@ internal object JavaClassNames {
   val Override = ClassName.get("java.lang", "Override")
 
   val List: ClassName = ClassName.get("java.util", "List")
+  val ArrayList: ClassName = ClassName.get("java.util", "ArrayList")
   val Arrays = ClassName.get("java.util", "Arrays")
   val Collections = ClassName.get("java.util", "Collections")
   val IllegalStateException = ClassName.get("java.lang", "IllegalStateException")

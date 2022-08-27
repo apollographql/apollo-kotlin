@@ -3,6 +3,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.api.Optional.Absent
 import com.apollographql.apollo3.api.Optional.Present
 import com.apollographql.apollo3.exception.MissingValueException
+import kotlin.jvm.JvmStatic
 
 /**
  * A sealed class that can either be [Present] or [Absent]
@@ -18,6 +19,14 @@ sealed class Optional<out V> {
   object Absent : Optional<Nothing>()
 
   companion object {
+    @JvmStatic
+    fun <T> absent(): Optional<T> = Absent
+
+    @JvmStatic
+    fun <T> fromNullable(nullableReference: T?): Optional<T> {
+      return nullableReference?.let { Present(it) } ?: absent()
+    }
+
     fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
   }
 }

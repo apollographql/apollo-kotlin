@@ -81,6 +81,10 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -115,6 +119,15 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
     )
     .selections(SpreadSingleWithDeferSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public SpreadSingleWithDefer build() {
+      return new SpreadSingleWithDefer();
+    }
   }
 
   public static class Data implements Query.Data {

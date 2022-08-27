@@ -59,4 +59,30 @@ public class HumanDetails implements Fragment.Data {
     }
     return $toString;
   }
+
+  public Builder toBuilder() {
+    Builder builder = new Builder();
+    builder.name = name;
+    return builder;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    private String name;
+
+    Builder() {
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public HumanDetails build() {
+      return new HumanDetails(name);
+    }
+  }
 }

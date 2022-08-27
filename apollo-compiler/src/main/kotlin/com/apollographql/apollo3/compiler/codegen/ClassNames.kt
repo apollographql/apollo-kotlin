@@ -12,6 +12,7 @@ internal object ClassNames {
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
   const val apolloApiTestPackageName = "$apolloApiPackageName.test"
 
+  val Assertions = ResolverClassName(apolloApiPackageName, "Assertions")
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
   val InterfaceType = ResolverClassName(apolloApiPackageName, "InterfaceType")
   val ObjectTypeBuilder = ResolverClassName(apolloApiPackageName, "ObjectType", "Builder")
@@ -22,6 +23,7 @@ internal object ClassNames {
   val JsonReader = ResolverClassName(apolloApiJsonPackageName, "JsonReader")
   val JsonWriter = ResolverClassName(apolloApiJsonPackageName, "JsonWriter")
   val CustomScalarAdapters = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters")
+  val Input = ResolverClassName(apolloApiPackageName, "Input")
   val Optional = ResolverClassName(apolloApiPackageName, "Optional")
   val Absent = ResolverClassName(apolloApiPackageName, "Optional", "Absent")
   val Present = ResolverClassName(apolloApiPackageName, "Optional", "Present")
@@ -34,6 +36,7 @@ internal object ClassNames {
   val FragmentData = ResolverClassName(apolloApiPackageName, "Fragment", "Data")
   val Query = ResolverClassName(apolloApiPackageName, "Query")
   val Mutation = ResolverClassName(apolloApiPackageName, "Mutation")
+  val Mutator = ResolverClassName("$apolloApiPackageName.internal", "Mutator")
   val Subscription = ResolverClassName(apolloApiPackageName, "Subscription")
   val QueryData = ResolverClassName(apolloApiPackageName, "Query", "Data")
   val MutationData = ResolverClassName(apolloApiPackageName, "Mutation", "Data")

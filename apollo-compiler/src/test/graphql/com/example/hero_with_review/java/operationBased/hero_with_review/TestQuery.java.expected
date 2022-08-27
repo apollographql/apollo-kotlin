@@ -95,6 +95,10 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -129,6 +133,22 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Episode ep;
+
+    Builder() {
+    }
+
+    public Builder ep(Episode ep) {
+      this.ep = ep;
+      return this;
+    }
+
+    public TestQuery build() {
+      return new TestQuery(ep);
+    }
   }
 
   public static class Data implements Mutation.Data {

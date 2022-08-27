@@ -20,6 +20,7 @@ import com.example.target_name.type.renamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "42f2acf77ef3db730fa970cbbba1ca04133fcea023d8355d4eb0c27ebe51e30f";
@@ -110,6 +111,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -144,6 +149,36 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Optional<renamedInput> input = Optional.absent();
+
+    private Optional<java.lang.Object> scalar = Optional.absent();
+
+    private Optional<renamedEnum> enum_ = Optional.absent();
+
+    Builder() {
+    }
+
+    public Builder input(@Nullable renamedInput input) {
+      this.input = Optional.fromNullable(input);
+      return this;
+    }
+
+    public Builder scalar(java.lang.Object scalar) {
+      this.scalar = Optional.fromNullable(scalar);
+      return this;
+    }
+
+    public Builder enum_(@Nullable renamedEnum enum_) {
+      this.enum_ = Optional.fromNullable(enum_);
+      return this;
+    }
+
+    public TestQuery build() {
+      return new TestQuery(input, scalar, enum_);
+    }
   }
 
   public static class Data implements Query.Data {

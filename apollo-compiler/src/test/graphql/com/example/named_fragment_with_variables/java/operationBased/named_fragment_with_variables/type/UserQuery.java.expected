@@ -10,6 +10,7 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.Nullable;
 
 public class UserQuery {
   public final String name;
@@ -63,5 +64,32 @@ public class UserQuery {
         + "}";
     }
     return $toString;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    private String name;
+
+    private Optional<Boolean> isAdmin = Optional.absent();
+
+    Builder() {
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder isAdmin(@Nullable Boolean isAdmin) {
+      this.isAdmin = Optional.fromNullable(isAdmin);
+      return this;
+    }
+
+    public UserQuery build() {
+      return new UserQuery(name, isAdmin);
+    }
   }
 }

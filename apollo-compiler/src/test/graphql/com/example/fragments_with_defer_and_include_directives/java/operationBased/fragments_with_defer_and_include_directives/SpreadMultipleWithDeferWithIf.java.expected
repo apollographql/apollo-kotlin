@@ -101,6 +101,10 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -135,6 +139,22 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     )
     .selections(SpreadMultipleWithDeferWithIfSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Boolean cond;
+
+    Builder() {
+    }
+
+    public Builder cond(Boolean cond) {
+      this.cond = cond;
+      return this;
+    }
+
+    public SpreadMultipleWithDeferWithIf build() {
+      return new SpreadMultipleWithDeferWithIf(cond);
+    }
   }
 
   public static class Data implements Query.Data {

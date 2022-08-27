@@ -11,8 +11,10 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The input object sent when someone is creating a new review
@@ -219,5 +221,240 @@ public class ReviewInput {
         + "}";
     }
     return $toString;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    private Integer stars;
+
+    private Optional<Integer> nullableIntFieldWithDefaultValue = Optional.fromNullable(10);
+
+    private Optional<String> commentary = Optional.absent();
+
+    private ColorInput favoriteColor;
+
+    private Optional<Episode> enumWithDefaultValue = Optional.fromNullable(Episode.safeValueOf("JEDI"));
+
+    private Optional<Episode> nonNullableEnumWithDefaultValue = Optional.fromNullable(Episode.safeValueOf("JEDI"));
+
+    private Optional<Episode> nullableEnum = Optional.absent();
+
+    private Optional<List<Date>> listOfCustomScalar = Optional.absent();
+
+    private Optional<Date> customScalar = Optional.absent();
+
+    private Optional<List<Episode>> listOfEnums = Optional.fromNullable(Arrays.<Episode>asList(Episode.safeValueOf("NEWHOPE"), Episode.safeValueOf("EMPIRE")));
+
+    private Optional<List<Integer>> listOfInt = Optional.fromNullable(Arrays.<Integer>asList(1, 2, 3));
+
+    private Optional<List<String>> listOfString = Optional.fromNullable(Arrays.<String>asList("test1", "test2", "test3"));
+
+    private List<String> listOfStringNonOptional;
+
+    private Optional<List<ColorInput>> listOfInputTypes = Optional.fromNullable(Arrays.<ColorInput>asList());
+
+    private Optional<Boolean> booleanWithDefaultValue = Optional.fromNullable(true);
+
+    private Optional<Boolean> booleanNonOptional = Optional.absent();
+
+    private Optional<List<List<String>>> listOfListOfString = Optional.absent();
+
+    private Optional<List<List<Episode>>> listOfListOfEnum = Optional.absent();
+
+    private Optional<List<List<Date>>> listOfListOfCustom = Optional.absent();
+
+    private Optional<List<List<ColorInput>>> listOfListOfObject = Optional.absent();
+
+    private Optional<String> capitalizedField = Optional.absent();
+
+    private Optional<Integer> capitalizedInt = Optional.absent();
+
+    Builder() {
+    }
+
+    /**
+     * 0-5 stars
+     */
+    public Builder stars(Integer stars) {
+      this.stars = stars;
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder nullableIntFieldWithDefaultValue(
+        @Nullable Integer nullableIntFieldWithDefaultValue) {
+      this.nullableIntFieldWithDefaultValue = Optional.fromNullable(nullableIntFieldWithDefaultValue);
+      return this;
+    }
+
+    /**
+     * Comment about the movie, optional
+     */
+    public Builder commentary(@Nullable String commentary) {
+      this.commentary = Optional.fromNullable(commentary);
+      return this;
+    }
+
+    /**
+     * Favorite color, optional
+     */
+    public Builder favoriteColor(ColorInput favoriteColor) {
+      this.favoriteColor = favoriteColor;
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
+      this.enumWithDefaultValue = Optional.fromNullable(enumWithDefaultValue);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder nonNullableEnumWithDefaultValue(
+        @Nullable Episode nonNullableEnumWithDefaultValue) {
+      this.nonNullableEnumWithDefaultValue = Optional.fromNullable(nonNullableEnumWithDefaultValue);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder nullableEnum(@Nullable Episode nullableEnum) {
+      this.nullableEnum = Optional.fromNullable(nullableEnum);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfCustomScalar(@Nullable List<Date> listOfCustomScalar) {
+      this.listOfCustomScalar = Optional.fromNullable(listOfCustomScalar);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder customScalar(@Nullable Date customScalar) {
+      this.customScalar = Optional.fromNullable(customScalar);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfEnums(@Nullable List<Episode> listOfEnums) {
+      this.listOfEnums = Optional.fromNullable(listOfEnums);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfInt(@Nullable List<Integer> listOfInt) {
+      this.listOfInt = Optional.fromNullable(listOfInt);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfString(@Nullable List<String> listOfString) {
+      this.listOfString = Optional.fromNullable(listOfString);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfStringNonOptional(List<String> listOfStringNonOptional) {
+      this.listOfStringNonOptional = listOfStringNonOptional;
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfInputTypes(@Nullable List<ColorInput> listOfInputTypes) {
+      this.listOfInputTypes = Optional.fromNullable(listOfInputTypes);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder booleanWithDefaultValue(@Nullable Boolean booleanWithDefaultValue) {
+      this.booleanWithDefaultValue = Optional.fromNullable(booleanWithDefaultValue);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder booleanNonOptional(@Nullable Boolean booleanNonOptional) {
+      this.booleanNonOptional = Optional.fromNullable(booleanNonOptional);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfString(@Nullable List<List<String>> listOfListOfString) {
+      this.listOfListOfString = Optional.fromNullable(listOfListOfString);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfEnum(@Nullable List<List<Episode>> listOfListOfEnum) {
+      this.listOfListOfEnum = Optional.fromNullable(listOfListOfEnum);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfCustom(@Nullable List<List<Date>> listOfListOfCustom) {
+      this.listOfListOfCustom = Optional.fromNullable(listOfListOfCustom);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder listOfListOfObject(@Nullable List<List<ColorInput>> listOfListOfObject) {
+      this.listOfListOfObject = Optional.fromNullable(listOfListOfObject);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder capitalizedField(@Nullable String capitalizedField) {
+      this.capitalizedField = Optional.fromNullable(capitalizedField);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder capitalizedInt(@Nullable Integer capitalizedInt) {
+      this.capitalizedInt = Optional.fromNullable(capitalizedInt);
+      return this;
+    }
+
+    public ReviewInput build() {
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, booleanNonOptional, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField, capitalizedInt);
+    }
   }
 }

@@ -5,10 +5,16 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
+import com.apollographql.apollo3.compiler.codegen.java.helpers.isCustomScalar
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
+import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrInputObject
+import com.apollographql.apollo3.compiler.ir.IrInputObjectType
+import com.apollographql.apollo3.compiler.ir.IrScalarType
+import com.apollographql.apollo3.compiler.ir.IrStringValue
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -42,5 +48,35 @@ internal class InputObjectBuilder(
           .makeDataClassFromParameters(fields.map {
             it.toNamedType().toParameterSpec(context)
           })
+          .addBuilder()
           .build()
+
+  private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
+    if (inputObject.fields.isEmpty()) {
+      return this
+    } else {
+      val builderFields = inputObject.fields.map {
+        context.layout.escapeReservedWord(it.name.decapitalizeFirstLetter()) to context.resolver.resolveIrType(it.type)
+      }
+      val builderFieldDefaultValues = inputObject.fields
+        .filter {
+          // ignore any custom type or object default values for now as we don't support them
+          !it.type.isCustomScalar() && (it.type !is IrInputObjectType || it.defaultValue == null)
+        }
+        .associate { context.layout.escapeReservedWord(it.name.decapitalizeFirstLetter()) to it.defaultValue }
+      val javaDocs = inputObject.fields
+        .filter { !it.description.isNullOrBlank() }
+        .associate { context.layout.escapeReservedWord(it.name.decapitalizeFirstLetter()) to it.description!! }
+      return addMethod(Builder.builderFactoryMethod())
+        .addType(
+          Builder(
+            targetObjectClassName = ClassName.get("", simpleName),
+            fields = builderFields,
+            fieldDefaultValues = builderFieldDefaultValues,
+            fieldJavaDocs = javaDocs,
+            context = context
+          ).build()
+        )
+    }
+  }
 }

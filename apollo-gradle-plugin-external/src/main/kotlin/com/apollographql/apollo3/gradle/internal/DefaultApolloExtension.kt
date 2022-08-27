@@ -91,7 +91,7 @@ abstract class DefaultApolloExtension(
       task.group = TASK_GROUP
       task.projectRootDir = project.rootDir.absolutePath
     }
-    
+
     /**
      * A simple task to be used from the command line to ease schema conversion
      */
@@ -560,6 +560,7 @@ abstract class DefaultApolloExtension(
       task.generateQueryDocument.set(service.generateQueryDocument)
       task.generateSchema.set(service.generateSchema)
       task.generatedSchemaName.set(service.generatedSchemaName)
+      task.generateModelBuilder.set(service.generateModelBuilder)
       task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)

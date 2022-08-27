@@ -78,6 +78,10 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -112,6 +116,15 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
     )
     .selections(InlineSingleWithDeferSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public InlineSingleWithDefer build() {
+      return new InlineSingleWithDefer();
+    }
   }
 
   public static class Data implements Query.Data {
