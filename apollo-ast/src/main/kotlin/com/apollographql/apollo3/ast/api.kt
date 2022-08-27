@@ -87,7 +87,8 @@ fun GQLDocument.validateAsSchemaAndAddApolloDefinition(): GQLResult<Schema> {
 /**
  * Validates the given document as an executable document.
  *
- * @param fieldsOnDisjointTypesMustMerge Whether fields with different shape are disallowed to be merged in disjoint types.
+ * @param fieldsOnDisjointTypesMustMerge set to false to relax the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge())
+ * and allow fields of different types at the same Json path as long as their parent types are disjoint.
  *
  * @return  a [GQLResult] containing the operation and fragment definitions in 'value', along with any potential issues
  */

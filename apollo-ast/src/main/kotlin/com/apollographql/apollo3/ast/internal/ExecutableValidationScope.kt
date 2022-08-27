@@ -45,7 +45,8 @@ import com.apollographql.apollo3.ast.sharesPossibleTypesWith
  * @param fragmentDefinitions: all the fragments in the current compilation unit.
  * This is required to check the type conditions as well as fields merging
  *
- * @param fieldsOnDisjointTypesMustMerge Whether fields with different shape are disallowed to be merged in disjoint types.
+ * @param fieldsOnDisjointTypesMustMerge set to false to relax the standard GraphQL [FieldsInSetCanMerge](https://spec.graphql.org/draft/#FieldsInSetCanMerge())
+ * and allow fields of different types at the same Json path as long as their parent types are disjoint.
  */
 internal class ExecutableValidationScope(
     private val schema: Schema,

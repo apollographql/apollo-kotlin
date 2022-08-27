@@ -26,7 +26,8 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = true).issues + if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
+        val mustMerge = graphQLFile.name != "merging_allowed.graphql"
+        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = mustMerge).issues + if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
           checkCapitalizedFields(parseResult.value!!.definitions)
         } else {
           emptyList()
