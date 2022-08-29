@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsSealedBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
@@ -32,6 +33,7 @@ import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 
@@ -200,6 +202,7 @@ internal class KotlinCodeGen(
 
     if (generateSchema) {
       builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions, ir.enums))
+      builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
     }
 
     if (ir.connectionTypes.isNotEmpty()) {
@@ -235,7 +238,9 @@ internal class KotlinCodeGen(
           cgFile.funSpecs.map { funSpec -> funSpec.internal(generateAsInternal) }.forEach { funSpec ->
             builder.addFunction(funSpec)
           }
-
+          cgFile.propertySpecs.map { propertySpec -> propertySpec.internal(generateAsInternal) }.forEach { propertySpec ->
+            builder.addProperty(propertySpec)
+          }
           val dir = if (cgFile.isTest) {
             testDir
           } else {
@@ -263,6 +268,14 @@ internal class KotlinCodeGen(
   }
 
   private fun FunSpec.internal(generateAsInternal: Boolean): FunSpec {
+    return if (generateAsInternal) {
+      this.toBuilder().addModifiers(KModifier.INTERNAL).build()
+    } else {
+      this
+    }
+  }
+
+  private fun PropertySpec.internal(generateAsInternal: Boolean): PropertySpec {
     return if (generateAsInternal) {
       this.toBuilder().addModifiers(KModifier.INTERNAL).build()
     } else {

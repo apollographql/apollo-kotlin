@@ -3,6 +3,7 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
 
@@ -13,7 +14,7 @@ class CustomScalarAdapters private constructor(
     customScalarAdapters: Map<String, Adapter<*>>,
     // We piggyback CustomScalarAdapters to pass around a context which is used in the Adapters at parse time.
     // This is currently used for @skip/@include and @defer.
-    // Ideally it should be passed as its own parameter but we're avoiding a breaking change.
+    // Ideally it should be passed as its own parameter, but we're avoiding a breaking change.
     // See https://github.com/apollographql/apollo-kotlin/pull/3813
     val adapterContext: AdapterContext,
     private val unsafe: Boolean
@@ -78,6 +79,7 @@ class CustomScalarAdapters private constructor(
      * `MapJsonReader.nextValue` and `MapJsonWriter.value()`
      */
     @JvmField
+    @ApolloExperimental
     val PassThrough = Builder().unsafe(true).build()
   }
 
@@ -109,6 +111,7 @@ class CustomScalarAdapters private constructor(
       this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }
 
+    @ApolloExperimental
     fun unsafe(unsafe: Boolean) = apply {
       this.unsafe = unsafe
     }

@@ -179,7 +179,7 @@ internal class JavaCodeGen(
         }
 
     if (generateSchema) {
-      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions, ir.enums))
+      builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, ir.objects, ir.interfaces, ir.unions, ir.enums))
     }
     if (generateDataBuilders) {
       builders.add(BuilderFactoryBuilder(context, ir.objects))

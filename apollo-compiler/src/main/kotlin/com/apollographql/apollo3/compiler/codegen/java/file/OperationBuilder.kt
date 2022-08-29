@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
@@ -160,7 +161,8 @@ internal class OperationBuilder(
                 .add("$T.$root,\n", context.resolver.resolveOperationSelections(operation.name))
                 .add("$S,\n", operation.operationType.typeName)
                 .add("${Identifier.map},\n")
-                .add("${Identifier.resolver}\n")
+                .add("${Identifier.resolver},\n")
+                .add("$T.$customScalarAdapters\n", context.resolver.resolveSchema())
                 .unindent()
                 .add(");")
                 .build()

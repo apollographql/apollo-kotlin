@@ -318,6 +318,7 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyJsonAda
 public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : java/lang/Enum {
 	public static final field BuilderFun Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field BuilderType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field CustomScalarAdapters Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Fragment Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
@@ -392,6 +393,7 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
 	public final fun registerBuilderFun (Ljava/lang/String;Lcom/squareup/kotlinpoet/MemberName;)V
 	public final fun registerBuilderType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public final fun registerCustomScalarAdapters (Lcom/squareup/kotlinpoet/ClassName;)V
 	public final fun registerEnumAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerFragment (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerFragmentSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
@@ -410,6 +412,7 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun resolveBuilderFun (Ljava/lang/String;)Lcom/squareup/kotlinpoet/MemberName;
 	public final fun resolveBuilderType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveCompiledType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/CodeBlock;
+	public final fun resolveCustomScalarAdapters ()Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragment (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragmentSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveFragmentVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
