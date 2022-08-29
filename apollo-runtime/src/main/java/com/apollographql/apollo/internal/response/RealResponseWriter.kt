@@ -1,6 +1,5 @@
 package com.apollographql.apollo.internal.response
 
-import com.apollographql.apollo.api.CustomTypeAdapter
 import com.apollographql.apollo.api.Operation
 import com.apollographql.apollo.api.ResponseField
 import com.apollographql.apollo.api.ScalarType
@@ -47,7 +46,22 @@ class RealResponseWriter(private val operationVariables: Operation.Variables, pr
     }
     val nestedResponseWriter = RealResponseWriter(operationVariables, scalarTypeAdapters)
     marshaller.marshal(nestedResponseWriter)
-    buffer[field.responseName] = FieldDescriptor(field, nestedResponseWriter.buffer)
+    buffer[field.responseName] = deepMergeObjects(field, buffer[field.responseName]?.value, nestedResponseWriter.buffer)
+  }
+
+  private fun deepMergeObjects(field: ResponseField, oldValue: Any?, newValue: Map<String, FieldDescriptor>): FieldDescriptor {
+    return if (oldValue == null || oldValue !is Map<*, *>) {
+      FieldDescriptor(field, newValue)
+    } else {
+      val oldMap = oldValue as Map<String, FieldDescriptor>
+
+      val mergedCommonValues = oldMap.keys.intersect(newValue.keys)
+          .filter { newValue[it]?.value is Map<*, *> }
+          .map { deepMergeObjects(oldMap[it]!!.field, oldMap[it]?.value, newValue[it]!!.value as Map<String, FieldDescriptor>) }
+          .associateBy { it.field.responseName }
+
+      FieldDescriptor(field, oldMap + newValue + mergedCommonValues)
+    }
   }
 
   override fun writeFragment(marshaller: ResponseFieldMarshaller?) {

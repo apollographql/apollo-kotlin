@@ -1,0 +1,15 @@
+query Home {
+    home {
+        ...sectionFragment
+        sectionA {
+            name
+        }
+    }
+}
+
+fragment sectionFragment on Home {
+    sectionA {
+        id
+        imageUrl
+    }
+}

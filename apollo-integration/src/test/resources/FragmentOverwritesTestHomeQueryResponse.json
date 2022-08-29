@@ -1,0 +1,13 @@
+{
+  "data": {
+    "home": {
+      "__typename": "Home",
+      "sectionA": {
+        "__typename": "SectionA",
+        "name": "initialSectionName",
+        "id": "section-id",
+        "imageUrl": "initialUrl"
+      }
+    }
+  }
+}
