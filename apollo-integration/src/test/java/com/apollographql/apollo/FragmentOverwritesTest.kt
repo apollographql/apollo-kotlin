@@ -62,6 +62,7 @@ class FragmentOverwritesTest {
             val networkResponse = apolloClient.query(HomeQuery()).await()
 
             assertThat(networkResponse.data?.home?.sectionA?.name).isEqualTo("initialSectionName")
+            assertThat(networkResponse.data?.home?.fragments?.sectionFragment?.sectionA?.imageUrl).isEqualTo("initialUrl")
 
             apolloClient.apolloStore.writeAndPublish(
                 HomeQuery(),
@@ -89,6 +90,7 @@ class FragmentOverwritesTest {
                 .await()
 
             assertThat(cacheResponse.data?.home?.sectionA?.name).isEqualTo("modifiedSectionName")
+            assertThat(cacheResponse.data?.home?.fragments?.sectionFragment?.sectionA?.imageUrl).isEqualTo("modifiedUrl")
         }
     }
 }
