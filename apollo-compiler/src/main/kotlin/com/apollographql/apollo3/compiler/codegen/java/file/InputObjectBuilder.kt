@@ -52,8 +52,20 @@ internal class InputObjectBuilder(
           .build()
 
   private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
+    addMethod(Builder.builderFactoryMethod())
+
+    val inputClassName = ClassName.get(packageName, simpleName)
+
     if (inputObject.fields.isEmpty()) {
-      return this
+      return addType(
+          Builder(
+              targetObjectClassName = inputClassName,
+              fields = emptyList(),
+              fieldDefaultValues = emptyMap(),
+              fieldJavaDocs = emptyMap(),
+              context = context
+          ).build()
+      )
     } else {
       val builderFields = inputObject.fields.map {
         context.layout.escapeReservedWord(it.name.decapitalizeFirstLetter()) to context.resolver.resolveIrType(it.type)
@@ -67,10 +79,9 @@ internal class InputObjectBuilder(
       val javaDocs = inputObject.fields
         .filter { !it.description.isNullOrBlank() }
         .associate { context.layout.escapeReservedWord(it.name.decapitalizeFirstLetter()) to it.description!! }
-      return addMethod(Builder.builderFactoryMethod())
-        .addType(
+      return addType(
           Builder(
-            targetObjectClassName = ClassName.get("", simpleName),
+            targetObjectClassName = inputClassName,
             fields = builderFields,
             fieldDefaultValues = builderFieldDefaultValues,
             fieldJavaDocs = javaDocs,
