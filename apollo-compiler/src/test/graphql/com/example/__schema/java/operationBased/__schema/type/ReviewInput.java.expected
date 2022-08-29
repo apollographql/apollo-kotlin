@@ -268,9 +268,9 @@ public class ReviewInput {
 
     private Optional<List<List<ColorInput>>> listOfListOfObject = Optional.absent();
 
-    private Optional<String> capitalizedField = Optional.absent();
+    private Optional<String> CapitalizedField = Optional.absent();
 
-    private Optional<Integer> capitalizedInt = Optional.absent();
+    private Optional<Integer> CapitalizedInt = Optional.absent();
 
     Builder() {
     }
@@ -440,21 +440,21 @@ public class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder capitalizedField(@Nullable String capitalizedField) {
-      this.capitalizedField = Optional.presentIfNotNull(capitalizedField);
+    public Builder CapitalizedField(@Nullable String CapitalizedField) {
+      this.CapitalizedField = Optional.presentIfNotNull(CapitalizedField);
       return this;
     }
 
     /**
      * for test purpose only
      */
-    public Builder capitalizedInt(@Nullable Integer capitalizedInt) {
-      this.capitalizedInt = Optional.presentIfNotNull(capitalizedInt);
+    public Builder CapitalizedInt(@Nullable Integer CapitalizedInt) {
+      this.CapitalizedInt = Optional.presentIfNotNull(CapitalizedInt);
       return this;
     }
 
     public ReviewInput build() {
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, booleanNonOptional, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, capitalizedField, capitalizedInt);
+      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, booleanNonOptional, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, CapitalizedField, CapitalizedInt);
     }
   }
 }
