@@ -72,7 +72,7 @@ public class ReviewRefInput {
     }
 
     public Builder reviewInput(@Nullable ReviewInput reviewInput) {
-      this.reviewInput = Optional.fromNullable(reviewInput);
+      this.reviewInput = Optional.presentIfNotNull(reviewInput);
       return this;
     }
 

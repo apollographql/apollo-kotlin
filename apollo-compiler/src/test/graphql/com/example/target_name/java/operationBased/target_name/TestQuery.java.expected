@@ -162,17 +162,17 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public Builder input(@Nullable renamedInput input) {
-      this.input = Optional.fromNullable(input);
+      this.input = Optional.presentIfNotNull(input);
       return this;
     }
 
     public Builder scalar(java.lang.Object scalar) {
-      this.scalar = Optional.fromNullable(scalar);
+      this.scalar = Optional.presentIfNotNull(scalar);
       return this;
     }
 
     public Builder enum_(@Nullable renamedEnum enum_) {
-      this.enum_ = Optional.fromNullable(enum_);
+      this.enum_ = Optional.presentIfNotNull(enum_);
       return this;
     }
 

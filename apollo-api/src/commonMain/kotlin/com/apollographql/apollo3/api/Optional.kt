@@ -20,13 +20,12 @@ sealed class Optional<out V> {
 
   companion object {
     @JvmStatic
-    fun <T> absent(): Optional<T> = Absent
+    fun <V> absent(): Optional<V> = Absent
 
     @JvmStatic
-    fun <T> fromNullable(nullableReference: T?): Optional<T> {
-      return nullableReference?.let { Present(it) } ?: absent()
-    }
+    fun <V> present(value: V): Optional<V> = if (value == null) throw NullPointerException() else Present(value)
 
+    @JvmStatic
     fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)
   }
 }

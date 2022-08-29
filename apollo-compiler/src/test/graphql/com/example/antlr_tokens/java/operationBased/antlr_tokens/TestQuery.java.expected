@@ -133,7 +133,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public Builder operation(@Nullable String operation) {
-      this.operation = Optional.fromNullable(operation);
+      this.operation = Optional.presentIfNotNull(operation);
       return this;
     }
 

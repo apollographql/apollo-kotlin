@@ -69,7 +69,7 @@ public class renamedInput {
     }
 
     public Builder field(@Nullable String field) {
-      this.field = Optional.fromNullable(field);
+      this.field = Optional.presentIfNotNull(field);
       return this;
     }
 

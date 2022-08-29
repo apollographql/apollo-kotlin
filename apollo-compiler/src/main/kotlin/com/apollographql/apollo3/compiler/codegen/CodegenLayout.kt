@@ -20,7 +20,7 @@ import com.apollographql.apollo3.compiler.singularize
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
 internal abstract class CodegenLayout(
-    val ir: Ir,
+    ir: Ir,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,

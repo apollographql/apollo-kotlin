@@ -8,26 +8,26 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.WildcardTypeName
 
-fun TypeName.isList() =
+internal fun TypeName.isList() =
   (this is ParameterizedTypeName && rawType == JavaClassNames.List)
 
-fun TypeName.listParamType(): TypeName {
+internal fun TypeName.listParamType(): TypeName {
   return (this as ParameterizedTypeName)
     .typeArguments
     .first()
     .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
 }
 
-fun TypeName.isOptional(expectedOptionalType: ClassName? = null): Boolean {
+internal fun TypeName.isOptional(expectedOptionalType: ClassName? = null): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this
   return if (expectedOptionalType == null) {
-    rawType == JavaClassNames.Optional || rawType == JavaClassNames.Input
+    rawType == JavaClassNames.Optional
   } else {
     rawType == expectedOptionalType
   }
 }
 
-fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {
+internal fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {
   return if (isOptional()) {
     val unwrappedTypeName = (this as ParameterizedTypeName).typeArguments.first()
     if (unwrappedTypeName == JavaClassNames.Object) {
@@ -41,7 +41,7 @@ fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): TypeName {
   }.let { if (withoutAnnotations) it.withoutAnnotations() else it }
 }
 
-fun TypeName.unwrapOptionalValue(
+internal fun TypeName.unwrapOptionalValue(
   varName: String,
   checkIfPresent: Boolean = true,
   transformation: ((CodeBlock) -> CodeBlock)? = null
@@ -72,15 +72,15 @@ fun TypeName.unwrapOptionalValue(
   }
 }
 
-fun TypeName.wrapOptionalValue(value: CodeBlock): CodeBlock {
+internal fun TypeName.wrapOptionalValue(value: CodeBlock): CodeBlock {
   return if (this.isOptional() && this is ParameterizedTypeName) {
-    CodeBlock.of("\$T.fromNullable(\$L)", rawType, value)
+    CodeBlock.of("\$T.presentIfNotNull(\$L)", rawType, value)
   } else {
     value
   }
 }
 
-fun TypeName.defaultOptionalValue(): CodeBlock {
+internal fun TypeName.defaultOptionalValue(): CodeBlock {
   return if (this.isOptional() && this is ParameterizedTypeName) {
     CodeBlock.of("\$T.absent()", rawType)
   } else {

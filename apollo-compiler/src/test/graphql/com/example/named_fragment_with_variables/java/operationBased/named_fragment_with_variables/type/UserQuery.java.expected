@@ -84,7 +84,7 @@ public class UserQuery {
     }
 
     public Builder isAdmin(@Nullable Boolean isAdmin) {
-      this.isAdmin = Optional.fromNullable(isAdmin);
+      this.isAdmin = Optional.presentIfNotNull(isAdmin);
       return this;
     }
 

@@ -251,7 +251,7 @@ internal class OperationBuilder(
   private fun TypeSpec.Builder.addBuilder(context: JavaContext): TypeSpec.Builder {
     addMethod(Builder.builderFactoryMethod())
 
-    val operationClassName = ClassName.get("", simpleName)
+    val operationClassName = ClassName.get(packageName, simpleName)
 
     if (operation.variables.isEmpty()) {
       return addType(
@@ -267,7 +267,7 @@ internal class OperationBuilder(
 
     operation.variables
       .map {
-        context.layout.propertyName(it.name.decapitalizeFirstLetter()) to context.resolver.resolveIrType(it.type)
+        context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
       }
       .let {
         Builder(
