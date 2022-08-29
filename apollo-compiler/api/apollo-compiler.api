@@ -356,6 +356,12 @@ public final class com/apollographql/apollo3/compiler/codegen/java/CodegenJavaFi
 	public final fun getTypeSpec ()Lcom/squareup/javapoet/TypeSpec;
 }
 
+public final class com/apollographql/apollo3/compiler/codegen/java/JavaAnnotations {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/java/JavaAnnotations;
+	public final fun getNonNull ()Lcom/squareup/javapoet/AnnotationSpec;
+	public final fun getNullable ()Lcom/squareup/javapoet/AnnotationSpec;
+}
+
 public abstract interface class com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
 	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
 	public abstract fun prepare ()V
@@ -383,6 +389,10 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withEqualsImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 	public static final fun withHashCodeImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/codegen/java/helpers/IrTypeKt {
+	public static final fun getBuiltInScalars ()Ljava/util/Set;
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
