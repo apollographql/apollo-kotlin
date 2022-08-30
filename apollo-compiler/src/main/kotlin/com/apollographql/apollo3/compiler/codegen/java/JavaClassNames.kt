@@ -1,15 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
-import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiJsonPackageName
 import com.apollographql.apollo3.compiler.codegen.ClassNames.apolloApiPackageName
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.codegen.kotlin.toKotlinPoetClassName
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.ParameterizedTypeName
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
@@ -24,6 +20,7 @@ internal object JavaClassNames {
   val JsonWriter = ClassNames.JsonWriter.toJavaPoetClassName()
   val CustomScalarAdapters = ClassNames.CustomScalarAdapters.toJavaPoetClassName()
   val Input = ClassNames.Input.toJavaPoetClassName()
+  val CustomScalarAdaptersBuilder = ClassNames.CustomScalarAdaptersBuilder.toJavaPoetClassName()
   val Optional = ClassNames.Optional.toJavaPoetClassName()
   val Absent = ClassNames.Absent.toJavaPoetClassName()
   val Present = ClassNames.Present.toJavaPoetClassName()

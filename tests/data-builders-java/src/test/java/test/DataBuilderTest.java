@@ -202,7 +202,7 @@ public class DataBuilderTest {
       Object ret = null;
       switch (name) {
         case "Long1": {
-          ret = "45";
+          ret = new MyLong(45L);
           break;
         }
         case "Long2": {

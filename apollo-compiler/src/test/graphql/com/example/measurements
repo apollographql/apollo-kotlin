@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  198005
-aggregate-kotlin-responseBased                                                                  50287
+aggregate-all                                                                                  198024
+aggregate-kotlin-responseBased                                                                  50302
 aggregate-kotlin-operationBased                                                                 35445
 aggregate-kotlin-compat                                                                         36830
-aggregate-java-operationBased                                                                   75443
+aggregate-java-operationBased                                                                   75447
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5566
 kotlin-compat-fragments_with_defer_and_include_directives                                        3612
@@ -15,7 +15,7 @@ kotlin-responseBased-fragment_with_inline_fragment                              
 java-operationBased-fragment_with_inline_fragment                                                2172
 java-operationBased-nested_named_fragments                                                       1857
 java-operationBased-mutation_create_review                                                       1796
-java-operationBased-__schema                                                                     1700
+java-operationBased-__schema                                                                     1704
 java-operationBased-union_inline_fragments                                                       1630
 java-operationBased-unique_type_name                                                             1611
 java-operationBased-input_object_type                                                            1607
@@ -47,8 +47,8 @@ kotlin-compat-unique_type_name                                                  
 kotlin-operationBased-inline_fragment_intersection                                               1111
 kotlin-operationBased-union_inline_fragments                                                     1111
 kotlin-responseBased-fragment_used_twice                                                         1108
+kotlin-responseBased-__schema                                                                    1107
 kotlin-responseBased-union_inline_fragments                                                      1100
-kotlin-responseBased-__schema                                                                    1092
 java-operationBased-root_query_inline_fragment                                                   1092
 kotlin-operationBased-unique_type_name                                                           1080
 kotlin-compat-root_query_fragment_with_nested_fragments                                          1073

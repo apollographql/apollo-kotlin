@@ -1,8 +1,8 @@
 package test
 
-import MyLong
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.FakeResolverContext
+import com.example.MyLong
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
 import data.builders.GetCustomScalarQuery
@@ -13,7 +13,6 @@ import data.builders.GetIntQuery
 import data.builders.GetPartialQuery
 import data.builders.PutIntMutation
 import data.builders.type.Direction
-import data.builders.type.Lion
 import data.builders.type.buildCat
 import data.builders.type.buildLion
 import kotlin.test.Test
@@ -170,7 +169,7 @@ class DataBuilderTest {
   class MyFakeResolver : FakeResolver {
     override fun resolveLeaf(context: FakeResolverContext): Any {
       return when (context.mergedField.type.leafType().name) {
-        "Long1" -> "45" // build-time => this needs to be resolved to Json
+        "Long1" -> MyLong(45) // build-time
         "Long2" -> MyLong(46) // run-time
         "Long3" -> 47L // mapped to Any
         else -> error("")

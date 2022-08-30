@@ -33,7 +33,8 @@ enum class ResolverKeyKind {
   MapType,
   BuilderType,
   BuilderFun,
-  Schema
+  Schema,
+  CustomScalarAdapters
 }
 
 @JsonClass(generateAdapter = true)

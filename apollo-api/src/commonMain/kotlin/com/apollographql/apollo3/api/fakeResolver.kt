@@ -29,11 +29,7 @@ interface FakeResolver {
    * - Int
    * - Double
    * - Strings
-   * - Custom scalar targets (see below)
-   *
-   * Custom scalars: for custom scalars whose adapter is registered at build time, [resolveLeaf] **must**
-   * return a Json representation of the scalar (using Map, List, Boolean, Int, Double, String).
-   * Target instances such as `Date`, `BigDecimal`, etc... are not supported because they would require [CustomScalarAdapters] to decode.
+   * - Custom scalar targets
    */
   fun resolveLeaf(context: FakeResolverContext): Any
 
@@ -96,6 +92,7 @@ private fun buildFakeObject(
     typename: String,
     base: Map<String, Any?>,
     resolver: FakeResolver,
+    customScalarAdapters: CustomScalarAdapters
 ): Map<String, Any?> {
   @Suppress("UNCHECKED_CAST")
   return buildFieldOfType(
@@ -105,7 +102,8 @@ private fun buildFakeObject(
           .build(),
       resolver,
       Optional.Present(base),
-      CompiledNotNullType(ObjectType.Builder(typename).build())
+      CompiledNotNullType(ObjectType.Builder(typename).build()),
+      customScalarAdapters
   ) as Map<String, Any?>
 }
 
@@ -114,8 +112,9 @@ private fun buildField(
     mergedField: CompiledField,
     resolver: FakeResolver,
     parent: Map<String, Any?>,
+    customScalarAdapters: CustomScalarAdapters
 ): Any? {
-  return buildFieldOfType(path, mergedField, resolver, parent.getOrAbsent(mergedField.responseName), mergedField.type)
+  return buildFieldOfType(path, mergedField, resolver, parent.getOrAbsent(mergedField.responseName), mergedField.type, customScalarAdapters)
 }
 
 private fun Map<String, Any?>.getOrAbsent(key: String) = if (containsKey(key)) {
@@ -130,24 +129,25 @@ private fun buildFieldOfType(
     resolver: FakeResolver,
     value: Optional<Any?>,
     type: CompiledType,
+    customScalarAdapters: CustomScalarAdapters,
 ): Any? {
   if (type !is CompiledNotNullType) {
     return if (value is Optional.Present) {
       if (value.value == null) {
         null
       } else {
-        buildFieldOfType(path, mergedField, resolver, value, CompiledNotNullType(type))
+        buildFieldOfType(path, mergedField, resolver, value, CompiledNotNullType(type), customScalarAdapters)
       }
     } else {
       if (resolver.resolveMaybeNull(FakeResolverContext(path, mergedField))) {
         null
       } else {
-        buildFieldOfType(path, mergedField, resolver, value, CompiledNotNullType(type))
+        buildFieldOfType(path, mergedField, resolver, value, CompiledNotNullType(type), customScalarAdapters)
       }
     }
   }
 
-  return buildFieldOfNonNullType(path, mergedField, resolver, value, type.ofType)
+  return buildFieldOfNonNullType(path, mergedField, resolver, value, type.ofType, customScalarAdapters)
 }
 
 private fun buildFieldOfNonNullType(
@@ -156,17 +156,18 @@ private fun buildFieldOfNonNullType(
     resolver: FakeResolver,
     value: Optional<Any?>,
     type: CompiledType,
+    customScalarAdapters: CustomScalarAdapters
 ): Any? {
   return when (type) {
     is CompiledListType -> {
       if (value is Optional.Present) {
         val list = (value.value as? List<Any?>) ?: error("")
         list.mapIndexed { index, item ->
-          buildFieldOfType(path + index, mergedField, resolver, Optional.Present(item), type.ofType)
+          buildFieldOfType(path + index, mergedField, resolver, Optional.Present(item), type.ofType, customScalarAdapters)
         }
       } else {
         0.until(resolver.resolveListSize(FakeResolverContext(path, mergedField))).map {
-          buildFieldOfType(path + it, mergedField, resolver, Optional.Absent, type.ofType)
+          buildFieldOfType(path + it, mergedField, resolver, Optional.Absent, type.ofType, customScalarAdapters)
         }
       }
     }
@@ -179,7 +180,7 @@ private fun buildFieldOfNonNullType(
           val typename = (map["__typename"] as? String) ?: error("")
 
           collectAndMerge(mergedField.selections, typename).associate {
-            it.responseName to buildField(path + it.responseName, it, resolver, map)
+            it.responseName to buildField(path + it.responseName, it, resolver, map, customScalarAdapters)
           }
         } else {
           value.value
@@ -190,10 +191,29 @@ private fun buildFieldOfNonNullType(
           val map = mapOf("__typename" to typename)
 
           collectAndMerge(mergedField.selections, typename).associate {
-            it.responseName to buildField(path + it.responseName, it, resolver, map)
+            it.responseName to buildField(path + it.responseName, it, resolver, map, customScalarAdapters)
           }
         } else {
-          resolver.resolveLeaf(FakeResolverContext(path, mergedField))
+          val leafValue = resolver.resolveLeaf(FakeResolverContext(path, mergedField))
+          if (type is CustomScalarType) {
+            /**
+             * This might be a scalar with a build time registered adapter.
+             * If that's the case, we need to adapt before putting the value in the map
+             * so that subsequent adapters can deserialize
+             */
+            val adapter = try {
+              customScalarAdapters.responseAdapterFor<Any>(type)
+            } catch (e: Exception) {
+              null
+            }
+            if (adapter != null) {
+              adaptValue(adapter, leafValue)
+            } else {
+              leafValue
+            }
+          } else {
+            leafValue
+          }
         }
       }
     }
@@ -263,9 +283,10 @@ fun <T> buildData(
     typename: String,
     map: Map<String, Any?>,
     resolver: FakeResolver,
+    customScalarAdapters: CustomScalarAdapters
 ): T {
   return adapter.obj(false).fromJson(
-      MapJsonReader(buildFakeObject(selections, typename, map, resolver)),
+      MapJsonReader(buildFakeObject(selections, typename, map, resolver, customScalarAdapters)),
       CustomScalarAdapters.PassThrough
   )
 }
@@ -276,7 +297,8 @@ fun <T> buildFragmentData(
     typename: String,
     block: Any? = null,
     resolver: FakeResolver,
-    type: CompiledType
+    type: CompiledType,
+    customScalarAdapters: CustomScalarAdapters
 ): T {
   val map = if (block == null) {
     mapOf(
@@ -298,6 +320,7 @@ fun <T> buildFragmentData(
       selections,
       typename,
       map,
-      resolver
+      resolver,
+      customScalarAdapters
   )
 }

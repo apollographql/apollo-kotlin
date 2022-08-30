@@ -1,9 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.DefaultFakeResolver
-import com.apollographql.apollo3.api.FakeResolver
-import com.apollographql.apollo3.api.buildFragmentData
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.block
@@ -23,7 +19,6 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
-import com.apollographql.apollo3.compiler.ir.IrType2
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
@@ -181,6 +176,7 @@ internal class FragmentBuilder(
                   .add("$block,\n")
                   .add("$resolver,\n")
                   .add("%T.$type,\n", context.resolver.resolveSchemaType(typename))
+                  .add("%T,\n", context.resolver.resolveCustomScalarAdapters())
                   .unindent()
                   .add(")\n")
                   .build()

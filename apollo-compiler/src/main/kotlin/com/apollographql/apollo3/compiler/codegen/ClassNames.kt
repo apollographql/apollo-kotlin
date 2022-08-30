@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.squareup.kotlinpoet.ClassName
-
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
  */
@@ -24,6 +21,7 @@ internal object ClassNames {
   val JsonWriter = ResolverClassName(apolloApiJsonPackageName, "JsonWriter")
   val CustomScalarAdapters = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters")
   val Input = ResolverClassName(apolloApiPackageName, "Input")
+  val CustomScalarAdaptersBuilder = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters", "Builder")
   val Optional = ResolverClassName(apolloApiPackageName, "Optional")
   val Absent = ResolverClassName(apolloApiPackageName, "Optional", "Absent")
   val Present = ResolverClassName(apolloApiPackageName, "Optional", "Present")

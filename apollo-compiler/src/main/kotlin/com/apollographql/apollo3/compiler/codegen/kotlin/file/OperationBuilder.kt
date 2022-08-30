@@ -216,7 +216,7 @@ internal class OperationBuilder(
       return FunSpec.builder(Identifier.Data)
           .addParameter(
               ParameterSpec.builder(
-                  Identifier.resolver,
+                  resolver,
                   KotlinSymbols.FakeResolver
               ).defaultValue(
                   CodeBlock.of("%T(%T.all)", KotlinSymbols.DefaultFakeResolver, context.resolver.resolveSchema())
@@ -244,7 +244,8 @@ internal class OperationBuilder(
                       KotlinMemberNames.GlobalBuilder,
                       context.resolver.resolveBuilderFun(typename),
                   )
-                  .add("${Identifier.resolver}\n")
+                  .add("$resolver,\n")
+                  .add("%T,\n", context.resolver.resolveCustomScalarAdapters())
                   .unindent()
                   .add(")\n")
                   .build()
