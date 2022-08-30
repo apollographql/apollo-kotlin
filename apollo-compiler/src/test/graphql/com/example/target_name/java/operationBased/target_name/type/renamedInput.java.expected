@@ -63,7 +63,7 @@ public class renamedInput {
   }
 
   public static final class Builder {
-    private Optional<String> field = Optional.absent();
+    private Optional<String> field;
 
     Builder() {
     }

@@ -66,7 +66,7 @@ public class ReviewRefInput {
   }
 
   public static final class Builder {
-    private Optional<ReviewInput> reviewInput = Optional.absent();
+    private Optional<ReviewInput> reviewInput;
 
     Builder() {
     }

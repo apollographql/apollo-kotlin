@@ -79,11 +79,3 @@ internal fun TypeName.wrapOptionalValue(value: CodeBlock): CodeBlock {
     value
   }
 }
-
-internal fun TypeName.defaultOptionalValue(): CodeBlock {
-  return if (this.isOptional() && this is ParameterizedTypeName) {
-    CodeBlock.of("\$T.absent()", rawType)
-  } else {
-    CodeBlock.of("")
-  }
-}

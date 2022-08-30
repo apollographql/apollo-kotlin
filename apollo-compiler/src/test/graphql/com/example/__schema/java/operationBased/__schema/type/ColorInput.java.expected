@@ -97,15 +97,15 @@ public class ColorInput {
   }
 
   public static final class Builder {
-    private Optional<Integer> red = Optional.presentIfNotNull(1);
+    private Optional<Integer> red;
 
-    private Optional<Double> green = Optional.presentIfNotNull(0.0);
+    private Optional<Double> green;
 
-    private Optional<Double> blue = Optional.presentIfNotNull(1.5);
+    private Optional<Double> blue;
 
-    private Optional<Episode> enumWithDefaultValue = Optional.presentIfNotNull(Episode.safeValueOf("new"));
+    private Optional<Episode> enumWithDefaultValue;
 
-    private Optional<ReviewRefInput> reviewRefInput = Optional.absent();
+    private Optional<ReviewRefInput> reviewRefInput;
 
     Builder() {
     }

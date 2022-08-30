@@ -152,11 +152,11 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<renamedInput> input = Optional.absent();
+    private Optional<renamedInput> input;
 
-    private Optional<java.lang.Object> scalar = Optional.absent();
+    private Optional<java.lang.Object> scalar;
 
-    private Optional<renamedEnum> enum_ = Optional.absent();
+    private Optional<renamedEnum> enum_;
 
     Builder() {
     }

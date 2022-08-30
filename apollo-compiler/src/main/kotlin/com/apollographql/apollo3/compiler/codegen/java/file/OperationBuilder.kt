@@ -259,7 +259,6 @@ internal class OperationBuilder(
         Builder(
           targetObjectClassName = operationClassName,
           fields = emptyList(),
-          fieldDefaultValues = emptyMap(),
           fieldJavaDocs = emptyMap(),
           context = context
         ).build()
@@ -274,7 +273,6 @@ internal class OperationBuilder(
         Builder(
           targetObjectClassName = operationClassName,
           fields = it,
-          fieldDefaultValues = emptyMap(),
           fieldJavaDocs = emptyMap(),
           context = context
         )

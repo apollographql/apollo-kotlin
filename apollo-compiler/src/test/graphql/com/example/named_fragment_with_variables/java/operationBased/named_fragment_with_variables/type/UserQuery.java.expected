@@ -73,7 +73,7 @@ public class UserQuery {
   public static final class Builder {
     private String name;
 
-    private Optional<Boolean> isAdmin = Optional.absent();
+    private Optional<Boolean> isAdmin;
 
     Builder() {
     }

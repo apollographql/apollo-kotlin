@@ -11,7 +11,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -230,47 +229,47 @@ public class ReviewInput {
   public static final class Builder {
     private Integer stars;
 
-    private Optional<Integer> nullableIntFieldWithDefaultValue = Optional.presentIfNotNull(10);
+    private Optional<Integer> nullableIntFieldWithDefaultValue;
 
-    private Optional<String> commentary = Optional.absent();
+    private Optional<String> commentary;
 
     private ColorInput favoriteColor;
 
-    private Optional<Episode> enumWithDefaultValue = Optional.presentIfNotNull(Episode.safeValueOf("JEDI"));
+    private Optional<Episode> enumWithDefaultValue;
 
-    private Optional<Episode> nonNullableEnumWithDefaultValue = Optional.presentIfNotNull(Episode.safeValueOf("JEDI"));
+    private Optional<Episode> nonNullableEnumWithDefaultValue;
 
-    private Optional<Episode> nullableEnum = Optional.absent();
+    private Optional<Episode> nullableEnum;
 
-    private Optional<List<Date>> listOfCustomScalar = Optional.absent();
+    private Optional<List<Date>> listOfCustomScalar;
 
-    private Optional<Date> customScalar = Optional.absent();
+    private Optional<Date> customScalar;
 
-    private Optional<List<Episode>> listOfEnums = Optional.presentIfNotNull(Arrays.<Episode>asList(Episode.safeValueOf("NEWHOPE"), Episode.safeValueOf("EMPIRE")));
+    private Optional<List<Episode>> listOfEnums;
 
-    private Optional<List<Integer>> listOfInt = Optional.presentIfNotNull(Arrays.<Integer>asList(1, 2, 3));
+    private Optional<List<Integer>> listOfInt;
 
-    private Optional<List<String>> listOfString = Optional.presentIfNotNull(Arrays.<String>asList("test1", "test2", "test3"));
+    private Optional<List<String>> listOfString;
 
     private List<String> listOfStringNonOptional;
 
-    private Optional<List<ColorInput>> listOfInputTypes = Optional.presentIfNotNull(Arrays.<ColorInput>asList());
+    private Optional<List<ColorInput>> listOfInputTypes;
 
-    private Optional<Boolean> booleanWithDefaultValue = Optional.presentIfNotNull(true);
+    private Optional<Boolean> booleanWithDefaultValue;
 
-    private Optional<Boolean> booleanNonOptional = Optional.absent();
+    private Optional<Boolean> booleanNonOptional;
 
-    private Optional<List<List<String>>> listOfListOfString = Optional.absent();
+    private Optional<List<List<String>>> listOfListOfString;
 
-    private Optional<List<List<Episode>>> listOfListOfEnum = Optional.absent();
+    private Optional<List<List<Episode>>> listOfListOfEnum;
 
-    private Optional<List<List<Date>>> listOfListOfCustom = Optional.absent();
+    private Optional<List<List<Date>>> listOfListOfCustom;
 
-    private Optional<List<List<ColorInput>>> listOfListOfObject = Optional.absent();
+    private Optional<List<List<ColorInput>>> listOfListOfObject;
 
-    private Optional<String> CapitalizedField = Optional.absent();
+    private Optional<String> CapitalizedField;
 
-    private Optional<Integer> CapitalizedInt = Optional.absent();
+    private Optional<Integer> CapitalizedInt;
 
     Builder() {
     }

@@ -9,7 +9,6 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
@@ -144,7 +143,6 @@ internal class ModelBuilder(
           Builder(
             targetObjectClassName = ClassName.get("", name),
             fields = fields.map { it.name to it.type.unwrapOptionalType() },
-            fieldDefaultValues = emptyMap(),
             fieldJavaDocs = emptyMap(),
             buildableTypes = buildableTypes,
             context = context

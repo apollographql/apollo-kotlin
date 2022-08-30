@@ -5,10 +5,6 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaAnnotations
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.defaultOptionalValue
-import com.apollographql.apollo3.compiler.ir.IrEnumValue
-import com.apollographql.apollo3.compiler.ir.IrListValue
-import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.isList
 import com.apollographql.apollo3.compiler.isOptional
 import com.apollographql.apollo3.compiler.listParamType
@@ -27,7 +23,6 @@ import javax.lang.model.element.Modifier
 internal class Builder(
   val targetObjectClassName: ClassName,
   val fields: List<Pair<String, TypeName>>,
-  val fieldDefaultValues: Map<String, IrValue?>,
   val fieldJavaDocs: Map<String, String>,
   val buildableTypes: List<TypeName> = emptyList(),
   val context: JavaContext
@@ -45,40 +40,9 @@ internal class Builder(
   }
 
   private fun builderFields(): List<FieldSpec> {
-    fun valueCode(value: IrValue, type: TypeName): CodeBlock {
-      return when (value) {
-        is IrEnumValue -> CodeBlock.of("\$T.safeValueOf(\$S)", type, value.value)
-        else -> value.codeBlock()
-      }
-    }
-
-    fun listInitializerCode(listValue: IrListValue, type: TypeName): CodeBlock {
-      val codeBuilder = CodeBlock.builder().add("\$T.<\$T>asList(", JavaClassNames.Arrays, type)
-      return listValue.values
-        .map { valueCode(it, type) }
-        .foldIndexed(codeBuilder) { index, builder, code ->
-          builder.add(if (index > 0) ", " else "").add(code)
-        }
-        .add(")")
-        .build()
-    }
-
     return fields.map { (fieldName, fieldType) ->
-      val rawFieldType = fieldType.unwrapOptionalType(true).let {
-        if (it.isList()) it.listParamType() else it
-      }
-      val initializer = fieldDefaultValues[fieldName]?.let { value ->
-        when (value) {
-          is IrListValue -> listInitializerCode(value, rawFieldType)
-          else -> valueCode(value, rawFieldType)
-        }
-      }?.let { code ->
-        fieldType.wrapOptionalValue(code)
-      }
-
       FieldSpec.builder(fieldType, fieldName)
         .addModifiers(Modifier.PRIVATE)
-        .initializer(initializer ?: fieldType.defaultOptionalValue())
         .build()
     }
   }
