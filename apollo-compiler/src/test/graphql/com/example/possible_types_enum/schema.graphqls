@@ -1,0 +1,44 @@
+schema {
+  query: Query
+}
+
+interface ThingWithID {
+  id: ID!
+  friend: Friend
+}
+
+interface ThingWithName {
+  name: String!
+}
+
+union Friend = Human | Human2
+
+type Human implements ThingWithID {
+  id: ID!
+  name: String!
+  life_status: LifeStatus!
+  friend: Friend!
+}
+type Human2 implements ThingWithName {
+  id: ID!
+  name: String!
+  life_status: LifeStatus!
+  friend: Friend!
+}
+
+type Droid implements ThingWithID {
+  id: ID!
+  model_name: String!
+  build_name: String!
+  name: String!
+  friend: Friend!
+}
+
+enum LifeStatus {
+  alive
+  dead
+}
+
+type Query {
+  something: ThingWithID
+}

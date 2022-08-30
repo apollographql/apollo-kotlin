@@ -1,0 +1,17 @@
+query TestOperation {
+  something {
+    id
+    ... on Human {
+      name
+      life_status
+      friend {
+        ... on Human {
+          name
+        }
+        ... on Human2 {
+          name
+        }
+      }
+    }
+  }
+}
