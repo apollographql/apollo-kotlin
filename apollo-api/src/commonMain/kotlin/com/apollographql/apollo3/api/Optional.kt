@@ -23,7 +23,7 @@ sealed class Optional<out V> {
     fun <V> absent(): Optional<V> = Absent
 
     @JvmStatic
-    fun <V> present(value: V): Optional<V> = if (value == null) throw NullPointerException() else Present(value)
+    fun <V> present(value: V): Optional<V> = Present(value)
 
     @JvmStatic
     fun <V : Any> presentIfNotNull(value: V?): Optional<V> = if (value == null) Absent else Present(value)

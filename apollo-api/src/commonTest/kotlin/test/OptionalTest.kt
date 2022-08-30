@@ -9,7 +9,7 @@ class OptionalTest {
   @Test
   fun presentTest() {
     assertIs<Optional.Present<*>>(Optional.present("some value"))
-    assertFails { Optional.present(null) }
+    assertIs{ Optional.present(null) }
   }
 
   @Test
