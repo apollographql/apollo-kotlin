@@ -52,11 +52,11 @@ internal class InputObjectBuilder(
       return this
     } else {
       val builderFields = inputObject.fields.map {
-        context.layout.escapeReservedWord(it.name) to context.resolver.resolveIrType(it.type)
+        context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
       }
       val javaDocs = inputObject.fields
         .filter { !it.description.isNullOrBlank() }
-        .associate { context.layout.escapeReservedWord(it.name) to it.description!! }
+        .associate { context.layout.propertyName(it.name) to it.description!! }
       return addMethod(Builder.builderFactoryMethod())
           .addType(
               Builder(
