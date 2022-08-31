@@ -34,7 +34,6 @@ internal class Builder(
       .addMethod(MethodSpec.constructorBuilder().build())
       .addMethods(fieldSetterMethodSpecs())
       .addMethods(inputFieldSetterMethodSpecs())
-      .addMethods(fieldSetterWithMutatorMethodSpecs())
       .addMethod(buildMethod())
       .build()
   }
@@ -92,64 +91,8 @@ internal class Builder(
       .build()
   }
 
-  private fun fieldSetterWithMutatorMethodSpecs(): List<MethodSpec> {
-    return fields
-      .map { (fieldName, fieldType) ->
-        fieldName to fieldType.withoutAnnotations()
-      }
-      .filter { (_, type) ->
-        if (type.isList()) {
-          buildableTypes.contains(type.listParamType())
-        } else {
-          buildableTypes.contains(type)
-        }
-      }
-      .map { (fieldName, fieldType) ->
-        fieldSetterWithMutatorMethodSpec(fieldName, fieldType)
-      }
-  }
-
-  private fun fieldSetterWithMutatorMethodSpec(fieldName: String, fieldType: TypeName): MethodSpec {
-    fun setFieldCode(): CodeBlock {
-      return CodeBlock.builder()
-        .addStatement("\$T.\$L builder = this.\$L != null ? this.\$L.\$L() : \$T.\$L()", fieldType,
-          JavaClassNames.Builder.simpleName(), fieldName, fieldName, TO_BUILDER_METHOD_NAME, fieldType,
-          JavaClassNames.Builder.simpleName().decapitalizeFirstLetter())
-        .addStatement("this.\$L = builder.build()", fieldName)
-        .addStatement("return this")
-        .build()
-    }
-
-    fun setListFieldCode(): CodeBlock {
-      return CodeBlock.builder()
-        .addStatement("\$T<\$T.\$L> builders = new \$T<>()", JavaClassNames.List, fieldType.listParamType(),
-          JavaClassNames.Builder.simpleName(), JavaClassNames.Arrays)
-        .beginControlFlow("if (this.\$L != null)", fieldName)
-        .beginControlFlow("for (\$T item : this.\$L)", fieldType.listParamType(), fieldName)
-        .addStatement("builders.add(item != null ? item.toBuilder() : null)")
-        .endControlFlow()
-        .endControlFlow()
-        .addStatement("\$T<\$T> \$L = new \$T<>()", JavaClassNames.List, fieldType.listParamType(), fieldName,
-          JavaClassNames.ArrayList)
-        .beginControlFlow("for (\$T.\$L item : builders)", fieldType.listParamType(), JavaClassNames.Builder.simpleName())
-        .addStatement("\$L.add(item != null ? item.build() : null)", fieldName)
-        .endControlFlow()
-        .addStatement("this.\$L = \$L", fieldName, fieldName)
-        .addStatement("return this")
-        .build()
-    }
-
-    val javaDoc = fieldJavaDocs[fieldName]
-    return MethodSpec.methodBuilder(fieldName)
-      .addModifiers(Modifier.PUBLIC)
-      .apply { if (!javaDoc.isNullOrBlank()) addJavadoc(CodeBlock.of("\$L\n", javaDoc)) }
-      .returns(JavaClassNames.Builder)
-      .addCode(if (fieldType.isList()) setListFieldCode() else setFieldCode())
-      .build()
-  }
-
   private fun buildMethod(): MethodSpec {
-    val validationCodeBuilder = fields.filter { (_, fieldType) ->
+   val validationCodeBuilder = fields.filter { (_, fieldType) ->
       !fieldType.isPrimitive && fieldType.annotations.contains(JavaAnnotations.NonNull)
     }.map { (fieldName, _) ->
       CodeBlock.of("\$T.checkFieldNotMissing(\$L, \$S);\n", ClassNames.Assertions, fieldName, fieldName)
