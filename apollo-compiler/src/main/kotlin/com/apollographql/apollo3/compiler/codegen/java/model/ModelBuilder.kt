@@ -126,7 +126,7 @@ internal class ModelBuilder(
         .returns(builderClass)
         .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
         .addCode(fields
-          .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, it.name, it.type.unwrapOptionalValue(it.name)) }
+          .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, it.name, it.name) }
           .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
           .build()
         )
@@ -142,7 +142,7 @@ internal class ModelBuilder(
         .addType(
           Builder(
             targetObjectClassName = ClassName.get("", name),
-            fields = fields.map { it.name to it.type.unwrapOptionalType() },
+            fields = fields.map { it.name to it.type },
             fieldJavaDocs = emptyMap(),
             buildableTypes = buildableTypes,
             context = context

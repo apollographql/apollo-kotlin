@@ -41,37 +41,6 @@ internal fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): T
   }.let { if (withoutAnnotations) it.withoutAnnotations() else it }
 }
 
-internal fun TypeName.unwrapOptionalValue(
-  varName: String,
-  checkIfPresent: Boolean = true,
-  transformation: ((CodeBlock) -> CodeBlock)? = null
-): CodeBlock {
-  return if (isOptional() && this is ParameterizedTypeName) {
-    if (rawType == JavaClassNames.Input) {
-      val valueCode = CodeBlock.of("\$L.value", varName)
-      if (checkIfPresent) {
-        CodeBlock.of("\$L != null ? \$L : null", valueCode, transformation?.invoke(valueCode) ?: valueCode)
-      } else {
-        transformation?.invoke(valueCode) ?: valueCode
-      }
-    } else {
-      val valueCode = CodeBlock.of("\$L.get()", varName)
-      if (checkIfPresent) {
-        CodeBlock.of("\$L.isPresent() ? \$L : null", varName, transformation?.invoke(valueCode) ?: valueCode)
-      } else {
-        transformation?.invoke(valueCode) ?: valueCode
-      }
-    }
-  } else {
-    val valueCode = CodeBlock.of("\$L", varName)
-    if (annotations.contains(JavaAnnotations.Nullable) && checkIfPresent && transformation != null) {
-      CodeBlock.of("\$L != null ? \$L : null", varName, transformation.invoke(valueCode))
-    } else {
-      transformation?.invoke(valueCode) ?: valueCode
-    }
-  }
-}
-
 internal fun TypeName.wrapOptionalValue(value: CodeBlock): CodeBlock {
   return if (this.isOptional() && this is ParameterizedTypeName) {
     CodeBlock.of("\$T.presentIfNotNull(\$L)", rawType, value)
