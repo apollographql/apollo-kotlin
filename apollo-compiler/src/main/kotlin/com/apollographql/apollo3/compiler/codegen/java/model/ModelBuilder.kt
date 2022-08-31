@@ -14,8 +14,6 @@ import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
-import com.apollographql.apollo3.compiler.unwrapOptionalType
-import com.apollographql.apollo3.compiler.unwrapOptionalValue
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -126,7 +124,7 @@ internal class ModelBuilder(
         .returns(builderClass)
         .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
         .addCode(fields
-          .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, it.name, it.name) }
+          .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
           .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
           .build()
         )
@@ -142,7 +140,7 @@ internal class ModelBuilder(
         .addType(
           Builder(
             targetObjectClassName = ClassName.get("", name),
-            fields = fields.map { it.name to it.type },
+            fields = fields.map { context.layout.propertyName(it.name) to it.type },
             fieldJavaDocs = emptyMap(),
             buildableTypes = buildableTypes,
             context = context
