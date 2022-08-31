@@ -47,19 +47,9 @@ internal class InputObjectBuilder(
           .build()
 
   private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
-    addMethod(Builder.builderFactoryMethod())
-
-    val inputClassName = ClassName.get(packageName, simpleName)
-
     if (inputObject.fields.isEmpty()) {
-      return addType(
-          Builder(
-              targetObjectClassName = inputClassName,
-              fields = emptyList(),
-              fieldJavaDocs = emptyMap(),
-              context = context
-          ).build()
-      )
+      // The GraphQL spec doesn't allow an input with no fields
+      return this
     } else {
       val builderFields = inputObject.fields.map {
         context.layout.escapeReservedWord(it.name) to context.resolver.resolveIrType(it.type)
@@ -67,14 +57,15 @@ internal class InputObjectBuilder(
       val javaDocs = inputObject.fields
         .filter { !it.description.isNullOrBlank() }
         .associate { context.layout.escapeReservedWord(it.name) to it.description!! }
-      return addType(
-          Builder(
-            targetObjectClassName = inputClassName,
-            fields = builderFields,
-            fieldJavaDocs = javaDocs,
-            context = context
-          ).build()
-        )
+      return addMethod(Builder.builderFactoryMethod())
+          .addType(
+              Builder(
+                  targetObjectClassName = ClassName.get(packageName, simpleName),
+                  fields = builderFields,
+                  fieldJavaDocs = javaDocs,
+                  context = context
+              ).build()
+          )
     }
   }
 }
