@@ -357,12 +357,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/CodegenJavaFi
 	public final fun getTypeSpec ()Lcom/squareup/javapoet/TypeSpec;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/java/JavaAnnotations {
-	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/codegen/java/JavaAnnotations;
-	public final fun getNonNull ()Lcom/squareup/javapoet/AnnotationSpec;
-	public final fun getNullable ()Lcom/squareup/javapoet/AnnotationSpec;
-}
-
 public abstract interface class com/apollographql/apollo3/compiler/codegen/java/JavaClassBuilder {
 	public abstract fun build ()Lcom/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile;
 	public abstract fun prepare ()V
