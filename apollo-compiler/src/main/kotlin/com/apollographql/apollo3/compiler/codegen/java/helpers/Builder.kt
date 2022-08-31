@@ -110,18 +110,17 @@ internal class Builder(
   }
 
   private fun fieldSetterWithMutatorMethodSpec(fieldName: String, fieldType: TypeName): MethodSpec {
-    fun setFieldCode(mutatorParam: ParameterSpec): CodeBlock {
+    fun setFieldCode(): CodeBlock {
       return CodeBlock.builder()
         .addStatement("\$T.\$L builder = this.\$L != null ? this.\$L.\$L() : \$T.\$L()", fieldType,
           JavaClassNames.Builder.simpleName(), fieldName, fieldName, TO_BUILDER_METHOD_NAME, fieldType,
           JavaClassNames.Builder.simpleName().decapitalizeFirstLetter())
-        .addStatement("\$L.accept(builder)", mutatorParam.name)
         .addStatement("this.\$L = builder.build()", fieldName)
         .addStatement("return this")
         .build()
     }
 
-    fun setListFieldCode(mutatorParam: ParameterSpec): CodeBlock {
+    fun setListFieldCode(): CodeBlock {
       return CodeBlock.builder()
         .addStatement("\$T<\$T.\$L> builders = new \$T<>()", JavaClassNames.List, fieldType.listParamType(),
           JavaClassNames.Builder.simpleName(), JavaClassNames.Arrays)
@@ -130,7 +129,6 @@ internal class Builder(
         .addStatement("builders.add(item != null ? item.toBuilder() : null)")
         .endControlFlow()
         .endControlFlow()
-        .addStatement("\$L.accept(builders)", mutatorParam.name)
         .addStatement("\$T<\$T> \$L = new \$T<>()", JavaClassNames.List, fieldType.listParamType(), fieldName,
           JavaClassNames.ArrayList)
         .beginControlFlow("for (\$T.\$L item : builders)", fieldType.listParamType(), JavaClassNames.Builder.simpleName())
@@ -142,14 +140,11 @@ internal class Builder(
     }
 
     val javaDoc = fieldJavaDocs[fieldName]
-    val mutatorParam = mutatorParam(fieldType)
     return MethodSpec.methodBuilder(fieldName)
       .addModifiers(Modifier.PUBLIC)
-      .addParameter(mutatorParam)
       .apply { if (!javaDoc.isNullOrBlank()) addJavadoc(CodeBlock.of("\$L\n", javaDoc)) }
       .returns(JavaClassNames.Builder)
-      .addStatement("\$T.checkFieldNotMissing(\$L, \$S)", ClassNames.Assertions, mutatorParam.name, mutatorParam.name)
-      .addCode(if (fieldType.isList()) setListFieldCode(mutatorParam) else setFieldCode(mutatorParam))
+      .addCode(if (fieldType.isList()) setListFieldCode() else setFieldCode())
       .build()
   }
 
@@ -175,22 +170,6 @@ internal class Builder(
 
   companion object {
     const val TO_BUILDER_METHOD_NAME = "toBuilder"
-
-    private fun mutatorParam(fieldType: TypeName): ParameterSpec {
-      val fieldBuilderType = if (fieldType.isList()) {
-        ParameterizedTypeName.get(
-          JavaClassNames.List,
-          ClassName.get(
-            "",
-            "${(fieldType.listParamType() as ClassName).simpleName()}.${JavaClassNames.Builder.simpleName()}"))
-      } else {
-        ClassName.get("", "${(fieldType as ClassName).simpleName()}.${JavaClassNames.Builder.simpleName()}")
-      }
-      return ParameterSpec.builder(
-        ParameterizedTypeName.get(JavaClassNames.Mutator, fieldBuilderType),
-        "mutator"
-      ).addAnnotation(JavaAnnotations.NonNull).build()
-    }
 
     fun builderFactoryMethod(): MethodSpec {
       return MethodSpec

@@ -392,10 +392,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/java/helpers/IrTypeKt {
-	public static final fun getBuiltInScalars ()Ljava/util/Set;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
 	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;)V
 	public final fun canResolveSchemaType (Ljava/lang/String;)Z

@@ -34,7 +34,6 @@ internal object ClassNames {
   val FragmentData = ResolverClassName(apolloApiPackageName, "Fragment", "Data")
   val Query = ResolverClassName(apolloApiPackageName, "Query")
   val Mutation = ResolverClassName(apolloApiPackageName, "Mutation")
-  val Mutator = ResolverClassName("$apolloApiPackageName.internal", "Mutator")
   val Subscription = ResolverClassName(apolloApiPackageName, "Subscription")
   val QueryData = ResolverClassName(apolloApiPackageName, "Query", "Data")
   val MutationData = ResolverClassName(apolloApiPackageName, "Mutation", "Data")

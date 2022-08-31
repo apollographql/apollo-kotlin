@@ -33,7 +33,6 @@ internal object JavaClassNames {
   val FragmentData = ClassNames.FragmentData.toJavaPoetClassName()
   val Query = ClassNames.Query.toJavaPoetClassName()
   val Mutation = ClassNames.Mutation.toJavaPoetClassName()
-  val Mutator = ClassNames.Mutator.toJavaPoetClassName()
   val Subscription = ClassNames.Subscription.toJavaPoetClassName()
   val QueryData = ClassNames.QueryData.toJavaPoetClassName()
   val MutationData = ClassNames.MutationData.toJavaPoetClassName()

@@ -999,10 +999,6 @@ public final class com/apollographql/apollo3/api/http/HttpResponse$Builder {
 	public final fun headers (Ljava/util/List;)Lcom/apollographql/apollo3/api/http/HttpResponse$Builder;
 }
 
-public abstract interface class com/apollographql/apollo3/api/internal/Mutator {
-	public abstract fun accept (Ljava/lang/Object;)V
-}
-
 public final class com/apollographql/apollo3/api/json/-JsonReaders {
 	public static final fun jsonReader (Ljava/util/Map;)Lcom/apollographql/apollo3/api/json/JsonReader;
 	public static final fun jsonReader (Lokio/BufferedSource;)Lcom/apollographql/apollo3/api/json/JsonReader;
