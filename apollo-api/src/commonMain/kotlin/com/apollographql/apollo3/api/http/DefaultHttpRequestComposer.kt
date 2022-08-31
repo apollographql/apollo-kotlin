@@ -81,10 +81,10 @@ class DefaultHttpRequestComposer(
 
     private const val HEADER_ACCEPT_NAME = "Accept"
 
-    // TODO The deferSpec=20220822 part is a temporary measure so early backend implementations of the @defer directive
-    // can recognize early client implementations and potentially reply in a compaible way.
+    // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
+    // can recognize early client implementations and potentially reply in a compatible way.
     // This should be removed in later versions.
-    private const val HEADER_ACCEPT_VALUE = "multipart/mixed; deferSpec=20220822, application/json"
+    private const val HEADER_ACCEPT_VALUE = "multipart/mixed; deferSpec=20220824, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
