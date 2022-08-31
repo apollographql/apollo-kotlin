@@ -83,7 +83,7 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
       X-APOLLO-OPERATION-ID: 7e7c85cbf5ef3af5641552c55965608a4e5d7243f3116a486d21c3a958d34235
       X-APOLLO-OPERATION-NAME: HeroName
-      accept: multipart/mixed; deferspec=20220822, application/json
+      accept: multipart/mixed; deferspec=20220824, application/json
       [end of headers]
 
       HTTP: 200
@@ -104,7 +104,7 @@ class LoggingInterceptorTest {
       Post http://0.0.0.0/
       X-APOLLO-OPERATION-ID: 7e7c85cbf5ef3af5641552c55965608a4e5d7243f3116a486d21c3a958d34235
       X-APOLLO-OPERATION-NAME: HeroName
-      accept: multipart/mixed; deferspec=20220822, application/json
+      accept: multipart/mixed; deferspec=20220824, application/json
       [end of headers]
       {"operationName":"HeroName","variables":{},"query":"query HeroName { hero { name } }"}
 
