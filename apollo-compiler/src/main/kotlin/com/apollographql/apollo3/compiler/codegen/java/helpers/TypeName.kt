@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.codegen.java.JavaAnnotations
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -6,17 +6,6 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
-import com.squareup.javapoet.WildcardTypeName
-
-internal fun TypeName.isList() =
-  (this is ParameterizedTypeName && rawType == JavaClassNames.List)
-
-internal fun TypeName.listParamType(): TypeName {
-  return (this as ParameterizedTypeName)
-    .typeArguments
-    .first()
-    .let { if (it is WildcardTypeName) it.upperBounds.first() else it }
-}
 
 internal fun TypeName.isOptional(expectedOptionalType: ClassName? = null): Boolean {
   val rawType = (this as? ParameterizedTypeName)?.rawType ?: this

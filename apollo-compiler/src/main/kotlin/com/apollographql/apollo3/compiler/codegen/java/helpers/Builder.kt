@@ -4,9 +4,6 @@ import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaAnnotations
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.isOptional
-import com.apollographql.apollo3.compiler.unwrapOptionalType
-import com.apollographql.apollo3.compiler.wrapOptionalValue
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
