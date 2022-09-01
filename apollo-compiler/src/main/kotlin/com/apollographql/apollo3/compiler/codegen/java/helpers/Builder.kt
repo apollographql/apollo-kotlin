@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.codegen.ClassNames
-import com.apollographql.apollo3.compiler.codegen.java.JavaAnnotations
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -71,7 +71,11 @@ internal class Builder(
   private fun inputFieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder("${fieldName}Input")
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(ParameterSpec.builder(fieldType, fieldName).addAnnotation(JavaAnnotations.NonNull).build())
+        .addParameter(
+            ParameterSpec.builder(fieldType, fieldName)
+                .addAnnotation(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
+                .build())
+
         .apply {
           if (!javaDoc.isNullOrBlank()) {
             addJavadoc(CodeBlock.of("\$L\n", javaDoc))
@@ -85,7 +89,7 @@ internal class Builder(
 
   private fun buildMethod(): MethodSpec {
     val validationCodeBuilder = fields.filter { (_, fieldType) ->
-      !fieldType.isPrimitive && fieldType.annotations.contains(JavaAnnotations.NonNull)
+      !fieldType.isPrimitive && fieldType.annotations.contains(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
     }.map { (fieldName, _) ->
       CodeBlock.of("\$T.checkFieldNotMissing(\$L, \$S);\n", ClassNames.Assertions, fieldName, fieldName)
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)

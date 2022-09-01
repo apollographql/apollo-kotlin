@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.codegen.java.JavaAnnotations
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
@@ -23,7 +23,7 @@ internal fun TypeName.unwrapOptionalType(withoutAnnotations: Boolean = false): T
       // Workaround for "annotation @org.jetbrains.annotations.Nullable not applicable in this type context"
       unwrappedTypeName
     } else {
-      unwrappedTypeName.annotated(JavaAnnotations.Nullable)
+      unwrappedTypeName.annotated(AnnotationSpec.builder(JavaClassNames.JetBrainsNullable).build())
     }
   } else {
     this

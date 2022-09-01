@@ -8,6 +8,7 @@ internal object ClassNames {
   const val apolloAnnotationsPackageName = "com.apollographql.apollo3.annotations"
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
   const val apolloApiTestPackageName = "$apolloApiPackageName.test"
+  private const val jetbrainsAnnotationsPackageName = "org.jetbrains.annotations"
 
   val Assertions = ResolverClassName(apolloApiPackageName, "Assertions")
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
@@ -57,4 +58,6 @@ internal object ClassNames {
   val MapBuilder = ResolverClassName(apolloApiTestPackageName, "MapBuilder")
   val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
+  val JetBrainsNullable = ResolverClassName(jetbrainsAnnotationsPackageName, "Nullable")
+  val JetBrainsNonNull = ResolverClassName(jetbrainsAnnotationsPackageName, "NotNull")
 }

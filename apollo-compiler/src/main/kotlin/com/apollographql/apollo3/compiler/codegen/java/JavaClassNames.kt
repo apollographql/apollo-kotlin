@@ -109,4 +109,7 @@ internal object JavaClassNames {
   val ObjectBuilderKt = ClassName.get(apolloApiPackageName, "ObjectBuilderKt")
   val ObjectMap = ClassName.get(apolloApiPackageName, "ObjectMap")
 
+  val JetBrainsNullable = ClassNames.JetBrainsNullable.toJavaPoetClassName()
+  val JetBrainsNonNull = ClassNames.JetBrainsNonNull.toJavaPoetClassName()
+
 }
