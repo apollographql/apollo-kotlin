@@ -4,10 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaAnnotations
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.isList
 import com.apollographql.apollo3.compiler.isOptional
-import com.apollographql.apollo3.compiler.listParamType
 import com.apollographql.apollo3.compiler.unwrapOptionalType
 import com.apollographql.apollo3.compiler.wrapOptionalValue
 import com.squareup.javapoet.ClassName
@@ -15,17 +12,15 @@ import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterSpec
-import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class Builder(
-  val targetObjectClassName: ClassName,
-  val fields: List<Pair<String, TypeName>>,
-  val fieldJavaDocs: Map<String, String>,
-  val buildableTypes: List<TypeName> = emptyList(),
-  val context: JavaContext
+    val targetObjectClassName: ClassName,
+    val fields: List<Pair<String, TypeName>>,
+    val fieldJavaDocs: Map<String, String>,
+    val context: JavaContext
 ) {
   fun build(): TypeSpec {
     return TypeSpec.classBuilder(JavaClassNames.Builder.simpleName())

@@ -257,10 +257,10 @@ internal class OperationBuilder(
     if (operation.variables.isEmpty()) {
       return addType(
         Builder(
-          targetObjectClassName = operationClassName,
-          fields = emptyList(),
-          fieldJavaDocs = emptyMap(),
-          context = context
+            targetObjectClassName = operationClassName,
+            fields = emptyList(),
+            fieldJavaDocs = emptyMap(),
+            context = context
         ).build()
       )
     }
@@ -271,10 +271,10 @@ internal class OperationBuilder(
       }
       .let {
         Builder(
-          targetObjectClassName = operationClassName,
-          fields = it,
-          fieldJavaDocs = emptyMap(),
-          context = context
+            targetObjectClassName = operationClassName,
+            fields = it,
+            fieldJavaDocs = emptyMap(),
+            context = context
         )
       }
       .let { addType(it.build()) }

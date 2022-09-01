@@ -139,11 +139,10 @@ internal class ModelBuilder(
         .addMethod(Builder.builderFactoryMethod())
         .addType(
           Builder(
-            targetObjectClassName = ClassName.get("", name),
-            fields = fields.map { context.layout.propertyName(it.name) to it.type },
-            fieldJavaDocs = emptyMap(),
-            buildableTypes = buildableTypes,
-            context = context
+              targetObjectClassName = ClassName.get("", name),
+              fields = fields.map { context.layout.propertyName(it.name) to it.type },
+              fieldJavaDocs = emptyMap(),
+              context = context
           ).build()
         ).build()
     }
