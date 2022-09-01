@@ -92,13 +92,13 @@ internal class ModelBuilder(
         .addTypes(nestedTypes)
         .addSuperinterfaces(superInterfaces)
         .build()
-      .let {
-        if (context.generateModelBuilder) {
-          it.addBuilder(context)
-        } else {
-          it
+        .let {
+          if (context.generateModelBuilder) {
+            it.addBuilder(context)
+          } else {
+            it
+          }
         }
-      }
   }
 
 
@@ -113,38 +113,38 @@ internal class ModelBuilder(
 
   private fun TypeSpec.addBuilder(context: JavaContext): TypeSpec {
     val fields = fieldSpecs.filter { !it.modifiers.contains(Modifier.STATIC) }
-      .filterNot { it.name.startsWith(prefix = "$") }
+        .filterNot { it.name.startsWith(prefix = "$") }
     if (fields.isEmpty()) {
       return this
     } else {
       val builderVariable = JavaClassNames.Builder.simpleName().decapitalizeFirstLetter()
       val builderClass = ClassName.get("", JavaClassNames.Builder.simpleName())
       val toBuilderMethod = MethodSpec.methodBuilder(Builder.TO_BUILDER_METHOD_NAME)
-        .addModifiers(Modifier.PUBLIC)
-        .returns(builderClass)
-        .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
-        .addCode(fields
-          .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
-          .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
+          .addModifiers(Modifier.PUBLIC)
+          .returns(builderClass)
+          .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
+          .addCode(fields
+              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
+              .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
+              .build()
+          )
+          .addStatement("return \$L", builderVariable)
           .build()
-        )
-        .addStatement("return \$L", builderVariable)
-        .build()
       val buildableTypes = typeSpecs.filter {
         it.typeSpecs.find { it.name == JavaClassNames.Builder.simpleName() } != null
       }.map { ClassName.get("", it.name) }
 
       return toBuilder()
-        .addMethod(toBuilderMethod)
-        .addMethod(Builder.builderFactoryMethod())
-        .addType(
-          Builder(
-              targetObjectClassName = ClassName.get("", name),
-              fields = fields.map { context.layout.propertyName(it.name) to it.type },
-              fieldJavaDocs = emptyMap(),
-              context = context
+          .addMethod(toBuilderMethod)
+          .addMethod(Builder.builderFactoryMethod())
+          .addType(
+              Builder(
+                  targetObjectClassName = ClassName.get("", name),
+                  fields = fields.map { context.layout.propertyName(it.name) to it.type },
+                  fieldJavaDocs = emptyMap(),
+                  context = context
+              ).build()
           ).build()
-        ).build()
     }
   }
 }

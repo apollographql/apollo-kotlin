@@ -256,28 +256,28 @@ internal class OperationBuilder(
 
     if (operation.variables.isEmpty()) {
       return addType(
-        Builder(
-            targetObjectClassName = operationClassName,
-            fields = emptyList(),
-            fieldJavaDocs = emptyMap(),
-            context = context
-        ).build()
+          Builder(
+              targetObjectClassName = operationClassName,
+              fields = emptyList(),
+              fieldJavaDocs = emptyMap(),
+              context = context
+          ).build()
       )
     }
 
     operation.variables
-      .map {
-        context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
-      }
-      .let {
-        Builder(
-            targetObjectClassName = operationClassName,
-            fields = it,
-            fieldJavaDocs = emptyMap(),
-            context = context
-        )
-      }
-      .let { addType(it.build()) }
+        .map {
+          context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
+        }
+        .let {
+          Builder(
+              targetObjectClassName = operationClassName,
+              fields = it,
+              fieldJavaDocs = emptyMap(),
+              context = context
+          )
+        }
+        .let { addType(it.build()) }
 
     return this
   }
