@@ -130,9 +130,6 @@ internal class ModelBuilder(
           )
           .addStatement("return \$L", builderVariable)
           .build()
-      val buildableTypes = typeSpecs.filter {
-        it.typeSpecs.find { it.name == JavaClassNames.Builder.simpleName() } != null
-      }.map { ClassName.get("", it.name) }
 
       return toBuilder()
           .addMethod(toBuilderMethod)
