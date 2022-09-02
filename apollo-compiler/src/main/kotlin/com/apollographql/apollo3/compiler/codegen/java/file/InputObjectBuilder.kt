@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
@@ -42,5 +43,29 @@ internal class InputObjectBuilder(
           .makeDataClassFromParameters(fields.map {
             it.toNamedType().toParameterSpec(context)
           })
+          .addBuilder()
           .build()
+
+  private fun TypeSpec.Builder.addBuilder(): TypeSpec.Builder {
+    if (inputObject.fields.isEmpty()) {
+      // The GraphQL spec doesn't allow an input with no fields
+      return this
+    } else {
+      val builderFields = inputObject.fields.map {
+        context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
+      }
+      val javaDocs = inputObject.fields
+          .filter { !it.description.isNullOrBlank() }
+          .associate { context.layout.propertyName(it.name) to it.description!! }
+      return addMethod(Builder.builderFactoryMethod())
+          .addType(
+              Builder(
+                  targetObjectClassName = ClassName.get(packageName, simpleName),
+                  fields = builderFields,
+                  fieldJavaDocs = javaDocs,
+                  context = context
+              ).build()
+          )
+    }
+  }
 }

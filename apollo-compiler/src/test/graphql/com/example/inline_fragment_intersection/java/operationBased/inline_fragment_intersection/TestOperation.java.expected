@@ -114,6 +114,10 @@ public class TestOperation implements Query<TestOperation.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -148,6 +152,15 @@ public class TestOperation implements Query<TestOperation.Data> {
     )
     .selections(TestOperationSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public TestOperation build() {
+      return new TestOperation();
+    }
   }
 
   public static class Data implements Query.Data {

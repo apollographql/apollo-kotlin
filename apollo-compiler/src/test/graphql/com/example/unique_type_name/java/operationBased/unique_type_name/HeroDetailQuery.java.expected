@@ -105,6 +105,10 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -139,6 +143,15 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     )
     .selections(HeroDetailQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public HeroDetailQuery build() {
+      return new HeroDetailQuery();
+    }
   }
 
   public static class Data implements Query.Data {

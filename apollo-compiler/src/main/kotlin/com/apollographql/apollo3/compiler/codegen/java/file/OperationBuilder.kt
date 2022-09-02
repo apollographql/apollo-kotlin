@@ -18,6 +18,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
@@ -88,6 +89,7 @@ internal class OperationBuilder(
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(operation.description)
         .makeDataClassFromParameters(operation.variables.map { it.toNamedType().toParameterSpec(context) })
+        .addBuilder(context)
         .addMethod(operationIdMethodSpec())
         .addMethod(queryDocumentMethodSpec(generateQueryDocument))
         .addMethod(nameMethodSpec())
@@ -246,5 +248,37 @@ internal class OperationBuilder(
         context.resolver.resolveOperationSelections(operation.name)
     )
   }
-}
 
+  private fun TypeSpec.Builder.addBuilder(context: JavaContext): TypeSpec.Builder {
+    addMethod(Builder.builderFactoryMethod())
+
+    val operationClassName = ClassName.get(packageName, simpleName)
+
+    if (operation.variables.isEmpty()) {
+      return addType(
+          Builder(
+              targetObjectClassName = operationClassName,
+              fields = emptyList(),
+              fieldJavaDocs = emptyMap(),
+              context = context
+          ).build()
+      )
+    }
+
+    operation.variables
+        .map {
+          context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
+        }
+        .let {
+          Builder(
+              targetObjectClassName = operationClassName,
+              fields = it,
+              fieldJavaDocs = emptyMap(),
+              context = context
+          )
+        }
+        .let { addType(it.build()) }
+
+    return this
+  }
+}

@@ -1,7 +1,6 @@
 package test;
 
 import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.Operations;
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
 import com.google.common.truth.Truth;
 import javatest.GetRandomQuery;
@@ -13,9 +12,9 @@ import java.io.IOException;
 public class OperationTest {
   @Test
   public void canUseDefaultFunctions() throws IOException {
-    GetRandomQuery query = new GetRandomQuery();
+    GetRandomQuery query = GetRandomQuery.builder().build();
 
-    GetRandomQuery.Data data = new GetRandomQuery.Data(42);
+    GetRandomQuery.Data data = GetRandomQuery.Data.builder().random(42).build();
 
     Buffer buffer = new Buffer();
     query.adapter().toJson(new BufferedSinkJsonWriter(buffer), CustomScalarAdapters.Empty, data);

@@ -82,6 +82,10 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -116,6 +120,15 @@ public class SpreadMultipleWithDefer implements Query<SpreadMultipleWithDefer.Da
     )
     .selections(SpreadMultipleWithDeferSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public SpreadMultipleWithDefer build() {
+      return new SpreadMultipleWithDefer();
+    }
   }
 
   public static class Data implements Query.Data {

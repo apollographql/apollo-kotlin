@@ -69,4 +69,38 @@ public class DroidDetails implements Fragment.Data {
     }
     return $toString;
   }
+
+  public Builder toBuilder() {
+    Builder builder = new Builder();
+    builder.name = name;
+    builder.primaryFunction = primaryFunction;
+    return builder;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    private String name;
+
+    private String primaryFunction;
+
+    Builder() {
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder primaryFunction(String primaryFunction) {
+      this.primaryFunction = primaryFunction;
+      return this;
+    }
+
+    public DroidDetails build() {
+      return new DroidDetails(name, primaryFunction);
+    }
+  }
 }

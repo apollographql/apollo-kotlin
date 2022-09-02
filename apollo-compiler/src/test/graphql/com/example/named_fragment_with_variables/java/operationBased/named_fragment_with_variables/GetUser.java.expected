@@ -114,6 +114,10 @@ public class GetUser implements Query<GetUser.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -148,6 +152,36 @@ public class GetUser implements Query<GetUser.Data> {
     )
     .selections(GetUserSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private String organizationId;
+
+    private UserQuery query;
+
+    private Integer size;
+
+    Builder() {
+    }
+
+    public Builder organizationId(String organizationId) {
+      this.organizationId = organizationId;
+      return this;
+    }
+
+    public Builder query(UserQuery query) {
+      this.query = query;
+      return this;
+    }
+
+    public Builder size(Integer size) {
+      this.size = size;
+      return this;
+    }
+
+    public GetUser build() {
+      return new GetUser(organizationId, query, size);
+    }
   }
 
   public static class Data implements Query.Data {

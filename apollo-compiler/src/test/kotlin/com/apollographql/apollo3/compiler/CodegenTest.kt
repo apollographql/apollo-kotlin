@@ -308,6 +308,11 @@ class CodegenTest {
         else -> emptyList()
       }
 
+      val generateModelBuilder = when (folder.name) {
+        "fragment_with_inline_fragment" -> true
+        else -> false
+      }
+
       val generateSchema = folder.name == "__schema"
 
       val schemaFile = folder.listFiles()!!.find { it.isFile && (it.name == "schema.sdl" || it.name == "schema.json" || it.name == "schema.graphqls") }
@@ -362,6 +367,7 @@ class CodegenTest {
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
+          generateModelBuilder = generateModelBuilder,
           generateSchema = generateSchema,
           moduleName = folder.name,
           targetLanguage = targetLanguage,

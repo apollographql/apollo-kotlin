@@ -5,20 +5,20 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperC
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
+import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
 import com.apollographql.apollo3.compiler.ir.IrAccessor
 import com.apollographql.apollo3.compiler.ir.IrFragmentAccessor
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrSubtypeAccessor
 import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
-import com.squareup.kotlinpoet.AnnotationSpec
-import com.squareup.kotlinpoet.CodeBlock
 import javax.lang.model.element.Modifier
 
 /**
@@ -92,6 +92,13 @@ internal class ModelBuilder(
         .addTypes(nestedTypes)
         .addSuperinterfaces(superInterfaces)
         .build()
+        .let {
+          if (context.generateModelBuilder) {
+            it.addBuilder(context)
+          } else {
+            it
+          }
+        }
   }
 
 
@@ -101,6 +108,40 @@ internal class ModelBuilder(
       is IrSubtypeAccessor -> {
         "as${upperCamelCaseIgnoringNonLetters(this.typeSet)}"
       }
+    }
+  }
+
+  private fun TypeSpec.addBuilder(context: JavaContext): TypeSpec {
+    val fields = fieldSpecs.filter { !it.modifiers.contains(Modifier.STATIC) }
+        .filterNot { it.name.startsWith(prefix = "$") }
+    if (fields.isEmpty()) {
+      return this
+    } else {
+      val builderVariable = JavaClassNames.Builder.simpleName().decapitalizeFirstLetter()
+      val builderClass = ClassName.get("", JavaClassNames.Builder.simpleName())
+      val toBuilderMethod = MethodSpec.methodBuilder(Builder.TO_BUILDER_METHOD_NAME)
+          .addModifiers(Modifier.PUBLIC)
+          .returns(builderClass)
+          .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
+          .addCode(fields
+              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
+              .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
+              .build()
+          )
+          .addStatement("return \$L", builderVariable)
+          .build()
+
+      return toBuilder()
+          .addMethod(toBuilderMethod)
+          .addMethod(Builder.builderFactoryMethod())
+          .addType(
+              Builder(
+                  targetObjectClassName = ClassName.get("", name),
+                  fields = fields.map { context.layout.propertyName(it.name) to it.type },
+                  fieldJavaDocs = emptyMap(),
+                  context = context
+              ).build()
+          ).build()
     }
   }
 }

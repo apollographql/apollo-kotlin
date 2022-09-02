@@ -93,6 +93,10 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -127,6 +131,29 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     )
     .selections(CreateReviewForEpisodeMutationSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Episode ep;
+
+    private ReviewInput review;
+
+    Builder() {
+    }
+
+    public Builder ep(Episode ep) {
+      this.ep = ep;
+      return this;
+    }
+
+    public Builder review(ReviewInput review) {
+      this.review = review;
+      return this;
+    }
+
+    public CreateReviewForEpisodeMutation build() {
+      return new CreateReviewForEpisodeMutation(ep, review);
+    }
   }
 
   public static class Data implements Mutation.Data {

@@ -87,6 +87,10 @@ public class GetPage implements Query<GetPage.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -121,6 +125,15 @@ public class GetPage implements Query<GetPage.Data> {
     )
     .selections(GetPageSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public GetPage build() {
+      return new GetPage();
+    }
   }
 
   public static class Data implements Query.Data {

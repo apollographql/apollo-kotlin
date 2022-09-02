@@ -55,4 +55,24 @@ public class Login {
     }
     return $toString;
   }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    private String email;
+
+    Builder() {
+    }
+
+    public Builder email(String email) {
+      this.email = email;
+      return this;
+    }
+
+    public Login build() {
+      return new Login(email);
+    }
+  }
 }

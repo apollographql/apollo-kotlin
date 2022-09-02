@@ -11,6 +11,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The input object sent when passing in a color
@@ -89,5 +90,68 @@ public class ColorInput {
         + "}";
     }
     return $toString;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static final class Builder {
+    private Optional<Integer> red;
+
+    private Optional<Double> green;
+
+    private Optional<Double> blue;
+
+    private Optional<Episode> enumWithDefaultValue;
+
+    private Optional<ReviewRefInput> reviewRefInput;
+
+    Builder() {
+    }
+
+    /**
+     * Red color
+     */
+    public Builder red(@Nullable Integer red) {
+      this.red = Optional.presentIfNotNull(red);
+      return this;
+    }
+
+    /**
+     * Green color
+     */
+    public Builder green(@Nullable Double green) {
+      this.green = Optional.presentIfNotNull(green);
+      return this;
+    }
+
+    /**
+     * Blue color
+     */
+    public Builder blue(@Nullable Double blue) {
+      this.blue = Optional.presentIfNotNull(blue);
+      return this;
+    }
+
+    /**
+     * for test purpose only
+     */
+    public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
+      this.enumWithDefaultValue = Optional.presentIfNotNull(enumWithDefaultValue);
+      return this;
+    }
+
+    /**
+     * Circle ref to review input
+     */
+    public Builder reviewRefInput(@Nullable ReviewRefInput reviewRefInput) {
+      this.reviewRefInput = Optional.presentIfNotNull(reviewRefInput);
+      return this;
+    }
+
+    public ColorInput build() {
+      return new ColorInput(red, green, blue, enumWithDefaultValue, reviewRefInput);
+    }
   }
 }

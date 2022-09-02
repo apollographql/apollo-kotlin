@@ -116,6 +116,10 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -150,6 +154,43 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     )
     .selections(SpreadMultipleWithDeferAndIncludeSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Boolean cond1;
+
+    private Boolean cond2;
+
+    private Boolean cond3;
+
+    private Boolean cond4;
+
+    Builder() {
+    }
+
+    public Builder cond1(Boolean cond1) {
+      this.cond1 = cond1;
+      return this;
+    }
+
+    public Builder cond2(Boolean cond2) {
+      this.cond2 = cond2;
+      return this;
+    }
+
+    public Builder cond3(Boolean cond3) {
+      this.cond3 = cond3;
+      return this;
+    }
+
+    public Builder cond4(Boolean cond4) {
+      this.cond4 = cond4;
+      return this;
+    }
+
+    public SpreadMultipleWithDeferAndInclude build() {
+      return new SpreadMultipleWithDeferAndInclude(cond1, cond2, cond3, cond4);
+    }
   }
 
   public static class Data implements Query.Data {

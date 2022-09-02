@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.squareup.kotlinpoet.ClassName
-
 /**
  * A list of constant [ResolverClassName] that don't use `class.name` and therefore survive proguard/R8
  */
@@ -11,7 +8,9 @@ internal object ClassNames {
   const val apolloAnnotationsPackageName = "com.apollographql.apollo3.annotations"
   const val apolloApiJsonPackageName = "$apolloApiPackageName.json"
   const val apolloApiTestPackageName = "$apolloApiPackageName.test"
+  private const val jetbrainsAnnotationsPackageName = "org.jetbrains.annotations"
 
+  val Assertions = ResolverClassName(apolloApiPackageName, "Assertions")
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
   val InterfaceType = ResolverClassName(apolloApiPackageName, "InterfaceType")
   val ObjectTypeBuilder = ResolverClassName(apolloApiPackageName, "ObjectType", "Builder")
@@ -22,6 +21,7 @@ internal object ClassNames {
   val JsonReader = ResolverClassName(apolloApiJsonPackageName, "JsonReader")
   val JsonWriter = ResolverClassName(apolloApiJsonPackageName, "JsonWriter")
   val CustomScalarAdapters = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters")
+  val Input = ResolverClassName(apolloApiPackageName, "Input")
   val CustomScalarAdaptersBuilder = ResolverClassName(apolloApiPackageName, "CustomScalarAdapters", "Builder")
   val Optional = ResolverClassName(apolloApiPackageName, "Optional")
   val Absent = ResolverClassName(apolloApiPackageName, "Optional", "Absent")
@@ -58,4 +58,6 @@ internal object ClassNames {
   val MapBuilder = ResolverClassName(apolloApiTestPackageName, "MapBuilder")
   val StubbedProperty = ResolverClassName(apolloApiTestPackageName, "StubbedProperty")
   val MandatoryTypenameProperty = ResolverClassName(apolloApiTestPackageName, "MandatoryTypenameProperty")
+  val JetBrainsNullable = ResolverClassName(jetbrainsAnnotationsPackageName, "Nullable")
+  val JetBrainsNonNull = ResolverClassName(jetbrainsAnnotationsPackageName, "NotNull")
 }

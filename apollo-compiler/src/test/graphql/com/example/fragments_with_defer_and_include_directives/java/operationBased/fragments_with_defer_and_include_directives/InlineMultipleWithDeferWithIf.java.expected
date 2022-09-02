@@ -92,6 +92,10 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -126,6 +130,22 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     )
     .selections(InlineMultipleWithDeferWithIfSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Boolean cond;
+
+    Builder() {
+    }
+
+    public Builder cond(Boolean cond) {
+      this.cond = cond;
+      return this;
+    }
+
+    public InlineMultipleWithDeferWithIf build() {
+      return new InlineMultipleWithDeferWithIf(cond);
+    }
   }
 
   public static class Data implements Query.Data {

@@ -81,6 +81,10 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -115,6 +119,15 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     )
     .selections(InlineMultipleWithDeferSelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public InlineMultipleWithDefer build() {
+      return new InlineMultipleWithDefer();
+    }
   }
 
   public static class Data implements Query.Data {

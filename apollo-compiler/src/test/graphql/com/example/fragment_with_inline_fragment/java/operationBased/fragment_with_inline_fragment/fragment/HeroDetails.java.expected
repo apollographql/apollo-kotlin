@@ -100,6 +100,20 @@ public class HeroDetails implements Fragment.Data {
     return $toString;
   }
 
+  public Builder toBuilder() {
+    Builder builder = new Builder();
+    builder.__typename = __typename;
+    builder.name = name;
+    builder.friendsConnection = friendsConnection;
+    builder.onDroid = onDroid;
+    builder.humanDetails = humanDetails;
+    return builder;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
   public static class FriendsConnection {
     /**
      * The total number of friends
@@ -159,6 +173,40 @@ public class HeroDetails implements Fragment.Data {
       }
       return $toString;
     }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.totalCount = totalCount;
+      builder.edges = edges;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer totalCount;
+
+      private List<Edge> edges;
+
+      Builder() {
+      }
+
+      public Builder totalCount(Integer totalCount) {
+        this.totalCount = totalCount;
+        return this;
+      }
+
+      public Builder edges(List<Edge> edges) {
+        this.edges = edges;
+        return this;
+      }
+
+      public FriendsConnection build() {
+        return new FriendsConnection(totalCount, edges);
+      }
+    }
   }
 
   public static class OnDroid {
@@ -217,6 +265,40 @@ public class HeroDetails implements Fragment.Data {
       }
       return $toString;
     }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.__typename = __typename;
+      builder.droidDetails = droidDetails;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private String __typename;
+
+      private DroidDetails droidDetails;
+
+      Builder() {
+      }
+
+      public Builder __typename(String __typename) {
+        this.__typename = __typename;
+        return this;
+      }
+
+      public Builder droidDetails(DroidDetails droidDetails) {
+        this.droidDetails = droidDetails;
+        return this;
+      }
+
+      public OnDroid build() {
+        return new OnDroid(__typename, droidDetails);
+      }
+    }
   }
 
   public static class Edge {
@@ -268,6 +350,32 @@ public class HeroDetails implements Fragment.Data {
       }
       return $toString;
     }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.node = node;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Node node;
+
+      Builder() {
+      }
+
+      public Builder node(Node node) {
+        this.node = node;
+        return this;
+      }
+
+      public Edge build() {
+        return new Edge(node);
+      }
+    }
   }
 
   public static class Node {
@@ -318,6 +426,76 @@ public class HeroDetails implements Fragment.Data {
           + "}";
       }
       return $toString;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.name = name;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private String name;
+
+      Builder() {
+      }
+
+      public Builder name(String name) {
+        this.name = name;
+        return this;
+      }
+
+      public Node build() {
+        return new Node(name);
+      }
+    }
+  }
+
+  public static final class Builder {
+    private String __typename;
+
+    private String name;
+
+    private FriendsConnection friendsConnection;
+
+    private OnDroid onDroid;
+
+    private HumanDetails humanDetails;
+
+    Builder() {
+    }
+
+    public Builder __typename(String __typename) {
+      this.__typename = __typename;
+      return this;
+    }
+
+    public Builder name(String name) {
+      this.name = name;
+      return this;
+    }
+
+    public Builder friendsConnection(FriendsConnection friendsConnection) {
+      this.friendsConnection = friendsConnection;
+      return this;
+    }
+
+    public Builder onDroid(OnDroid onDroid) {
+      this.onDroid = onDroid;
+      return this;
+    }
+
+    public Builder humanDetails(HumanDetails humanDetails) {
+      this.humanDetails = humanDetails;
+      return this;
+    }
+
+    public HeroDetails build() {
+      return new HeroDetails(__typename, name, friendsConnection, onDroid, humanDetails);
     }
   }
 }

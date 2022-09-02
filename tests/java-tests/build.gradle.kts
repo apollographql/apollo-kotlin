@@ -17,4 +17,5 @@ dependencies {
 
 apollo {
   packageName.set("javatest")
+  generateModelBuilder.set(true)
 }

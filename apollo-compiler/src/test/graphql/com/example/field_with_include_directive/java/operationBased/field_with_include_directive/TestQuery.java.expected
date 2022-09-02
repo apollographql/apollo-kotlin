@@ -94,6 +94,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -128,6 +132,29 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    private Boolean includeName;
+
+    private Boolean skipFriends;
+
+    Builder() {
+    }
+
+    public Builder includeName(Boolean includeName) {
+      this.includeName = includeName;
+      return this;
+    }
+
+    public Builder skipFriends(Boolean skipFriends) {
+      this.skipFriends = skipFriends;
+      return this;
+    }
+
+    public TestQuery build() {
+      return new TestQuery(includeName, skipFriends);
+    }
   }
 
   public static class Data implements Query.Data {

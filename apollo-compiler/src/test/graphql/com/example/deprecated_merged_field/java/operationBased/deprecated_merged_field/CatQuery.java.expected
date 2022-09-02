@@ -87,6 +87,10 @@ public class CatQuery implements Query<CatQuery.Data> {
     return $toString;
   }
 
+  public static Builder builder() {
+    return new Builder();
+  }
+
   @Override
   public String id() {
     return OPERATION_ID;
@@ -121,6 +125,15 @@ public class CatQuery implements Query<CatQuery.Data> {
     )
     .selections(CatQuerySelections.__root)
     .build();
+  }
+
+  public static final class Builder {
+    Builder() {
+    }
+
+    public CatQuery build() {
+      return new CatQuery();
+    }
   }
 
   public static class Data implements Query.Data {
