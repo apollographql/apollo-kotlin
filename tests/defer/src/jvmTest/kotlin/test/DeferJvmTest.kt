@@ -8,15 +8,25 @@ import com.apollographql.apollo3.mockserver.ChunkedResponse
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo3.testing.receiveOrTimeout
 import defer.WithFragmentSpreadsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.channels.toList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.junit.Ignore
 import org.junit.Test
+import supergraph.ProductQuery
 import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class DeferJvmTest {
@@ -85,5 +95,31 @@ class DeferJvmTest {
     )
 
     assertEquals(expected, actual)
+  }
+
+  @Test
+  @Ignore
+  fun supergraph() {
+    runBlocking {
+      val channel = Channel<ProductQuery.Data?>(UNLIMITED)
+      val client = ApolloClient.Builder()
+          .serverUrl("http://localhost:4000/")
+          .build()
+      launch(Dispatchers.IO) {
+        client
+            .query(ProductQuery())
+            .toFlow()
+            .collect {
+              println("got ${it.data}")
+              channel.send(it.data)
+            }
+        channel.close()
+      }
+
+      assertNull(channel.receiveOrTimeout(1000)?.product?.productInfoInventory)
+      delay(4500)
+      assertNotNull(channel.receiveOrTimeout(1000)?.product?.productInfoInventory)
+      client.close()
+    }
   }
 }

@@ -1,0 +1,77 @@
+directive @defer(label: String, if: Boolean! = true) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+type DeliveryEstimates {
+  estimatedDelivery: String
+  fastestDelivery: String
+}
+
+type Panda {
+  name: ID!
+  favoriteFood: String
+}
+
+type Product implements ProductItf & SkuItf {
+  id: ID!
+  dimensions: ProductDimension
+  delivery(zip: String): DeliveryEstimates
+  sku: String
+  package: String
+  variation: ProductVariation
+  createdBy: User
+  hidden: String
+  reviewsScore: Float!
+  reviewsCount: Int!
+  reviews: [Review!]!
+}
+
+type ProductDimension {
+  size: String
+  weight: Float
+}
+
+interface ProductItf implements SkuItf {
+  id: ID!
+  dimensions: ProductDimension
+  delivery(zip: String): DeliveryEstimates
+  sku: String
+  package: String
+  variation: ProductVariation
+  createdBy: User
+  reviewsCount: Int!
+  reviewsScore: Float!
+  reviews: [Review!]!
+}
+
+type ProductVariation {
+  id: ID!
+  name: String
+}
+
+type Query {
+  allPandas: [Panda]
+  panda(name: ID!): Panda
+  allProducts: [ProductItf]
+  product(id: ID!): ProductItf
+  review(id: Int!): Review
+}
+
+type Review {
+  id: Int!
+  body: String!
+}
+
+enum ShippingClass {
+  STANDARD
+  EXPRESS
+  OVERNIGHT
+}
+
+interface SkuItf {
+  sku: String
+}
+
+type User {
+  email: ID!
+  totalProductsCreated: Int
+  name: String
+}
