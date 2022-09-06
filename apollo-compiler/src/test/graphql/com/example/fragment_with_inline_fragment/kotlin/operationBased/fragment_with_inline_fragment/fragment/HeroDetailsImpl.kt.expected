@@ -18,7 +18,7 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.Unit
 
-public class HeroDetailsImpl() : Fragment<HeroDetails> {
+public class HeroDetailsImpl() : Fragment<IHeroDetails> {
   public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   public override fun hashCode(): Int = this::class.hashCode()
@@ -28,8 +28,8 @@ public class HeroDetailsImpl() : Fragment<HeroDetails> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<HeroDetails> =
-      HeroDetailsImpl_ResponseAdapter.HeroDetails.obj(true)
+  public override fun adapter(): Adapter<IHeroDetails> =
+      HeroDetailsImpl_ResponseAdapter.IHeroDetails.obj(true)
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

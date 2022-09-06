@@ -17,6 +17,7 @@ import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
@@ -174,16 +175,24 @@ internal class OperationBasedModelGroupBuilder(
       usedNames: MutableSet<String>,
       parentTypeConditions: List<String>,
   ): OperationField {
+    val rawTypeName = parentTypeConditions.lastOrNull() ?: ""
     if (selections.isEmpty()) {
       return OperationField(
           info = info,
           condition = condition,
           fieldSet = null,
+          shapes = emptyList(),
+          rawTypeName = rawTypeName
       )
     }
 
     val selfPath = path + "." + info.responseName
-
+    val shapes = shapes(
+        schema,
+        allFragmentDefinitions,
+        selections.map { it.selection }.filter { it !is GQLFragmentSpread },
+        rawTypeName
+    ).filter { it.possibleTypes.isNotEmpty() }
 
     /**
      * Merge fragments with the same type condition and include directive to avoid name clashes
@@ -325,6 +334,13 @@ internal class OperationBasedModelGroupBuilder(
             type = IrNonNullType(type)
           }
 
+          val fragmentShapes = shapes(
+            schema,
+            allFragmentDefinitions,
+            fragmentDefinition.selectionSet.selections.filter { it !is GQLFragmentSpread },
+            fragmentDefinition.typeCondition.name
+          ).filter { it.possibleTypes.isNotEmpty() }
+
           val childInfo = IrFieldInfo(
               responseName = first.name.decapitalizeFirstLetter().escapeKotlinReservedWord(),
               description = "Synthetic field for '${first.name}'",
@@ -333,19 +349,12 @@ internal class OperationBasedModelGroupBuilder(
               type = type,
               gqlType = null,
           )
-
-          val p = if (insertFragmentSyntheticField) {
-            "$selfPath.$FRAGMENTS_SYNTHETIC_FIELD"
-          } else {
-            selfPath
-          }
-          buildField(
-              path = p,
+          OperationField(
               info = childInfo,
-              selections = emptyList(), // Don't create a model for fragments spreads
               condition = childCondition,
-              usedNames = usedNames,
-              parentTypeConditions = emptyList() // this is not used because this field has no sub selections
+              fieldSet = null,
+              shapes = fragmentShapes,
+              rawTypeName = typeCondition
           )
         }
 
@@ -376,6 +385,8 @@ internal class OperationBasedModelGroupBuilder(
               info = fragmentsFieldInfo,
               condition = BooleanExpression.True,
               fieldSet = fragmentsFieldSet,
+              shapes = emptyList(),
+              rawTypeName
           )
       )
     } else {
@@ -422,11 +433,12 @@ internal class OperationBasedModelGroupBuilder(
           info.responseName
         }
     )
-
     return OperationField(
         info = patchedInfo,
         condition = condition,
         fieldSet = fieldSet,
+        shapes = shapes,
+        rawTypeName = rawTypeName
     )
   }
 
@@ -439,10 +451,13 @@ private class OperationField(
     val info: IrFieldInfo,
     val condition: BooleanExpression<BTerm>,
     val fieldSet: OperationFieldSet?,
+    val shapes: List<Shape>,
+    val rawTypeName: String
 ) {
   val isSynthetic: Boolean
     get() = info.gqlType == null
-
+  val hasMultipleShapes: Boolean
+    get() = shapes.size > 1
 }
 
 private data class OperationFieldSet(
@@ -456,11 +471,19 @@ private fun OperationField.toModelGroup(): IrModelGroup? {
     return null
   }
 
-  val model = fieldSet.toModel()
-  return IrModelGroup(
-      models = listOf(model),
-      baseModelId = model.id
-  )
+  return if (hasMultipleShapes) {
+    val (baseModelId, models) = fieldSet.toShapedModels(shapes, rawTypeName)
+    IrModelGroup(
+        models = models,
+        baseModelId = baseModelId
+    )
+  } else {
+    val model = fieldSet.toModel()
+    IrModelGroup(
+        models = listOf(model),
+        baseModelId = model.id
+    )
+  }
 }
 
 private fun OperationFieldSet.toModel(): IrModel {
@@ -479,10 +502,138 @@ private fun OperationFieldSet.toModel(): IrModel {
 }
 
 private fun OperationField.toProperty(): IrProperty {
+  return if (!hasMultipleShapes) {
+    IrProperty(
+        info = info,
+        override = false,
+        condition = condition,
+        requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
+    )
+  } else {
+    IrProperty(
+        info = info.copy(
+            type = info.type.replacePath { makeAbstractModelID(it) }
+        ),
+        override = false,
+        condition = condition,
+        requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
+    )
+  }
+}
+
+private fun OperationFieldSet.toShapedModels(
+    shapes: List<Shape>,
+    rawTypeName: String
+): Pair<String, List<IrModel>> {
+  val shapedTypeModels = shapes
+      .filter { it.typeSet.size > 1 }
+      .map { toShapedTypeModel(it, rawTypeName) }
+  val baseModel = toAbstractModel()
+  val modelList = listOf(baseModel) + shapedTypeModels + toFallbackModel()
+  return baseModel.id to modelList
+}
+
+private fun OperationFieldSet.toFallbackModel(): IrModel {
+  val model = toModel()
+  return model.copy(
+      modelName = modelName,
+      id = id,
+      implements = listOf(makeAbstractModelID(id)),
+      properties = model.properties.map {
+        it.copy(
+            override = true
+        )
+      },
+      isFallback = true
+  )
+}
+
+private fun OperationFieldSet.toAbstractModel(): IrModel {
+  return IrModel(
+      modelName = makeAbstractModelName(modelName),
+      id = makeAbstractModelID(id),
+      properties = fields.map { it.toProperty() },
+      accessors = emptyList(),
+      implements = emptyList(),
+      isFallback = false,
+      isInterface = true,
+      modelGroups = emptyList(),
+      possibleTypes = emptyList(),
+      typeSet = emptySet(),
+  )
+}
+
+
+private fun OperationFieldSet.toShapedTypeModel(shape: Shape, rawTypeName: String): IrModel {
+  return IrModel(
+      modelName = makeShapedModelName(modelName, shape, rawTypeName),
+      id = makeShapedModelID(id, shape),
+      properties = fields.map { it.toShapedProperty(shape) },
+      accessors = emptyList(),
+      implements = listOf(makeAbstractModelID(id)),
+      isFallback = false,
+      isInterface = false,
+      modelGroups = emptyList(),
+      possibleTypes = shape.possibleTypes.toList(),
+      typeSet = shape.typeSet,
+  )
+}
+
+private fun OperationField.toShapedProperty(shape: Shape): IrProperty {
+  val fieldShapedCondition = condition.simplifyBasedOnPossibleType(shape.possibleTypes)
+  var fieldShapedType = if (hasMultipleShapes) {
+    info.type.replacePath { makeAbstractModelID(it) }
+  } else {
+    info.type
+  }
+  if (fieldShapedCondition.simplify() == BooleanExpression.True) {
+    fieldShapedType = fieldShapedType.makeNonNull()
+  }
   return IrProperty(
-      info = info,
-      override = false,
-      condition = condition,
+      info = info.copy(
+          type = fieldShapedType
+      ),
+      override = true,
+      condition = fieldShapedCondition,
       requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
   )
 }
+
+private fun BPossibleTypes.isAlwaysSatisfied(possibleTypes: PossibleTypes): Boolean {
+  return (possibleTypes - this.possibleTypes).isEmpty()
+}
+
+private fun BooleanExpression<BTerm>.simplifyBasedOnPossibleType(possibleTypes: PossibleTypes): BooleanExpression<BTerm> {
+  val originalExpression = this
+  return when(this) {
+    BooleanExpression.True,
+    BooleanExpression.False -> originalExpression
+    is BooleanExpression.Not -> operand.simplifyBasedOnPossibleType(possibleTypes)
+    is BooleanExpression.Or -> BooleanExpression.Or(operands.map { it.simplifyBasedOnPossibleType(possibleTypes) }.toSet())
+    is BooleanExpression.And -> BooleanExpression.And(operands.map { it.simplifyBasedOnPossibleType(possibleTypes) }.toSet())
+    is BooleanExpression.Element -> {
+      when (value) {
+        is BLabel,
+        is BVariable -> originalExpression
+        is BPossibleTypes -> {
+          if ((value as BPossibleTypes).isAlwaysSatisfied(possibleTypes)) {
+            BooleanExpression.True
+          } else {
+            originalExpression
+          }
+        }
+      }
+    }
+  }
+}
+
+private fun makeAbstractModelID(id: String): String = "$id:::abstract"
+private fun makeShapedModelID(id: String, shape: Shape): String = "$id::${shape.modelIDSuffix}"
+
+private fun makeAbstractModelName(name: String): String = "I$name"
+private fun makeShapedModelName(name: String, shape: Shape, rawTypeName: String): String
+  = "${shape.makeTypeSetPrefix(rawTypeName)}$name"
+
+private fun Shape.makeTypeSetPrefix(rawTypeName: String) = CodegenLayout.upperCamelCaseIgnoringNonLetters(typeSet - rawTypeName)
+private val Shape.modelIDSuffix get() = typeSet.sorted().joinToString("")
+

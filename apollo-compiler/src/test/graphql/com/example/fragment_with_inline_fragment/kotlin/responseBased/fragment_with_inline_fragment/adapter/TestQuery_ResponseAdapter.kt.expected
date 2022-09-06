@@ -438,7 +438,7 @@ public object TestQuery_ResponseAdapter {
             value.appearsIn)
       }
 
-      private object FriendsConnection : Adapter<TestQuery.Data.OtherHero.FriendsConnection> {
+      public object FriendsConnection : Adapter<TestQuery.Data.OtherHero.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
         public override fun fromJson(reader: JsonReader,

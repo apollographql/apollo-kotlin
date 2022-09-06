@@ -812,3 +812,12 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
     else -> error("Not a compound type?")
   }
 }
+
+internal fun IrType.replacePath(transform: (String) -> String): IrType {
+  return when (this) {
+    is IrNonNullType -> IrNonNullType(ofType = ofType.replacePath(transform))
+    is IrListType -> IrListType(ofType = ofType.replacePath(transform))
+    is IrModelType -> copy(path = transform(path))
+    else -> error("Not a compound type?")
+  }
+}
