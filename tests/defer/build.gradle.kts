@@ -55,12 +55,21 @@ apollo {
   service("kotlin") {
     packageName.set("defer")
     generateKotlinModels.set(true)
+    sourceFolder.set("base")
     configureConnection(true)
   }
   service("java") {
     packageName.set("defer")
     generateKotlinModels.set(false)
+    sourceFolder.set("base")
     configureConnection(false)
+  }
+  service("supergraph") {
+    packageName.set("supergraph")
+    sourceFolder.set("supergraph")
+    this.addTypename.set("ifAbstract")
+
+    configureConnection(true)
   }
 }
 
