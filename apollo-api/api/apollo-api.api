@@ -352,18 +352,21 @@ public final class com/apollographql/apollo3/api/CompiledListType : com/apollogr
 	public fun <init> (Lcom/apollographql/apollo3/api/CompiledType;)V
 	public final fun getOfType ()Lcom/apollographql/apollo3/api/CompiledType;
 	public fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
+	public fun rawType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public abstract class com/apollographql/apollo3/api/CompiledNamedType : com/apollographql/apollo3/api/CompiledType {
 	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getName ()Ljava/lang/String;
 	public fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
+	public fun rawType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public final class com/apollographql/apollo3/api/CompiledNotNullType : com/apollographql/apollo3/api/CompiledType {
 	public fun <init> (Lcom/apollographql/apollo3/api/CompiledType;)V
 	public final fun getOfType ()Lcom/apollographql/apollo3/api/CompiledType;
 	public fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
+	public fun rawType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public abstract class com/apollographql/apollo3/api/CompiledSelection {
@@ -371,6 +374,7 @@ public abstract class com/apollographql/apollo3/api/CompiledSelection {
 
 public abstract class com/apollographql/apollo3/api/CompiledType {
 	public abstract fun leafType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
+	public abstract fun rawType ()Lcom/apollographql/apollo3/api/CompiledNamedType;
 }
 
 public final class com/apollographql/apollo3/api/CompiledVariable {

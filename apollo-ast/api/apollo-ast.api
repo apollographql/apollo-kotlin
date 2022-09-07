@@ -1024,6 +1024,7 @@ public final class com/apollographql/apollo3/ast/GqlstringsKt {
 public final class com/apollographql/apollo3/ast/GqltypeKt {
 	public static final fun leafType (Lcom/apollographql/apollo3/ast/GQLType;)Lcom/apollographql/apollo3/ast/GQLNamedType;
 	public static final fun pretty (Lcom/apollographql/apollo3/ast/GQLType;)Ljava/lang/String;
+	public static final fun rawType (Lcom/apollographql/apollo3/ast/GQLType;)Lcom/apollographql/apollo3/ast/GQLNamedType;
 }
 
 public final class com/apollographql/apollo3/ast/GqltypedefinitionKt {
