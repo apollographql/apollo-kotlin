@@ -142,7 +142,7 @@ internal class Normalizer(
             value as Map<String, Any?>,
             CacheKeyGeneratorContext(field, variables),
         )?.key ?: path
-        buildRecord(value, key, field.selections, field.type.leafType().name)
+        buildRecord(value, key, field.selections, field.type.rawType().name)
       }
       else -> {
         // scalar

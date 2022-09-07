@@ -364,7 +364,7 @@ internal data class IrVariableValue(val name: String) : IrValue()
 
 
 internal sealed class IrType {
-  open fun leafType() = this
+  open fun rawType() = this
 }
 
 internal data class IrNonNullType(val ofType: IrType) : IrType() {
@@ -372,11 +372,11 @@ internal data class IrNonNullType(val ofType: IrType) : IrType() {
     check(ofType !is IrNonNullType)
   }
 
-  override fun leafType() = ofType.leafType()
+  override fun rawType() = ofType.rawType()
 }
 
 internal data class IrOptionalType(val ofType: IrType) : IrType() {
-  override fun leafType() = ofType.leafType()
+  override fun rawType() = ofType.rawType()
 }
 
 internal data class IrListType(val ofType: IrType) : IrType() {
@@ -384,7 +384,7 @@ internal data class IrListType(val ofType: IrType) : IrType() {
     check(ofType !is IrOptionalType)
   }
 
-  override fun leafType() = ofType.leafType()
+  override fun rawType() = ofType.rawType()
 }
 
 

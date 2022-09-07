@@ -123,7 +123,7 @@ internal class CacheBatchReader(
             }
             else -> throw IllegalStateException()
           }
-          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.leafType().name)
+          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.rawType().name)
 
           it.responseName to value
         }.toMap()
@@ -172,7 +172,7 @@ internal class CacheBatchReader(
             }
             else -> throw IllegalStateException()
           }
-          value.registerCacheKeys(path + it.responseName, it.selections, it.type.leafType().name)
+          value.registerCacheKeys(path + it.responseName, it.selections, it.type.rawType().name)
 
           it.responseName to value
         }.toMap()

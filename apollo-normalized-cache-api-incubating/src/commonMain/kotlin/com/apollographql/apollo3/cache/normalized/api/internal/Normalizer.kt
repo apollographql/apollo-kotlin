@@ -194,10 +194,10 @@ internal class Normalizer(
           key = path
         }
         if (embeddedFields.contains(field.name)) {
-          buildFields(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+          buildFields(value, key, field.selections, field.type.rawType().name, field.type.rawType().embeddedFields)
               .mapValues { it.value.fieldValue }
         } else {
-          buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+          buildRecord(value, key, field.selections, field.type.rawType().name, field.type.rawType().embeddedFields)
         }
       }
       else -> {

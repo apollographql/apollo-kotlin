@@ -21,7 +21,7 @@ interface FakeResolver {
    * You can get the type of the leaf type with:
    *
    * ```
-   * context.mergedField.type.leafType()
+   * context.mergedField.type.rawType()
    * ```
    *
    * @return a kotlin value representing the value at path `context.path`. Possible values include
@@ -45,7 +45,7 @@ interface FakeResolver {
   fun resolveMaybeNull(context: FakeResolverContext): Boolean
 
   /**
-   * @return a concrete type that implements the type in `context.mergedField.type.leafType()`
+   * @return a concrete type that implements the type in `context.mergedField.type.rawType()`
    */
   fun resolveTypename(context: FakeResolverContext): String
 }
@@ -230,7 +230,7 @@ class DefaultFakeResolver(val types: List<CompiledNamedType>) : FakeResolver {
   private var impl = mutableMapOf<String, Int>()
 
   override fun resolveLeaf(context: FakeResolverContext): Any {
-    return when (val name = context.mergedField.type.leafType().name) {
+    return when (val name = context.mergedField.type.rawType().name) {
       "Int" -> currentInt++
       "Float" -> currentFloat++
       "Boolean" -> (!currentBoolean).also { currentBoolean = it }
@@ -265,14 +265,14 @@ class DefaultFakeResolver(val types: List<CompiledNamedType>) : FakeResolver {
   }
 
   override fun resolveTypename(context: FakeResolverContext): String {
-    val leafType = context.mergedField.type.leafType()
-    val name = leafType.name
+    val rawType = context.mergedField.type.rawType()
+    val name = rawType.name
     val index = impl.getOrElse(name) { 0 }
 
     impl[name] = index + 1
 
     // XXX: Cache this computation
-    val possibleTypes = possibleTypes(types, leafType)
+    val possibleTypes = possibleTypes(types, rawType)
     return possibleTypes[index % possibleTypes.size].name
   }
 }

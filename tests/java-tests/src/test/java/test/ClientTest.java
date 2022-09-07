@@ -136,7 +136,7 @@ public class ClientTest {
 
     CacheKeyResolver cacheKeyResolver = new CacheKeyResolver() {
       @Override public CacheKey cacheKeyForField(@NotNull CompiledField field, @NotNull Executable.Variables variables) {
-        String typename = field.getType().leafType().getName();
+        String typename = field.getType().rawType().getName();
         Object id = field.resolveArgument("id", variables);
         if (id instanceof String) {
           return new CacheKey(typename, id.toString());

@@ -51,7 +51,7 @@ import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.internal.toConnectionFields
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
 import com.apollographql.apollo3.ast.isFieldNonNull
-import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.optionalValue
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.responseName
@@ -171,7 +171,7 @@ internal class IrBuilder(
             }
             // Add all fields types
             typeDefinition.fields.forEach {
-              usedTypes.add(it.type.leafType().name)
+              usedTypes.add(it.type.rawType().name)
             }
           }
         }
@@ -201,7 +201,7 @@ internal class IrBuilder(
             }
             // Add all fields types
             typeDefinition.fields.forEach {
-              usedTypes.add(it.type.leafType().name)
+              usedTypes.add(it.type.rawType().name)
             }
           }
         }
@@ -682,7 +682,7 @@ internal class IrBuilder(
           info = info,
           condition = BooleanExpression.Or(fieldsWithSameResponseName.map { it.condition }.toSet()).simplify(),
           selections = childSelections,
-          rawTypeName = first.type.leafType().name,
+          rawTypeName = first.type.rawType().name,
       )
     }
   }

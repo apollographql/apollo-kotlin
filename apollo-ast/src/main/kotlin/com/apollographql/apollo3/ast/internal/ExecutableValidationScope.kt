@@ -35,7 +35,7 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.VariableUsage
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
-import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.pretty
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
@@ -181,18 +181,18 @@ internal class ExecutableValidationScope(
       variableUsages.add(it)
     }
 
-    val leafTypeDefinition = typeDefinitions[fieldDefinition.type.leafType().name]
+    val typeDefinition = typeDefinitions[fieldDefinition.type.rawType().name]
 
-    if (leafTypeDefinition == null) {
+    if (typeDefinition == null) {
       registerIssue(
-          message = "Unknown type `${fieldDefinition.type.leafType().name}`",
+          message = "Unknown type `${fieldDefinition.type.rawType().name}`",
           sourceLocation = sourceLocation
       )
       return
     }
 
-    if (leafTypeDefinition !is GQLScalarTypeDefinition
-        && leafTypeDefinition !is GQLEnumTypeDefinition) {
+    if (typeDefinition !is GQLScalarTypeDefinition
+        && typeDefinition !is GQLEnumTypeDefinition) {
       if (selectionSet == null) {
         registerIssue(
             message = "Field `$name` of type `${fieldDefinition.type.pretty()}` must have a selection of sub-fields",
@@ -201,7 +201,7 @@ internal class ExecutableValidationScope(
         return
       }
       val fieldPath = if (path.isEmpty()) name else "$path.$name"
-      selectionSet.validate(leafTypeDefinition, this@validate, fieldPath)
+      selectionSet.validate(typeDefinition, this@validate, fieldPath)
     } else {
       if (selectionSet != null) {
         registerIssue(
@@ -504,8 +504,8 @@ internal class ExecutableValidationScope(
       return
     }
 
-    val setA = fieldA.selectionSet?.collectFields(typeA.leafType().name) ?: emptyList()
-    val setB = fieldB.selectionSet?.collectFields(typeB.leafType().name) ?: emptyList()
+    val setA = fieldA.selectionSet?.collectFields(typeA.rawType().name) ?: emptyList()
+    val setB = fieldB.selectionSet?.collectFields(typeB.rawType().name) ?: emptyList()
 
     fieldsInSetCanMerge(setA + setB)
   }
@@ -521,7 +521,7 @@ internal class ExecutableValidationScope(
               // This field is unknown. Let other validation rules catch this
               return@forEach
             }
-            val set = first.field.selectionSet?.collectFields(fieldDefinition.type.leafType().name) ?: emptyList()
+            val set = first.field.selectionSet?.collectFields(fieldDefinition.type.rawType().name) ?: emptyList()
             // recurse in subfields
             fieldsInSetCanMerge(set)
           } else {

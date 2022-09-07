@@ -13,7 +13,7 @@ import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.definitionFromScope
-import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.codegen.keyArgs
 import com.apollographql.apollo3.compiler.codegen.paginationArgs
@@ -96,7 +96,7 @@ internal class SelectionSetsBuilder(
             condition = expression,
             selectionSetName = if (selectionSet != null) selectionSetName else null
         ),
-        nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.leafType().name).orEmpty()
+        nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.rawType().name).orEmpty()
     )
   }
 

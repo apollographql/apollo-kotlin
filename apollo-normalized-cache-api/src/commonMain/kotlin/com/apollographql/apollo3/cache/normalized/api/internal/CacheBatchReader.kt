@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -115,7 +114,7 @@ internal class CacheBatchReader(
 
           val value = cacheResolver.resolveField(it, variables, record, record.key)
 
-          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.leafType().name)
+          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.rawType().name)
 
           it.responseName to value
         }.toMap()

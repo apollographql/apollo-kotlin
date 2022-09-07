@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Data
 import com.apollographql.apollo3.compiler.codegen.Identifier.block
@@ -174,15 +173,15 @@ internal data class TCtor(
 )
 
 private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
-  val leafType = info.type.leafType()
+  val rawType = info.type.rawType()
 
   /**
    * Lookup the modelGroup for this property
    * This feels a bit weird because this is information we had before the tree gets split into properties and models
    * We might be able to remove that lookup
    */
-  val ctors = if (leafType is IrModelType) {
-    val leafPath = (leafType as? IrModelType)?.path
+  val ctors = if (rawType is IrModelType) {
+    val leafPath = (rawType as? IrModelType)?.path
     val modelGroup = modelGroups.single { it.baseModelId == leafPath }
     modelGroup.models.filter { !it.isInterface }.map {
       TCtor(
@@ -194,8 +193,8 @@ private fun IrProperty.tProperty(modelGroups: List<IrModelGroup>): TProperty {
   } else {
     emptyList()
   }
-  val enumName = if (leafType is IrEnumType) {
-    leafType.name
+  val enumName = if (rawType is IrEnumType) {
+    rawType.name
   } else {
     null
   }

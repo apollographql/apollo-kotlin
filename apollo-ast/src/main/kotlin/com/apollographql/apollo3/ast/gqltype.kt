@@ -1,9 +1,14 @@
 package com.apollographql.apollo3.ast
 
+@Deprecated("Use rawType instead", ReplaceWith("rawType()"))
+fun GQLType.leafType(): GQLNamedType = rawType()
 
-fun GQLType.leafType(): GQLNamedType = when (this) {
-  is GQLNonNullType -> type.leafType()
-  is GQLListType -> type.leafType()
+/**
+ * Returns the raw type. The raw type is the GQLNamedType without any list/nonnull wrapper types
+ */
+fun GQLType.rawType(): GQLNamedType = when (this) {
+  is GQLNonNullType -> type.rawType()
+  is GQLListType -> type.rawType()
   is GQLNamedType -> this
 }
 

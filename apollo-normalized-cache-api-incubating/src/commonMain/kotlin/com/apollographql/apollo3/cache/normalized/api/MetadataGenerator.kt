@@ -32,7 +32,7 @@ object EmptyMetadataGenerator : MetadataGenerator {
 class ConnectionMetadataGenerator(private val connectionTypes: Set<String>) : MetadataGenerator {
   @Suppress("UNCHECKED_CAST")
   override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
-    if (context.field.type.leafType().name in connectionTypes) {
+    if (context.field.type.rawType().name in connectionTypes) {
       obj as Map<String, Any?>
       val edges = obj["edges"] as List<Map<String, Any?>>
       val startCursor = edges.firstOrNull()?.get("cursor") as String?
