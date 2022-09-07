@@ -10,6 +10,10 @@ A small Glossary of the terms used during codegen. The [GraphQL Spec](https://sp
 This is the shape of the actual json as returned by the server. A given query can have multiple shapes depending the different type conditions at each field. While Field trees are in the GraphQL domain, Response shapes are in the Json domain and different Field trees can have the same response shape (http://spec.graphql.org/draft/#SameResponseShape())
 
 
+### Raw type
+
+The raw type is the named type without any list/nonnull wrapper types
+
 ### Leaf type
 
 A leaf type that doesn't contain fields or input fields. It's either a scalar or an enum
@@ -30,7 +34,7 @@ Synonym for object type
 Given a type condition, all the concrete types that can satisfy this type condition.
 
 
-### Type set
+### typeSet
 
 A set of type conditions from nested fragments and inline fragments. A type set can be abstract if no possible type will implement that exact type set. It is concrete else.
 
