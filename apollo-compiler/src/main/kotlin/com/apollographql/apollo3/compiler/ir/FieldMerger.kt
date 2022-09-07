@@ -20,7 +20,7 @@ internal data class MergedField(
     val selections: List<GQLSelection>,
     /**
      * The name of the rawType, without the NotNull/List decorations
-     * When selections is not empty, this is the type condition for these selections
+     * When selections are not empty, this is the type condition for these selections
      *
      * We cannot rely on [info.type] to get it because [info.type] represents a Kotlin model and lost this already
      */
@@ -30,12 +30,12 @@ internal data class MergedField(
 internal fun collectFields(
     allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     selections: List<GQLSelection>,
-    typenameInScope: String,
+    parentTypeDefinition: String,
     typeSet: TypeSet,
 ): List<FieldWithParent> {
   return selections.flatMap {
     when (it) {
-      is GQLField -> listOf(FieldWithParent(it, typenameInScope))
+      is GQLField -> listOf(FieldWithParent(it, parentTypeDefinition))
       is GQLInlineFragment -> {
         if (typeSet.contains(it.typeCondition.name)) {
           collectFields(allFragmentDefinitions, it.selectionSet.selections, it.typeCondition.name, typeSet)

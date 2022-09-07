@@ -360,7 +360,7 @@ private class FieldNodeBuilder(
         collectFields(
             allFragmentDefinitions = allFragmentDefinitions,
             selections = state.selections,
-            typenameInScope = state.rawTypename,
+            parentTypeDefinition = state.rawTypename,
             typeSet = typeSet,
         )
     )

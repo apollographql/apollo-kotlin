@@ -158,11 +158,11 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun GQLField.validate(typeDefinitionInScope: GQLTypeDefinition, path: String) {
-    val fieldDefinition = definitionFromScope(schema, typeDefinitionInScope)
+  private fun GQLField.validate(parentTypeDefinition: GQLTypeDefinition, path: String) {
+    val fieldDefinition = definitionFromScope(schema, parentTypeDefinition)
     if (fieldDefinition == null) {
       registerIssue(
-          message = "Can't query `$name` on type `${typeDefinitionInScope.name}`",
+          message = "Can't query `$name` on type `${parentTypeDefinition.name}`",
           sourceLocation = sourceLocation
       )
       return
@@ -220,7 +220,7 @@ internal class ExecutableValidationScope(
   }
 
 
-  private fun GQLInlineFragment.validate(typeDefinitionInScope: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
+  private fun GQLInlineFragment.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
     val inlineFragmentTypeDefinition = typeDefinitions[typeCondition.name]
     if (inlineFragmentTypeDefinition == null) {
       registerIssue(
@@ -230,7 +230,7 @@ internal class ExecutableValidationScope(
       return
     }
 
-    if (!inlineFragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, schema = schema)) {
+    if (!inlineFragmentTypeDefinition.sharesPossibleTypesWith(other = parentTypeDefinition, schema = schema)) {
       registerIssue(
           message = "Inline fragment cannot be spread here as result can never be of type `${typeCondition.name}`",
           sourceLocation = typeCondition.sourceLocation
@@ -248,7 +248,7 @@ internal class ExecutableValidationScope(
     }
   }
 
-  private fun GQLFragmentSpread.validate(typeDefinitionInScope: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
+  private fun GQLFragmentSpread.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String) {
     val fragmentDefinition = fragmentDefinitions[name]
     if (fragmentDefinition == null) {
       registerIssue(
@@ -267,9 +267,9 @@ internal class ExecutableValidationScope(
       return
     }
 
-    if (!fragmentTypeDefinition.sharesPossibleTypesWith(other = typeDefinitionInScope, schema = schema)) {
+    if (!fragmentTypeDefinition.sharesPossibleTypesWith(other = parentTypeDefinition, schema = schema)) {
       registerIssue(
-          message = "Fragment `$name` cannot be spread here as result can never be of type `${typeDefinitionInScope.name}`",
+          message = "Fragment `$name` cannot be spread here as result can never be of type `${parentTypeDefinition.name}`",
           sourceLocation = sourceLocation
       )
       return
@@ -442,11 +442,11 @@ internal class ExecutableValidationScope(
     deferDirectivePathAndLabels[pathAndLabel] = sourceLocation
   }
 
-  private fun GQLSelectionSet.validate(typeDefinitionInScope: GQLTypeDefinition, selectionSetParent: GQLNode, path: String = "") {
+  private fun GQLSelectionSet.validate(parentTypeDefinition: GQLTypeDefinition, selectionSetParent: GQLNode, path: String = "") {
     if (selections.isEmpty()) {
       // This will never happen from parsing documents but is kept for reference and to catch bad manual document modifications
       registerIssue(
-          message = "Selection of type `${typeDefinitionInScope.name}` must have a selection of sub-fields",
+          message = "Selection of type `${parentTypeDefinition.name}` must have a selection of sub-fields",
           sourceLocation = sourceLocation
       )
       return
@@ -454,9 +454,9 @@ internal class ExecutableValidationScope(
 
     selections.forEach {
       when (it) {
-        is GQLField -> it.validate(typeDefinitionInScope, path)
-        is GQLInlineFragment -> it.validate(typeDefinitionInScope, selectionSetParent, path)
-        is GQLFragmentSpread -> it.validate(typeDefinitionInScope, selectionSetParent, path)
+        is GQLField -> it.validate(parentTypeDefinition, path)
+        is GQLInlineFragment -> it.validate(parentTypeDefinition, selectionSetParent, path)
+        is GQLFragmentSpread -> it.validate(parentTypeDefinition, selectionSetParent, path)
       }
     }
   }
