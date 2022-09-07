@@ -2,22 +2,7 @@
 
 ## Glossary
 
-A small Glossary of the terms used during codegen. The [GraphQL Spec](https://spec.graphql.org/draft/) does a nice job of defining the common terms like `Field`, `SelectionSet`, etc... so I'm not adding these terms here. But it misses some concepts that we bumped across during codegen and that I'm trying to clarify here.
-
-
-### Field tree
-
-Every GraphQL operation queries a tree of fields starting from the root. Fields can be of scalar or compound type.
-
-
-### Fragment tree
-
-Each field in the field tree contains (possibly nested) fragments and inline fragments that define a tree of fragments. This makes a GraphQL query a somewhat 2-dimensional tree or “tree of tree” with a tree of fragments at each field node.
-
-
-### Field set
-
-A selection set containing only fields and no fragments. When combined they form a field tree.
+A small Glossary of the terms used during codegen. The [GraphQL Spec](https://spec.graphql.org/draft/) does a nice job of defining the common terms like `Field`, `SelectionSet`, etc... so I'm not adding these terms here. But it misses some concepts that we bumped into during codegen and that I'm trying to clarify here.
 
 
 ### Response shape
@@ -25,9 +10,9 @@ A selection set containing only fields and no fragments. When combined they form
 This is the shape of the actual json as returned by the server. A given query can have multiple shapes depending the different type conditions at each field. While Field trees are in the GraphQL domain, Response shapes are in the Json domain and different Field trees can have the same response shape (http://spec.graphql.org/draft/#SameResponseShape())
 
 
-### Scalar type
+### Leaf type
 
-A leaf type
+A leaf type that doesn't contain fields or input fields. It's either a scalar or an enum
 
 
 ### Composite type
@@ -93,30 +78,26 @@ type Panther implements Animal & WarmBlooded
 - [Animal, Pet] => [Turtle] (concrete)
 ```
 
+### parentType
 
-
-### Parent Type
-
-the type condition of the enclosing fragment in the fragment tree, if any or the type of the parent field if none
+the type condition of the enclosing fragment if any or else the type of the parent field 
 
 Example:
 
 ```
 {
     animal {
+        # parentType: Animal
         ... on Pet {
+            # parentType: Pet
             ...warmBlooded {
+                # parentType: WarmBlooded
                 temperature
             }
         }
     }
 }
 ```
-
-`Pet` is the ParentType of the `warmBlooded` fragment
-`WarmBlooded` is the ParentType of the `temperature` field
-
-
 
 ### Polymorphic field
 

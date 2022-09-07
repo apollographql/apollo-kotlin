@@ -57,7 +57,7 @@ internal fun adapterMethodSpec(
       .build()
 }
 
-internal fun rootFieldMethodSpec(context: JavaContext, typeInScope: String, selectionsClassName: ClassName): MethodSpec {
+internal fun rootFieldMethodSpec(context: JavaContext, parentType: String, selectionsClassName: ClassName): MethodSpec {
   return MethodSpec.methodBuilder(rootField)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)
@@ -67,7 +67,7 @@ internal fun rootFieldMethodSpec(context: JavaContext, typeInScope: String, sele
               .add("return new $T(\n", JavaClassNames.CompiledFieldBuilder)
               .indent()
               .add("$S,\n", Identifier.data)
-              .add("$L\n", context.resolver.resolveCompiledType(typeInScope))
+              .add("$L\n", context.resolver.resolveCompiledType(parentType))
               .unindent()
               .add(")\n")
               .add(".${Identifier.selections}($T.$root)\n", selectionsClassName)
