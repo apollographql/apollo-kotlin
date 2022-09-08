@@ -18,7 +18,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
 
   private val adapterName = model.modelName
   private val adaptedClassName by lazy {
-    context.resolver.resolveModel(model.id)
+    context.resolver.resolveModel(model.path)
   }
 
   private val nestedAdapterBuilders = model.modelGroups.map {
@@ -32,7 +32,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
 
   override fun prepare() {
     context.resolver.registerModelAdapter(
-        model.id,
+        model.path,
         (path + adapterName).toClassName()
     )
     nestedAdapterBuilders.map { it.prepare() }
@@ -45,7 +45,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.enumBuilder(adapterName)
         .addSuperinterface(
-            ParameterizedTypeName.get(JavaClassNames.Adapter, context.resolver.resolveModel(model.id))
+            ParameterizedTypeName.get(JavaClassNames.Adapter, context.resolver.resolveModel(model.path))
         )
         .apply {
           addModifiers(if (public) Modifier.PUBLIC else Modifier.PRIVATE)
