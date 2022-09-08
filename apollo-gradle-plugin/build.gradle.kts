@@ -112,12 +112,6 @@ configure<PublishingExtension> {
         }
       }
     }
-    if (relocateJar && name == "pluginMaven") {
-      this as MavenPublication
-      artifact(file("build/gr8/shadow/mapping.txt")) {
-        classifier = "mapping"
-      }
-    }
   }
 }
 
