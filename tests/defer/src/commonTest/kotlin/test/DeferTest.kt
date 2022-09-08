@@ -16,13 +16,10 @@ import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerFields
 import defer.fragment.ScreenFields
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class DeferTest {
@@ -246,18 +243,7 @@ class DeferTest {
     )
 
     mockServer.enqueueMultipart(jsonList)
-
-    apolloClient.query(query).toFlow().collectIndexed { index, response ->
-      // This will be called twice
-
-      if (index == 0) {
-        // First time without the fragment
-        assertNull(response.data?.computer?.computerFields)
-      } else       if (index == 0) {
-        // Second time will have the fragment
-        assertNotNull(response.data?.computer?.computerFields)
-      }
-    }
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
     assertResponseListEquals(expectedDataList, actualResponseList)
   }
 
