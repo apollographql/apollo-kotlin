@@ -2,6 +2,12 @@ query GetRandom {
   random
 }
 
+query GetScalars {
+  languageCode
+  json
+  long
+}
+
 query Animal {
   animal {
     ... on Dog {

@@ -2,6 +2,9 @@ type Query {
   random: Int!
   animal: Animal
   location: GeoPoint
+  languageCode: LanguageCode
+  long: Long
+  json: Json
 }
 
 type Mutation {
@@ -45,3 +48,9 @@ enum AnimalClass {
 }
 
 scalar GeoPoint
+
+scalar LanguageCode
+
+scalar Long
+
+scalar Json
