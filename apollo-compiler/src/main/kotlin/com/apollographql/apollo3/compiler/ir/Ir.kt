@@ -209,7 +209,9 @@ internal data class IrSubtypeAccessor(
 ) : IrAccessor()
 
 /**
- * A Kotlin class or interface representing a GraphQL object field
+ * A class or interface representing a GraphQL object field
+ *
+ * Monomorphic fields will always be represented by a class while polymorphic fields will involve interfaces
  */
 internal data class IrModel(
     val modelName: String,
