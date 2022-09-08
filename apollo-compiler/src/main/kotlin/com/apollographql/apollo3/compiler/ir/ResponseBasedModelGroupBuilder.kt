@@ -60,7 +60,7 @@ private data class ResponseField(
 )
 
 private data class ResponseFieldSet(
-    val id: String,
+    val path: String,
     val typeSet: TypeSet,
     val responseFields: List<ResponseField>,
     val possibleTypes: Set<String>,
@@ -131,7 +131,7 @@ private class FieldNodeBuilder(
     )
 
     return buildFieldNode(
-        path = "${MODEL_OPERATION_DATA}.$operationName",
+        modelPath = "${MODEL_OPERATION_DATA}.$operationName",
         info = info,
         selections = selections,
         rawTypename = rawTypeName,
@@ -155,7 +155,7 @@ private class FieldNodeBuilder(
       )
 
       return buildFieldNode(
-          path = "${MODEL_FRAGMENT_INTERFACE}.$name",
+          modelPath = "${MODEL_FRAGMENT_INTERFACE}.$name",
           info = info,
           selections = fragment.selectionSet.selections,
           rawTypename = fragment.typeCondition.name,
@@ -180,7 +180,7 @@ private class FieldNodeBuilder(
     )
 
     return buildFieldNode(
-        path = "${MODEL_FRAGMENT_DATA}.$name",
+        modelPath = "${MODEL_FRAGMENT_DATA}.$name",
         info = info,
         selections = fragment.selectionSet.selections,
         rawTypename = fragment.typeCondition.name,
@@ -209,7 +209,7 @@ private class FieldNodeBuilder(
         "Cannot find base model"
       }
       ret
-    }.id
+    }.path
   }
 
   /**
@@ -225,9 +225,13 @@ private class FieldNodeBuilder(
    * This builds the models greedily so that:
    * 1. we have a qualifiedName when needed
    * 2. we can build the "Other" fields
+   *
+   * @param modelPath the path of the model containing this field
+   * @param info the field info. For composite types, [info].type contains a placeholder value that is replaced
+   * once all field shapes have been built
    */
   private fun buildFieldNode(
-      path: String,
+      modelPath: String,
       info: IrFieldInfo,
       condition: BooleanExpression<BVariable>,
       selections: List<GQLSelection>,
@@ -273,7 +277,7 @@ private class FieldNodeBuilder(
         fragmentResponseFields = fragmentFieldNodes,
         info = info,
         modelDescriptors = modelDescriptors.toSet(),
-        path = path,
+        path = modelPath,
         selections = selections,
         rawTypename = rawTypename
     )
@@ -288,14 +292,14 @@ private class FieldNodeBuilder(
     /**
      * Patch the field with the type of the base model
      */
-    val baseModelId = fieldSetNodes.first { it.typeSet.size == 1 }.id
+    val baseModelId = fieldSetNodes.first { it.typeSet.size == 1 }.path
     val patchedInfo = info.copy(type = info.type.replacePlaceholder(baseModelId))
 
     /**
      * Patch the base fieldSet with the accessors
      */
     val patchedFieldSetNodes = fieldSetNodes.map {
-      if (it.id == baseModelId) {
+      if (it.path == baseModelId) {
         val subtypeAccessors = allTypeSets
             .filter { typeSet ->
               typeSet.size > 1
@@ -367,11 +371,11 @@ private class FieldNodeBuilder(
 
     val path = subpath(state.path, state.info, typeSet, isOther)
     val fieldSetNode = ResponseFieldSet(
-        id = path,
+        path = path,
         accessors = emptyList(),
         responseFields = mergedFields.map { mergedField ->
           buildFieldNode(
-              path = path,
+              modelPath = path,
               info = mergedField.info,
               condition = mergedField.condition,
               selections = mergedField.selections,
@@ -384,7 +388,7 @@ private class FieldNodeBuilder(
         },
         possibleTypes = modelDescriptor.shape.possibleTypes,
         typeSet = typeSet,
-        implements = implementedFieldSetNodes.map { it.id },
+        implements = implementedFieldSetNodes.map { it.path },
         isOther = isOther,
         isInterface = isInterface,
         isFallback = typeSet.size == 1 && isOther,
@@ -502,7 +506,7 @@ private fun ResponseFieldSet.toIrModel(parentResponseField: ResponseField): IrMo
       properties = responseFields.map { it.toIrProperty() },
       implements = implements,
       accessors = accessors,
-      id = id,
+      path = path,
       typeSet = typeSet,
       isInterface = isInterface,
       isFallback = isFallback,
