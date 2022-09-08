@@ -3,7 +3,7 @@ Change Log
 
 # Version 3.6.0
 
-_2022-09-01_
+_2022-09-08_
 
 This version brings initial support for `@defer` as well as data builders.
 
@@ -125,6 +125,7 @@ Starting with this release, Apollo Kotlin is built with Kotlin 1.7.10. This does
 
 ## 👷‍ All changes
 
+* fix registering Java scalars. Many thanks @parker for catching this. (#4375)
 * Data builders (#4359, #4338, #4331, #4330, #4328, #4323, #4321)
 * Add a flag to disable fieldsCanMerge validation on disjoint types (#4342)
 * Re-introduce @defer and use new payload format (#4351)
