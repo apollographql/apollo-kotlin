@@ -7,8 +7,7 @@ A small Glossary of the terms used during codegen. The [GraphQL Spec](https://sp
 
 ### Response shape
 
-This is the shape of the actual json as returned by the server. A given query can have multiple shapes depending the different type conditions at each field. While Field trees are in the GraphQL domain, Response shapes are in the Json domain and different Field trees can have the same response shape (http://spec.graphql.org/draft/#SameResponseShape())
-
+This is the shape of the actual json as returned by the server. A given query can have multiple shapes depending on the different type conditions at each field. While selection sets are in the GraphQL domain, Response shapes are in the Json domain and different selection sets can have the same response shape (http://spec.graphql.org/draft/#SameResponseShape())
 
 ### Raw type
 
@@ -21,7 +20,7 @@ A leaf type that doesn't contain fields or input fields. It's either a scalar or
 
 ### Composite type
 
-A type that contains sub fields. It is an interface, object or union type
+A type that contains subfields. It is an interface, object or union type
 
 
 ### Concrete type
