@@ -18,4 +18,7 @@ dependencies {
 apollo {
   packageName.set("javatest")
   generateModelBuilder.set(true)
+  mapScalarToJavaString("LanguageCode")
+  mapScalarToJavaObject("Json")
+  mapScalarToJavaLong("Long")
 }
