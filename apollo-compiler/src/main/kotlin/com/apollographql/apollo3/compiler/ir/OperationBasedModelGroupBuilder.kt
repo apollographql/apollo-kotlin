@@ -192,7 +192,7 @@ internal class OperationBasedModelGroupBuilder(
       shapes(
           schema,
           allFragmentDefinitions,
-          selections.map { it.selection }.filter { it !is GQLFragmentSpread },
+          selections.map { it.selection },
           rawTypeName
       ).filter { it.possibleTypes.isNotEmpty() }
     } else {
@@ -442,6 +442,7 @@ internal class OperationBasedModelGroupBuilder(
           info.responseName
         }
     )
+
     return OperationField(
         info = patchedInfo,
         condition = condition,

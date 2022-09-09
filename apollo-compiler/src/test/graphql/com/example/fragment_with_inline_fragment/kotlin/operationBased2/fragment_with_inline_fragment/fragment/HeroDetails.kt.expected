@@ -34,6 +34,26 @@ public interface IHeroDetails : Fragment.Data {
   public val humanDetails: HumanDetails?
 }
 
+public data class HumanHeroDetails(
+  public override val __typename: String,
+  /**
+   * The name of the character
+   */
+  public override val name: String,
+  /**
+   * The friends of the character exposed as a connection with edges
+   */
+  public override val friendsConnection: HeroDetails.FriendsConnection,
+  /**
+   * Synthetic field for inline fragment on Droid
+   */
+  public override val onDroid: HeroDetails.OnDroid?,
+  /**
+   * Synthetic field for 'HumanDetails'
+   */
+  public override val humanDetails: HumanDetails,
+) : IHeroDetails
+
 public data class DroidHeroDetails(
   public override val __typename: String,
   /**
