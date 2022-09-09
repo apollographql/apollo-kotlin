@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: Aug 2022**
+**Last updated: Sept 2022**
 
 For up to date release notes, refer to the project [Change Log](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -15,9 +15,9 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 ## Upcoming Releases
 
-### 3.6
+### 3.7
 
-- Release 3.6 will focus on adding support for the `@defer` directive as well as adding `schemaBased` test builders. See Github [3.6 Milestone](https://github.com/apollographql/apollo-kotlin/milestone/23) for more details.
+- Release 3.7 will focus on providing better Java support in Apollo Kotlin.  See Github [3.7 Milestone](https://github.com/apollographql/apollo-kotlin/milestone/25) for more details.
 
 ## Longer Term
 
