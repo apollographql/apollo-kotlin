@@ -4,7 +4,6 @@
 -keep class kotlin.Metadata { *; }
 -keep class kotlin.Unit { *; }
 
-
 # We need to keep type arguments (Signature) for Gradle to be able to instantiate abstract models like `Property`
 # Else it fails with
 # 'Declaration of property alwaysGenerateTypesMatching does not include any type arguments in its property type interface org.gradle.api.provider.SetProperty'
@@ -53,6 +52,8 @@
 
 # Makes it easier to debug on MacOS case-insensitive filesystem when unzipping the jars
 -dontusemixedcaseclassnames
+# Keep class names to make debugging easier
+-dontobfuscate
 -repackageclasses com.apollographql.relocated
 
 # Allow to repackage com.moshi.JsonAdapter.lenient
