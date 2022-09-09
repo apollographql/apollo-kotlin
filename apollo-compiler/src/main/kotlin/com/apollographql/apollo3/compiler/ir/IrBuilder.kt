@@ -60,6 +60,7 @@ import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED2
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.ScalarInfo
 
@@ -92,12 +93,21 @@ internal class IrBuilder(
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         compat = true,
+        operationBased2 = false
     )
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         compat = false,
+        operationBased2 = false
+    )
+    MODELS_OPERATION_BASED2 -> OperationBasedModelGroupBuilder(
+        schema = schema,
+        allFragmentDefinitions = allFragmentDefinitions,
+        fieldMerger = this,
+        compat = false,
+        operationBased2 = true
     )
     MODELS_RESPONSE_BASED -> responseBasedBuilder
     else -> error("codegenModels='$codegenModels' is not supported")

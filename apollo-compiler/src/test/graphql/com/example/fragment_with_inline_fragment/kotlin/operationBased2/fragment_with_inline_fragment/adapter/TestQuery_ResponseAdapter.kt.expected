@@ -69,7 +69,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.Hero(
@@ -95,7 +95,7 @@ public object TestQuery_ResponseAdapter {
         Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
             value.appearsIn)
 
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.toJson(writer,
             customScalarAdapters, value.heroDetails)
       }
     }

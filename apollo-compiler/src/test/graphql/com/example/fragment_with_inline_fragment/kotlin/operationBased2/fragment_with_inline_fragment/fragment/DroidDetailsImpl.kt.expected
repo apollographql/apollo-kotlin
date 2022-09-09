@@ -11,14 +11,14 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
-import com.example.fragment_with_inline_fragment.fragment.selections.HeroDetailsSelections
-import com.example.fragment_with_inline_fragment.type.Character
+import com.example.fragment_with_inline_fragment.fragment.selections.DroidDetailsSelections
+import com.example.fragment_with_inline_fragment.type.Droid
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Unit
 
-public class HeroDetailsImpl() : Fragment<HeroDetails> {
+public class DroidDetailsImpl() : Fragment<DroidDetails> {
   public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   public override fun hashCode(): Int = this::class.hashCode()
@@ -28,13 +28,13 @@ public class HeroDetailsImpl() : Fragment<HeroDetails> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<HeroDetails> =
-      HeroDetailsImpl_ResponseAdapter.HeroDetails.obj(true)
+  public override fun adapter(): Adapter<DroidDetails> =
+      DroidDetailsImpl_ResponseAdapter.DroidDetails.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
-    type = Character.type
+    type = Droid.type
   )
-  .selections(selections = HeroDetailsSelections.__root)
+  .selections(selections = DroidDetailsSelections.__root)
   .build()
 }

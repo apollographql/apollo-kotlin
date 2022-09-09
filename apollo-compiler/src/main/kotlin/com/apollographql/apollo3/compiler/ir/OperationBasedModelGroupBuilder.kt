@@ -28,6 +28,7 @@ internal class OperationBasedModelGroupBuilder(
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
     private val compat: Boolean,
+    private val operationBased2: Boolean
 ) : ModelGroupBuilder {
   private val insertFragmentSyntheticField = compat
   private val collectAllInlineFragmentFields = compat
@@ -187,12 +188,16 @@ internal class OperationBasedModelGroupBuilder(
     }
 
     val selfPath = path + "." + info.responseName
-    val shapes = shapes(
-        schema,
-        allFragmentDefinitions,
-        selections.map { it.selection }.filter { it !is GQLFragmentSpread },
-        rawTypeName
-    ).filter { it.possibleTypes.isNotEmpty() }
+    val shapes = if (operationBased2) {
+      shapes(
+          schema,
+          allFragmentDefinitions,
+          selections.map { it.selection }.filter { it !is GQLFragmentSpread },
+          rawTypeName
+      ).filter { it.possibleTypes.isNotEmpty() }
+    } else {
+      emptyList()
+    }
 
     /**
      * Merge fragments with the same type condition and include directive to avoid name clashes
@@ -334,12 +339,16 @@ internal class OperationBasedModelGroupBuilder(
             type = IrNonNullType(type)
           }
 
-          val fragmentShapes = shapes(
-            schema,
-            allFragmentDefinitions,
-            fragmentDefinition.selectionSet.selections.filter { it !is GQLFragmentSpread },
-            fragmentDefinition.typeCondition.name
-          ).filter { it.possibleTypes.isNotEmpty() }
+          val fragmentShapes = if (operationBased2) {
+            shapes(
+                schema,
+                allFragmentDefinitions,
+                fragmentDefinition.selectionSet.selections.filter { it !is GQLFragmentSpread },
+                fragmentDefinition.typeCondition.name
+            ).filter { it.possibleTypes.isNotEmpty() }
+          } else {
+            emptyList()
+          }
 
           val childInfo = IrFieldInfo(
               responseName = first.name.decapitalizeFirstLetter().escapeKotlinReservedWord(),

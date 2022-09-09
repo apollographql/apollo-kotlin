@@ -15,6 +15,7 @@ import java.io.File
 
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
+const val MODELS_OPERATION_BASED2 = "operationBased2"
 
 @Deprecated(
     "MODELS_COMPAT is provided for 2.x compatibility and will be removed in a future version.",

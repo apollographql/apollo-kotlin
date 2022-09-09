@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -22,13 +23,113 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails :
-      Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails> {
+  public object IHeroDetails :
+      Adapter<com.example.fragment_with_inline_fragment.fragment.IHeroDetails> {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        com.example.fragment_with_inline_fragment.fragment.IHeroDetails {
+      val __typename = reader.readTypename()
+      return when(__typename) {
+        "Droid",
+        -> DroidHeroDetails.fromJson(reader, customScalarAdapters, __typename)
+        else
+        -> HeroDetails.fromJson(reader, customScalarAdapters, __typename)
+      }
+    }
+
+    public override fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      `value`: com.example.fragment_with_inline_fragment.fragment.IHeroDetails,
+    ): Unit {
+      when(value) {
+        is com.example.fragment_with_inline_fragment.fragment.DroidHeroDetails ->
+            DroidHeroDetails.toJson(writer, customScalarAdapters, value)
+        is com.example.fragment_with_inline_fragment.fragment.HeroDetails ->
+            HeroDetails.toJson(writer, customScalarAdapters, value)
+      }
+    }
+  }
+
+  public object DroidHeroDetails {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.fragment_with_inline_fragment.fragment.HeroDetails {
-      var __typename: String? = null
+    public fun fromJson(
+      reader: JsonReader,
+      customScalarAdapters: CustomScalarAdapters,
+      typename: String,
+    ): com.example.fragment_with_inline_fragment.fragment.DroidHeroDetails {
+      var __typename: String? = typename
+      var _name: String? = null
+      var _friendsConnection: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          2 -> _friendsConnection = HeroDetails.FriendsConnection.obj().fromJson(reader,
+              customScalarAdapters)
+          else -> break
+        }
+      }
+
+      check(__typename != null) {
+        "__typename was not found"
+      }
+
+      reader.rewind()
+      val _onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.fromJson(reader,
+          customScalarAdapters)
+
+      var _humanDetails: HumanDetails? = null
+      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        reader.rewind()
+        _humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+            customScalarAdapters)
+      }
+
+      return com.example.fragment_with_inline_fragment.fragment.DroidHeroDetails(
+        __typename = __typename,
+        name = _name!!,
+        friendsConnection = _friendsConnection!!,
+        onDroid = _onDroid,
+        humanDetails = _humanDetails
+      )
+    }
+
+    public fun toJson(
+      writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
+      `value`: com.example.fragment_with_inline_fragment.fragment.DroidHeroDetails,
+    ): Unit {
+      writer.name("__typename")
+      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+
+      writer.name("name")
+      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+      writer.name("friendsConnection")
+      HeroDetails.FriendsConnection.obj().toJson(writer, customScalarAdapters,
+          value.friendsConnection)
+
+      com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.toJson(writer,
+          customScalarAdapters, value.onDroid)
+
+      if (value.humanDetails != null) {
+        com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+            customScalarAdapters, value.humanDetails)
+      }
+    }
+  }
+
+  public object HeroDetails {
+    public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
+
+    public fun fromJson(
+      reader: JsonReader,
+      customScalarAdapters: CustomScalarAdapters,
+      typename: String,
+    ): com.example.fragment_with_inline_fragment.fragment.HeroDetails {
+      var __typename: String? = typename
       var _name: String? = null
       var _friendsConnection: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection? = null
 
@@ -68,7 +169,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public fun toJson(
       writer: JsonWriter,
       customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails,
@@ -93,7 +194,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
     }
 
-    private object FriendsConnection :
+    public object FriendsConnection :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
@@ -194,7 +295,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
     }
 
-    private object OnDroid :
+    public object OnDroid :
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
