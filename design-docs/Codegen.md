@@ -6,9 +6,14 @@ For more complex queries, involving [merged fields](https://spec.graphql.org/dra
 
 * **responseBased**: the Kotlin models map the received json.
 * **operationBased**: the Kotlin models map the sent operation.
+* **operationBased2**: based on **operationBased**, but expose more type information. 
 * **compat**: for compatibility with Apollo Kotlin 2.x
 
-`operationBased` will generate less code but will use more memory and expose less type information. `responseBased` will generate interfaces to access the models in a more polymorphic way. It will also store each merged field exactly once and have more efficient json parsing. That comes at the price of more generated code.
+`responseBased` will generate interfaces to access the models in a more polymorphic way. It will also store each merged field exactly once and have more efficient json parsing. That comes at the price of more generated code. 
+
+`operationBased` will generate less code but will use more memory and expose less type information.
+
+`operationBased2` same as `operationBased` but will generate interfaces to access model similar to `responseBased`. 
 
 
 # responseBased codegen
@@ -237,6 +242,143 @@ data.hero.onDroid?.name
 </pre></td>
 </tr>
 </table>
+
+# operationBased2 models
+
+operationBased2 codegen is a variant of operationBased which exposes more type information.
+
+#### Why another operationBased?
+
+With operationBased model, handling all possible types of a model could be treacherous code. 
+
+For example query below,
+```graphql
+query TestOperation {
+  something {
+    ... on Type1 {
+      #...
+    }
+    ... on Type2 {
+      #...
+    }
+    ... on Type3 {
+      #...
+    }
+  }
+}
+```
+
+Handling `something` code will look like the following
+```kotlin
+when {
+  something.onType1 != null -> {
+    // Handle Type1
+  }
+  something.onType2 != null -> {
+    // Handle Type2
+  }
+  something.onType3 != null -> {
+    // Handle Type3
+  }
+}
+```
+#### Why this code treacherous?
+* It is difficult to write when there are many possible types. 
+* It is difficult to maintain when there is a new possible type. 
+
+With operationBased2, it generates a `sealed interface` and `classes` for model with multiple possible types. So such model can be handled with [sealed interface and when statement](https://kotlinlang.org/docs/sealed-classes.html#sealed-classes-and-when-expression)
+
+Handling `something` code will become like this
+```kotlin
+when (something) {
+  is Type1Something -> {
+    // Handle Type1
+  }
+  is Type2Something -> {
+    // Handle Type2
+  }
+  is Type3Something -> {
+    // Handle Type3
+  }
+}
+```
+#### Benefits
+* Compiler can help generate code to handle all possible types
+* Compiler can check if all possible types is handled
+
+### Named fragments
+
+Named fragments are generated as separated/reusable data classes, and a corresponding field with the same name as the fragment:
+
+<table>
+<tr><th>GraphQL</th><th>Kotlin</th></tr>
+<tr>
+<td><pre lang="graphql">
+query GetHero {
+  hero {
+    id
+    ...droidDetails 
+  }
+}
+fragment droidDetails on Droid {
+  primaryFunction
+}
+</pre></td>
+<td><pre lang="kotlin">
+// GetHeroQuery.kt
+sealed interface IHero(val id: String, val droidDetails: DroidDetails?)
+data class DroidHero(override val id: String, override val droidDetails: DroidDetails): IHero
+data class Hero(override val id: String, override val droidDetails: DroidDetails?): IHero
+
+// DroidDetails.kt
+class DroidDetails(val primaryFunction: String)
+</pre></td>
+</tr>
+</table>
+
+The different possible types are implemented as different classes implementing a base `IHero` interface.
+
+The response will be a `DroidHero` when returned `hero` is a `Droid`. In this case, `IHero.droidDetails` is always set, so it overrides as a non-null field.
+
+The response will be a `Hero` when returned `hero` is not a `Droid`.
+
+The `DroidDetails` interface is generated in a separate file because it can be reused in other queries.
+
+### Inline fragments
+
+Inline fragments are generated as local data classes and a corresponding field:
+
+<table>
+<tr><th>GraphQL</th><th>Kotlin</th></tr>
+<tr>
+<td><pre lang="graphql">
+query GetHero {
+  hero {
+    id
+    ... on Droid {
+      name
+    }
+  } 
+}
+</pre></td>
+<td><pre lang="kotlin">
+// GetHeroQuery.kt
+sealed interface IHero(val id: String, val onDroid: Hero.OnDroid?)
+data class DroidHero(override val id: String, override val onDroid: Hero.OnDroid): IHero
+data class Hero(override val id: String, override val onDroid: Hero.OnDroid?): IHero
+
+data class OnDroid(name: String)
+</pre></td>
+</tr>
+</table>
+
+The different possible types are implemented as different classes implementing a base `IHero` interface.
+
+The response will be a `DroidHero` when returned `hero` is a `Droid`. In this case, `IHero.onDroid` is always set, so it overrides as a non-null field.
+
+The response will be a `Hero` when returned `hero` is not a `Droid`.
+
+The `OnDroid` class is generated in the same file as the query because it cannot be reused in other queries.
 
 # compat codegen
 
