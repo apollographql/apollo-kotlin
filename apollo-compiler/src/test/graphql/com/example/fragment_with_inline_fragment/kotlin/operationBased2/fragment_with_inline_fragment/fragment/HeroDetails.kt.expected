@@ -10,7 +10,7 @@ import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
-public interface IHeroDetails : Fragment.Data {
+public sealed interface IHeroDetails : Fragment.Data {
   public val __typename: String
 
   /**
