@@ -52,16 +52,19 @@ dependencies {
 }
 
 // shared/build.gradle.kts
+// This module must not have a schema
 // This module can use fragments and types from 'schema'
 dependencies {
     apolloMetadata(project(":schema"))
+}
+apollo {
     generateApolloMetadata.set(true)
 }
 
 // schema/build.gradle.kts
 // This module is the schema module
 // Place the schema in this module
-dependencies {
+apollo {
     generateApolloMetadata.set(true)
 }
 ```
