@@ -15,9 +15,9 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 ## Upcoming Releases
 
-### 3.7
+### Release TBD
 
-- Release 3.7 will focus on providing better Java support in Apollo Kotlin.  See Github [3.7 Milestone](https://github.com/apollographql/apollo-kotlin/milestone/25) for more details.
+- This release will focus on providing better Java support in Apollo Kotlin.  See Github [Java Support Release TBD](https://github.com/apollographql/apollo-kotlin/milestone/25) for more details.
 
 ## Longer Term
 
