@@ -11,6 +11,10 @@ This version brings initial support for `@defer` as well as data builders.
 
 Many thanks to @engdorm, @Goooler, @pt2121 and @StylianosGakis for their contributions!
 
+## ✨️ [new] Kotlin 1.7 (#4314)
+
+Starting with this release, Apollo Kotlin is built with Kotlin 1.7.10. This doesn't impact Android and JVM projects (the minimum supported version of Kotlin continues to be 1.5) but if you are on a project using Native or JS, you will need to update the Kotlin version to 1.7.0+.
+
 ## ✨️ [new] `@defer` support
 
 `@defer` support is experimental in the Kotlin Client and currently a [Stage 2 GraphQL specification draft](https://github.com/graphql/graphql-spec/blob/main/CONTRIBUTING.md#stage-2-draft) to allow incremental delivery of response payloads. 
@@ -118,10 +122,6 @@ val data = GetHeroQuery.Data {
   }
 } 
 ```
-
-## ✨️ [new] Kotlin 1.7 (#4314)
-
-Starting with this release, Apollo Kotlin is built with Kotlin 1.7.10. This doesn't impact Android and JVM projects (the minimum supported version of Kotlin continues to be 1.5) but if you are on a project using Native, you will need to update the Kotlin version to 1.7.0+.
 
 ## 👷‍ All changes
 
