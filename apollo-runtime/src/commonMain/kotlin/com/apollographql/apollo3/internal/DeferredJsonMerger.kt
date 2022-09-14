@@ -34,6 +34,14 @@ class DeferredJsonMerger {
   var hasNext: Boolean = true
     private set
 
+  /**
+   * A payload can sometimes have no `incremental` field, e.g. when the server couldn't predict if there were more data after the last
+   * emitted payload. This field allows to test for this in order to ignore such payloads.
+   * See https://github.com/apollographql/router/issues/1687.
+   */
+  var isEmptyPayload: Boolean = false
+    private set
+
   fun merge(payload: BufferedSource): JsonMap {
     val payloadMap = jsonToMap(payload)
     return merge(payloadMap)
@@ -48,7 +56,10 @@ class DeferredJsonMerger {
     }
 
     val incrementalList = payload["incremental"] as? List<JsonMap>
-    if (incrementalList != null) {
+    if (incrementalList == null) {
+      isEmptyPayload = true
+    } else {
+      isEmptyPayload = false
       val mergedErrors = mutableListOf<JsonMap>()
       val mergedExtensions = mutableListOf<JsonMap>()
       for (incrementalItem in incrementalList) {
@@ -131,6 +142,7 @@ class DeferredJsonMerger {
     _merged.clear()
     _mergedFragmentIds.clear()
     hasNext = true
+    isEmptyPayload = false
   }
 }
 
