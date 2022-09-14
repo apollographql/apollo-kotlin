@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onSubscription
@@ -303,12 +304,15 @@ private constructor(
           }
           apolloResponse
         }
+
         is OperationError -> throw SubscriptionOperationException(request.operation.name(), response.payload)
         is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
 
         // Cannot happen as these events are filtered out upstream
         is OperationComplete, is GeneralError -> error("Unexpected event $response")
       }
+    }.filterNot {
+      deferredJsonMerger.isEmptyPayload
     }.onCompletion {
       messages.send(StopOperation(request))
     }

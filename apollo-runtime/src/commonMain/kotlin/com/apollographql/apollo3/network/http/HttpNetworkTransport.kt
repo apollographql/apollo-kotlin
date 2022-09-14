@@ -23,6 +23,7 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
@@ -110,19 +111,21 @@ private constructor(
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
     val jsonMerger = DeferredJsonMerger()
-    return multipartBodyFlow(httpResponse).map { part ->
-      try {
-        val merged = jsonMerger.merge(part)
-        val deferredFragmentIds = jsonMerger.mergedFragmentIds
-        val isLast = !jsonMerger.hasNext
-        operation.parseJsonResponse(
-            jsonReader = merged.jsonReader(),
-            customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
-        ).newBuilder().isLast(isLast).build()
-      } catch (e: Exception) {
-        throw wrapThrowableIfNeeded(e)
-      }
-    }
+    return multipartBodyFlow(httpResponse)
+        .map { part ->
+          try {
+            val merged = jsonMerger.merge(part)
+            val deferredFragmentIds = jsonMerger.mergedFragmentIds
+            val isLast = !jsonMerger.hasNext
+            operation.parseJsonResponse(
+                jsonReader = merged.jsonReader(),
+                customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+            ).newBuilder().isLast(isLast).build()
+          } catch (e: Exception) {
+            throw wrapThrowableIfNeeded(e)
+          }
+        }
+        .filterNot { jsonMerger.isEmptyPayload }
   }
 
   private fun <D : Operation.Data> ApolloResponse<D>.withHttpInfo(

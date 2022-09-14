@@ -9,13 +9,15 @@ import com.apollographql.apollo3.api.json.readAny
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-class DeferJsonMergerTest {
-  @Test
-  fun mergeJsonSingleIncrementalItem() {
-      val deferredJsonMerger = DeferredJsonMerger()
+class DeferredJsonMergerTest {
+    @Test
+    fun mergeJsonSingleIncrementalItem() {
+        val deferredJsonMerger = DeferredJsonMerger()
 
-      val payload1 = """
+        val payload1 = """
       {
         "data": {
           "computers": [
@@ -352,14 +354,14 @@ class DeferJsonMergerTest {
         ]
       }
     """
-      deferredJsonMerger.merge(payload5.buffer())
-      assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
-      assertEquals(setOf(
-          DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
-          DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
-          DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
-      ), deferredJsonMerger.mergedFragmentIds)
-  }
+        deferredJsonMerger.merge(payload5.buffer())
+        assertEquals(jsonToMap(mergedPayloads_1_2_3_4_5), deferredJsonMerger.merged)
+        assertEquals(setOf(
+            DeferredFragmentIdentifier(path = listOf("computers", 0), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
+            DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
+        ), deferredJsonMerger.mergedFragmentIds)
+    }
 
     @Test
     fun mergeJsonMultipleIncrementalItems() {
@@ -623,6 +625,81 @@ class DeferJsonMergerTest {
             DeferredFragmentIdentifier(path = listOf("computers", 1), label = "query:Query1:0"),
             DeferredFragmentIdentifier(path = listOf("computers", 1, "screen"), label = "fragment:ComputerFields:0"),
         ), deferredJsonMerger.mergedFragmentIds)
+    }
+
+    @Test
+    fun emptyPayloads() {
+        val deferredJsonMerger = DeferredJsonMerger()
+
+        val payload1 = """
+      {
+        "data": {
+          "computers": [
+            {
+              "id": "Computer1",
+              "screen": {
+                "isTouch": true
+              }
+            },
+            {
+              "id": "Computer2",
+              "screen": {
+                "isTouch": false
+              }
+            }
+          ]
+        },
+        "hasNext": true
+      }
+    """
+        deferredJsonMerger.merge(payload1.buffer())
+        assertFalse(deferredJsonMerger.isEmptyPayload)
+
+        val payload2 = """
+      {
+        "hasNext": true
+      }
+    """
+        deferredJsonMerger.merge(payload2.buffer())
+        assertTrue(deferredJsonMerger.isEmptyPayload)
+
+        val payload3 = """
+      {
+        "incremental": [
+          {
+            "data": {
+              "cpu": "386",
+              "year": 1993,
+              "screen": {
+                "resolution": "640x480"
+              }
+            },
+            "path": [
+              "computers",
+              0
+            ],
+            "label": "query:Query1:0",
+            "extensions": {
+              "duration": {
+                "amount": 100,
+                "unit": "ms"
+              }
+            }
+          }
+        ],
+        "hasNext": true
+      }
+    """
+        deferredJsonMerger.merge(payload3.buffer())
+        assertFalse(deferredJsonMerger.isEmptyPayload)
+
+        val payload4 = """
+      {
+        "hasNext": false
+      }
+    """
+        deferredJsonMerger.merge(payload4.buffer())
+        assertTrue(deferredJsonMerger.isEmptyPayload)
     }
 }
 

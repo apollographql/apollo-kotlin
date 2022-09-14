@@ -62,3 +62,12 @@ subscription WithFragmentSpreadsSubscription {
 fragment CounterFields on Counter{
   valueTimesTwo
 }
+
+query SimpleDeferQuery {
+  computers {
+    id
+    ... on Computer @defer {
+      cpu
+    }
+  }
+}

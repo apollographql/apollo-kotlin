@@ -11,6 +11,7 @@ import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.mpp.platform
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
+import defer.SimpleDeferQuery
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerFields
@@ -284,5 +285,35 @@ class DeferTest {
       assertTrue(currentTimeMillis() - timeBeforeReceive >= delayMillis)
     }
     job.cancel()
+  }
+
+  @Test
+  fun emptyPayloadsAreIgnored() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val jsonWithEmptyPayload = listOf(
+        """{"data":{"computers":[{"__typename":"Computer","id":"computer1"}]},"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":true}""",
+        """{"hasNext":false}""",
+    )
+    val jsonWithoutEmptyPayload = listOf(
+        """{"data":{"computers":[{"__typename":"Computer","id":"computer1"}]},"hasNext":true}""",
+        """{"incremental": [{"data":{"cpu":"386"},"path":["computers",0]}],"hasNext":false}""",
+    )
+
+    val expectedDataList = listOf(
+        SimpleDeferQuery.Data(
+            listOf(SimpleDeferQuery.Computer("Computer", "computer1", null))
+        ),
+        SimpleDeferQuery.Data(
+            listOf(SimpleDeferQuery.Computer("Computer", "computer1", SimpleDeferQuery.OnComputer("386")))
+        ),
+    )
+
+    mockServer.enqueueMultipart(jsonWithEmptyPayload)
+    var actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+
+    mockServer.enqueueMultipart(jsonWithoutEmptyPayload)
+    actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
   }
 }
