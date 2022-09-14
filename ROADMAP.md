@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: Aug 2022**
+**Last updated: Sept 2022**
 
 For up to date release notes, refer to the project [Change Log](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -15,9 +15,9 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 ## Upcoming Releases
 
-### 3.6
+### Release TBD
 
-- Release 3.6 will focus on adding support for the `@defer` directive as well as adding `schemaBased` test builders. See Github [3.6 Milestone](https://github.com/apollographql/apollo-kotlin/milestone/23) for more details.
+- This release will focus on providing better Java support in Apollo Kotlin.  See Github [Java Support Release TBD](https://github.com/apollographql/apollo-kotlin/milestone/25) for more details.
 
 ## Longer Term
 
@@ -25,13 +25,13 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview. The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
 
-### Test APIs
-
-Apollo Kotlin 3 introduces [test builders](https://www.apollographql.com/docs/kotlin/testing/test-builders/) as a new type-safe way to build test data. While this is working, it generates a lot of code, making it hard to include in main source sets. This can be problematic in some cases like Jetpack Compose `@Preview` for an example. We are investigating generating schema-based test builders for simpler and more lightweight APIs.
-
 ### Rel 1.0 Android Studio Plugin
 
 Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to offer better support for Android developers who wish to use our Kotlin Client.
+
+### Better support for Jetpack Compose
+
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin. We'd like to offer better support for Android developers who wish to use Jetpack Compose with our Kotlin Client.
 
 ### `release-2.x` branch
 
