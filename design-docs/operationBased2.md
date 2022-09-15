@@ -140,13 +140,28 @@ query TestOperation {
 public data class Data(public val animal: IAnimal?)
 
 // Interface Model
-sealed interface IAnimal { val onAnimal: Animal.IOnAnimal }
+sealed interface Animal { 
+  val onWarmBlooded: Animal.OnWarmBlooded?
+  val onPet: Animal.OnPet?
+}
 // 3 TypeSet Models
-data class WarmBloodedAnimal(val onAnimal: Animal.IOnAnimal): IAnimal
-data class PetAnimal(val onAnimal: Animal.IOnAnimal): IAnimal
-data class WarmBloodedPetAnimal(val onAnimal: Animal.IOnAnimal): IAnimal
+data class WarmBloodedAnimal(
+  val onWarmBlooded: Animal.OnWarmBlooded
+  val onPet: Animal.OnPet?  
+): Animal
+data class PetAnimal(
+  val onWarmBlooded: Animal.OnWarmBlooded?
+  val onPet: Animal.OnPet
+): Animal
+data class WarmBloodedPetAnimal(
+  val onWarmBlooded: Animal.OnWarmBlooded
+  val onPet: Animal.OnPet
+): Animal
 // Fallback Model
-data class Animal(val onAnimal: IOnAnimal): IAnimal
+data class OtherAnimal(
+  val onWarmBlooded: Animal.OnWarmBlooded?
+  val onPet: Animal.OnPet?  
+): Animal
 
 </pre></td>
 </tr>
