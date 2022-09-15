@@ -248,35 +248,34 @@ fragment AnimalFragment on Animal {
 </pre></td>
 <td><pre lang="kotlin">
 
-// animal is not generated as polymorphic model because there is no inline fragment
-data class Animal(val animalFragment: IAnimalFragment)
+public data class Data(public val animal: Animal?)
+data class Animal(val animalFragment: AnimalFragment)
 
-// AnimalFragment is generated as polymorphic model because it contains inline fragments
-sealed interface IAnimalFragment { 
-  val species: String
-  val onWarmBlooded: AnimalFragment.OnWarmBlooded?
-  val onPet: AnimalFragment.OnPet?
+public sealed interface AnimalFragment { 
+  val species: String,
+  val onWarmBlooded: OnWarmBlooded?,
+  val onPet: OnPet?
 }
 data class WarmBloodedAnimalFragment(
-  val species: String,
-  val onWarmBlooded: AnimalFragment.OnWarmBlooded,
-  val onPet: AnimalFragment.OnPet?
-): IAnimalFragment
+  val species: String, 
+  val onWarmBlooded: OnWarmBlooded,
+  val onPet:OnPet?
+): AnimalFragment
 data class PetAnimalFragment(
   val species: String,
-  val onWarmBlooded: AnimalFragment.OnWarmBlooded?,
-  val onPet: AnimalFragment.OnPet
-): IAnimalFragment
+  val onWarmBlooded: OnWarmBlooded?,
+  val onPet: OnPet,
+): AnimalFragment
 data class WarmBloodedPetAnimalFragment(
   val species: String,
-  val onWarmBlooded: AnimalFragment.OnWarmBlooded,
-  val onPet: AnimalFragment.OnPet
-): IAnimalFragment
-data class AnimalFragment(
+  val onWarmBlooded: OnWarmBlooded,
+  val onPet: OnPet,
+): AnimalFragment
+data class OtherAnimalFragment(
   val species: String,
-  val onWarmBlooded: AnimalFragment.OnWarmBlooded?,
-  val onPet: AnimalFragment.OnPet?
-): IAnimalFragment
+  val onWarmBlooded: OnWarmBlooded?,
+  val onPet: OnPet?,
+): AnimalFragment
 </pre></td>
 </tr>
 </table>
