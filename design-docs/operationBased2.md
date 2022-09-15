@@ -194,34 +194,33 @@ query TestOperation {
 
 // animal is not generated as polymorphic model because the `... on Animal` inline fragment type condition is always satisfied
 public data class Data(public val animal: Animal?)
-data class Animal(val onAnimal: IOnAnimal)
+data class Animal(val onAnimal: OnAnimal)
 
-// onAnimal field has two nested inline fragments -> generated as Polymorphic model
-public sealed interface IOnAnimal { 
+public sealed interface OnAnimal { 
   val species: String,
-  val onWarmBlooded: OnAnimal.OnWarmBlooded?,
-   val onPet: OnAnimal.OnPet?
+  val onWarmBlooded: OnWarmBlooded?,
+  val onPet: OnPet?
 }
 data class WarmBloodedOnAnimal(
   val species: String, 
-  val onWarmBlooded: OnAnimal.OnWarmBlooded,
-  val onPet: OnAnimal.OnPet?
-): IOnAnimal
+  val onWarmBlooded: OnWarmBlooded,
+  val onPet: OnPet?
+): OnAnimal
 data class PetOnAnimal(
   val species: String,
-  val onWarmBlooded: OnAnimal.OnWarmBlooded?,
-  val onPet: OnAnimal.OnPet,
-): IOnAnimal
+  val onWarmBlooded: OnWarmBlooded?,
+  val onPet: OnPet,
+): OnAnimal
 data class WarmBloodedPetOnAnimal(
   val species: String,
-  val onWarmBlooded: OnAnimal.OnWarmBlooded,
-  val onPet: OnAnimal.OnPet,
-): IOnAnimal
-data class OnAnimal(
+  val onWarmBlooded: OnWarmBlooded,
+  val onPet: OnPet,
+): OnAnimal
+data class OtherOnAnimal(
   val species: String,
   val onWarmBlooded: OnWarmBlooded?,
   val onPet: OnPet?,
-): IOnAnimal
+): OnAnimal
 </pre></td>
 </tr>
 </table>
