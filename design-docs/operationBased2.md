@@ -192,7 +192,7 @@ query TestOperation {
 </pre></td>
 <td><pre lang="kotlin">
 
-// animal is not generated as polymorphic model because inline fragment ... on Animal is always assignable
+// animal is not generated as polymorphic model because the `... on Animal` inline fragment type condition is always satisfied
 public data class Data(public val animal: Animal?)
 data class Animal(val onAnimal: IOnAnimal)
 
