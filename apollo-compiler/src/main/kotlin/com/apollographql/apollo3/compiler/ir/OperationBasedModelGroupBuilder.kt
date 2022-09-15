@@ -512,23 +512,12 @@ private fun OperationFieldSet.toModel(): IrModel {
 }
 
 private fun OperationField.toProperty(): IrProperty {
-  return if (!hasMultipleShapes) {
-    IrProperty(
-        info = info,
-        override = false,
-        condition = condition,
-        requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
-    )
-  } else {
-    IrProperty(
-        info = info.copy(
-            type = info.type.replacePath { makeAbstractModelID(it) }
-        ),
-        override = false,
-        condition = condition,
-        requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
-    )
-  }
+  return IrProperty(
+      info = info,
+      override = false,
+      condition = condition,
+      requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
+  )
 }
 
 private fun OperationFieldSet.toShapedModels(
@@ -544,30 +533,30 @@ private fun OperationFieldSet.toShapedModels(
 }
 
 private fun OperationFieldSet.toFallbackModel(): IrModel {
-  val model = toModel()
-  return model.copy(
-      modelName = modelName,
-      id = id,
-      implements = listOf(makeAbstractModelID(id)),
-      properties = model.properties.map {
-        it.copy(
-            override = true
-        )
-      },
-      isFallback = true
+  return IrModel(
+      modelName = makeFallbackModelName(modelName),
+      id = makeFallbackModelID(id),
+      properties = fields.map { it.toProperty().copy(override = true) },
+      accessors = emptyList(),
+      implements = listOf(id),
+      isFallback = true,
+      isInterface = false,
+      modelGroups = emptyList(),
+      possibleTypes = emptyList(),
+      typeSet = emptySet(),
   )
 }
 
 private fun OperationFieldSet.toAbstractModel(): IrModel {
   return IrModel(
-      modelName = makeAbstractModelName(modelName),
-      id = makeAbstractModelID(id),
+      modelName = modelName,
+      id = id,
       properties = fields.map { it.toProperty() },
       accessors = emptyList(),
       implements = emptyList(),
       isFallback = false,
       isInterface = true,
-      modelGroups = emptyList(),
+      modelGroups = fields.mapNotNull { it.toModelGroup() },
       possibleTypes = emptyList(),
       typeSet = emptySet(),
   )
@@ -580,7 +569,7 @@ private fun OperationFieldSet.toShapedTypeModel(shape: Shape, rawTypeName: Strin
       id = makeShapedModelID(id, shape),
       properties = fields.map { it.toShapedProperty(shape) },
       accessors = emptyList(),
-      implements = listOf(makeAbstractModelID(id)),
+      implements = listOf(id),
       isFallback = false,
       isInterface = false,
       modelGroups = emptyList(),
@@ -591,13 +580,10 @@ private fun OperationFieldSet.toShapedTypeModel(shape: Shape, rawTypeName: Strin
 
 private fun OperationField.toShapedProperty(shape: Shape): IrProperty {
   val fieldShapedCondition = condition.simplifyBasedOnPossibleType(shape.possibleTypes)
-  var fieldShapedType = if (hasMultipleShapes) {
-    info.type.replacePath { makeAbstractModelID(it) }
+  val fieldShapedType = if (fieldShapedCondition.simplify() == BooleanExpression.True) {
+     info.type.makeNonNull()
   } else {
     info.type
-  }
-  if (fieldShapedCondition.simplify() == BooleanExpression.True) {
-    fieldShapedType = fieldShapedType.makeNonNull()
   }
   return IrProperty(
       info = info.copy(
@@ -637,12 +623,13 @@ private fun BooleanExpression<BTerm>.simplifyBasedOnPossibleType(possibleTypes: 
   }
 }
 
-private fun makeAbstractModelID(id: String): String = "$id:::abstract"
 private fun makeShapedModelID(id: String, shape: Shape): String = "$id::${shape.modelIDSuffix}"
+private fun makeFallbackModelID(id: String): String = "$id:::fallback"
 
-private fun makeAbstractModelName(name: String): String = "I$name"
 private fun makeShapedModelName(name: String, shape: Shape, rawTypeName: String): String
   = "${shape.makeTypeSetPrefix(rawTypeName)}$name"
+private fun makeFallbackModelName(name: String): String = "Other$name"
+
 
 private fun Shape.makeTypeSetPrefix(rawTypeName: String) = CodegenLayout.upperCamelCaseIgnoringNonLetters(typeSet - rawTypeName)
 private val Shape.modelIDSuffix get() = typeSet.sorted().joinToString("")

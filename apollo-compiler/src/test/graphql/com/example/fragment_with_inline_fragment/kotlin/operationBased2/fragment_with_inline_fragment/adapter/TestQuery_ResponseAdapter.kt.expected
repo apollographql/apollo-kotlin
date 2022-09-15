@@ -27,11 +27,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
-      var _hero: TestQuery.Data.IHero? = null
+      var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = IHero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -47,12 +47,12 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("hero")
-      IHero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object IHero : Adapter<TestQuery.Data.IHero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.IHero {
+          TestQuery.Data.Hero {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
@@ -60,19 +60,19 @@ public object TestQuery_ResponseAdapter {
           "Droid",
           -> DroidHero.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> Hero.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherHero.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.IHero,
+        `value`: TestQuery.Data.Hero,
       ): Unit {
         when(value) {
           is TestQuery.Data.HumanHero -> HumanHero.toJson(writer, customScalarAdapters, value)
           is TestQuery.Data.DroidHero -> DroidHero.toJson(writer, customScalarAdapters, value)
-          is TestQuery.Data.Hero -> Hero.toJson(writer, customScalarAdapters, value)
+          is TestQuery.Data.OtherHero -> OtherHero.toJson(writer, customScalarAdapters, value)
         }
       }
     }
@@ -100,7 +100,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.fromJson(reader,
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.HumanHero(
@@ -126,7 +126,7 @@ public object TestQuery_ResponseAdapter {
         Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
             value.appearsIn)
 
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.toJson(writer,
+        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
             customScalarAdapters, value.heroDetails)
       }
     }
@@ -154,7 +154,7 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.fromJson(reader,
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
             customScalarAdapters)
 
         return TestQuery.Data.DroidHero(
@@ -180,19 +180,19 @@ public object TestQuery_ResponseAdapter {
         Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
             value.appearsIn)
 
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.toJson(writer,
+        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
             customScalarAdapters, value.heroDetails)
       }
     }
 
-    public object Hero {
+    public object OtherHero {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
 
       public fun fromJson(
         reader: JsonReader,
         customScalarAdapters: CustomScalarAdapters,
         typename: String,
-      ): TestQuery.Data.Hero {
+      ): TestQuery.Data.OtherHero {
         var __typename: String? = typename
         var _name: String? = null
         var _appearsIn: List<Episode?>? = null
@@ -208,10 +208,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.fromJson(reader,
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
             customScalarAdapters)
 
-        return TestQuery.Data.Hero(
+        return TestQuery.Data.OtherHero(
           __typename = __typename!!,
           name = _name!!,
           appearsIn = _appearsIn!!,
@@ -222,7 +222,7 @@ public object TestQuery_ResponseAdapter {
       public fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.Hero,
+        `value`: TestQuery.Data.OtherHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
@@ -234,7 +234,7 @@ public object TestQuery_ResponseAdapter {
         Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
             value.appearsIn)
 
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.IHeroDetails.toJson(writer,
+        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
             customScalarAdapters, value.heroDetails)
       }
     }

@@ -46,7 +46,22 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     )
   }
 
+  private val nestedAdapterBuilders = modelGroup
+      .models
+      .filter { it.isInterface }
+      .map { interfaceModel ->
+        interfaceModel.modelGroups.map {
+          ResponseAdapterBuilder.create(
+              context,
+              it,
+              path,
+              interfaceModel.isFallback
+          )
+        }
+      }.flatten()
+
   override fun prepare() {
+    nestedAdapterBuilders.map { it.prepare() }
     context.resolver.registerModelAdapter(
         modelGroup.baseModelId,
         ClassName(
@@ -60,7 +75,9 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   }
 
   override fun build(): List<TypeSpec> {
-    return listOf(typeSpec()) + implementationAdapterBuilders.flatMap { it.build() }
+    return listOf(typeSpec()) +
+        implementationAdapterBuilders.flatMap { it.build() } +
+        nestedAdapterBuilders.flatMap { it.build() }
   }
 
   private fun typeSpec(): TypeSpec {

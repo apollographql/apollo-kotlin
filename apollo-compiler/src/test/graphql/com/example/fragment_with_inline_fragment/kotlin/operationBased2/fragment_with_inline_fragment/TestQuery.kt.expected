@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragment_with_inline_fragment.adapter.TestQuery_ResponseAdapter
-import com.example.fragment_with_inline_fragment.fragment.IHeroDetails
+import com.example.fragment_with_inline_fragment.fragment.HeroDetails
 import com.example.fragment_with_inline_fragment.selections.TestQuerySelections
 import com.example.fragment_with_inline_fragment.type.Episode
 import kotlin.Any
@@ -50,9 +50,9 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
-    public val hero: IHero?,
+    public val hero: Hero?,
   ) : Query.Data {
-    public sealed interface IHero {
+    public sealed interface Hero {
       public val __typename: String
 
       /**
@@ -68,7 +68,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public val heroDetails: IHeroDetails
+      public val heroDetails: HeroDetails
     }
 
     public data class HumanHero(
@@ -84,8 +84,8 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public override val heroDetails: IHeroDetails,
-    ) : IHero {
+      public override val heroDetails: HeroDetails,
+    ) : Hero {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }
 
@@ -102,12 +102,12 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public override val heroDetails: IHeroDetails,
-    ) : IHero {
+      public override val heroDetails: HeroDetails,
+    ) : Hero {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }
 
-    public data class Hero(
+    public data class OtherHero(
       public override val __typename: String,
       /**
        * The name of the character
@@ -120,8 +120,8 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public override val heroDetails: IHeroDetails,
-    ) : IHero {
+      public override val heroDetails: HeroDetails,
+    ) : Hero {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }
   }
