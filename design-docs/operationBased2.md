@@ -109,9 +109,9 @@ query TestOperation {
 <td><pre lang="kotlin">
 public data class Data(public val animal: IAnimal?)
 
-sealed interface IAnimal { val onCat: Animal.OnCat? }
-data class CatAnimal(val onCat: Animal.OnCat): IAnimal
-data class Animal(val onCat: Animal.OnCat?): IAnimal
+sealed interface Animal { val onCat: Animal.OnCat? }
+data class CatAnimal(val onCat: Animal.OnCat): Animal
+data class OtherAnimal(val onCat: Animal.OnCat?): Animal
 </pre></td>
 </tr>
 </table>
