@@ -139,7 +139,7 @@ query TestOperation {
 <td><pre lang="kotlin">
 public data class Data(public val animal: IAnimal?)
 
-// Abstraction Model
+// Interface Model
 sealed interface IAnimal { val onAnimal: Animal.IOnAnimal }
 // 3 TypeSet Models
 data class WarmBloodedAnimal(val onAnimal: Animal.IOnAnimal): IAnimal
