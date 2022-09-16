@@ -80,3 +80,40 @@ query CanDisableDeferUsingIfArgumentQuery {
     }
   }
 }
+
+query DoesNotDisableDeferWithNullIfArgumentQuery($shouldDefer: Boolean) {
+  computers {
+    id
+    ... on Computer @defer(if: $shouldDefer) {
+      cpu
+    }
+  }
+}
+
+query CanDeferFragmentsOnTheTopLevelQueryFieldQuery {
+  ...FragmentOnQuery @defer
+}
+
+fragment FragmentOnQuery on Query {
+  computers {
+    id
+  }
+}
+
+query CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery {
+  computer(id: "Computer1") {
+    screen {
+      ...ScreenFields @defer
+      ...ScreenFields
+    }
+  }
+}
+
+query CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery {
+  computer(id: "Computer1") {
+    screen {
+      ...ScreenFields
+      ...ScreenFields @defer
+    }
+  }
+}

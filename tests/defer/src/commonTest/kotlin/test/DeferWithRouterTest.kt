@@ -2,12 +2,18 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.testing.internal.runTest
+import defer.CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery
+import defer.CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery
+import defer.CanDeferFragmentsOnTheTopLevelQueryFieldQuery
 import defer.CanDisableDeferUsingIfArgumentQuery
+import defer.DoesNotDisableDeferWithNullIfArgumentQuery
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerFields
+import defer.fragment.FragmentOnQuery
 import defer.fragment.ScreenFields
 import kotlinx.coroutines.flow.toList
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -122,5 +128,88 @@ class DeferWithRouterTest {
     assertEquals(expectedDataList, actualDataList)
   }
 
+  @Test
+  fun doesNotDisableDeferWithNullIfArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computers":[{"id":"Computer1","cpu":"386"},{"id":"Computer2","cpu":"486"}]},"hasNext":false}
+    val expectedDataList = listOf(
+        DoesNotDisableDeferWithNullIfArgumentQuery.Data(
+            listOf(
+                DoesNotDisableDeferWithNullIfArgumentQuery.Computer("Computer", "Computer1", DoesNotDisableDeferWithNullIfArgumentQuery.OnComputer("386")),
+                DoesNotDisableDeferWithNullIfArgumentQuery.Computer("Computer", "Computer2", DoesNotDisableDeferWithNullIfArgumentQuery.OnComputer("486")),
+            )
+        ),
+    )
+    val actualDataList = apolloClient.query(DoesNotDisableDeferWithNullIfArgumentQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  @Ignore
+  // TODO Ignored for now, currently not supported by Router - see https://github.com/apollographql/router/issues/1800
+  fun canDeferFragmentsOnTheTopLevelQueryField() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{},"hasNext":true}
+    // {"incremental":[{"data":{"computers":[{"id":"Computer1"},{"id":"Computer2"}]},"path":[]}],"hasNext":false}
+    val expectedDataList = listOf(
+        CanDeferFragmentsOnTheTopLevelQueryFieldQuery.Data(
+            "Query",
+            null
+        ),
+        CanDeferFragmentsOnTheTopLevelQueryFieldQuery.Data(
+            "Query",
+            FragmentOnQuery(
+                listOf(
+                    FragmentOnQuery.Computer("Computer1"),
+                    FragmentOnQuery.Computer("Computer2"),
+                )
+            )
+        ),
+    )
+    val actualDataList = apolloClient.query(CanDeferFragmentsOnTheTopLevelQueryFieldQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  fun canDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirst() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{"screen":{"isColor":false}}},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"isColor":false},"path":["computer","screen"]}]}
+    val expectedDataList = listOf(
+        CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery.Data(
+            CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery.Computer(
+                CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery.Screen("Screen", ScreenFields(false))
+            )
+        ),
+        CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery.Data(
+            CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery.Computer(
+                CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery.Screen("Screen", ScreenFields(false))
+            )
+        ),
+    )
+    val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  fun canDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirst() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{"screen":{"isColor":false}}},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"isColor":false},"path":["computer","screen"]}]}
+    val expectedDataList = listOf(
+        CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery.Data(
+            CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery.Computer(
+                CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery.Screen("Screen", ScreenFields(false))
+            )
+        ),
+        CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery.Data(
+            CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery.Computer(
+                CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery.Screen("Screen", ScreenFields(false))
+            )
+        ),
+    )
+    val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
 
 }

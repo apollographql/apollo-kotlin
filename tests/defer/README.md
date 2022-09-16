@@ -13,6 +13,6 @@ They are enabled only when running from the specific `defer-with-router-tests` C
 To run them locally:
 
 1. Install and run the
-   subgraph: `cd tests/defer/router/subgraphs/computers && npm install && APOLLO_PORT=4001 npm start &`
-2. Run the router: `./router --supergraph tests/defer/router/simple-supergraph.graphqls &`
+   subgraph: `(cd tests/defer/router/subgraphs/computers && npm install && APOLLO_PORT=4001 npm start)&`
+2. Run the router: `path/to/router --supergraph tests/defer/router/simple-supergraph.graphqls &`
 3. Run the tests: `COM_APOLLOGRAPHQL_DEFER_WITH_ROUTER_TESTS=true ./gradlew -p tests :defer:allTests`
