@@ -135,5 +135,5 @@ directive @deprecated(
 
 directive @defer(
   label: String
-  if: Boolean
+  if: Boolean! = true
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
