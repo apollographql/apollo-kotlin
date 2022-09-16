@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.testing.internal.runTest
 import defer.CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery
 import defer.CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery
@@ -140,7 +141,7 @@ class DeferWithRouterTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(DoesNotDisableDeferWithNullIfArgumentQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(DoesNotDisableDeferWithNullIfArgumentQuery(Optional.Absent)).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
   }
 
