@@ -71,3 +71,12 @@ query SimpleDeferQuery {
     }
   }
 }
+
+query CanDisableDeferUsingIfArgumentQuery {
+  computers {
+    id
+    ... on Computer @defer(if: false) {
+      cpu
+    }
+  }
+}

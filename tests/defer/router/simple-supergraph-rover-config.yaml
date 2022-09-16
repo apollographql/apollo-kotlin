@@ -1,0 +1,12 @@
+# Generate the supergraph schema with this command:
+#
+# rover supergraph compose --config ./simple-supergraph-rover-config.yaml > simple-supergraph.graphqls
+#
+# See https://www.apollographql.com/docs/federation/quickstart/local-composition/#1-provide-subgraph-details
+
+federation_version: 2
+subgraphs:
+  computers:
+    routing_url: http://localhost:4001/
+    schema:
+      file: ./subgraphs/computers/computers.graphqls

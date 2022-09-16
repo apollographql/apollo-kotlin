@@ -1,0 +1,52 @@
+name: defer-router-tests
+
+# TODO: Run on schedule instead of on pull requests
+on:
+  pull_request:
+    branches: [ '*' ]
+#  schedule:
+#    - cron: '0 3 * * *'
+
+jobs:
+  defer-with-router-tests:
+    runs-on: macos-11
+    if: github.repository == 'apollographql/apollo-kotlin'
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28 #v3
+
+      - name: Install and run subgraph
+        working-directory: tests/defer/router/subgraphs/computers
+        run: |
+          npm install
+          APOLLO_PORT=4001 npm start &
+
+      - name: Install router
+        # TODO: Version of the router to test against is set here, we can either use "latest" (breaks reproducible builds)
+        # or keep a specific version but should update it regularly with new releases of the router (could Renovate help?)
+        run: |
+          curl -sSL https://router.apollo.dev/download/nix/v1.0.0-rc.0 | sh
+
+      - name: Run router
+        run: |
+          ./router --supergraph tests/defer/router/simple-supergraph.graphqls &
+
+      - name: Setup Java
+        uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 #v3
+        with:
+          distribution: 'temurin'
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee #v2.1.4
+
+      - name: Run Apollo Kotlin tests
+        env:
+          COM_APOLLOGRAPHQL_DEFER_WITH_ROUTER_TESTS: true
+        run: |
+          ulimit -c unlimited
+          # Workaround an issue where kotlinNpmInstall outputs
+          # 'Resolving NPM dependencies using yarn' returns 137
+          # ./gradlew compileKotlinJsIr compileKotlinJsLegacy
+          # ./gradlew --stop
+          ./gradlew --no-daemon --console plain -p tests :defer:allTests
