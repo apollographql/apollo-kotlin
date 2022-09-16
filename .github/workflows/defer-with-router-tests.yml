@@ -25,7 +25,7 @@ jobs:
         # TODO: Version of the router to test against is set here, we can either use "latest" (breaks reproducible builds)
         # or keep a specific version but should update it regularly with new releases of the router (could Renovate help?)
         run: |
-          curl -sSL https://router.apollo.dev/download/nix/v1.0.0-rc.0 | sh
+          curl -sSL https://router.apollo.dev/download/nix/v1.0.0-rc.1 | sh
 
       - name: Run router
         run: |

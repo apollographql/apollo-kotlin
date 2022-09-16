@@ -13,6 +13,7 @@ import defer.CanDisableDeferUsingIfArgumentQuery
 import defer.DoesNotDisableDeferWithNullIfArgumentQuery
 import defer.HandlesErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownInDeferredFragmentsQuery
+import defer.HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerErrorField
@@ -136,6 +137,8 @@ class DeferWithRouterTest {
   }
 
   @Test
+  @Ignore
+  // TODO Ignored for now, not passing the variable makes the Router crash (no issue yet)
   // TODO Not sure if this one is correct - see https://github.com/apollographql/router/issues/1820
   fun doesNotDisableDeferWithNullIfArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
@@ -227,7 +230,6 @@ class DeferWithRouterTest {
     // Expected payloads:
     // {"data":{"computer":{"id":"Computer1"}},"hasNext":true}
     // {"hasNext":false,"incremental":[{"data":{"errorField":null},"errors":[{"message":"Subgraph errors redacted"}],"path":["computer"]}]}
-
     val query = HandlesErrorsThrownInDeferredFragmentsQuery()
     val uuid = uuid4()
 
@@ -276,7 +278,6 @@ class DeferWithRouterTest {
     // Expected payloads:
     // {"data":{"computer":{"id":"Computer1"}},"hasNext":true}
     // {"hasNext":false,"incremental":[{"data":null,"errors":[{"message":"Subgraph errors redacted"}],"path":["computer"]}]}
-
     val query = HandlesNonNullableErrorsThrownInDeferredFragmentsQuery()
     val uuid = uuid4()
 
@@ -318,4 +319,45 @@ class DeferWithRouterTest {
     assertResponseListEquals(expectedDataList, actualResponseList)
   }
 
+  @Test
+  fun handlesNonNullableErrorsThrownOutsideDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":null},"errors":[{"message":"Subgraph errors redacted"}],"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":null,"path":["computer"]}]}
+    val query = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+            data = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery.Data(
+                null
+            )
+        )
+            .errors(
+                listOf(
+                    Error(
+                        message = "Subgraph errors redacted",
+                        locations = null,
+                        path = null,
+                        extensions = null,
+                        nonStandardFields = null,
+                    )
+                )
+            )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+            data = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery.Data(
+                null
+            )
+        )
+            .build(),
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
 }

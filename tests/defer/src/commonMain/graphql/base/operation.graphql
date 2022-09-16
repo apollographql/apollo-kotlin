@@ -139,3 +139,14 @@ query HandlesNonNullableErrorsThrownInDeferredFragmentsQuery {
 fragment ComputerNonNullableErrorField on Computer {
   nonNullErrorField
 }
+
+query HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery {
+  computer(id: "Computer1") {
+    nonNullErrorField
+    ...ComputerIdField @defer
+  }
+}
+
+fragment ComputerIdField on Computer {
+  id
+}
