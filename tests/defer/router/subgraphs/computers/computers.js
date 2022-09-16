@@ -15,9 +15,14 @@ const resolvers = {
             return computers;
         },
         computer: (_, args, context) => {
-            return computers.find(p => p.id == args.id);
+            return computers.find(p => p.id === args.id);
         }
     },
+    Computer: {
+        errorField: (_, args, context) => {
+            throw new Error("Error field");
+        }
+    }
 }
 const server = new ApolloServer({typeDefs, resolvers});
 server.listen({port: port}).then(({url}) => {

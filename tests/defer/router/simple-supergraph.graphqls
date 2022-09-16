@@ -5,8 +5,8 @@
 # See also: https://www.apollographql.com/docs/federation/quickstart/local-composition/#2-perform-composition
 
 schema
-@link(url: "https://specs.apollo.dev/link/v1.0")
-@link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
 {
   query: Query
   mutation: Mutation
@@ -23,12 +23,13 @@ directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boole
 directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
 
 type Computer
-@join__type(graph: COMPUTERS)
+  @join__type(graph: COMPUTERS)
 {
   id: ID!
   cpu: String!
   year: Int!
   screen: Screen!
+  errorField: String
 }
 
 scalar join__FieldSet
@@ -52,20 +53,20 @@ enum link__Purpose {
 }
 
 type Mutation
-@join__type(graph: COMPUTERS)
+  @join__type(graph: COMPUTERS)
 {
   computers: [Computer!]!
 }
 
 type Query
-@join__type(graph: COMPUTERS)
+  @join__type(graph: COMPUTERS)
 {
   computers: [Computer!]!
   computer(id: ID!): Computer
 }
 
 type Screen
-@join__type(graph: COMPUTERS)
+  @join__type(graph: COMPUTERS)
 {
   resolution: String!
   isColor: Boolean!

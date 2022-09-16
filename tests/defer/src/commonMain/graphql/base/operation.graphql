@@ -117,3 +117,14 @@ query CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery {
     }
   }
 }
+
+query HandlesErrorsThrownInDeferredFragmentsQuery {
+  computer(id: "Computer1") {
+    id
+    ...ComputerErrorField @defer
+  }
+}
+
+fragment ComputerErrorField on Computer {
+  errorField
+}

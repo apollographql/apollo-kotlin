@@ -21,6 +21,7 @@ type Computer {
   cpu: String!
   year: Int!
   screen: Screen!
+  errorField: String
 }
 
 type Screen {
