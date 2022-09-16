@@ -1,15 +1,21 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.testing.internal.runTest
+import com.benasher44.uuid.uuid4
 import defer.CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery
 import defer.CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery
 import defer.CanDeferFragmentsOnTheTopLevelQueryFieldQuery
 import defer.CanDisableDeferUsingIfArgumentQuery
 import defer.DoesNotDisableDeferWithNullIfArgumentQuery
+import defer.HandlesErrorsThrownInDeferredFragmentsQuery
+import defer.HandlesNonNullableErrorsThrownInDeferredFragmentsQuery
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
+import defer.fragment.ComputerErrorField
 import defer.fragment.ComputerFields
 import defer.fragment.FragmentOnQuery
 import defer.fragment.ScreenFields
@@ -130,6 +136,7 @@ class DeferWithRouterTest {
   }
 
   @Test
+  // TODO Not sure if this one is correct - see https://github.com/apollographql/router/issues/1820
   fun doesNotDisableDeferWithNullIfArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
     // {"data":{"computers":[{"id":"Computer1","cpu":"386"},{"id":"Computer2","cpu":"486"}]},"hasNext":false}
@@ -211,6 +218,104 @@ class DeferWithRouterTest {
     )
     val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  @Ignore
+  // TODO Ignored for now, Router returns error on first chunk instead - see https://github.com/apollographql/router/issues/1818
+  fun handlesErrorsThrownInDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{"id":"Computer1"}},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"errorField":null},"errors":[{"message":"Subgraph errors redacted"}],"path":["computer"]}]}
+
+    val query = HandlesErrorsThrownInDeferredFragmentsQuery()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+            data = HandlesErrorsThrownInDeferredFragmentsQuery.Data(
+                HandlesErrorsThrownInDeferredFragmentsQuery.Computer(
+                    "Computer", "Computer1", null
+                )
+            )
+        )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+            data = HandlesErrorsThrownInDeferredFragmentsQuery.Data(
+                HandlesErrorsThrownInDeferredFragmentsQuery.Computer(
+                    "Computer", "Computer1", ComputerErrorField(null)
+                )
+            )
+        )
+            .errors(
+                listOf(
+                    Error(
+                        message = "Subgraph errors redacted",
+                        locations = null,
+                        path = null,
+                        extensions = null,
+                        nonStandardFields = null,
+                    )
+                )
+            )
+            .build(),
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
+  }
+
+  @Test
+  @Ignore
+  // TODO Ignored for now, Router returns error on first chunk instead - see https://github.com/apollographql/router/issues/1818
+  fun handlesNonNullableErrorsThrownInDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computer":{"id":"Computer1"}},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":null,"errors":[{"message":"Subgraph errors redacted"}],"path":["computer"]}]}
+
+    val query = HandlesNonNullableErrorsThrownInDeferredFragmentsQuery()
+    val uuid = uuid4()
+
+    val expectedDataList = listOf(
+        ApolloResponse.Builder(
+            query,
+            uuid,
+            data = HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Data(
+                HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Computer(
+                    "Computer", "Computer1", null
+                )
+            )
+        )
+            .build(),
+
+        ApolloResponse.Builder(
+            query,
+            uuid,
+            data = HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Data(
+                HandlesNonNullableErrorsThrownInDeferredFragmentsQuery.Computer(
+                    "Computer", "Computer1", null
+                )
+            )
+        )
+            .errors(
+                listOf(
+                    Error(
+                        message = "Subgraph errors redacted",
+                        locations = null,
+                        path = null,
+                        extensions = null,
+                        nonStandardFields = null,
+                    )
+                )
+            )
+            .build(),
+    )
+    val actualResponseList = apolloClient.query(query).toFlow().toList()
+    assertResponseListEquals(expectedDataList, actualResponseList)
   }
 
 }

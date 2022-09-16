@@ -22,6 +22,7 @@ type Computer {
   year: Int!
   screen: Screen!
   errorField: String
+  nonNullErrorField: String!
 }
 
 type Screen {

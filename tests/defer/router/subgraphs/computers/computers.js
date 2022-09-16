@@ -21,6 +21,9 @@ const resolvers = {
     Computer: {
         errorField: (_, args, context) => {
             throw new Error("Error field");
+        },
+        nonNullErrorField: (_, args, context) => {
+            throw new Error("Error field");
         }
     }
 }
