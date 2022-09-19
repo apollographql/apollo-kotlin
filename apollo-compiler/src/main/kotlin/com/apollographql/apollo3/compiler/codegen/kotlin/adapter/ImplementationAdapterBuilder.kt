@@ -36,7 +36,7 @@ internal class ImplementationAdapterBuilder(
         context,
         it,
         path + adapterName,
-        model.isFallback
+        false
     )
   }
 

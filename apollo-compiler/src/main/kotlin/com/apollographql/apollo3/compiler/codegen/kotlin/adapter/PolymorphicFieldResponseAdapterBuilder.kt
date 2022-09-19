@@ -55,7 +55,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
               context,
               it,
               path,
-              interfaceModel.isFallback
+              false
           )
         }
       }.flatten()
