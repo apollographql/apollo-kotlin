@@ -14,7 +14,7 @@ kotlin {
       dependencies {
         api(okio())
         api(libs.uuid)
-        api(projects.apolloAnnotations)
+        api(project(":apollo-annotations"))
       }
     }
   }

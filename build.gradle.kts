@@ -1,14 +1,7 @@
 import JapiCmp.configureJapiCmp
 
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
-  }
-  dependencies {
-    classpath("com.apollographql.apollo3:build-logic")
-  }
+plugins {
+  id("apollo.library").apply(false)
 }
 
 apply(plugin = "com.github.ben-manes.versions")

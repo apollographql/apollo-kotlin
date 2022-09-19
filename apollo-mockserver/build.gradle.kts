@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloAnnotations)
+        api(project(":apollo-annotations"))
         api(okio())
         implementation(libs.atomicfu.get().toString()) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
@@ -31,10 +31,10 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(projects.apolloTestingSupport) {
+        implementation(project(":apollo-testing-support")) {
           because("runTest")
         }
-        implementation(projects.apolloRuntime) {
+        implementation(project(":apollo-runtime")) {
           because("We need HttpEngine for SocketTest")
         }
       }

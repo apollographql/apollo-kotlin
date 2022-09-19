@@ -15,7 +15,7 @@ dependencies {
   antlr(libs.antlr)
   implementation(libs.antlr.runtime)
   api(okio())
-  api(projects.apolloAnnotations)
+  api(project(":apollo-annotations"))
 
   implementation(libs.moshi)
   implementation(libs.moshix.sealed.runtime)

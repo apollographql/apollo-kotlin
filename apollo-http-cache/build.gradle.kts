@@ -9,12 +9,12 @@ apolloLibrary {
 
 dependencies {
   api(libs.okhttp)
-  api(projects.apolloApi)
-  api(projects.apolloRuntime)
+  api(project(":apollo-api"))
+  api(project(":apollo-runtime"))
   implementation(libs.moshi)
   implementation(libs.kotlinx.datetime)
 
-  testImplementation(projects.apolloMockserver)
+  testImplementation(project(":apollo-mockserver"))
   testImplementation(libs.kotlin.test.junit)
   testImplementation(libs.truth)
 }

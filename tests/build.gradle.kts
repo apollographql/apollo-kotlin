@@ -1,14 +1,6 @@
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
-  }
-
-  dependencies {
-    classpath("com.apollographql.apollo3:apollo-gradle-plugin")
-    classpath("com.apollographql.apollo3:build-logic")
-  }
+plugins {
+  id("com.apollographql.apollo3").apply(false)
+  id("apollo.test").apply(false)
 }
 
 repositories {

@@ -11,8 +11,8 @@ apolloLibrary {
 }
 
 dependencies {
-  implementation(projects.apolloAst)
-  implementation(projects.apolloApi) {
+  implementation(project(":apollo-ast"))
+  implementation(project(":apollo-api")) {
     because("For BooleanExpression")
   }
   implementation(libs.poet.kotlin.get().toString()) {

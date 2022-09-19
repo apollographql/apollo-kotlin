@@ -25,7 +25,6 @@ dependencies {
   // See https://github.com/gradle/gradle/issues/4741
   implementation(libs.android.plugin)
   implementation(libs.gradle.japicmp.plugin)
-  implementation(libs.gradle.metalava.plugin)
   implementation(libs.vespene)
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version

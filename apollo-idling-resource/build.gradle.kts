@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
   implementation(libs.androidx.espresso.idlingresource)
-  api(projects.apolloRuntime)
+  api(project(":apollo-runtime"))
 }
 
 android {

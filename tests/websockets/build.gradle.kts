@@ -26,7 +26,7 @@ kotlin {
 
     val jvmTest by getting {
       dependencies {
-        implementation(projects.sampleServer)
+        implementation(project(":sample-server"))
       }
     }
   }

@@ -6,8 +6,8 @@ plugins {
 
 dependencies {
   implementation(libs.apollo.runtime)
-  implementation(projects.multiModule2.root)
-  apolloMetadata(projects.multiModule2.root)
+  implementation(project(":multi-module-2:root"))
+  apolloMetadata(project(":multi-module-2:root"))
   testImplementation(libs.kotlin.test.junit)
 }
 

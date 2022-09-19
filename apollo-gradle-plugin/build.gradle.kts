@@ -27,9 +27,9 @@ dependencies {
    */
   add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
-  add("shade", projects.apolloGradlePluginExternal)
+  add("shade", project(":apollo-gradle-plugin-external"))
 
-  testImplementation(projects.apolloAst)
+  testImplementation(project(":apollo-ast"))
   testImplementation(libs.junit)
   testImplementation(libs.truth)
   testImplementation(libs.assertj)

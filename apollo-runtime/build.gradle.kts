@@ -14,8 +14,8 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloApi)
-        api(projects.apolloMppUtils)
+        api(project(":apollo-api"))
+        api(project(":apollo-mpp-utils"))
         api(okio())
         api(libs.uuid)
         api(libs.kotlinx.coroutines)
@@ -24,8 +24,8 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(projects.apolloMockserver)
-        implementation(projects.apolloTestingSupport)
+        implementation(project(":apollo-mockserver"))
+        implementation(project(":apollo-testing-support"))
       }
     }
 

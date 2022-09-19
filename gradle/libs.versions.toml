@@ -76,7 +76,6 @@ gradle-api = { group = "dev.gradleplugins", name = "gradle-api", version = "7.2"
 # Keep in sync with MIN_GRADLE_VERSION
 gradle-api-min = { group = "dev.gradleplugins", name = "gradle-api", version = "5.6" }
 gradle-japicmp-plugin = { group = "me.champeau.gradle", name = "japicmp-gradle-plugin", version = "0.2.8" }
-gradle-metalava-plugin = { group = "me.tylerbwong.gradle", name = "metalava-gradle", version = "0.1.5" }
 gradle-publish-plugin = { group = "com.gradle.publish", name = "plugin-publish-plugin", version = "0.12.0" }
 graphqlkotlin = { group = "com.expediagroup", name = "graphql-kotlin-spring-server", version = "5.3.0" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }

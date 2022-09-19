@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloApi)
+        api(project(":apollo-api"))
         api(libs.kotlinx.datetime)
       }
     }

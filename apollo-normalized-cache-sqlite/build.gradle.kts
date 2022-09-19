@@ -31,9 +31,9 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloApi)
-        api(projects.apolloNormalizedCacheApi)
-        api(projects.apolloNormalizedCache)
+        api(project(":apollo-api"))
+        api(project(":apollo-normalized-cache-api"))
+        api(project(":apollo-normalized-cache"))
       }
     }
 
@@ -73,7 +73,7 @@ kotlin {
 
     val commonTest by getting {
       dependencies {
-        implementation(projects.apolloTestingSupport)
+        implementation(project(":apollo-testing-support"))
       }
     }
   }

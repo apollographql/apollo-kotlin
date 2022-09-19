@@ -14,9 +14,9 @@ dependencies {
   compileOnly(libs.kotlin.plugin.min)
   compileOnly(libs.android.plugin.min)
 
-  api(projects.apolloCompiler)
-  implementation(projects.apolloTooling)
-  implementation(projects.apolloAst)
+  api(project(":apollo-compiler"))
+  implementation(project(":apollo-tooling"))
+  implementation(project(":apollo-ast"))
 }
 
 

@@ -13,9 +13,9 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloApi)
-        api(projects.apolloRuntime)
-        api(projects.apolloMockserver)
+        api(project(":apollo-api"))
+        api(project(":apollo-runtime"))
+        api(project(":apollo-mockserver"))
         api(libs.kotlinx.coroutines)
         implementation(libs.atomicfu.get().toString()) {
           because("We need locks in TestNetworkTransportHandler (we don't use the gradle plugin rewrite)")
