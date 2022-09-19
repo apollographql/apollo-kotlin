@@ -154,6 +154,7 @@ public final class com/apollographql/apollo3/compiler/OperationOutputGenerator$D
 
 public final class com/apollographql/apollo3/compiler/Options$Companion {
 	public final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
+	public final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
 	public final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
 	public final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
 	public final fun getDefaultScalarMapping ()Ljava/util/Map;
