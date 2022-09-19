@@ -209,10 +209,15 @@ internal data class IrSubtypeAccessor(
 ) : IrAccessor()
 
 /**
- * A Kotlin class or interface representing a GraphQL object field
+ * A class or interface representing a GraphQL object field
+ *
+ * Monomorphic fields will always be represented by a class while polymorphic fields will involve interfaces
  */
 internal data class IrModel(
     val modelName: String,
+    /**
+     * The path to this field. See [IrModelType] for more details
+     */
     val id: String,
     /**
      * The typeSet of this model.
@@ -364,7 +369,7 @@ internal data class IrVariableValue(val name: String) : IrValue()
 
 
 internal sealed class IrType {
-  open fun leafType() = this
+  open fun rawType() = this
 }
 
 internal data class IrNonNullType(val ofType: IrType) : IrType() {
@@ -372,11 +377,11 @@ internal data class IrNonNullType(val ofType: IrType) : IrType() {
     check(ofType !is IrNonNullType)
   }
 
-  override fun leafType() = ofType.leafType()
+  override fun rawType() = ofType.rawType()
 }
 
 internal data class IrOptionalType(val ofType: IrType) : IrType() {
-  override fun leafType() = ofType.leafType()
+  override fun rawType() = ofType.rawType()
 }
 
 internal data class IrListType(val ofType: IrType) : IrType() {
@@ -384,7 +389,7 @@ internal data class IrListType(val ofType: IrType) : IrType() {
     check(ofType !is IrOptionalType)
   }
 
-  override fun leafType() = ofType.leafType()
+  override fun rawType() = ofType.rawType()
 }
 
 
@@ -397,12 +402,16 @@ internal data class IrInputObjectType(override val name: String) : IrType(), IrN
 internal data class IrEnumType(override val name: String) : IrType(), IrNamedType
 
 /**
- * @param path a unique path identifying the model.
+ * @param path a unique path identifying a given model.
  *
- * fragmentData.$fragmentName.hero.friend
- * fragmentInterface.$fragmentName.hero.friend
- * operationData.$operationName.hero.friend
- * operationData.$operationName.hero.otherFriend
+ * For responseBased codegen
+ *
+ * operationData.$operationName.Query_data.Droid_hero
+ * fragmentData.$fragmentName.Query_data.Character_hero
+ * fragmentData.$fragmentName.Query_data.Droid_hero
+ * fragmentData.$fragmentName.Query_data.Human_hero
+ * fragmentData.$fragmentName.Query_data.Human_hero.Character_friend
+ * fragmentInterface.$fragmentName.Query_data.Character_hero
  * ?
  */
 internal data class IrModelType(val path: String) : IrType()

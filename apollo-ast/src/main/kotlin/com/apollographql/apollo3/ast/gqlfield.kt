@@ -34,17 +34,16 @@ private val typeMetaFieldDefinition = GQLFieldDefinition(
 )
 
 fun GQLField.definitionFromScope(schema: Schema, rawTypename: String): GQLFieldDefinition? {
-  val typeDefinitionInScope = schema.typeDefinition(rawTypename)
-  return definitionFromScope(schema, typeDefinitionInScope)
+  return definitionFromScope(schema, schema.typeDefinition(rawTypename))
 }
 
-fun GQLField.definitionFromScope(schema: Schema, typeDefinitionInScope: GQLTypeDefinition): GQLFieldDefinition? {
+fun GQLField.definitionFromScope(schema: Schema, parentTypeDefinition: GQLTypeDefinition): GQLFieldDefinition? {
   return when {
     name == "__typename" -> listOf(typenameMetaFieldDefinition)
-    name == "__schema" && typeDefinitionInScope.name == schema.queryTypeDefinition.name -> listOf(schemaMetaFieldDefinition)
-    name == "__type" && typeDefinitionInScope.name == schema.queryTypeDefinition.name -> listOf(typeMetaFieldDefinition)
-    typeDefinitionInScope is GQLObjectTypeDefinition -> typeDefinitionInScope.fields
-    typeDefinitionInScope is GQLInterfaceTypeDefinition -> typeDefinitionInScope.fields
+    name == "__schema" && parentTypeDefinition.name == schema.queryTypeDefinition.name -> listOf(schemaMetaFieldDefinition)
+    name == "__type" && parentTypeDefinition.name == schema.queryTypeDefinition.name -> listOf(typeMetaFieldDefinition)
+    parentTypeDefinition is GQLObjectTypeDefinition -> parentTypeDefinition.fields
+    parentTypeDefinition is GQLInterfaceTypeDefinition -> parentTypeDefinition.fields
     else -> emptyList()
   }.firstOrNull { it.name == name }
 }

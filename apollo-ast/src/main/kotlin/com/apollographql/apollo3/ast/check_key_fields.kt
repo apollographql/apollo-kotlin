@@ -60,7 +60,7 @@ private fun CheckKeyFieldsScope.checkFieldSet(path: String, selections: List<GQL
 
   mergedFields.forEach {
     val first = it.first()
-    val rawTypeName = first.field.definitionFromScope(schema, first.parentType)!!.type.leafType().name
+    val rawTypeName = first.field.definitionFromScope(schema, first.parentType)!!.type.rawType().name
     checkField(path + "." + first.field.name, it.flatMap { it.field.selectionSet?.selections ?: emptyList() }, rawTypeName)
   }
 }

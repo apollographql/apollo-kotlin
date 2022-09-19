@@ -178,7 +178,7 @@ class OffsetBasedWithPagePaginationTest {
 
   private class OffsetPaginationMetadataGenerator(private val typeName: String) : MetadataGenerator {
     override fun metadataForObject(obj: Any?, context: MetadataGeneratorContext): Map<String, Any?> {
-      if (context.field.type.leafType().name == typeName) {
+      if (context.field.type.rawType().name == typeName) {
         return mapOf("offset" to context.argumentValue("offset"))
       }
       return emptyMap()

@@ -139,19 +139,27 @@ class CompiledFragment internal constructor(
 data class CompiledCondition(val name: String, val inverted: Boolean)
 
 sealed class CompiledType {
+  @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
   abstract fun leafType(): CompiledNamedType
+  abstract fun rawType(): CompiledNamedType
 }
 
 class CompiledNotNullType(val ofType: CompiledType) : CompiledType() {
-  override fun leafType() = ofType.leafType()
+  @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
+  override fun leafType() = ofType.rawType()
+  override fun rawType() = ofType.rawType()
 }
 
 class CompiledListType(val ofType: CompiledType) : CompiledType() {
-  override fun leafType() = ofType.leafType()
+  @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
+  override fun leafType() = ofType.rawType()
+  override fun rawType() = ofType.rawType()
 }
 
 sealed class CompiledNamedType(val name: String) : CompiledType() {
+  @Deprecated("Use rawType instead", ReplaceWith("rawType()"))
   override fun leafType() = this
+  override fun rawType() = this
 }
 
 /**

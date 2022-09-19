@@ -131,7 +131,7 @@ private class FieldNodeBuilder(
     )
 
     return buildFieldNode(
-        path = "${MODEL_OPERATION_DATA}.$operationName",
+        modelPath = "${MODEL_OPERATION_DATA}.$operationName",
         info = info,
         selections = selections,
         rawTypename = rawTypeName,
@@ -155,7 +155,7 @@ private class FieldNodeBuilder(
       )
 
       return buildFieldNode(
-          path = "${MODEL_FRAGMENT_INTERFACE}.$name",
+          modelPath = "${MODEL_FRAGMENT_INTERFACE}.$name",
           info = info,
           selections = fragment.selectionSet.selections,
           rawTypename = fragment.typeCondition.name,
@@ -180,7 +180,7 @@ private class FieldNodeBuilder(
     )
 
     return buildFieldNode(
-        path = "${MODEL_FRAGMENT_DATA}.$name",
+        modelPath = "${MODEL_FRAGMENT_DATA}.$name",
         info = info,
         selections = fragment.selectionSet.selections,
         rawTypename = fragment.typeCondition.name,
@@ -225,9 +225,13 @@ private class FieldNodeBuilder(
    * This builds the models greedily so that:
    * 1. we have a qualifiedName when needed
    * 2. we can build the "Other" fields
+   *
+   * @param modelPath the path of the model containing this field
+   * @param info the field info. For composite types, [info].type contains a placeholder value that is replaced
+   * once all field shapes have been built
    */
   private fun buildFieldNode(
-      path: String,
+      modelPath: String,
       info: IrFieldInfo,
       condition: BooleanExpression<BVariable>,
       selections: List<GQLSelection>,
@@ -273,7 +277,7 @@ private class FieldNodeBuilder(
         fragmentResponseFields = fragmentFieldNodes,
         info = info,
         modelDescriptors = modelDescriptors.toSet(),
-        path = path,
+        path = modelPath,
         selections = selections,
         rawTypename = rawTypename
     )
@@ -360,7 +364,7 @@ private class FieldNodeBuilder(
         collectFields(
             allFragmentDefinitions = allFragmentDefinitions,
             selections = state.selections,
-            typenameInScope = state.rawTypename,
+            parentTypeDefinition = state.rawTypename,
             typeSet = typeSet,
         )
     )
@@ -371,7 +375,7 @@ private class FieldNodeBuilder(
         accessors = emptyList(),
         responseFields = mergedFields.map { mergedField ->
           buildFieldNode(
-              path = path,
+              modelPath = path,
               info = mergedField.info,
               condition = mergedField.condition,
               selections = mergedField.selections,

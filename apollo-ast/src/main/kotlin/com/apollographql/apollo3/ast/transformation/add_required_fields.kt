@@ -9,9 +9,8 @@ import com.apollographql.apollo3.ast.GQLSelectionSet
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.definitionFromScope
-import com.apollographql.apollo3.ast.implementsAbstractType
 import com.apollographql.apollo3.ast.isAbstract
-import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.rootTypeDefinition
 
 fun addRequiredFields(
@@ -143,7 +142,7 @@ private fun GQLField.addRequiredFields(schema: Schema, addTypename: String, frag
       schema,
       addTypename,
       fragments,
-      typeDefinition.type.leafType().name,
+      typeDefinition.type.rawType().name,
       emptySet(),
       true
   )

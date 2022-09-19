@@ -31,7 +31,7 @@ interface CacheKeyGenerator {
  * @param field the field representing the object or for lists, the field representing the list. `field.type` is not
  * always the type of the object. Especially, it can be any combination of [com.apollographql.apollo3.api.CompiledNotNullType]
  * and [com.apollographql.apollo3.api.CompiledListType].
- * Use `field.type.leafType()` to access the type of the object. For interface fields, it will be the interface type,
+ * Use `field.type.rawType()` to access the type of the object. For interface fields, it will be the interface type,
  * not concrete types.
  * @param variables the variables used in the operation where the object is normalized.
  */
@@ -45,7 +45,7 @@ class CacheKeyGeneratorContext(
  */
 object TypePolicyCacheKeyGenerator : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
-    val keyFields = context.field.type.leafType().keyFields()
+    val keyFields = context.field.type.rawType().keyFields()
 
     return if (keyFields.isNotEmpty()) {
       CacheKey(obj["__typename"].toString(), keyFields.map { obj[it].toString() })

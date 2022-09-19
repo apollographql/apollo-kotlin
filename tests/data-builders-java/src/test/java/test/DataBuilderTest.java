@@ -198,7 +198,7 @@ public class DataBuilderTest {
 
   static class MyFakeResolver implements FakeResolver {
     @NotNull @Override public Object resolveLeaf(@NotNull FakeResolverContext context) {
-      String name = context.getMergedField().getType().leafType().getName();
+      String name = context.getMergedField().getType().rawType().getName();
       Object ret = null;
       switch (name) {
         case "Long1": {

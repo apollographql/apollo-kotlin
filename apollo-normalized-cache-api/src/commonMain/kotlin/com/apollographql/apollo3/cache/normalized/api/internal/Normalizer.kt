@@ -25,8 +25,8 @@ internal class Normalizer(
 ) {
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: String): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope)
+  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, parentType: String): Map<String, Record> {
+    buildRecord(map, rootKey, selections, parentType)
 
     return records
   }
@@ -41,11 +41,11 @@ internal class Normalizer(
       obj: Map<String, Any?>,
       key: String,
       selections: List<CompiledSelection>,
-      typeInScope: String,
+      parentType: String,
   ): CacheKey {
 
     val typename = obj["__typename"] as? String
-    val allFields = collectFields(selections, typeInScope, typename)
+    val allFields = collectFields(selections, parentType, typename)
 
     val record = Record(
         key = key,
@@ -142,7 +142,7 @@ internal class Normalizer(
             value as Map<String, Any?>,
             CacheKeyGeneratorContext(field, variables),
         )?.key ?: path
-        buildRecord(value, key, field.selections, field.type.leafType().name)
+        buildRecord(value, key, field.selections, field.type.rawType().name)
       }
       else -> {
         // scalar
@@ -155,15 +155,15 @@ internal class Normalizer(
     val fields = mutableListOf<CompiledField>()
   }
 
-  private fun collectFields(selections: List<CompiledSelection>, typeInScope: String, typename: String?, state: CollectState) {
+  private fun collectFields(selections: List<CompiledSelection>, parentType: String, typename: String?, state: CollectState) {
     selections.forEach {
       when (it) {
         is CompiledField -> {
           state.fields.add(it)
         }
         is CompiledFragment -> {
-          if (typename in it.possibleTypes || it.typeCondition == typeInScope) {
-            collectFields(it.selections, typeInScope, typename, state)
+          if (typename in it.possibleTypes || it.typeCondition == parentType) {
+            collectFields(it.selections, parentType, typename, state)
           }
         }
       }
@@ -175,9 +175,9 @@ internal class Normalizer(
    * that's the case, we will collect less fields than we should and records will miss some values leading to more
    * cache miss
    */
-  private fun collectFields(selections: List<CompiledSelection>, typeInScope: String, typename: String?): List<CompiledField> {
+  private fun collectFields(selections: List<CompiledSelection>, parentType: String, typename: String?): List<CompiledField> {
     val state = CollectState()
-    collectFields(selections, typeInScope, typename, state)
+    collectFields(selections, parentType, typename, state)
     return state.fields
   }
 

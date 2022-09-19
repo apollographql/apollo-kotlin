@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api.internal
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledFragment
 import com.apollographql.apollo3.api.CompiledSelection
@@ -35,7 +34,7 @@ internal class CacheBatchReader(
       val key: String,
       val path: List<Any>,
       val selections: List<CompiledSelection>,
-      val typeInScope: String,
+      val parentType: String,
   )
 
   /**
@@ -53,15 +52,15 @@ internal class CacheBatchReader(
   /**
    *
    */
-  private fun collect(selections: List<CompiledSelection>, typeInScope: String, typename: String?, state: CollectState) {
+  private fun collect(selections: List<CompiledSelection>, parentType: String, typename: String?, state: CollectState) {
     selections.forEach { compiledSelection ->
       when (compiledSelection) {
         is CompiledField -> {
           state.fields.add(compiledSelection)
         }
         is CompiledFragment -> {
-          if (typename in compiledSelection.possibleTypes || compiledSelection.typeCondition == typeInScope) {
-            collect(compiledSelection.selections, typeInScope, typename, state)
+          if (typename in compiledSelection.possibleTypes || compiledSelection.typeCondition == parentType) {
+            collect(compiledSelection.selections, parentType, typename, state)
           }
         }
       }
@@ -70,11 +69,11 @@ internal class CacheBatchReader(
 
   private fun collectAndMergeSameDirectives(
       selections: List<CompiledSelection>,
-      typeInScope: String,
+      parentType: String,
       typename: String?,
   ): List<CompiledField> {
     val state = CollectState()
-    collect(selections, typeInScope, typename, state)
+    collect(selections, parentType, typename, state)
     return state.fields.groupBy { (it.responseName) to it.condition }.values.map {
       it.first().newBuilder().selections(it.flatMap { it.selections }).build()
     }
@@ -85,7 +84,7 @@ internal class CacheBatchReader(
         PendingReference(
             key = rootKey,
             selections = rootSelections,
-            typeInScope = rootTypename,
+            parentType = rootTypename,
             path = emptyList()
         )
     )
@@ -106,7 +105,7 @@ internal class CacheBatchReader(
           }
         }
 
-        val collectedFields = collectAndMergeSameDirectives(pendingReference.selections, pendingReference.typeInScope, record["__typename"] as? String)
+        val collectedFields = collectAndMergeSameDirectives(pendingReference.selections, pendingReference.parentType, record["__typename"] as? String)
 
         val map = collectedFields.mapNotNull {
           if (it.shouldSkip(variables.valueMap)) {
@@ -115,7 +114,7 @@ internal class CacheBatchReader(
 
           val value = cacheResolver.resolveField(it, variables, record, record.key)
 
-          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.leafType().name)
+          value.registerCacheKeys(pendingReference.path + it.responseName, it.selections, it.type.rawType().name)
 
           it.responseName to value
         }.toMap()
@@ -131,21 +130,21 @@ internal class CacheBatchReader(
   /**
    * The path leading to this value
    */
-  private fun Any?.registerCacheKeys(path: List<Any>, selections: List<CompiledSelection>, typeInScope: String) {
+  private fun Any?.registerCacheKeys(path: List<Any>, selections: List<CompiledSelection>, parentType: String) {
     when (this) {
       is CacheKey -> {
         pendingReferences.add(
             PendingReference(
                 key = key,
                 selections = selections,
-                typeInScope = typeInScope,
+                parentType = parentType,
                 path = path
             )
         )
       }
       is List<*> -> {
         forEachIndexed { index, value ->
-          value.registerCacheKeys(path + index, selections, typeInScope)
+          value.registerCacheKeys(path + index, selections, parentType)
         }
       }
     }

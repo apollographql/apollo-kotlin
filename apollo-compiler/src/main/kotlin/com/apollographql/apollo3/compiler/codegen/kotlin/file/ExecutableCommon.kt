@@ -65,7 +65,7 @@ internal fun adapterFunSpec(
       .build()
 }
 
-internal fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selectionsClassName: ClassName): FunSpec {
+internal fun rootFieldFunSpec(context: KotlinContext, parentType: String, selectionsClassName: ClassName): FunSpec {
   return FunSpec.builder(rootField)
       .addModifiers(KModifier.OVERRIDE)
       .returns(KotlinSymbols.CompiledField)
@@ -74,7 +74,7 @@ internal fun rootFieldFunSpec(context: KotlinContext, typeInScope: String, selec
               .add("return·%T(\n", KotlinSymbols.CompiledFieldBuilder)
               .indent()
               .add("name·=·%S,\n", Identifier.data)
-              .add("type·=·%L\n", context.resolver.resolveCompiledType(typeInScope))
+              .add("type·=·%L\n", context.resolver.resolveCompiledType(parentType))
               .unindent()
               .add(")\n")
               .add(".$selections(selections·=·%T.$root)\n", selectionsClassName)

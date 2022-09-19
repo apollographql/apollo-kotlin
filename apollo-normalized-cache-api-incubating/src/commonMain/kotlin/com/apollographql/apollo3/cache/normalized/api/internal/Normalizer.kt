@@ -30,8 +30,8 @@ internal class Normalizer(
 ) {
   private val records = mutableMapOf<String, Record>()
 
-  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, typeInScope: CompiledNamedType): Map<String, Record> {
-    buildRecord(map, rootKey, selections, typeInScope.name, typeInScope.embeddedFields)
+  fun normalize(map: Map<String, Any?>, selections: List<CompiledSelection>, parentType: CompiledNamedType): Map<String, Record> {
+    buildRecord(map, rootKey, selections, parentType.name, parentType.embeddedFields)
 
     return records
   }
@@ -53,12 +53,12 @@ internal class Normalizer(
       obj: Map<String, Any?>,
       key: String,
       selections: List<CompiledSelection>,
-      typeInScope: String,
+      parentType: String,
       embeddedFields: List<String>,
   ): Map<String, FieldInfo> {
 
     val typename = obj["__typename"] as? String
-    val allFields = collectFields(selections, typeInScope, typename)
+    val allFields = collectFields(selections, parentType, typename)
 
     val fields = obj.entries.mapNotNull { entry ->
       val compiledFields = allFields.filter { it.responseName == entry.key }
@@ -114,10 +114,10 @@ internal class Normalizer(
       obj: Map<String, Any?>,
       key: String,
       selections: List<CompiledSelection>,
-      typeInScope: String,
+      parentType: String,
       embeddedFields: List<String>,
   ): CacheKey {
-    val fields = buildFields(obj, key, selections, typeInScope, embeddedFields)
+    val fields = buildFields(obj, key, selections, parentType, embeddedFields)
     val fieldValues = fields.mapValues { it.value.fieldValue }
     val metadata = fields.mapValues { it.value.metadata }
     val record = Record(
@@ -194,10 +194,10 @@ internal class Normalizer(
           key = path
         }
         if (embeddedFields.contains(field.name)) {
-          buildFields(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+          buildFields(value, key, field.selections, field.type.rawType().name, field.type.rawType().embeddedFields)
               .mapValues { it.value.fieldValue }
         } else {
-          buildRecord(value, key, field.selections, field.type.leafType().name, field.type.leafType().embeddedFields)
+          buildRecord(value, key, field.selections, field.type.rawType().name, field.type.rawType().embeddedFields)
         }
       }
       else -> {
@@ -218,15 +218,15 @@ internal class Normalizer(
     val fields = mutableListOf<CompiledField>()
   }
 
-  private fun collectFields(selections: List<CompiledSelection>, typeInScope: String, typename: String?, state: CollectState) {
+  private fun collectFields(selections: List<CompiledSelection>, parentType: String, typename: String?, state: CollectState) {
     selections.forEach {
       when (it) {
         is CompiledField -> {
           state.fields.add(it)
         }
         is CompiledFragment -> {
-          if (typename in it.possibleTypes || it.typeCondition == typeInScope) {
-            collectFields(it.selections, typeInScope, typename, state)
+          if (typename in it.possibleTypes || it.typeCondition == parentType) {
+            collectFields(it.selections, parentType, typename, state)
           }
         }
       }
@@ -238,9 +238,9 @@ internal class Normalizer(
    * that's the case, we will collect less fields than we should and records will miss some values leading to more
    * cache miss
    */
-  private fun collectFields(selections: List<CompiledSelection>, typeInScope: String, typename: String?): List<CompiledField> {
+  private fun collectFields(selections: List<CompiledSelection>, parentType: String, typename: String?): List<CompiledField> {
     val state = CollectState()
-    collectFields(selections, typeInScope, typename, state)
+    collectFields(selections, parentType, typename, state)
     return state.fields
   }
 

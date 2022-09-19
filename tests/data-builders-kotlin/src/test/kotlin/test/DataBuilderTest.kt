@@ -168,7 +168,7 @@ class DataBuilderTest {
 
   class MyFakeResolver : FakeResolver {
     override fun resolveLeaf(context: FakeResolverContext): Any {
-      return when (context.mergedField.type.leafType().name) {
+      return when (context.mergedField.type.rawType().name) {
         "Long1" -> MyLong(45) // build-time
         "Long2" -> MyLong(46) // run-time
         "Long3" -> 47L // mapped to Any

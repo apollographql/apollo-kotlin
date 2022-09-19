@@ -21,7 +21,7 @@ abstract class CacheKeyResolver : CacheResolver {
   /**
    * Return the computed the cache key for a composite field.
    *
-   * If the field is of object type, you can get the object typename with `field.type.leafType().name`
+   * If the field is of object type, you can get the object typename with `field.type.rawType().name`
    * If the field is of interface type, the concrete object typename is not predictable and the returned [CacheKey] must be unique
    * in the whole schema as it cannot be namespaced by the typename anymore.
    *
@@ -32,7 +32,7 @@ abstract class CacheKeyResolver : CacheResolver {
   /**
    * For a field that contains a list of objects, [listOfCacheKeysForField ] returns a list of [CacheKey]s where each [CacheKey] identifies an object.
    *
-   * If the field is of object type, you can get the object typename with `field.type.leafType().name`
+   * If the field is of object type, you can get the object typename with `field.type.rawType().name`
    * If the field is of interface type, the concrete object typename is not predictable and the returned [CacheKey] must be unique
    * in the whole schema as it cannot be namespaced by the typename anymore.
    *

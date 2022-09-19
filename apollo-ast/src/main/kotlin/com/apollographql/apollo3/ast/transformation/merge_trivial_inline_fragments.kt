@@ -6,7 +6,7 @@ fun List<GQLSelection>.mergeTrivialInlineFragments(schema: Schema, rawTypename: 
   return flatMap {
     when (it) {
       is GQLField -> {
-        val parentType = it.definitionFromScope(schema, rawTypename)!!.type.leafType().name
+        val parentType = it.definitionFromScope(schema, rawTypename)!!.type.rawType().name
         listOf(
             it.copy(
                 selectionSet = it.selectionSet?.copy(

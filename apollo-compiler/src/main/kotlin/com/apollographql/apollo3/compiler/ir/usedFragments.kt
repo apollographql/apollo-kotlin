@@ -7,7 +7,7 @@ import com.apollographql.apollo3.ast.GQLInlineFragment
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.definitionFromScope
-import com.apollographql.apollo3.ast.leafType
+import com.apollographql.apollo3.ast.rawType
 
 internal fun usedFragments(
     schema: Schema,
@@ -19,7 +19,7 @@ internal fun usedFragments(
     when (it) {
       is GQLField -> {
         val fieldDefinition = it.definitionFromScope(schema, rawTypename)!!
-        usedFragments(schema, allFragmentDefinitions, it.selectionSet?.selections ?: emptyList(), fieldDefinition.type.leafType().name)
+        usedFragments(schema, allFragmentDefinitions, it.selectionSet?.selections ?: emptyList(), fieldDefinition.type.rawType().name)
       }
       is GQLInlineFragment -> {
         usedFragments(schema, allFragmentDefinitions, it.selectionSet.selections, it.typeCondition.name)
