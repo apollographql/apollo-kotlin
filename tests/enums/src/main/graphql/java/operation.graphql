@@ -1,7 +1,0 @@
-query GetEnums {
-  direction
-  gravity
-  foo
-  fooClass
-  fooEnum
-}

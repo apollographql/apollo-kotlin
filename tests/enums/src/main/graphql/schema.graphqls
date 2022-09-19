@@ -2,6 +2,7 @@ type Query {
   direction: Direction
   gravity: Gravity
   foo: Foo
+  fooSealed: FooSealed
   fooClass: FooClass
   fooEnum: FooEnum
 }
@@ -46,6 +47,11 @@ enum Foo {
 }
 
 enum FooEnum {
+  # not renamed in extra.graphqls, will be renamed automatically
+  type,
+}
+
+enum FooSealed {
   # not renamed in extra.graphqls, will be renamed automatically
   type,
 }
