@@ -1,10 +1,10 @@
 package test
 
-import enums.type.Direction
-import enums.type.Foo
-import enums.type.FooEnum
-import enums.type.FooSealed
-import enums.type.Gravity
+import enums.kotlin.type.Direction
+import enums.kotlin.type.Foo
+import enums.kotlin.type.FooEnum
+import enums.kotlin.type.FooSealed
+import enums.kotlin.type.Gravity
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -28,6 +28,27 @@ class EnumsTest {
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
   }
+
+  @Test
+  fun javaEnums() {
+    assertEquals(enums.java.type.Direction.NORTH, enums.java.type.Direction.safeValueOf("NORTH"))
+    assertEquals(enums.java.type.Direction.north, enums.java.type.Direction.safeValueOf("north"))
+    assertEquals(enums.java.type.Direction.UNKNOWN__, enums.java.type.Direction.safeValueOf("newDirection"))
+    assertEquals(enums.java.type.Direction.name, enums.java.type.Direction.safeValueOf("name"))
+    assertEquals(enums.java.type.Direction.ordinal, enums.java.type.Direction.safeValueOf("ordinal"))
+    assertEquals(enums.java.type.Direction.type__, enums.java.type.Direction.safeValueOf("type"))
+  }
+
+  @Test
+  fun javaClasses() {
+    assertEquals(enums.java.type.Gravity.TOP, enums.java.type.Gravity.safeValueOf("TOP"))
+    assertEquals(enums.java.type.Gravity.top2, enums.java.type.Gravity.safeValueOf("top2"))
+    assertEquals(enums.java.type.Gravity.UNKNOWN__("newGravity"), enums.java.type.Gravity.safeValueOf("newGravity"))
+    assertEquals(enums.java.type.Gravity.name, enums.java.type.Gravity.safeValueOf("name"))
+    assertEquals(enums.java.type.Gravity.ordinal, enums.java.type.Gravity.safeValueOf("ordinal"))
+    assertEquals(enums.java.type.Gravity.type__, enums.java.type.Gravity.safeValueOf("type"))
+  }
+
 
   @Test
   fun headerAndImpl() {

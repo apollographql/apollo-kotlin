@@ -14,13 +14,14 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.adapter.TestQuery_ResponseAdapter;
 import com.example.enum_field.selections.TestQuerySelections;
 import com.example.enum_field.type.Gravity;
+import com.example.enum_field.type.GravityAsEnum;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "a6e990af14595ccd87694d8f1b6560763c8354411790e9179f9cc9433d37f957";
+  public static final String OPERATION_ID = "d9f4dcc9a9b855455b49cca3f8f542dba43a5324df22e1662f4fe0157d4c73d4";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -28,9 +29,10 @@ public class TestQuery implements Query<TestQuery.Data> {
    *
    * query TestQuery {
    *   gravity
+   *   gravityAsEnum
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { gravity }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { gravity gravityAsEnum }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -126,14 +128,17 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public Gravity gravity;
 
+    public GravityAsEnum gravityAsEnum;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
 
     private transient volatile String $toString;
 
-    public Data(Gravity gravity) {
+    public Data(Gravity gravity, GravityAsEnum gravityAsEnum) {
       this.gravity = gravity;
+      this.gravityAsEnum = gravityAsEnum;
     }
 
     @Override
@@ -143,7 +148,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.gravity == null) ? (that.gravity == null) : this.gravity.equals(that.gravity));
+        return ((this.gravity == null) ? (that.gravity == null) : this.gravity.equals(that.gravity))
+         &&((this.gravityAsEnum == null) ? (that.gravityAsEnum == null) : this.gravityAsEnum.equals(that.gravityAsEnum));
       }
       return false;
     }
@@ -154,6 +160,8 @@ public class TestQuery implements Query<TestQuery.Data> {
         int h = 1;
         h *= 1000003;
         h ^= (gravity == null) ? 0 : gravity.hashCode();
+        h *= 1000003;
+        h ^= (gravityAsEnum == null) ? 0 : gravityAsEnum.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -164,7 +172,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "gravity=" + gravity
+          + "gravity=" + gravity + ", "
+          + "gravityAsEnum=" + gravityAsEnum
           + "}";
       }
       return $toString;

@@ -206,6 +206,7 @@ object ApolloCompiler {
             generateSchema = generateSchema,
             generatedSchemaName = options.generatedSchemaName,
             flatten = options.flattenModels,
+            classesForEnumsMatching = options.classesForEnumsMatching,
             scalarMapping = options.scalarMapping,
             generateDataBuilders = options.generateDataBuilders,
             generateModelBuilder = options.generateModelBuilder

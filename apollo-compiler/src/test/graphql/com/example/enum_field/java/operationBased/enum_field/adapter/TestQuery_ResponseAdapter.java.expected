@@ -12,6 +12,8 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.TestQuery;
 import com.example.enum_field.type.Gravity;
+import com.example.enum_field.type.GravityAsEnum;
+import com.example.enum_field.type.adapter.GravityAsEnum_ResponseAdapter;
 import com.example.enum_field.type.adapter.Gravity_ResponseAdapter;
 import java.io.IOException;
 import java.lang.Override;
@@ -23,23 +25,26 @@ public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("gravity");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("gravity", "gravityAsEnum");
 
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       Gravity _gravity = null;
+      GravityAsEnum _gravityAsEnum = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        _gravity
+        _gravity,
+        _gravityAsEnum
       );
     }
 
@@ -48,6 +53,9 @@ public class TestQuery_ResponseAdapter {
         TestQuery.Data value) throws IOException {
       writer.name("gravity");
       new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravity);
+
+      writer.name("gravityAsEnum");
+      new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravityAsEnum);
     }
   }
 }

@@ -7,7 +7,8 @@ import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.BuilderFactoryBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.CustomScalarBuilder
-import com.apollographql.apollo3.compiler.codegen.java.file.EnumBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.EnumAsClassBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.FragmentBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.FragmentDataAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.FragmentModelsBuilder
@@ -58,8 +59,9 @@ internal class JavaCodeGen(
      * depth 0
      */
     private val flatten: Boolean,
+    private val classesForEnumsMatching: List<String>,
     private val scalarMapping: Map<String, ScalarInfo>,
-    private val generateDataBuilders: Boolean
+    private val generateDataBuilders: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -94,7 +96,11 @@ internal class JavaCodeGen(
     ir.enums
         .filter { !context.resolver.canResolveSchemaType(it.name) }
         .forEach { enum ->
-          builders.add(EnumBuilder(context, enum))
+          if (classesForEnumsMatching.any { Regex(it).matches(enum.name) }) {
+            builders.add(EnumAsClassBuilder(context, enum))
+          } else {
+            builders.add(EnumAsEnumBuilder(context, enum))
+          }
           builders.add(EnumResponseAdapterBuilder(context, enum))
         }
     ir.objects

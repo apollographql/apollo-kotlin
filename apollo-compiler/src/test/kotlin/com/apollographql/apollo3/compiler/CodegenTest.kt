@@ -308,6 +308,11 @@ class CodegenTest {
         else -> emptyList()
       }
 
+      val classesForEnumsMatching = when (folder.name) {
+        "enum_field" -> listOf("Gravity")
+        else -> listOf(".*")
+      }
+
       val generateModelBuilder = when (folder.name) {
         "fragment_with_inline_fragment" -> true
         else -> false
@@ -372,6 +377,7 @@ class CodegenTest {
           moduleName = folder.name,
           targetLanguage = targetLanguage,
           sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
+          classesForEnumsMatching = classesForEnumsMatching,
           addJvmOverloads = addJvmOverloads,
       )
     }

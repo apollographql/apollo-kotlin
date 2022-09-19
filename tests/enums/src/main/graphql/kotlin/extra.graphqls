@@ -1,0 +1,8 @@
+extend enum Direction {
+  type @targetName(name: "type_")
+}
+
+extend enum Gravity {
+  type @targetName(name: "type_")
+}
+

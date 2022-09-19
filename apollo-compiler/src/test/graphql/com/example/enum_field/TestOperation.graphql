@@ -1,4 +1,5 @@
 # A query with a case sensitive enum
 query TestQuery {
   gravity
+  gravityAsEnum
 }
