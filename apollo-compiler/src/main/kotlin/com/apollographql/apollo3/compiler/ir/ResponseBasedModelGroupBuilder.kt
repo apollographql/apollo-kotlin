@@ -60,7 +60,7 @@ private data class ResponseField(
 )
 
 private data class ResponseFieldSet(
-    val path: String,
+    val id: String,
     val typeSet: TypeSet,
     val responseFields: List<ResponseField>,
     val possibleTypes: Set<String>,
@@ -209,7 +209,7 @@ private class FieldNodeBuilder(
         "Cannot find base model"
       }
       ret
-    }.path
+    }.id
   }
 
   /**
@@ -292,14 +292,14 @@ private class FieldNodeBuilder(
     /**
      * Patch the field with the type of the base model
      */
-    val baseModelId = fieldSetNodes.first { it.typeSet.size == 1 }.path
+    val baseModelId = fieldSetNodes.first { it.typeSet.size == 1 }.id
     val patchedInfo = info.copy(type = info.type.replacePlaceholder(baseModelId))
 
     /**
      * Patch the base fieldSet with the accessors
      */
     val patchedFieldSetNodes = fieldSetNodes.map {
-      if (it.path == baseModelId) {
+      if (it.id == baseModelId) {
         val subtypeAccessors = allTypeSets
             .filter { typeSet ->
               typeSet.size > 1
@@ -371,7 +371,7 @@ private class FieldNodeBuilder(
 
     val path = subpath(state.path, state.info, typeSet, isOther)
     val fieldSetNode = ResponseFieldSet(
-        path = path,
+        id = path,
         accessors = emptyList(),
         responseFields = mergedFields.map { mergedField ->
           buildFieldNode(
@@ -388,7 +388,7 @@ private class FieldNodeBuilder(
         },
         possibleTypes = modelDescriptor.shape.possibleTypes,
         typeSet = typeSet,
-        implements = implementedFieldSetNodes.map { it.path },
+        implements = implementedFieldSetNodes.map { it.id },
         isOther = isOther,
         isInterface = isInterface,
         isFallback = typeSet.size == 1 && isOther,
@@ -506,7 +506,7 @@ private fun ResponseFieldSet.toIrModel(parentResponseField: ResponseField): IrMo
       properties = responseFields.map { it.toIrProperty() },
       implements = implements,
       accessors = accessors,
-      id = path,
+      id = id,
       typeSet = typeSet,
       isInterface = isInterface,
       isFallback = isFallback,
