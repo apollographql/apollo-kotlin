@@ -328,6 +328,7 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : 
 	public static final field Operation Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field OperationSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field OperationVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field Pagination Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Schema Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaTypeAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
