@@ -218,7 +218,7 @@ internal data class IrModel(
     /**
      * The path to this field. See [IrModelType] for more details
      */
-    val path: String,
+    val id: String,
     /**
      * The typeSet of this model.
      * Used by the adapters for ordering/making the code look nice

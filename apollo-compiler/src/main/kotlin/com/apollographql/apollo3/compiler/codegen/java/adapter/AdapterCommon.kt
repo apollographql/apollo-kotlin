@@ -194,7 +194,7 @@ internal fun readFromResponseCodeBlock(
       ).build()
 
   val suffix = CodeBlock.builder()
-      .add("return new $T(\n", context.resolver.resolveModel(model.path))
+      .add("return new $T(\n", context.resolver.resolveModel(model.id))
       .indent()
       .add(
           visibleProperties.map { property ->

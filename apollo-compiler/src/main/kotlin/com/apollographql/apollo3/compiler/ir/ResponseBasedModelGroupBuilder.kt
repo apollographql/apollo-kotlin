@@ -506,7 +506,7 @@ private fun ResponseFieldSet.toIrModel(parentResponseField: ResponseField): IrMo
       properties = responseFields.map { it.toIrProperty() },
       implements = implements,
       accessors = accessors,
-      path = path,
+      id = path,
       typeSet = typeSet,
       isInterface = isInterface,
       isFallback = isFallback,
