@@ -1,16 +1,19 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
+import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class PaginationBuilder(
-    context: KotlinContext,
+    private val context: KotlinContext,
     private val connectionTypes: List<String>,
 ) : CgFileBuilder {
   private val layout = context.layout
@@ -18,6 +21,7 @@ internal class PaginationBuilder(
   private val simpleName = layout.paginationName()
 
   override fun prepare() {
+    context.resolver.register(ResolverKeyKind.Pagination, "", ClassName(packageName, simpleName))
   }
 
   override fun build(): CgFile {

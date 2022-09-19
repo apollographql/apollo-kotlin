@@ -34,7 +34,8 @@ enum class ResolverKeyKind {
   BuilderType,
   BuilderFun,
   Schema,
-  CustomScalarAdapters
+  CustomScalarAdapters,
+  Pagination
 }
 
 @JsonClass(generateAdapter = true)
