@@ -1,6 +1,6 @@
 {
   "name": "subgraph-computers",
-  "version": "1.1.27",
+  "version": "1.1.0",
   "description": "",
   "main": "computers.js",
   "scripts": {
