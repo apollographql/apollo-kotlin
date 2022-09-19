@@ -1,11 +1,8 @@
 name: defer-router-tests
 
-# TODO: Run on schedule instead of on pull requests
 on:
-  pull_request:
-    branches: [ '*' ]
-#  schedule:
-#    - cron: '0 3 * * *'
+  schedule:
+    - cron: '0 3 * * *'
 
 jobs:
   defer-with-router-tests:
@@ -22,10 +19,8 @@ jobs:
           APOLLO_PORT=4001 npm start &
 
       - name: Install router
-        # TODO: Version of the router to test against is set here, we can either use "latest" (breaks reproducible builds)
-        # or keep a specific version but should update it regularly with new releases of the router (could Renovate help?)
         run: |
-          curl -sSL https://router.apollo.dev/download/nix/v1.0.0-rc.1 | sh
+          curl -sSL https://router.apollo.dev/download/nix/latest | sh
 
       - name: Run router
         run: |
