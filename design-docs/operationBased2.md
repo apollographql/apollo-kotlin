@@ -17,38 +17,7 @@ data class Animal(val species: String)
 </tr>
 </table>
 
-
 ## Example 2
-
-<table>
-<tr><th>GraphQL</th><th>Kotlin</th></tr>
-<tr>
-<td><pre lang="graphql">
-query TestOperation {
-  animal {
-    ... LionFragment
-    ... CatFragment
-  }
-}
-fragment LionFragment on Cat {
-  species
-}
-fragment CatFragment on Cat {
-  species
-}
-</pre></td>
-<td><pre lang="kotlin">
-public data class Data(public val animal: Animal?)
-data class Animal(
-  val lionFragment: LionFragment?,
-  val catFragment: CatFragment?,
-)
-</pre></td>
-</tr>
-</table>
-
-
-## Example 3
 
 <table>
 <tr><th>GraphQL</th><th>Kotlin</th></tr>
@@ -70,7 +39,7 @@ data class Animal(val onAnimal: OnAnimal)
 </tr>
 </table>
 
-## Example 4
+## Example 3
 
 <table>
 <tr><th>GraphQL</th><th>Kotlin</th></tr>
@@ -92,7 +61,7 @@ data class Cat(val onAnimal: OnAnimal)
 </tr>
 </table>
 
-## Example 5
+## Example 4
 
 <table>
 <tr><th>GraphQL</th><th>Kotlin</th></tr>
@@ -116,7 +85,31 @@ data class OtherAnimal(val onCat: Animal.OnCat?): Animal
 </tr>
 </table>
 
+## Example 5
 
+<table>
+<tr><th>GraphQL</th><th>Kotlin</th></tr>
+<tr>
+<td><pre lang="graphql">
+query TestOperation {
+  animal {
+    ... CatFragment
+  }
+}
+fragment CatFragment on Cat {
+  species
+}
+</pre></td>
+<td><pre lang="kotlin">
+public data class Data(public val animal: IAnimal?)
+
+sealed interface Animal { val catFragment: CatFragment? }
+data class CatAnimal(val catFragment: CatFragment): Animal
+data class OtherAnimal(val catFragment: CatFragment?): Animal
+
+</pre></td>
+</tr>
+</table>
 
 ## Example 6
 
