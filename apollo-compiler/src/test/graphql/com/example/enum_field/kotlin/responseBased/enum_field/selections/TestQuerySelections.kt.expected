@@ -9,16 +9,17 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.example.enum_field.type.Gravity
 import com.example.enum_field.type.GravityAsEnum
+import kotlin.collections.List
 
 public object TestQuerySelections {
   public val __root: List<CompiledSelection> = listOf(
-      CompiledField.Builder(
+        CompiledField.Builder(
           name = "gravity",
           type = Gravity.type
-      ).build(),
-      CompiledField.Builder(
+        ).build(),
+        CompiledField.Builder(
           name = "gravityAsEnum",
           type = GravityAsEnum.type
-      ).build()
-  )
+        ).build()
+      )
 }

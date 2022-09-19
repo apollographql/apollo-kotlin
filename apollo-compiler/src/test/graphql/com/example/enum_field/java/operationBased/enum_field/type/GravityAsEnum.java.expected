@@ -24,6 +24,8 @@ public enum GravityAsEnum {
   @Deprecated
   bottom("bottom"),
 
+  is("is"),
+
   /**
    * a name that clashes with a Java reserved keyword
    */
@@ -44,7 +46,7 @@ public enum GravityAsEnum {
    */
   UNKNOWN__("UNKNOWN__");
 
-  public static EnumType type = new EnumType("GravityAsEnum", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "while", "type", "String"));
+  public static EnumType type = new EnumType("GravityAsEnum", Arrays.asList("TOP", "CENTER", "BOTTOM", "bottom", "is", "while", "type", "String"));
 
   public String rawValue;
 
@@ -58,6 +60,7 @@ public enum GravityAsEnum {
       case "CENTER": return GravityAsEnum.CENTER;
       case "BOTTOM": return GravityAsEnum.BOTTOM;
       case "bottom": return GravityAsEnum.bottom;
+      case "is": return GravityAsEnum.is;
       case "while": return GravityAsEnum.while_;
       case "type": return GravityAsEnum.type_;
       case "String": return GravityAsEnum.String;

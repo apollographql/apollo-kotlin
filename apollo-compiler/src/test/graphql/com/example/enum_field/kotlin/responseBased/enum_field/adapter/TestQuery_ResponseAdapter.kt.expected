@@ -15,6 +15,9 @@ import com.example.enum_field.type.Gravity
 import com.example.enum_field.type.GravityAsEnum
 import com.example.enum_field.type.adapter.GravityAsEnum_ResponseAdapter
 import com.example.enum_field.type.adapter.Gravity_ResponseAdapter
+import kotlin.String
+import kotlin.Unit
+import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
@@ -30,14 +33,13 @@ public object TestQuery_ResponseAdapter {
           0 -> _gravity = Gravity_ResponseAdapter.nullable().fromJson(reader, customScalarAdapters)
           1 -> _gravityAsEnum = GravityAsEnum_ResponseAdapter.nullable().fromJson(reader,
               customScalarAdapters)
-
           else -> break
         }
       }
 
       return TestQuery.Data(
-          gravity = _gravity,
-          gravityAsEnum = _gravityAsEnum
+        gravity = _gravity,
+        gravityAsEnum = _gravityAsEnum
       )
     }
 
