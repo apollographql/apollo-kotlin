@@ -463,7 +463,7 @@ interface Service {
   /**
    * When to add __typename. One of "always", "ifFragments", "ifAbstract" or "ifPolymorphic"
    *
-   * - "always": Add '__typename' for every compound field
+   * - "always": Add '__typename' for every composite field
    *
    * - "ifFragments": Add '__typename' for every selection set that contains fragments (inline or named)
    * This causes cache misses when introducing fragments where no fragment was present before and will be certainly removed in
