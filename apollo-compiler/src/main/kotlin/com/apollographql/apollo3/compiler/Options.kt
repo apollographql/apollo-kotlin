@@ -155,7 +155,7 @@ class Options(
      * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
      * cases too.
      *
-     * Only valid when [targetLanguage] is "kotlin"
+     * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_4] or [TargetLanguage.KOTLIN_1_5]
      */
     val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
@@ -175,7 +175,7 @@ class Options(
      * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
      * the client was compiled against an older schema that doesn't have knowledge of the new enums.
      *
-     * Only valid when [targetLanguage] is "kotlin"
+     * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_4] or [TargetLanguage.KOTLIN_1_5]
      *
      * Default: emptyList()
      */
@@ -187,7 +187,7 @@ class Options(
      * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
      * the client was compiled against an older schema that doesn't have knowledge of the new enums.
      *
-     * Only valid when [targetLanguage] is "java"
+     * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
      *
      * Default: listOf(".*")
      */
