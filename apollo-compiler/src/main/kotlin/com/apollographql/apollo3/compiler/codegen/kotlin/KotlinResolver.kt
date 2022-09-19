@@ -65,7 +65,7 @@ class KotlinResolver(
 
   fun canResolveSchemaType(name: String) = resolve(ResolverKey(ResolverKeyKind.SchemaType, name)) != null
 
-  private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
+  internal fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName): Unit {
     check(memberName.enclosingClassName == null) {

@@ -22,7 +22,9 @@ abstract class ApolloCheckDuplicatesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val metadataList = metadataFiles.files.mapNotNull { ApolloMetadata.readFrom(it) }
+    val metadataList = metadataFiles.files.mapNotNull {
+      ApolloMetadata.readFrom(it)
+    }
 
     metadataList.flatMap { metadata ->
       metadata.compilerMetadata.resolverInfo.entries.map { it.key to metadata.moduleName }

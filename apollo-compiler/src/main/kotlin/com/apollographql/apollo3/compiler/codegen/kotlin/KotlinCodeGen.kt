@@ -5,6 +5,8 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
+import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarAdaptersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
@@ -200,12 +202,12 @@ internal class KotlinCodeGen(
           }
         }
 
-    if (generateSchema) {
+    if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
       builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions, ir.enums))
       builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
     }
 
-    if (ir.connectionTypes.isNotEmpty()) {
+    if (ir.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null ) {
       builders.add(PaginationBuilder(context, ir.connectionTypes))
     }
 
