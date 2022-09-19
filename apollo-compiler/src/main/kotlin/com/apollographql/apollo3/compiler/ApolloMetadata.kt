@@ -57,7 +57,9 @@ data class ApolloMetadata(
           .adapter(ApolloMetadata::class.java)
     }
 
-    fun readFrom(file: File) = adapter.fromJson(file.source().buffer()) ?: error("bad metadata at ${file.absolutePath}")
+    fun readFrom(file: File): ApolloMetadata {
+      return adapter.fromJson(file.source().buffer()) ?: error("bad metadata at ${file.absolutePath}")
+    }
   }
 
   fun writeTo(file: File) {

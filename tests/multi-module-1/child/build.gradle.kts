@@ -6,12 +6,12 @@ plugins {
 
 dependencies {
   implementation(libs.apollo.runtime)
-  implementation(projects.multiModuleRoot)
-  apolloMetadata(projects.multiModuleRoot)
+  implementation(projects.multiModule1.root)
+  apolloMetadata(projects.multiModule1.root)
   testImplementation(libs.kotlin.test.junit)
 }
 
 apollo {
-  packageName.set("multimodule.child")
+  packageName.set("multimodule1.child")
   flattenModels.set(false)
 }

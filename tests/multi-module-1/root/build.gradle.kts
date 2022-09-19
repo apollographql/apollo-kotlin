@@ -5,10 +5,11 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.apollo.api)
+  implementation(libs.apollo.runtime)
 }
 
 apollo {
-  packageName.set("multimodule.root")
+  packageName.set("multimodule1.root")
   generateApolloMetadata.set(true)
+  customScalarsMapping.set(mapOf("Long" to "kotlin.Long"))
 }

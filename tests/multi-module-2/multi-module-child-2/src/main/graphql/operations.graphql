@@ -1,5 +1,0 @@
-query GetConnection {
-  connection {
-    foo: random
-  }
-}

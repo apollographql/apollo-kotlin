@@ -3,13 +3,14 @@ rootProject.name = "apollo-tests"
 // Include all tests
 rootProject.projectDir
     .listFiles()!!
-    .filter { it.isDirectory && !it.name.contains("multi-module")}
+    .filter { it.isDirectory}
     .flatMap {
       it.walk()
     }
     .filter { it.isDirectory && File(it, "build.gradle.kts").exists() }
     .forEach {
-      include(it.name)
+      val project = it.relativeTo(rootProject.projectDir).path.replace(File.separatorChar, ':')
+      include(project)
     }
 
 includeBuild("../build-logic")

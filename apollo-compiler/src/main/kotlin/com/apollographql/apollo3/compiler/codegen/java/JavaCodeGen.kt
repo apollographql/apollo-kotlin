@@ -4,6 +4,8 @@ import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
+import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.EnumResponseAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.BuilderFactoryBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.CustomScalarBuilder
@@ -59,7 +61,7 @@ internal class JavaCodeGen(
      */
     private val flatten: Boolean,
     private val scalarMapping: Map<String, ScalarInfo>,
-    private val generateDataBuilders: Boolean
+    private val generateDataBuilders: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -180,7 +182,7 @@ internal class JavaCodeGen(
           )
         }
 
-    if (generateSchema) {
+    if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
       builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, ir.objects, ir.interfaces, ir.unions, ir.enums))
     }
     if (generateDataBuilders) {

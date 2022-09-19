@@ -232,11 +232,11 @@ data class GQLSchemaDefinition(
   override fun writeInternal(writer: SDLWriter) {
     with(writer) {
       writeDescription(description)
+      write("schema ")
       if (directives.isNotEmpty()) {
         directives.join(writer)
         write(" ")
       }
-      write("schema ")
       write("{\n")
       indent()
       rootOperationTypeDefinitions.join(writer, separator = "")
