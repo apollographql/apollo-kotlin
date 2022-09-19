@@ -23,7 +23,7 @@ const resolvers = {
             throw new Error("Error field");
         },
         nonNullErrorField: (_, args, context) => {
-            throw new Error("Error field");
+            return null;
         }
     }
 }
