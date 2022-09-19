@@ -10,9 +10,6 @@ fragment HeroWithFriendsFragment on Character {
     friends {
         ... HumanWithIdFragment
     }
-    ... on Droid {
-        primaryFunction
-    }
 }
 
 fragment HumanWithIdFragment on Human {
