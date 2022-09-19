@@ -1,7 +1,7 @@
 package test
 
-import multimodule.child.GetLong2Query
-import multimodule.root.fragment.QueryDetails
+import multimodule1.child.GetLong2Query
+import multimodule1.root.fragment.QueryDetails
 import org.junit.Test
 import kotlin.test.assertIs
 

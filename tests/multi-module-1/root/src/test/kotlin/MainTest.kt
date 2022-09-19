@@ -1,5 +1,5 @@
 class MainTest {
   fun test() {
-    println(multimodule.root.fragment.QueryDetails::class.java)
+    println(multimodule1.root.fragment.QueryDetails::class.java)
   }
 }

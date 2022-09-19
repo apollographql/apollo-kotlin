@@ -2,7 +2,7 @@ package test
 
 import com.example.GetLong3Query
 import com.example.fragment.QueryDetails3
-import multimodule.root.fragment.QueryDetails
+import multimodule1.root.fragment.QueryDetails
 import org.junit.Test
 
 class MainTest {
