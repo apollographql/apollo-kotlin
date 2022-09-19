@@ -1,0 +1,11 @@
+
+type Query
+@fieldPolicy(forField: "connection", paginationArgs: "offset, limit")
+{
+  connection(limit: Int!, offset: Int!): Connection
+}
+
+type Connection {
+  random: Int!
+}
+

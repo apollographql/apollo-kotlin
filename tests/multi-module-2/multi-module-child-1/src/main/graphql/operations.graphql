@@ -1,0 +1,5 @@
+query GetConnection {
+  connection {
+    random
+  }
+}

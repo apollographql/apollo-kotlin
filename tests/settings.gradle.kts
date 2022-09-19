@@ -3,6 +3,10 @@ rootProject.name = "apollo-tests"
 // Include all tests
 rootProject.projectDir
     .listFiles()!!
+    .filter { it.isDirectory && !it.name.contains("multi-module")}
+    .flatMap {
+      it.walk()
+    }
     .filter { it.isDirectory && File(it, "build.gradle.kts").exists() }
     .forEach {
       include(it.name)
