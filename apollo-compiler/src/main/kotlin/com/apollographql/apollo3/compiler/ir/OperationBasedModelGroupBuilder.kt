@@ -193,7 +193,8 @@ internal class OperationBasedModelGroupBuilder(
           schema,
           allFragmentDefinitions,
           selections.map { it.selection },
-          rawTypeName
+          rawTypeName,
+          true
       ).filter { it.possibleTypes.isNotEmpty() }
     } else {
       emptyList()
@@ -343,8 +344,9 @@ internal class OperationBasedModelGroupBuilder(
             shapes(
                 schema,
                 allFragmentDefinitions,
-                fragmentDefinition.selectionSet.selections.filter { it !is GQLFragmentSpread },
-                fragmentDefinition.typeCondition.name
+                fragmentDefinition.selectionSet.selections,
+                fragmentDefinition.typeCondition.name,
+                true
             ).filter { it.possibleTypes.isNotEmpty() }
           } else {
             emptyList()
