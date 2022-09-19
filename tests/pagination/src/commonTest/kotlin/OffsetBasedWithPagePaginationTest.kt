@@ -14,7 +14,8 @@ import com.apollographql.apollo3.cache.normalized.api.internal.OptimisticCache
 import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.testing.internal.runTest
 import com.squareup.sqldelight.internal.AtomicBoolean
-import pagination.test.UsersOffsetBasedWithPageQuery_TestBuilder.Data
+import pagination.type.buildUser
+import pagination.type.buildUserPage
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.test.Test
@@ -55,10 +56,10 @@ class OffsetBasedWithPagePaginationTest {
     // First page
     val query1 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(42), limit = Optional.Present(2))
     val data1 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "42" },
-            user { id = "43" },
+            buildUser { id = "42" },
+            buildUser { id = "43" },
         )
       }
     }
@@ -70,22 +71,22 @@ class OffsetBasedWithPagePaginationTest {
     // Page after
     val query2 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(2))
     val data2 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "44" },
-            user { id = "45" },
+            buildUser { id = "44" },
+            buildUser { id = "45" },
         )
       }
     }
     apolloStore.writeOperation(query2, data2)
     dataFromStore = apolloStore.readOperation(query1)
     var expectedData = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "42" },
-            user { id = "43" },
-            user { id = "44" },
-            user { id = "45" },
+            buildUser { id = "42" },
+            buildUser { id = "43" },
+            buildUser { id = "44" },
+            buildUser { id = "45" },
         )
       }
     }
@@ -95,24 +96,24 @@ class OffsetBasedWithPagePaginationTest {
     // Page in the middle
     val query3 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(44), limit = Optional.Present(3))
     val data3 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "44" },
-            user { id = "45" },
-            user { id = "46" },
+            buildUser { id = "44" },
+            buildUser { id = "45" },
+            buildUser { id = "46" },
         )
       }
     }
     apolloStore.writeOperation(query3, data3)
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "42" },
-            user { id = "43" },
-            user { id = "44" },
-            user { id = "45" },
-            user { id = "46" },
+            buildUser { id = "42" },
+            buildUser { id = "43" },
+            buildUser { id = "44" },
+            buildUser { id = "45" },
+            buildUser { id = "46" },
         )
       }
     }
@@ -122,25 +123,25 @@ class OffsetBasedWithPagePaginationTest {
     // Page before
     val query4 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(40), limit = Optional.Present(2))
     val data4 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "40" },
-            user { id = "41" },
+            buildUser { id = "40" },
+            buildUser { id = "41" },
         )
       }
     }
     apolloStore.writeOperation(query4, data4)
     dataFromStore = apolloStore.readOperation(query1)
     expectedData = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "40" },
-            user { id = "41" },
-            user { id = "42" },
-            user { id = "43" },
-            user { id = "44" },
-            user { id = "45" },
-            user { id = "46" },
+            buildUser { id = "40" },
+            buildUser { id = "41" },
+            buildUser { id = "42" },
+            buildUser { id = "43" },
+            buildUser { id = "44" },
+            buildUser { id = "45" },
+            buildUser { id = "46" },
         )
       }
     }
@@ -150,10 +151,10 @@ class OffsetBasedWithPagePaginationTest {
     // Non-contiguous page (should reset)
     val query5 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(50), limit = Optional.Present(2))
     val data5 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = listOf(
-            user { id = "50" },
-            user { id = "51" },
+            buildUser { id = "50" },
+            buildUser { id = "51" },
         )
       }
     }
@@ -165,7 +166,7 @@ class OffsetBasedWithPagePaginationTest {
     // Empty page (should keep previous result)
     val query6 = UsersOffsetBasedWithPageQuery(offset = Optional.Present(52), limit = Optional.Present(2))
     val data6 = UsersOffsetBasedWithPageQuery.Data {
-      usersOffsetBasedWithPage = usersOffsetBasedWithPage {
+      usersOffsetBasedWithPage = buildUserPage {
         users = emptyList()
       }
     }

@@ -32,7 +32,7 @@ apollo {
   service("pagination") {
     packageName.set("pagination")
     sourceFolder.set("pagination")
-    generateTestBuilders.set(true)
+    generateDataBuilders.set(true)
   }
   service("embed") {
     packageName.set("embed")
