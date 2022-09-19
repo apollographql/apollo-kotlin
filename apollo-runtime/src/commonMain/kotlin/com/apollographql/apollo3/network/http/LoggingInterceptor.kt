@@ -10,7 +10,7 @@ import kotlin.jvm.JvmOverloads
 /**
  * An interceptor that logs requests and responses.
  *
- * @param level the level of logging. Caution: when uploading files, setting this to [Level.BODY] will cause the files to
+ * @param [level] the level of logging. Caution: when uploading files, setting this to [Level.BODY] will cause the files to
  * be fully loaded into memory, which may cause OutOfMemoryErrors.
  */
 class LoggingInterceptor(
@@ -21,9 +21,56 @@ class LoggingInterceptor(
   constructor(log: (String) -> Unit = { println(it) }) : this(level = Level.BODY, log = log)
 
   enum class Level {
+    /** No logs. */
     NONE,
+
+    /**
+     * Logs HTTP method, request target, and response code.
+     *
+     * Example:
+     * ```
+     * Post /graphql
+     *
+     * HTTP: 200
+     * ```
+     */
     BASIC,
+    
+    /**
+     * Logs HTTP method, request target, response code, and headers.
+     *
+     * Example:
+     * ```
+     * Post /graphql
+     * X-APOLLO-OPERATION-ID: 9311
+     * Accept: multipart/mixed; deferSpec=20220824, application/json
+     * [end of headers]
+     *
+     * HTTP: 200
+     * Content-Type: application/json; charset=utf-8
+     * Content-Length: 2716
+     * [end of headers]
+     * ```
+     */
     HEADERS,
+     
+    /**
+     * Logs HTTP method, request target, response code, headers, and bodies.
+     *
+     * Example:
+     * ```
+     * Post /graphql
+     * X-APOLLO-OPERATION-ID: 9311
+     * [end of headers]
+     * {"operationName":"LaunchList","variables":{"cursor":"1584533760"},"query":"query LaunchList($cursor: String)}
+     *
+     * HTTP: 200
+     * Content-Type: application/json; charset=utf-8
+     * Content-Length: 2716
+     * [end of headers]
+     * {"data":{"launches":{"cursor":"1544033760","hasMore":true,"launches":[...]}}}
+     * ```
+     */
     BODY,
   }
 
