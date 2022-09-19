@@ -52,76 +52,21 @@ public class TestQuery() : Query<TestQuery.Data> {
   public data class Data(
     public val hero: Hero?,
   ) : Query.Data {
-    public sealed interface Hero {
-      public val __typename: String
-
+    public data class Hero(
+      public val __typename: String,
       /**
        * The name of the character
        */
-      public val name: String
-
+      public val name: String,
       /**
        * The movies this character appears in
        */
-      public val appearsIn: List<Episode?>
-
+      public val appearsIn: List<Episode?>,
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public val heroDetails: HeroDetails
-    }
-
-    public data class HumanHero(
-      public override val __typename: String,
-      /**
-       * The name of the character
-       */
-      public override val name: String,
-      /**
-       * The movies this character appears in
-       */
-      public override val appearsIn: List<Episode?>,
-      /**
-       * Synthetic field for 'HeroDetails'
-       */
-      public override val heroDetails: HeroDetails,
-    ) : Hero {
-      public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-    }
-
-    public data class DroidHero(
-      public override val __typename: String,
-      /**
-       * The name of the character
-       */
-      public override val name: String,
-      /**
-       * The movies this character appears in
-       */
-      public override val appearsIn: List<Episode?>,
-      /**
-       * Synthetic field for 'HeroDetails'
-       */
-      public override val heroDetails: HeroDetails,
-    ) : Hero {
-      public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
-    }
-
-    public data class OtherHero(
-      public override val __typename: String,
-      /**
-       * The name of the character
-       */
-      public override val name: String,
-      /**
-       * The movies this character appears in
-       */
-      public override val appearsIn: List<Episode?>,
-      /**
-       * Synthetic field for 'HeroDetails'
-       */
-      public override val heroDetails: HeroDetails,
-    ) : Hero {
+      public val heroDetails: HeroDetails,
+    ) {
       public fun appearsInFilterNotNull(): List<Episode> = appearsIn.filterNotNull()
     }
   }

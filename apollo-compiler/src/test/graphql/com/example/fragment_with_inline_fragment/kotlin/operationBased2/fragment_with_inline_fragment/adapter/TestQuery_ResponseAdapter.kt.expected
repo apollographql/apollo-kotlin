@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.json.readTypename
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
@@ -51,178 +50,40 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
+
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
-        val __typename = reader.readTypename()
-        return when(__typename) {
-          "Human",
-          -> HumanHero.fromJson(reader, customScalarAdapters, __typename)
-          "Droid",
-          -> DroidHero.fromJson(reader, customScalarAdapters, __typename)
-          else
-          -> OtherHero.fromJson(reader, customScalarAdapters, __typename)
+        var __typename: String? = null
+        var _name: String? = null
+        var _appearsIn: List<Episode?>? = null
+
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
+                customScalarAdapters)
+            else -> break
+          }
         }
+
+        reader.rewind()
+        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+            customScalarAdapters)
+
+        return TestQuery.Data.Hero(
+          __typename = __typename!!,
+          name = _name!!,
+          appearsIn = _appearsIn!!,
+          heroDetails = _heroDetails
+        )
       }
 
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero,
-      ): Unit {
-        when(value) {
-          is TestQuery.Data.HumanHero -> HumanHero.toJson(writer, customScalarAdapters, value)
-          is TestQuery.Data.DroidHero -> DroidHero.toJson(writer, customScalarAdapters, value)
-          is TestQuery.Data.OtherHero -> OtherHero.toJson(writer, customScalarAdapters, value)
-        }
-      }
-    }
-
-    public object HumanHero {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
-
-      public fun fromJson(
-        reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
-        typename: String,
-      ): TestQuery.Data.HumanHero {
-        var __typename: String? = typename
-        var _name: String? = null
-        var _appearsIn: List<Episode?>? = null
-
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
-                customScalarAdapters)
-            else -> break
-          }
-        }
-
-        reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-            customScalarAdapters)
-
-        return TestQuery.Data.HumanHero(
-          __typename = __typename!!,
-          name = _name!!,
-          appearsIn = _appearsIn!!,
-          heroDetails = _heroDetails
-        )
-      }
-
-      public fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.HumanHero,
-      ): Unit {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-        writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-            value.appearsIn)
-
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-            customScalarAdapters, value.heroDetails)
-      }
-    }
-
-    public object DroidHero {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
-
-      public fun fromJson(
-        reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
-        typename: String,
-      ): TestQuery.Data.DroidHero {
-        var __typename: String? = typename
-        var _name: String? = null
-        var _appearsIn: List<Episode?>? = null
-
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
-                customScalarAdapters)
-            else -> break
-          }
-        }
-
-        reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-            customScalarAdapters)
-
-        return TestQuery.Data.DroidHero(
-          __typename = __typename!!,
-          name = _name!!,
-          appearsIn = _appearsIn!!,
-          heroDetails = _heroDetails
-        )
-      }
-
-      public fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.DroidHero,
-      ): Unit {
-        writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
-        writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
-
-        writer.name("appearsIn")
-        Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-            value.appearsIn)
-
-        com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-            customScalarAdapters, value.heroDetails)
-      }
-    }
-
-    public object OtherHero {
-      public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "appearsIn")
-
-      public fun fromJson(
-        reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
-        typename: String,
-      ): TestQuery.Data.OtherHero {
-        var __typename: String? = typename
-        var _name: String? = null
-        var _appearsIn: List<Episode?>? = null
-
-        while(true) {
-          when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
-                customScalarAdapters)
-            else -> break
-          }
-        }
-
-        reader.rewind()
-        val _heroDetails = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-            customScalarAdapters)
-
-        return TestQuery.Data.OtherHero(
-          __typename = __typename!!,
-          name = _name!!,
-          appearsIn = _appearsIn!!,
-          heroDetails = _heroDetails
-        )
-      }
-
-      public fun toJson(
-        writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
-        `value`: TestQuery.Data.OtherHero,
       ): Unit {
         writer.name("__typename")
         StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
