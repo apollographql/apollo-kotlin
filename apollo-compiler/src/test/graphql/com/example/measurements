@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  198020
-aggregate-kotlin-responseBased                                                                  50302
+aggregate-all                                                                                  198249
+aggregate-kotlin-responseBased                                                                  50411
 aggregate-kotlin-operationBased                                                                 35445
 aggregate-kotlin-compat                                                                         36830
-aggregate-java-operationBased                                                                   75443
+aggregate-java-operationBased                                                                   75563
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5566
 kotlin-compat-fragments_with_defer_and_include_directives                                        3612
@@ -175,6 +175,7 @@ kotlin-responseBased-simple_inline_fragment                                     
 kotlin-responseBased-fieldset_with_multiple_super                                                 585
 kotlin-responseBased-not_all_combinations_are_needed                                              585
 java-operationBased-inline_fragment_for_non_optional_field                                        578
+java-operationBased-enum_field                                                                    576
 java-operationBased-inline_fragment_type_coercion                                                 572
 kotlin-compat-simple_inline_fragment                                                              568
 java-operationBased-two_heroes_unique                                                             567
@@ -215,7 +216,6 @@ java-operationBased-merged_include                                              
 kotlin-compat-monomorphic                                                                         461
 java-operationBased-operation_id_generator                                                        461
 kotlin-operationBased-interface_always_nested                                                     458
-java-operationBased-enum_field                                                                    456
 kotlin-operationBased-monomorphic                                                                 454
 kotlin-responseBased-introspection_query                                                          453
 java-operationBased-enums_as_sealed                                                               450
@@ -226,6 +226,7 @@ kotlin-responseBased-variable_default_value                                     
 java-operationBased-nonnull                                                                       442
 kotlin-operationBased-hero_name                                                                   436
 kotlin-operationBased-capitalized_fields                                                          435
+kotlin-responseBased-enum_field                                                                   431
 kotlin-responseBased-field_with_include_directive                                                 431
 kotlin-responseBased-optional                                                                     431
 kotlin-responseBased-inline_fragment_type_coercion                                                428
@@ -248,7 +249,6 @@ kotlin-responseBased-subscriptions                                              
 kotlin-responseBased-enums_as_sealed                                                              346
 kotlin-responseBased-operation_id_generator                                                       327
 kotlin-responseBased-merged_include                                                               325
-kotlin-responseBased-enum_field                                                                   322
 kotlin-responseBased-big_query                                                                    319
 kotlin-responseBased-case_sensitive_enum                                                          317
 kotlin-responseBased-nonnull                                                                      311

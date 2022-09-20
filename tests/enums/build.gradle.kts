@@ -11,6 +11,17 @@ dependencies {
 }
 
 apollo {
-  packageName.set("enums")
-  sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed"))
+  service("kotlin") {
+    packageName.set("enums.kotlin")
+    sealedClassesForEnumsMatching.set(listOf(".*avity", "FooSealed"))
+  }
+
+  service("java") {
+    packageName.set("enums.java")
+    generateKotlinModels.set(false)
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    classesForEnumsMatching.set(listOf(".*avity", "FooClass"))
+  }
 }

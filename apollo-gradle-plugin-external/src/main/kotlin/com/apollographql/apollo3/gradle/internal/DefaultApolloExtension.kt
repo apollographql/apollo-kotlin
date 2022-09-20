@@ -570,6 +570,7 @@ abstract class DefaultApolloExtension(
       task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
       task.addJvmOverloads.set(service.addJvmOverloads)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
+      task.classesForEnumsMatching.set(service.classesForEnumsMatching)
       task.generateOptionalOperationVariables.set(service.generateOptionalOperationVariables)
       task.languageVersion.set(service.languageVersion)
       task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)

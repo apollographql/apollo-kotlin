@@ -8,6 +8,7 @@ package com.example.enum_field.selections
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.example.enum_field.type.Gravity
+import com.example.enum_field.type.GravityAsEnum
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -15,6 +16,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "gravity",
           type = Gravity.type
+        ).build(),
+        CompiledField.Builder(
+          name = "gravityAsEnum",
+          type = GravityAsEnum.type
         ).build()
       )
 }

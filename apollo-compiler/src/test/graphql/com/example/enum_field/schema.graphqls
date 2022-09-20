@@ -1,5 +1,6 @@
 type Query {
   gravity: Gravity
+  gravityAsEnum: GravityAsEnum
 }
 
 enum Gravity {
@@ -16,5 +17,26 @@ enum Gravity {
   type
 
   # an enum value that clashes with the rawValue type
+  String
+}
+
+enum GravityAsEnum {
+  TOP
+  CENTER
+  BOTTOM
+
+  "like BOTTOM but with different case instead"
+  bottom @deprecated(reason: "use BOTTOM instead")
+
+  # a name that clashes with a Kotlin reserved keyword
+  is
+
+  "a name that clashes with a Java reserved keyword"
+  while
+
+  "a name that clashes with the generated `type` constant"
+  type
+
+  "an enum value that clashes with the rawValue type"
   String
 }

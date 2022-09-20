@@ -3,6 +3,7 @@ type Query {
   gravity: Gravity
   foo: Foo
   fooSealed: FooSealed
+  fooClass: FooClass
   fooEnum: FooEnum
 }
 
@@ -51,6 +52,11 @@ enum FooEnum {
 }
 
 enum FooSealed {
+  # not renamed in extra.graphqls, will be renamed automatically
+  type,
+}
+
+enum FooClass {
   # not renamed in extra.graphqls, will be renamed automatically
   type,
 }

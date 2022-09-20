@@ -531,9 +531,23 @@ interface Service {
    * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
    * the client was compiled against an older schema that doesn't have knowledge of the new enums.
    *
+   * Only valid when [generateKotlinModels] is `true`
+   *
    * Default: emptyList()
    */
   val sealedClassesForEnumsMatching: ListProperty<String>
+
+  /**
+   * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
+   *
+   * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+   * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+   *
+   * Only valid when [generateKotlinModels] is `false`
+   *
+   * Default: listOf(".*")
+   */
+  val classesForEnumsMatching: ListProperty<String>
 
   /**
    * The annotation to use for `@requiresOptIn` fields/inputFields/enumValues

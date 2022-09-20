@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.obj
 import com.example.enum_field.adapter.TestQuery_ResponseAdapter
 import com.example.enum_field.selections.TestQuerySelections
 import com.example.enum_field.type.Gravity
+import com.example.enum_field.type.GravityAsEnum
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -49,11 +50,12 @@ public class TestQuery() : Query<TestQuery.Data> {
   @ApolloAdaptableWith(TestQuery_ResponseAdapter.Data::class)
   public data class Data(
     public val gravity: Gravity?,
+    public val gravityAsEnum: GravityAsEnum?,
   ) : Query.Data
 
   public companion object {
     public const val OPERATION_ID: String =
-        "a6e990af14595ccd87694d8f1b6560763c8354411790e9179f9cc9433d37f957"
+        "d9f4dcc9a9b855455b49cca3f8f542dba43a5324df22e1662f4fe0157d4c73d4"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -61,10 +63,11 @@ public class TestQuery() : Query<TestQuery.Data> {
      *
      * query TestQuery {
      *   gravity
+     *   gravityAsEnum
      * }
      */
     public val OPERATION_DOCUMENT: String
-      get() = "query TestQuery { gravity }"
+      get() = "query TestQuery { gravity gravityAsEnum }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

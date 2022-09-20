@@ -13,8 +13,8 @@ import com.apollographql.apollo3.compiler.Options
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.Options.Companion.defaultClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
-import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldsOnDisjointTypesMustMerge
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
@@ -28,6 +28,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateRespo
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
@@ -187,6 +188,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
+  abstract val classesForEnumsMatching: ListProperty<String>
+
+  @get:Input
+  @get:Optional
   abstract val generateOptionalOperationVariables: Property<Boolean>
 
   @get:Input
@@ -317,6 +322,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         generateDataBuilders = generateDataBuilders.getOrElse(defaultGenerateDataBuilders),
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
+        classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
         addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
         requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),

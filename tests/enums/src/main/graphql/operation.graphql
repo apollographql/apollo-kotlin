@@ -3,5 +3,6 @@ query GetEnums {
   gravity
   foo
   fooSealed
+  fooClass
   fooEnum
 }

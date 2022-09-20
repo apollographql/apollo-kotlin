@@ -5,9 +5,9 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toSchema
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File
@@ -155,7 +155,7 @@ class Options(
      * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
      * cases too.
      *
-     * Only valid when [targetLanguage] is "kotlin"
+     * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_4] or [TargetLanguage.KOTLIN_1_5]
      */
     val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
@@ -175,9 +175,23 @@ class Options(
      * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
      * the client was compiled against an older schema that doesn't have knowledge of the new enums.
      *
+     * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_4] or [TargetLanguage.KOTLIN_1_5]
+     *
      * Default: emptyList()
      */
     val sealedClassesForEnumsMatching: List<String> = defaultSealedClassesForEnumsMatching,
+
+    /**
+     * A list of [Regex] patterns for GraphQL enums that should be generated as Java classes.
+     *
+     * Use this if you want your client to have access to the rawValue of the enum. This can be useful if new GraphQL enums are added but
+     * the client was compiled against an older schema that doesn't have knowledge of the new enums.
+     *
+     * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
+     *
+     * Default: listOf(".*")
+     */
+    val classesForEnumsMatching: List<String> = defaultClassesForEnumsMatching,
 
     /**
      * Whether to generate operation variables as [com.apollographql.apollo3.api.Optional]
@@ -264,11 +278,12 @@ class Options(
       generateTestBuilders: Boolean = this.generateTestBuilders,
       generateDataBuilders: Boolean = this.generateDataBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
+      classesForEnumsMatching: List<String> = this.classesForEnumsMatching,
       generateOptionalOperationVariables: Boolean = this.generateOptionalOperationVariables,
       addJvmOverloads: Boolean = this.addJvmOverloads,
       addTypename: String = this.addTypename,
       requiresOptInAnnotation: String? = this.requiresOptInAnnotation,
-      fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge
+      fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -301,6 +316,7 @@ class Options(
       generateDataBuilders = generateDataBuilders,
       testDir = testDir,
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
+      classesForEnumsMatching = classesForEnumsMatching,
       generateOptionalOperationVariables = generateOptionalOperationVariables,
       addJvmOverloads = addJvmOverloads,
       addTypename = addTypename,
@@ -334,6 +350,7 @@ class Options(
     const val defaultGenerateDataBuilders = false
     const val defaultGenerateModelBuilder = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
+    val defaultClassesForEnumsMatching = listOf(".*")
     const val defaultGenerateOptionalOperationVariables = true
     const val defaultUseSchemaPackageNameForFragments = false
     const val defaultAddJvmOverloads = false
