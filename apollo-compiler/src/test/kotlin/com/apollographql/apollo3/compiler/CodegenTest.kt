@@ -357,6 +357,11 @@ class CodegenTest {
       val packageName = "com.example.${folder.name}"
       val outputDir = File("build/generated/test/${folder.name}/$targetLanguagePath/$codegenModels/")
 
+      val generatePrimitiveTypes = when (folder.name) {
+        "java_primitive_types" -> true
+        else -> false
+      }
+
       return Options(
           executableFiles = graphqlFiles,
           schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors(),
@@ -379,6 +384,7 @@ class CodegenTest {
           sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
           classesForEnumsMatching = classesForEnumsMatching,
           addJvmOverloads = addJvmOverloads,
+          generatePrimitiveTypes = generatePrimitiveTypes,
       )
     }
 

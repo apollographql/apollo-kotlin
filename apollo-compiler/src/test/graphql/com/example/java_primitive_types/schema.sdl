@@ -1,0 +1,15 @@
+type Query {
+  nullableInt(input: MyInput, nullableInt: Int, nonNullableInt: Int!): Int
+  nonNullableInt(input: MyInput, nullableInt: Int, nonNullableInt: Int!): Int!
+  myType: MyType!
+}
+
+input MyInput {
+  nullableInt: Int
+  nonNullableInt: Int!
+}
+
+type MyType {
+  nullableInt: Int
+  nonNullableInt: Int!
+}
