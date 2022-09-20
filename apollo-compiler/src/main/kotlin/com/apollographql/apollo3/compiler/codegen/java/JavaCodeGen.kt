@@ -64,6 +64,7 @@ internal class JavaCodeGen(
     private val classesForEnumsMatching: List<String>,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generateDataBuilders: Boolean,
+    private val generatePrimitiveTypes: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -71,7 +72,7 @@ internal class JavaCodeGen(
    */
   fun write(outputDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as JavaResolver?) { acc, resolverInfo ->
-      JavaResolver(resolverInfo.entries, acc, scalarMapping)
+      JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes)
     }
 
     val layout = JavaCodegenLayout(
@@ -84,7 +85,7 @@ internal class JavaCodeGen(
 
     val context = JavaContext(
         layout = layout,
-        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping),
+        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes),
         generateModelBuilder = generateModelBuilder
     )
     val builders = mutableListOf<JavaClassBuilder>()

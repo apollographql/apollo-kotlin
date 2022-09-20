@@ -31,7 +31,12 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
 
 
-internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
+internal class JavaResolver(
+    entries: List<ResolverEntry>,
+    val next: JavaResolver?,
+    private val scalarMapping: Map<String, ScalarInfo>,
+    private val generatePrimitiveTypes: Boolean,
+) {
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -55,7 +60,11 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
 
   fun resolveIrType(type: IrType): TypeName {
     if (type is IrNonNullType) {
-      return resolveIrType(type.ofType).unboxIfPrimitiveType()
+      return if (generatePrimitiveTypes && type.ofType is IrScalarType) {
+        resolveIrScalarType(type.ofType, asPrimitiveType = true)
+      } else {
+        resolveIrType(type.ofType)
+      }
     }
 
     return when (type) {
@@ -63,19 +72,19 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
       is IrOptionalType -> ParameterizedTypeName.get(JavaClassNames.Optional, resolveIrType(type.ofType).boxIfPrimitiveType())
       is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
-      is IrScalarType -> resolveIrScalarType(type)
+      is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
     }
   }
 
-  private fun resolveIrScalarType(type: IrScalarType): ClassName {
+  private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {
     // Try mapping first, then built-ins, then fallback to Object
     return resolveScalarTarget(type.name) ?: when (type.name) {
       "String" -> JavaClassNames.String
       "ID" -> JavaClassNames.String
-      "Float" -> JavaClassNames.Double
-      "Int" -> JavaClassNames.Integer
-      "Boolean" -> JavaClassNames.Boolean
+      "Float" -> if (asPrimitiveType) TypeName.DOUBLE else JavaClassNames.Double
+      "Int" -> if (asPrimitiveType) TypeName.INT else JavaClassNames.Integer
+      "Boolean" -> if (asPrimitiveType) TypeName.BOOLEAN else JavaClassNames.Boolean
       else -> JavaClassNames.Object
     }
   }
@@ -300,10 +309,9 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
 
 fun ResolverClassName.toJavaPoetClassName(): ClassName = ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())
 
-private fun TypeName.unboxIfPrimitiveType(): TypeName {
-  return if (this in setOf(JavaClassNames.Double, JavaClassNames.Integer, JavaClassNames.Boolean)) this.unbox() else this
-}
+
+private val primitiveTypeNames = setOf(TypeName.DOUBLE, TypeName.INT, TypeName.BOOLEAN)
 
 internal fun TypeName.boxIfPrimitiveType(): TypeName {
-  return if (this in setOf(TypeName.DOUBLE, TypeName.INT, TypeName.BOOLEAN)) this.box() else this
+  return if (this in primitiveTypeNames) this.box() else this
 }

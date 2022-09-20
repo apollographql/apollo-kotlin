@@ -209,7 +209,8 @@ object ApolloCompiler {
             classesForEnumsMatching = options.classesForEnumsMatching,
             scalarMapping = options.scalarMapping,
             generateDataBuilders = options.generateDataBuilders,
-            generateModelBuilder = options.generateModelBuilder
+            generateModelBuilder = options.generateModelBuilder,
+            generatePrimitiveTypes = options.generatePrimitiveTypes,
         ).write(outputDir = outputDir)
       }
       else -> {

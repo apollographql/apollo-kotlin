@@ -577,6 +577,16 @@ interface Service {
   val fieldsOnDisjointTypesMustMerge: Property<Boolean>
 
   /**
+   * Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`,
+   * `Boolean`) when possible.
+   *
+   * Only valid when [generateKotlinModels] is `false`
+   *
+   * Default: false
+   */
+  val generatePrimitiveTypes: Boolean
+
+  /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen
    *
    * In practice, it does the following:
