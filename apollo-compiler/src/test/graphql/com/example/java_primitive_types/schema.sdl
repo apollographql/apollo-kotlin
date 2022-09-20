@@ -1,7 +1,8 @@
 type Query {
   nullableInt(input: MyInput, nullableInt: Int, nonNullableInt: Int!): Int
   nonNullableInt(input: MyInput, nullableInt: Int, nonNullableInt: Int!): Int!
-  myType: MyType!
+  nullableMyType: MyType
+  nonNullableMyType: MyType!
 }
 
 input MyInput {
