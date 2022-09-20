@@ -584,7 +584,7 @@ interface Service {
    *
    * Default: false
    */
-  val generatePrimitiveTypes: Boolean
+  val generatePrimitiveTypes: Property<Boolean>
 
   /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen
