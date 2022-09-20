@@ -269,6 +269,10 @@ internal data class IrProperty(
 internal data class IrModelGroup(
     val baseModelId: String,
     val models: List<IrModel>,
+    /**
+     * modelGroups that are commonly used in every models
+     */
+    val sharedModelGroups: List<IrModelGroup>
 )
 
 internal sealed interface IrSchemaType {

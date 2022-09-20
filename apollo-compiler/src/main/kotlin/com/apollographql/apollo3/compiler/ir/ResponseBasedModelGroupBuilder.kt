@@ -494,7 +494,8 @@ private fun ResponseField.toIrModelGroup(): IrModelGroup? {
   }
   return IrModelGroup(
       baseModelId = modelId!!,
-      models = responseFieldSets.map { it.toIrModel(this) }
+      models = responseFieldSets.map { it.toIrModel(this) },
+      sharedModelGroups = emptyList()
   )
 }
 

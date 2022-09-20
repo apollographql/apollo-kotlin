@@ -484,16 +484,13 @@ private fun OperationField.toModelGroup(): IrModelGroup? {
   }
 
   return if (hasMultipleShapes) {
-    val (baseModelId, models) = fieldSet.toShapedModels(shapes, rawTypeName)
-    IrModelGroup(
-        models = models,
-        baseModelId = baseModelId
-    )
+    fieldSet.toShapedModels(shapes, rawTypeName)
   } else {
     val model = fieldSet.toModel()
     IrModelGroup(
         models = listOf(model),
-        baseModelId = model.id
+        baseModelId = model.id,
+        sharedModelGroups = emptyList()
     )
   }
 }
@@ -525,13 +522,17 @@ private fun OperationField.toProperty(): IrProperty {
 private fun OperationFieldSet.toShapedModels(
     shapes: List<Shape>,
     rawTypeName: String
-): Pair<String, List<IrModel>> {
+): IrModelGroup {
   val shapedTypeModels = shapes
       .filter { it.typeSet.size > 1 }
       .map { toShapedTypeModel(it, rawTypeName) }
-  val baseModel = toAbstractModel()
-  val modelList = listOf(baseModel) + shapedTypeModels + toFallbackModel()
-  return baseModel.id to modelList
+  val interfaceModel = toInterfaceModel()
+  val modelList = listOf(interfaceModel) + shapedTypeModels + toFallbackModel()
+  return IrModelGroup(
+      baseModelId = interfaceModel.id,
+      models = modelList,
+      sharedModelGroups = interfaceModel.modelGroups
+  )
 }
 
 private fun OperationFieldSet.toFallbackModel(): IrModel {
@@ -549,7 +550,7 @@ private fun OperationFieldSet.toFallbackModel(): IrModel {
   )
 }
 
-private fun OperationFieldSet.toAbstractModel(): IrModel {
+private fun OperationFieldSet.toInterfaceModel(): IrModel {
   return IrModel(
       modelName = modelName,
       id = id,
@@ -563,7 +564,6 @@ private fun OperationFieldSet.toAbstractModel(): IrModel {
       typeSet = emptySet(),
   )
 }
-
 
 private fun OperationFieldSet.toShapedTypeModel(shape: Shape, rawTypeName: String): IrModel {
   return IrModel(
@@ -588,9 +588,7 @@ private fun OperationField.toShapedProperty(shape: Shape): IrProperty {
     info.type
   }
   return IrProperty(
-      info = info.copy(
-          type = fieldShapedType
-      ),
+      info = info.copy(type = fieldShapedType),
       override = true,
       condition = fieldShapedCondition,
       requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
