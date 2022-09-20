@@ -1,4 +1,4 @@
-query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!) {
+query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4) {
   nullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
   nonNullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
   myType {

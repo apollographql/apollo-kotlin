@@ -40,5 +40,9 @@ public object JavaPrimitiveQuery_VariablesAdapter : Adapter<JavaPrimitiveQuery> 
     }
     writer.name("nonNullableInt")
     IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+    if (value.nonNullableIntWithDefault is Optional.Present) {
+      writer.name("nonNullableIntWithDefault")
+      IntAdapter.optional().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+    }
   }
 }

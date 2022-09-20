@@ -11,4 +11,5 @@ import kotlin.Int
 public data class MyInput(
   public val nullableInt: Optional<Int?> = Optional.Absent,
   public val nonNullableInt: Int,
+  public val nonNullableIntWithDefault: Optional<Int> = Optional.Absent,
 )

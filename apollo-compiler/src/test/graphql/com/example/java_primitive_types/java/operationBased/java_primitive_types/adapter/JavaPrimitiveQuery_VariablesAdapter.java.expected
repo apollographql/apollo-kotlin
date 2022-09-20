@@ -44,5 +44,9 @@ public enum JavaPrimitiveQuery_VariablesAdapter implements Adapter<JavaPrimitive
     }
     writer.name("nonNullableInt");
     Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+    if (value.nonNullableIntWithDefault instanceof Optional.Present) {
+      writer.name("nonNullableIntWithDefault");
+      new OptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nonNullableIntWithDefault);
+    }
   }
 }

@@ -25,6 +25,7 @@ public data class JavaPrimitiveQuery(
   public val input: Optional<MyInput?> = Optional.Absent,
   public val nullableInt: Optional<Int?> = Optional.Absent,
   public val nonNullableInt: Int,
+  public val nonNullableIntWithDefault: Optional<Int> = Optional.Absent,
 ) : Query<JavaPrimitiveQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -60,13 +61,14 @@ public data class JavaPrimitiveQuery(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "64c20f42687fe7a72e138fff071f7924685bcea8b40010e16df72bca3155cda9"
+        "ce4569f64d1c79cce8520336c6d0bc9a0b1019fcc526b3d22e95b0e8aeba77d4"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
-     * query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!) {
+     * query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!,
+     * $nonNullableIntWithDefault: Int! = 4 ) {
      *   nullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
      *   nonNullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
      *   myType {
@@ -77,7 +79,7 @@ public data class JavaPrimitiveQuery(
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query JavaPrimitiveQuery(${'$'}input: MyInput, ${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!) { nullableInt(input: ${'$'}input, nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt) nonNullableInt(input: ${'$'}input, nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt) myType { nullableInt nonNullableInt } }"
+          "query JavaPrimitiveQuery(${'$'}input: MyInput, ${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!, ${'$'}nonNullableIntWithDefault: Int! = 4 ) { nullableInt(input: ${'$'}input, nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt) nonNullableInt(input: ${'$'}input, nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt) myType { nullableInt nonNullableInt } }"
 
     public const val OPERATION_NAME: String = "JavaPrimitiveQuery"
   }
