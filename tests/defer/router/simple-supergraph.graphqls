@@ -1,0 +1,74 @@
+# This file was generated with this command:
+#
+# rover supergraph compose --config ./simple-supergraph-rover-config.yaml > simple-supergraph.graphqls
+#
+# See also: https://www.apollographql.com/docs/federation/quickstart/local-composition/#2-perform-composition
+
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+type Computer
+  @join__type(graph: COMPUTERS)
+{
+  id: ID!
+  cpu: String!
+  year: Int!
+  screen: Screen!
+  errorField: String
+  nonNullErrorField: String!
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  COMPUTERS @join__graph(name: "computers", url: "http://localhost:4001/")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Mutation
+  @join__type(graph: COMPUTERS)
+{
+  computers: [Computer!]!
+}
+
+type Query
+  @join__type(graph: COMPUTERS)
+{
+  computers: [Computer!]!
+  computer(id: ID!): Computer
+}
+
+type Screen
+  @join__type(graph: COMPUTERS)
+{
+  resolution: String!
+  isColor: Boolean!
+}

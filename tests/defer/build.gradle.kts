@@ -89,3 +89,13 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
     }
   }
 }
+
+tasks.withType(AbstractTestTask::class.java) {
+  // Run the defer with Router tests only from a a specific CI job
+  val runDeferWithRouterTests = System.getenv("COM_APOLLOGRAPHQL_DEFER_WITH_ROUTER_TESTS").toBoolean()
+  if (runDeferWithRouterTests) {
+    filter.setIncludePatterns("test.DeferWithRouterTest")
+  } else {
+    filter.setExcludePatterns("test.DeferWithRouterTest")
+  }
+}
