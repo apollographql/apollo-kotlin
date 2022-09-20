@@ -15,6 +15,7 @@ import com.example.field_with_include_directive.adapter.TestQuery_ResponseAdapte
 import com.example.field_with_include_directive.adapter.TestQuery_VariablesAdapter;
 import com.example.field_with_include_directive.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
@@ -40,9 +41,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  public final boolean includeName;
+  public final Boolean includeName;
 
-  public final boolean skipFriends;
+  public final Boolean skipFriends;
 
   private transient volatile int $hashCode;
 
@@ -50,7 +51,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(boolean includeName, boolean skipFriends) {
+  public TestQuery(Boolean includeName, Boolean skipFriends) {
     this.includeName = includeName;
     this.skipFriends = skipFriends;
   }
@@ -62,8 +63,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
     if (o instanceof TestQuery) {
       TestQuery that = (TestQuery) o;
-      return this.includeName == that.includeName
-       &&this.skipFriends == that.skipFriends;
+      return ((this.includeName == null) ? (that.includeName == null) : this.includeName.equals(that.includeName))
+       &&((this.skipFriends == null) ? (that.skipFriends == null) : this.skipFriends.equals(that.skipFriends));
     }
     return false;
   }
@@ -73,9 +74,9 @@ public class TestQuery implements Query<TestQuery.Data> {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= Boolean.valueOf(includeName).hashCode();
+      h ^= (includeName == null) ? 0 : includeName.hashCode();
       h *= 1000003;
-      h ^= Boolean.valueOf(skipFriends).hashCode();
+      h ^= (skipFriends == null) ? 0 : skipFriends.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -134,19 +135,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private boolean includeName;
+    private Boolean includeName;
 
-    private boolean skipFriends;
+    private Boolean skipFriends;
 
     Builder() {
     }
 
-    public Builder includeName(boolean includeName) {
+    public Builder includeName(Boolean includeName) {
       this.includeName = includeName;
       return this;
     }
 
-    public Builder skipFriends(boolean skipFriends) {
+    public Builder skipFriends(Boolean skipFriends) {
       this.skipFriends = skipFriends;
       return this;
     }

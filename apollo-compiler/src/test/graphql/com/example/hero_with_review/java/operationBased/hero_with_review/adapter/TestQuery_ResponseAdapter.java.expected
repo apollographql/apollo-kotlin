@@ -15,6 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_with_review.TestQuery;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -60,7 +61,7 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.CreateReview fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      int _stars = 0;
+      Integer _stars = null;
       String _commentary = null;
 
       loop:

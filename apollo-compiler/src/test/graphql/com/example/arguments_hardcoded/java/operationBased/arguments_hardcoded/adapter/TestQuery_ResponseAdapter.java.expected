@@ -16,6 +16,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.arguments_hardcoded.TestQuery;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class TestQuery_ResponseAdapter {
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       List<TestQuery.Review> _reviews = null;
-      int _testNullableArguments = 0;
+      Integer _testNullableArguments = null;
 
       loop:
       while(true) {
@@ -69,7 +70,7 @@ public class TestQuery_ResponseAdapter {
     @Override
     public TestQuery.Review fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      int _stars = 0;
+      Integer _stars = null;
       String _commentary = null;
 
       loop:

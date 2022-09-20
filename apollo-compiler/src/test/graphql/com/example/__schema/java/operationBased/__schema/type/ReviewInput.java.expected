@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  * The input object sent when someone is creating a new review
  */
 public class ReviewInput {
-  public final int stars;
+  public final Integer stars;
 
   public final Optional<Integer> nullableIntFieldWithDefaultValue;
 
@@ -68,7 +68,7 @@ public class ReviewInput {
 
   private transient volatile String $toString;
 
-  public ReviewInput(int stars, Optional<Integer> nullableIntFieldWithDefaultValue,
+  public ReviewInput(Integer stars, Optional<Integer> nullableIntFieldWithDefaultValue,
       Optional<String> commentary, ColorInput favoriteColor, Optional<Episode> enumWithDefaultValue,
       Optional<Episode> nonNullableEnumWithDefaultValue, Optional<Episode> nullableEnum,
       Optional<List<Object>> listOfCustomScalar, Optional<Object> customScalar,
@@ -111,7 +111,7 @@ public class ReviewInput {
     }
     if (o instanceof ReviewInput) {
       ReviewInput that = (ReviewInput) o;
-      return this.stars == that.stars
+      return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
        &&((this.nullableIntFieldWithDefaultValue == null) ? (that.nullableIntFieldWithDefaultValue == null) : this.nullableIntFieldWithDefaultValue.equals(that.nullableIntFieldWithDefaultValue))
        &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary))
        &&((this.favoriteColor == null) ? (that.favoriteColor == null) : this.favoriteColor.equals(that.favoriteColor))
@@ -142,7 +142,7 @@ public class ReviewInput {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= stars;
+      h ^= (stars == null) ? 0 : stars.hashCode();
       h *= 1000003;
       h ^= (nullableIntFieldWithDefaultValue == null) ? 0 : nullableIntFieldWithDefaultValue.hashCode();
       h *= 1000003;
@@ -227,7 +227,7 @@ public class ReviewInput {
   }
 
   public static final class Builder {
-    private int stars;
+    private Integer stars;
 
     private Optional<Integer> nullableIntFieldWithDefaultValue;
 
@@ -277,7 +277,7 @@ public class ReviewInput {
     /**
      * 0-5 stars
      */
-    public Builder stars(int stars) {
+    public Builder stars(Integer stars) {
       this.stars = stars;
       return this;
     }

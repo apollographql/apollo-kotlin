@@ -15,6 +15,7 @@ import com.example.inline_fragment_with_include_directive.adapter.TestQuery_Resp
 import com.example.inline_fragment_with_include_directive.adapter.TestQuery_VariablesAdapter;
 import com.example.inline_fragment_with_include_directive.selections.TestQuerySelections;
 import java.io.IOException;
+import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -48,9 +49,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  public final boolean withDetails;
+  public final Boolean withDetails;
 
-  public final boolean skipHumanDetails;
+  public final Boolean skipHumanDetails;
 
   private transient volatile int $hashCode;
 
@@ -58,7 +59,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(boolean withDetails, boolean skipHumanDetails) {
+  public TestQuery(Boolean withDetails, Boolean skipHumanDetails) {
     this.withDetails = withDetails;
     this.skipHumanDetails = skipHumanDetails;
   }
@@ -70,8 +71,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
     if (o instanceof TestQuery) {
       TestQuery that = (TestQuery) o;
-      return this.withDetails == that.withDetails
-       &&this.skipHumanDetails == that.skipHumanDetails;
+      return ((this.withDetails == null) ? (that.withDetails == null) : this.withDetails.equals(that.withDetails))
+       &&((this.skipHumanDetails == null) ? (that.skipHumanDetails == null) : this.skipHumanDetails.equals(that.skipHumanDetails));
     }
     return false;
   }
@@ -81,9 +82,9 @@ public class TestQuery implements Query<TestQuery.Data> {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= Boolean.valueOf(withDetails).hashCode();
+      h ^= (withDetails == null) ? 0 : withDetails.hashCode();
       h *= 1000003;
-      h ^= Boolean.valueOf(skipHumanDetails).hashCode();
+      h ^= (skipHumanDetails == null) ? 0 : skipHumanDetails.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -142,19 +143,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private boolean withDetails;
+    private Boolean withDetails;
 
-    private boolean skipHumanDetails;
+    private Boolean skipHumanDetails;
 
     Builder() {
     }
 
-    public Builder withDetails(boolean withDetails) {
+    public Builder withDetails(Boolean withDetails) {
       this.withDetails = withDetails;
       return this;
     }
 
-    public Builder skipHumanDetails(boolean skipHumanDetails) {
+    public Builder skipHumanDetails(Boolean skipHumanDetails) {
       this.skipHumanDetails = skipHumanDetails;
       return this;
     }

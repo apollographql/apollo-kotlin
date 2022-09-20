@@ -18,6 +18,7 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.interface_on_interface.GetHuman;
 import java.io.IOException;
+import java.lang.Double;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ public class GetHuman_ResponseAdapter {
         throws IOException {
       String _id = null;
       String _name = null;
-      double _height = 0.0;
+      Double _height = null;
 
       loop:
       while(true) {
@@ -162,7 +163,7 @@ public class GetHuman_ResponseAdapter {
     @Override
     public GetHuman.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      double _height = 0.0;
+      Double _height = null;
 
       loop:
       while(true) {

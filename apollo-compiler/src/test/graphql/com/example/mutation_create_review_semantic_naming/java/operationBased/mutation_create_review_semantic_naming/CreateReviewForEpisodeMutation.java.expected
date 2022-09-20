@@ -17,6 +17,7 @@ import com.example.mutation_create_review_semantic_naming.selections.CreateRevie
 import com.example.mutation_create_review_semantic_naming.type.Episode;
 import com.example.mutation_create_review_semantic_naming.type.ReviewInput;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -207,7 +208,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     /**
      * The number of stars this review gave, 1-5
      */
-    public int stars;
+    public Integer stars;
 
     /**
      * Comment about the movie
@@ -220,7 +221,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
 
     private transient volatile String $toString;
 
-    public CreateReview(int stars, String commentary) {
+    public CreateReview(Integer stars, String commentary) {
       this.stars = stars;
       this.commentary = commentary;
     }
@@ -232,7 +233,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
       }
       if (o instanceof CreateReview) {
         CreateReview that = (CreateReview) o;
-        return this.stars == that.stars
+        return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
          &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
       }
       return false;
@@ -243,7 +244,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= stars;
+        h ^= (stars == null) ? 0 : stars.hashCode();
         h *= 1000003;
         h ^= (commentary == null) ? 0 : commentary.hashCode();
         $hashCode = h;

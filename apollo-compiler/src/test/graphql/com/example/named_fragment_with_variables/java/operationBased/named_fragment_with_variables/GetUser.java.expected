@@ -17,6 +17,7 @@ import com.example.named_fragment_with_variables.fragment.QueryFragment;
 import com.example.named_fragment_with_variables.selections.GetUserSelections;
 import com.example.named_fragment_with_variables.type.UserQuery;
 import java.io.IOException;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -57,7 +58,7 @@ public class GetUser implements Query<GetUser.Data> {
 
   public final UserQuery query;
 
-  public final int size;
+  public final Integer size;
 
   private transient volatile int $hashCode;
 
@@ -65,7 +66,7 @@ public class GetUser implements Query<GetUser.Data> {
 
   private transient volatile String $toString;
 
-  public GetUser(String organizationId, UserQuery query, int size) {
+  public GetUser(String organizationId, UserQuery query, Integer size) {
     this.organizationId = organizationId;
     this.query = query;
     this.size = size;
@@ -80,7 +81,7 @@ public class GetUser implements Query<GetUser.Data> {
       GetUser that = (GetUser) o;
       return ((this.organizationId == null) ? (that.organizationId == null) : this.organizationId.equals(that.organizationId))
        &&((this.query == null) ? (that.query == null) : this.query.equals(that.query))
-       &&this.size == that.size;
+       &&((this.size == null) ? (that.size == null) : this.size.equals(that.size));
     }
     return false;
   }
@@ -94,7 +95,7 @@ public class GetUser implements Query<GetUser.Data> {
       h *= 1000003;
       h ^= (query == null) ? 0 : query.hashCode();
       h *= 1000003;
-      h ^= size;
+      h ^= (size == null) ? 0 : size.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -158,7 +159,7 @@ public class GetUser implements Query<GetUser.Data> {
 
     private UserQuery query;
 
-    private int size;
+    private Integer size;
 
     Builder() {
     }
@@ -173,7 +174,7 @@ public class GetUser implements Query<GetUser.Data> {
       return this;
     }
 
-    public Builder size(int size) {
+    public Builder size(Integer size) {
       this.size = size;
       return this;
     }

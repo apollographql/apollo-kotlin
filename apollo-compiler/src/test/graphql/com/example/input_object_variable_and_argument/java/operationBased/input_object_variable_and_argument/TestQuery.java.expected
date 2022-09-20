@@ -18,6 +18,7 @@ import com.example.input_object_variable_and_argument.selections.TestQuerySelect
 import com.example.input_object_variable_and_argument.type.Episode;
 import java.io.IOException;
 import java.lang.Double;
+import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -54,9 +55,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Optional<Episode> episode;
 
-  public final int stars;
+  public final Integer stars;
 
-  public final double greenValue;
+  public final Double greenValue;
 
   private transient volatile int $hashCode;
 
@@ -64,7 +65,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Optional<Episode> episode, int stars, double greenValue) {
+  public TestQuery(Optional<Episode> episode, Integer stars, Double greenValue) {
     this.episode = episode;
     this.stars = stars;
     this.greenValue = greenValue;
@@ -78,8 +79,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     if (o instanceof TestQuery) {
       TestQuery that = (TestQuery) o;
       return ((this.episode == null) ? (that.episode == null) : this.episode.equals(that.episode))
-       &&this.stars == that.stars
-       &&Double.doubleToLongBits(this.greenValue) == Double.doubleToLongBits(that.greenValue);
+       &&((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
+       &&((this.greenValue == null) ? (that.greenValue == null) : this.greenValue.equals(that.greenValue));
     }
     return false;
   }
@@ -91,9 +92,9 @@ public class TestQuery implements Query<TestQuery.Data> {
       h *= 1000003;
       h ^= (episode == null) ? 0 : episode.hashCode();
       h *= 1000003;
-      h ^= stars;
+      h ^= (stars == null) ? 0 : stars.hashCode();
       h *= 1000003;
-      h ^= Double.valueOf(greenValue).hashCode();
+      h ^= (greenValue == null) ? 0 : greenValue.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -155,9 +156,9 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static final class Builder {
     private Optional<Episode> episode;
 
-    private int stars;
+    private Integer stars;
 
-    private double greenValue;
+    private Double greenValue;
 
     Builder() {
     }
@@ -167,12 +168,12 @@ public class TestQuery implements Query<TestQuery.Data> {
       return this;
     }
 
-    public Builder stars(int stars) {
+    public Builder stars(Integer stars) {
       this.stars = stars;
       return this;
     }
 
-    public Builder greenValue(double greenValue) {
+    public Builder greenValue(Double greenValue) {
       this.greenValue = greenValue;
       return this;
     }

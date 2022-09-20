@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter;
 import com.example.interface_on_interface.selections.GetHumanSelections;
 import java.io.IOException;
+import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -192,7 +193,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     public String name;
 
-    public double height;
+    public Double height;
 
     private transient volatile int $hashCode;
 
@@ -200,7 +201,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     private transient volatile String $toString;
 
-    public Human(String id, String name, double height) {
+    public Human(String id, String name, Double height) {
       this.id = id;
       this.name = name;
       this.height = height;
@@ -215,7 +216,7 @@ public class GetHuman implements Query<GetHuman.Data> {
         Human that = (Human) o;
         return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
          &&((this.name == null) ? (that.name == null) : this.name.equals(that.name))
-         &&Double.doubleToLongBits(this.height) == Double.doubleToLongBits(that.height);
+         &&((this.height == null) ? (that.height == null) : this.height.equals(that.height));
       }
       return false;
     }
@@ -229,7 +230,7 @@ public class GetHuman implements Query<GetHuman.Data> {
         h *= 1000003;
         h ^= (name == null) ? 0 : name.hashCode();
         h *= 1000003;
-        h ^= Double.valueOf(height).hashCode();
+        h ^= (height == null) ? 0 : height.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -308,7 +309,7 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   public static class OnHuman {
-    public double height;
+    public Double height;
 
     private transient volatile int $hashCode;
 
@@ -316,7 +317,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(double height) {
+    public OnHuman(Double height) {
       this.height = height;
     }
 
@@ -327,7 +328,7 @@ public class GetHuman implements Query<GetHuman.Data> {
       }
       if (o instanceof OnHuman) {
         OnHuman that = (OnHuman) o;
-        return Double.doubleToLongBits(this.height) == Double.doubleToLongBits(that.height);
+        return ((this.height == null) ? (that.height == null) : this.height.equals(that.height));
       }
       return false;
     }
@@ -337,7 +338,7 @@ public class GetHuman implements Query<GetHuman.Data> {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= Double.valueOf(height).hashCode();
+        h ^= (height == null) ? 0 : height.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
