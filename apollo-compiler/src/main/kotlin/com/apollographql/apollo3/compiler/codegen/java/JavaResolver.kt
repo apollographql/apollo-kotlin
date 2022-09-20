@@ -29,7 +29,6 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
-import com.squareup.kotlinpoet.MemberName
 
 
 internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver?, private val scalarMapping: Map<String, ScalarInfo>) {
@@ -56,13 +55,13 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
 
   fun resolveIrType(type: IrType): TypeName {
     if (type is IrNonNullType) {
-      return resolveIrType(type.ofType)
+      return resolveIrType(type.ofType).unboxIfPrimitiveType()
     }
 
     return when (type) {
       is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-      is IrOptionalType -> ParameterizedTypeName.get(JavaClassNames.Optional, resolveIrType(type.ofType))
-      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType))
+      is IrOptionalType -> ParameterizedTypeName.get(JavaClassNames.Optional, resolveIrType(type.ofType).boxIfPrimitiveType())
+      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
@@ -94,6 +93,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
+
         else -> {
           CodeBlock.of("new $T<>($L)", JavaClassNames.NullableAdapter, adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
@@ -168,6 +168,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(adapterInitializer.expression)
       }
+
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
@@ -176,6 +177,7 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
             resolveCompiledType(type.name)
         )
       }
+
       else -> {
         when (type.name) {
           "Boolean" -> adapterCodeBlock("BooleanAdapter")
@@ -278,9 +280,11 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
           null
         }
       }
+
       is IrEnumType2 -> {
         nonNullableAdapterInitializer(IrEnumType(type.name), false)
       }
+
       is IrCompositeType2 -> null
     }
   }
@@ -290,7 +294,16 @@ internal class JavaResolver(entries: List<ResolverEntry>, val next: JavaResolver
   }
 
   fun registerSchema(className: ClassName) = register(ResolverKeyKind.Schema, "", className)
-  fun resolveSchema():ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
+  fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
 }
 
+
 fun ResolverClassName.toJavaPoetClassName(): ClassName = ClassName.get(packageName, simpleNames[0], *simpleNames.drop(1).toTypedArray())
+
+private fun TypeName.unboxIfPrimitiveType(): TypeName {
+  return if (this in setOf(JavaClassNames.Double, JavaClassNames.Integer, JavaClassNames.Boolean)) this.unbox() else this
+}
+
+internal fun TypeName.boxIfPrimitiveType(): TypeName {
+  return if (this in setOf(TypeName.DOUBLE, TypeName.INT, TypeName.BOOLEAN)) this.box() else this
+}

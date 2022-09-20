@@ -16,7 +16,6 @@ import com.example.fragments_with_defer_and_include_directives.adapter.SpreadMul
 import com.example.fragments_with_defer_and_include_directives.fragment.DroidDetails;
 import com.example.fragments_with_defer_and_include_directives.selections.SpreadMultipleWithDeferAndIncludeSelections;
 import java.io.IOException;
-import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -48,13 +47,13 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDeferAndInclude";
 
-  public final Boolean cond1;
+  public final boolean cond1;
 
-  public final Boolean cond2;
+  public final boolean cond2;
 
-  public final Boolean cond3;
+  public final boolean cond3;
 
-  public final Boolean cond4;
+  public final boolean cond4;
 
   private transient volatile int $hashCode;
 
@@ -62,8 +61,8 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
   private transient volatile String $toString;
 
-  public SpreadMultipleWithDeferAndInclude(Boolean cond1, Boolean cond2, Boolean cond3,
-      Boolean cond4) {
+  public SpreadMultipleWithDeferAndInclude(boolean cond1, boolean cond2, boolean cond3,
+      boolean cond4) {
     this.cond1 = cond1;
     this.cond2 = cond2;
     this.cond3 = cond3;
@@ -77,10 +76,10 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     }
     if (o instanceof SpreadMultipleWithDeferAndInclude) {
       SpreadMultipleWithDeferAndInclude that = (SpreadMultipleWithDeferAndInclude) o;
-      return ((this.cond1 == null) ? (that.cond1 == null) : this.cond1.equals(that.cond1))
-       &&((this.cond2 == null) ? (that.cond2 == null) : this.cond2.equals(that.cond2))
-       &&((this.cond3 == null) ? (that.cond3 == null) : this.cond3.equals(that.cond3))
-       &&((this.cond4 == null) ? (that.cond4 == null) : this.cond4.equals(that.cond4));
+      return this.cond1 == that.cond1
+       &&this.cond2 == that.cond2
+       &&this.cond3 == that.cond3
+       &&this.cond4 == that.cond4;
     }
     return false;
   }
@@ -90,13 +89,13 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (cond1 == null) ? 0 : cond1.hashCode();
+      h ^= Boolean.valueOf(cond1).hashCode();
       h *= 1000003;
-      h ^= (cond2 == null) ? 0 : cond2.hashCode();
+      h ^= Boolean.valueOf(cond2).hashCode();
       h *= 1000003;
-      h ^= (cond3 == null) ? 0 : cond3.hashCode();
+      h ^= Boolean.valueOf(cond3).hashCode();
       h *= 1000003;
-      h ^= (cond4 == null) ? 0 : cond4.hashCode();
+      h ^= Boolean.valueOf(cond4).hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -157,33 +156,33 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
   }
 
   public static final class Builder {
-    private Boolean cond1;
+    private boolean cond1;
 
-    private Boolean cond2;
+    private boolean cond2;
 
-    private Boolean cond3;
+    private boolean cond3;
 
-    private Boolean cond4;
+    private boolean cond4;
 
     Builder() {
     }
 
-    public Builder cond1(Boolean cond1) {
+    public Builder cond1(boolean cond1) {
       this.cond1 = cond1;
       return this;
     }
 
-    public Builder cond2(Boolean cond2) {
+    public Builder cond2(boolean cond2) {
       this.cond2 = cond2;
       return this;
     }
 
-    public Builder cond3(Boolean cond3) {
+    public Builder cond3(boolean cond3) {
       this.cond3 = cond3;
       return this;
     }
 
-    public Builder cond4(Boolean cond4) {
+    public Builder cond4(boolean cond4) {
       this.cond4 = cond4;
       return this;
     }

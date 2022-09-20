@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.arguments_hardcoded.adapter.TestQuery_ResponseAdapter;
 import com.example.arguments_hardcoded.selections.TestQuerySelections;
 import java.io.IOException;
-import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -131,7 +130,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class Data implements Query.Data {
     public List<Review> reviews;
 
-    public Integer testNullableArguments;
+    public int testNullableArguments;
 
     private transient volatile int $hashCode;
 
@@ -139,7 +138,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(List<Review> reviews, Integer testNullableArguments) {
+    public Data(List<Review> reviews, int testNullableArguments) {
       this.reviews = reviews;
       this.testNullableArguments = testNullableArguments;
     }
@@ -152,7 +151,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       if (o instanceof Data) {
         Data that = (Data) o;
         return ((this.reviews == null) ? (that.reviews == null) : this.reviews.equals(that.reviews))
-         &&((this.testNullableArguments == null) ? (that.testNullableArguments == null) : this.testNullableArguments.equals(that.testNullableArguments));
+         &&this.testNullableArguments == that.testNullableArguments;
       }
       return false;
     }
@@ -164,7 +163,7 @@ public class TestQuery implements Query<TestQuery.Data> {
         h *= 1000003;
         h ^= (reviews == null) ? 0 : reviews.hashCode();
         h *= 1000003;
-        h ^= (testNullableArguments == null) ? 0 : testNullableArguments.hashCode();
+        h ^= testNullableArguments;
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -187,7 +186,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The number of stars this review gave, 1-5
      */
-    public Integer stars;
+    public int stars;
 
     /**
      * Comment about the movie
@@ -200,7 +199,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Review(Integer stars, String commentary) {
+    public Review(int stars, String commentary) {
       this.stars = stars;
       this.commentary = commentary;
     }
@@ -212,7 +211,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Review) {
         Review that = (Review) o;
-        return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
+        return this.stars == that.stars
          &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
       }
       return false;
@@ -223,7 +222,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (stars == null) ? 0 : stars.hashCode();
+        h ^= stars;
         h *= 1000003;
         h ^= (commentary == null) ? 0 : commentary.hashCode();
         $hashCode = h;

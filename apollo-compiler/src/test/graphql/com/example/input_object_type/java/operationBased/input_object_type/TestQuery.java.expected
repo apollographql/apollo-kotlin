@@ -17,7 +17,6 @@ import com.example.input_object_type.selections.TestQuerySelections;
 import com.example.input_object_type.type.Episode;
 import com.example.input_object_type.type.ReviewInput;
 import java.io.IOException;
-import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -208,7 +207,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     /**
      * The number of stars this review gave, 1-5
      */
-    public Integer stars;
+    public int stars;
 
     /**
      * Comment about the movie
@@ -221,7 +220,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public CreateReview(Integer stars, String commentary) {
+    public CreateReview(int stars, String commentary) {
       this.stars = stars;
       this.commentary = commentary;
     }
@@ -233,7 +232,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
       }
       if (o instanceof CreateReview) {
         CreateReview that = (CreateReview) o;
-        return ((this.stars == null) ? (that.stars == null) : this.stars.equals(that.stars))
+        return this.stars == that.stars
          &&((this.commentary == null) ? (that.commentary == null) : this.commentary.equals(that.commentary));
       }
       return false;
@@ -244,7 +243,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (stars == null) ? 0 : stars.hashCode();
+        h ^= stars;
         h *= 1000003;
         h ^= (commentary == null) ? 0 : commentary.hashCode();
         $hashCode = h;

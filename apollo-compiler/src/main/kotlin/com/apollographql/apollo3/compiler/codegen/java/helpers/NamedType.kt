@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.boxIfPrimitiveType
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrVariable
@@ -67,7 +68,8 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   var castToPresent = CodeBlock.of("")
   if (type.isOptional()) {
     builder.beginControlFlow("if ($value.$propertyName instanceof $T)", JavaClassNames.Present)
-    castToPresent = CodeBlock.of("($T)", ParameterizedTypeName.get(JavaClassNames.Present, context.resolver.resolveIrType(type.makeNonOptional())))
+    val resolvedType = context.resolver.resolveIrType(type.makeNonOptional()).boxIfPrimitiveType()
+    castToPresent = CodeBlock.of("($T)", ParameterizedTypeName.get(JavaClassNames.Present, resolvedType))
   }
   builder.add("$writer.name($S);\n", graphQlName)
   builder.addStatement(

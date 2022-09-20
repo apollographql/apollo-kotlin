@@ -15,7 +15,6 @@ import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter;
 import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter;
 import com.example.subscriptions.selections.TestSubscriptionSelections;
 import java.io.IOException;
-import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -195,7 +194,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     /**
      * The SQL ID of this entry
      */
-    public Integer id;
+    public int id;
 
     /**
      * The text of the comment
@@ -208,7 +207,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
 
     private transient volatile String $toString;
 
-    public CommentAdded(Integer id, String content) {
+    public CommentAdded(int id, String content) {
       this.id = id;
       this.content = content;
     }
@@ -220,7 +219,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
       }
       if (o instanceof CommentAdded) {
         CommentAdded that = (CommentAdded) o;
-        return ((this.id == null) ? (that.id == null) : this.id.equals(that.id))
+        return this.id == that.id
          &&((this.content == null) ? (that.content == null) : this.content.equals(that.content));
       }
       return false;
@@ -231,7 +230,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
       if (!$hashCodeMemoized) {
         int h = 1;
         h *= 1000003;
-        h ^= (id == null) ? 0 : id.hashCode();
+        h ^= id;
         h *= 1000003;
         h ^= (content == null) ? 0 : content.hashCode();
         $hashCode = h;

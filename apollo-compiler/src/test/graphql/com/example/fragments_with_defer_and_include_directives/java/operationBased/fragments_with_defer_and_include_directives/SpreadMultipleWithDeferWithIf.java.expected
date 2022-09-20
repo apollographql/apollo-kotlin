@@ -18,7 +18,6 @@ import com.example.fragments_with_defer_and_include_directives.fragment.Characte
 import com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3;
 import com.example.fragments_with_defer_and_include_directives.selections.SpreadMultipleWithDeferWithIfSelections;
 import java.io.IOException;
-import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -55,7 +54,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDeferWithIf";
 
-  public final Boolean cond;
+  public final boolean cond;
 
   private transient volatile int $hashCode;
 
@@ -63,7 +62,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
   private transient volatile String $toString;
 
-  public SpreadMultipleWithDeferWithIf(Boolean cond) {
+  public SpreadMultipleWithDeferWithIf(boolean cond) {
     this.cond = cond;
   }
 
@@ -74,7 +73,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     }
     if (o instanceof SpreadMultipleWithDeferWithIf) {
       SpreadMultipleWithDeferWithIf that = (SpreadMultipleWithDeferWithIf) o;
-      return ((this.cond == null) ? (that.cond == null) : this.cond.equals(that.cond));
+      return this.cond == that.cond;
     }
     return false;
   }
@@ -84,7 +83,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (cond == null) ? 0 : cond.hashCode();
+      h ^= Boolean.valueOf(cond).hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -142,12 +141,12 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
   }
 
   public static final class Builder {
-    private Boolean cond;
+    private boolean cond;
 
     Builder() {
     }
 
-    public Builder cond(Boolean cond) {
+    public Builder cond(boolean cond) {
       this.cond = cond;
       return this;
     }

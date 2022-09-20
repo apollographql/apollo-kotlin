@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review_semantic_naming.CreateReviewForEpisodeMutation;
 import java.io.IOException;
-import java.lang.Integer;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -61,7 +60,7 @@ public class CreateReviewForEpisodeMutation_ResponseAdapter {
     @Override
     public CreateReviewForEpisodeMutation.CreateReview fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
-      Integer _stars = null;
+      int _stars = 0;
       String _commentary = null;
 
       loop:

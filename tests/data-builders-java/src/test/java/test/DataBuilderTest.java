@@ -35,7 +35,7 @@ public class DataBuilderTest {
     );
 
     assertEquals(null, data.nullableInt);
-    assertEquals(Integer.valueOf(42), data.nonNullableInt);
+    assertEquals(42, data.nonNullableInt);
   }
 
   @Test
@@ -116,7 +116,7 @@ public class DataBuilderTest {
     );
 
     assertEquals("Cat", data.feline.__typename);
-    assertEquals(Integer.valueOf(5), data.feline.onCat.mustaches);
+    assertEquals(5, data.feline.onCat.mustaches);
   }
 
   @Test
@@ -152,13 +152,13 @@ public class DataBuilderTest {
 
     assertEquals(Direction.SOUTH, data.direction);
     assertEquals(Integer.valueOf(0), data.nullableInt);
-    assertEquals(Integer.valueOf(1), data.nonNullableInt);
+    assertEquals(1, data.nonNullableInt);
     assertEquals(Arrays.asList(
         Arrays.asList(2, 3, 4),
         Arrays.asList(5, 6, 7),
         Arrays.asList(8, 9, 10)
     ), data.listOfListOfInt);
-    assertEquals(Integer.valueOf(11), data.cat.mustaches);
+    assertEquals(11, data.cat.mustaches);
     assertEquals("Lion", data.animal.__typename);
     assertEquals("Cat", data.feline.__typename);
   }

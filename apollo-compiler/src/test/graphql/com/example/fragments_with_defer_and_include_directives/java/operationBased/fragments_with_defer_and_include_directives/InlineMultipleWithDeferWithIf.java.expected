@@ -15,7 +15,6 @@ import com.example.fragments_with_defer_and_include_directives.adapter.InlineMul
 import com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_VariablesAdapter;
 import com.example.fragments_with_defer_and_include_directives.selections.InlineMultipleWithDeferWithIfSelections;
 import java.io.IOException;
-import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
@@ -46,7 +45,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
   public static final String OPERATION_NAME = "InlineMultipleWithDeferWithIf";
 
-  public final Boolean cond;
+  public final boolean cond;
 
   private transient volatile int $hashCode;
 
@@ -54,7 +53,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
   private transient volatile String $toString;
 
-  public InlineMultipleWithDeferWithIf(Boolean cond) {
+  public InlineMultipleWithDeferWithIf(boolean cond) {
     this.cond = cond;
   }
 
@@ -65,7 +64,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     }
     if (o instanceof InlineMultipleWithDeferWithIf) {
       InlineMultipleWithDeferWithIf that = (InlineMultipleWithDeferWithIf) o;
-      return ((this.cond == null) ? (that.cond == null) : this.cond.equals(that.cond));
+      return this.cond == that.cond;
     }
     return false;
   }
@@ -75,7 +74,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (cond == null) ? 0 : cond.hashCode();
+      h ^= Boolean.valueOf(cond).hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -133,12 +132,12 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
   }
 
   public static final class Builder {
-    private Boolean cond;
+    private boolean cond;
 
     Builder() {
     }
 
-    public Builder cond(Boolean cond) {
+    public Builder cond(boolean cond) {
       this.cond = cond;
       return this;
     }
