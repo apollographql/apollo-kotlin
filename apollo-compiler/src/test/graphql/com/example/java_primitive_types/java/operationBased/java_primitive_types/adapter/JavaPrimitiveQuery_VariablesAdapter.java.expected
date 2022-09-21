@@ -5,12 +5,13 @@
 //
 package com.example.java_primitive_types.adapter;
 
-import com.apollographql.apollo3.adapter.JavaOptionalAdapter;
-import com.apollographql.apollo3.adapter.JavaOptionalAdapters;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.OptionalAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_primitive_types.JavaPrimitiveQuery;
@@ -18,6 +19,7 @@ import com.example.java_primitive_types.type.MyInput;
 import com.example.java_primitive_types.type.adapter.MyInput_InputAdapter;
 import java.io.IOException;
 import java.lang.IllegalStateException;
+import java.lang.Integer;
 import java.lang.Override;
 
 public enum JavaPrimitiveQuery_VariablesAdapter implements Adapter<JavaPrimitiveQuery> {
@@ -32,25 +34,25 @@ public enum JavaPrimitiveQuery_VariablesAdapter implements Adapter<JavaPrimitive
   @Override
   public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
       JavaPrimitiveQuery value) throws IOException {
-    if (value.nullableInt.isPresent()) {
+    if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new JavaOptionalAdapter<>(JavaOptionalAdapters.JavaOptionalIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
+      new OptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nullableInt);
     }
     writer.name("nonNullableInt");
     Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
-    if (value.nonNullableIntWithDefault.isPresent()) {
+    if (value.nonNullableIntWithDefault instanceof Optional.Present) {
       writer.name("nonNullableIntWithDefault");
-      new JavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
+      new OptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nonNullableIntWithDefault);
     }
-    if (value.nullableInput.isPresent()) {
+    if (value.nullableInput instanceof Optional.Present) {
       writer.name("nullableInput");
-      new JavaOptionalAdapter<>(new JavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.nullableInput);
+      new OptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, (Optional.Present<MyInput>)value.nullableInput);
     }
     writer.name("nonNullableInput");
     new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableInput);
-    if (value.nonNullableInputWithDefault.isPresent()) {
+    if (value.nonNullableInputWithDefault instanceof Optional.Present) {
       writer.name("nonNullableInputWithDefault");
-      new JavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nonNullableInputWithDefault);
+      new OptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, customScalarAdapters, (Optional.Present<MyInput>)value.nonNullableInputWithDefault);
     }
   }
 }

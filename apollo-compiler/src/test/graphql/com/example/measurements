@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                    1455
+aggregate-all                                                                                    1458
 aggregate-kotlin-responseBased                                                                    552
 aggregate-kotlin-operationBased                                                                     0
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                     903
+aggregate-java-operationBased                                                                     906
 
-java-operationBased-java_primitive_types                                                          903
+java-operationBased-java_primitive_types                                                          906
 kotlin-responseBased-java_primitive_types                                                         552

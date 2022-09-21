@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_primitive_types.adapter.JavaPrimitiveQuery_ResponseAdapter;
@@ -20,7 +21,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import java.util.Optional;
+import org.jetbrains.annotations.Nullable;
 
 public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   public static final String OPERATION_ID = "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605";
@@ -49,13 +50,13 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
   public static final String OPERATION_NAME = "JavaPrimitiveQuery";
 
-  public final Optional<Optional<Integer>> nullableInt;
+  public final Optional<Integer> nullableInt;
 
   public final int nonNullableInt;
 
   public final Optional<Integer> nonNullableIntWithDefault;
 
-  public final Optional<Optional<MyInput>> nullableInput;
+  public final Optional<MyInput> nullableInput;
 
   public final MyInput nonNullableInput;
 
@@ -67,8 +68,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
   private transient volatile String $toString;
 
-  public JavaPrimitiveQuery(Optional<Optional<Integer>> nullableInt, int nonNullableInt,
-      Optional<Integer> nonNullableIntWithDefault, Optional<Optional<MyInput>> nullableInput,
+  public JavaPrimitiveQuery(Optional<Integer> nullableInt, int nonNullableInt,
+      Optional<Integer> nonNullableIntWithDefault, Optional<MyInput> nullableInput,
       MyInput nonNullableInput, Optional<MyInput> nonNullableInputWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
@@ -173,13 +174,13 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Optional<Integer>> nullableInt;
+    private Optional<Integer> nullableInt;
 
     private int nonNullableInt;
 
     private Optional<Integer> nonNullableIntWithDefault;
 
-    private Optional<Optional<MyInput>> nullableInput;
+    private Optional<MyInput> nullableInput;
 
     private MyInput nonNullableInput;
 
@@ -188,8 +189,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     Builder() {
     }
 
-    public Builder nullableInt(Optional<Optional<Integer>> nullableInt) {
-      this.nullableInt = nullableInt;
+    public Builder nullableInt(@Nullable Integer nullableInt) {
+      this.nullableInt = Optional.presentIfNotNull(nullableInt);
       return this;
     }
 
@@ -198,13 +199,13 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableIntWithDefault(Optional<Integer> nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = nonNullableIntWithDefault;
+    public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
+      this.nonNullableIntWithDefault = Optional.presentIfNotNull(nonNullableIntWithDefault);
       return this;
     }
 
-    public Builder nullableInput(Optional<Optional<MyInput>> nullableInput) {
-      this.nullableInput = nullableInput;
+    public Builder nullableInput(@Nullable MyInput nullableInput) {
+      this.nullableInput = Optional.presentIfNotNull(nullableInput);
       return this;
     }
 
@@ -213,8 +214,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInputWithDefault(Optional<MyInput> nonNullableInputWithDefault) {
-      this.nonNullableInputWithDefault = nonNullableInputWithDefault;
+    public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
+      this.nonNullableInputWithDefault = Optional.presentIfNotNull(nonNullableInputWithDefault);
       return this;
     }
 
@@ -224,11 +225,11 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    public Optional<Integer> nullableInt;
+    public Integer nullableInt;
 
     public int nonNullableInt;
 
-    public Optional<NullableMyType> nullableMyType;
+    public NullableMyType nullableMyType;
 
     public NonNullableMyType nonNullableMyType;
 
@@ -238,8 +239,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Optional<Integer> nullableInt, int nonNullableInt,
-        Optional<NullableMyType> nullableMyType, NonNullableMyType nonNullableMyType) {
+    public Data(Integer nullableInt, int nonNullableInt, NullableMyType nullableMyType,
+        NonNullableMyType nonNullableMyType) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
       this.nullableMyType = nullableMyType;
@@ -294,7 +295,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static class NullableMyType {
-    public Optional<Integer> nullableInt;
+    public Integer nullableInt;
 
     public int nonNullableInt;
 
@@ -304,7 +305,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public NullableMyType(Optional<Integer> nullableInt, int nonNullableInt) {
+    public NullableMyType(Integer nullableInt, int nonNullableInt) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
     }
@@ -349,7 +350,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static class NonNullableMyType {
-    public Optional<Integer> nullableInt;
+    public Integer nullableInt;
 
     public int nonNullableInt;
 
@@ -359,7 +360,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public NonNullableMyType(Optional<Integer> nullableInt, int nonNullableInt) {
+    public NonNullableMyType(Integer nullableInt, int nonNullableInt) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
     }
