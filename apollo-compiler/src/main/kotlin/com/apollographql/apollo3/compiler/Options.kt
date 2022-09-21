@@ -224,6 +224,16 @@ class Options(
      * Default: true.
      */
     val fieldsOnDisjointTypesMustMerge: Boolean = defaultFieldsOnDisjointTypesMustMerge,
+
+    /**
+     * Whether to generate fields as primitive types (`int`, `double`, `boolean`) instead of their boxed types (`Integer`, `Double`,
+     * `Boolean`) when possible.
+     *
+     * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
+     *
+     * Default: false
+     */
+    val generatePrimitiveTypes: Boolean = defaultGeneratePrimitiveTypes,
 ) {
 
   /**
@@ -284,6 +294,7 @@ class Options(
       addTypename: String = this.addTypename,
       requiresOptInAnnotation: String? = this.requiresOptInAnnotation,
       fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge,
+      generatePrimitiveTypes: Boolean = this.generatePrimitiveTypes,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -321,7 +332,8 @@ class Options(
       addJvmOverloads = addJvmOverloads,
       addTypename = addTypename,
       requiresOptInAnnotation = requiresOptInAnnotation,
-      fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge
+      fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
+      generatePrimitiveTypes = generatePrimitiveTypes,
   )
 
   companion object {
@@ -355,6 +367,7 @@ class Options(
     const val defaultUseSchemaPackageNameForFragments = false
     const val defaultAddJvmOverloads = false
     const val defaultFieldsOnDisjointTypesMustMerge = true
+    const val defaultGeneratePrimitiveTypes = false
   }
 }
 

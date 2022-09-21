@@ -68,15 +68,19 @@ internal fun readFromResponseCodeBlock(
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
   val prefix = regularProperties.map { property ->
+    val resolvedType = context.resolver.resolveIrType(property.info.type)
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
       (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of(T, JavaClassNames.Absent)
+      resolvedType == TypeName.INT -> CodeBlock.of("0")
+      resolvedType == TypeName.DOUBLE -> CodeBlock.of("0.0")
+      resolvedType == TypeName.BOOLEAN -> CodeBlock.of("false")
       else -> CodeBlock.of("null")
     }
 
     CodeBlock.of(
         "$T $L = $L;",
-        context.resolver.resolveIrType(property.info.type),
+        resolvedType,
         context.layout.variableName(property.info.responseName),
         variableInitializer
     )
