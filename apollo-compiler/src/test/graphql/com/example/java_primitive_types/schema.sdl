@@ -1,6 +1,6 @@
 type Query {
-  nullableInt(input: MyInput, nullableInt: Int, nonNullableInt: Int!): Int
-  nonNullableInt(input: MyInput, nullableInt: Int, nonNullableInt: Int!): Int!
+  nullableInt(nullableInt: Int, nonNullableInt: Int!, nonNullableIntWithDefault: Int! = 4, nullableInput: MyInput, nonNullableInput: MyInput!, nonNullableInputWithDefault: MyInput! = {nonNullableInt: 4}): Int
+  nonNullableInt(nullableInt: Int, nonNullableInt: Int!, nonNullableIntWithDefault: Int! = 4, nullableInput: MyInput, nonNullableInput: MyInput!, nonNullableInputWithDefault: MyInput! = {nonNullableInt: 4}): Int!
   nullableMyType: MyType
   nonNullableMyType: MyType!
 }

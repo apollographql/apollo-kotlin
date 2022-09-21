@@ -42,8 +42,11 @@ public object JavaPrimitiveQuerySelections {
           name = "nullableInt",
           type = GraphQLInt.type
         ).arguments(listOf(
-          CompiledArgument.Builder("input", CompiledVariable("input")).build(),
+          CompiledArgument.Builder("nonNullableInput", CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder("nonNullableInputWithDefault", CompiledVariable("nonNullableInputWithDefault")).build(),
           CompiledArgument.Builder("nonNullableInt", CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder("nonNullableIntWithDefault", CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder("nullableInput", CompiledVariable("nullableInput")).build(),
           CompiledArgument.Builder("nullableInt", CompiledVariable("nullableInt")).build()
         ))
         .build(),
@@ -51,8 +54,11 @@ public object JavaPrimitiveQuerySelections {
           name = "nonNullableInt",
           type = GraphQLInt.type.notNull()
         ).arguments(listOf(
-          CompiledArgument.Builder("input", CompiledVariable("input")).build(),
+          CompiledArgument.Builder("nonNullableInput", CompiledVariable("nonNullableInput")).build(),
+          CompiledArgument.Builder("nonNullableInputWithDefault", CompiledVariable("nonNullableInputWithDefault")).build(),
           CompiledArgument.Builder("nonNullableInt", CompiledVariable("nonNullableInt")).build(),
+          CompiledArgument.Builder("nonNullableIntWithDefault", CompiledVariable("nonNullableIntWithDefault")).build(),
+          CompiledArgument.Builder("nullableInput", CompiledVariable("nullableInput")).build(),
           CompiledArgument.Builder("nullableInt", CompiledVariable("nullableInt")).build()
         ))
         .build(),

@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
+import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalType
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrEnumType2
@@ -59,23 +60,36 @@ internal class JavaResolver(
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   fun resolveIrType(type: IrType): TypeName {
+    println("XXX $type")
     if (type is IrNonNullType) {
       return if (generatePrimitiveTypes && type.ofType is IrScalarType) {
         resolveIrScalarType(type.ofType, asPrimitiveType = true)
       } else {
-        resolveIrType(type.ofType)
+        resolveIrType(type.ofType).unwrapFromOptional()
       }
     }
 
     return when (type) {
       is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
-      is IrOptionalType -> ParameterizedTypeName.get(JavaClassNames.Optional, resolveIrType(type.ofType).boxIfPrimitiveType())
+      is IrOptionalType -> resolveIrType(type.ofType).boxIfPrimitiveType().wrapInOptional()
       is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-    }
+    }.wrapInOptional()
   }
+
+  // TODO return other flavors depending on option
+  private fun optionalClassName(): ClassName = JavaClassNames.JavaOptional
+
+  private fun TypeName.wrapInOptional(): TypeName {
+    return ParameterizedTypeName.get(optionalClassName(), this)
+  }
+
+  private fun TypeName.unwrapFromOptional(): TypeName {
+    return if (this !is ParameterizedTypeName || rawType != optionalClassName()) this else  typeArguments.first()
+  }
+
 
   private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {
     // Try mapping first, then built-ins, then fallback to Object
@@ -90,21 +104,23 @@ internal class JavaResolver(
   }
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
+    println("YYY $type")
     if (type !is IrNonNullType) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
       return when {
-        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableStringAdapter")
-        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableStringAdapter")
-        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableBooleanAdapter")
-        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableIntAdapter")
-        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> adapterCodeBlock("NullableDoubleAdapter")
+        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("String")
+        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("String")
+        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("Boolean")
+        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("Int")
+        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("Double")
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
 
         else -> {
-          CodeBlock.of("new $T<>($L)", JavaClassNames.NullableAdapter, adapterInitializer(IrNonNullType(type), requiresBuffering))
+//          CodeBlock.of("new $T<>($L)", JavaClassNames.NullableAdapter, adapterInitializer(IrNonNullType(type), requiresBuffering))
+          CodeBlock.of("new $T<>($L)", optionalAdapterClassName(), adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
       }
     }
@@ -167,10 +183,14 @@ internal class JavaResolver(
       }
 
       is IrOptionalType -> {
-        CodeBlock.of("new $T<>($L)", JavaClassNames.OptionalAdapter, adapterInitializer(type.ofType, requiresBuffering))
+        CodeBlock.of("new $T<>($L)", optionalAdapterClassName(), adapterInitializer(type.ofType, requiresBuffering))
       }
     }
   }
+
+  // TODO return other flavors depending on option
+  private fun optionalAdapterClassName(): ClassName =  JavaClassNames.JavaOptionalAdapter// JavaClassNames.OptionalAdapter
+
 
   private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
@@ -215,6 +235,14 @@ internal class JavaResolver(
    * Nullable adapters are @JvmField properties
    */
   private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
+  private fun optionalAdapterCodeBlock(className: ClassName, adapterName: String) = CodeBlock.of("$T.$L", className, adapterName)
+  private fun optionalAdapterCodeBlock(typeName: String):CodeBlock {
+    // TODO It depends
+    val className = JavaClassNames.JavaOptionalAdapters
+    val adapterNamePrefix = "Java"
+    val adapterNameSuffix = "Adapter"
+    return optionalAdapterCodeBlock(className, adapterNamePrefix + "Optional" + typeName + adapterNameSuffix)
+  }
 
   fun resolveModel(path: String) = resolveAndAssert(ResolverKeyKind.Model, path)
 

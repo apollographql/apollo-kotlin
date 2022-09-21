@@ -80,6 +80,10 @@ internal object JavaClassNames {
    * ClassNames for kotlin files turned into java classes
    */
   val Adapters = ClassName.get(apolloApiPackageName, "Adapters")
+  val JavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.adapter", "JavaOptionalAdapter")
+  val JavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.adapter", "JavaOptionalAdapters")
+  val GuavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.adapter", "GuavaOptionalAdapter")
+  val GuavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.adapter", "GuavaOptionalAdapters")
   val CompiledGraphQL = ClassName.get(apolloApiPackageName, "CompiledGraphQL")
   val BooleanExpressions = ClassName.get(apolloApiPackageName, "BooleanExpressions")
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")
@@ -105,6 +109,7 @@ internal object JavaClassNames {
   val HashMap = ClassName.get("java.util", "HashMap")
   val Map: ClassName = ClassName.get("java.util", "Map")
   val MapOfStringToObject = ParameterizedTypeName.get(Map, String, Object)
+  val JavaOptional = ClassName.get("java.util", "Optional")
 
   val ObjectBuilderKt = ClassName.get(apolloApiPackageName, "ObjectBuilderKt")
   val ObjectMap = ClassName.get(apolloApiPackageName, "ObjectMap")
@@ -112,4 +117,5 @@ internal object JavaClassNames {
   val JetBrainsNullable = ClassNames.JetBrainsNullable.toJavaPoetClassName()
   val JetBrainsNonNull = ClassNames.JetBrainsNonNull.toJavaPoetClassName()
 
+  val GuavaOptional = ClassName.get("com.google.common.base", "Optional")
 }

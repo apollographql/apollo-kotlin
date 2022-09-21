@@ -81,7 +81,6 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
   }
 }
 
-@SharedImmutable
 @JvmField
 val StringAdapter = object  : Adapter<String> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
@@ -93,7 +92,6 @@ val StringAdapter = object  : Adapter<String> {
   }
 }
 
-@SharedImmutable
 @JvmField
 val IntAdapter = object  : Adapter<Int> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
@@ -105,7 +103,6 @@ val IntAdapter = object  : Adapter<Int> {
   }
 }
 
-@SharedImmutable
 @JvmField
 val DoubleAdapter = object  : Adapter<Double> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
@@ -117,11 +114,7 @@ val DoubleAdapter = object  : Adapter<Double> {
   }
 }
 
-/**
- * An [Adapter] that converts to/from a [Float]
- * Floats are not part of the GraphQL spec but this can be used in custom scalars
- */
-@SharedImmutable
+
 @JvmField
 val FloatAdapter = object  : Adapter<Float> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
@@ -133,13 +126,7 @@ val FloatAdapter = object  : Adapter<Float> {
   }
 }
 
-/**
- * An [Adapter] that converts to/from a [Long]
- * Longs are not part of the GraphQL spec but this can be used in custom scalars
- *
- * If the Json number does not fit in a [Long], an exception will be thrown
- */
-@SharedImmutable
+
 @JvmField
 val LongAdapter = object : Adapter<Long>  {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
@@ -151,7 +138,6 @@ val LongAdapter = object : Adapter<Long>  {
   }
 }
 
-@SharedImmutable
 @JvmField
 val BooleanAdapter = object  : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
@@ -163,7 +149,6 @@ val BooleanAdapter = object  : Adapter<Boolean> {
   }
 }
 
-@SharedImmutable
 @JvmField
 val AnyAdapter = object : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
@@ -202,7 +187,6 @@ internal class PassThroughAdapter<T>: Adapter<T> {
   }
 }
 
-@SharedImmutable
 @JvmField
 val UploadAdapter = object  : Adapter<Upload> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Upload {
@@ -214,22 +198,17 @@ val UploadAdapter = object  : Adapter<Upload> {
   }
 }
 
-/**
+/*
  * Global instances of nullable adapters for built-in scalar types
  */
-@SharedImmutable
 @JvmField
 val NullableStringAdapter = StringAdapter.nullable()
-@SharedImmutable
 @JvmField
 val NullableDoubleAdapter = DoubleAdapter.nullable()
-@SharedImmutable
 @JvmField
 val NullableIntAdapter = IntAdapter.nullable()
-@SharedImmutable
 @JvmField
 val NullableBooleanAdapter = BooleanAdapter.nullable()
-@SharedImmutable
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
 

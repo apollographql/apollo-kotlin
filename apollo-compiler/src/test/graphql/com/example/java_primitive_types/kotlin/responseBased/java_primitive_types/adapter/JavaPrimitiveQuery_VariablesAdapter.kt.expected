@@ -29,11 +29,6 @@ public object JavaPrimitiveQuery_VariablesAdapter : Adapter<JavaPrimitiveQuery> 
     customScalarAdapters: CustomScalarAdapters,
     `value`: JavaPrimitiveQuery,
   ): Unit {
-    if (value.input is Optional.Present) {
-      writer.name("input")
-      MyInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
-          value.input)
-    }
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
       NullableIntAdapter.optional().toJson(writer, customScalarAdapters, value.nullableInt)
@@ -43,6 +38,18 @@ public object JavaPrimitiveQuery_VariablesAdapter : Adapter<JavaPrimitiveQuery> 
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
       IntAdapter.optional().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+    }
+    if (value.nullableInput is Optional.Present) {
+      writer.name("nullableInput")
+      MyInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
+          value.nullableInput)
+    }
+    writer.name("nonNullableInput")
+    MyInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.nonNullableInput)
+    if (value.nonNullableInputWithDefault is Optional.Present) {
+      writer.name("nonNullableInputWithDefault")
+      MyInput_InputAdapter.obj().optional().toJson(writer, customScalarAdapters,
+          value.nonNullableInputWithDefault)
     }
   }
 }

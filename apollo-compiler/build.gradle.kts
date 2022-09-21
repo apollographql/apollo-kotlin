@@ -24,6 +24,10 @@ dependencies {
   implementation(golatac.lib("moshi"))
   implementation(golatac.lib("moshix.sealed.runtime"))
 
+  implementation(project(":apollo-adapters")) {
+    because("For Java and Guava Optional adapter use in the Java generated code")
+  }
+
   ksp(golatac.lib("moshix.sealed.codegen"))
   ksp(golatac.lib("moshix.ksp"))
 

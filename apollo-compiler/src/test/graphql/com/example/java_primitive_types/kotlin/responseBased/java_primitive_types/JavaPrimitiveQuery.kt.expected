@@ -22,10 +22,12 @@ import kotlin.String
 import kotlin.Unit
 
 public data class JavaPrimitiveQuery(
-  public val input: Optional<MyInput?> = Optional.Absent,
   public val nullableInt: Optional<Int?> = Optional.Absent,
   public val nonNullableInt: Int,
   public val nonNullableIntWithDefault: Optional<Int> = Optional.Absent,
+  public val nullableInput: Optional<MyInput?> = Optional.Absent,
+  public val nonNullableInput: MyInput,
+  public val nonNullableInputWithDefault: Optional<MyInput> = Optional.Absent,
 ) : Query<JavaPrimitiveQuery.Data> {
   public override fun id(): String = OPERATION_ID
 
@@ -67,16 +69,24 @@ public data class JavaPrimitiveQuery(
 
   public companion object {
     public const val OPERATION_ID: String =
-        "14afbb396dadd86751b8c79dde627c847fca22a10332bfad73aacb6da1c2a4c1"
+        "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
      * The un-minimized version is:
      *
-     * query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!,
-     * $nonNullableIntWithDefault: Int! = 4 ) {
-     *   nullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
-     *   nonNullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
+     * query JavaPrimitiveQuery($nullableInt: Int, $nonNullableInt: Int!,
+     * $nonNullableIntWithDefault: Int! = 4 , $nullableInput: MyInput, $nonNullableInput: MyInput!,
+     * $nonNullableInputWithDefault: MyInput! = {
+     *   nonNullableInt: 4
+     * }
+     *  ) {
+     *   nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt,
+     * nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput,
+     * nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+     *   nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt,
+     * nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput,
+     * nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
      *   nullableMyType {
      *     nullableInt
      *     nonNullableInt
@@ -89,7 +99,7 @@ public data class JavaPrimitiveQuery(
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query JavaPrimitiveQuery(${'$'}input: MyInput, ${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!, ${'$'}nonNullableIntWithDefault: Int! = 4 ) { nullableInt(input: ${'$'}input, nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt) nonNullableInt(input: ${'$'}input, nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } }"
+          "query JavaPrimitiveQuery(${'$'}nullableInt: Int, ${'$'}nonNullableInt: Int!, ${'$'}nonNullableIntWithDefault: Int! = 4 , ${'$'}nullableInput: MyInput, ${'$'}nonNullableInput: MyInput!, ${'$'}nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nonNullableInt(nullableInt: ${'$'}nullableInt, nonNullableInt: ${'$'}nonNullableInt, nonNullableIntWithDefault: ${'$'}nonNullableIntWithDefault, nullableInput: ${'$'}nullableInput, nonNullableInput: ${'$'}nonNullableInput, nonNullableInputWithDefault: ${'$'}nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } }"
 
     public const val OPERATION_NAME: String = "JavaPrimitiveQuery"
   }

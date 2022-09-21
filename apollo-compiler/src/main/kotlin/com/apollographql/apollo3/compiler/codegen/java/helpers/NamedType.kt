@@ -65,21 +65,23 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 
-  var castToPresent = CodeBlock.of("")
   if (type.isOptional()) {
-    builder.beginControlFlow("if ($value.$propertyName instanceof $T)", JavaClassNames.Present)
-    val resolvedType = context.resolver.resolveIrType(type.makeNonOptional()).boxIfPrimitiveType()
-    castToPresent = CodeBlock.of("($T)", ParameterizedTypeName.get(JavaClassNames.Present, resolvedType))
+    builder.beginOptionalControlFlow(propertyName)
   }
   builder.add("$writer.name($S);\n", graphQlName)
   builder.addStatement(
-      "$L.${Identifier.toJson}($writer, $customScalarAdapters, $L$value.$propertyName)",
+      "$L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)",
       adapterInitializer,
-      castToPresent
   )
   if (type.isOptional()) {
     builder.endControlFlow()
   }
 
   return builder.build()
+}
+
+private fun CodeBlock.Builder.beginOptionalControlFlow(propertyName: String) {
+  // TODO it depends
+//  beginControlFlow("if ($value.$propertyName instanceof $T)", JavaClassNames.Present)
+  beginControlFlow("if ($value.$propertyName.isPresent())")
 }

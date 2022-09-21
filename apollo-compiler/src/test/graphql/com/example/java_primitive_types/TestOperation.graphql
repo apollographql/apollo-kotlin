@@ -1,6 +1,13 @@
-query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4) {
-  nullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
-  nonNullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
+query JavaPrimitiveQuery(
+  $nullableInt: Int,
+  $nonNullableInt: Int!,
+  $nonNullableIntWithDefault: Int! = 4,
+  $nullableInput: MyInput,
+  $nonNullableInput: MyInput!,
+  $nonNullableInputWithDefault: MyInput! = {nonNullableInt: 4},
+) {
+  nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+  nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
   nullableMyType {
     nullableInt
     nonNullableInt
@@ -10,3 +17,4 @@ query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: In
     nonNullableInt
   }
 }
+
