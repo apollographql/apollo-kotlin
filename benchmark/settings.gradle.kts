@@ -5,6 +5,5 @@ includeBuild("build-logic")
 pluginManagement {
   repositories {
     mavenCentral()
-    mavenLocal()
   }
 }

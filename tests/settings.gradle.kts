@@ -28,6 +28,5 @@ pluginManagement {
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
       }
     }
-    mavenLocal()
   }
 }

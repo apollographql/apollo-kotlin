@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-  id("net.mbonnin.golatac").version("0.0.1")
+  id("net.mbonnin.golatac").version("0.0.2")
 }
 
 golatac.init(file("../gradle/libraries.toml"))
