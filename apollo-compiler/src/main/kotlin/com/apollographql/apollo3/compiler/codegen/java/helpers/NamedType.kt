@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
+import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
@@ -65,13 +66,20 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 
+  var castToPresent = CodeBlock.of("")
   if (type.isOptional()) {
-    builder.beginOptionalControlFlow(propertyName)
+    builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
+    // Apollo's Optional need to cast the value to a Present<WrappedType>, while Java's and Guava's don't
+    if (context.nullableFieldStyle !in setOf(JavaNullableFieldStyle.JAVA_OPTIONAL, JavaNullableFieldStyle.GUAVA_OPTIONAL)) {
+      val resolvedType = context.resolver.resolveIrType(type.makeNonOptional()).boxIfPrimitiveType()
+      castToPresent = CodeBlock.of("($T)", ParameterizedTypeName.get(JavaClassNames.Present, resolvedType))
+    }
   }
   builder.add("$writer.name($S);\n", graphQlName)
   builder.addStatement(
-      "$L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)",
+      "$L.${Identifier.toJson}($writer, $customScalarAdapters, $L$value.$propertyName)",
       adapterInitializer,
+      castToPresent
   )
   if (type.isOptional()) {
     builder.endControlFlow()
@@ -80,8 +88,12 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   return builder.build()
 }
 
-private fun CodeBlock.Builder.beginOptionalControlFlow(propertyName: String) {
-  // TODO it depends
-//  beginControlFlow("if ($value.$propertyName instanceof $T)", JavaClassNames.Present)
-  beginControlFlow("if ($value.$propertyName.isPresent())")
+private fun CodeBlock.Builder.beginOptionalControlFlow(propertyName: String, nullableFieldStyle: JavaNullableFieldStyle) {
+  when (nullableFieldStyle) {
+    JavaNullableFieldStyle.JAVA_OPTIONAL,
+    JavaNullableFieldStyle.GUAVA_OPTIONAL,
+    -> beginControlFlow("if ($value.$propertyName.isPresent())")
+
+    else -> beginControlFlow("if ($value.$propertyName instanceof $T)", JavaClassNames.Present)
+  }
 }

@@ -1,7 +1,9 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
+import com.apollographql.apollo3.compiler.Options
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
@@ -365,15 +367,19 @@ abstract class DefaultApolloExtension(
       project.kotlinMultiplatformExtension != null -> {
         connection.connectToKotlinSourceSet("commonMain")
       }
+
       project.androidExtension != null -> {
         connection.connectToAndroidSourceSet("main")
       }
+
       project.kotlinProjectExtension != null -> {
         connection.connectToKotlinSourceSet("main")
       }
+
       project.javaConvention != null -> {
         connection.connectToJavaSourceSet("main")
       }
+
       else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
     }
   }
@@ -383,16 +389,20 @@ abstract class DefaultApolloExtension(
       project.kotlinMultiplatformExtension != null -> {
         connection.connectToKotlinSourceSet("commonTest")
       }
+
       project.androidExtension != null -> {
         connection.connectToAndroidSourceSet("test")
         connection.connectToAndroidSourceSet("androidTest")
       }
+
       project.kotlinProjectExtension != null -> {
         connection.connectToKotlinSourceSet("test")
       }
+
       project.javaConvention != null -> {
         connection.connectToJavaSourceSet("test")
       }
+
       else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
     }
   }
@@ -473,12 +483,15 @@ abstract class DefaultApolloExtension(
             }
           }
         }
+
         project.hasKotlinPlugin() -> {
           generateKotlinModels = true
         }
+
         project.hasJavaPlugin() -> {
           generateKotlinModels = false
         }
+
         else -> {
           error("Apollo: No Java or Kotlin plugin found")
         }
@@ -576,6 +589,9 @@ abstract class DefaultApolloExtension(
       task.requiresOptInAnnotation.set(service.requiresOptInAnnotation)
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.generatePrimitiveTypes.set(service.generatePrimitiveTypes)
+      val nullableFieldStyle: String? = service.nullableFieldStyle.orNull
+      task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullableFieldStyle.fromOptionName(nullableFieldStyle)
+          ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
     }
   }
 

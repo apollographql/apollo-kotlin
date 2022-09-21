@@ -211,6 +211,7 @@ object ApolloCompiler {
             generateDataBuilders = options.generateDataBuilders,
             generateModelBuilder = options.generateModelBuilder,
             generatePrimitiveTypes = options.generatePrimitiveTypes,
+            nullableFieldStyle = options.nullableFieldStyle,
         ).write(outputDir = outputDir)
       }
       else -> {

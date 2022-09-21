@@ -587,6 +587,21 @@ interface Service {
   val generatePrimitiveTypes: Property<Boolean>
 
   /**
+   * The style to use for fields that are nullable in the Java generated code.
+   *
+   * Only valid when [generateKotlinModels] is `false`.
+   *
+   * Acceptable values:
+   * - `simple`: Fields will be generated with the same type whether they are nullable or not
+   * - `apolloOptional`: Fields will be generated as Apollo's `apollo.api.Optional<Type>` if nullable, or `Type` if not.
+   * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
+   * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
+   *
+   * Default: `simple`
+   */
+  val nullableFieldStyle: Property<String>
+
+  /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen
    *
    * In practice, it does the following:

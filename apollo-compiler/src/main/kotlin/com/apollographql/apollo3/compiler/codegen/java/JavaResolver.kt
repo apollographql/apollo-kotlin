@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
+import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
@@ -10,7 +11,6 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.adapter.singletonAdapterInitializer
-import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalType
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrEnumType2
@@ -37,7 +37,34 @@ internal class JavaResolver(
     val next: JavaResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generatePrimitiveTypes: Boolean,
+    private val nullableFieldStyle: JavaNullableFieldStyle,
 ) {
+
+  private val optionalClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptional
+    JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptional
+    else -> JavaClassNames.Optional
+  }
+
+  private val optionalAdapterClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
+    JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    else -> JavaClassNames.OptionalAdapter
+  }
+
+  private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
+    JavaNullableFieldStyle.APOLLO_OPTIONAL -> JavaClassNames.OptionalAdapter
+    JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
+    JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    else -> JavaClassNames.NullableAdapter
+  }
+
+  private val wrapNullableFieldsInOptional = nullableFieldStyle in setOf(
+      JavaNullableFieldStyle.APOLLO_OPTIONAL,
+      JavaNullableFieldStyle.JAVA_OPTIONAL,
+      JavaNullableFieldStyle.GUAVA_OPTIONAL,
+  )
+
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -60,12 +87,11 @@ internal class JavaResolver(
   private fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   fun resolveIrType(type: IrType): TypeName {
-    println("XXX $type")
     if (type is IrNonNullType) {
       return if (generatePrimitiveTypes && type.ofType is IrScalarType) {
         resolveIrScalarType(type.ofType, asPrimitiveType = true)
       } else {
-        resolveIrType(type.ofType).unwrapFromOptional()
+        resolveIrType(type.ofType).let { if (wrapNullableFieldsInOptional) it.unwrapFromOptional() else it }
       }
     }
 
@@ -76,20 +102,16 @@ internal class JavaResolver(
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-    }.wrapInOptional()
+    }.let { if (wrapNullableFieldsInOptional) it.wrapInOptional() else it }
   }
 
-  // TODO return other flavors depending on option
-  private fun optionalClassName(): ClassName = JavaClassNames.JavaOptional
-
   private fun TypeName.wrapInOptional(): TypeName {
-    return ParameterizedTypeName.get(optionalClassName(), this)
+    return ParameterizedTypeName.get(optionalClassName, this)
   }
 
   private fun TypeName.unwrapFromOptional(): TypeName {
-    return if (this !is ParameterizedTypeName || rawType != optionalClassName()) this else  typeArguments.first()
+    return if (this !is ParameterizedTypeName || rawType != optionalClassName) this else typeArguments.first()
   }
-
 
   private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {
     // Try mapping first, then built-ins, then fallback to Object
@@ -109,18 +131,17 @@ internal class JavaResolver(
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
       return when {
-        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("String")
-        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("String")
-        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("Boolean")
-        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("Int")
-        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> optionalAdapterCodeBlock("Double")
+        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("String")
+        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("String")
+        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Boolean")
+        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Int")
+        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Double")
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
           adapterCodeBlock("NullableAnyAdapter")
         }
 
         else -> {
-//          CodeBlock.of("new $T<>($L)", JavaClassNames.NullableAdapter, adapterInitializer(IrNonNullType(type), requiresBuffering))
-          CodeBlock.of("new $T<>($L)", optionalAdapterClassName(), adapterInitializer(IrNonNullType(type), requiresBuffering))
+          CodeBlock.of("new $T<>($L)", optionalOrNullableAdapterClassName, adapterInitializer(IrNonNullType(type), requiresBuffering))
         }
       }
     }
@@ -183,14 +204,10 @@ internal class JavaResolver(
       }
 
       is IrOptionalType -> {
-        CodeBlock.of("new $T<>($L)", optionalAdapterClassName(), adapterInitializer(type.ofType, requiresBuffering))
+        CodeBlock.of("new $T<>($L)", optionalAdapterClassName, adapterInitializer(type.ofType, requiresBuffering))
       }
     }
   }
-
-  // TODO return other flavors depending on option
-  private fun optionalAdapterClassName(): ClassName =  JavaClassNames.JavaOptionalAdapter// JavaClassNames.OptionalAdapter
-
 
   private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
@@ -235,13 +252,36 @@ internal class JavaResolver(
    * Nullable adapters are @JvmField properties
    */
   private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
-  private fun optionalAdapterCodeBlock(className: ClassName, adapterName: String) = CodeBlock.of("$T.$L", className, adapterName)
-  private fun optionalAdapterCodeBlock(typeName: String):CodeBlock {
-    // TODO It depends
-    val className = JavaClassNames.JavaOptionalAdapters
-    val adapterNamePrefix = "Java"
-    val adapterNameSuffix = "Adapter"
-    return optionalAdapterCodeBlock(className, adapterNamePrefix + "Optional" + typeName + adapterNameSuffix)
+  private fun scalarAdapterCodeBlock(typeName: String): CodeBlock {
+    val className: ClassName
+    val adapterNamePrefix: String
+    when (nullableFieldStyle) {
+      JavaNullableFieldStyle.APOLLO_OPTIONAL -> {
+        // Ex: Adapters.OptionalStringAdapter
+        className = JavaClassNames.Adapters
+        adapterNamePrefix = "Optional"
+      }
+
+      JavaNullableFieldStyle.JAVA_OPTIONAL -> {
+        // Ex: JavaOptionalAdapters.JavaOptionalStringAdapter
+        className = JavaClassNames.JavaOptionalAdapters
+        adapterNamePrefix = "JavaOptional"
+      }
+
+      JavaNullableFieldStyle.GUAVA_OPTIONAL -> {
+        // Ex: GuavaOptionalAdapters.GuavaOptionalStringAdapter
+        className = JavaClassNames.GuavaOptional
+        adapterNamePrefix = "GuavaOptional"
+      }
+
+      else -> {
+        // Ex: Adapters.NullableStringAdapter
+        className = JavaClassNames.Adapters
+        adapterNamePrefix = "Nullable"
+      }
+    }
+    val adapterName = "$adapterNamePrefix${typeName}Adapter"
+    return CodeBlock.of("$T.$L", className, adapterName)
   }
 
   fun resolveModel(path: String) = resolveAndAssert(ResolverKeyKind.Model, path)
