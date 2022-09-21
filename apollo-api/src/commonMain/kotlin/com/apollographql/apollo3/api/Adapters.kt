@@ -14,7 +14,6 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
-import kotlin.native.concurrent.SharedImmutable
 
 /**
  * This file contains a list of [Adapter] for standard types
@@ -69,7 +68,9 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
 }
 
 /**
- * ResponseAdapters can only express something that's present. Absent values are handled outside of the adapter
+ * OptionalAdapter can only express something that's present. Absent values are handled outside of the adapter.
+ *
+ * This adapter is used to handle optional arguments in operations, as well as optional fields in Input objects.
  */
 class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
@@ -81,8 +82,30 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
   }
 }
 
+/**
+ * This adapter is used to handle JSON serialization/deserialization of nullable fields when they are represented as `Optional<Type>`.
+ */
+class OptionalJsonAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
+    return if (reader.peek() == JsonReader.Token.NULL) {
+      reader.skipValue()
+      Optional.Absent
+    } else {
+      Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional<T>) {
+    if (value is Optional.Present) {
+      wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+    } else {
+      writer.nullValue()
+    }
+  }
+}
+
 @JvmField
-val StringAdapter = object  : Adapter<String> {
+val StringAdapter = object : Adapter<String> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
     return reader.nextString()!!
   }
@@ -93,7 +116,7 @@ val StringAdapter = object  : Adapter<String> {
 }
 
 @JvmField
-val IntAdapter = object  : Adapter<Int> {
+val IntAdapter = object : Adapter<Int> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
     return reader.nextInt()
   }
@@ -104,7 +127,7 @@ val IntAdapter = object  : Adapter<Int> {
 }
 
 @JvmField
-val DoubleAdapter = object  : Adapter<Double> {
+val DoubleAdapter = object : Adapter<Double> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
     return reader.nextDouble()
   }
@@ -116,7 +139,7 @@ val DoubleAdapter = object  : Adapter<Double> {
 
 
 @JvmField
-val FloatAdapter = object  : Adapter<Float> {
+val FloatAdapter = object : Adapter<Float> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
@@ -128,7 +151,7 @@ val FloatAdapter = object  : Adapter<Float> {
 
 
 @JvmField
-val LongAdapter = object : Adapter<Long>  {
+val LongAdapter = object : Adapter<Long> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
     return reader.nextLong()
   }
@@ -139,7 +162,7 @@ val LongAdapter = object : Adapter<Long>  {
 }
 
 @JvmField
-val BooleanAdapter = object  : Adapter<Boolean> {
+val BooleanAdapter = object : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
@@ -168,9 +191,9 @@ val AnyAdapter = object : Adapter<Any> {
   }
 }
 
-internal class PassThroughAdapter<T>: Adapter<T> {
+internal class PassThroughAdapter<T> : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    check (reader is MapJsonReader) {
+    check(reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
     }
 
@@ -179,7 +202,7 @@ internal class PassThroughAdapter<T>: Adapter<T> {
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-    check (writer is MapJsonWriter) {
+    check(writer is MapJsonWriter) {
       "UnsafeAdapter only supports MapJsonWriter"
     }
 
@@ -188,7 +211,7 @@ internal class PassThroughAdapter<T>: Adapter<T> {
 }
 
 @JvmField
-val UploadAdapter = object  : Adapter<Upload> {
+val UploadAdapter = object : Adapter<Upload> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Upload {
     error("File Upload used in output position")
   }
@@ -203,14 +226,36 @@ val UploadAdapter = object  : Adapter<Upload> {
  */
 @JvmField
 val NullableStringAdapter = StringAdapter.nullable()
+
 @JvmField
 val NullableDoubleAdapter = DoubleAdapter.nullable()
+
 @JvmField
 val NullableIntAdapter = IntAdapter.nullable()
+
 @JvmField
 val NullableBooleanAdapter = BooleanAdapter.nullable()
+
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
+
+/*
+ * Global instances of nullable adapters for built-in scalar types
+ */
+@JvmField
+val OptionalJsonStringAdapter = OptionalJsonAdapter(StringAdapter)
+
+@JvmField
+val OptionalJsonDoubleAdapter = OptionalJsonAdapter(DoubleAdapter)
+
+@JvmField
+val OptionalJsonIntAdapter = OptionalJsonAdapter(IntAdapter)
+
+@JvmField
+val OptionalJsonBooleanAdapter = OptionalJsonAdapter(BooleanAdapter)
+
+@JvmField
+val OptionalJsonAnyAdapter = OptionalJsonAdapter(AnyAdapter)
 
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
@@ -252,16 +297,23 @@ class ObjectAdapter<T>(
 
 @JvmName("-nullable")
 fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
+
 @JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
+
 @JvmName("-obj")
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+
 @JvmName("-optional")
 fun <T> Adapter<T>.optional() = OptionalAdapter(this)
 
 
 @JvmName("-toJson")
 @JvmOverloads
-fun <T> Adapter<T>.toJsonString(value: T, customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty, indent: String? = null): String = buildJsonString(indent) {
+fun <T> Adapter<T>.toJsonString(
+    value: T,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    indent: String? = null,
+): String = buildJsonString(indent) {
   this@toJsonString.toJson(this, customScalarAdapters, value)
 }

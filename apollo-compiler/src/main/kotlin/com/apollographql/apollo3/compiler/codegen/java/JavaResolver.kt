@@ -53,7 +53,7 @@ internal class JavaResolver(
   }
 
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullableFieldStyle.APOLLO_OPTIONAL -> JavaClassNames.OptionalAdapter
+    JavaNullableFieldStyle.APOLLO_OPTIONAL -> JavaClassNames.OptionalJsonAdapter
     JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
     JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
     else -> JavaClassNames.NullableAdapter
@@ -126,7 +126,6 @@ internal class JavaResolver(
   }
 
   fun adapterInitializer(type: IrType, requiresBuffering: Boolean): CodeBlock {
-    println("YYY $type")
     if (type !is IrNonNullType) {
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
@@ -257,9 +256,9 @@ internal class JavaResolver(
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
       JavaNullableFieldStyle.APOLLO_OPTIONAL -> {
-        // Ex: Adapters.OptionalStringAdapter
+        // Ex: Adapters.OptionalJsonStringAdapter
         className = JavaClassNames.Adapters
-        adapterNamePrefix = "Optional"
+        adapterNamePrefix = "OptionalJson"
       }
 
       JavaNullableFieldStyle.JAVA_OPTIONAL -> {
@@ -270,7 +269,7 @@ internal class JavaResolver(
 
       JavaNullableFieldStyle.GUAVA_OPTIONAL -> {
         // Ex: GuavaOptionalAdapters.GuavaOptionalStringAdapter
-        className = JavaClassNames.GuavaOptional
+        className = JavaClassNames.GuavaOptionalAdapters
         adapterNamePrefix = "GuavaOptional"
       }
 
