@@ -50,34 +50,34 @@ kotlin {
     val jvmMain by getting {
       dependsOn(commonMain)
       dependencies {
-        implementation(libs.sqldelight.jvm)
+        implementation(golatac.lib("sqldelight.jvm"))
       }
     }
 
     val appleMain by getting {
       dependencies {
-        implementation(libs.sqldelight.native)
+        implementation(golatac.lib("sqldelight.native"))
       }
     }
 
     val jvmTest by getting {
       dependencies {
-        implementation(libs.truth)
+        implementation(golatac.lib("truth"))
       }
     }
 
     val androidMain by getting {
       dependsOn(commonMain)
       dependencies {
-        api(libs.androidx.sqlite)
-        implementation(libs.sqldelight.android)
-        implementation(libs.androidx.sqlite.framework)
-        implementation(libs.androidx.startup.runtime)
+        api(golatac.lib("androidx.sqlite"))
+        implementation(golatac.lib("sqldelight.android"))
+        implementation(golatac.lib("androidx.sqlite.framework"))
+        implementation(golatac.lib("androidx.startup.runtime"))
       }
     }
     val androidTest by getting {
       dependencies {
-        implementation(libs.kotlin.test.junit)
+        implementation(golatac.lib("kotlin.test.junit"))
       }
     }
     val commonTest by getting {
@@ -89,11 +89,11 @@ kotlin {
 }
 
 configure<com.android.build.gradle.LibraryExtension> {
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
+  compileSdk = golatac.version("android.sdkversion.compile").toInt()
 
   defaultConfig {
-    minSdk = libs.versions.android.sdkversion.min.get().toInt()
-    targetSdk = libs.versions.android.sdkversion.target.get().toInt()
+    minSdk = golatac.version("android.sdkversion.min").toInt()
+    targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
 }
 

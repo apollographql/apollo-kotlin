@@ -6,12 +6,12 @@ plugins {
 }
 
 dependencies {
-  api(libs.graphqlkotlin)
-  api(libs.kotlin.reflect.get().toString()) {
+  api(golatac.lib("graphqlkotlin"))
+  api(golatac.lib("kotlin.reflect").toString()) {
     because("graphqlKotlin pull kotlin-reflect and that triggers a warning like" +
         "Runtime JAR files in the classpath should have the same version.")
   }
-  implementation(libs.kotlinx.coroutines.reactor.get().toString()) {
+  implementation(golatac.lib("kotlinx.coroutines.reactor").toString()) {
     because("reactor must have the same version as the coroutines version")
   }
 }

@@ -10,9 +10,9 @@ apolloLibrary {
 }
 
 dependencies {
-  compileOnly(libs.gradle.api.min)
-  compileOnly(libs.kotlin.plugin.min)
-  compileOnly(libs.android.plugin.min)
+  compileOnly(golatac.lib("gradle.api.min"))
+  compileOnly(golatac.lib("kotlin.plugin.min"))
+  compileOnly(golatac.lib("android.plugin.min"))
 
   api(project(":apollo-compiler"))
   implementation(project(":apollo-tooling"))

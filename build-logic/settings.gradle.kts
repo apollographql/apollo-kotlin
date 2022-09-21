@@ -1,5 +1,18 @@
 rootProject.name = "build-logic"
 
+pluginManagement {
+  repositories {
+    gradlePluginPortal {
+      content {
+        includeModule("org.gradle.kotlin.embedded-kotlin", "org.gradle.kotlin.embedded-kotlin.gradle.plugin")
+        includeGroup("org.gradle.kotlin")
+      }
+    }
+    mavenCentral()
+    mavenLocal()
+  }
+}
+
 dependencyResolutionManagement {
   repositories {
     mavenCentral()
@@ -10,12 +23,6 @@ dependencyResolutionManagement {
         includeModule("com.gradle.publish", "plugin-publish-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
       }
-    }
-  }
-
-  versionCatalogs {
-    create("libs") {
-      from(files("../gradle/libs.versions.toml"))
     }
   }
 }

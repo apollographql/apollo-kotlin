@@ -9,8 +9,6 @@ rootProject.projectDir
       include(it.name)
     }
 
-includeBuild("build-logic")
-
 pluginManagement {
   includeBuild("build-logic")
 
@@ -24,6 +22,7 @@ pluginManagement {
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
       }
     }
+    mavenLocal()
   }
 }
 

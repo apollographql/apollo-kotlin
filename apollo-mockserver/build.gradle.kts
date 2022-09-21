@@ -16,16 +16,16 @@ kotlin {
       dependencies {
         api(project(":apollo-annotations"))
         api(okio())
-        implementation(libs.atomicfu.get().toString()) {
+        implementation(golatac.lib("atomicfu")) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-        implementation(libs.kotlinx.coroutines)
+        implementation(golatac.lib("kotlinx.coroutines"))
       }
     }
 
     val jsMain by getting {
       dependencies {
-        implementation(libs.kotlinx.nodejs)
+        implementation(golatac.lib("kotlinx.nodejs"))
       }
     }
 

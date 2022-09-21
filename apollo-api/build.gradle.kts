@@ -13,7 +13,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(okio())
-        api(libs.uuid)
+        api(golatac.lib("uuid"))
         api(project(":apollo-annotations"))
       }
     }

@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime")
-  testImplementation(libs.junit)
+  testImplementation(golatac.lib("junit"))
 }
 
 apollo {

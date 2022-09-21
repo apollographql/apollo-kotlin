@@ -15,11 +15,11 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.mockserver)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.mpputils)
-        implementation(libs.apollo.runtime)
+        implementation(golatac.lib("apollo.testingsupport"))
+        implementation(golatac.lib("apollo.mockserver"))
+        implementation(golatac.lib("apollo.normalizedcache"))
+        implementation(golatac.lib("apollo.mpputils"))
+        implementation(golatac.lib("apollo.runtime"))
       }
     }
   }
@@ -38,4 +38,3 @@ apollo {
   packageName.set("macos.app")
   generateDataBuilders.set(true)
 }
-

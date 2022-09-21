@@ -7,8 +7,8 @@ plugins {
 dependencies {
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-annotations"))
-  implementation(libs.kotlinx.serialization.json)
-  implementation(libs.clikt)
+  implementation(golatac.lib("kotlinx.serialization.json"))
+  implementation(golatac.lib("clikt"))
 }
 
 application {

@@ -15,7 +15,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(project(":apollo-api"))
-        api(libs.kotlinx.datetime)
+        api(golatac.lib("kotlinx.datetime"))
       }
     }
     val jsMain by getting {

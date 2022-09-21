@@ -1,7 +1,10 @@
 plugins {
   id("com.apollographql.apollo3").apply(false)
   id("apollo.test").apply(false)
+  id("net.mbonnin.golatac").version("0.0.1")
 }
+
+golatac.init(file("../gradle/libraries.toml"))
 
 repositories {
   mavenCentral()

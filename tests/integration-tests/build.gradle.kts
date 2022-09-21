@@ -19,35 +19,35 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.api)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.mockserver)
-        implementation(libs.apollo.adapters)
-        implementation(libs.apollo.runtime)
+        implementation(golatac.lib("apollo.api"))
+        implementation(golatac.lib("apollo.normalizedcache"))
+        implementation(golatac.lib("apollo.testingsupport"))
+        implementation(golatac.lib("apollo.mockserver"))
+        implementation(golatac.lib("apollo.adapters"))
+        implementation(golatac.lib("apollo.runtime"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(libs.kotlinx.coroutines)
-        implementation(libs.kotlinx.serialization.json.get().toString()) {
+        implementation(golatac.lib("kotlinx.coroutines"))
+        implementation(golatac.lib("kotlinx.serialization.json").toString()) {
           because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
         }
-        implementation(libs.kotlinx.coroutines.test)
+        implementation(golatac.lib("kotlinx.coroutines.test"))
       }
     }
 
     val javaCodegenTest by getting {
       dependencies {
         // Add test-junit manually because configureMppTestsDefaults did not do it for us
-        implementation(libs.kotlin.test.junit)
+        implementation(golatac.lib("kotlin.test.junit"))
       }
     }
 
     val jvmTest by getting {
       dependencies {
-        implementation(libs.okhttp.logging)
+        implementation(golatac.lib("okhttp.logging"))
       }
     }
   }

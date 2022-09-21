@@ -16,7 +16,7 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.runtime)
+        implementation(golatac.lib("apollo.runtime"))
       }
     }
   }

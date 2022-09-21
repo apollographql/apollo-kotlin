@@ -16,8 +16,8 @@ kotlin {
       dependencies {
         api(project(":apollo-runtime"))
         api(project(":apollo-normalized-cache-api-incubating"))
-        api(libs.kotlinx.coroutines)
-        implementation(libs.atomicfu.get().toString()) {
+        api(golatac.lib("kotlinx.coroutines"))
+        implementation(golatac.lib("atomicfu")) {
           because("Use of ReentrantLock in DefaultApolloStore for Apple (we don't use the gradle plugin rewrite)")
         }
       }

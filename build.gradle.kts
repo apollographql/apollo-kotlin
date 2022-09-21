@@ -2,7 +2,10 @@ import JapiCmp.configureJapiCmp
 
 plugins {
   id("apollo.library").apply(false)
+  id("net.mbonnin.golatac").version("0.0.1")
 }
+
+golatac.init(file("gradle/libraries.toml"))
 
 apply(plugin = "com.github.ben-manes.versions")
 apply(plugin = "org.jetbrains.dokka")
