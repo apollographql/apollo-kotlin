@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugi
 plugins {
   `embedded-kotlin`
   id("java-gradle-plugin")
-  id("net.mbonnin.golatac").version("0.0.2")
+  id("net.mbonnin.golatac").version("0.0.3")
 }
 
 plugins.apply(SamWithReceiverGradleSubplugin::class.java)
