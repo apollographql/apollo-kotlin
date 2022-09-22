@@ -18,7 +18,12 @@ import com.google.common.base.Optional
  */
 class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
-    return Optional.fromNullable(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    return if (reader.peek() == JsonReader.Token.NULL) {
+      reader.skipValue()
+      Optional.absent()
+    } else {
+      Optional.of(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    }
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional<T>) {

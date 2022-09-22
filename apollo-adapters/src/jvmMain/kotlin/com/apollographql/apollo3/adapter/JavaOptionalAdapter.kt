@@ -18,7 +18,12 @@ import java.util.Optional
  */
 class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
-    return Optional.ofNullable(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    return if (reader.peek() == JsonReader.Token.NULL) {
+      reader.skipValue()
+      Optional.empty()
+    } else {
+      Optional.of(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    }
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional<T>) {
