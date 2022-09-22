@@ -169,28 +169,56 @@ internal sealed class IrOperationType(val typeName: String) {
 }
 
 /**
- * When merging fields, [IrFieldInfo] is the information that is common to all merged fields
+ * Information about a field that is going to be turned into an [IrProperty]. This merges fields and replaces directives
+ * by things that are easier to use from codegen (description, deprecation, etc...)
+ *
+ * [type] can be used to be resolved to a model. It is made nullable if this field has an `@include` or `@defer` condition
+ *
+ * - For merged fields, [IrFieldInfo] is the information that is common to all merged fields
+ * - For synthetic fields, it is constructed by hand
+ *
+ * TODO: maybe merge this with [IrProperty]
  */
 internal data class IrFieldInfo(
-    val responseName: String,
     /**
-     * from the fieldDefinition
-     * This can technically differ between different merged fields. For convenience, we take the first one
+     * The responseName of this field (or synthetic name)
      */
-    val description: String?,
+    val responseName: String,
+
     /**
-     * from the fieldDefinition
+     * from the fieldDefinition.
+     *
+     * It might contain IrModelType that point to generated models
      */
     val type: IrType,
+
     /**
      * The GraphQL type of the field needed to build the CompiledField
      * null for synthetic fields
+     *
+     * TODO: CompiledField duplicates "operation_document" so we could certainly remove it (and gqlType too)
      */
     val gqlType: GQLType?,
+
+    /**
+     * from the fieldDefinition
+     *
+     * This can technically differ if the field is implemented on different objects/interfaces.
+     * For convenience, we take the value of the first encountered field
+     */
+    val description: String?,
+
+    /**
+     * from the fieldDefinition directives
+     *
+     * This can technically differ if the field is implemented on different objects/interfaces.
+     * For convenience, we take the value of the first enocuntered field
+     */
+    val deprecationReason: String?,
+
     /**
      * from the fieldDefinition directives
      */
-    val deprecationReason: String?,
     val optInFeature: String?,
 )
 
@@ -221,17 +249,20 @@ internal data class IrModel(
     val id: String,
     /**
      * The typeSet of this model.
-     * Used by the adapters for ordering/making the code look nice
+     * Used by the adapters for ordering/making the code look nice but has no runtime impact
      */
     val typeSet: TypeSet,
     val properties: List<IrProperty>,
     /**
      * The possible types
-     * Used by the adapters to generate the polymorphic reading code
+     * Used by the polymorphic adapter to generate the `when` statement that chooses the concrete adapter
+     * to delegate to
      */
     val possibleTypes: List<String>,
     val accessors: List<IrAccessor>,
-    // A list of paths
+    /**
+     * A list of paths to interfaces that the model implements
+     */
     val implements: List<String>,
     /**
      * Nested models. Might be empty if the models are flattened
@@ -269,10 +300,6 @@ internal data class IrProperty(
 internal data class IrModelGroup(
     val baseModelId: String,
     val models: List<IrModel>,
-    /**
-     * modelGroups that are commonly used in every models
-     */
-    val sharedModelGroups: List<IrModelGroup>
 )
 
 internal sealed interface IrSchemaType {
@@ -408,15 +435,20 @@ internal data class IrEnumType(override val name: String) : IrType(), IrNamedTyp
 /**
  * @param path a unique path identifying a given model.
  *
- * For responseBased codegen
+ * - responseBased: Each dot is a dot in the Json response
+ * operationData.$operationName.Data.DroidHero
+ * fragmentData.$fragmentName.Data.Hero // interface
+ * fragmentData.$fragmentName.Data.OtherHero
+ * fragmentData.$fragmentName.Data.DroidHero
+ * fragmentData.$fragmentName.Data.HumanHero
+ * fragmentData.$fragmentName.Data.HumanHero.CharacterFriend
+ * fragmentInterface.$fragmentName.Data.CharacterHero
+
+ * - operationBased2:
+ * operationData.$operationName.Data.Hero // interface
+ * operationData.$operationName.Data.DroidHero.OnDroid.HumanFriend.onHuman
+ * operationData.$operationName.Data.OtherHero.Starship
  *
- * operationData.$operationName.Query_data.Droid_hero
- * fragmentData.$fragmentName.Query_data.Character_hero
- * fragmentData.$fragmentName.Query_data.Droid_hero
- * fragmentData.$fragmentName.Query_data.Human_hero
- * fragmentData.$fragmentName.Query_data.Human_hero.Character_friend
- * fragmentInterface.$fragmentName.Query_data.Character_hero
- * ?
  */
 internal data class IrModelType(val path: String) : IrType()
 

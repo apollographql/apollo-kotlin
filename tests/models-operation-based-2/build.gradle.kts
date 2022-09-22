@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+  implementation(libs.apollo.normalizedcache)
   implementation(libs.apollo.runtime)
   implementation(libs.apollo.adapters)
   testImplementation(libs.apollo.testingsupport)
@@ -14,6 +15,7 @@ dependencies {
 apollo {
   srcDir(file("../models-fixtures/graphql"))
   packageName.set("codegen.models")
+  generateDataBuilders.set(true)
   generateFragmentImplementations.set(true)
 
   codegenModels.set("operationBased2")

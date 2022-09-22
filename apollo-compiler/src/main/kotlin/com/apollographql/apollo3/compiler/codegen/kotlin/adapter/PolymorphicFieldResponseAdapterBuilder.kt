@@ -46,19 +46,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     )
   }
 
-  private val sharedModelGroupAdapterBuilders = modelGroup
-      .sharedModelGroups
-      .map {
-        ResponseAdapterBuilder.create(
-            context,
-            it,
-            path,
-            false
-        )
-      }
-
   override fun prepare() {
-    sharedModelGroupAdapterBuilders.map { it.prepare() }
     context.resolver.registerModelAdapter(
         modelGroup.baseModelId,
         ClassName(
@@ -72,9 +60,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   }
 
   override fun build(): List<TypeSpec> {
-    return listOf(typeSpec()) +
-        implementationAdapterBuilders.flatMap { it.build() } +
-        sharedModelGroupAdapterBuilders.flatMap { it.build() }
+    return listOf(typeSpec()) + implementationAdapterBuilders.flatMap { it.build() }
   }
 
   private fun typeSpec(): TypeSpec {

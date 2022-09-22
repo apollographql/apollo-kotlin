@@ -87,7 +87,7 @@ object ApolloCompiler {
 
     validationResult.issues.checkNoErrors()
 
-    if (options.codegenModels == MODELS_RESPONSE_BASED) {
+    if (options.codegenModels == MODELS_RESPONSE_BASED || options.codegenModels == MODELS_OPERATION_BASED2) {
       checkConditionalFragments(definitions).checkNoErrors()
     }
 

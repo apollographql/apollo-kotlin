@@ -39,7 +39,7 @@ private fun IssuesScope.checkConditionalFragments(selections: List<GQLSelection>
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
               Issue.ConditionalFragment(
-                  message = "'responseBased' models do not support @include/@skip and @defer directives on fragments",
+                  message = "'responseBased' and 'operationBased2' models do not support @include/@skip and @defer directives on fragments",
                   sourceLocation = it.sourceLocation
               )
           )
@@ -50,7 +50,7 @@ private fun IssuesScope.checkConditionalFragments(selections: List<GQLSelection>
         if (it.directives.toBooleanExpression() != BooleanExpression.True) {
           issues.add(
               Issue.ConditionalFragment(
-                  message = "'responseBased' models do not support @include/@skip and @defer directives on fragments",
+                  message = "'responseBased' and 'operationBased2' models do not support @include/@skip and @defer directives on fragments",
                   sourceLocation = it.sourceLocation
               )
           )

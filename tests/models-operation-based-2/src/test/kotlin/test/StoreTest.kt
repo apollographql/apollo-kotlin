@@ -105,14 +105,14 @@ class StoreTest {
             "2001",
             "R222-D222",
             listOf(
-                HeroWithFriendsFragment.Friend(
+                HeroWithFriendsFragment.HumanFriend(
                     "Human",
                     HumanWithIdFragment(
                         "1000",
                         "SuperMan"
                     )
                 ),
-                HeroWithFriendsFragment.Friend(
+                HeroWithFriendsFragment.HumanFriend(
                     "Human",
                     HumanWithIdFragment(
                         "1002",

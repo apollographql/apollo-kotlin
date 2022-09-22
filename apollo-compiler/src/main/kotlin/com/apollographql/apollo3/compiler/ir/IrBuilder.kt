@@ -93,21 +93,17 @@ internal class IrBuilder(
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         compat = true,
-        operationBased2 = false
     )
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         compat = false,
-        operationBased2 = false
     )
-    MODELS_OPERATION_BASED2 -> OperationBasedModelGroupBuilder(
+    MODELS_OPERATION_BASED2 -> OperationBased2ModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
-        compat = false,
-        operationBased2 = true
     )
     MODELS_RESPONSE_BASED -> responseBasedBuilder
     else -> error("codegenModels='$codegenModels' is not supported")

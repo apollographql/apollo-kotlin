@@ -17,7 +17,6 @@ import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.transformation.mergeTrivialInlineFragments
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.lowerCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.modelName
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
@@ -28,7 +27,6 @@ internal class OperationBasedModelGroupBuilder(
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,
     private val compat: Boolean,
-    private val operationBased2: Boolean
 ) : ModelGroupBuilder {
   private val insertFragmentSyntheticField = compat
   private val collectAllInlineFragmentFields = compat
@@ -162,7 +160,7 @@ internal class OperationBasedModelGroupBuilder(
   /**
    * @param path the path up to but not including this field
    * @param info information about this field
-   * @param selections the sub-selections of these fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
+   * @param selections the sub-selections of this field. If [collectAllInlineFragmentFields] is true, might contain parent fields that
    * might not all be on the same parent type. Hence [SelectionWithParent]
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
    * @param usedNames the used names for 2.x compat name conflicts resolution
@@ -176,34 +174,21 @@ internal class OperationBasedModelGroupBuilder(
       usedNames: MutableSet<String>,
       parentTypeConditions: List<String>,
   ): OperationField {
-    val rawTypeName = parentTypeConditions.lastOrNull() ?: ""
     if (selections.isEmpty()) {
       return OperationField(
           info = info,
           condition = condition,
           fieldSet = null,
-          shapes = emptyList(),
-          rawTypeName = rawTypeName
       )
     }
 
     val selfPath = path + "." + info.responseName
-    val shapes = if (operationBased2) {
-      shapes(
-          schema,
-          allFragmentDefinitions,
-          selections.map { it.selection },
-          rawTypeName,
-          true
-      ).filter { it.possibleTypes.isNotEmpty() }
-    } else {
-      emptyList()
-    }
+
 
     /**
      * Merge fragments with the same type condition and include directive to avoid name clashes
      *
-     * We don't merge inline fragments with different include directives as nested fields would all have to become nullable:
+     * We don't merge inline fragments with different @include directives as nested fields would all have to become nullable:
      *
      * ```
      * {
@@ -238,9 +223,24 @@ internal class OperationBasedModelGroupBuilder(
         }.entries.flatMap {
           val typeCondition = it.key
 
-          // If there is only one fragment, no need to disambiguate it
-          val nameNeedsCondition = it.value.size > 1
           val inlineFragmentsWithSameTypeCondition = it.value.map { it.selection as GQLInlineFragment }
+          // If there is only one fragment, no need to disambiguate it
+          /**
+           * TODO: we could go one step further and check the condition too
+           *
+           * Right now this:
+           * {
+           *   ... on Cat @include(if: $foo) {
+           *     #
+           *   }
+           *   ... on Cat @include(if: $foo) {
+           *     #
+           *   }
+           * }
+           *
+           * Will create a `OnCatIfFoo` when `OnCat` would have been enough
+           */
+          val nameNeedsCondition = inlineFragmentsWithSameTypeCondition.size > 1
 
           /**
            * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
@@ -340,18 +340,6 @@ internal class OperationBasedModelGroupBuilder(
             type = IrNonNullType(type)
           }
 
-          val fragmentShapes = if (operationBased2) {
-            shapes(
-                schema,
-                allFragmentDefinitions,
-                fragmentDefinition.selectionSet.selections,
-                fragmentDefinition.typeCondition.name,
-                true
-            ).filter { it.possibleTypes.isNotEmpty() }
-          } else {
-            emptyList()
-          }
-
           val childInfo = IrFieldInfo(
               responseName = first.name.decapitalizeFirstLetter().escapeKotlinReservedWord(),
               description = "Synthetic field for '${first.name}'",
@@ -360,12 +348,19 @@ internal class OperationBasedModelGroupBuilder(
               type = type,
               gqlType = null,
           )
-          OperationField(
+
+          val p = if (insertFragmentSyntheticField) {
+            "$selfPath.$FRAGMENTS_SYNTHETIC_FIELD"
+          } else {
+            selfPath
+          }
+          buildField(
+              path = p,
               info = childInfo,
+              selections = emptyList(), // Don't create a model for fragments spreads
               condition = childCondition,
-              fieldSet = null,
-              shapes = fragmentShapes,
-              rawTypeName = typeCondition
+              usedNames = usedNames,
+              parentTypeConditions = emptyList() // this is not used because this field has no sub selections
           )
         }
 
@@ -396,8 +391,6 @@ internal class OperationBasedModelGroupBuilder(
               info = fragmentsFieldInfo,
               condition = BooleanExpression.True,
               fieldSet = fragmentsFieldSet,
-              shapes = emptyList(),
-              rawTypeName
           )
       )
     } else {
@@ -420,11 +413,19 @@ internal class OperationBasedModelGroupBuilder(
     val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
       val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
 
+      /**
+       * We always pass True here because the non-synthetic fields are always read. This simplifies the generated code
+       * This means:
+       * - `@defer` doesn't work on fields but this is ok because it is not supposed to
+       * - we cannot detect if a field returns `null` whereas it should have been @skipped
+       */
+      val fieldCondition = BooleanExpression.True
+
       buildField(
           path = selfPath,
           info = childInfo,
           selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
-          condition = BooleanExpression.True,
+          condition = fieldCondition,
           usedNames = usedNames,
           parentTypeConditions = listOf(mergedField.rawTypeName)
       )
@@ -449,8 +450,6 @@ internal class OperationBasedModelGroupBuilder(
         info = patchedInfo,
         condition = condition,
         fieldSet = fieldSet,
-        shapes = shapes,
-        rawTypeName = rawTypeName
     )
   }
 
@@ -463,13 +462,10 @@ private class OperationField(
     val info: IrFieldInfo,
     val condition: BooleanExpression<BTerm>,
     val fieldSet: OperationFieldSet?,
-    val shapes: List<Shape>,
-    val rawTypeName: String
 ) {
   val isSynthetic: Boolean
     get() = info.gqlType == null
-  val hasMultipleShapes: Boolean
-    get() = shapes.size > 1
+
 }
 
 private data class OperationFieldSet(
@@ -483,16 +479,11 @@ private fun OperationField.toModelGroup(): IrModelGroup? {
     return null
   }
 
-  return if (hasMultipleShapes) {
-    fieldSet.toShapedModels(shapes, rawTypeName)
-  } else {
-    val model = fieldSet.toModel()
-    IrModelGroup(
-        models = listOf(model),
-        baseModelId = model.id,
-        sharedModelGroups = emptyList()
-    )
-  }
+  val model = fieldSet.toModel()
+  return IrModelGroup(
+      models = listOf(model),
+      baseModelId = model.id
+  )
 }
 
 private fun OperationFieldSet.toModel(): IrModel {
@@ -518,119 +509,3 @@ private fun OperationField.toProperty(): IrProperty {
       requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
   )
 }
-
-private fun OperationFieldSet.toShapedModels(
-    shapes: List<Shape>,
-    rawTypeName: String
-): IrModelGroup {
-  val shapedTypeModels = shapes
-      .filter { it.typeSet.size > 1 }
-      .map { toShapedTypeModel(it, rawTypeName) }
-  val interfaceModel = toInterfaceModel()
-  val modelList = listOf(interfaceModel) + shapedTypeModels + toFallbackModel()
-  return IrModelGroup(
-      baseModelId = interfaceModel.id,
-      models = modelList,
-      sharedModelGroups = interfaceModel.modelGroups
-  )
-}
-
-private fun OperationFieldSet.toFallbackModel(): IrModel {
-  return IrModel(
-      modelName = makeFallbackModelName(modelName),
-      id = makeFallbackModelID(id),
-      properties = fields.map { it.toProperty().copy(override = true) },
-      accessors = emptyList(),
-      implements = listOf(id),
-      isFallback = true,
-      isInterface = false,
-      modelGroups = emptyList(),
-      possibleTypes = emptyList(),
-      typeSet = emptySet(),
-  )
-}
-
-private fun OperationFieldSet.toInterfaceModel(): IrModel {
-  return IrModel(
-      modelName = modelName,
-      id = id,
-      properties = fields.map { it.toProperty() },
-      accessors = emptyList(),
-      implements = emptyList(),
-      isFallback = false,
-      isInterface = true,
-      modelGroups = fields.mapNotNull { it.toModelGroup() },
-      possibleTypes = emptyList(),
-      typeSet = emptySet(),
-  )
-}
-
-private fun OperationFieldSet.toShapedTypeModel(shape: Shape, rawTypeName: String): IrModel {
-  return IrModel(
-      modelName = makeShapedModelName(modelName, shape, rawTypeName),
-      id = makeShapedModelID(id, shape),
-      properties = fields.map { it.toShapedProperty(shape) },
-      accessors = emptyList(),
-      implements = listOf(id),
-      isFallback = false,
-      isInterface = false,
-      modelGroups = emptyList(),
-      possibleTypes = shape.possibleTypes.toList(),
-      typeSet = shape.typeSet,
-  )
-}
-
-private fun OperationField.toShapedProperty(shape: Shape): IrProperty {
-  val fieldShapedCondition = condition.simplifyBasedOnPossibleType(shape.possibleTypes)
-  val fieldShapedType = if (fieldShapedCondition.simplify() == BooleanExpression.True) {
-     info.type.makeNonNull()
-  } else {
-    info.type
-  }
-  return IrProperty(
-      info = info.copy(type = fieldShapedType),
-      override = true,
-      condition = fieldShapedCondition,
-      requiresBuffering = fieldSet?.fields?.any { it.isSynthetic } ?: false,
-  )
-}
-
-private fun BPossibleTypes.isAlwaysSatisfied(possibleTypes: PossibleTypes): Boolean {
-  return (possibleTypes - this.possibleTypes).isEmpty()
-}
-
-private fun BooleanExpression<BTerm>.simplifyBasedOnPossibleType(possibleTypes: PossibleTypes): BooleanExpression<BTerm> {
-  val originalExpression = this
-  return when(this) {
-    BooleanExpression.True,
-    BooleanExpression.False -> originalExpression
-    is BooleanExpression.Not -> operand.simplifyBasedOnPossibleType(possibleTypes)
-    is BooleanExpression.Or -> BooleanExpression.Or(operands.map { it.simplifyBasedOnPossibleType(possibleTypes) }.toSet())
-    is BooleanExpression.And -> BooleanExpression.And(operands.map { it.simplifyBasedOnPossibleType(possibleTypes) }.toSet())
-    is BooleanExpression.Element -> {
-      when (value) {
-        is BLabel,
-        is BVariable -> originalExpression
-        is BPossibleTypes -> {
-          if ((value as BPossibleTypes).isAlwaysSatisfied(possibleTypes)) {
-            BooleanExpression.True
-          } else {
-            originalExpression
-          }
-        }
-      }
-    }
-  }
-}
-
-private fun makeShapedModelID(id: String, shape: Shape): String = "$id::${shape.modelIDSuffix}"
-private fun makeFallbackModelID(id: String): String = "$id:::fallback"
-
-private fun makeShapedModelName(name: String, shape: Shape, rawTypeName: String): String
-  = "${shape.makeTypeSetPrefix(rawTypeName)}$name"
-private fun makeFallbackModelName(name: String): String = "Other$name"
-
-
-private fun Shape.makeTypeSetPrefix(rawTypeName: String) = CodegenLayout.upperCamelCaseIgnoringNonLetters(typeSet - rawTypeName)
-private val Shape.modelIDSuffix get() = typeSet.sorted().joinToString("")
-
