@@ -854,3 +854,32 @@ val response = query.parse(bufferedSource);
 // With
 val response = query.parseJsonResponse(bufferedSource);
 ```
+
+### `refetchQueries()`
+
+Apollo Android 2.x exposes a `ApolloCall.Builder.refetchQueries(List<Query>)`. This was used to get new values from the network after a mutation that potentially impacts other queries. This gave little control over error handling, caching or concurrency.
+
+Apollo Kotlin 3.x exposes a coroutine API that make it easy to implement similar functionality without library support. Coroutines make it easy to chain calls, retry in case of error or change the dispatcher. For a simple version, you can do something like this:
+
+```kotlin
+  suspend fun <MutationData: Mutation.Data> mutation(mutation: Mutation<MutationData>, vararg refetchQueries: Query<*>) {
+    apolloClient.mutation(mutation).execute()
+    refetchQueries.forEach {
+      apolloClient.query(it).execute()
+    }
+  }  
+```
+
+If you want to bind the refetches to the scope of your ApolloClient, you can do:
+
+```kotlin
+  suspend fun <MutationData: Mutation.Data> mutation(mutation: Mutation<MutationData>, vararg refetchQueries: Query<*>) {
+    apolloClient.mutation(mutation).execute()
+    apolloClient.executionContext[ConcurrencyInfo]!!.coroutineScope.launch {
+      refetchQueries.forEach {
+        apolloClient.query(it).execute()
+      }
+    }
+  }
+```
+It is not planned to add `refetchQueries()` in the library.
