@@ -5,13 +5,13 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.apollo.runtime)
-  implementation(libs.apollo.adapters)
-  implementation(libs.guava.jre)
-  testImplementation(libs.kotlin.test)
-  testImplementation(libs.junit)
-  testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.apollo.testingsupport)
+  implementation(golatac.lib("apollo.runtime"))
+  implementation(golatac.lib("apollo.adapters"))
+  implementation(golatac.lib("guava.jre"))
+  testImplementation(golatac.lib("kotlin.test"))
+  testImplementation(golatac.lib("junit"))
+  testImplementation(golatac.lib("apollo.mockserver"))
+  testImplementation(golatac.lib("apollo.testingsupport"))
 }
 
 apollo {
