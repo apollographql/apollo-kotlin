@@ -32,6 +32,11 @@ public final class com/apollographql/apollo3/api/Adapters {
 	public static final field NullableDoubleAdapter Lcom/apollographql/apollo3/api/NullableAdapter;
 	public static final field NullableIntAdapter Lcom/apollographql/apollo3/api/NullableAdapter;
 	public static final field NullableStringAdapter Lcom/apollographql/apollo3/api/NullableAdapter;
+	public static final field OptionalJsonAnyAdapter Lcom/apollographql/apollo3/api/OptionalJsonAdapter;
+	public static final field OptionalJsonBooleanAdapter Lcom/apollographql/apollo3/api/OptionalJsonAdapter;
+	public static final field OptionalJsonDoubleAdapter Lcom/apollographql/apollo3/api/OptionalJsonAdapter;
+	public static final field OptionalJsonIntAdapter Lcom/apollographql/apollo3/api/OptionalJsonAdapter;
+	public static final field OptionalJsonStringAdapter Lcom/apollographql/apollo3/api/OptionalJsonAdapter;
 	public static final field StringAdapter Lcom/apollographql/apollo3/api/Adapter;
 	public static final field UploadAdapter Lcom/apollographql/apollo3/api/Adapter;
 	public static final fun -list (Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/ListAdapter;
@@ -846,6 +851,14 @@ public final class com/apollographql/apollo3/api/OptionalAdapter : com/apollogra
 	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Optional$Present;
 	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
 	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/api/Optional$Present;)V
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
+}
+
+public final class com/apollographql/apollo3/api/OptionalJsonAdapter : com/apollographql/apollo3/api/Adapter {
+	public fun <init> (Lcom/apollographql/apollo3/api/Adapter;)V
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Optional;
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/api/Optional;)V
 	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 }
 

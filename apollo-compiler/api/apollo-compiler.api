@@ -122,6 +122,20 @@ public final class com/apollographql/apollo3/compiler/IncomingOptions$Companion 
 	public final fun resolveSchema (Ljava/util/Collection;Ljava/util/List;)Lkotlin/Pair;
 }
 
+public final class com/apollographql/apollo3/compiler/JavaNullableFieldStyle : java/lang/Enum {
+	public static final field APOLLO_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+	public static final field Companion Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle$Companion;
+	public static final field GUAVA_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+	public static final field JAVA_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+	public static final field SIMPLE Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+	public static fun values ()[Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+}
+
+public final class com/apollographql/apollo3/compiler/JavaNullableFieldStyle$Companion {
+	public final fun fromOptionName (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
+}
+
 public final class com/apollographql/apollo3/compiler/MoshiKt {
 	public static final fun getMOSHI ()Lcom/squareup/moshi/Moshi;
 }
@@ -156,6 +170,7 @@ public final class com/apollographql/apollo3/compiler/Options$Companion {
 	public final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
 	public final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
 	public final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
+	public final fun getDefaultNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullableFieldStyle;
 	public final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
 	public final fun getDefaultScalarMapping ()Ljava/util/Map;
 	public final fun getDefaultSealedClassesForEnumsMatching ()Ljava/util/List;
