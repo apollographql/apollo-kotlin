@@ -11,27 +11,27 @@ apolloLibrary {
 }
 
 dependencies {
-  implementation(projects.apolloAst)
-  implementation(projects.apolloApi) {
+  implementation(project(":apollo-ast"))
+  implementation(project(":apollo-api")) {
     because("For BooleanExpression")
   }
-  implementation(libs.poet.kotlin.get().toString()) {
+  implementation(golatac.lib("poet.kotlin")) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")
   }
-  implementation(libs.poet.java)
+  implementation(golatac.lib("poet.java"))
 
-  implementation(libs.moshi)
-  implementation(libs.moshix.sealed.runtime)
+  implementation(golatac.lib("moshi"))
+  implementation(golatac.lib("moshix.sealed.runtime"))
 
-  ksp(libs.moshix.sealed.codegen)
-  ksp(libs.moshix.ksp)
+  ksp(golatac.lib("moshix.sealed.codegen"))
+  ksp(golatac.lib("moshix.ksp"))
 
-  testImplementation(libs.kotlin.compiletesting)
-  testImplementation(libs.google.testing.compile)
-  testImplementation(libs.truth)
-  testImplementation(libs.kotlin.test.junit)
-  testImplementation(libs.google.testparameterinjector)
+  testImplementation(golatac.lib("kotlin.compiletesting"))
+  testImplementation(golatac.lib("google.testing.compile"))
+  testImplementation(golatac.lib("truth"))
+  testImplementation(golatac.lib("kotlin.test.junit"))
+  testImplementation(golatac.lib("google.testparameterinjector"))
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

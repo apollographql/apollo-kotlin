@@ -14,30 +14,30 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloApi)
-        api(projects.apolloMppUtils)
+        api(project(":apollo-api"))
+        api(project(":apollo-mpp-utils"))
         api(okio())
-        api(libs.uuid)
-        api(libs.kotlinx.coroutines)
+        api(golatac.lib("uuid"))
+        api(golatac.lib("kotlinx.coroutines"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(projects.apolloMockserver)
-        implementation(projects.apolloTestingSupport)
+        implementation(project(":apollo-mockserver"))
+        implementation(project(":apollo-testing-support"))
       }
     }
 
     val jvmMain by getting {
       dependencies {
-        api(libs.okhttp)
+        api(golatac.lib("okhttp"))
       }
     }
 
     val jsMain by getting {
       dependencies {
-        api(libs.ktor.client.js)
+        api(golatac.lib("ktor.client.js"))
       }
     }
 
@@ -48,9 +48,9 @@ kotlin {
 
     val jvmTest by getting {
       dependencies {
-        implementation(libs.kotlin.test.junit)
-        implementation(libs.truth)
-        implementation(libs.okhttp)
+        implementation(golatac.lib("kotlin.test.junit"))
+        implementation(golatac.lib("truth"))
+        implementation(golatac.lib("okhttp"))
       }
     }
   }

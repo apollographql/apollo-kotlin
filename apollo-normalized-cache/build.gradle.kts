@@ -14,10 +14,10 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloRuntime)
-        api(projects.apolloNormalizedCacheApi)
-        api(libs.kotlinx.coroutines)
-        implementation(libs.atomicfu.get().toString()) {
+        api(project(":apollo-runtime"))
+        api(project(":apollo-normalized-cache-api"))
+        api(golatac.lib("kotlinx.coroutines"))
+        implementation(golatac.lib("atomicfu")) {
           because("Use of ReentrantLock in DefaultApolloStore for Apple (we don't use the gradle plugin rewrite)")
         }
       }

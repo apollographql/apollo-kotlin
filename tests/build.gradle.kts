@@ -1,15 +1,10 @@
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
-  }
-
-  dependencies {
-    classpath("com.apollographql.apollo3:apollo-gradle-plugin")
-    classpath("com.apollographql.apollo3:build-logic")
-  }
+plugins {
+  id("com.apollographql.apollo3").apply(false)
+  id("apollo.test").apply(false)
+  id("net.mbonnin.golatac").version("0.0.3")
 }
+
+golatac.init(file("../gradle/libraries.toml"))
 
 repositories {
   mavenCentral()

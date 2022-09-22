@@ -71,7 +71,7 @@ fun setCurrentVersion(version: String) {
   }.joinToString(separator = "\n", postfix = "\n")
   gradleProperties.writeText(newContent)
 
-  val versionCatalog = File("gradle/libs.versions.toml")
+  val versionCatalog = File("gradle/libraries.toml"))
   // apollo = "3.5.1"
   newContent = versionCatalog.readLines().map {
     it.replace(Regex("( *apollo *= *\").*(\".*)")) {

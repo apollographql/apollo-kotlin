@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugi
 plugins {
   `embedded-kotlin`
   id("java-gradle-plugin")
+  id("net.mbonnin.golatac").version("0.0.3")
 }
 
 plugins.apply(SamWithReceiverGradleSubplugin::class.java)
@@ -11,41 +12,42 @@ extensions.configure(SamWithReceiverExtension::class.java) {
   annotations(HasImplicitReceiver::class.qualifiedName!!)
 }
 
-group = "com.apollographql.apollo3"
+group = "com.apollographql.apollo3.build"
+
+golatac.init(file("../gradle/libraries.toml"))
 
 dependencies {
-  compileOnly(libs.gradle.api)
+  compileOnly(golatac.lib("gradle.api"))
 
-  implementation(libs.okhttp)
+  implementation(golatac.lib("okhttp"))
 
-  implementation(libs.dokka.plugin)
-  implementation(libs.dokka.base)
+  implementation(golatac.lib("dokka.plugin"))
+  implementation(golatac.lib("dokka.base"))
 
   // We add all the plugins to the classpath here so that they are loaded with proper conflict resolution
   // See https://github.com/gradle/gradle/issues/4741
-  implementation(libs.android.plugin)
-  implementation(libs.gradle.japicmp.plugin)
-  implementation(libs.gradle.metalava.plugin)
-  implementation(libs.vespene)
+  implementation(golatac.lib("android.plugin"))
+  implementation(golatac.lib("gradle.japicmp.plugin"))
+  implementation(golatac.lib("vespene"))
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin
   if (System.getProperty("idea.sync.active") == null) {
-    implementation(libs.kotlin.plugin)
-    runtimeOnly(libs.ksp)
+    implementation(golatac.lib("kotlin.plugin"))
+    runtimeOnly(golatac.lib("ksp"))
   } else {
-    implementation(libs.kotlin.plugin.duringideasync)
-    runtimeOnly(libs.ksp.duringideasync)
+    implementation(golatac.lib("kotlin.plugin.duringideasync"))
+    runtimeOnly(golatac.lib("ksp.duringideasync"))
   }
 
-  runtimeOnly(libs.sqldelight.plugin)
-  runtimeOnly(libs.gradle.publish.plugin)
-  runtimeOnly(libs.benmanes.versions)
-  runtimeOnly(libs.gr8)
-  runtimeOnly(libs.kotlinx.binarycompatibilityvalidator)
+  runtimeOnly(golatac.lib("sqldelight.plugin"))
+  runtimeOnly(golatac.lib("gradle.publish.plugin"))
+  runtimeOnly(golatac.lib("benmanes.versions"))
+  runtimeOnly(golatac.lib("gr8"))
+  runtimeOnly(golatac.lib("kotlinx.binarycompatibilityvalidator"))
   // XXX: This is only needed for tests. We could have different build logic for different
   // builds but this seems just overkill for now
-  runtimeOnly(libs.kotlin.allopen)
+  runtimeOnly(golatac.lib("kotlin.allopen"))
 }
 
 // This shuts down a warning in Kotlin 1.5.30:

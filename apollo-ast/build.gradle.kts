@@ -12,18 +12,18 @@ apolloLibrary {
 }
 
 dependencies {
-  antlr(libs.antlr)
-  implementation(libs.antlr.runtime)
+  antlr(golatac.lib("antlr"))
+  implementation(golatac.lib("antlr.runtime"))
   api(okio())
-  api(projects.apolloAnnotations)
+  api(project(":apollo-annotations"))
 
-  implementation(libs.moshi)
-  implementation(libs.moshix.sealed.runtime)
+  implementation(golatac.lib("moshi"))
+  implementation(golatac.lib("moshix.sealed.runtime"))
 
-  ksp(libs.moshix.sealed.codegen)
-  ksp(libs.moshix.ksp)
+  ksp(golatac.lib("moshix.sealed.codegen"))
+  ksp(golatac.lib("moshix.ksp"))
 
-  testImplementation(libs.kotlin.test.junit)
+  testImplementation(golatac.lib("kotlin.test.junit"))
 }
 
 // Only expose the antlr runtime dependency

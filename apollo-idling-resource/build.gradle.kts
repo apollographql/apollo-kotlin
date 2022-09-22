@@ -5,15 +5,15 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.androidx.espresso.idlingresource)
-  api(projects.apolloRuntime)
+  implementation(golatac.lib("androidx.espresso.idlingresource"))
+  api(project(":apollo-runtime"))
 }
 
 android {
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
+  compileSdk = golatac.version("android.sdkversion.compile").toInt()
 
   defaultConfig {
-    minSdk = libs.versions.android.sdkversion.min.get().toInt()
-    targetSdk = libs.versions.android.sdkversion.target.get().toInt()
+    minSdk = golatac.version("android.sdkversion.min").toInt()
+    targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
 }

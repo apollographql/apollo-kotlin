@@ -12,21 +12,21 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.runtime)
+        implementation(golatac.lib("apollo.runtime"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.normalizedcache)
-        implementation(libs.turbine)
+        implementation(golatac.lib("apollo.testingsupport"))
+        implementation(golatac.lib("apollo.normalizedcache"))
+        implementation(golatac.lib("turbine"))
       }
     }
 
     val jvmTest by getting {
       dependencies {
-        implementation(projects.sampleServer)
+        implementation(project(":sample-server"))
       }
     }
   }

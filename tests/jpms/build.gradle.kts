@@ -10,10 +10,10 @@ repositories {
 }
 
 dependencies {
-  implementation(libs.apollo.runtime)
-  implementation(libs.apollo.rx2)
-  implementation(libs.apollo.normalizedcache.sqlite)
-  testImplementation(libs.junit)
+  implementation(golatac.lib("apollo.runtime"))
+  implementation(golatac.lib("apollo.rx2"))
+  implementation(golatac.lib("apollo.normalizedcache.sqlite"))
+  testImplementation(golatac.lib("junit"))
 }
 
 application {

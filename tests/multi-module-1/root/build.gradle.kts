@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.apollo.runtime)
+  implementation(golatac.lib("apollo.runtime"))
 }
 
 apollo {

@@ -1,15 +1,11 @@
 import JapiCmp.configureJapiCmp
 
-buildscript {
-  repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
-  }
-  dependencies {
-    classpath("com.apollographql.apollo3:build-logic")
-  }
+plugins {
+  id("apollo.library").apply(false)
+  id("net.mbonnin.golatac").version("0.0.3")
 }
+
+golatac.init(file("gradle/libraries.toml"))
 
 apply(plugin = "com.github.ben-manes.versions")
 apply(plugin = "org.jetbrains.dokka")

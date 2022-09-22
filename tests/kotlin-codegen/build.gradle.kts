@@ -5,8 +5,8 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.apollo.api)
-  testImplementation(libs.kotlin.test.junit)
+  implementation(golatac.lib("apollo.api"))
+  testImplementation(golatac.lib("kotlin.test.junit"))
 }
 
 apollo {

@@ -6,19 +6,19 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.androidx.espresso.idlingresource)
-  implementation(libs.apollo.idlingresource)
-  testImplementation(libs.apollo.mockserver)
-  testImplementation(libs.android.support.annotations)
-  testImplementation(libs.android.test.runner)
+  implementation(golatac.lib("androidx.espresso.idlingresource"))
+  implementation(golatac.lib("apollo.idlingresource"))
+  testImplementation(golatac.lib("apollo.mockserver"))
+  testImplementation(golatac.lib("android.support.annotations"))
+  testImplementation(golatac.lib("android.test.runner"))
 }
 
 android {
-  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
+  compileSdk = golatac.version("android.sdkversion.compile").toInt()
 
   defaultConfig {
-    minSdk = libs.versions.android.sdkversion.min.get().toInt()
-    targetSdk = libs.versions.android.sdkversion.target.get().toInt()
+    minSdk = golatac.version("android.sdkversion.min").toInt()
+    targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
 }
 

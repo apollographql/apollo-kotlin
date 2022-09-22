@@ -1,7 +1,7 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("apollo.library")
   id("java-gradle-plugin")
+  id("apollo.library")
   id("com.gradle.plugin-publish")
   id("com.gradleup.gr8")
 }
@@ -27,14 +27,14 @@ dependencies {
    */
   add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
-  add("shade", projects.apolloGradlePluginExternal)
+  add("shade", project(":apollo-gradle-plugin-external"))
 
-  testImplementation(projects.apolloAst)
-  testImplementation(libs.junit)
-  testImplementation(libs.truth)
-  testImplementation(libs.assertj)
-  testImplementation(libs.okhttp.mockwebserver)
-  testImplementation(libs.okhttp.tls)
+  testImplementation(project(":apollo-ast"))
+  testImplementation(golatac.lib("junit"))
+  testImplementation(golatac.lib("truth"))
+  testImplementation(golatac.lib("assertj"))
+  testImplementation(golatac.lib("okhttp.mockwebserver"))
+  testImplementation(golatac.lib("okhttp.tls"))
 }
 
 if (relocateJar) {

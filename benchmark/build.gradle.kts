@@ -11,6 +11,12 @@ buildscript {
   }
 }
 
+plugins {
+  id("net.mbonnin.golatac").version("0.0.3")
+}
+
+golatac.init(file("../gradle/libraries.toml"))
+
 allprojects {
   repositories {
     mavenCentral()

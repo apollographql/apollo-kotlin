@@ -4,14 +4,14 @@ plugins {
 }
 
 dependencies {
-  implementation(projects.apolloAnnotations)
-  implementation(projects.apolloAst)
-  api(projects.apolloCompiler)
-  implementation(libs.moshi)
-  implementation(libs.moshix.sealed.runtime)
-  implementation(libs.okhttp)
+  implementation(project(":apollo-annotations"))
+  implementation(project(":apollo-ast"))
+  api(project(":apollo-compiler"))
+  implementation(golatac.lib("moshi"))
+  implementation(golatac.lib("moshix.sealed.runtime"))
+  implementation(golatac.lib("okhttp"))
 
-  implementation(libs.moshi)
-  testImplementation(libs.junit)
-  testImplementation(libs.truth)
+  implementation(golatac.lib("moshi"))
+  testImplementation(golatac.lib("junit"))
+  testImplementation(golatac.lib("truth"))
 }

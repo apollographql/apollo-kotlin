@@ -5,11 +5,11 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.apollo.runtime)
-  implementation(libs.apollo.normalizedcache)
-  implementation(libs.apollo.mockserver)
-  implementation(libs.apollo.rx2)
-  testImplementation(libs.kotlin.test.junit)
+  implementation(golatac.lib("apollo.runtime"))
+  implementation(golatac.lib("apollo.normalizedcache"))
+  implementation(golatac.lib("apollo.mockserver"))
+  implementation(golatac.lib("apollo.rx2"))
+  testImplementation(golatac.lib("kotlin.test.junit"))
 }
 
 apollo {

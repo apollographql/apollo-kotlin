@@ -14,10 +14,10 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloApi)
-        api(projects.apolloMppUtils)
+        api(project(":apollo-api"))
+        api(project(":apollo-mpp-utils"))
         implementation(okio())
-        api(libs.uuid)
+        api(golatac.lib("uuid"))
       }
     }
   }

@@ -14,15 +14,15 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.runtime)
+        implementation(golatac.lib("apollo.runtime"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(libs.apollo.testingsupport)
-        implementation(libs.apollo.normalizedcache.incubating)
-        implementation(libs.apollo.normalizedcache.sqlite.incubating)
+        implementation(golatac.lib("apollo.testingsupport"))
+        implementation(golatac.lib("apollo.normalizedcache.incubating"))
+        implementation(golatac.lib("apollo.normalizedcache.sqlite.incubating"))
       }
     }
   }

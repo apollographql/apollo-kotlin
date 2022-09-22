@@ -14,27 +14,27 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        api(projects.apolloAnnotations)
+        api(project(":apollo-annotations"))
         api(okio())
-        implementation(libs.atomicfu.get().toString()) {
+        implementation(golatac.lib("atomicfu")) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-        implementation(libs.kotlinx.coroutines)
+        implementation(golatac.lib("kotlinx.coroutines"))
       }
     }
 
     val jsMain by getting {
       dependencies {
-        implementation(libs.kotlinx.nodejs)
+        implementation(golatac.lib("kotlinx.nodejs"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(projects.apolloTestingSupport) {
+        implementation(project(":apollo-testing-support")) {
           because("runTest")
         }
-        implementation(projects.apolloRuntime) {
+        implementation(project(":apollo-runtime")) {
           because("We need HttpEngine for SocketTest")
         }
       }

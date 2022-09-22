@@ -59,8 +59,8 @@ dependencies {
       }
     }
   }
-  implementation(libs.moshi)
-  ksp(libs.moshix.ksp)
+  implementation(golatac.lib("moshi"))
+  ksp(golatac.lib("moshix.ksp"))
 
   androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0")
   androidTestImplementation("androidx.test:core:1.4.0")
@@ -68,11 +68,11 @@ dependencies {
 
 configure<com.android.build.gradle.LibraryExtension> {
   namespace = "com.apollographql.apollo3.benchmark"
-  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
+  compileSdkVersion(golatac.version("android.sdkversion.compile").toInt())
 
   defaultConfig {
-    minSdkVersion(libs.versions.android.sdkversion.min.get())
-    targetSdkVersion(libs.versions.android.sdkversion.target.get())
+    minSdkVersion(golatac.version("android.sdkversion.min"))
+    targetSdkVersion(golatac.version("android.sdkversion.target"))
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 

@@ -19,15 +19,15 @@ kotlin {
   sourceSets {
     val commonMain by getting {
       dependencies {
-        implementation(libs.apollo.runtime)
-        implementation(libs.apollo.normalizedcache)
+        implementation(golatac.lib("apollo.runtime"))
+        implementation(golatac.lib("apollo.normalizedcache"))
       }
     }
 
     val commonTest by getting {
       dependencies {
-        implementation(libs.apollo.mockserver)
-        implementation(libs.apollo.testingsupport)
+        implementation(golatac.lib("apollo.mockserver"))
+        implementation(golatac.lib("apollo.testingsupport"))
       }
     }
 
@@ -45,7 +45,7 @@ kotlin {
 
     val jvmTest by getting {
       dependencies {
-        implementation(libs.apollo.httpCache)
+        implementation(golatac.lib("apollo.httpCache"))
       }
     }
   }

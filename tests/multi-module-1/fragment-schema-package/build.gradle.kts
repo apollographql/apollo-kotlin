@@ -5,10 +5,10 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.apollo.runtime)
-  implementation(projects.multiModule1.root)
-  apolloMetadata(projects.multiModule1.root)
-  testImplementation(libs.kotlin.test.junit)
+  implementation(golatac.lib("apollo.runtime"))
+  implementation(project(":multi-module-1:root"))
+  apolloMetadata(project(":multi-module-1:root"))
+  testImplementation(golatac.lib("kotlin.test.junit"))
 }
 
 apollo {
