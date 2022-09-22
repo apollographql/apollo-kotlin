@@ -316,7 +316,7 @@ class CodegenTest {
       }
 
       val generateModelBuilder = when (folder.name) {
-        "fragment_with_inline_fragment" -> true
+        "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals" -> true
         else -> false
       }
 

@@ -13,7 +13,6 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaResolver
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -46,7 +45,7 @@ internal fun adapterMethodSpec(
     resolver: JavaResolver,
     property: IrProperty,
 ): MethodSpec {
-  val adaptedTypeName = resolver.resolveIrType(property.info.type).unwrapOptionalType(withoutAnnotations = true)
+  val adaptedTypeName = resolver.unwrapFromOptional(resolver.resolveIrType(property.info.type))
   return MethodSpec.methodBuilder(Identifier.adapter)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)

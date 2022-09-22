@@ -91,7 +91,7 @@ internal class JavaResolver(
       return if (generatePrimitiveTypes && type.ofType is IrScalarType) {
         resolveIrScalarType(type.ofType, asPrimitiveType = true)
       } else {
-        resolveIrType(type.ofType).let { if (wrapNullableFieldsInOptional) it.unwrapFromOptional() else it }
+        resolveIrType(type.ofType).let { if (wrapNullableFieldsInOptional) unwrapFromOptional(it) else it }
       }
     }
 
@@ -109,8 +109,12 @@ internal class JavaResolver(
     return ParameterizedTypeName.get(optionalClassName, this)
   }
 
-  private fun TypeName.unwrapFromOptional(): TypeName {
-    return if (this !is ParameterizedTypeName || rawType != optionalClassName) this else typeArguments.first()
+  internal fun unwrapFromOptional(typeName: TypeName): TypeName {
+    return if (typeName !is ParameterizedTypeName || typeName.rawType != optionalClassName) typeName else typeName.typeArguments.first()
+  }
+
+  internal fun isOptional(typeName: TypeName): Boolean {
+    return typeName is ParameterizedTypeName && typeName.rawType == optionalClassName
   }
 
   private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {
