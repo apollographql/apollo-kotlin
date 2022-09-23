@@ -1,21 +1,14 @@
 package test;
 
-import com.apollographql.apollo3.ApolloClient;
-import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
+import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.MapJsonWriter;
-import com.apollographql.apollo3.mockserver.MockResponse;
-import com.apollographql.apollo3.mockserver.MockServer;
-import com.apollographql.apollo3.rx2.Rx2Apollo;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlin.coroutines.EmptyCoroutineContext;
+import okio.Buffer;
 import optionals.apollo.MyQuery;
 import optionals.apollo.type.MyInput;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Map;
@@ -25,23 +18,6 @@ import static test.MapUtils.mapOf;
 
 @SuppressWarnings("unchecked")
 public class ApolloOptionalsTest {
-  MockServer mockServer;
-  ApolloClient apolloClient;
-
-  @Before
-  public void before() {
-    mockServer = new MockServer();
-    String url = (String) mockServer.url(new Continuation<String>() {
-      @NotNull @Override public CoroutineContext getContext() {
-        return EmptyCoroutineContext.INSTANCE;
-      }
-
-      @Override public void resumeWith(@NotNull Object o) {
-      }
-    });
-    apolloClient = new ApolloClient.Builder().serverUrl(url).build();
-  }
-
   @Test
   public void serializeVariablesPresent() throws Exception {
     MyQuery query = new MyQuery(
@@ -145,10 +121,10 @@ public class ApolloOptionalsTest {
   }
 
   @Test
-  public void readResultAbsent() throws Exception {
+  public void dataAdapter() throws Exception {
     MyQuery query = new MyQuery(Optional.absent(), 0, Optional.absent(), Optional.absent(), myInputOptionalAbsent(), Optional.absent());
-    mockServer.enqueue(new MockResponse.Builder().body("{\n" +
-        "        \"data\": {\n" +
+    Buffer buffer = new Buffer();
+    buffer.writeUtf8("{\n" +
         "          \"nullableInt\": null,\n" +
         "          \"nonNullableInt\": 1,\n" +
         "          \"nullableMyType\": null,\n" +
@@ -156,9 +132,9 @@ public class ApolloOptionalsTest {
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 2\n" +
         "          }\n" +
-        "        }\n" +
-        "      }").build());
-    ApolloResponse<MyQuery.Data> result = Rx2Apollo.single(apolloClient.query(query)).blockingGet();
+        "      }");
+    JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
@@ -170,11 +146,11 @@ public class ApolloOptionalsTest {
                 /* nonNullableInt = */ 2
             )
         ),
-        result.dataAssertNoErrors()
+        actualData
     );
 
-    mockServer.enqueue(new MockResponse.Builder().body("{\n" +
-        "        \"data\": {\n" +
+    buffer = new Buffer();
+    buffer.writeUtf8("{\n" +
         "          \"nullableInt\": 0,\n" +
         "          \"nonNullableInt\": 1,\n" +
         "          \"nullableMyType\": {\n" +
@@ -185,9 +161,9 @@ public class ApolloOptionalsTest {
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 4\n" +
         "          }\n" +
-        "        }\n" +
-        "      }").build());
-    result = Rx2Apollo.single(apolloClient.query(query)).blockingGet();
+        "      }");
+    jsonReader = new BufferedSourceJsonReader(buffer);
+    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.present(0),
@@ -203,9 +179,8 @@ public class ApolloOptionalsTest {
                 /* nonNullableInt = */ 4
             )
         ),
-        result.dataAssertNoErrors()
+        actualData
     );
-
   }
 
 

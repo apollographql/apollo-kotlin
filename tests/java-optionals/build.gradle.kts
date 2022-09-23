@@ -5,7 +5,6 @@ plugins {
 }
 
 dependencies {
-  implementation(golatac.lib("apollo.runtime"))
   implementation(golatac.lib("apollo.adapters"))
   implementation(golatac.lib("guava.jre"))
   testImplementation(golatac.lib("kotlin.test"))
