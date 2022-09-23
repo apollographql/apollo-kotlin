@@ -7,15 +7,14 @@ package com.example.java_primitive_types.type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.OptionalAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_primitive_types.type.MyInput;
 import java.io.IOException;
 import java.lang.IllegalStateException;
-import java.lang.Integer;
 import java.lang.Override;
 
 public enum MyInput_InputAdapter implements Adapter<MyInput> {
@@ -32,13 +31,13 @@ public enum MyInput_InputAdapter implements Adapter<MyInput> {
       throws IOException {
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new OptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nullableInt);
+      new ApolloOptionalAdapter<>(Adapters.NullableIntAdapter).toJson(writer, customScalarAdapters, value.nullableInt);
     }
     writer.name("nonNullableInt");
     Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
     if (value.nonNullableIntWithDefault instanceof Optional.Present) {
       writer.name("nonNullableIntWithDefault");
-      new OptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Integer>)value.nonNullableIntWithDefault);
+      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault);
     }
   }
 }

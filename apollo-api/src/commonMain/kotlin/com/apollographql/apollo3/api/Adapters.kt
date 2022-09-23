@@ -86,7 +86,7 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
  * This adapter is used to handle nullable fields when they are represented as [Optional].
  * `null` is deserialized as [Optional.Absent].
  */
-class OptionalFieldAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
+class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -252,19 +252,19 @@ val NullableAnyAdapter = AnyAdapter.nullable()
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val OptionalFieldStringAdapter = OptionalFieldAdapter(StringAdapter)
+val ApolloOptionalStringAdapter = ApolloOptionalAdapter(StringAdapter)
 
 @JvmField
-val OptionalFieldDoubleAdapter = OptionalFieldAdapter(DoubleAdapter)
+val ApolloOptionalDoubleAdapter = ApolloOptionalAdapter(DoubleAdapter)
 
 @JvmField
-val OptionalFieldIntAdapter = OptionalFieldAdapter(IntAdapter)
+val ApolloOptionalIntAdapter = ApolloOptionalAdapter(IntAdapter)
 
 @JvmField
-val OptionalFieldBooleanAdapter = OptionalFieldAdapter(BooleanAdapter)
+val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanAdapter)
 
 @JvmField
-val OptionalFieldAnyAdapter = OptionalFieldAdapter(AnyAdapter)
+val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyAdapter)
 
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,

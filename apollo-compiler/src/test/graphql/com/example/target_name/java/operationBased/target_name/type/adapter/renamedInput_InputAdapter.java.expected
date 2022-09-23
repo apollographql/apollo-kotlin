@@ -7,16 +7,15 @@ package com.example.target_name.type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.OptionalAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.type.renamedInput;
 import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
-import java.lang.String;
 
 public enum renamedInput_InputAdapter implements Adapter<renamedInput> {
   INSTANCE;
@@ -32,7 +31,7 @@ public enum renamedInput_InputAdapter implements Adapter<renamedInput> {
       renamedInput value) throws IOException {
     if (value.field instanceof Optional.Present) {
       writer.name("field");
-      new OptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, (Optional.Present<String>)value.field);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, customScalarAdapters, value.field);
     }
   }
 }

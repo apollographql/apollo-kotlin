@@ -10,15 +10,12 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.boxIfPrimitiveType
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isOptional
-import com.apollographql.apollo3.compiler.ir.makeNonOptional
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterSpec
-import com.squareup.javapoet.ParameterizedTypeName
 
 internal class NamedType(
     val graphQlName: String,
@@ -66,21 +63,11 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
 
-  var castToPresent = CodeBlock.of("")
   if (type.isOptional()) {
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
-    // Apollo's Optional need to cast the value to a Present<WrappedType>, while Java's and Guava's don't
-    if (context.nullableFieldStyle !in setOf(JavaNullable.JAVA_OPTIONAL, JavaNullable.GUAVA_OPTIONAL)) {
-      val resolvedType = context.resolver.resolveIrType(type.makeNonOptional()).boxIfPrimitiveType()
-      castToPresent = CodeBlock.of("($T)", ParameterizedTypeName.get(JavaClassNames.Present, resolvedType))
-    }
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement(
-      "$L.${Identifier.toJson}($writer, $customScalarAdapters, $L$value.$propertyName)",
-      adapterInitializer,
-      castToPresent
-  )
+  builder.addStatement("$L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)", adapterInitializer)
   if (type.isOptional()) {
     builder.endControlFlow()
   }

@@ -72,8 +72,7 @@ internal object JavaClassNames {
   val ImmutableMapBuilder = ClassName.get(apolloApiPackageName, "ImmutableMapBuilder")
   val NullableAdapter = ClassName.get(apolloApiPackageName, "NullableAdapter")
   val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
-  val OptionalAdapter = ClassName.get(apolloApiPackageName, "OptionalAdapter")
-  val OptionalFieldAdapter = ClassName.get(apolloApiPackageName, "OptionalFieldAdapter")
+  val ApolloOptionalAdapter = ClassName.get(apolloApiPackageName, "ApolloOptionalAdapter")
 
   val IOException = ClassName.get("java.io", "IOException")
 
