@@ -73,7 +73,7 @@ internal object JavaClassNames {
   val NullableAdapter = ClassName.get(apolloApiPackageName, "NullableAdapter")
   val ListAdapter = ClassName.get(apolloApiPackageName, "ListAdapter")
   val OptionalAdapter = ClassName.get(apolloApiPackageName, "OptionalAdapter")
-  val OptionalJsonAdapter = ClassName.get(apolloApiPackageName, "OptionalJsonAdapter")
+  val OptionalFieldAdapter = ClassName.get(apolloApiPackageName, "OptionalFieldAdapter")
 
   val IOException = ClassName.get("java.io", "IOException")
 

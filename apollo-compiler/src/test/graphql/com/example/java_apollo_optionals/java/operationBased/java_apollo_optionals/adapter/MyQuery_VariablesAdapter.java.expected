@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.OptionalAdapter;
-import com.apollographql.apollo3.api.OptionalJsonAdapter;
+import com.apollographql.apollo3.api.OptionalFieldAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_apollo_optionals.MyQuery;
@@ -36,7 +36,7 @@ public enum MyQuery_VariablesAdapter implements Adapter<MyQuery> {
       throws IOException {
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new OptionalAdapter<>(Adapters.OptionalJsonIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Optional<Integer>>)value.nullableInt);
+      new OptionalAdapter<>(Adapters.OptionalFieldIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Optional<Integer>>)value.nullableInt);
     }
     writer.name("nonNullableInt");
     Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
@@ -46,7 +46,7 @@ public enum MyQuery_VariablesAdapter implements Adapter<MyQuery> {
     }
     if (value.nullableInput instanceof Optional.Present) {
       writer.name("nullableInput");
-      new OptionalAdapter<>(new OptionalJsonAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, (Optional.Present<Optional<MyInput>>)value.nullableInput);
+      new OptionalAdapter<>(new OptionalFieldAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, (Optional.Present<Optional<MyInput>>)value.nullableInput);
     }
     writer.name("nonNullableInput");
     new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableInput);

@@ -32,7 +32,7 @@ public enum MyInput_InputAdapter implements Adapter<MyInput> {
       throws IOException {
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new OptionalAdapter<>(Adapters.OptionalJsonIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Optional<Integer>>)value.nullableInt);
+      new OptionalAdapter<>(Adapters.OptionalFieldIntAdapter).toJson(writer, customScalarAdapters, (Optional.Present<Optional<Integer>>)value.nullableInt);
     }
     writer.name("nonNullableInt");
     Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);

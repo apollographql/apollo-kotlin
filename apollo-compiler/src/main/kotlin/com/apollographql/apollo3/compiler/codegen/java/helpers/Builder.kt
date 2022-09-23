@@ -70,9 +70,8 @@ internal class Builder(
   }
 
   private fun wrapValueInOptional(value: String, fieldType: TypeName, nullableFieldStyle: JavaNullableFieldStyle): CodeBlock {
-    val valueCodeBlock = CodeBlock.of(L, value)
     return if (!context.resolver.isOptional(fieldType)) {
-      valueCodeBlock
+      CodeBlock.of(L, value)
     } else {
       when (nullableFieldStyle) {
         JavaNullableFieldStyle.JAVA_OPTIONAL -> CodeBlock.of("\$T.ofNullable(\$L)", JavaClassNames.JavaOptional, value)

@@ -53,7 +53,7 @@ internal class JavaResolver(
   }
 
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullableFieldStyle.APOLLO_OPTIONAL -> JavaClassNames.OptionalJsonAdapter
+    JavaNullableFieldStyle.APOLLO_OPTIONAL -> JavaClassNames.OptionalFieldAdapter
     JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
     JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
     else -> JavaClassNames.NullableAdapter
@@ -260,9 +260,9 @@ internal class JavaResolver(
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
       JavaNullableFieldStyle.APOLLO_OPTIONAL -> {
-        // Ex: Adapters.OptionalJsonStringAdapter
+        // Ex: Adapters.OptionalFieldStringAdapter
         className = JavaClassNames.Adapters
-        adapterNamePrefix = "OptionalJson"
+        adapterNamePrefix = "OptionalField"
       }
 
       JavaNullableFieldStyle.JAVA_OPTIONAL -> {

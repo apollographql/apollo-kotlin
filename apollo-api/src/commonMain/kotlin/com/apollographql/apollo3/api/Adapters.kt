@@ -70,7 +70,7 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
 /**
  * OptionalAdapter can only express something that's present. Absent values are handled outside of the adapter.
  *
- * This adapter is used to handle optional arguments in operations, as well as optional fields in Input objects.
+ * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
 class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
@@ -83,9 +83,10 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
 }
 
 /**
- * This adapter is used to handle JSON serialization/deserialization of nullable fields when they are represented as `Optional<Type>`.
+ * This adapter is used to handle nullable fields when they are represented as [Optional].
+ * `null` is deserialized as [Optional.Absent].
  */
-class OptionalJsonAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
+class OptionalFieldAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -137,7 +138,10 @@ val DoubleAdapter = object : Adapter<Double> {
   }
 }
 
-
+/**
+ * An [Adapter] that converts to/from a [Float]
+ * Floats are not part of the GraphQL spec but this can be used in custom scalars
+ */
 @JvmField
 val FloatAdapter = object : Adapter<Float> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
@@ -149,7 +153,12 @@ val FloatAdapter = object : Adapter<Float> {
   }
 }
 
-
+/**
+ * An [Adapter] that converts to/from a [Long]
+ * Longs are not part of the GraphQL spec but this can be used in custom scalars
+ *
+ * If the Json number does not fit in a [Long], an exception will be thrown
+ */
 @JvmField
 val LongAdapter = object : Adapter<Long> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
@@ -240,22 +249,22 @@ val NullableBooleanAdapter = BooleanAdapter.nullable()
 val NullableAnyAdapter = AnyAdapter.nullable()
 
 /*
- * Global instances of nullable adapters for built-in scalar types
+ * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val OptionalJsonStringAdapter = OptionalJsonAdapter(StringAdapter)
+val OptionalFieldStringAdapter = OptionalFieldAdapter(StringAdapter)
 
 @JvmField
-val OptionalJsonDoubleAdapter = OptionalJsonAdapter(DoubleAdapter)
+val OptionalFieldDoubleAdapter = OptionalFieldAdapter(DoubleAdapter)
 
 @JvmField
-val OptionalJsonIntAdapter = OptionalJsonAdapter(IntAdapter)
+val OptionalFieldIntAdapter = OptionalFieldAdapter(IntAdapter)
 
 @JvmField
-val OptionalJsonBooleanAdapter = OptionalJsonAdapter(BooleanAdapter)
+val OptionalFieldBooleanAdapter = OptionalFieldAdapter(BooleanAdapter)
 
 @JvmField
-val OptionalJsonAnyAdapter = OptionalJsonAdapter(AnyAdapter)
+val OptionalFieldAnyAdapter = OptionalFieldAdapter(AnyAdapter)
 
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
