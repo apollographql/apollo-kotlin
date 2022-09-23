@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
-import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
@@ -37,32 +37,32 @@ internal class JavaResolver(
     val next: JavaResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generatePrimitiveTypes: Boolean,
-    private val nullableFieldStyle: JavaNullableFieldStyle,
+    private val nullableFieldStyle: JavaNullable,
 ) {
 
   private val optionalClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptional
-    JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptional
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptional
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptional
     else -> JavaClassNames.Optional
   }
 
   private val optionalAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
-    JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
     else -> JavaClassNames.OptionalAdapter
   }
 
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullableFieldStyle.APOLLO_OPTIONAL -> JavaClassNames.OptionalFieldAdapter
-    JavaNullableFieldStyle.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
-    JavaNullableFieldStyle.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
+    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.OptionalFieldAdapter
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
     else -> JavaClassNames.NullableAdapter
   }
 
   private val wrapNullableFieldsInOptional = nullableFieldStyle in setOf(
-      JavaNullableFieldStyle.APOLLO_OPTIONAL,
-      JavaNullableFieldStyle.JAVA_OPTIONAL,
-      JavaNullableFieldStyle.GUAVA_OPTIONAL,
+      JavaNullable.APOLLO_OPTIONAL,
+      JavaNullable.JAVA_OPTIONAL,
+      JavaNullable.GUAVA_OPTIONAL,
   )
 
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
@@ -259,19 +259,19 @@ internal class JavaResolver(
     val className: ClassName
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
-      JavaNullableFieldStyle.APOLLO_OPTIONAL -> {
+      JavaNullable.APOLLO_OPTIONAL -> {
         // Ex: Adapters.OptionalFieldStringAdapter
         className = JavaClassNames.Adapters
         adapterNamePrefix = "OptionalField"
       }
 
-      JavaNullableFieldStyle.JAVA_OPTIONAL -> {
+      JavaNullable.JAVA_OPTIONAL -> {
         // Ex: JavaOptionalAdapters.JavaOptionalStringAdapter
         className = JavaClassNames.JavaOptionalAdapters
         adapterNamePrefix = "JavaOptional"
       }
 
-      JavaNullableFieldStyle.GUAVA_OPTIONAL -> {
+      JavaNullable.GUAVA_OPTIONAL -> {
         // Ex: GuavaOptionalAdapters.GuavaOptionalStringAdapter
         className = JavaClassNames.GuavaOptionalAdapters
         adapterNamePrefix = "GuavaOptional"

@@ -365,10 +365,10 @@ class CodegenTest {
       }
 
       val nullableFieldStyle = when (folder.name) {
-        "java_apollo_optionals" -> JavaNullableFieldStyle.APOLLO_OPTIONAL
-        "java_guava_optionals" -> JavaNullableFieldStyle.GUAVA_OPTIONAL
-        "java_java_optionals" -> JavaNullableFieldStyle.JAVA_OPTIONAL
-        else -> JavaNullableFieldStyle.SIMPLE
+        "java_apollo_optionals" -> JavaNullable.APOLLO_OPTIONAL
+        "java_guava_optionals" -> JavaNullable.GUAVA_OPTIONAL
+        "java_java_optionals" -> JavaNullable.JAVA_OPTIONAL
+        else -> JavaNullable.NONE
       }
 
       return Options(

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
@@ -66,7 +66,7 @@ internal class JavaCodeGen(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generateDataBuilders: Boolean,
     private val generatePrimitiveTypes: Boolean,
-    private val nullableFieldStyle: JavaNullableFieldStyle,
+    private val nullableFieldStyle: JavaNullable,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files

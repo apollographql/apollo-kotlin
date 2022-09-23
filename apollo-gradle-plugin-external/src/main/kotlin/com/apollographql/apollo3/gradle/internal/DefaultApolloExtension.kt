@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
@@ -590,7 +590,7 @@ abstract class DefaultApolloExtension(
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.generatePrimitiveTypes.set(service.generatePrimitiveTypes)
       val nullableFieldStyle: String? = service.nullableFieldStyle.orNull
-      task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullableFieldStyle.fromOptionName(nullableFieldStyle)
+      task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullable.fromName(nullableFieldStyle)
           ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
     }
   }

@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
-import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -233,7 +233,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val nullableFieldStyle: Property<JavaNullableFieldStyle>
+  abstract val nullableFieldStyle: Property<JavaNullable>
 
   @TaskAction
   fun taskAction() {

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.JavaNullableFieldStyle
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -69,13 +69,13 @@ internal class Builder(
         .build()
   }
 
-  private fun wrapValueInOptional(value: String, fieldType: TypeName, nullableFieldStyle: JavaNullableFieldStyle): CodeBlock {
+  private fun wrapValueInOptional(value: String, fieldType: TypeName, nullableFieldStyle: JavaNullable): CodeBlock {
     return if (!context.resolver.isOptional(fieldType)) {
       CodeBlock.of(L, value)
     } else {
       when (nullableFieldStyle) {
-        JavaNullableFieldStyle.JAVA_OPTIONAL -> CodeBlock.of("\$T.ofNullable(\$L)", JavaClassNames.JavaOptional, value)
-        JavaNullableFieldStyle.GUAVA_OPTIONAL -> CodeBlock.of("\$T.fromNullable(\$L)", JavaClassNames.GuavaOptional, value)
+        JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("\$T.ofNullable(\$L)", JavaClassNames.JavaOptional, value)
+        JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("\$T.fromNullable(\$L)", JavaClassNames.GuavaOptional, value)
         else -> CodeBlock.of("\$T.presentIfNotNull(\$L)", JavaClassNames.Optional, value)
       }
     }

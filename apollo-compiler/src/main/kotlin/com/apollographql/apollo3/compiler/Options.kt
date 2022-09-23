@@ -39,12 +39,12 @@ enum class TargetLanguage {
   KOTLIN_1_5,
 }
 
-enum class JavaNullableFieldStyle {
+enum class JavaNullable {
   /**
    * Fields will be generated with the same type whether they are nullable or not.
    * This is the default value.
    */
-  SIMPLE,
+  NONE,
 
   /**
    * Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
@@ -63,9 +63,9 @@ enum class JavaNullableFieldStyle {
   ;
 
   companion object {
-    fun fromOptionName(name: String): JavaNullableFieldStyle? {
+    fun fromName(name: String): JavaNullable? {
       return when (name) {
-        "simple" -> SIMPLE
+        "none" -> NONE
         "apolloOptional" -> APOLLO_OPTIONAL
         "javaOptional" -> JAVA_OPTIONAL
         "guavaOptional" -> GUAVA_OPTIONAL
@@ -278,14 +278,14 @@ class Options(
      * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
      *
      * Acceptable values:
-     * - `simple`: Fields will be generated with the same type whether they are nullable or not
+     * - `none`: Fields will be generated with the same type whether they are nullable or not
      * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
      * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
      * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
      *
-     * Default: `simple`
+     * Default: `none`
      */
-    val nullableFieldStyle: JavaNullableFieldStyle = defaultNullableFieldStyle,
+    val nullableFieldStyle: JavaNullable = defaultNullableFieldStyle,
 ) {
 
   /**
@@ -347,7 +347,7 @@ class Options(
       requiresOptInAnnotation: String? = this.requiresOptInAnnotation,
       fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge,
       generatePrimitiveTypes: Boolean = this.generatePrimitiveTypes,
-      nullableFieldStyle: JavaNullableFieldStyle = this.nullableFieldStyle,
+      nullableFieldStyle: JavaNullable = this.nullableFieldStyle,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -422,7 +422,7 @@ class Options(
     const val defaultAddJvmOverloads = false
     const val defaultFieldsOnDisjointTypesMustMerge = true
     const val defaultGeneratePrimitiveTypes = false
-    val defaultNullableFieldStyle = JavaNullableFieldStyle.SIMPLE
+    val defaultNullableFieldStyle = JavaNullable.NONE
   }
 }
 
