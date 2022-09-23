@@ -593,7 +593,7 @@ interface Service {
    *
    * Acceptable values:
    * - `simple`: Fields will be generated with the same type whether they are nullable or not
-   * - `apolloOptional`: Fields will be generated as Apollo's `apollo.api.Optional<Type>` if nullable, or `Type` if not.
+   * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
    * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
    * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
    *
