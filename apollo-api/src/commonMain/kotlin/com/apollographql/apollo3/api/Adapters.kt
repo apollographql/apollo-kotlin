@@ -67,11 +67,7 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
   }
 }
 
-/**
- * OptionalAdapter can only express something that's present. Absent values are handled outside of the adapter.
- *
- * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
- */
+@Deprecated("Use PresentAdapter instead")
 class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
@@ -81,6 +77,22 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
     wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
   }
 }
+
+/**
+ * PresentAdapter can only express something that's present. Absent values are handled outside of the adapter.
+ *
+ * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
+ */
+class PresentAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional.Present<T>) {
+    wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+  }
+}
+
 
 /**
  * This adapter is used to handle nullable fields when they are represented as [Optional].
@@ -314,7 +326,11 @@ fun <T> Adapter<T>.list() = ListAdapter(this)
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmName("-optional")
-fun <T> Adapter<T>.optional() = OptionalAdapter(this)
+@Deprecated("Use present instead", ReplaceWith("present()"))
+fun <T> Adapter<T>.optional() = PresentAdapter(this)
+
+@JvmName("-present")
+fun <T> Adapter<T>.present() = PresentAdapter(this)
 
 
 @JvmName("-toJson")

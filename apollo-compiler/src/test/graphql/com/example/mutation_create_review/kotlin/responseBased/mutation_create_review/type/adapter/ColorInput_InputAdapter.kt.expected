@@ -15,7 +15,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo3.api.present
 import com.example.mutation_create_review.type.ColorInput
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -31,24 +31,24 @@ internal object ColorInput_InputAdapter : Adapter<ColorInput> {
   ): Unit {
     if (value.red is Optional.Present) {
       writer.name("red")
-      IntAdapter.optional().toJson(writer, customScalarAdapters, value.red)
+      IntAdapter.present().toJson(writer, customScalarAdapters, value.red)
     }
     if (value.green is Optional.Present) {
       writer.name("green")
-      NullableDoubleAdapter.optional().toJson(writer, customScalarAdapters, value.green)
+      NullableDoubleAdapter.present().toJson(writer, customScalarAdapters, value.green)
     }
     if (value.blue is Optional.Present) {
       writer.name("blue")
-      DoubleAdapter.optional().toJson(writer, customScalarAdapters, value.blue)
+      DoubleAdapter.present().toJson(writer, customScalarAdapters, value.blue)
     }
     if (value.enumWithDefaultValue is Optional.Present) {
       writer.name("enumWithDefaultValue")
-      Episode_ResponseAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.enumWithDefaultValue)
     }
     if (value.reviewRefInput is Optional.Present) {
       writer.name("reviewRefInput")
-      ReviewRefInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
+      ReviewRefInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
           value.reviewRefInput)
     }
   }

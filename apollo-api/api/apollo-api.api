@@ -43,7 +43,8 @@ public final class com/apollographql/apollo3/api/Adapters {
 	public static final fun -nullable (Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/NullableAdapter;
 	public static final fun -obj (Lcom/apollographql/apollo3/api/Adapter;Z)Lcom/apollographql/apollo3/api/ObjectAdapter;
 	public static synthetic fun -obj$default (Lcom/apollographql/apollo3/api/Adapter;ZILjava/lang/Object;)Lcom/apollographql/apollo3/api/ObjectAdapter;
-	public static final fun -optional (Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/OptionalAdapter;
+	public static final fun -optional (Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/PresentAdapter;
+	public static final fun -present (Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/PresentAdapter;
 	public static final fun -toJson (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;)Ljava/lang/String;
 	public static final fun -toJson (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/String;
 	public static final fun -toJson (Lcom/apollographql/apollo3/api/Adapter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/String;)Ljava/lang/String;
@@ -864,6 +865,14 @@ public final class com/apollographql/apollo3/api/OptionalAdapter : com/apollogra
 
 public final class com/apollographql/apollo3/api/PossibleTypes {
 	public static final fun possibleTypes (Ljava/util/List;Lcom/apollographql/apollo3/api/CompiledNamedType;)Ljava/util/List;
+}
+
+public final class com/apollographql/apollo3/api/PresentAdapter : com/apollographql/apollo3/api/Adapter {
+	public fun <init> (Lcom/apollographql/apollo3/api/Adapter;)V
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/api/Optional$Present;
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/api/Optional$Present;)V
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Ljava/lang/Object;)V
 }
 
 public abstract interface class com/apollographql/apollo3/api/Query : com/apollographql/apollo3/api/Operation {

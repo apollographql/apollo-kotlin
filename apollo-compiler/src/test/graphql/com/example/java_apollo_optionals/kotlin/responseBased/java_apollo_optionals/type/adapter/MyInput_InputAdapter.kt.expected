@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo3.api.present
 import com.example.java_apollo_optionals.type.MyInput
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -28,13 +28,13 @@ public object MyInput_InputAdapter : Adapter<MyInput> {
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.optional().toJson(writer, customScalarAdapters, value.nullableInt)
+      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.nullableInt)
     }
     writer.name("nonNullableInt")
     IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.optional().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+      IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
     }
   }
 }
