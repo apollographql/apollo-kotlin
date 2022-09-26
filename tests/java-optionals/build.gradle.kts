@@ -1,5 +1,5 @@
 plugins {
-  id("org.jetbrains.kotlin.jvm")
+  id("java")
   id("apollo.test")
   id("com.apollographql.apollo3")
 }
@@ -7,11 +7,7 @@ plugins {
 dependencies {
   implementation(golatac.lib("apollo.api.java"))
   implementation(golatac.lib("guava.jre"))
-  testImplementation(golatac.lib("kotlin.test"))
   testImplementation(golatac.lib("junit"))
-  testImplementation(golatac.lib("apollo.mockserver"))
-  testImplementation(golatac.lib("apollo.testingsupport"))
-  testImplementation(golatac.lib("apollo.rx2"))
 }
 
 apollo {
