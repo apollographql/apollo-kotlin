@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo3.api.present
 import com.example.input_object_variable_and_argument.TestQuery
 import com.example.input_object_variable_and_argument.type.adapter.Episode_ResponseAdapter
 import kotlin.IllegalStateException
@@ -30,7 +30,7 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
   ): Unit {
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+      Episode_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.episode)
     }
     writer.name("stars")

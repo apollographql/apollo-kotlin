@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
@@ -65,6 +66,7 @@ internal class JavaCodeGen(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val generateDataBuilders: Boolean,
     private val generatePrimitiveTypes: Boolean,
+    private val nullableFieldStyle: JavaNullable,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -72,7 +74,7 @@ internal class JavaCodeGen(
    */
   fun write(outputDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as JavaResolver?) { acc, resolverInfo ->
-      JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes)
+      JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes, nullableFieldStyle)
     }
 
     val layout = JavaCodegenLayout(
@@ -85,8 +87,9 @@ internal class JavaCodeGen(
 
     val context = JavaContext(
         layout = layout,
-        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes),
-        generateModelBuilder = generateModelBuilder
+        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes, nullableFieldStyle),
+        generateModelBuilder = generateModelBuilder,
+        nullableFieldStyle = nullableFieldStyle,
     )
     val builders = mutableListOf<JavaClassBuilder>()
 

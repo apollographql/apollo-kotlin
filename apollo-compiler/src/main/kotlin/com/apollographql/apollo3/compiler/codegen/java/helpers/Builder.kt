@@ -1,8 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
+import com.apollographql.apollo3.compiler.JavaNullable
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
+import com.apollographql.apollo3.compiler.codegen.java.L
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -25,7 +28,6 @@ internal class Builder(
         .addFields(builderFields())
         .addMethod(MethodSpec.constructorBuilder().build())
         .addMethods(fieldSetterMethodSpecs())
-        .addMethods(inputFieldSetterMethodSpecs())
         .addMethod(buildMethod())
         .build()
   }
@@ -48,43 +50,35 @@ internal class Builder(
   private fun fieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
     return MethodSpec.methodBuilder(fieldName)
         .addModifiers(Modifier.PUBLIC)
-        .addParameter(ParameterSpec.builder(fieldType.unwrapOptionalType(), fieldName).build())
-        .apply {
-          if (!javaDoc.isNullOrBlank()) {
-            addJavadoc(CodeBlock.of("\$L\n", javaDoc))
-          }
-        }
-        .returns(JavaClassNames.Builder)
-        .addStatement("this.\$L = \$L", fieldName, fieldType.wrapOptionalValue(CodeBlock.of("\$L", fieldName)))
-        .addStatement("return this")
-        .build()
-  }
-
-  private fun inputFieldSetterMethodSpecs(): List<MethodSpec> {
-    return fields.filter { (_, fieldType) -> fieldType.isOptional(JavaClassNames.Input) }
-        .map { (fieldName, fieldType) ->
-          val javaDoc = fieldJavaDocs[fieldName]
-          inputFieldSetterMethodSpec(fieldName, fieldType, javaDoc)
-        }
-  }
-
-  private fun inputFieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
-    return MethodSpec.methodBuilder("${fieldName}Input")
-        .addModifiers(Modifier.PUBLIC)
         .addParameter(
-            ParameterSpec.builder(fieldType, fieldName)
-                .addAnnotation(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
-                .build())
-
+            ParameterSpec.builder(context.resolver.unwrapFromOptional(fieldType), fieldName)
+                .applyIf(context.resolver.isOptional(fieldType)) {
+                  // TODO: Other flavors of Nullable annotations will be supported later
+                  addAnnotation(JavaClassNames.JetBrainsNullable)
+                }
+                .build()
+        )
         .apply {
           if (!javaDoc.isNullOrBlank()) {
             addJavadoc(CodeBlock.of("\$L\n", javaDoc))
           }
         }
         .returns(JavaClassNames.Builder)
-        .addStatement("this.\$L = \$T.checkFieldNotMissing(\$L, \$S)", fieldName, ClassNames.Assertions, fieldName, fieldName)
+        .addStatement("this.\$L = \$L", fieldName, wrapValueInOptional(fieldName, fieldType, context.nullableFieldStyle))
         .addStatement("return this")
         .build()
+  }
+
+  private fun wrapValueInOptional(value: String, fieldType: TypeName, nullableFieldStyle: JavaNullable): CodeBlock {
+    return if (!context.resolver.isOptional(fieldType)) {
+      CodeBlock.of(L, value)
+    } else {
+      when (nullableFieldStyle) {
+        JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("\$T.ofNullable(\$L)", JavaClassNames.JavaOptional, value)
+        JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("\$T.fromNullable(\$L)", JavaClassNames.GuavaOptional, value)
+        else -> CodeBlock.of("\$T.presentIfNotNull(\$L)", JavaClassNames.Optional, value)
+      }
+    }
   }
 
   private fun buildMethod(): MethodSpec {

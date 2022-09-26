@@ -39,6 +39,43 @@ enum class TargetLanguage {
   KOTLIN_1_5,
 }
 
+enum class JavaNullable {
+  /**
+   * Fields will be generated with the same type whether they are nullable or not.
+   * This is the default value.
+   */
+  NONE,
+
+  /**
+   * Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
+   */
+  APOLLO_OPTIONAL,
+
+  /**
+   * Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
+   */
+  JAVA_OPTIONAL,
+
+  /**
+   * Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
+   */
+  GUAVA_OPTIONAL,
+  ;
+
+  companion object {
+    fun fromName(name: String): JavaNullable? {
+      return when (name) {
+        "none" -> NONE
+        "apolloOptional" -> APOLLO_OPTIONAL
+        "javaOptional" -> JAVA_OPTIONAL
+        "guavaOptional" -> GUAVA_OPTIONAL
+        else -> null
+      }
+    }
+  }
+
+}
+
 @ApolloExperimental
 class Options(
     /**
@@ -234,6 +271,21 @@ class Options(
      * Default: false
      */
     val generatePrimitiveTypes: Boolean = defaultGeneratePrimitiveTypes,
+
+    /**
+     * The style to use for fields that are nullable in the Java generated code.
+     *
+     * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
+     *
+     * Acceptable values:
+     * - `none`: Fields will be generated with the same type whether they are nullable or not
+     * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
+     * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
+     * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
+     *
+     * Default: `none`
+     */
+    val nullableFieldStyle: JavaNullable = defaultNullableFieldStyle,
 ) {
 
   /**
@@ -295,6 +347,7 @@ class Options(
       requiresOptInAnnotation: String? = this.requiresOptInAnnotation,
       fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge,
       generatePrimitiveTypes: Boolean = this.generatePrimitiveTypes,
+      nullableFieldStyle: JavaNullable = this.nullableFieldStyle,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -334,6 +387,7 @@ class Options(
       requiresOptInAnnotation = requiresOptInAnnotation,
       fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
       generatePrimitiveTypes = generatePrimitiveTypes,
+      nullableFieldStyle = nullableFieldStyle,
   )
 
   companion object {
@@ -368,6 +422,7 @@ class Options(
     const val defaultAddJvmOverloads = false
     const val defaultFieldsOnDisjointTypesMustMerge = true
     const val defaultGeneratePrimitiveTypes = false
+    val defaultNullableFieldStyle = JavaNullable.NONE
   }
 }
 

@@ -24,26 +24,31 @@ import java.lang.String;
 import org.jetbrains.annotations.Nullable;
 
 public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
-  public static final String OPERATION_ID = "ce4569f64d1c79cce8520336c6d0bc9a0b1019fcc526b3d22e95b0e8aeba77d4";
+  public static final String OPERATION_ID = "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
-   * query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 ) {
-   *   nullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
-   *   nonNullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt)
-   *   myType {
+   * query JavaPrimitiveQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! = {
+   *   nonNullableInt: 4
+   * }
+   *  ) {
+   *   nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+   *   nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+   *   nullableMyType {
+   *     nullableInt
+   *     nonNullableInt
+   *   }
+   *   nonNullableMyType {
    *     nullableInt
    *     nonNullableInt
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query JavaPrimitiveQuery($input: MyInput, $nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 ) { nullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt) nonNullableInt(input: $input, nullableInt: $nullableInt, nonNullableInt: $nonNullableInt) myType { nullableInt nonNullableInt } }";
+  public static final String OPERATION_DOCUMENT = "query JavaPrimitiveQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault) nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } }";
 
   public static final String OPERATION_NAME = "JavaPrimitiveQuery";
-
-  public final Optional<MyInput> input;
 
   public final Optional<Integer> nullableInt;
 
@@ -51,18 +56,27 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
   public final Optional<Integer> nonNullableIntWithDefault;
 
+  public final Optional<MyInput> nullableInput;
+
+  public final MyInput nonNullableInput;
+
+  public final Optional<MyInput> nonNullableInputWithDefault;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
   private transient volatile String $toString;
 
-  public JavaPrimitiveQuery(Optional<MyInput> input, Optional<Integer> nullableInt,
-      int nonNullableInt, Optional<Integer> nonNullableIntWithDefault) {
-    this.input = input;
+  public JavaPrimitiveQuery(Optional<Integer> nullableInt, int nonNullableInt,
+      Optional<Integer> nonNullableIntWithDefault, Optional<MyInput> nullableInput,
+      MyInput nonNullableInput, Optional<MyInput> nonNullableInputWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
     this.nonNullableIntWithDefault = nonNullableIntWithDefault;
+    this.nullableInput = nullableInput;
+    this.nonNullableInput = nonNullableInput;
+    this.nonNullableInputWithDefault = nonNullableInputWithDefault;
   }
 
   @Override
@@ -72,10 +86,12 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     }
     if (o instanceof JavaPrimitiveQuery) {
       JavaPrimitiveQuery that = (JavaPrimitiveQuery) o;
-      return ((this.input == null) ? (that.input == null) : this.input.equals(that.input))
-       &&((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
+      return ((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
        &&this.nonNullableInt == that.nonNullableInt
-       &&((this.nonNullableIntWithDefault == null) ? (that.nonNullableIntWithDefault == null) : this.nonNullableIntWithDefault.equals(that.nonNullableIntWithDefault));
+       &&((this.nonNullableIntWithDefault == null) ? (that.nonNullableIntWithDefault == null) : this.nonNullableIntWithDefault.equals(that.nonNullableIntWithDefault))
+       &&((this.nullableInput == null) ? (that.nullableInput == null) : this.nullableInput.equals(that.nullableInput))
+       &&((this.nonNullableInput == null) ? (that.nonNullableInput == null) : this.nonNullableInput.equals(that.nonNullableInput))
+       &&((this.nonNullableInputWithDefault == null) ? (that.nonNullableInputWithDefault == null) : this.nonNullableInputWithDefault.equals(that.nonNullableInputWithDefault));
     }
     return false;
   }
@@ -85,13 +101,17 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (input == null) ? 0 : input.hashCode();
-      h *= 1000003;
       h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
       h *= 1000003;
       h ^= nonNullableInt;
       h *= 1000003;
       h ^= (nonNullableIntWithDefault == null) ? 0 : nonNullableIntWithDefault.hashCode();
+      h *= 1000003;
+      h ^= (nullableInput == null) ? 0 : nullableInput.hashCode();
+      h *= 1000003;
+      h ^= (nonNullableInput == null) ? 0 : nonNullableInput.hashCode();
+      h *= 1000003;
+      h ^= (nonNullableInputWithDefault == null) ? 0 : nonNullableInputWithDefault.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -102,10 +122,12 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   public String toString() {
     if ($toString == null) {
       $toString = "JavaPrimitiveQuery{"
-        + "input=" + input + ", "
         + "nullableInt=" + nullableInt + ", "
         + "nonNullableInt=" + nonNullableInt + ", "
-        + "nonNullableIntWithDefault=" + nonNullableIntWithDefault
+        + "nonNullableIntWithDefault=" + nonNullableIntWithDefault + ", "
+        + "nullableInput=" + nullableInput + ", "
+        + "nonNullableInput=" + nonNullableInput + ", "
+        + "nonNullableInputWithDefault=" + nonNullableInputWithDefault
         + "}";
     }
     return $toString;
@@ -152,20 +174,19 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<MyInput> input;
-
     private Optional<Integer> nullableInt;
 
     private int nonNullableInt;
 
     private Optional<Integer> nonNullableIntWithDefault;
 
-    Builder() {
-    }
+    private Optional<MyInput> nullableInput;
 
-    public Builder input(@Nullable MyInput input) {
-      this.input = Optional.presentIfNotNull(input);
-      return this;
+    private MyInput nonNullableInput;
+
+    private Optional<MyInput> nonNullableInputWithDefault;
+
+    Builder() {
     }
 
     public Builder nullableInt(@Nullable Integer nullableInt) {
@@ -183,8 +204,23 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return this;
     }
 
+    public Builder nullableInput(@Nullable MyInput nullableInput) {
+      this.nullableInput = Optional.presentIfNotNull(nullableInput);
+      return this;
+    }
+
+    public Builder nonNullableInput(MyInput nonNullableInput) {
+      this.nonNullableInput = nonNullableInput;
+      return this;
+    }
+
+    public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
+      this.nonNullableInputWithDefault = Optional.presentIfNotNull(nonNullableInputWithDefault);
+      return this;
+    }
+
     public JavaPrimitiveQuery build() {
-      return new JavaPrimitiveQuery(input, nullableInt, nonNullableInt, nonNullableIntWithDefault);
+      return new JavaPrimitiveQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
     }
   }
 
@@ -193,7 +229,9 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     public int nonNullableInt;
 
-    public MyType myType;
+    public NullableMyType nullableMyType;
+
+    public NonNullableMyType nonNullableMyType;
 
     private transient volatile int $hashCode;
 
@@ -201,10 +239,12 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Integer nullableInt, int nonNullableInt, MyType myType) {
+    public Data(Integer nullableInt, int nonNullableInt, NullableMyType nullableMyType,
+        NonNullableMyType nonNullableMyType) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
-      this.myType = myType;
+      this.nullableMyType = nullableMyType;
+      this.nonNullableMyType = nonNullableMyType;
     }
 
     @Override
@@ -216,7 +256,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
         Data that = (Data) o;
         return ((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
          &&this.nonNullableInt == that.nonNullableInt
-         &&((this.myType == null) ? (that.myType == null) : this.myType.equals(that.myType));
+         &&((this.nullableMyType == null) ? (that.nullableMyType == null) : this.nullableMyType.equals(that.nullableMyType))
+         &&((this.nonNullableMyType == null) ? (that.nonNullableMyType == null) : this.nonNullableMyType.equals(that.nonNullableMyType));
       }
       return false;
     }
@@ -230,7 +271,9 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
         h *= 1000003;
         h ^= nonNullableInt;
         h *= 1000003;
-        h ^= (myType == null) ? 0 : myType.hashCode();
+        h ^= (nullableMyType == null) ? 0 : nullableMyType.hashCode();
+        h *= 1000003;
+        h ^= (nonNullableMyType == null) ? 0 : nonNullableMyType.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -243,14 +286,65 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
         $toString = "Data{"
           + "nullableInt=" + nullableInt + ", "
           + "nonNullableInt=" + nonNullableInt + ", "
-          + "myType=" + myType
+          + "nullableMyType=" + nullableMyType + ", "
+          + "nonNullableMyType=" + nonNullableMyType
           + "}";
       }
       return $toString;
     }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.nullableInt = nullableInt;
+      builder.nonNullableInt = nonNullableInt;
+      builder.nullableMyType = nullableMyType;
+      builder.nonNullableMyType = nonNullableMyType;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer nullableInt;
+
+      private int nonNullableInt;
+
+      private NullableMyType nullableMyType;
+
+      private NonNullableMyType nonNullableMyType;
+
+      Builder() {
+      }
+
+      public Builder nullableInt(Integer nullableInt) {
+        this.nullableInt = nullableInt;
+        return this;
+      }
+
+      public Builder nonNullableInt(int nonNullableInt) {
+        this.nonNullableInt = nonNullableInt;
+        return this;
+      }
+
+      public Builder nullableMyType(NullableMyType nullableMyType) {
+        this.nullableMyType = nullableMyType;
+        return this;
+      }
+
+      public Builder nonNullableMyType(NonNullableMyType nonNullableMyType) {
+        this.nonNullableMyType = nonNullableMyType;
+        return this;
+      }
+
+      public Data build() {
+        return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
+      }
+    }
   }
 
-  public static class MyType {
+  public static class NullableMyType {
     public Integer nullableInt;
 
     public int nonNullableInt;
@@ -261,7 +355,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public MyType(Integer nullableInt, int nonNullableInt) {
+    public NullableMyType(Integer nullableInt, int nonNullableInt) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
     }
@@ -271,8 +365,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       if (o == this) {
         return true;
       }
-      if (o instanceof MyType) {
-        MyType that = (MyType) o;
+      if (o instanceof NullableMyType) {
+        NullableMyType that = (NullableMyType) o;
         return ((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
          &&this.nonNullableInt == that.nonNullableInt;
       }
@@ -296,12 +390,135 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "MyType{"
+        $toString = "NullableMyType{"
           + "nullableInt=" + nullableInt + ", "
           + "nonNullableInt=" + nonNullableInt
           + "}";
       }
       return $toString;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.nullableInt = nullableInt;
+      builder.nonNullableInt = nonNullableInt;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer nullableInt;
+
+      private int nonNullableInt;
+
+      Builder() {
+      }
+
+      public Builder nullableInt(Integer nullableInt) {
+        this.nullableInt = nullableInt;
+        return this;
+      }
+
+      public Builder nonNullableInt(int nonNullableInt) {
+        this.nonNullableInt = nonNullableInt;
+        return this;
+      }
+
+      public NullableMyType build() {
+        return new NullableMyType(nullableInt, nonNullableInt);
+      }
+    }
+  }
+
+  public static class NonNullableMyType {
+    public Integer nullableInt;
+
+    public int nonNullableInt;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
+    public NonNullableMyType(Integer nullableInt, int nonNullableInt) {
+      this.nullableInt = nullableInt;
+      this.nonNullableInt = nonNullableInt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof NonNullableMyType) {
+        NonNullableMyType that = (NonNullableMyType) o;
+        return ((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
+         &&this.nonNullableInt == that.nonNullableInt;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+        h *= 1000003;
+        h ^= nonNullableInt;
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "NonNullableMyType{"
+          + "nullableInt=" + nullableInt + ", "
+          + "nonNullableInt=" + nonNullableInt
+          + "}";
+      }
+      return $toString;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.nullableInt = nullableInt;
+      builder.nonNullableInt = nonNullableInt;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer nullableInt;
+
+      private int nonNullableInt;
+
+      Builder() {
+      }
+
+      public Builder nullableInt(Integer nullableInt) {
+        this.nullableInt = nullableInt;
+        return this;
+      }
+
+      public Builder nonNullableInt(int nonNullableInt) {
+        this.nonNullableInt = nonNullableInt;
+        return this;
+      }
+
+      public NonNullableMyType build() {
+        return new NonNullableMyType(nullableInt, nonNullableInt);
+      }
     }
   }
 }

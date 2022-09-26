@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.java_primitive_types.JavaPrimitiveQuery
 import kotlin.Int
@@ -20,19 +21,23 @@ import kotlin.collections.List
 
 public object JavaPrimitiveQuery_ResponseAdapter {
   public object Data : Adapter<JavaPrimitiveQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt", "myType")
+    public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
+        "nullableMyType", "nonNullableMyType")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         JavaPrimitiveQuery.Data {
       var _nullableInt: Int? = null
       var _nonNullableInt: Int? = null
-      var _myType: JavaPrimitiveQuery.Data.MyType? = null
+      var _nullableMyType: JavaPrimitiveQuery.Data.NullableMyType? = null
+      var _nonNullableMyType: JavaPrimitiveQuery.Data.NonNullableMyType? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
           1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _myType = MyType.obj().fromJson(reader, customScalarAdapters)
+          2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader,
+              customScalarAdapters)
+          3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -40,7 +45,8 @@ public object JavaPrimitiveQuery_ResponseAdapter {
       return JavaPrimitiveQuery.Data(
         nullableInt = _nullableInt,
         nonNullableInt = _nonNullableInt!!,
-        myType = _myType!!
+        nullableMyType = _nullableMyType,
+        nonNullableMyType = _nonNullableMyType!!
       )
     }
 
@@ -55,15 +61,18 @@ public object JavaPrimitiveQuery_ResponseAdapter {
       writer.name("nonNullableInt")
       IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
 
-      writer.name("myType")
-      MyType.obj().toJson(writer, customScalarAdapters, value.myType)
+      writer.name("nullableMyType")
+      NullableMyType.obj().nullable().toJson(writer, customScalarAdapters, value.nullableMyType)
+
+      writer.name("nonNullableMyType")
+      NonNullableMyType.obj().toJson(writer, customScalarAdapters, value.nonNullableMyType)
     }
 
-    private object MyType : Adapter<JavaPrimitiveQuery.Data.MyType> {
+    private object NullableMyType : Adapter<JavaPrimitiveQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          JavaPrimitiveQuery.Data.MyType {
+          JavaPrimitiveQuery.Data.NullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
@@ -75,7 +84,7 @@ public object JavaPrimitiveQuery_ResponseAdapter {
           }
         }
 
-        return JavaPrimitiveQuery.Data.MyType(
+        return JavaPrimitiveQuery.Data.NullableMyType(
           nullableInt = _nullableInt,
           nonNullableInt = _nonNullableInt!!
         )
@@ -84,7 +93,42 @@ public object JavaPrimitiveQuery_ResponseAdapter {
       public override fun toJson(
         writer: JsonWriter,
         customScalarAdapters: CustomScalarAdapters,
-        `value`: JavaPrimitiveQuery.Data.MyType,
+        `value`: JavaPrimitiveQuery.Data.NullableMyType,
+      ): Unit {
+        writer.name("nullableInt")
+        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
+
+        writer.name("nonNullableInt")
+        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+      }
+    }
+
+    private object NonNullableMyType : Adapter<JavaPrimitiveQuery.Data.NonNullableMyType> {
+      public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
+
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          JavaPrimitiveQuery.Data.NonNullableMyType {
+        var _nullableInt: Int? = null
+        var _nonNullableInt: Int? = null
+
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
+
+        return JavaPrimitiveQuery.Data.NonNullableMyType(
+          nullableInt = _nullableInt,
+          nonNullableInt = _nonNullableInt!!
+        )
+      }
+
+      public override fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: JavaPrimitiveQuery.Data.NonNullableMyType,
       ): Unit {
         writer.name("nullableInt")
         NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)

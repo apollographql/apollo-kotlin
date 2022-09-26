@@ -203,6 +203,7 @@ class CodegenTest {
                   list + listOf(Parameters(file, MODELS_RESPONSE_BASED, true))
                 }
               }
+
               else -> {
                 listOf(
                     Parameters(file, MODELS_RESPONSE_BASED, true)
@@ -295,6 +296,7 @@ class CodegenTest {
 
           override val version: String = "1"
         }
+
         else -> OperationIdGenerator.Sha256
       }
 
@@ -314,7 +316,7 @@ class CodegenTest {
       }
 
       val generateModelBuilder = when (folder.name) {
-        "fragment_with_inline_fragment" -> true
+        "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals" -> true
         else -> false
       }
 
@@ -358,8 +360,15 @@ class CodegenTest {
       val outputDir = File("build/generated/test/${folder.name}/$targetLanguagePath/$codegenModels/")
 
       val generatePrimitiveTypes = when (folder.name) {
-        "java_primitive_types" -> true
+        "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals" -> true
         else -> false
+      }
+
+      val nullableFieldStyle = when (folder.name) {
+        "java_apollo_optionals" -> JavaNullable.APOLLO_OPTIONAL
+        "java_guava_optionals" -> JavaNullable.GUAVA_OPTIONAL
+        "java_java_optionals" -> JavaNullable.JAVA_OPTIONAL
+        else -> JavaNullable.NONE
       }
 
       return Options(
@@ -385,6 +394,7 @@ class CodegenTest {
           classesForEnumsMatching = classesForEnumsMatching,
           addJvmOverloads = addJvmOverloads,
           generatePrimitiveTypes = generatePrimitiveTypes,
+          nullableFieldStyle = nullableFieldStyle,
       )
     }
 

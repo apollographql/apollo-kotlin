@@ -45,7 +45,7 @@ internal fun adapterMethodSpec(
     resolver: JavaResolver,
     property: IrProperty,
 ): MethodSpec {
-  val adaptedTypeName = resolver.resolveIrType(property.info.type)
+  val adaptedTypeName = resolver.unwrapFromOptional(resolver.resolveIrType(property.info.type))
   return MethodSpec.methodBuilder(Identifier.adapter)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)

@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo3.api.present
 import com.example.target_name.TestQuery
 import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter
 import com.example.target_name.type.adapter.renamedInput_InputAdapter
@@ -31,16 +31,16 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
   ): Unit {
     if (value.input is Optional.Present) {
       writer.name("input")
-      renamedInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
+      renamedInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
           value.input)
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
-      NullableAnyAdapter.optional().toJson(writer, customScalarAdapters, value.scalar)
+      NullableAnyAdapter.present().toJson(writer, customScalarAdapters, value.scalar)
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().optional().toJson(writer, customScalarAdapters,
+      renamedEnum_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
           value.`enum`)
     }
   }

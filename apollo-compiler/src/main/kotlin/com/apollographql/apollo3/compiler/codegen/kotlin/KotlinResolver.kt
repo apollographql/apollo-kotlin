@@ -10,14 +10,14 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
+import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
+import com.apollographql.apollo3.compiler.ir.IrEnumType2
 import com.apollographql.apollo3.compiler.ir.IrInputObjectType
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrListType2
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNamedType
-import com.apollographql.apollo3.compiler.ir.IrCompositeType2
-import com.apollographql.apollo3.compiler.ir.IrEnumType2
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
@@ -151,9 +151,11 @@ class KotlinResolver(
           null
         }
       }
+
       is IrEnumType2 -> {
         nonNullableAdapterInitializer(IrEnumType(type.name), false)
       }
+
       is IrCompositeType2 -> null
     }
   }
@@ -224,8 +226,8 @@ class KotlinResolver(
       }
 
       type is IrOptionalType -> {
-        val optionalFun = MemberName("com.apollographql.apollo3.api", "optional")
-        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), optionalFun)
+        val presentFun = MemberName("com.apollographql.apollo3.api", "present")
+        CodeBlock.of("%L.%M()", adapterInitializer(type.ofType, requiresBuffering), presentFun)
       }
 
       else -> error("Cannot create an adapter for $type")

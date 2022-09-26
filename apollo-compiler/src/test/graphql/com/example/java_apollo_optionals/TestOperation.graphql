@@ -1,0 +1,20 @@
+query MyQuery(
+  $nullableInt: Int,
+  $nonNullableInt: Int!,
+  $nonNullableIntWithDefault: Int! = 4,
+  $nullableInput: MyInput,
+  $nonNullableInput: MyInput!,
+  $nonNullableInputWithDefault: MyInput! = {nonNullableInt: 4},
+) {
+  nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+  nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault)
+  nullableMyType {
+    nullableInt
+    nonNullableInt
+  }
+  nonNullableMyType {
+    nullableInt
+    nonNullableInt
+  }
+}
+

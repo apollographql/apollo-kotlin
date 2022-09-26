@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.NullableStringAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo3.api.present
 import com.example.antlr_tokens.TestQuery
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -27,7 +27,7 @@ public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
   ): Unit {
     if (value.operation is Optional.Present) {
       writer.name("operation")
-      NullableStringAdapter.optional().toJson(writer, customScalarAdapters, value.operation)
+      NullableStringAdapter.present().toJson(writer, customScalarAdapters, value.operation)
     }
   }
 }

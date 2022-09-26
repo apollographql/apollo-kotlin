@@ -343,7 +343,7 @@ public class ReviewInput {
     /**
      * for test purpose only
      */
-    public Builder customScalar(Object customScalar) {
+    public Builder customScalar(@Nullable Object customScalar) {
       this.customScalar = Optional.presentIfNotNull(customScalar);
       return this;
     }

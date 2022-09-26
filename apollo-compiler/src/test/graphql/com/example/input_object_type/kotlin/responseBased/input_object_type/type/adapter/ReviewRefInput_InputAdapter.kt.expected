@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
-import com.apollographql.apollo3.api.optional
+import com.apollographql.apollo3.api.present
 import com.example.input_object_type.type.ReviewRefInput
 import kotlin.IllegalStateException
 import kotlin.Unit
@@ -28,7 +28,7 @@ public object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
   ): Unit {
     if (value.reviewInput is Optional.Present) {
       writer.name("reviewInput")
-      ReviewInput_InputAdapter.obj().nullable().optional().toJson(writer, customScalarAdapters,
+      ReviewInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
           value.reviewInput)
     }
   }

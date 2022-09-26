@@ -14,7 +14,6 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
-import kotlin.native.concurrent.SharedImmutable
 
 /**
  * This file contains a list of [Adapter] for standard types
@@ -68,9 +67,7 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
   }
 }
 
-/**
- * ResponseAdapters can only express something that's present. Absent values are handled outside of the adapter
- */
+@Deprecated("Use PresentAdapter instead")
 class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
@@ -81,9 +78,47 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
   }
 }
 
-@SharedImmutable
+/**
+ * PresentAdapter can only express something that's present. Absent values are handled outside of the adapter.
+ *
+ * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
+ */
+class PresentAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional.Present<T>) {
+    wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+  }
+}
+
+
+/**
+ * This adapter is used to handle nullable fields when they are represented as [Optional].
+ * `null` is deserialized as [Optional.Absent].
+ */
+class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
+    return if (reader.peek() == JsonReader.Token.NULL) {
+      reader.skipValue()
+      Optional.Absent
+    } else {
+      Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+    }
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional<T>) {
+    if (value is Optional.Present) {
+      wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+    } else {
+      writer.nullValue()
+    }
+  }
+}
+
 @JvmField
-val StringAdapter = object  : Adapter<String> {
+val StringAdapter = object : Adapter<String> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
     return reader.nextString()!!
   }
@@ -93,9 +128,8 @@ val StringAdapter = object  : Adapter<String> {
   }
 }
 
-@SharedImmutable
 @JvmField
-val IntAdapter = object  : Adapter<Int> {
+val IntAdapter = object : Adapter<Int> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
     return reader.nextInt()
   }
@@ -105,9 +139,8 @@ val IntAdapter = object  : Adapter<Int> {
   }
 }
 
-@SharedImmutable
 @JvmField
-val DoubleAdapter = object  : Adapter<Double> {
+val DoubleAdapter = object : Adapter<Double> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
     return reader.nextDouble()
   }
@@ -121,9 +154,8 @@ val DoubleAdapter = object  : Adapter<Double> {
  * An [Adapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
-@SharedImmutable
 @JvmField
-val FloatAdapter = object  : Adapter<Float> {
+val FloatAdapter = object : Adapter<Float> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
@@ -139,9 +171,8 @@ val FloatAdapter = object  : Adapter<Float> {
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
-@SharedImmutable
 @JvmField
-val LongAdapter = object : Adapter<Long>  {
+val LongAdapter = object : Adapter<Long> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
     return reader.nextLong()
   }
@@ -151,9 +182,8 @@ val LongAdapter = object : Adapter<Long>  {
   }
 }
 
-@SharedImmutable
 @JvmField
-val BooleanAdapter = object  : Adapter<Boolean> {
+val BooleanAdapter = object : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
@@ -163,7 +193,6 @@ val BooleanAdapter = object  : Adapter<Boolean> {
   }
 }
 
-@SharedImmutable
 @JvmField
 val AnyAdapter = object : Adapter<Any> {
   fun fromJson(reader: JsonReader): Any {
@@ -183,9 +212,9 @@ val AnyAdapter = object : Adapter<Any> {
   }
 }
 
-internal class PassThroughAdapter<T>: Adapter<T> {
+internal class PassThroughAdapter<T> : Adapter<T> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
-    check (reader is MapJsonReader) {
+    check(reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
     }
 
@@ -194,7 +223,7 @@ internal class PassThroughAdapter<T>: Adapter<T> {
   }
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
-    check (writer is MapJsonWriter) {
+    check(writer is MapJsonWriter) {
       "UnsafeAdapter only supports MapJsonWriter"
     }
 
@@ -202,9 +231,8 @@ internal class PassThroughAdapter<T>: Adapter<T> {
   }
 }
 
-@SharedImmutable
 @JvmField
-val UploadAdapter = object  : Adapter<Upload> {
+val UploadAdapter = object : Adapter<Upload> {
   override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Upload {
     error("File Upload used in output position")
   }
@@ -214,24 +242,41 @@ val UploadAdapter = object  : Adapter<Upload> {
   }
 }
 
-/**
+/*
  * Global instances of nullable adapters for built-in scalar types
  */
-@SharedImmutable
 @JvmField
 val NullableStringAdapter = StringAdapter.nullable()
-@SharedImmutable
+
 @JvmField
 val NullableDoubleAdapter = DoubleAdapter.nullable()
-@SharedImmutable
+
 @JvmField
 val NullableIntAdapter = IntAdapter.nullable()
-@SharedImmutable
+
 @JvmField
 val NullableBooleanAdapter = BooleanAdapter.nullable()
-@SharedImmutable
+
 @JvmField
 val NullableAnyAdapter = AnyAdapter.nullable()
+
+/*
+ * Global instances of optional adapters for built-in scalar types
+ */
+@JvmField
+val ApolloOptionalStringAdapter = ApolloOptionalAdapter(StringAdapter)
+
+@JvmField
+val ApolloOptionalDoubleAdapter = ApolloOptionalAdapter(DoubleAdapter)
+
+@JvmField
+val ApolloOptionalIntAdapter = ApolloOptionalAdapter(IntAdapter)
+
+@JvmField
+val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanAdapter)
+
+@JvmField
+val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyAdapter)
 
 class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
@@ -273,16 +318,27 @@ class ObjectAdapter<T>(
 
 @JvmName("-nullable")
 fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
+
 @JvmName("-list")
 fun <T> Adapter<T>.list() = ListAdapter(this)
+
 @JvmName("-obj")
 fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+
 @JvmName("-optional")
-fun <T> Adapter<T>.optional() = OptionalAdapter(this)
+@Deprecated("Use present instead", ReplaceWith("present()"))
+fun <T> Adapter<T>.optional() = PresentAdapter(this)
+
+@JvmName("-present")
+fun <T> Adapter<T>.present() = PresentAdapter(this)
 
 
 @JvmName("-toJson")
 @JvmOverloads
-fun <T> Adapter<T>.toJsonString(value: T, customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty, indent: String? = null): String = buildJsonString(indent) {
+fun <T> Adapter<T>.toJsonString(
+    value: T,
+    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    indent: String? = null,
+): String = buildJsonString(indent) {
   this@toJsonString.toJson(this, customScalarAdapters, value)
 }

@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -24,32 +25,35 @@ public class JavaPrimitiveQuery_ResponseAdapter {
   public enum Data implements Adapter<JavaPrimitiveQuery.Data> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "myType");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType");
 
     @Override
     public JavaPrimitiveQuery.Data fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
-      JavaPrimitiveQuery.MyType _myType = null;
+      JavaPrimitiveQuery.NullableMyType _nullableMyType = null;
+      JavaPrimitiveQuery.NonNullableMyType _nonNullableMyType = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _myType = new ObjectAdapter<JavaPrimitiveQuery.MyType>(MyType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
+          case 2: _nullableMyType = new NullableAdapter<>(new ObjectAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 3: _nonNullableMyType = new ObjectAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(_nonNullableInt, "nonNullableInt");
-      Assertions.checkFieldNotMissing(_myType, "myType");
+      Assertions.checkFieldNotMissing(_nonNullableMyType, "nonNullableMyType");
 
       return new JavaPrimitiveQuery.Data(
         _nullableInt,
         _nonNullableInt,
-        _myType
+        _nullableMyType,
+        _nonNullableMyType
       );
     }
 
@@ -62,18 +66,21 @@ public class JavaPrimitiveQuery_ResponseAdapter {
       writer.name("nonNullableInt");
       Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
 
-      writer.name("myType");
-      new ObjectAdapter<JavaPrimitiveQuery.MyType>(MyType.INSTANCE, false).toJson(writer, customScalarAdapters, value.myType);
+      writer.name("nullableMyType");
+      new NullableAdapter<>(new ObjectAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, customScalarAdapters, value.nullableMyType);
+
+      writer.name("nonNullableMyType");
+      new ObjectAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, customScalarAdapters, value.nonNullableMyType);
     }
   }
 
-  public enum MyType implements Adapter<JavaPrimitiveQuery.MyType> {
+  public enum NullableMyType implements Adapter<JavaPrimitiveQuery.NullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public JavaPrimitiveQuery.MyType fromJson(JsonReader reader,
+    public JavaPrimitiveQuery.NullableMyType fromJson(JsonReader reader,
         CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
@@ -89,7 +96,7 @@ public class JavaPrimitiveQuery_ResponseAdapter {
 
       Assertions.checkFieldNotMissing(_nonNullableInt, "nonNullableInt");
 
-      return new JavaPrimitiveQuery.MyType(
+      return new JavaPrimitiveQuery.NullableMyType(
         _nullableInt,
         _nonNullableInt
       );
@@ -97,7 +104,46 @@ public class JavaPrimitiveQuery_ResponseAdapter {
 
     @Override
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        JavaPrimitiveQuery.MyType value) throws IOException {
+        JavaPrimitiveQuery.NullableMyType value) throws IOException {
+      writer.name("nullableInt");
+      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
+
+      writer.name("nonNullableInt");
+      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt);
+    }
+  }
+
+  public enum NonNullableMyType implements Adapter<JavaPrimitiveQuery.NonNullableMyType> {
+    INSTANCE;
+
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
+
+    @Override
+    public JavaPrimitiveQuery.NonNullableMyType fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
+      Integer _nullableInt = null;
+      int _nonNullableInt = 0;
+
+      loop:
+      while(true) {
+        switch (reader.selectName(RESPONSE_NAMES)) {
+          case 0: _nullableInt = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          default: break loop;
+        }
+      }
+
+      Assertions.checkFieldNotMissing(_nonNullableInt, "nonNullableInt");
+
+      return new JavaPrimitiveQuery.NonNullableMyType(
+        _nullableInt,
+        _nonNullableInt
+      );
+    }
+
+    @Override
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        JavaPrimitiveQuery.NonNullableMyType value) throws IOException {
       writer.name("nullableInt");
       Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt);
 

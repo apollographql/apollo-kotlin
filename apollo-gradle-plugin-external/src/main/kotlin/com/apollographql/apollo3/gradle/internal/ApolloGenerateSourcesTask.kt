@@ -6,6 +6,7 @@ import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -29,6 +30,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateRespo
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.Options.Companion.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
@@ -229,6 +231,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val generatePrimitiveTypes: Property<Boolean>
 
+  @get:Input
+  @get:Optional
+  abstract val nullableFieldStyle: Property<JavaNullable>
+
   @TaskAction
   fun taskAction() {
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
@@ -333,6 +339,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge),
         generatePrimitiveTypes = fieldsOnDisjointTypesMustMerge.getOrElse(defaultGeneratePrimitiveTypes),
+        nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle)
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)
