@@ -30,6 +30,8 @@ com.apollographql.apollo3.api.internal
 com.apollographql.apollo3.api.json
 com.apollographql.apollo3.api.test
 com.apollographql.apollo3.exception
+module:apollo-api-java
+com.apollographql.apollo3.api.java.adapter
 module:apollo-ast
 com.apollographql.apollo3.ast
 com.apollographql.apollo3.ast.internal
