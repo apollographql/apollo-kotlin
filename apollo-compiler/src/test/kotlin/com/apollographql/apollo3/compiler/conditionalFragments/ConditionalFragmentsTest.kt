@@ -36,7 +36,7 @@ class ConditionalFragmentsTest {
       )
     }
 
-    assertEquals(true, throwable.message?.contains("'responseBased' models do not support @include/@skip and @defer directives"))
+    assertEquals(true, throwable.message?.contains("'responseBased' and 'operationBased2' models do not support @include/@skip and @defer directives"))
   }
 
   @Test
