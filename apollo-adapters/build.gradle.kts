@@ -23,10 +23,5 @@ kotlin {
         implementation(npm("big.js", "5.2.2"))
       }
     }
-    val jvmMain by getting {
-      dependencies {
-        compileOnly(golatac.lib("guava.jre"))
-      }
-    }
   }
 }

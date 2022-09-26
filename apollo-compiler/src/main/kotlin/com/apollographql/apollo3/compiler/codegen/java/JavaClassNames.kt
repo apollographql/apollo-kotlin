@@ -80,10 +80,10 @@ internal object JavaClassNames {
    * ClassNames for kotlin files turned into java classes
    */
   val Adapters = ClassName.get(apolloApiPackageName, "Adapters")
-  val JavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.adapter", "JavaOptionalAdapter")
-  val JavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.adapter", "JavaOptionalAdapters")
-  val GuavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.adapter", "GuavaOptionalAdapter")
-  val GuavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.adapter", "GuavaOptionalAdapters")
+  val JavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalAdapter")
+  val JavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "JavaOptionalAdapters")
+  val GuavaOptionalAdapter = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalAdapter")
+  val GuavaOptionalAdapters = ClassName.get("com.apollographql.apollo3.api.java.adapter", "GuavaOptionalAdapters")
   val CompiledGraphQL = ClassName.get(apolloApiPackageName, "CompiledGraphQL")
   val BooleanExpressions = ClassName.get(apolloApiPackageName, "BooleanExpressions")
   val Assertions = ClassName.get(apolloApiPackageName, "Assertions")

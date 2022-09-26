@@ -45,6 +45,7 @@ antlr = { group = "org.antlr", name = "antlr4", version.ref = "antlr" }
 antlr-runtime = { group = "org.antlr", name = "antlr4-runtime", version.ref = "antlr" }
 apollo-adapters = { group = "com.apollographql.apollo3", name = "apollo-adapters", version.ref = "apollo" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
+apollo-api-java = { group = "com.apollographql.apollo3", name = "apollo-api-java", version.ref = "apollo" }
 apollo-httpCache = { group = "com.apollographql.apollo3", name = "apollo-http-cache", version.ref = "apollo" }
 apollo-idlingresource = { group = "com.apollographql.apollo3", name = "apollo-idling-resource", version.ref = "apollo" }
 apollo-mockserver = { group = "com.apollographql.apollo3", name = "apollo-mockserver", version.ref = "apollo" }

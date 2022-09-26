@@ -24,7 +24,7 @@ dependencies {
   implementation(golatac.lib("moshi"))
   implementation(golatac.lib("moshix.sealed.runtime"))
 
-  implementation(project(":apollo-adapters")) {
+  implementation(project(":apollo-api-java")) {
     because("For Java and Guava Optional adapter use in the Java generated code")
   }
 

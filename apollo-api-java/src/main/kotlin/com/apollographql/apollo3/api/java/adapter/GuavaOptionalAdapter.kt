@@ -1,6 +1,7 @@
 @file:JvmName("GuavaOptionalAdapters")
 
-package com.apollographql.apollo3.adapter
+package com.apollographql.apollo3.api.java.adapter
+
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
