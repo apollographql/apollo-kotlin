@@ -46,6 +46,27 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     )
   }
 
+  private val nestedAdapterBuilders: List<ResponseAdapterBuilder> = modelGroup
+      .models
+      .filter { it.isInterface }
+      .flatMap { it.modelGroups }
+      .mapNotNull {
+        /**
+         * For operationBased2 codegen, the interface might contain classes that are reused by other
+         * models so we need to build the adapters
+         */
+        if (it.models.any { !it.isInterface }) {
+          ResponseAdapterBuilder.create(
+              context,
+              it,
+              path + adapterName,
+              true
+          )
+        } else {
+          null
+        }
+      }
+
   override fun prepare() {
     context.resolver.registerModelAdapter(
         modelGroup.baseModelId,
@@ -55,6 +76,9 @@ internal class PolymorphicFieldResponseAdapterBuilder(
         )
     )
     implementationAdapterBuilders.forEach {
+      it.prepare()
+    }
+    nestedAdapterBuilders.forEach {
       it.prepare()
     }
   }
@@ -71,6 +95,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
         .applyIf(!public) {
           addModifiers(KModifier.PRIVATE)
         }
+        .addTypes(nestedAdapterBuilders.flatMap { it.build() })
         .addFunction(readFromResponseFunSpec())
         .addFunction(writeToResponseFunSpec())
         .build()

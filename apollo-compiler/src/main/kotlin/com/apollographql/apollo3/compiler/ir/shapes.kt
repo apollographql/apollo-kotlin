@@ -14,6 +14,21 @@ internal data class Shape(val typeSet: TypeSet, val possibleTypes: PossibleTypes
  * This function computes the different shapes a given field can take.
  *
  * TODO: refactor to use [buckets]
+ * TODO: right now this function keeps user type sets even if some of them are redundant:
+ *
+ * ```
+ * {
+ *   cat {
+ *     # generates a `interface AnimalCat`
+ *     ... on Animal {
+ *       species
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * Simplify to not generate that code
+ *
  */
 internal fun shapes(
     schema: Schema,

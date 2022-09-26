@@ -13,10 +13,19 @@ dependencies {
 }
 
 apollo {
-  srcDir(file("../models-fixtures/graphql"))
-  packageName.set("codegen.models")
-  generateDataBuilders.set(true)
-  generateFragmentImplementations.set(true)
+  service("fixtures") {
+    srcDir(file("../models-fixtures/graphql"))
+    packageName.set("codegen.models")
+    generateDataBuilders.set(true)
+    generateFragmentImplementations.set(true)
 
-  codegenModels.set("operationBased2")
+    codegenModels.set("operationBased2")
+  }
+  service("animals") {
+    srcDir(file("graphql"))
+    flattenModels.set(false)
+    generateDataBuilders.set(true)
+    codegenModels.set("operationBased2")
+    packageName.set("animals")
+  }
 }
