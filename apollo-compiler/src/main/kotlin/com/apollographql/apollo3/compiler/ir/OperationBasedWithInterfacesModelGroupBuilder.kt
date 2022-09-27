@@ -25,7 +25,7 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
  *
  * For that last point, it starts just like [OperationBasedModelGroupBuilder] and once it has a list of nodes
  */
-internal class OperationBased2ModelGroupBuilder(
+internal class OperationBasedWithInterfacesModelGroupBuilder(
     private val schema: Schema,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val fieldMerger: FieldMerger,

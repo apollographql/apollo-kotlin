@@ -100,7 +100,7 @@ internal class IrBuilder(
         fieldMerger = this,
         compat = false,
     )
-    MODELS_OPERATION_BASED_WITH_INTERFACES -> OperationBased2ModelGroupBuilder(
+    MODELS_OPERATION_BASED_WITH_INTERFACES -> OperationBasedWithInterfacesModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
