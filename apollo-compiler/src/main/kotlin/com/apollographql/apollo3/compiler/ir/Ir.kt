@@ -444,7 +444,7 @@ internal data class IrEnumType(override val name: String) : IrType(), IrNamedTyp
  * fragmentData.$fragmentName.Data.HumanHero.CharacterFriend
  * fragmentInterface.$fragmentName.Data.CharacterHero
 
- * - operationBased2:
+ * - experimental_operationBasedWithInterfaces:
  * operationData.$operationName.Data.Hero // interface
  * operationData.$operationName.Data.DroidHero.OnDroid.HumanFriend.onHuman
  * operationData.$operationName.Data.OtherHero.Starship

@@ -19,13 +19,13 @@ apollo {
     generateDataBuilders.set(true)
     generateFragmentImplementations.set(true)
 
-    codegenModels.set("operationBased2")
+    codegenModels.set("experimental_operationBasedWithInterfaces")
   }
   service("animals") {
     srcDir(file("graphql"))
     flattenModels.set(false)
     generateDataBuilders.set(true)
-    codegenModels.set("operationBased2")
+    codegenModels.set("experimental_operationBasedWithInterfaces")
     packageName.set("animals")
   }
 }

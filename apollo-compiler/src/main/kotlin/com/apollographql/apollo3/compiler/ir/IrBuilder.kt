@@ -60,7 +60,7 @@ import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
-import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED2
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.ScalarInfo
 
@@ -100,7 +100,7 @@ internal class IrBuilder(
         fieldMerger = this,
         compat = false,
     )
-    MODELS_OPERATION_BASED2 -> OperationBased2ModelGroupBuilder(
+    MODELS_OPERATION_BASED_WITH_INTERFACES -> OperationBased2ModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,

@@ -6,14 +6,14 @@ For more complex queries, involving [merged fields](https://spec.graphql.org/dra
 
 * **responseBased**: the Kotlin models map the received json.
 * **operationBased**: the Kotlin models map the sent operation.
-* **operationBased2**: based on **operationBased**, but expose more type information. 
+* **experimental_operationBasedWithInterfaces**: based on **operationBased**, but expose more type information. 
 * **compat**: for compatibility with Apollo Kotlin 2.x
 
 `responseBased` will generate interfaces to access the models in a more polymorphic way. It will also store each merged field exactly once and have more efficient json parsing. That comes at the price of more generated code. 
 
 `operationBased` will generate less code but will use more memory and expose less type information.
 
-`operationBased2` same as `operationBased` but will generate interfaces to access model similar to `responseBased`. 
+`experimental_operationBasedWithInterfaces` same as `operationBased` but will generate interfaces to access model similar to `responseBased`. 
 
 
 # responseBased codegen
@@ -243,13 +243,13 @@ data.hero.onDroid?.name
 </tr>
 </table>
 
-# operationBased2 models
+# experimental_operationBasedWithInterfaces models
 
-operationBased2 codegen is a variant of operationBased which exposes more type information.
+experimental_operationBasedWithInterfaces codegen is a variant of operationBased which allows to leverage Kotlin `when` statements and make some fragments non-null depending on what case they are in.
 
 #### Why another operationBased?
 
-With operationBased model, handling all possible types of a model could be treacherous code. 
+With operationBased model, handling all possible types of a model relies on a succession of `if` statements: 
 
 For example query below,
 ```graphql
@@ -268,7 +268,8 @@ query TestOperation {
 }
 ```
 
-Handling `something` code will look like the following
+Handling `something` code will look like the following:
+
 ```kotlin
 when {
   something.onType1 != null -> {
@@ -282,11 +283,12 @@ when {
   }
 }
 ```
+
 #### Why this code treacherous?
 * It is difficult to write when there are many possible types. 
 * It is difficult to maintain when there is a new possible type. 
 
-With operationBased2, it generates a `sealed interface` and `classes` for model with multiple possible types. So such model can be handled with [sealed interface and when statement](https://kotlinlang.org/docs/sealed-classes.html#sealed-classes-and-when-expression)
+With experimental_operationBasedWithInterfaces, it generates a `sealed interface` and `classes` for model with multiple possible types. So such model can be handled with [sealed interface and when statement](https://kotlinlang.org/docs/sealed-classes.html#sealed-classes-and-when-expression)
 
 Handling `something` code will become like this
 ```kotlin

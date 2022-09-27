@@ -52,8 +52,8 @@ internal class PolymorphicFieldResponseAdapterBuilder(
       .flatMap { it.modelGroups }
       .mapNotNull {
         /**
-         * For operationBased2 codegen, the interface might contain classes that are reused by other
-         * models so we need to build the adapters
+         * For experimental_operationBasedWithInterfaces codegen, the interface might contain classes that are reused by other
+         * models, so we need to build the adapters
          */
         if (it.models.any { !it.isInterface }) {
           ResponseAdapterBuilder.create(

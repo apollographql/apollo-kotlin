@@ -35,22 +35,9 @@ internal fun shapes(
     allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     selections: List<GQLSelection>,
     rawTypename: String,
-    shallow: Boolean
 ): List<Shape> {
 
-  val userTypeSets = if (shallow) {
-    /**
-     * operationBased2
-     * Collect only different type sets from direct child inline & named fragments
-     */
-    selections.shallowCollectUserTypeSets(allFragmentDefinitions, setOf(rawTypename)).toSet()
-  } else {
-    /**
-     * responseBased
-     * Collect all different type sets requested by the user from the inline & named fragments
-     */
-    selections.collectUserTypeSets(allFragmentDefinitions, setOf(rawTypename)).toSet()
-  }
+  val userTypeSets = selections.collectUserTypeSets(allFragmentDefinitions, setOf(rawTypename)).toSet()
 
   val typeConditionToPossibleTypes = userTypeSets.union().associateWith {
     schema.typeDefinition(it).possibleTypes(schema)
@@ -107,22 +94,6 @@ internal fun shapes(
   }
 
   return shapes.map { Shape(it.typeSet, it.actualPossibleTypes) }
-}
-
-private fun List<GQLSelection>.shallowCollectUserTypeSets(
-    allGQLFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    currentTypeSet: TypeSet,
-): List<TypeSet> {
-  return listOf(currentTypeSet) + flatMap {
-    when (it) {
-      is GQLField -> emptyList()
-      is GQLInlineFragment -> listOf(currentTypeSet + it.typeCondition.name)
-      is GQLFragmentSpread -> {
-        val fragmentDefinition = allGQLFragmentDefinitions[it.name]!!
-        listOf(currentTypeSet + fragmentDefinition.typeCondition.name)
-      }
-    }
-  }
 }
 
 private fun List<GQLSelection>.collectUserTypeSets(

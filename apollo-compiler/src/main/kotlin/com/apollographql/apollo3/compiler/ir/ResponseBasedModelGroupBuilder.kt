@@ -250,7 +250,7 @@ private class FieldNodeBuilder(
       )
     }
 
-    val shapes = shapes(schema, allFragmentDefinitions, selections, rawTypename, false)
+    val shapes = shapes(schema, allFragmentDefinitions, selections, rawTypename)
     val allTypeSets = shapes.map { it.typeSet }.toSet()
 
     val fragmentFieldNodes = mutableListOf<ResponseField>()

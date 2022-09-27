@@ -454,7 +454,13 @@ interface Service {
   val generateModelBuilder: Property<Boolean>
 
   /**
-   * What codegen to use. One of "operationBased", "responseBased" or "compat"
+   * What codegen to use. One of "operationBased", "responseBased", "compat" or "experimental_operationBasedWithInterfaces"
+   *
+   * - "operationBased" generates models that map 1:1 with the GraphQL operation
+   * - "responseBased" generates models that map 1:1 with the Json response
+   * - "compat" is for compatibility with 2.x and will be removed in a future version
+   * - "experimental_operationBasedWithInterfaces" is like "operationBased" except it will generate an interface for polymorphic
+   * selection sets
    *
    * Default value: "operationBased"
    */
@@ -471,7 +477,7 @@ interface Service {
    *
    * - "ifAbstract": Add '__typename' for abstract fields, i.e. fields that are of union or interface type
    * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
-   * could be read from the cache and we don't have a containing field in that case.
+   * could be read from the cache, and we don't have a containing field in that case.
    *
    * - "ifPolymorphic": Add '__typename' for polymorphic fields, i.e. fields that contains a subfragment
    * (inline or named) whose type condition isn't a super type of the field type.
@@ -481,7 +487,7 @@ interface Service {
    * required in some cases.
    *
    * Note: It also adds '__typename' on fragment definitions that satisfy the same property because fragments
-   * could be read from the cache and we don't have a containing field in that case.
+   * could be read from the cache, and we don't have a containing field in that case.
    *
    * Default value: "ifFragments"
    */
