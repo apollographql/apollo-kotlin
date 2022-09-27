@@ -9,20 +9,16 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PilotFragment implements Fragment.Data {
   /**
    * The name of this person.
    */
-  @Nullable
   public String name;
 
   /**
    * A planet that this person was born on or inhabits.
    */
-  @Nullable
   public Homeworld homeworld;
 
   private transient volatile int $hashCode;
@@ -31,7 +27,7 @@ public class PilotFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public PilotFragment(@Nullable String name, @Nullable Homeworld homeworld) {
+  public PilotFragment(String name, Homeworld homeworld) {
     this.name = name;
     this.homeworld = homeworld;
   }
@@ -75,13 +71,11 @@ public class PilotFragment implements Fragment.Data {
   }
 
   public static class Homeworld {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'planetFragment'
      */
-    @NotNull
     public PlanetFragment planetFragment;
 
     private transient volatile int $hashCode;
@@ -90,7 +84,7 @@ public class PilotFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Homeworld(@NotNull String __typename, @NotNull PlanetFragment planetFragment) {
+    public Homeworld(String __typename, PlanetFragment planetFragment) {
       this.__typename = __typename;
       this.planetFragment = planetFragment;
     }

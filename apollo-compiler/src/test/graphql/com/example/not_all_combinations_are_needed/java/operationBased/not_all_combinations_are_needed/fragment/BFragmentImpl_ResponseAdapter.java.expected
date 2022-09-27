@@ -28,7 +28,7 @@ public class BFragmentImpl_ResponseAdapter {
       String _fieldB1 = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

@@ -33,7 +33,7 @@ public class CatQuery_ResponseAdapter {
       CatQuery.Cat _cat = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _cat = new NullableAdapter<>(new ObjectAdapter<CatQuery.Cat>(Cat.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -64,7 +64,7 @@ public class CatQuery_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

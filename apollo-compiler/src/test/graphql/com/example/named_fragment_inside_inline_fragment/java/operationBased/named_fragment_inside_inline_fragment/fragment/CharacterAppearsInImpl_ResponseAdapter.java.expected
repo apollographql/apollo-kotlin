@@ -32,7 +32,7 @@ public class CharacterAppearsInImpl_ResponseAdapter {
       List<Episode> _appearsIn = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
           default: break loop;

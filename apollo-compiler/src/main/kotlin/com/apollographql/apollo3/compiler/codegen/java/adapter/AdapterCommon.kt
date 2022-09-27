@@ -98,7 +98,7 @@ internal fun readFromResponseCodeBlock(
   val loop = if (regularProperties.isNotEmpty()) {
     CodeBlock.builder()
         .add("loop:\n")
-        .beginControlFlow("while (true)")
+        .beginControlFlow("while(true)")
         .beginControlFlow("switch ($reader.selectName($RESPONSE_NAMES))")
         .add(
             regularProperties.mapIndexed { index, property ->

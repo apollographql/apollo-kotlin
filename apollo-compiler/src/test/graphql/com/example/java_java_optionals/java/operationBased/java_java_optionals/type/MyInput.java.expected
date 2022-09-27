@@ -10,16 +10,13 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MyInput {
-  @NotNull
   public final Optional<Optional<Integer>> nullableInt;
 
   public final int nonNullableInt;
 
-  @NotNull
   public final Optional<Integer> nonNullableIntWithDefault;
 
   private transient volatile int $hashCode;
@@ -28,8 +25,8 @@ public class MyInput {
 
   private transient volatile String $toString;
 
-  public MyInput(@NotNull Optional<Optional<Integer>> nullableInt, int nonNullableInt,
-      @NotNull Optional<Integer> nonNullableIntWithDefault) {
+  public MyInput(Optional<Optional<Integer>> nullableInt, int nonNullableInt,
+      Optional<Integer> nonNullableIntWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
     this.nonNullableIntWithDefault = nonNullableIntWithDefault;

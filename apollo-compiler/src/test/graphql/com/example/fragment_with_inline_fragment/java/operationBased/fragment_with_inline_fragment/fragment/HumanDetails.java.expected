@@ -5,18 +5,15 @@
 //
 package com.example.fragment_with_inline_fragment.fragment;
 
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 
 public class HumanDetails implements Fragment.Data {
   /**
    * What this human calls themselves
    */
-  @NotNull
   public String name;
 
   private transient volatile int $hashCode;
@@ -25,7 +22,7 @@ public class HumanDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HumanDetails(@NotNull String name) {
+  public HumanDetails(String name) {
     this.name = name;
   }
 
@@ -82,13 +79,12 @@ public class HumanDetails implements Fragment.Data {
     /**
      * What this human calls themselves
      */
-    public Builder name(@NotNull String name) {
+    public Builder name(String name) {
       this.name = name;
       return this;
     }
 
     public HumanDetails build() {
-      Assertions.checkFieldNotMissing(name, "name");
       return new HumanDetails(name);
     }
   }

@@ -32,7 +32,7 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -64,7 +64,7 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
       String _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

@@ -40,7 +40,7 @@ public class HeroDetailQuery_ResponseAdapter {
       com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 _heroDetailQuery = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _heroDetailQuery = new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -73,7 +73,7 @@ public class HeroDetailQuery_ResponseAdapter {
       List<com.example.unique_type_name.HeroDetailQuery.Friend> _friends = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -128,7 +128,7 @@ public class HeroDetailQuery_ResponseAdapter {
       String _name = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -162,7 +162,7 @@ public class HeroDetailQuery_ResponseAdapter {
       List<com.example.unique_type_name.HeroDetailQuery.Friend1> _friends = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
@@ -199,7 +199,7 @@ public class HeroDetailQuery_ResponseAdapter {
       List<com.example.unique_type_name.HeroDetailQuery.Friend2> _friends = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
           case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
@@ -237,7 +237,7 @@ public class HeroDetailQuery_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

@@ -34,7 +34,7 @@ public class GetHero_ResponseAdapter {
       GetHero.Hero _hero = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _hero = new NullableAdapter<>(new ObjectAdapter<GetHero.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -65,7 +65,7 @@ public class GetHero_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -104,7 +104,7 @@ public class GetHero_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

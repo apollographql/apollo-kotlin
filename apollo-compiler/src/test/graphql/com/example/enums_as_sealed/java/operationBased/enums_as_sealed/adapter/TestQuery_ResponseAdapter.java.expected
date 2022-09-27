@@ -31,7 +31,7 @@ public class TestQuery_ResponseAdapter {
       Enum _enum = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _enum = new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           default: break loop;

@@ -31,7 +31,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.TypeWithGraphQLKeywords _typeWithGraphQLKeywords = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -64,7 +64,7 @@ public class TestQuery_ResponseAdapter {
       String _alias = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _on = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _null = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;

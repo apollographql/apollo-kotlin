@@ -18,8 +18,6 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "9788d8cb5185e8875c193d2e8aa5cb15fb66916d00f51b55a037b5b8ebffc788";
@@ -141,7 +139,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -150,7 +147,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -190,25 +187,21 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
-    @NotNull
     public OnCharacter onCharacter;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -217,8 +210,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull OnCharacter onCharacter,
-        @Nullable OnHuman onHuman, @Nullable OnDroid onDroid) {
+    public Hero(String __typename, OnCharacter onCharacter, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
       this.onHuman = onHuman;
@@ -273,19 +265,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnCharacter {
-    @NotNull
     public String __typename;
 
     /**
      * The ID of the character
      */
-    @NotNull
     public String id;
 
     /**
      * Synthetic field for inline fragment on Character
      */
-    @NotNull
     public OnCharacter1 onCharacter;
 
     private transient volatile int $hashCode;
@@ -294,8 +283,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(@NotNull String __typename, @NotNull String id,
-        @NotNull OnCharacter1 onCharacter) {
+    public OnCharacter(String __typename, String id, OnCharacter1 onCharacter) {
       this.__typename = __typename;
       this.id = id;
       this.onCharacter = onCharacter;
@@ -348,7 +336,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -357,7 +344,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter1(@NotNull String name) {
+    public OnCharacter1(String name) {
       this.name = name;
     }
 
@@ -400,7 +387,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -409,7 +395,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable Double height) {
+    public OnHuman(Double height) {
       this.height = height;
     }
 
@@ -452,7 +438,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
-    @Nullable
     public String primaryFunction;
 
     private transient volatile int $hashCode;
@@ -461,7 +446,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(@Nullable String primaryFunction) {
+    public OnDroid(String primaryFunction) {
       this.primaryFunction = primaryFunction;
     }
 

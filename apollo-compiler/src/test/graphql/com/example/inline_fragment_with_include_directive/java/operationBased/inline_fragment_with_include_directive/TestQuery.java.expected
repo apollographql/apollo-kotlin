@@ -6,7 +6,6 @@
 package com.example.inline_fragment_with_include_directive;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -20,8 +19,6 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "1fc50a1808d1ff72f74d821b563ee69df2fc04dd650e41d27d75d90d0413bd65";
@@ -52,10 +49,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  @NotNull
   public final Boolean withDetails;
 
-  @NotNull
   public final Boolean skipHumanDetails;
 
   private transient volatile int $hashCode;
@@ -64,7 +59,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(@NotNull Boolean withDetails, @NotNull Boolean skipHumanDetails) {
+  public TestQuery(Boolean withDetails, Boolean skipHumanDetails) {
     this.withDetails = withDetails;
     this.skipHumanDetails = skipHumanDetails;
   }
@@ -155,25 +150,22 @@ public class TestQuery implements Query<TestQuery.Data> {
     Builder() {
     }
 
-    public Builder withDetails(@NotNull Boolean withDetails) {
+    public Builder withDetails(Boolean withDetails) {
       this.withDetails = withDetails;
       return this;
     }
 
-    public Builder skipHumanDetails(@NotNull Boolean skipHumanDetails) {
+    public Builder skipHumanDetails(Boolean skipHumanDetails) {
       this.skipHumanDetails = skipHumanDetails;
       return this;
     }
 
     public TestQuery build() {
-      Assertions.checkFieldNotMissing(withDetails, "withDetails");
-      Assertions.checkFieldNotMissing(skipHumanDetails, "skipHumanDetails");
       return new TestQuery(withDetails, skipHumanDetails);
     }
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -182,7 +174,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -222,31 +214,26 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * The ID of the character
      */
-    @NotNull
     public String id;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroid onDroid;
 
     /**
      * Synthetic field for inline fragment on Character
      */
-    @Nullable
     public OnCharacter onCharacter;
 
     private transient volatile int $hashCode;
@@ -255,8 +242,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull String id, @Nullable OnHuman onHuman,
-        @Nullable OnDroid onDroid, @Nullable OnCharacter onCharacter) {
+    public Hero(String __typename, String id, OnHuman onHuman, OnDroid onDroid,
+        OnCharacter onCharacter) {
       this.__typename = __typename;
       this.id = id;
       this.onHuman = onHuman;
@@ -319,13 +306,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * What this human calls themselves
      */
-    @NotNull
     public String name;
 
     /**
      * The home planet of the human, or null if unknown
      */
-    @Nullable
     public String homePlanet;
 
     private transient volatile int $hashCode;
@@ -334,7 +319,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@NotNull String name, @Nullable String homePlanet) {
+    public OnHuman(String name, String homePlanet) {
       this.name = name;
       this.homePlanet = homePlanet;
     }
@@ -382,13 +367,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * What others call this droid
      */
-    @NotNull
     public String name;
 
     /**
      * This droid's primary function
      */
-    @Nullable
     public String primaryFunction;
 
     private transient volatile int $hashCode;
@@ -397,7 +380,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(@NotNull String name, @Nullable String primaryFunction) {
+    public OnDroid(String name, String primaryFunction) {
       this.name = name;
       this.primaryFunction = primaryFunction;
     }
@@ -445,7 +428,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -454,7 +436,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(@NotNull String name) {
+    public OnCharacter(String name) {
       this.name = name;
     }
 

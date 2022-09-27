@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class GetHero implements Query<GetHero.Data> {
   public static final String OPERATION_ID = "9885eef2193cd56885e6e1bacd7f02b712820858880de6fb29b3f3b04458c831";
@@ -142,7 +140,6 @@ public class GetHero implements Query<GetHero.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -151,7 +148,7 @@ public class GetHero implements Query<GetHero.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -191,13 +188,11 @@ public class GetHero implements Query<GetHero.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
-    @NotNull
     public OnCharacter onCharacter;
 
     private transient volatile int $hashCode;
@@ -206,7 +201,7 @@ public class GetHero implements Query<GetHero.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull OnCharacter onCharacter) {
+    public Hero(String __typename, OnCharacter onCharacter) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
     }
@@ -251,19 +246,16 @@ public class GetHero implements Query<GetHero.Data> {
   }
 
   public static class OnCharacter {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'characterName'
      */
-    @NotNull
     public CharacterName characterName;
 
     /**
      * Synthetic field for 'characterAppearsIn'
      */
-    @NotNull
     public CharacterAppearsIn characterAppearsIn;
 
     private transient volatile int $hashCode;
@@ -272,8 +264,8 @@ public class GetHero implements Query<GetHero.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(@NotNull String __typename, @NotNull CharacterName characterName,
-        @NotNull CharacterAppearsIn characterAppearsIn) {
+    public OnCharacter(String __typename, CharacterName characterName,
+        CharacterAppearsIn characterAppearsIn) {
       this.__typename = __typename;
       this.characterName = characterName;
       this.characterAppearsIn = characterAppearsIn;

@@ -6,7 +6,6 @@
 package com.example.target_name;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,7 +20,6 @@ import com.example.target_name.type.renamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
@@ -52,13 +50,10 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  @NotNull
   public final Optional<renamedInput> input;
 
-  @NotNull
   public final Optional<java.lang.Object> scalar;
 
-  @NotNull
   public final Optional<renamedEnum> enum_;
 
   private transient volatile int $hashCode;
@@ -67,8 +62,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(@NotNull Optional<renamedInput> input,
-      @NotNull Optional<java.lang.Object> scalar, @NotNull Optional<renamedEnum> enum_) {
+  public TestQuery(Optional<renamedInput> input, Optional<java.lang.Object> scalar,
+      Optional<renamedEnum> enum_) {
     this.input = input;
     this.scalar = scalar;
     this.enum_ = enum_;
@@ -182,27 +177,19 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      Assertions.checkFieldNotMissing(input, "input");
-      Assertions.checkFieldNotMissing(scalar, "scalar");
-      Assertions.checkFieldNotMissing(enum_, "enum_");
       return new TestQuery(input, scalar, enum_);
     }
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Object object;
 
-    @Nullable
     public Interface interface_;
 
-    @Nullable
     public Union union;
 
-    @Nullable
     public java.lang.Object scalar;
 
-    @Nullable
     public renamedEnum enum_;
 
     private transient volatile int $hashCode;
@@ -211,8 +198,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Object object, @Nullable Interface interface_, @Nullable Union union,
-        @Nullable java.lang.Object scalar, @Nullable renamedEnum enum_) {
+    public Data(Object object, Interface interface_, Union union, java.lang.Object scalar,
+        renamedEnum enum_) {
       this.object = object;
       this.interface_ = interface_;
       this.union = union;
@@ -272,7 +259,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Object {
-    @Nullable
     public String field;
 
     private transient volatile int $hashCode;
@@ -281,7 +267,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Object(@Nullable String field) {
+    public Object(String field) {
       this.field = field;
     }
 
@@ -321,7 +307,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Interface {
-    @Nullable
     public String field;
 
     private transient volatile int $hashCode;
@@ -330,7 +315,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Interface(@Nullable String field) {
+    public Interface(String field) {
       this.field = field;
     }
 
@@ -370,13 +355,11 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Union {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on ReservedObject
      */
-    @Nullable
     public OnReservedObject onReservedObject;
 
     private transient volatile int $hashCode;
@@ -385,7 +368,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Union(@NotNull String __typename, @Nullable OnReservedObject onReservedObject) {
+    public Union(String __typename, OnReservedObject onReservedObject) {
       this.__typename = __typename;
       this.onReservedObject = onReservedObject;
     }
@@ -430,7 +413,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnReservedObject {
-    @Nullable
     public String field;
 
     private transient volatile int $hashCode;
@@ -439,7 +421,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnReservedObject(@Nullable String field) {
+    public OnReservedObject(String field) {
       this.field = field;
     }
 

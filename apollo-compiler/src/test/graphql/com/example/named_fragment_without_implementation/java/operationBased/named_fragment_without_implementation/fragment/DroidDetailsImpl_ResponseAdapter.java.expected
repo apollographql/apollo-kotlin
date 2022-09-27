@@ -28,7 +28,7 @@ public class DroidDetailsImpl_ResponseAdapter {
       String _primaryFunction = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

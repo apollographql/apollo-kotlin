@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> {
   public static final String OPERATION_ID = "fad1c3622a6f35d5fa4ad7b5e4a8d50525c350d4688837022f0f7a6f0aed2ba0";
@@ -133,7 +131,6 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -142,7 +139,7 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -182,13 +179,11 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'DroidDetails'
      */
-    @Nullable
     public DroidDetails droidDetails;
 
     private transient volatile int $hashCode;
@@ -197,7 +192,7 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @Nullable DroidDetails droidDetails) {
+    public Hero(String __typename, DroidDetails droidDetails) {
       this.__typename = __typename;
       this.droidDetails = droidDetails;
     }

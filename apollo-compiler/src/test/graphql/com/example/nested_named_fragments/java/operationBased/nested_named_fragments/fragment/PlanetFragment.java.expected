@@ -9,13 +9,11 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class PlanetFragment implements Fragment.Data {
   /**
    * The name of this planet.
    */
-  @Nullable
   public String name;
 
   private transient volatile int $hashCode;
@@ -24,7 +22,7 @@ public class PlanetFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public PlanetFragment(@Nullable String name) {
+  public PlanetFragment(String name) {
     this.name = name;
   }
 

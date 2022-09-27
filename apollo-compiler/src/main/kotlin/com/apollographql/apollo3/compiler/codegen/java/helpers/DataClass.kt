@@ -63,7 +63,7 @@ fun TypeSpec.Builder.makeDataClassFromProperties(fields: List<FieldSpec>): TypeS
               fields.map {
                 ParameterSpec
                     .builder(it.type, it.name)
-                    .addAnnotations(it.annotations)
+                    .addAnnotations(it.annotations.filterNot { it.type == JavaClassNames.Deprecated })
                     .build()
               }
           )

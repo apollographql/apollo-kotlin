@@ -6,7 +6,6 @@
 package com.example.subscriptions;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -20,8 +19,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestSubscription implements Subscription<TestSubscription.Data> {
   public static final String OPERATION_ID = "f053ee1afe42260f1511e417b6133f1cb8507c185e2e7b4e1e579696dbc8f2af";
@@ -41,7 +38,6 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
 
   public static final String OPERATION_NAME = "TestSubscription";
 
-  @NotNull
   public final String repo;
 
   private transient volatile int $hashCode;
@@ -50,7 +46,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
 
   private transient volatile String $toString;
 
-  public TestSubscription(@NotNull String repo) {
+  public TestSubscription(String repo) {
     this.repo = repo;
   }
 
@@ -134,13 +130,12 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     Builder() {
     }
 
-    public Builder repo(@NotNull String repo) {
+    public Builder repo(String repo) {
       this.repo = repo;
       return this;
     }
 
     public TestSubscription build() {
-      Assertions.checkFieldNotMissing(repo, "repo");
       return new TestSubscription(repo);
     }
   }
@@ -149,7 +144,6 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     /**
      * Subscription fires on every comment added
      */
-    @Nullable
     public CommentAdded commentAdded;
 
     private transient volatile int $hashCode;
@@ -158,7 +152,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable CommentAdded commentAdded) {
+    public Data(CommentAdded commentAdded) {
       this.commentAdded = commentAdded;
     }
 
@@ -201,13 +195,11 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     /**
      * The SQL ID of this entry
      */
-    @NotNull
     public Integer id;
 
     /**
      * The text of the comment
      */
-    @NotNull
     public String content;
 
     private transient volatile int $hashCode;
@@ -216,7 +208,7 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
 
     private transient volatile String $toString;
 
-    public CommentAdded(@NotNull Integer id, @NotNull String content) {
+    public CommentAdded(Integer id, String content) {
       this.id = id;
       this.content = content;
     }

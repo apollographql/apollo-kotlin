@@ -34,7 +34,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.Starship _starship = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _starship = new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -67,7 +67,7 @@ public class TestQuery_ResponseAdapter {
       List<List<Double>> _coordinates = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;

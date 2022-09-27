@@ -6,7 +6,6 @@
 package com.example.fragment_with_inline_fragment;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,8 +20,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "e7d60efdcca39c19521839807ddc66ed9efa271ade2ad3e0a934c6c9b388830e";
@@ -161,7 +158,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -170,7 +166,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -224,7 +220,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       Builder() {
       }
 
-      public Builder hero(@Nullable Hero hero) {
+      public Builder hero(Hero hero) {
         this.hero = hero;
         return this;
       }
@@ -236,25 +232,21 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * The movies this character appears in
      */
-    @NotNull
     public List<Episode> appearsIn;
 
     /**
      * Synthetic field for 'HeroDetails'
      */
-    @NotNull
     public HeroDetails heroDetails;
 
     private transient volatile int $hashCode;
@@ -263,8 +255,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull String name, @NotNull List<Episode> appearsIn,
-        @NotNull HeroDetails heroDetails) {
+    public Hero(String __typename, String name, List<Episode> appearsIn, HeroDetails heroDetails) {
       this.__typename = __typename;
       this.name = name;
       this.appearsIn = appearsIn;
@@ -342,7 +333,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       Builder() {
       }
 
-      public Builder __typename(@NotNull String __typename) {
+      public Builder __typename(String __typename) {
         this.__typename = __typename;
         return this;
       }
@@ -350,7 +341,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       /**
        * The name of the character
        */
-      public Builder name(@NotNull String name) {
+      public Builder name(String name) {
         this.name = name;
         return this;
       }
@@ -358,7 +349,7 @@ public class TestQuery implements Query<TestQuery.Data> {
       /**
        * The movies this character appears in
        */
-      public Builder appearsIn(@NotNull List<Episode> appearsIn) {
+      public Builder appearsIn(List<Episode> appearsIn) {
         this.appearsIn = appearsIn;
         return this;
       }
@@ -366,16 +357,12 @@ public class TestQuery implements Query<TestQuery.Data> {
       /**
        * Synthetic field for 'HeroDetails'
        */
-      public Builder heroDetails(@NotNull HeroDetails heroDetails) {
+      public Builder heroDetails(HeroDetails heroDetails) {
         this.heroDetails = heroDetails;
         return this;
       }
 
       public Hero build() {
-        Assertions.checkFieldNotMissing(__typename, "__typename");
-        Assertions.checkFieldNotMissing(name, "name");
-        Assertions.checkFieldNotMissing(appearsIn, "appearsIn");
-        Assertions.checkFieldNotMissing(heroDetails, "heroDetails");
         return new Hero(__typename, name, appearsIn, heroDetails);
       }
     }

@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Data> {
   public static final String OPERATION_ID = "9331f0c719bafb010d29f76c720d4488f45c5196bf3fb8908b2be30bc546e355";
@@ -133,7 +131,6 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -142,7 +139,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -182,19 +179,16 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroidDeferD_first onDroidDeferD_first;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroidDeferD_second onDroidDeferD_second;
 
     private transient volatile int $hashCode;
@@ -203,8 +197,8 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @Nullable OnDroidDeferD_first onDroidDeferD_first,
-        @Nullable OnDroidDeferD_second onDroidDeferD_second) {
+    public Hero(String __typename, OnDroidDeferD_first onDroidDeferD_first,
+        OnDroidDeferD_second onDroidDeferD_second) {
       this.__typename = __typename;
       this.onDroidDeferD_first = onDroidDeferD_first;
       this.onDroidDeferD_second = onDroidDeferD_second;
@@ -257,7 +251,6 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     /**
      * What others call this droid
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -266,7 +259,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public OnDroidDeferD_first(@NotNull String name) {
+    public OnDroidDeferD_first(String name) {
       this.name = name;
     }
 
@@ -309,7 +302,6 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
     /**
      * The ID of the droid
      */
-    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -318,7 +310,7 @@ public class InlineMultipleWithDefer implements Query<InlineMultipleWithDefer.Da
 
     private transient volatile String $toString;
 
-    public OnDroidDeferD_second(@NotNull String id) {
+    public OnDroidDeferD_second(String id) {
       this.id = id;
     }
 

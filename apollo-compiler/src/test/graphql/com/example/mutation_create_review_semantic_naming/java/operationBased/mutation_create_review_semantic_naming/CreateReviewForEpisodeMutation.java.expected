@@ -6,7 +6,6 @@
 package com.example.mutation_create_review_semantic_naming;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
@@ -22,8 +21,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForEpisodeMutation.Data> {
   public static final String OPERATION_ID = "0af665fbb1ccec4fbec377a80b620cb423b737162848a7b16b842c2fa382b54c";
@@ -43,10 +40,8 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
 
   public static final String OPERATION_NAME = "CreateReviewForEpisode";
 
-  @NotNull
   public final Episode ep;
 
-  @NotNull
   public final ReviewInput review;
 
   private transient volatile int $hashCode;
@@ -55,7 +50,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
 
   private transient volatile String $toString;
 
-  public CreateReviewForEpisodeMutation(@NotNull Episode ep, @NotNull ReviewInput review) {
+  public CreateReviewForEpisodeMutation(Episode ep, ReviewInput review) {
     this.ep = ep;
     this.review = review;
   }
@@ -146,25 +141,22 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     Builder() {
     }
 
-    public Builder ep(@NotNull Episode ep) {
+    public Builder ep(Episode ep) {
       this.ep = ep;
       return this;
     }
 
-    public Builder review(@NotNull ReviewInput review) {
+    public Builder review(ReviewInput review) {
       this.review = review;
       return this;
     }
 
     public CreateReviewForEpisodeMutation build() {
-      Assertions.checkFieldNotMissing(ep, "ep");
-      Assertions.checkFieldNotMissing(review, "review");
       return new CreateReviewForEpisodeMutation(ep, review);
     }
   }
 
   public static class Data implements Mutation.Data {
-    @Nullable
     public CreateReview createReview;
 
     private transient volatile int $hashCode;
@@ -173,7 +165,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
 
     private transient volatile String $toString;
 
-    public Data(@Nullable CreateReview createReview) {
+    public Data(CreateReview createReview) {
       this.createReview = createReview;
     }
 
@@ -216,13 +208,11 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     /**
      * The number of stars this review gave, 1-5
      */
-    @NotNull
     public Integer stars;
 
     /**
      * Comment about the movie
      */
-    @Nullable
     public String commentary;
 
     private transient volatile int $hashCode;
@@ -231,7 +221,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
 
     private transient volatile String $toString;
 
-    public CreateReview(@NotNull Integer stars, @Nullable String commentary) {
+    public CreateReview(Integer stars, String commentary) {
       this.stars = stars;
       this.commentary = commentary;
     }

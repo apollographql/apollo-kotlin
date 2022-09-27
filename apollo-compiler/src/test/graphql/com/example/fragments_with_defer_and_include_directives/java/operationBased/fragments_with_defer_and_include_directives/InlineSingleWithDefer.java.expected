@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> {
   public static final String OPERATION_ID = "70222802c9192f810f19a54d31e039ce0fc3b8baac231841f0a0e8b4200c312b";
@@ -130,7 +128,6 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -139,7 +136,7 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -179,13 +176,11 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -194,7 +189,7 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @Nullable OnDroid onDroid) {
+    public Hero(String __typename, OnDroid onDroid) {
       this.__typename = __typename;
       this.onDroid = onDroid;
     }
@@ -242,7 +237,6 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
     /**
      * What others call this droid
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -251,7 +245,7 @@ public class InlineSingleWithDefer implements Query<InlineSingleWithDefer.Data> 
 
     private transient volatile String $toString;
 
-    public OnDroid(@NotNull String name) {
+    public OnDroid(String name) {
       this.name = name;
     }
 

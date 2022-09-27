@@ -34,7 +34,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       HeroDetailsQuery.Hero _hero = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _hero = new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -66,7 +66,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       HeroDetailsQuery.FriendsConnection _friendsConnection = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _friendsConnection = new ObjectAdapter<HeroDetailsQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
@@ -106,7 +106,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       List<HeroDetailsQuery.Edge> _edges = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
@@ -142,7 +142,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       HeroDetailsQuery.Node _node = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _node = new NullableAdapter<>(new ObjectAdapter<HeroDetailsQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -173,7 +173,7 @@ public class HeroDetailsQuery_ResponseAdapter {
       String _name = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

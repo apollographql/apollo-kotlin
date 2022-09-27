@@ -10,23 +10,18 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class StarshipFragment implements Fragment.Data {
   /**
    * The ID of an object
    */
-  @NotNull
   public String id;
 
   /**
    * The name of this starship. The common name, such as "Death Star".
    */
-  @Nullable
   public String name;
 
-  @Nullable
   public PilotConnection pilotConnection;
 
   private transient volatile int $hashCode;
@@ -35,8 +30,7 @@ public class StarshipFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public StarshipFragment(@NotNull String id, @Nullable String name,
-      @Nullable PilotConnection pilotConnection) {
+  public StarshipFragment(String id, String name, PilotConnection pilotConnection) {
     this.id = id;
     this.name = name;
     this.pilotConnection = pilotConnection;
@@ -88,7 +82,6 @@ public class StarshipFragment implements Fragment.Data {
     /**
      * A list of edges.
      */
-    @Nullable
     public List<Edge> edges;
 
     private transient volatile int $hashCode;
@@ -97,7 +90,7 @@ public class StarshipFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public PilotConnection(@Nullable List<Edge> edges) {
+    public PilotConnection(List<Edge> edges) {
       this.edges = edges;
     }
 
@@ -140,7 +133,6 @@ public class StarshipFragment implements Fragment.Data {
     /**
      * The item at the end of the edge
      */
-    @Nullable
     public Node node;
 
     private transient volatile int $hashCode;
@@ -149,7 +141,7 @@ public class StarshipFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Edge(@Nullable Node node) {
+    public Edge(Node node) {
       this.node = node;
     }
 
@@ -189,13 +181,11 @@ public class StarshipFragment implements Fragment.Data {
   }
 
   public static class Node {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'pilotFragment'
      */
-    @NotNull
     public PilotFragment pilotFragment;
 
     private transient volatile int $hashCode;
@@ -204,7 +194,7 @@ public class StarshipFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Node(@NotNull String __typename, @NotNull PilotFragment pilotFragment) {
+    public Node(String __typename, PilotFragment pilotFragment) {
       this.__typename = __typename;
       this.pilotFragment = pilotFragment;
     }

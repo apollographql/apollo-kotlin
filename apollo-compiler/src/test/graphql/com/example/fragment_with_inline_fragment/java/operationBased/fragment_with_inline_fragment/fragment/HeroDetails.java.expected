@@ -5,42 +5,34 @@
 //
 package com.example.fragment_with_inline_fragment.fragment;
 
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.Fragment;
 import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class HeroDetails implements Fragment.Data {
-  @NotNull
   public String __typename;
 
   /**
    * The name of the character
    */
-  @NotNull
   public String name;
 
   /**
    * The friends of the character exposed as a connection with edges
    */
-  @NotNull
   public FriendsConnection friendsConnection;
 
   /**
    * Synthetic field for inline fragment on Droid
    */
-  @Nullable
   public OnDroid onDroid;
 
   /**
    * Synthetic field for 'HumanDetails'
    */
-  @Nullable
   public HumanDetails humanDetails;
 
   private transient volatile int $hashCode;
@@ -49,9 +41,8 @@ public class HeroDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HeroDetails(@NotNull String __typename, @NotNull String name,
-      @NotNull FriendsConnection friendsConnection, @Nullable OnDroid onDroid,
-      @Nullable HumanDetails humanDetails) {
+  public HeroDetails(String __typename, String name, FriendsConnection friendsConnection,
+      OnDroid onDroid, HumanDetails humanDetails) {
     this.__typename = __typename;
     this.name = name;
     this.friendsConnection = friendsConnection;
@@ -127,13 +118,11 @@ public class HeroDetails implements Fragment.Data {
     /**
      * The total number of friends
      */
-    @Nullable
     public Integer totalCount;
 
     /**
      * The edges for each of the character's friends.
      */
-    @Nullable
     public List<Edge> edges;
 
     private transient volatile int $hashCode;
@@ -142,7 +131,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
+    public FriendsConnection(Integer totalCount, List<Edge> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
     }
@@ -207,7 +196,7 @@ public class HeroDetails implements Fragment.Data {
       /**
        * The total number of friends
        */
-      public Builder totalCount(@Nullable Integer totalCount) {
+      public Builder totalCount(Integer totalCount) {
         this.totalCount = totalCount;
         return this;
       }
@@ -215,7 +204,7 @@ public class HeroDetails implements Fragment.Data {
       /**
        * The edges for each of the character's friends.
        */
-      public Builder edges(@Nullable List<Edge> edges) {
+      public Builder edges(List<Edge> edges) {
         this.edges = edges;
         return this;
       }
@@ -227,13 +216,11 @@ public class HeroDetails implements Fragment.Data {
   }
 
   public static class OnDroid {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'DroidDetails'
      */
-    @NotNull
     public DroidDetails droidDetails;
 
     private transient volatile int $hashCode;
@@ -242,7 +229,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnDroid(@NotNull String __typename, @NotNull DroidDetails droidDetails) {
+    public OnDroid(String __typename, DroidDetails droidDetails) {
       this.__typename = __typename;
       this.droidDetails = droidDetails;
     }
@@ -304,7 +291,7 @@ public class HeroDetails implements Fragment.Data {
       Builder() {
       }
 
-      public Builder __typename(@NotNull String __typename) {
+      public Builder __typename(String __typename) {
         this.__typename = __typename;
         return this;
       }
@@ -312,14 +299,12 @@ public class HeroDetails implements Fragment.Data {
       /**
        * Synthetic field for 'DroidDetails'
        */
-      public Builder droidDetails(@NotNull DroidDetails droidDetails) {
+      public Builder droidDetails(DroidDetails droidDetails) {
         this.droidDetails = droidDetails;
         return this;
       }
 
       public OnDroid build() {
-        Assertions.checkFieldNotMissing(__typename, "__typename");
-        Assertions.checkFieldNotMissing(droidDetails, "droidDetails");
         return new OnDroid(__typename, droidDetails);
       }
     }
@@ -329,7 +314,6 @@ public class HeroDetails implements Fragment.Data {
     /**
      * The character represented by this friendship edge
      */
-    @Nullable
     public Node node;
 
     private transient volatile int $hashCode;
@@ -338,7 +322,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Edge(@Nullable Node node) {
+    public Edge(Node node) {
       this.node = node;
     }
 
@@ -395,7 +379,7 @@ public class HeroDetails implements Fragment.Data {
       /**
        * The character represented by this friendship edge
        */
-      public Builder node(@Nullable Node node) {
+      public Builder node(Node node) {
         this.node = node;
         return this;
       }
@@ -410,7 +394,6 @@ public class HeroDetails implements Fragment.Data {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -419,7 +402,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Node(@NotNull String name) {
+    public Node(String name) {
       this.name = name;
     }
 
@@ -476,13 +459,12 @@ public class HeroDetails implements Fragment.Data {
       /**
        * The name of the character
        */
-      public Builder name(@NotNull String name) {
+      public Builder name(String name) {
         this.name = name;
         return this;
       }
 
       public Node build() {
-        Assertions.checkFieldNotMissing(name, "name");
         return new Node(name);
       }
     }
@@ -502,7 +484,7 @@ public class HeroDetails implements Fragment.Data {
     Builder() {
     }
 
-    public Builder __typename(@NotNull String __typename) {
+    public Builder __typename(String __typename) {
       this.__typename = __typename;
       return this;
     }
@@ -510,7 +492,7 @@ public class HeroDetails implements Fragment.Data {
     /**
      * The name of the character
      */
-    public Builder name(@NotNull String name) {
+    public Builder name(String name) {
       this.name = name;
       return this;
     }
@@ -518,7 +500,7 @@ public class HeroDetails implements Fragment.Data {
     /**
      * The friends of the character exposed as a connection with edges
      */
-    public Builder friendsConnection(@NotNull FriendsConnection friendsConnection) {
+    public Builder friendsConnection(FriendsConnection friendsConnection) {
       this.friendsConnection = friendsConnection;
       return this;
     }
@@ -526,7 +508,7 @@ public class HeroDetails implements Fragment.Data {
     /**
      * Synthetic field for inline fragment on Droid
      */
-    public Builder onDroid(@Nullable OnDroid onDroid) {
+    public Builder onDroid(OnDroid onDroid) {
       this.onDroid = onDroid;
       return this;
     }
@@ -534,15 +516,12 @@ public class HeroDetails implements Fragment.Data {
     /**
      * Synthetic field for 'HumanDetails'
      */
-    public Builder humanDetails(@Nullable HumanDetails humanDetails) {
+    public Builder humanDetails(HumanDetails humanDetails) {
       this.humanDetails = humanDetails;
       return this;
     }
 
     public HeroDetails build() {
-      Assertions.checkFieldNotMissing(__typename, "__typename");
-      Assertions.checkFieldNotMissing(name, "name");
-      Assertions.checkFieldNotMissing(friendsConnection, "friendsConnection");
       return new HeroDetails(__typename, name, friendsConnection, onDroid, humanDetails);
     }
   }

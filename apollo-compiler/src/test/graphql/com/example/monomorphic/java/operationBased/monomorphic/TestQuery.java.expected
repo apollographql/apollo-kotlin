@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "fd42891d34246c8eb8c35ffcfa1c8b99282f5a90e7e43ffcab1cdd5a13d8a241";
@@ -132,7 +131,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @NotNull
     public Cat cat;
 
     private transient volatile int $hashCode;
@@ -141,7 +139,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@NotNull Cat cat) {
+    public Data(Cat cat) {
       this.cat = cat;
     }
 
@@ -181,13 +179,11 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Cat {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Node
      */
-    @NotNull
     public OnNode onNode;
 
     private transient volatile int $hashCode;
@@ -196,7 +192,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Cat(@NotNull String __typename, @NotNull OnNode onNode) {
+    public Cat(String __typename, OnNode onNode) {
       this.__typename = __typename;
       this.onNode = onNode;
     }
@@ -241,13 +237,11 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnNode {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Animal
      */
-    @NotNull
     public OnAnimal onAnimal;
 
     private transient volatile int $hashCode;
@@ -256,7 +250,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnNode(@NotNull String __typename, @NotNull OnAnimal onAnimal) {
+    public OnNode(String __typename, OnAnimal onAnimal) {
       this.__typename = __typename;
       this.onAnimal = onAnimal;
     }
@@ -301,7 +295,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnAnimal {
-    @NotNull
     public String species;
 
     private transient volatile int $hashCode;
@@ -310,7 +303,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnAnimal(@NotNull String species) {
+    public OnAnimal(String species) {
       this.species = species;
     }
 

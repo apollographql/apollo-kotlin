@@ -38,7 +38,7 @@ public class AnimalQuery_ResponseAdapter {
       AnimalQuery.Animal _animal = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _animal = new NullableAdapter<>(new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -69,7 +69,7 @@ public class AnimalQuery_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

@@ -6,7 +6,6 @@
 package com.example.mutation_create_review;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
@@ -24,8 +23,6 @@ import java.lang.Override;
 import java.lang.String;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.Data> {
   public static final String OPERATION_ID = "b333ec8237cdc346478f07c98169eeb782c4afac1a0a8b94c62dfbcb27275b21";
@@ -51,10 +48,8 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
   public static final String OPERATION_NAME = "CreateReviewForEpisode";
 
-  @NotNull
   public final Episode ep;
 
-  @NotNull
   public final ReviewInput review;
 
   private transient volatile int $hashCode;
@@ -63,7 +58,7 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
   private transient volatile String $toString;
 
-  public CreateReviewForEpisode(@NotNull Episode ep, @NotNull ReviewInput review) {
+  public CreateReviewForEpisode(Episode ep, ReviewInput review) {
     this.ep = ep;
     this.review = review;
   }
@@ -154,25 +149,22 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     Builder() {
     }
 
-    public Builder ep(@NotNull Episode ep) {
+    public Builder ep(Episode ep) {
       this.ep = ep;
       return this;
     }
 
-    public Builder review(@NotNull ReviewInput review) {
+    public Builder review(ReviewInput review) {
       this.review = review;
       return this;
     }
 
     public CreateReviewForEpisode build() {
-      Assertions.checkFieldNotMissing(ep, "ep");
-      Assertions.checkFieldNotMissing(review, "review");
       return new CreateReviewForEpisode(ep, review);
     }
   }
 
   public static class Data implements Mutation.Data {
-    @Nullable
     public CreateReview createReview;
 
     private transient volatile int $hashCode;
@@ -181,7 +173,7 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
     private transient volatile String $toString;
 
-    public Data(@Nullable CreateReview createReview) {
+    public Data(CreateReview createReview) {
       this.createReview = createReview;
     }
 
@@ -224,37 +216,31 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     /**
      * The number of stars this review gave, 1-5
      */
-    @NotNull
     public Integer stars;
 
     /**
      * Comment about the movie
      */
-    @Nullable
     public String commentary;
 
     /**
      * for test purpose only
      */
-    @Nullable
     public List<List<String>> listOfListOfString;
 
     /**
      * for test purpose only
      */
-    @Nullable
     public List<List<Episode>> listOfListOfEnum;
 
     /**
      * for test purpose only
      */
-    @Nullable
     public List<List<Date>> listOfListOfCustom;
 
     /**
      * for test purpose only
      */
-    @Nullable
     public List<List<ListOfListOfObject>> listOfListOfObject;
 
     private transient volatile int $hashCode;
@@ -263,11 +249,9 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
     private transient volatile String $toString;
 
-    public CreateReview(@NotNull Integer stars, @Nullable String commentary,
-        @Nullable List<List<String>> listOfListOfString,
-        @Nullable List<List<Episode>> listOfListOfEnum,
-        @Nullable List<List<Date>> listOfListOfCustom,
-        @Nullable List<List<ListOfListOfObject>> listOfListOfObject) {
+    public CreateReview(Integer stars, String commentary, List<List<String>> listOfListOfString,
+        List<List<Episode>> listOfListOfEnum, List<List<Date>> listOfListOfCustom,
+        List<List<ListOfListOfObject>> listOfListOfObject) {
       this.stars = stars;
       this.commentary = commentary;
       this.listOfListOfString = listOfListOfString;
@@ -335,7 +319,6 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -344,7 +327,7 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
 
     private transient volatile String $toString;
 
-    public ListOfListOfObject(@NotNull String name) {
+    public ListOfListOfObject(String name) {
       this.name = name;
     }
 

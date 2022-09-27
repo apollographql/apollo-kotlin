@@ -33,7 +33,7 @@ public class TestSubscription_ResponseAdapter {
       TestSubscription.CommentAdded _commentAdded = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -65,7 +65,7 @@ public class TestSubscription_ResponseAdapter {
       String _content = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _content = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;

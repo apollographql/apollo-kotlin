@@ -6,7 +6,6 @@
 package com.example.named_fragment_with_variables;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -22,7 +21,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 
 public class GetUser implements Query<GetUser.Data> {
   public static final String OPERATION_ID = "1314916fa3163a17df2b7a0173e55fef34621507824242308b3006e9ab4740b4";
@@ -56,13 +54,10 @@ public class GetUser implements Query<GetUser.Data> {
 
   public static final String OPERATION_NAME = "GetUser";
 
-  @NotNull
   public final String organizationId;
 
-  @NotNull
   public final UserQuery query;
 
-  @NotNull
   public final Integer size;
 
   private transient volatile int $hashCode;
@@ -71,7 +66,7 @@ public class GetUser implements Query<GetUser.Data> {
 
   private transient volatile String $toString;
 
-  public GetUser(@NotNull String organizationId, @NotNull UserQuery query, @NotNull Integer size) {
+  public GetUser(String organizationId, UserQuery query, Integer size) {
     this.organizationId = organizationId;
     this.query = query;
     this.size = size;
@@ -169,37 +164,32 @@ public class GetUser implements Query<GetUser.Data> {
     Builder() {
     }
 
-    public Builder organizationId(@NotNull String organizationId) {
+    public Builder organizationId(String organizationId) {
       this.organizationId = organizationId;
       return this;
     }
 
-    public Builder query(@NotNull UserQuery query) {
+    public Builder query(UserQuery query) {
       this.query = query;
       return this;
     }
 
-    public Builder size(@NotNull Integer size) {
+    public Builder size(Integer size) {
       this.size = size;
       return this;
     }
 
     public GetUser build() {
-      Assertions.checkFieldNotMissing(organizationId, "organizationId");
-      Assertions.checkFieldNotMissing(query, "query");
-      Assertions.checkFieldNotMissing(size, "size");
       return new GetUser(organizationId, query, size);
     }
   }
 
   public static class Data implements Query.Data {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'QueryFragment'
      */
-    @NotNull
     public QueryFragment queryFragment;
 
     private transient volatile int $hashCode;
@@ -208,7 +198,7 @@ public class GetUser implements Query<GetUser.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@NotNull String __typename, @NotNull QueryFragment queryFragment) {
+    public Data(String __typename, QueryFragment queryFragment) {
       this.__typename = __typename;
       this.queryFragment = queryFragment;
     }

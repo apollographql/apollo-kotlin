@@ -6,7 +6,6 @@
 package com.example.nested_conditional_inline;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -23,7 +22,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
@@ -62,7 +60,6 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  @NotNull
   public final Optional<Episode> episode;
 
   private transient volatile int $hashCode;
@@ -71,7 +68,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(@NotNull Optional<Episode> episode) {
+  public TestQuery(Optional<Episode> episode) {
     this.episode = episode;
   }
 
@@ -161,13 +158,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      Assertions.checkFieldNotMissing(episode, "episode");
       return new TestQuery(episode);
     }
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -176,7 +171,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -216,25 +211,21 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -243,8 +234,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull String name, @Nullable OnHuman onHuman,
-        @Nullable OnDroid onDroid) {
+    public Hero(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -302,7 +292,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This human's friends, or an empty list if they have none
      */
-    @Nullable
     public List<Friend> friends;
 
     private transient volatile int $hashCode;
@@ -311,7 +300,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable List<Friend> friends) {
+    public OnHuman(List<Friend> friends) {
       this.friends = friends;
     }
 
@@ -351,19 +340,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend {
-    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman1 onHuman;
 
     private transient volatile int $hashCode;
@@ -372,7 +358,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(@NotNull String __typename, @NotNull String name, @Nullable OnHuman1 onHuman) {
+    public Friend(String __typename, String name, OnHuman1 onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -425,7 +411,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -434,7 +419,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman1(@Nullable Double height) {
+    public OnHuman1(Double height) {
       this.height = height;
     }
 
@@ -477,7 +462,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This droid's friends, or an empty list if they have none
      */
-    @Nullable
     public List<Friend1> friends;
 
     private transient volatile int $hashCode;
@@ -486,7 +470,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(@Nullable List<Friend1> friends) {
+    public OnDroid(List<Friend1> friends) {
       this.friends = friends;
     }
 
@@ -526,19 +510,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend1 {
-    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman2 onHuman;
 
     private transient volatile int $hashCode;
@@ -547,7 +528,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(@NotNull String __typename, @NotNull String name, @Nullable OnHuman2 onHuman) {
+    public Friend1(String __typename, String name, OnHuman2 onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -600,7 +581,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -609,7 +589,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman2(@Nullable Double height) {
+    public OnHuman2(Double height) {
       this.height = height;
     }
 

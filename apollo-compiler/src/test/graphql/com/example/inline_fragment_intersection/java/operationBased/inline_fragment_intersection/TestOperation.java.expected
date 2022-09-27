@@ -21,8 +21,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestOperation implements Query<TestOperation.Data> {
   public static final String OPERATION_ID = "c99acd467295cdc6cf49f2f0e260f5879de276fba742d6faa161453e53fbf9d4";
@@ -166,7 +164,6 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class Data implements Query.Data {
-    @NotNull
     public Random random;
 
     private transient volatile int $hashCode;
@@ -175,7 +172,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@NotNull Random random) {
+    public Data(Random random) {
       this.random = random;
     }
 
@@ -215,19 +212,16 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class Random {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Being
      */
-    @Nullable
     public OnBeing onBeing;
 
     /**
      * Synthetic field for inline fragment on Wookie
      */
-    @Nullable
     public OnWookie2 onWookie;
 
     private transient volatile int $hashCode;
@@ -236,8 +230,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public Random(@NotNull String __typename, @Nullable OnBeing onBeing,
-        @Nullable OnWookie2 onWookie) {
+    public Random(String __typename, OnBeing onBeing, OnWookie2 onWookie) {
       this.__typename = __typename;
       this.onBeing = onBeing;
       this.onWookie = onWookie;
@@ -287,19 +280,15 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class OnBeing {
-    @NotNull
     public String __typename;
 
-    @NotNull
     public String name;
 
-    @NotNull
     public List<Friend> friends;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     private transient volatile int $hashCode;
@@ -308,8 +297,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public OnBeing(@NotNull String __typename, @NotNull String name, @NotNull List<Friend> friends,
-        @Nullable OnHuman onHuman) {
+    public OnBeing(String __typename, String name, List<Friend> friends, OnHuman onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.friends = friends;
@@ -364,16 +352,13 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class Friend {
-    @NotNull
     public String __typename;
 
-    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Wookie
      */
-    @Nullable
     public OnWookie onWookie;
 
     private transient volatile int $hashCode;
@@ -382,7 +367,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(@NotNull String __typename, @NotNull String name, @Nullable OnWookie onWookie) {
+    public Friend(String __typename, String name, OnWookie onWookie) {
       this.__typename = __typename;
       this.name = name;
       this.onWookie = onWookie;
@@ -432,7 +417,6 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class OnWookie {
-    @Nullable
     public Double lifeExpectancy;
 
     private transient volatile int $hashCode;
@@ -441,7 +425,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public OnWookie(@Nullable Double lifeExpectancy) {
+    public OnWookie(Double lifeExpectancy) {
       this.lifeExpectancy = lifeExpectancy;
     }
 
@@ -481,10 +465,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class OnHuman {
-    @Nullable
     public String profilePictureUrl;
 
-    @NotNull
     public List<Friend1> friends;
 
     private transient volatile int $hashCode;
@@ -493,7 +475,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable String profilePictureUrl, @NotNull List<Friend1> friends) {
+    public OnHuman(String profilePictureUrl, List<Friend1> friends) {
       this.profilePictureUrl = profilePictureUrl;
       this.friends = friends;
     }
@@ -538,16 +520,13 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class Friend1 {
-    @NotNull
     public String __typename;
 
-    @Nullable
     public Boolean isFamous;
 
     /**
      * Synthetic field for inline fragment on Wookie
      */
-    @Nullable
     public OnWookie1 onWookie;
 
     private transient volatile int $hashCode;
@@ -556,8 +535,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(@NotNull String __typename, @Nullable Boolean isFamous,
-        @Nullable OnWookie1 onWookie) {
+    public Friend1(String __typename, Boolean isFamous, OnWookie1 onWookie) {
       this.__typename = __typename;
       this.isFamous = isFamous;
       this.onWookie = onWookie;
@@ -607,7 +585,6 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class OnWookie1 {
-    @NotNull
     public Race race;
 
     private transient volatile int $hashCode;
@@ -616,7 +593,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public OnWookie1(@NotNull Race race) {
+    public OnWookie1(Race race) {
       this.race = race;
     }
 
@@ -656,10 +633,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class OnWookie2 {
-    @NotNull
     public Race race;
 
-    @NotNull
     public List<Friend2> friends;
 
     private transient volatile int $hashCode;
@@ -668,7 +643,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public OnWookie2(@NotNull Race race, @NotNull List<Friend2> friends) {
+    public OnWookie2(Race race, List<Friend2> friends) {
       this.race = race;
       this.friends = friends;
     }
@@ -713,7 +688,6 @@ public class TestOperation implements Query<TestOperation.Data> {
   }
 
   public static class Friend2 {
-    @Nullable
     public Double lifeExpectancy;
 
     private transient volatile int $hashCode;
@@ -722,7 +696,7 @@ public class TestOperation implements Query<TestOperation.Data> {
 
     private transient volatile String $toString;
 
-    public Friend2(@Nullable Double lifeExpectancy) {
+    public Friend2(Double lifeExpectancy) {
       this.lifeExpectancy = lifeExpectancy;
     }
 

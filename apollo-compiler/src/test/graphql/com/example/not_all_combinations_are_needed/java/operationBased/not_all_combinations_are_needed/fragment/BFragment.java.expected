@@ -9,10 +9,8 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class BFragment implements Fragment.Data {
-  @Nullable
   public String fieldB1;
 
   private transient volatile int $hashCode;
@@ -21,7 +19,7 @@ public class BFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public BFragment(@Nullable String fieldB1) {
+  public BFragment(String fieldB1) {
     this.fieldB1 = fieldB1;
   }
 

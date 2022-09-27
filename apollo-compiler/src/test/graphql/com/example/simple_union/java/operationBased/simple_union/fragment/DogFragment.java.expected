@@ -9,10 +9,8 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 
 public class DogFragment implements Fragment.Data {
-  @NotNull
   public String woof;
 
   private transient volatile int $hashCode;
@@ -21,7 +19,7 @@ public class DogFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public DogFragment(@NotNull String woof) {
+  public DogFragment(String woof) {
     this.woof = woof;
   }
 

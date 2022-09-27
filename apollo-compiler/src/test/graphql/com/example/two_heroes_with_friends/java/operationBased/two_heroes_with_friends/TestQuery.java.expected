@@ -19,8 +19,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "28b644b6fcd59e0677f51136035c5fc1deb6419f12b819bff2e6bf4c5f659916";
@@ -149,10 +147,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public R2 r2;
 
-    @Nullable
     public Luke luke;
 
     private transient volatile int $hashCode;
@@ -161,7 +157,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable R2 r2, @Nullable Luke luke) {
+    public Data(R2 r2, Luke luke) {
       this.r2 = r2;
       this.luke = luke;
     }
@@ -209,13 +205,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * The friends of the character exposed as a connection with edges
      */
-    @NotNull
     public FriendsConnection friendsConnection;
 
     private transient volatile int $hashCode;
@@ -224,7 +218,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public R2(@NotNull String name, @NotNull FriendsConnection friendsConnection) {
+    public R2(String name, FriendsConnection friendsConnection) {
       this.name = name;
       this.friendsConnection = friendsConnection;
     }
@@ -272,13 +266,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The total number of friends
      */
-    @Nullable
     public Integer totalCount;
 
     /**
      * The edges for each of the character's friends.
      */
-    @Nullable
     public List<Edge> edges;
 
     private transient volatile int $hashCode;
@@ -287,7 +279,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
+    public FriendsConnection(Integer totalCount, List<Edge> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
     }
@@ -335,7 +327,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The character represented by this friendship edge
      */
-    @Nullable
     public Node node;
 
     private transient volatile int $hashCode;
@@ -344,7 +335,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Edge(@Nullable Node node) {
+    public Edge(Node node) {
       this.node = node;
     }
 
@@ -387,7 +378,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -396,7 +386,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Node(@NotNull String name) {
+    public Node(String name) {
       this.name = name;
     }
 
@@ -439,19 +429,16 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
-    @NotNull
     public String id;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * The friends of the character exposed as a connection with edges
      */
-    @NotNull
     public FriendsConnection1 friendsConnection;
 
     private transient volatile int $hashCode;
@@ -460,8 +447,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Luke(@NotNull String id, @NotNull String name,
-        @NotNull FriendsConnection1 friendsConnection) {
+    public Luke(String id, String name, FriendsConnection1 friendsConnection) {
       this.id = id;
       this.name = name;
       this.friendsConnection = friendsConnection;
@@ -514,13 +500,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The total number of friends
      */
-    @Nullable
     public Integer totalCount;
 
     /**
      * The edges for each of the character's friends.
      */
-    @Nullable
     public List<Edge1> edges;
 
     private transient volatile int $hashCode;
@@ -529,7 +513,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public FriendsConnection1(@Nullable Integer totalCount, @Nullable List<Edge1> edges) {
+    public FriendsConnection1(Integer totalCount, List<Edge1> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
     }
@@ -577,7 +561,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The character represented by this friendship edge
      */
-    @Nullable
     public Node1 node;
 
     private transient volatile int $hashCode;
@@ -586,7 +569,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Edge1(@Nullable Node1 node) {
+    public Edge1(Node1 node) {
       this.node = node;
     }
 
@@ -629,7 +612,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -638,7 +620,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Node1(@NotNull String name) {
+    public Node1(String name) {
       this.name = name;
     }
 

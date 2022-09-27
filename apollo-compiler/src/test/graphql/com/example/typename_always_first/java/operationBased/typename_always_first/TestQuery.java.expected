@@ -18,8 +18,6 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "5351cc2f9dea89f8d8d9513a08a18eee20324eaba674211bf21f9c01cba9fdea";
@@ -138,10 +136,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
-    @NotNull
     public String __typename;
 
     private transient volatile int $hashCode;
@@ -150,7 +146,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero, @NotNull String __typename) {
+    public Data(Hero hero, String __typename) {
       this.hero = hero;
       this.__typename = __typename;
     }
@@ -195,19 +191,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -216,7 +209,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @Nullable OnHuman onHuman, @Nullable OnDroid onDroid) {
+    public Hero(String __typename, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.onHuman = onHuman;
       this.onDroid = onDroid;
@@ -269,10 +262,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
-    @NotNull
     public String __typename;
 
     private transient volatile int $hashCode;
@@ -281,7 +272,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable Double height, @NotNull String __typename) {
+    public OnHuman(Double height, String __typename) {
       this.height = height;
       this.__typename = __typename;
     }
@@ -329,16 +320,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * What others call this droid
      */
-    @NotNull
     public String name;
 
-    @NotNull
     public String __typename;
 
     /**
      * This droid's primary function
      */
-    @Nullable
     public String primaryFunction;
 
     private transient volatile int $hashCode;
@@ -347,8 +335,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(@NotNull String name, @NotNull String __typename,
-        @Nullable String primaryFunction) {
+    public OnDroid(String name, String __typename, String primaryFunction) {
       this.name = name;
       this.__typename = __typename;
       this.primaryFunction = primaryFunction;

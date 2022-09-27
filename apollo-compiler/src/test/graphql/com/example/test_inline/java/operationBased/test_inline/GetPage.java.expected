@@ -18,8 +18,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class GetPage implements Query<GetPage.Data> {
   public static final String OPERATION_ID = "09dd0a176a2233eccc3b2d3a76f25a1083460354f399f8b1aaf172c18cfc202b";
@@ -139,7 +137,6 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class Data implements Query.Data {
-    @NotNull
     public Collection collection;
 
     private transient volatile int $hashCode;
@@ -148,7 +145,7 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@NotNull Collection collection) {
+    public Data(Collection collection) {
       this.collection = collection;
     }
 
@@ -188,16 +185,13 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class Collection {
-    @NotNull
     public String __typename;
 
-    @NotNull
     public List<Item> items;
 
     /**
      * Synthetic field for inline fragment on ParticularCollection
      */
-    @Nullable
     public OnParticularCollection onParticularCollection;
 
     private transient volatile int $hashCode;
@@ -206,8 +200,8 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public Collection(@NotNull String __typename, @NotNull List<Item> items,
-        @Nullable OnParticularCollection onParticularCollection) {
+    public Collection(String __typename, List<Item> items,
+        OnParticularCollection onParticularCollection) {
       this.__typename = __typename;
       this.items = items;
       this.onParticularCollection = onParticularCollection;
@@ -257,7 +251,6 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class Item {
-    @NotNull
     public String title;
 
     private transient volatile int $hashCode;
@@ -266,7 +259,7 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public Item(@NotNull String title) {
+    public Item(String title) {
       this.title = title;
     }
 
@@ -306,7 +299,6 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class OnParticularCollection {
-    @NotNull
     public List<Item1> items;
 
     private transient volatile int $hashCode;
@@ -315,7 +307,7 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public OnParticularCollection(@NotNull List<Item1> items) {
+    public OnParticularCollection(List<Item1> items) {
       this.items = items;
     }
 
@@ -355,13 +347,11 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class Item1 {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on ParticularItem
      */
-    @Nullable
     public OnParticularItem onParticularItem;
 
     private transient volatile int $hashCode;
@@ -370,7 +360,7 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public Item1(@NotNull String __typename, @Nullable OnParticularItem onParticularItem) {
+    public Item1(String __typename, OnParticularItem onParticularItem) {
       this.__typename = __typename;
       this.onParticularItem = onParticularItem;
     }
@@ -415,7 +405,6 @@ public class GetPage implements Query<GetPage.Data> {
   }
 
   public static class OnParticularItem {
-    @NotNull
     public String image;
 
     private transient volatile int $hashCode;
@@ -424,7 +413,7 @@ public class GetPage implements Query<GetPage.Data> {
 
     private transient volatile String $toString;
 
-    public OnParticularItem(@NotNull String image) {
+    public OnParticularItem(String image) {
       this.image = image;
     }
 

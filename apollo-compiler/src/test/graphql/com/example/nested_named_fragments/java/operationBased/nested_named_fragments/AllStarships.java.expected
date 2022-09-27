@@ -20,8 +20,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class AllStarships implements Query<AllStarships.Data> {
   public static final String OPERATION_ID = "a76ec26a83546f1113b4f2d763d67118a12a70958ef57d44d3f33dedaf90ff72";
@@ -160,7 +158,6 @@ public class AllStarships implements Query<AllStarships.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public AllStarships1 allStarships;
 
     private transient volatile int $hashCode;
@@ -169,7 +166,7 @@ public class AllStarships implements Query<AllStarships.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable AllStarships1 allStarships) {
+    public Data(AllStarships1 allStarships) {
       this.allStarships = allStarships;
     }
 
@@ -212,7 +209,6 @@ public class AllStarships implements Query<AllStarships.Data> {
     /**
      * A list of edges.
      */
-    @Nullable
     public List<Edge> edges;
 
     private transient volatile int $hashCode;
@@ -221,7 +217,7 @@ public class AllStarships implements Query<AllStarships.Data> {
 
     private transient volatile String $toString;
 
-    public AllStarships1(@Nullable List<Edge> edges) {
+    public AllStarships1(List<Edge> edges) {
       this.edges = edges;
     }
 
@@ -264,7 +260,6 @@ public class AllStarships implements Query<AllStarships.Data> {
     /**
      * The item at the end of the edge
      */
-    @Nullable
     public Node node;
 
     private transient volatile int $hashCode;
@@ -273,7 +268,7 @@ public class AllStarships implements Query<AllStarships.Data> {
 
     private transient volatile String $toString;
 
-    public Edge(@Nullable Node node) {
+    public Edge(Node node) {
       this.node = node;
     }
 
@@ -313,13 +308,11 @@ public class AllStarships implements Query<AllStarships.Data> {
   }
 
   public static class Node {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'starshipFragment'
      */
-    @NotNull
     public StarshipFragment starshipFragment;
 
     private transient volatile int $hashCode;
@@ -328,7 +321,7 @@ public class AllStarships implements Query<AllStarships.Data> {
 
     private transient volatile String $toString;
 
-    public Node(@NotNull String __typename, @NotNull StarshipFragment starshipFragment) {
+    public Node(String __typename, StarshipFragment starshipFragment) {
       this.__typename = __typename;
       this.starshipFragment = starshipFragment;
     }

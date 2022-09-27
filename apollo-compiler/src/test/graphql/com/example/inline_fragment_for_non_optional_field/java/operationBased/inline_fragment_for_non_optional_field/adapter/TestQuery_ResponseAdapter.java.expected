@@ -36,7 +36,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.NonOptionalHero _nonOptionalHero = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _nonOptionalHero = new ObjectAdapter<TestQuery.NonOptionalHero>(NonOptionalHero.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -70,7 +70,7 @@ public class TestQuery_ResponseAdapter {
       String _name = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -120,7 +120,7 @@ public class TestQuery_ResponseAdapter {
       Double _height = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

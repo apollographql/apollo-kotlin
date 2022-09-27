@@ -9,20 +9,14 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class QueryFragment implements Fragment.Data {
-  @NotNull
   public String __typename;
 
-  @Nullable
   public Hero hero;
 
-  @Nullable
   public Droid droid;
 
-  @Nullable
   public Human human;
 
   private transient volatile int $hashCode;
@@ -31,8 +25,7 @@ public class QueryFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public QueryFragment(@NotNull String __typename, @Nullable Hero hero, @Nullable Droid droid,
-      @Nullable Human human) {
+  public QueryFragment(String __typename, Hero hero, Droid droid, Human human) {
     this.__typename = __typename;
     this.hero = hero;
     this.droid = droid;
@@ -86,13 +79,11 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'heroFragment'
      */
-    @NotNull
     public HeroFragment heroFragment;
 
     private transient volatile int $hashCode;
@@ -101,7 +92,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull HeroFragment heroFragment) {
+    public Hero(String __typename, HeroFragment heroFragment) {
       this.__typename = __typename;
       this.heroFragment = heroFragment;
     }
@@ -146,13 +137,11 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Droid {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'droidFragment'
      */
-    @NotNull
     public DroidFragment droidFragment;
 
     private transient volatile int $hashCode;
@@ -161,7 +150,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Droid(@NotNull String __typename, @NotNull DroidFragment droidFragment) {
+    public Droid(String __typename, DroidFragment droidFragment) {
       this.__typename = __typename;
       this.droidFragment = droidFragment;
     }
@@ -206,13 +195,11 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Human {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @NotNull
     public OnHuman onHuman;
 
     private transient volatile int $hashCode;
@@ -221,7 +208,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Human(@NotNull String __typename, @NotNull OnHuman onHuman) {
+    public Human(String __typename, OnHuman onHuman) {
       this.__typename = __typename;
       this.onHuman = onHuman;
     }
@@ -269,13 +256,11 @@ public class QueryFragment implements Fragment.Data {
     /**
      * What this human calls themselves
      */
-    @NotNull
     public String name;
 
     /**
      * The home planet of the human, or null if unknown
      */
-    @Nullable
     public String homePlanet;
 
     private transient volatile int $hashCode;
@@ -284,7 +269,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnHuman(@NotNull String name, @Nullable String homePlanet) {
+    public OnHuman(String name, String homePlanet) {
       this.name = name;
       this.homePlanet = homePlanet;
     }

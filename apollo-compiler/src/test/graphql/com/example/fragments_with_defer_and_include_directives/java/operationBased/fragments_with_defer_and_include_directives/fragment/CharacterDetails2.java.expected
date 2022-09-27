@@ -9,13 +9,11 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 
 public class CharacterDetails2 implements Fragment.Data {
   /**
    * The ID of the droid
    */
-  @NotNull
   public String id;
 
   private transient volatile int $hashCode;
@@ -24,7 +22,7 @@ public class CharacterDetails2 implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public CharacterDetails2(@NotNull String id) {
+  public CharacterDetails2(String id) {
     this.id = id;
   }
 

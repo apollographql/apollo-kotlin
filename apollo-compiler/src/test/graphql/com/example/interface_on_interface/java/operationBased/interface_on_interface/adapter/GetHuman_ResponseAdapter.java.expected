@@ -37,7 +37,7 @@ public class GetHuman_ResponseAdapter {
       GetHuman.Node _node = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _human = new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           case 1: _node = new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
@@ -78,7 +78,7 @@ public class GetHuman_ResponseAdapter {
       Double _height = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -123,7 +123,7 @@ public class GetHuman_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -166,7 +166,7 @@ public class GetHuman_ResponseAdapter {
       Double _height = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

@@ -32,7 +32,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       com.example.named_fragment_with_variables.fragment.QueryFragment.Organization _organization = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -64,7 +64,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> _user = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
@@ -104,7 +104,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

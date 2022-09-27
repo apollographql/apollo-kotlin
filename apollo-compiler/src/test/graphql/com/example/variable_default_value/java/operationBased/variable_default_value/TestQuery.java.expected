@@ -6,7 +6,6 @@
 package com.example.variable_default_value;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
@@ -41,7 +39,6 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
-  @NotNull
   public final Optional<Episode> episode;
 
   private transient volatile int $hashCode;
@@ -50,7 +47,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(@NotNull Optional<Episode> episode) {
+  public TestQuery(Optional<Episode> episode) {
     this.episode = episode;
   }
 
@@ -140,13 +137,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      Assertions.checkFieldNotMissing(episode, "episode");
       return new TestQuery(episode);
     }
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -155,7 +150,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -198,7 +193,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -207,7 +201,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String name) {
+    public Hero(String name) {
       this.name = name;
     }
 

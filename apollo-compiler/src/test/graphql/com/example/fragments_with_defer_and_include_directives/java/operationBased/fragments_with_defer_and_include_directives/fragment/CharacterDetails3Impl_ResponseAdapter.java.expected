@@ -30,7 +30,7 @@ public class CharacterDetails3Impl_ResponseAdapter {
       Object _birthDate = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

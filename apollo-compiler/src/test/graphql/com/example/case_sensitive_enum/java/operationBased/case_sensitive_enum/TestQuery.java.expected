@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "1dbd1f94815f122a090e09d84dd17b0bf55e8c44671cba8fd89a7c7c9fa79d63";
@@ -125,7 +124,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Enum enum_;
 
     private transient volatile int $hashCode;
@@ -134,7 +132,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Enum enum_) {
+    public Data(Enum enum_) {
       this.enum_ = enum_;
     }
 

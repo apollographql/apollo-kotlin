@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "79be9e4e97049f3245b5774e22d02ec3db4304788471b62abfbded44b756c6bd";
@@ -133,7 +131,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Horse Horse;
 
     private transient volatile int $hashCode;
@@ -142,7 +139,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Horse Horse) {
+    public Data(Horse Horse) {
       this.Horse = Horse;
     }
 
@@ -182,16 +179,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Horse {
-    @NotNull
     public String __typename;
 
-    @Nullable
     public String Donkey;
 
     /**
      * Synthetic field for inline fragment on Horse
      */
-    @NotNull
     public OnHorse onHorse;
 
     private transient volatile int $hashCode;
@@ -200,7 +194,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Horse(@NotNull String __typename, @Nullable String Donkey, @NotNull OnHorse onHorse) {
+    public Horse(String __typename, String Donkey, OnHorse onHorse) {
       this.__typename = __typename;
       this.Donkey = Donkey;
       this.onHorse = onHorse;
@@ -250,7 +244,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnHorse {
-    @Nullable
     public Cow Cow;
 
     private transient volatile int $hashCode;
@@ -259,7 +252,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHorse(@Nullable Cow Cow) {
+    public OnHorse(Cow Cow) {
       this.Cow = Cow;
     }
 
@@ -299,7 +292,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Cow {
-    @Nullable
     public String Moo;
 
     private transient volatile int $hashCode;
@@ -308,7 +300,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Cow(@Nullable String Moo) {
+    public Cow(String Moo) {
       this.Moo = Moo;
     }
 

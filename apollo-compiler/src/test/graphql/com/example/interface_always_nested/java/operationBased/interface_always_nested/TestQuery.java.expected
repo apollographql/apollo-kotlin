@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "942dce7142e6653f801c8c4e96884e592106f75559c4ad96595a225c35d26260";
@@ -134,7 +132,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Root root;
 
     private transient volatile int $hashCode;
@@ -143,7 +140,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Root root) {
+    public Data(Root root) {
       this.root = root;
     }
 
@@ -183,13 +180,11 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Root {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on A
      */
-    @Nullable
     public OnA onA;
 
     private transient volatile int $hashCode;
@@ -198,7 +193,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Root(@NotNull String __typename, @Nullable OnA onA) {
+    public Root(String __typename, OnA onA) {
       this.__typename = __typename;
       this.onA = onA;
     }
@@ -243,16 +238,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnA {
-    @NotNull
     public String __typename;
 
-    @Nullable
     public String fieldA1;
 
     /**
      * Synthetic field for inline fragment on B
      */
-    @Nullable
     public OnB onB;
 
     private transient volatile int $hashCode;
@@ -261,7 +253,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnA(@NotNull String __typename, @Nullable String fieldA1, @Nullable OnB onB) {
+    public OnA(String __typename, String fieldA1, OnB onB) {
       this.__typename = __typename;
       this.fieldA1 = fieldA1;
       this.onB = onB;
@@ -311,7 +303,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnB {
-    @Nullable
     public String fieldB1;
 
     private transient volatile int $hashCode;
@@ -320,7 +311,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnB(@Nullable String fieldB1) {
+    public OnB(String fieldB1) {
       this.fieldB1 = fieldB1;
     }
 

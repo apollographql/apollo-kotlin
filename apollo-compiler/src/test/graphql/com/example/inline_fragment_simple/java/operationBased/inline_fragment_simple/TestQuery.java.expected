@@ -18,8 +18,6 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "5438a5b2731bc2f21c90dcc4bff5628dd91f65534a3f5cab0dbbbfdd3b4bf19b";
@@ -131,7 +129,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -140,7 +137,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -180,13 +177,11 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     private transient volatile int $hashCode;
@@ -195,7 +190,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @Nullable OnHuman onHuman) {
+    public Hero(String __typename, OnHuman onHuman) {
       this.__typename = __typename;
       this.onHuman = onHuman;
     }
@@ -243,7 +238,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -252,7 +246,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable Double height) {
+    public OnHuman(Double height) {
       this.height = height;
     }
 

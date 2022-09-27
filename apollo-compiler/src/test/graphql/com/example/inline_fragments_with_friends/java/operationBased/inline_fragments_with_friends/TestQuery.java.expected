@@ -20,8 +20,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "43bfea6068cd77041d723551dd119f0676f6c333620dd281a668eca49d14fcb5";
@@ -143,7 +141,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -152,7 +149,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -192,25 +189,21 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
-    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -219,8 +212,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @NotNull String name, @Nullable OnHuman onHuman,
-        @Nullable OnDroid onDroid) {
+    public Hero(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -278,13 +270,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
     /**
      * This human's friends, or an empty list if they have none
      */
-    @Nullable
     public List<Friend> friends;
 
     private transient volatile int $hashCode;
@@ -293,7 +283,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable Double height, @Nullable List<Friend> friends) {
+    public OnHuman(Double height, List<Friend> friends) {
       this.height = height;
       this.friends = friends;
     }
@@ -341,7 +331,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The movies this character appears in
      */
-    @NotNull
     public List<Episode> appearsIn;
 
     private transient volatile int $hashCode;
@@ -350,7 +339,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(@NotNull List<Episode> appearsIn) {
+    public Friend(List<Episode> appearsIn) {
       this.appearsIn = appearsIn;
     }
 
@@ -393,13 +382,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
-    @Nullable
     public String primaryFunction;
 
     /**
      * This droid's friends, or an empty list if they have none
      */
-    @Nullable
     public List<Friend1> friends;
 
     private transient volatile int $hashCode;
@@ -408,7 +395,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(@Nullable String primaryFunction, @Nullable List<Friend1> friends) {
+    public OnDroid(String primaryFunction, List<Friend1> friends) {
       this.primaryFunction = primaryFunction;
       this.friends = friends;
     }
@@ -456,7 +443,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
-    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -465,7 +451,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(@NotNull String id) {
+    public Friend1(String id) {
       this.id = id;
     }
 

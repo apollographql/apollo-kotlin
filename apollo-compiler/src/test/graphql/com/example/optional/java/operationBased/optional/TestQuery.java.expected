@@ -19,8 +19,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "9438477e508a2037f377e235bb022f24d375a02a5bb3dc6116c20c52e30ff026";
@@ -130,7 +128,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -139,7 +136,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -182,13 +179,11 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * The movies this character appears in
      */
-    @Nullable
     public List<Episode> appearsIn;
 
     private transient volatile int $hashCode;
@@ -197,7 +192,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String name, @Nullable List<Episode> appearsIn) {
+    public Hero(String name, List<Episode> appearsIn) {
       this.name = name;
       this.appearsIn = appearsIn;
     }

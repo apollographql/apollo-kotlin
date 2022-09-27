@@ -19,8 +19,6 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
   public static final String OPERATION_ID = "5e11892e17cceb600c00f4565a27951dce5e8aadd95b64b8d13a835ed8fb11e1";
@@ -137,7 +135,6 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -146,7 +143,7 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -189,13 +186,11 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * The friends of the character exposed as a connection with edges
      */
-    @NotNull
     public FriendsConnection friendsConnection;
 
     private transient volatile int $hashCode;
@@ -204,7 +199,7 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String name, @NotNull FriendsConnection friendsConnection) {
+    public Hero(String name, FriendsConnection friendsConnection) {
       this.name = name;
       this.friendsConnection = friendsConnection;
     }
@@ -252,13 +247,11 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
     /**
      * The total number of friends
      */
-    @Nullable
     public Integer totalCount;
 
     /**
      * The edges for each of the character's friends.
      */
-    @Nullable
     public List<Edge> edges;
 
     private transient volatile int $hashCode;
@@ -267,7 +260,7 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
     private transient volatile String $toString;
 
-    public FriendsConnection(@Nullable Integer totalCount, @Nullable List<Edge> edges) {
+    public FriendsConnection(Integer totalCount, List<Edge> edges) {
       this.totalCount = totalCount;
       this.edges = edges;
     }
@@ -315,7 +308,6 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
     /**
      * The character represented by this friendship edge
      */
-    @Nullable
     public Node node;
 
     private transient volatile int $hashCode;
@@ -324,7 +316,7 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Edge(@Nullable Node node) {
+    public Edge(Node node) {
       this.node = node;
     }
 
@@ -367,7 +359,6 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -376,7 +367,7 @@ public class HeroDetailsQuery implements Query<HeroDetailsQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Node(@NotNull String name) {
+    public Node(String name) {
       this.name = name;
     }
 

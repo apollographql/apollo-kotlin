@@ -6,7 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -23,8 +22,6 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDeferWithIf.Data> {
   public static final String OPERATION_ID = "ecdac17ca37d6cbf3a6e5059904fabfd96193cbe0720eb27880026b518feec9f";
@@ -58,7 +55,6 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDeferWithIf";
 
-  @NotNull
   public final Boolean cond;
 
   private transient volatile int $hashCode;
@@ -67,7 +63,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
   private transient volatile String $toString;
 
-  public SpreadMultipleWithDeferWithIf(@NotNull Boolean cond) {
+  public SpreadMultipleWithDeferWithIf(Boolean cond) {
     this.cond = cond;
   }
 
@@ -151,19 +147,17 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     Builder() {
     }
 
-    public Builder cond(@NotNull Boolean cond) {
+    public Builder cond(Boolean cond) {
       this.cond = cond;
       return this;
     }
 
     public SpreadMultipleWithDeferWithIf build() {
-      Assertions.checkFieldNotMissing(cond, "cond");
       return new SpreadMultipleWithDeferWithIf(cond);
     }
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -172,7 +166,7 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Hero hero) {
+    public Data(Hero hero) {
       this.hero = hero;
     }
 
@@ -212,25 +206,21 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
   }
 
   public static class Hero {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'CharacterDetails'
      */
-    @Nullable
     public CharacterDetails characterDetails;
 
     /**
      * Synthetic field for 'CharacterDetails2'
      */
-    @Nullable
     public CharacterDetails2 characterDetails2;
 
     /**
      * Synthetic field for 'CharacterDetails3'
      */
-    @Nullable
     public CharacterDetails3 characterDetails3;
 
     private transient volatile int $hashCode;
@@ -239,9 +229,8 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
 
     private transient volatile String $toString;
 
-    public Hero(@NotNull String __typename, @Nullable CharacterDetails characterDetails,
-        @Nullable CharacterDetails2 characterDetails2,
-        @Nullable CharacterDetails3 characterDetails3) {
+    public Hero(String __typename, CharacterDetails characterDetails,
+        CharacterDetails2 characterDetails2, CharacterDetails3 characterDetails3) {
       this.__typename = __typename;
       this.characterDetails = characterDetails;
       this.characterDetails2 = characterDetails2;

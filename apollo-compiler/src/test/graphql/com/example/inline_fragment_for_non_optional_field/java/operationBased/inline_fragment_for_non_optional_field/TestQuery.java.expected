@@ -18,8 +18,6 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "e33ec8a463abf6b32191d1f07aa6c7e4d038a493cace83a45a64632eb65b1ced";
@@ -132,7 +130,6 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @NotNull
     public NonOptionalHero nonOptionalHero;
 
     private transient volatile int $hashCode;
@@ -141,7 +138,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@NotNull NonOptionalHero nonOptionalHero) {
+    public Data(NonOptionalHero nonOptionalHero) {
       this.nonOptionalHero = nonOptionalHero;
     }
 
@@ -181,19 +178,16 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class NonOptionalHero {
-    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
-    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
-    @Nullable
     public OnHuman onHuman;
 
     private transient volatile int $hashCode;
@@ -202,8 +196,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public NonOptionalHero(@NotNull String __typename, @NotNull String name,
-        @Nullable OnHuman onHuman) {
+    public NonOptionalHero(String __typename, String name, OnHuman onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -256,7 +249,6 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
-    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -265,7 +257,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(@Nullable Double height) {
+    public OnHuman(Double height) {
       this.height = height;
     }
 

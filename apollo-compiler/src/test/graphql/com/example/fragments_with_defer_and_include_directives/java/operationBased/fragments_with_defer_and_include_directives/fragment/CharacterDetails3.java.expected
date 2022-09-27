@@ -9,13 +9,11 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 
 public class CharacterDetails3 implements Fragment.Data {
   /**
    * The date droid was created.
    */
-  @NotNull
   public Object birthDate;
 
   private transient volatile int $hashCode;
@@ -24,7 +22,7 @@ public class CharacterDetails3 implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public CharacterDetails3(@NotNull Object birthDate) {
+  public CharacterDetails3(Object birthDate) {
     this.birthDate = birthDate;
   }
 

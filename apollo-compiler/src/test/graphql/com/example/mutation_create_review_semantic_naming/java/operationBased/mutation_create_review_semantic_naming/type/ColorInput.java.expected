@@ -11,26 +11,20 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * The input object sent when passing in a color
  */
 public class ColorInput {
-  @NotNull
   public final Optional<Integer> red;
 
-  @NotNull
   public final Optional<Double> green;
 
-  @NotNull
   public final Optional<Double> blue;
 
-  @NotNull
   public final Optional<Episode> enumWithDefaultValue;
 
-  @NotNull
   public final Optional<ReviewRefInput> reviewRefInput;
 
   private transient volatile int $hashCode;
@@ -39,9 +33,8 @@ public class ColorInput {
 
   private transient volatile String $toString;
 
-  public ColorInput(@NotNull Optional<Integer> red, @NotNull Optional<Double> green,
-      @NotNull Optional<Double> blue, @NotNull Optional<Episode> enumWithDefaultValue,
-      @NotNull Optional<ReviewRefInput> reviewRefInput) {
+  public ColorInput(Optional<Integer> red, Optional<Double> green, Optional<Double> blue,
+      Optional<Episode> enumWithDefaultValue, Optional<ReviewRefInput> reviewRefInput) {
     this.red = red;
     this.green = green;
     this.blue = blue;

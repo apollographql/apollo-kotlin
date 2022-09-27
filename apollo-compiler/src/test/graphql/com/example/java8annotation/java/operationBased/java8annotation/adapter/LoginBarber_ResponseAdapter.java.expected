@@ -31,7 +31,7 @@ public class LoginBarber_ResponseAdapter {
       LoginBarber.Login _login = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _login = new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -64,7 +64,7 @@ public class LoginBarber_ResponseAdapter {
       String _response = null;
 
       loop:
-      while (true) {
+      while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _response = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

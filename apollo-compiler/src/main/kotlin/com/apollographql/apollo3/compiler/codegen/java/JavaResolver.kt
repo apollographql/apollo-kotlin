@@ -66,6 +66,21 @@ internal class JavaResolver(
       JavaNullable.GUAVA_OPTIONAL,
   )
 
+  private val nullableAnnotationClassName: ClassName? = when (nullableFieldStyle) {
+    JavaNullable.JETBRAINS_ANNOTATIONS -> JavaClassNames.JetBrainsNullable
+    JavaNullable.ANDROID_ANNOTATIONS -> JavaClassNames.JetBrainsNullable // TODO
+    JavaNullable.JSR_305_ANNOTATIONS -> JavaClassNames.JetBrainsNullable // TODO
+    else -> null
+  }
+
+  private val notNullAnnotationClassName: ClassName? = when (nullableFieldStyle) {
+    JavaNullable.JETBRAINS_ANNOTATIONS -> JavaClassNames.JetBrainsNonNull
+    JavaNullable.ANDROID_ANNOTATIONS -> JavaClassNames.JetBrainsNonNull // TODO
+    JavaNullable.JSR_305_ANNOTATIONS -> JavaClassNames.JetBrainsNonNull // TODO
+    else -> null
+  }
+
+
   fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
 
   private var classNames = entries.associateBy(
@@ -119,12 +134,19 @@ internal class JavaResolver(
   }
 
   private fun TypeName.addNullableAnnotation(): TypeName {
-    return this.annotated(AnnotationSpec.builder(JavaClassNames.JetBrainsNullable).build())
+    return if (nullableAnnotationClassName == null) {
+      this
+    } else {
+      annotated(AnnotationSpec.builder(nullableAnnotationClassName).build())
+    }
   }
 
   private fun TypeName.addNonNullableAnnotation(): TypeName {
-    if (this in primitiveTypeNames) return this
-    return this.annotated(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
+    return if (this in primitiveTypeNames || notNullAnnotationClassName == null) {
+      this
+    } else {
+      annotated(AnnotationSpec.builder(notNullAnnotationClassName).build())
+    }
   }
 
   private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {

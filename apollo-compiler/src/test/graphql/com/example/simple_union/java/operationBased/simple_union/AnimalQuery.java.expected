@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class AnimalQuery implements Query<AnimalQuery.Data> {
   public static final String OPERATION_ID = "0a4d6f7c4de2a81e6247e9f2205b24b2b42e03c1f25fe7267e13fe1342d905d7";
@@ -139,7 +137,6 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   }
 
   public static class Data implements Query.Data {
-    @Nullable
     public Animal animal;
 
     private transient volatile int $hashCode;
@@ -148,7 +145,7 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(@Nullable Animal animal) {
+    public Data(Animal animal) {
       this.animal = animal;
     }
 
@@ -188,19 +185,16 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   }
 
   public static class Animal {
-    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'CatFragment'
      */
-    @Nullable
     public CatFragment catFragment;
 
     /**
      * Synthetic field for 'DogFragment'
      */
-    @Nullable
     public DogFragment dogFragment;
 
     private transient volatile int $hashCode;
@@ -209,8 +203,7 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Animal(@NotNull String __typename, @Nullable CatFragment catFragment,
-        @Nullable DogFragment dogFragment) {
+    public Animal(String __typename, CatFragment catFragment, DogFragment dogFragment) {
       this.__typename = __typename;
       this.catFragment = catFragment;
       this.dogFragment = dogFragment;

@@ -9,17 +9,13 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class IFragment implements Fragment.Data {
-  @NotNull
   public String __typename;
 
   /**
    * Synthetic field for inline fragment on A
    */
-  @Nullable
   public OnA onA;
 
   private transient volatile int $hashCode;
@@ -28,7 +24,7 @@ public class IFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public IFragment(@NotNull String __typename, @Nullable OnA onA) {
+  public IFragment(String __typename, OnA onA) {
     this.__typename = __typename;
     this.onA = onA;
   }
@@ -72,7 +68,6 @@ public class IFragment implements Fragment.Data {
   }
 
   public static class OnA {
-    @Nullable
     public String fieldA;
 
     private transient volatile int $hashCode;
@@ -81,7 +76,7 @@ public class IFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnA(@Nullable String fieldA) {
+    public OnA(String fieldA) {
       this.fieldA = fieldA;
     }
 

@@ -10,13 +10,11 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class HumanDetails implements Fragment.Data {
   /**
    * Height in the preferred unit, default is meters
    */
-  @Nullable
   public Double height;
 
   private transient volatile int $hashCode;
@@ -25,7 +23,7 @@ public class HumanDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HumanDetails(@Nullable Double height) {
+  public HumanDetails(Double height) {
     this.height = height;
   }
 
