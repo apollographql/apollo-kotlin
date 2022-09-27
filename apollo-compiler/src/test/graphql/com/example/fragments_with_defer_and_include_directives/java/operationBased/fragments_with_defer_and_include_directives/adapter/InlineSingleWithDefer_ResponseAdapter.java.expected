@@ -37,7 +37,7 @@ public class InlineSingleWithDefer_ResponseAdapter {
       InlineSingleWithDefer.Hero _hero = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineSingleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -69,7 +69,7 @@ public class InlineSingleWithDefer_ResponseAdapter {
 
       List<Object> __path = reader.getPath();
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -112,7 +112,7 @@ public class InlineSingleWithDefer_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

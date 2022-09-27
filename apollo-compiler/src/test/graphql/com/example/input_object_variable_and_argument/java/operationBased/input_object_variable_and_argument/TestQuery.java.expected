@@ -6,6 +6,7 @@
 package com.example.input_object_variable_and_argument;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -22,6 +23,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
@@ -53,10 +55,13 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final Optional<Episode> episode;
 
+  @NotNull
   public final Integer stars;
 
+  @NotNull
   public final Double greenValue;
 
   private transient volatile int $hashCode;
@@ -65,7 +70,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Optional<Episode> episode, Integer stars, Double greenValue) {
+  public TestQuery(@NotNull Optional<Episode> episode, @NotNull Integer stars,
+      @NotNull Double greenValue) {
     this.episode = episode;
     this.stars = stars;
     this.greenValue = greenValue;
@@ -168,22 +174,26 @@ public class TestQuery implements Query<TestQuery.Data> {
       return this;
     }
 
-    public Builder stars(Integer stars) {
+    public Builder stars(@NotNull Integer stars) {
       this.stars = stars;
       return this;
     }
 
-    public Builder greenValue(Double greenValue) {
+    public Builder greenValue(@NotNull Double greenValue) {
       this.greenValue = greenValue;
       return this;
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(episode, "episode");
+      Assertions.checkFieldNotMissing(stars, "stars");
+      Assertions.checkFieldNotMissing(greenValue, "greenValue");
       return new TestQuery(episode, stars, greenValue);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public HeroWithReview heroWithReview;
 
     private transient volatile int $hashCode;
@@ -192,7 +202,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(HeroWithReview heroWithReview) {
+    public Data(@Nullable HeroWithReview heroWithReview) {
       this.heroWithReview = heroWithReview;
     }
 
@@ -235,11 +245,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * What this human calls themselves
      */
+    @NotNull
     public String name;
 
     /**
      * Height in the preferred unit, default is meters
      */
+    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -248,7 +260,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public HeroWithReview(String name, Double height) {
+    public HeroWithReview(@NotNull String name, @Nullable Double height) {
       this.name = name;
       this.height = height;
     }

@@ -12,54 +12,77 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * The input object sent when someone is creating a new review
  */
 public class ReviewInput {
+  @NotNull
   public final Integer stars;
 
+  @NotNull
   public final Optional<Integer> nullableIntFieldWithDefaultValue;
 
+  @NotNull
   public final Optional<String> commentary;
 
+  @NotNull
   public final ColorInput favoriteColor;
 
+  @NotNull
   public final Optional<Episode> enumWithDefaultValue;
 
+  @NotNull
   public final Optional<Episode> nonNullableEnumWithDefaultValue;
 
+  @NotNull
   public final Optional<Episode> nullableEnum;
 
+  @NotNull
   public final Optional<List<Object>> listOfCustomScalar;
 
+  @NotNull
   public final Optional<Object> customScalar;
 
+  @NotNull
   public final Optional<List<Episode>> listOfEnums;
 
+  @NotNull
   public final Optional<List<Integer>> listOfInt;
 
+  @NotNull
   public final Optional<List<String>> listOfString;
 
+  @NotNull
   public final List<String> listOfStringNonOptional;
 
+  @NotNull
   public final Optional<List<ColorInput>> listOfInputTypes;
 
+  @NotNull
   public final Optional<Boolean> booleanWithDefaultValue;
 
+  @NotNull
   public final Optional<Boolean> booleanNonOptional;
 
+  @NotNull
   public final Optional<List<List<String>>> listOfListOfString;
 
+  @NotNull
   public final Optional<List<List<Episode>>> listOfListOfEnum;
 
+  @NotNull
   public final Optional<List<List<Object>>> listOfListOfCustom;
 
+  @NotNull
   public final Optional<List<List<ColorInput>>> listOfListOfObject;
 
+  @NotNull
   public final Optional<String> CapitalizedField;
 
+  @NotNull
   public final Optional<Integer> CapitalizedInt;
 
   private transient volatile int $hashCode;
@@ -68,18 +91,23 @@ public class ReviewInput {
 
   private transient volatile String $toString;
 
-  public ReviewInput(Integer stars, Optional<Integer> nullableIntFieldWithDefaultValue,
-      Optional<String> commentary, ColorInput favoriteColor, Optional<Episode> enumWithDefaultValue,
-      Optional<Episode> nonNullableEnumWithDefaultValue, Optional<Episode> nullableEnum,
-      Optional<List<Object>> listOfCustomScalar, Optional<Object> customScalar,
-      Optional<List<Episode>> listOfEnums, Optional<List<Integer>> listOfInt,
-      Optional<List<String>> listOfString, List<String> listOfStringNonOptional,
-      Optional<List<ColorInput>> listOfInputTypes, Optional<Boolean> booleanWithDefaultValue,
-      Optional<Boolean> booleanNonOptional, Optional<List<List<String>>> listOfListOfString,
-      Optional<List<List<Episode>>> listOfListOfEnum,
-      Optional<List<List<Object>>> listOfListOfCustom,
-      Optional<List<List<ColorInput>>> listOfListOfObject, Optional<String> CapitalizedField,
-      Optional<Integer> CapitalizedInt) {
+  public ReviewInput(@NotNull Integer stars,
+      @NotNull Optional<Integer> nullableIntFieldWithDefaultValue,
+      @NotNull Optional<String> commentary, @NotNull ColorInput favoriteColor,
+      @NotNull Optional<Episode> enumWithDefaultValue,
+      @NotNull Optional<Episode> nonNullableEnumWithDefaultValue,
+      @NotNull Optional<Episode> nullableEnum, @NotNull Optional<List<Object>> listOfCustomScalar,
+      @NotNull Optional<Object> customScalar, @NotNull Optional<List<Episode>> listOfEnums,
+      @NotNull Optional<List<Integer>> listOfInt, @NotNull Optional<List<String>> listOfString,
+      @NotNull List<String> listOfStringNonOptional,
+      @NotNull Optional<List<ColorInput>> listOfInputTypes,
+      @NotNull Optional<Boolean> booleanWithDefaultValue,
+      @NotNull Optional<Boolean> booleanNonOptional,
+      @NotNull Optional<List<List<String>>> listOfListOfString,
+      @NotNull Optional<List<List<Episode>>> listOfListOfEnum,
+      @NotNull Optional<List<List<Object>>> listOfListOfCustom,
+      @NotNull Optional<List<List<ColorInput>>> listOfListOfObject,
+      @NotNull Optional<String> CapitalizedField, @NotNull Optional<Integer> CapitalizedInt) {
     this.stars = stars;
     this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
     this.commentary = commentary;

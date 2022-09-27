@@ -20,6 +20,8 @@ import java.lang.Override;
 import java.lang.String;
 import java.util.Date;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "1d5498a23394700442413af8ec1b8edce1445ce533afdb2e9d5ec9c0ed40a9e3";
@@ -134,6 +136,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -142,7 +145,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -185,36 +188,43 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
+    @NotNull
     public Long id;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * The date character was born.
      */
+    @NotNull
     public Date birthDate;
 
     /**
      * The dates of appearances
      */
+    @NotNull
     public List<Date> appearanceDates;
 
     /**
      * The date character was born.
      */
+    @NotNull
     public Object fieldWithUnsupportedType;
 
     /**
      * Profile link
      */
+    @NotNull
     public String profileLink;
 
     /**
      * Links
      */
+    @NotNull
     public List<String> links;
 
     private transient volatile int $hashCode;
@@ -223,8 +233,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(Long id, String name, Date birthDate, List<Date> appearanceDates,
-        Object fieldWithUnsupportedType, String profileLink, List<String> links) {
+    public Hero(@NotNull Long id, @NotNull String name, @NotNull Date birthDate,
+        @NotNull List<Date> appearanceDates, @NotNull Object fieldWithUnsupportedType,
+        @NotNull String profileLink, @NotNull List<String> links) {
       this.id = id;
       this.name = name;
       this.birthDate = birthDate;

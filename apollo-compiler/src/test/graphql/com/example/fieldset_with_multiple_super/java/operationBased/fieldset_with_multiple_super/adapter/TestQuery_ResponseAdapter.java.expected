@@ -36,7 +36,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.C _c = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _c = new NullableAdapter<>(new ObjectAdapter<TestQuery.C>(C.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -67,7 +67,7 @@ public class TestQuery_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -122,7 +122,7 @@ public class TestQuery_ResponseAdapter {
       String _fieldA1 = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -170,7 +170,7 @@ public class TestQuery_ResponseAdapter {
       String _fieldB1 = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -202,7 +202,7 @@ public class TestQuery_ResponseAdapter {
       String _fieldB2 = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -250,7 +250,7 @@ public class TestQuery_ResponseAdapter {
       String _fieldA2 = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _fieldA2 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

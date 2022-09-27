@@ -9,13 +9,16 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class HumanDetails implements Fragment.Data {
+  @NotNull
   public String __typename;
 
   /**
    * What this human calls themselves
    */
+  @NotNull
   public String name;
 
   private transient volatile int $hashCode;
@@ -24,7 +27,7 @@ public class HumanDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HumanDetails(String __typename, String name) {
+  public HumanDetails(@NotNull String __typename, @NotNull String name) {
     this.__typename = __typename;
     this.name = name;
   }

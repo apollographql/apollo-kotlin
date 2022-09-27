@@ -10,18 +10,23 @@ import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AnimalFragment implements Fragment.Data {
+  @NotNull
   public String __typename;
 
   /**
    * Synthetic field for inline fragment on Cat
    */
+  @Nullable
   public OnCat onCat;
 
   /**
    * Synthetic field for inline fragment on Dog
    */
+  @Nullable
   public OnDog onDog;
 
   private transient volatile int $hashCode;
@@ -30,7 +35,7 @@ public class AnimalFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public AnimalFragment(String __typename, OnCat onCat, OnDog onDog) {
+  public AnimalFragment(@NotNull String __typename, @Nullable OnCat onCat, @Nullable OnDog onDog) {
     this.__typename = __typename;
     this.onCat = onCat;
     this.onDog = onDog;
@@ -79,6 +84,7 @@ public class AnimalFragment implements Fragment.Data {
   }
 
   public static class OnCat {
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -87,7 +93,7 @@ public class AnimalFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnCat(String name) {
+    public OnCat(@NotNull String name) {
       this.name = name;
     }
 
@@ -130,6 +136,7 @@ public class AnimalFragment implements Fragment.Data {
     /**
      * No longer supported
      */
+    @NotNull
     @Deprecated
     public String name;
 
@@ -139,7 +146,7 @@ public class AnimalFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnDog(String name) {
+    public OnDog(@NotNull @Deprecated String name) {
       this.name = name;
     }
 

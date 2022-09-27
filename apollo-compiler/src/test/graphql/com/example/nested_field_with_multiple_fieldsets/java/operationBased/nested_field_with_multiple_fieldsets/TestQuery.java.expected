@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "39e196d404a902ae82f38401080d30922ca3eadf8fd6dc53ef53d4673c6af264";
@@ -147,6 +149,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Iface1 iface1;
 
     private transient volatile int $hashCode;
@@ -155,7 +158,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Iface1 iface1) {
+    public Data(@Nullable Iface1 iface1) {
       this.iface1 = iface1;
     }
 
@@ -195,16 +198,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Iface1 {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Iface1
      */
+    @NotNull
     public OnIface1 onIface1;
 
     /**
      * Synthetic field for inline fragment on Impl1
      */
+    @Nullable
     public OnImpl1 onImpl1;
 
     private transient volatile int $hashCode;
@@ -213,7 +219,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Iface1(String __typename, OnIface1 onIface1, OnImpl1 onImpl1) {
+    public Iface1(@NotNull String __typename, @NotNull OnIface1 onIface1,
+        @Nullable OnImpl1 onImpl1) {
       this.__typename = __typename;
       this.onIface1 = onIface1;
       this.onImpl1 = onImpl1;
@@ -263,6 +270,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnIface1 {
+    @Nullable
     public Iface2 iface2;
 
     private transient volatile int $hashCode;
@@ -271,7 +279,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnIface1(Iface2 iface2) {
+    public OnIface1(@Nullable Iface2 iface2) {
       this.iface2 = iface2;
     }
 
@@ -311,16 +319,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Iface2 {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Iface2
      */
+    @NotNull
     public OnIface2 onIface2;
 
     /**
      * Synthetic field for inline fragment on Impl2
      */
+    @Nullable
     public OnImpl2 onImpl2;
 
     private transient volatile int $hashCode;
@@ -329,7 +340,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Iface2(String __typename, OnIface2 onIface2, OnImpl2 onImpl2) {
+    public Iface2(@NotNull String __typename, @NotNull OnIface2 onIface2,
+        @Nullable OnImpl2 onImpl2) {
       this.__typename = __typename;
       this.onIface2 = onIface2;
       this.onImpl2 = onImpl2;
@@ -379,6 +391,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnIface2 {
+    @Nullable
     public String scalar1;
 
     private transient volatile int $hashCode;
@@ -387,7 +400,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnIface2(String scalar1) {
+    public OnIface2(@Nullable String scalar1) {
       this.scalar1 = scalar1;
     }
 
@@ -427,6 +440,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnImpl2 {
+    @Nullable
     public String scalar2;
 
     private transient volatile int $hashCode;
@@ -435,7 +449,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnImpl2(String scalar2) {
+    public OnImpl2(@Nullable String scalar2) {
       this.scalar2 = scalar2;
     }
 
@@ -475,6 +489,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnImpl1 {
+    @Nullable
     public Iface21 iface2;
 
     private transient volatile int $hashCode;
@@ -483,7 +498,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnImpl1(Iface21 iface2) {
+    public OnImpl1(@Nullable Iface21 iface2) {
       this.iface2 = iface2;
     }
 
@@ -523,16 +538,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Iface21 {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Iface2
      */
+    @NotNull
     public OnIface21 onIface2;
 
     /**
      * Synthetic field for inline fragment on Impl2
      */
+    @Nullable
     public OnImpl21 onImpl2;
 
     private transient volatile int $hashCode;
@@ -541,7 +559,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Iface21(String __typename, OnIface21 onIface2, OnImpl21 onImpl2) {
+    public Iface21(@NotNull String __typename, @NotNull OnIface21 onIface2,
+        @Nullable OnImpl21 onImpl2) {
       this.__typename = __typename;
       this.onIface2 = onIface2;
       this.onImpl2 = onImpl2;
@@ -591,6 +610,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnIface21 {
+    @Nullable
     public String scalar3;
 
     private transient volatile int $hashCode;
@@ -599,7 +619,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnIface21(String scalar3) {
+    public OnIface21(@Nullable String scalar3) {
       this.scalar3 = scalar3;
     }
 
@@ -639,6 +659,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnImpl21 {
+    @Nullable
     public String scalar4;
 
     private transient volatile int $hashCode;
@@ -647,7 +668,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnImpl21(String scalar4) {
+    public OnImpl21(@Nullable String scalar4) {
       this.scalar4 = scalar4;
     }
 

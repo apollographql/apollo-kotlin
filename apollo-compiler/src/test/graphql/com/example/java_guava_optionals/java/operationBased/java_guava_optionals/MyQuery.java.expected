@@ -6,6 +6,7 @@
 package com.example.java_guava_optionals;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,6 +22,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MyQuery implements Query<MyQuery.Data> {
@@ -50,16 +52,21 @@ public class MyQuery implements Query<MyQuery.Data> {
 
   public static final String OPERATION_NAME = "MyQuery";
 
+  @NotNull
   public final Optional<Optional<Integer>> nullableInt;
 
   public final int nonNullableInt;
 
+  @NotNull
   public final Optional<Integer> nonNullableIntWithDefault;
 
+  @NotNull
   public final Optional<Optional<MyInput>> nullableInput;
 
+  @NotNull
   public final MyInput nonNullableInput;
 
+  @NotNull
   public final Optional<MyInput> nonNullableInputWithDefault;
 
   private transient volatile int $hashCode;
@@ -68,9 +75,10 @@ public class MyQuery implements Query<MyQuery.Data> {
 
   private transient volatile String $toString;
 
-  public MyQuery(Optional<Optional<Integer>> nullableInt, int nonNullableInt,
-      Optional<Integer> nonNullableIntWithDefault, Optional<Optional<MyInput>> nullableInput,
-      MyInput nonNullableInput, Optional<MyInput> nonNullableInputWithDefault) {
+  public MyQuery(@NotNull Optional<Optional<Integer>> nullableInt, int nonNullableInt,
+      @NotNull Optional<Integer> nonNullableIntWithDefault,
+      @NotNull Optional<Optional<MyInput>> nullableInput, @NotNull MyInput nonNullableInput,
+      @NotNull Optional<MyInput> nonNullableInputWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
     this.nonNullableIntWithDefault = nonNullableIntWithDefault;
@@ -209,7 +217,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInput(MyInput nonNullableInput) {
+    public Builder nonNullableInput(@NotNull MyInput nonNullableInput) {
       this.nonNullableInput = nonNullableInput;
       return this;
     }
@@ -220,6 +228,11 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public MyQuery build() {
+      Assertions.checkFieldNotMissing(nullableInt, "nullableInt");
+      Assertions.checkFieldNotMissing(nonNullableIntWithDefault, "nonNullableIntWithDefault");
+      Assertions.checkFieldNotMissing(nullableInput, "nullableInput");
+      Assertions.checkFieldNotMissing(nonNullableInput, "nonNullableInput");
+      Assertions.checkFieldNotMissing(nonNullableInputWithDefault, "nonNullableInputWithDefault");
       return new MyQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
     }
   }
@@ -231,6 +244,7 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     public Optional<NullableMyType> nullableMyType;
 
+    @NotNull
     public NonNullableMyType nonNullableMyType;
 
     private transient volatile int $hashCode;
@@ -240,7 +254,7 @@ public class MyQuery implements Query<MyQuery.Data> {
     private transient volatile String $toString;
 
     public Data(Optional<Integer> nullableInt, int nonNullableInt,
-        Optional<NullableMyType> nullableMyType, NonNullableMyType nonNullableMyType) {
+        Optional<NullableMyType> nullableMyType, @NotNull NonNullableMyType nonNullableMyType) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
       this.nullableMyType = nullableMyType;
@@ -333,12 +347,13 @@ public class MyQuery implements Query<MyQuery.Data> {
         return this;
       }
 
-      public Builder nonNullableMyType(NonNullableMyType nonNullableMyType) {
+      public Builder nonNullableMyType(@NotNull NonNullableMyType nonNullableMyType) {
         this.nonNullableMyType = nonNullableMyType;
         return this;
       }
 
       public Data build() {
+        Assertions.checkFieldNotMissing(nonNullableMyType, "nonNullableMyType");
         return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
       }
     }

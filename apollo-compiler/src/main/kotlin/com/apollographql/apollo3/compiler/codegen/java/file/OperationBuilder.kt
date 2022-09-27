@@ -259,7 +259,6 @@ internal class OperationBuilder(
           Builder(
               targetObjectClassName = operationClassName,
               fields = emptyList(),
-              fieldJavaDocs = emptyMap(),
               context = context
           ).build()
       )
@@ -267,13 +266,15 @@ internal class OperationBuilder(
 
     operation.variables
         .map {
-          context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
+          val irType = context.resolver.resolveIrType(it.type)
+          FieldSpec.builder(irType.withoutAnnotations(), context.layout.propertyName(it.name))
+              .addAnnotations(irType.annotations)
+              .build()
         }
         .let {
           Builder(
               targetObjectClassName = operationClassName,
               fields = it,
-              fieldJavaDocs = emptyMap(),
               context = context
           )
         }

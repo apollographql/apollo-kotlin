@@ -10,7 +10,6 @@ internal object ClassNames {
   const val apolloApiTestPackageName = "$apolloApiPackageName.test"
   private const val jetbrainsAnnotationsPackageName = "org.jetbrains.annotations"
 
-  val Assertions = ResolverClassName(apolloApiPackageName, "Assertions")
   val ObjectType = ResolverClassName(apolloApiPackageName, "ObjectType")
   val InterfaceType = ResolverClassName(apolloApiPackageName, "InterfaceType")
   val ObjectTypeBuilder = ResolverClassName(apolloApiPackageName, "ObjectType", "Builder")

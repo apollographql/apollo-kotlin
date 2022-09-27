@@ -9,10 +9,14 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QueryFragment implements Fragment.Data {
+  @NotNull
   public String __typename;
 
+  @Nullable
   public Hero hero;
 
   private transient volatile int $hashCode;
@@ -21,7 +25,7 @@ public class QueryFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public QueryFragment(String __typename, Hero hero) {
+  public QueryFragment(@NotNull String __typename, @Nullable Hero hero) {
     this.__typename = __typename;
     this.hero = hero;
   }
@@ -68,6 +72,7 @@ public class QueryFragment implements Fragment.Data {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -76,7 +81,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Hero(String name) {
+    public Hero(@NotNull String name) {
       this.name = name;
     }
 

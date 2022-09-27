@@ -11,16 +11,20 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HeroDetails implements Fragment.Data {
   /**
    * The name of the character
    */
+  @NotNull
   public String name;
 
   /**
    * The friends of the character, or an empty list if they have none
    */
+  @Nullable
   public List<Friend> friends;
 
   private transient volatile int $hashCode;
@@ -29,7 +33,7 @@ public class HeroDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HeroDetails(String name, List<Friend> friends) {
+  public HeroDetails(@NotNull String name, @Nullable List<Friend> friends) {
     this.name = name;
     this.friends = friends;
   }
@@ -73,21 +77,25 @@ public class HeroDetails implements Fragment.Data {
   }
 
   public static class Friend {
+    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
+    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -96,7 +104,8 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Friend(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
+    public Friend(@NotNull String __typename, @NotNull String name, @Nullable OnHuman onHuman,
+        @Nullable OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -154,6 +163,7 @@ public class HeroDetails implements Fragment.Data {
     /**
      * Height in the preferred unit, default is meters
      */
+    @Nullable
     public Double height;
 
     private transient volatile int $hashCode;
@@ -162,7 +172,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnHuman(Double height) {
+    public OnHuman(@Nullable Double height) {
       this.height = height;
     }
 
@@ -205,6 +215,7 @@ public class HeroDetails implements Fragment.Data {
     /**
      * This droid's primary function
      */
+    @Nullable
     public String primaryFunction;
 
     private transient volatile int $hashCode;
@@ -213,7 +224,7 @@ public class HeroDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnDroid(String primaryFunction) {
+    public OnDroid(@Nullable String primaryFunction) {
       this.primaryFunction = primaryFunction;
     }
 

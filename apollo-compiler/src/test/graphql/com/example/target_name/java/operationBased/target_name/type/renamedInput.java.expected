@@ -9,9 +9,11 @@ import com.apollographql.apollo3.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class renamedInput {
+  @NotNull
   public final Optional<String> field;
 
   private transient volatile int $hashCode;
@@ -20,7 +22,7 @@ public class renamedInput {
 
   private transient volatile String $toString;
 
-  public renamedInput(Optional<String> field) {
+  public renamedInput(@NotNull Optional<String> field) {
     this.field = field;
   }
 

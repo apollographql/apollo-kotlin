@@ -40,7 +40,7 @@ public class TestOperation_ResponseAdapter {
       TestOperation.Random _random = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _random = new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -73,7 +73,7 @@ public class TestOperation_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -129,7 +129,7 @@ public class TestOperation_ResponseAdapter {
       List<TestOperation.Friend> _friends = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -186,7 +186,7 @@ public class TestOperation_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -236,7 +236,7 @@ public class TestOperation_ResponseAdapter {
       Double _lifeExpectancy = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -268,7 +268,7 @@ public class TestOperation_ResponseAdapter {
       List<TestOperation.Friend1> _friends = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
@@ -307,7 +307,7 @@ public class TestOperation_ResponseAdapter {
       Boolean _isFamous = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, customScalarAdapters); break;
@@ -355,7 +355,7 @@ public class TestOperation_ResponseAdapter {
       Race _race = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -389,7 +389,7 @@ public class TestOperation_ResponseAdapter {
       List<TestOperation.Friend2> _friends = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
@@ -428,7 +428,7 @@ public class TestOperation_ResponseAdapter {
       Double _lifeExpectancy = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

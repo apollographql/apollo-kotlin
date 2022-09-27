@@ -9,8 +9,11 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class AFragment implements Fragment.Data {
+  @Nullable
   public Node node;
 
   private transient volatile int $hashCode;
@@ -19,7 +22,7 @@ public class AFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public AFragment(Node node) {
+  public AFragment(@Nullable Node node) {
     this.node = node;
   }
 
@@ -58,16 +61,19 @@ public class AFragment implements Fragment.Data {
   }
 
   public static class Node {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'fragment1'
      */
+    @Nullable
     public Fragment1 fragment1;
 
     /**
      * Synthetic field for 'fragment2'
      */
+    @Nullable
     public Fragment2 fragment2;
 
     private transient volatile int $hashCode;
@@ -76,7 +82,8 @@ public class AFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Node(String __typename, Fragment1 fragment1, Fragment2 fragment2) {
+    public Node(@NotNull String __typename, @Nullable Fragment1 fragment1,
+        @Nullable Fragment2 fragment2) {
       this.__typename = __typename;
       this.fragment1 = fragment1;
       this.fragment2 = fragment2;

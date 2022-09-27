@@ -10,21 +10,26 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HumanDetails implements Fragment.Data {
   /**
    * What this human calls themselves
    */
+  @NotNull
   public String name;
 
   /**
    * Profile link
    */
+  @NotNull
   public Object profileLink;
 
   /**
    * The friends of the human exposed as a connection with edges
    */
+  @NotNull
   public FriendsConnection friendsConnection;
 
   private transient volatile int $hashCode;
@@ -33,7 +38,8 @@ public class HumanDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HumanDetails(String name, Object profileLink, FriendsConnection friendsConnection) {
+  public HumanDetails(@NotNull String name, @NotNull Object profileLink,
+      @NotNull FriendsConnection friendsConnection) {
     this.name = name;
     this.profileLink = profileLink;
     this.friendsConnection = friendsConnection;
@@ -85,6 +91,7 @@ public class HumanDetails implements Fragment.Data {
     /**
      * The edges for each of the character's friends.
      */
+    @Nullable
     public List<Edge> edges;
 
     private transient volatile int $hashCode;
@@ -93,7 +100,7 @@ public class HumanDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public FriendsConnection(List<Edge> edges) {
+    public FriendsConnection(@Nullable List<Edge> edges) {
       this.edges = edges;
     }
 
@@ -136,6 +143,7 @@ public class HumanDetails implements Fragment.Data {
     /**
      * The character represented by this friendship edge
      */
+    @Nullable
     public Node node;
 
     private transient volatile int $hashCode;
@@ -144,7 +152,7 @@ public class HumanDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Edge(Node node) {
+    public Edge(@Nullable Node node) {
       this.node = node;
     }
 
@@ -187,6 +195,7 @@ public class HumanDetails implements Fragment.Data {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -195,7 +204,7 @@ public class HumanDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Node(String name) {
+    public Node(@NotNull String name) {
       this.name = name;
     }
 

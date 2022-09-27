@@ -9,11 +9,13 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.Nullable;
 
 public class HumanDetails implements Fragment.Data {
   /**
    * The home planet of the human, or null if unknown
    */
+  @Nullable
   public String homePlanet;
 
   private transient volatile int $hashCode;
@@ -22,7 +24,7 @@ public class HumanDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HumanDetails(String homePlanet) {
+  public HumanDetails(@Nullable String homePlanet) {
     this.homePlanet = homePlanet;
   }
 

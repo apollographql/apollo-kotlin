@@ -10,11 +10,14 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class UserQuery {
+  @NotNull
   public final String name;
 
+  @NotNull
   public final Optional<Boolean> isAdmin;
 
   private transient volatile int $hashCode;
@@ -23,7 +26,7 @@ public class UserQuery {
 
   private transient volatile String $toString;
 
-  public UserQuery(String name, Optional<Boolean> isAdmin) {
+  public UserQuery(@NotNull String name, @NotNull Optional<Boolean> isAdmin) {
     this.name = name;
     this.isAdmin = isAdmin;
   }

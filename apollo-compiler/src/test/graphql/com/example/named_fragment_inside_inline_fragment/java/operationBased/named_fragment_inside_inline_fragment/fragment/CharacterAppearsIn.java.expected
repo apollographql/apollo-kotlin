@@ -11,11 +11,13 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class CharacterAppearsIn implements Fragment.Data {
   /**
    * The movies this character appears in
    */
+  @NotNull
   public List<Episode> appearsIn;
 
   private transient volatile int $hashCode;
@@ -24,7 +26,7 @@ public class CharacterAppearsIn implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public CharacterAppearsIn(List<Episode> appearsIn) {
+  public CharacterAppearsIn(@NotNull List<Episode> appearsIn) {
     this.appearsIn = appearsIn;
   }
 

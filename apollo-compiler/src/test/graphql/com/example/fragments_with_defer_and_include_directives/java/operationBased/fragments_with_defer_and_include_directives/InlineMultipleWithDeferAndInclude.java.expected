@@ -6,6 +6,7 @@
 package com.example.fragments_with_defer_and_include_directives;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -19,6 +20,8 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWithDeferAndInclude.Data> {
   public static final String OPERATION_ID = "f159c1ac4f33a49c5c9833e06a2606e2fc7ede812e119909eb45f95dc2aa01fc";
@@ -55,12 +58,16 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
   public static final String OPERATION_NAME = "InlineMultipleWithDeferAndInclude";
 
+  @NotNull
   public final Boolean cond1;
 
+  @NotNull
   public final Boolean cond2;
 
+  @NotNull
   public final Boolean cond3;
 
+  @NotNull
   public final Boolean cond4;
 
   private transient volatile int $hashCode;
@@ -69,8 +76,8 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
   private transient volatile String $toString;
 
-  public InlineMultipleWithDeferAndInclude(Boolean cond1, Boolean cond2, Boolean cond3,
-      Boolean cond4) {
+  public InlineMultipleWithDeferAndInclude(@NotNull Boolean cond1, @NotNull Boolean cond2,
+      @NotNull Boolean cond3, @NotNull Boolean cond4) {
     this.cond1 = cond1;
     this.cond2 = cond2;
     this.cond3 = cond3;
@@ -175,32 +182,37 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     Builder() {
     }
 
-    public Builder cond1(Boolean cond1) {
+    public Builder cond1(@NotNull Boolean cond1) {
       this.cond1 = cond1;
       return this;
     }
 
-    public Builder cond2(Boolean cond2) {
+    public Builder cond2(@NotNull Boolean cond2) {
       this.cond2 = cond2;
       return this;
     }
 
-    public Builder cond3(Boolean cond3) {
+    public Builder cond3(@NotNull Boolean cond3) {
       this.cond3 = cond3;
       return this;
     }
 
-    public Builder cond4(Boolean cond4) {
+    public Builder cond4(@NotNull Boolean cond4) {
       this.cond4 = cond4;
       return this;
     }
 
     public InlineMultipleWithDeferAndInclude build() {
+      Assertions.checkFieldNotMissing(cond1, "cond1");
+      Assertions.checkFieldNotMissing(cond2, "cond2");
+      Assertions.checkFieldNotMissing(cond3, "cond3");
+      Assertions.checkFieldNotMissing(cond4, "cond4");
       return new InlineMultipleWithDeferAndInclude(cond1, cond2, cond3, cond4);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -209,7 +221,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -249,36 +261,43 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
   }
 
   public static class Hero {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroidIfCond1 onDroidIfCond1;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroidIfNotCond2 onDroidIfNotCond2;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroidDeferE_first onDroidDeferE_first;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroidDeferE_second onDroidDeferE_second;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroidDeferE_third onDroidDeferE_third;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroidDeferE_fourth onDroidDeferE_fourth;
 
     private transient volatile int $hashCode;
@@ -287,10 +306,12 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, OnDroidIfCond1 onDroidIfCond1,
-        OnDroidIfNotCond2 onDroidIfNotCond2, OnDroidDeferE_first onDroidDeferE_first,
-        OnDroidDeferE_second onDroidDeferE_second, OnDroidDeferE_third onDroidDeferE_third,
-        OnDroidDeferE_fourth onDroidDeferE_fourth) {
+    public Hero(@NotNull String __typename, @Nullable OnDroidIfCond1 onDroidIfCond1,
+        @Nullable OnDroidIfNotCond2 onDroidIfNotCond2,
+        @Nullable OnDroidDeferE_first onDroidDeferE_first,
+        @Nullable OnDroidDeferE_second onDroidDeferE_second,
+        @Nullable OnDroidDeferE_third onDroidDeferE_third,
+        @Nullable OnDroidDeferE_fourth onDroidDeferE_fourth) {
       this.__typename = __typename;
       this.onDroidIfCond1 = onDroidIfCond1;
       this.onDroidIfNotCond2 = onDroidIfNotCond2;
@@ -363,6 +384,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * What others call this droid
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -371,7 +393,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidIfCond1(String name) {
+    public OnDroidIfCond1(@NotNull String name) {
       this.name = name;
     }
 
@@ -414,6 +436,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * The ID of the droid
      */
+    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -422,7 +445,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidIfNotCond2(String id) {
+    public OnDroidIfNotCond2(@NotNull String id) {
       this.id = id;
     }
 
@@ -465,6 +488,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * What others call this droid
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -473,7 +497,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferE_first(String name) {
+    public OnDroidDeferE_first(@NotNull String name) {
       this.name = name;
     }
 
@@ -516,6 +540,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * The ID of the droid
      */
+    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -524,7 +549,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferE_second(String id) {
+    public OnDroidDeferE_second(@NotNull String id) {
       this.id = id;
     }
 
@@ -567,6 +592,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * What others call this droid
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -575,7 +601,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferE_third(String name) {
+    public OnDroidDeferE_third(@NotNull String name) {
       this.name = name;
     }
 
@@ -618,6 +644,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     /**
      * The ID of the droid
      */
+    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -626,7 +653,7 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
 
     private transient volatile String $toString;
 
-    public OnDroidDeferE_fourth(String id) {
+    public OnDroidDeferE_fourth(@NotNull String id) {
       this.id = id;
     }
 

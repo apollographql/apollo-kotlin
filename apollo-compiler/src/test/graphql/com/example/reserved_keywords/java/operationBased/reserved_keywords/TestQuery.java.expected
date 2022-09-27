@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "d2f555fdc0bd9ea0a928c39aa7818ac66b0c0a0870772b1fb57387c3c3cf8577";
@@ -132,8 +134,10 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Yield yield;
 
+    @Nullable
     public List<Object> objects;
 
     private transient volatile int $hashCode;
@@ -142,7 +146,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Yield yield, List<Object> objects) {
+    public Data(@Nullable Yield yield, @Nullable List<Object> objects) {
       this.yield = yield;
       this.objects = objects;
     }
@@ -190,11 +194,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
+    @NotNull
     public String while_;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String it;
 
     private transient volatile int $hashCode;
@@ -203,7 +209,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Yield(String while_, String it) {
+    public Yield(@NotNull String while_, @NotNull String it) {
       this.while_ = while_;
       this.it = it;
     }
@@ -248,11 +254,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Object {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @Nullable
     public OnCharacter onCharacter;
 
     private transient volatile int $hashCode;
@@ -261,7 +269,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Object(String __typename, OnCharacter onCharacter) {
+    public Object(@NotNull String __typename, @Nullable OnCharacter onCharacter) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
     }
@@ -309,6 +317,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -317,7 +326,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(String name) {
+    public OnCharacter(@NotNull String name) {
       this.name = name;
     }
 

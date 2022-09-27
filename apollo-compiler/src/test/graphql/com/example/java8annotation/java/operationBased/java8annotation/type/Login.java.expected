@@ -8,8 +8,10 @@ package com.example.java8annotation.type;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class Login {
+  @NotNull
   public final String email;
 
   private transient volatile int $hashCode;
@@ -18,7 +20,7 @@ public class Login {
 
   private transient volatile String $toString;
 
-  public Login(String email) {
+  public Login(@NotNull String email) {
     this.email = email;
   }
 

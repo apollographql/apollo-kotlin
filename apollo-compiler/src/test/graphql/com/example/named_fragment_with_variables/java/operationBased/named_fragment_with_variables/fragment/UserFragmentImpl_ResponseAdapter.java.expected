@@ -31,7 +31,7 @@ public class UserFragmentImpl_ResponseAdapter {
       String _avatar = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _firstName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _lastName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;

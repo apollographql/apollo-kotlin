@@ -18,6 +18,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "0df748160db73d1bbdea0e6e8437222dd4026ef9a3d699923485cf95c7df8366";
@@ -134,8 +136,10 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @NotNull
     public __Schema __schema;
 
+    @NotNull
     public __Type __type;
 
     private transient volatile int $hashCode;
@@ -144,7 +148,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(__Schema __schema, __Type __type) {
+    public Data(@NotNull __Schema __schema, @NotNull __Type __type) {
       this.__schema = __schema;
       this.__type = __type;
     }
@@ -189,8 +193,10 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class __Schema {
+    @NotNull
     public QueryType queryType;
 
+    @NotNull
     public List<Type> types;
 
     private transient volatile int $hashCode;
@@ -199,7 +205,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public __Schema(QueryType queryType, List<Type> types) {
+    public __Schema(@NotNull QueryType queryType, @NotNull List<Type> types) {
       this.queryType = queryType;
       this.types = types;
     }
@@ -244,6 +250,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class QueryType {
+    @Nullable
     public String name;
 
     private transient volatile int $hashCode;
@@ -252,7 +259,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public QueryType(String name) {
+    public QueryType(@Nullable String name) {
       this.name = name;
     }
 
@@ -292,6 +299,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Type {
+    @Nullable
     public String name;
 
     private transient volatile int $hashCode;
@@ -300,7 +308,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Type(String name) {
+    public Type(@Nullable String name) {
       this.name = name;
     }
 
@@ -340,6 +348,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class __Type {
+    @Nullable
     public String name;
 
     private transient volatile int $hashCode;
@@ -348,7 +357,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public __Type(String name) {
+    public __Type(@Nullable String name) {
       this.name = name;
     }
 

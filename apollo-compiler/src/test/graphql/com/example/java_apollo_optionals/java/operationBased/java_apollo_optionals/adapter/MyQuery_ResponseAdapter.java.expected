@@ -37,7 +37,7 @@ public class MyQuery_ResponseAdapter {
       MyQuery.NonNullableMyType _nonNullableMyType = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
@@ -87,7 +87,7 @@ public class MyQuery_ResponseAdapter {
       int _nonNullableInt = 0;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
@@ -126,7 +126,7 @@ public class MyQuery_ResponseAdapter {
       int _nonNullableInt = 0;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _nullableInt = Adapters.ApolloOptionalIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;

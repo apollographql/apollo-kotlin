@@ -6,6 +6,7 @@
 package com.example.fragment_spread_with_include_directive;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,6 +22,8 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "3dbd5da247db9417fdbd2b79ef02f682006b1a507298b2bb57ef40a2fd2db850";
@@ -50,8 +53,10 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final Boolean withDetails;
 
+  @NotNull
   public final Boolean skipHumanDetails;
 
   private transient volatile int $hashCode;
@@ -60,7 +65,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Boolean withDetails, Boolean skipHumanDetails) {
+  public TestQuery(@NotNull Boolean withDetails, @NotNull Boolean skipHumanDetails) {
     this.withDetails = withDetails;
     this.skipHumanDetails = skipHumanDetails;
   }
@@ -151,22 +156,25 @@ public class TestQuery implements Query<TestQuery.Data> {
     Builder() {
     }
 
-    public Builder withDetails(Boolean withDetails) {
+    public Builder withDetails(@NotNull Boolean withDetails) {
       this.withDetails = withDetails;
       return this;
     }
 
-    public Builder skipHumanDetails(Boolean skipHumanDetails) {
+    public Builder skipHumanDetails(@NotNull Boolean skipHumanDetails) {
       this.skipHumanDetails = skipHumanDetails;
       return this;
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(withDetails, "withDetails");
+      Assertions.checkFieldNotMissing(skipHumanDetails, "skipHumanDetails");
       return new TestQuery(withDetails, skipHumanDetails);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -175,7 +183,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -215,21 +223,25 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    @NotNull
     public String __typename;
 
     /**
      * The ID of the character
      */
+    @NotNull
     public String id;
 
     /**
      * Synthetic field for 'HeroDetails'
      */
+    @Nullable
     public HeroDetails heroDetails;
 
     /**
      * Synthetic field for 'HumanDetails'
      */
+    @Nullable
     public HumanDetails humanDetails;
 
     private transient volatile int $hashCode;
@@ -238,7 +250,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, String id, HeroDetails heroDetails, HumanDetails humanDetails) {
+    public Hero(@NotNull String __typename, @NotNull String id, @Nullable HeroDetails heroDetails,
+        @Nullable HumanDetails humanDetails) {
       this.__typename = __typename;
       this.id = id;
       this.heroDetails = heroDetails;

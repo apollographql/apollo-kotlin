@@ -21,6 +21,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   public static final String OPERATION_ID = "9e49497791948cf0840e8353d87b142b6474e023a2082a3fe414b312565599de";
@@ -155,6 +157,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public HeroDetailQuery1 heroDetailQuery;
 
     private transient volatile int $hashCode;
@@ -163,7 +166,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(HeroDetailQuery1 heroDetailQuery) {
+    public Data(@Nullable HeroDetailQuery1 heroDetailQuery) {
       this.heroDetailQuery = heroDetailQuery;
     }
 
@@ -203,21 +206,25 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   public static class HeroDetailQuery1 {
+    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * The friends of the character, or an empty list if they have none
      */
+    @Nullable
     public List<Friend> friends;
 
     /**
      * Synthetic field for inline fragment on Human
      */
+    @Nullable
     public OnHuman onHuman;
 
     private transient volatile int $hashCode;
@@ -226,7 +233,8 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public HeroDetailQuery1(String __typename, String name, List<Friend> friends, OnHuman onHuman) {
+    public HeroDetailQuery1(@NotNull String __typename, @NotNull String name,
+        @Nullable List<Friend> friends, @Nullable OnHuman onHuman) {
       this.__typename = __typename;
       this.name = name;
       this.friends = friends;
@@ -284,6 +292,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -292,7 +301,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(String name) {
+    public Friend(@NotNull String name) {
       this.name = name;
     }
 
@@ -335,11 +344,13 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     /**
      * Height in the preferred unit, default is meters
      */
+    @Nullable
     public Double height;
 
     /**
      * This human's friends, or an empty list if they have none
      */
+    @Nullable
     public List<Friend1> friends;
 
     private transient volatile int $hashCode;
@@ -348,7 +359,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(Double height, List<Friend1> friends) {
+    public OnHuman(@Nullable Double height, @Nullable List<Friend1> friends) {
       this.height = height;
       this.friends = friends;
     }
@@ -396,11 +407,13 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
     /**
      * The movies this character appears in
      */
+    @NotNull
     public List<Episode> appearsIn;
 
     /**
      * The friends of the character, or an empty list if they have none
      */
+    @Nullable
     public List<Friend2> friends;
 
     private transient volatile int $hashCode;
@@ -409,7 +422,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(List<Episode> appearsIn, List<Friend2> friends) {
+    public Friend1(@NotNull List<Episode> appearsIn, @Nullable List<Friend2> friends) {
       this.appearsIn = appearsIn;
       this.friends = friends;
     }
@@ -454,11 +467,13 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
   }
 
   public static class Friend2 {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'HeroDetails'
      */
+    @NotNull
     public HeroDetails heroDetails;
 
     private transient volatile int $hashCode;
@@ -467,7 +482,7 @@ public class HeroDetailQuery implements Query<HeroDetailQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend2(String __typename, HeroDetails heroDetails) {
+    public Friend2(@NotNull String __typename, @NotNull HeroDetails heroDetails) {
       this.__typename = __typename;
       this.heroDetails = heroDetails;
     }

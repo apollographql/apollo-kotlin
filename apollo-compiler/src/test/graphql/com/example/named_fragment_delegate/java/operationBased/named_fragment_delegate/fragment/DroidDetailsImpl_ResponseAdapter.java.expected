@@ -34,7 +34,7 @@ public class DroidDetailsImpl_ResponseAdapter {
       List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> _friends = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -77,7 +77,7 @@ public class DroidDetailsImpl_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

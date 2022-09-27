@@ -6,6 +6,7 @@
 package com.example.field_with_include_directive;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -20,6 +21,8 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "7d815b13df95ab484c7b20cb8059c07e3a8688d1ea0a251bff6d3f0b6fdb1cb7";
@@ -41,8 +44,10 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final Boolean includeName;
 
+  @NotNull
   public final Boolean skipFriends;
 
   private transient volatile int $hashCode;
@@ -51,7 +56,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Boolean includeName, Boolean skipFriends) {
+  public TestQuery(@NotNull Boolean includeName, @NotNull Boolean skipFriends) {
     this.includeName = includeName;
     this.skipFriends = skipFriends;
   }
@@ -142,22 +147,25 @@ public class TestQuery implements Query<TestQuery.Data> {
     Builder() {
     }
 
-    public Builder includeName(Boolean includeName) {
+    public Builder includeName(@NotNull Boolean includeName) {
       this.includeName = includeName;
       return this;
     }
 
-    public Builder skipFriends(Boolean skipFriends) {
+    public Builder skipFriends(@NotNull Boolean skipFriends) {
       this.skipFriends = skipFriends;
       return this;
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(includeName, "includeName");
+      Assertions.checkFieldNotMissing(skipFriends, "skipFriends");
       return new TestQuery(includeName, skipFriends);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -166,7 +174,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -209,11 +217,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
+    @Nullable
     public String name;
 
     /**
      * The friends of the character exposed as a connection with edges
      */
+    @Nullable
     public FriendsConnection friendsConnection;
 
     private transient volatile int $hashCode;
@@ -222,7 +232,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, FriendsConnection friendsConnection) {
+    public Hero(@Nullable String name, @Nullable FriendsConnection friendsConnection) {
       this.name = name;
       this.friendsConnection = friendsConnection;
     }
@@ -270,6 +280,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The total number of friends
      */
+    @Nullable
     public Integer totalCount;
 
     private transient volatile int $hashCode;
@@ -278,7 +289,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public FriendsConnection(Integer totalCount) {
+    public FriendsConnection(@Nullable Integer totalCount) {
       this.totalCount = totalCount;
     }
 

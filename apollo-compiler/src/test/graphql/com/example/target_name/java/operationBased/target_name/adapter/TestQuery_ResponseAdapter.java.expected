@@ -42,7 +42,7 @@ public class TestQuery_ResponseAdapter {
       renamedEnum _enum = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _object = new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           case 1: _interface = new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
@@ -93,7 +93,7 @@ public class TestQuery_ResponseAdapter {
       String _field = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -124,7 +124,7 @@ public class TestQuery_ResponseAdapter {
       String _field = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -155,7 +155,7 @@ public class TestQuery_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -198,7 +198,7 @@ public class TestQuery_ResponseAdapter {
       String _field = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

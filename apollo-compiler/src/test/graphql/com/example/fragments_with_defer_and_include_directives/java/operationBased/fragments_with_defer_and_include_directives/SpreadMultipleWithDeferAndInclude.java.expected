@@ -6,6 +6,7 @@
 package com.example.fragments_with_defer_and_include_directives;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -20,6 +21,8 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWithDeferAndInclude.Data> {
   public static final String OPERATION_ID = "1c9d61b4af65df2bfed92353244efbb66d20a35daf747507e66ed9d20dcd1517";
@@ -48,12 +51,16 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
   public static final String OPERATION_NAME = "SpreadMultipleWithDeferAndInclude";
 
+  @NotNull
   public final Boolean cond1;
 
+  @NotNull
   public final Boolean cond2;
 
+  @NotNull
   public final Boolean cond3;
 
+  @NotNull
   public final Boolean cond4;
 
   private transient volatile int $hashCode;
@@ -62,8 +69,8 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
   private transient volatile String $toString;
 
-  public SpreadMultipleWithDeferAndInclude(Boolean cond1, Boolean cond2, Boolean cond3,
-      Boolean cond4) {
+  public SpreadMultipleWithDeferAndInclude(@NotNull Boolean cond1, @NotNull Boolean cond2,
+      @NotNull Boolean cond3, @NotNull Boolean cond4) {
     this.cond1 = cond1;
     this.cond2 = cond2;
     this.cond3 = cond3;
@@ -168,32 +175,37 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     Builder() {
     }
 
-    public Builder cond1(Boolean cond1) {
+    public Builder cond1(@NotNull Boolean cond1) {
       this.cond1 = cond1;
       return this;
     }
 
-    public Builder cond2(Boolean cond2) {
+    public Builder cond2(@NotNull Boolean cond2) {
       this.cond2 = cond2;
       return this;
     }
 
-    public Builder cond3(Boolean cond3) {
+    public Builder cond3(@NotNull Boolean cond3) {
       this.cond3 = cond3;
       return this;
     }
 
-    public Builder cond4(Boolean cond4) {
+    public Builder cond4(@NotNull Boolean cond4) {
       this.cond4 = cond4;
       return this;
     }
 
     public SpreadMultipleWithDeferAndInclude build() {
+      Assertions.checkFieldNotMissing(cond1, "cond1");
+      Assertions.checkFieldNotMissing(cond2, "cond2");
+      Assertions.checkFieldNotMissing(cond3, "cond3");
+      Assertions.checkFieldNotMissing(cond4, "cond4");
       return new SpreadMultipleWithDeferAndInclude(cond1, cond2, cond3, cond4);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -202,7 +214,7 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -242,11 +254,13 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
   }
 
   public static class Hero {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'DroidDetails'
      */
+    @Nullable
     public DroidDetails droidDetails;
 
     private transient volatile int $hashCode;
@@ -255,7 +269,7 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, DroidDetails droidDetails) {
+    public Hero(@NotNull String __typename, @Nullable DroidDetails droidDetails) {
       this.__typename = __typename;
       this.droidDetails = droidDetails;
     }

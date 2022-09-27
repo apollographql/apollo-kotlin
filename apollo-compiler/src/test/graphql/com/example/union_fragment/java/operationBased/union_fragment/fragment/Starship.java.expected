@@ -9,11 +9,13 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class Starship implements Fragment.Data {
   /**
    * The name of the starship
    */
+  @NotNull
   public String name;
 
   private transient volatile int $hashCode;
@@ -22,7 +24,7 @@ public class Starship implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public Starship(String name) {
+  public Starship(@NotNull String name) {
     this.name = name;
   }
 

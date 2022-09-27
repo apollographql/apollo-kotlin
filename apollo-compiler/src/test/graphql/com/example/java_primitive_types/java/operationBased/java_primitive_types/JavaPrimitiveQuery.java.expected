@@ -6,6 +6,7 @@
 package com.example.java_primitive_types;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -21,6 +22,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
@@ -50,16 +52,21 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
   public static final String OPERATION_NAME = "JavaPrimitiveQuery";
 
+  @NotNull
   public final Optional<Integer> nullableInt;
 
   public final int nonNullableInt;
 
+  @NotNull
   public final Optional<Integer> nonNullableIntWithDefault;
 
+  @NotNull
   public final Optional<MyInput> nullableInput;
 
+  @NotNull
   public final MyInput nonNullableInput;
 
+  @NotNull
   public final Optional<MyInput> nonNullableInputWithDefault;
 
   private transient volatile int $hashCode;
@@ -68,9 +75,10 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
   private transient volatile String $toString;
 
-  public JavaPrimitiveQuery(Optional<Integer> nullableInt, int nonNullableInt,
-      Optional<Integer> nonNullableIntWithDefault, Optional<MyInput> nullableInput,
-      MyInput nonNullableInput, Optional<MyInput> nonNullableInputWithDefault) {
+  public JavaPrimitiveQuery(@NotNull Optional<Integer> nullableInt, int nonNullableInt,
+      @NotNull Optional<Integer> nonNullableIntWithDefault,
+      @NotNull Optional<MyInput> nullableInput, @NotNull MyInput nonNullableInput,
+      @NotNull Optional<MyInput> nonNullableInputWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
     this.nonNullableIntWithDefault = nonNullableIntWithDefault;
@@ -209,7 +217,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInput(MyInput nonNullableInput) {
+    public Builder nonNullableInput(@NotNull MyInput nonNullableInput) {
       this.nonNullableInput = nonNullableInput;
       return this;
     }
@@ -220,17 +228,25 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     }
 
     public JavaPrimitiveQuery build() {
+      Assertions.checkFieldNotMissing(nullableInt, "nullableInt");
+      Assertions.checkFieldNotMissing(nonNullableIntWithDefault, "nonNullableIntWithDefault");
+      Assertions.checkFieldNotMissing(nullableInput, "nullableInput");
+      Assertions.checkFieldNotMissing(nonNullableInput, "nonNullableInput");
+      Assertions.checkFieldNotMissing(nonNullableInputWithDefault, "nonNullableInputWithDefault");
       return new JavaPrimitiveQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Integer nullableInt;
 
     public int nonNullableInt;
 
+    @Nullable
     public NullableMyType nullableMyType;
 
+    @NotNull
     public NonNullableMyType nonNullableMyType;
 
     private transient volatile int $hashCode;
@@ -239,8 +255,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Integer nullableInt, int nonNullableInt, NullableMyType nullableMyType,
-        NonNullableMyType nonNullableMyType) {
+    public Data(@Nullable Integer nullableInt, int nonNullableInt,
+        @Nullable NullableMyType nullableMyType, @NotNull NonNullableMyType nonNullableMyType) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
       this.nullableMyType = nullableMyType;
@@ -318,7 +334,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       Builder() {
       }
 
-      public Builder nullableInt(Integer nullableInt) {
+      public Builder nullableInt(@Nullable Integer nullableInt) {
         this.nullableInt = nullableInt;
         return this;
       }
@@ -328,23 +344,25 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
         return this;
       }
 
-      public Builder nullableMyType(NullableMyType nullableMyType) {
+      public Builder nullableMyType(@Nullable NullableMyType nullableMyType) {
         this.nullableMyType = nullableMyType;
         return this;
       }
 
-      public Builder nonNullableMyType(NonNullableMyType nonNullableMyType) {
+      public Builder nonNullableMyType(@NotNull NonNullableMyType nonNullableMyType) {
         this.nonNullableMyType = nonNullableMyType;
         return this;
       }
 
       public Data build() {
+        Assertions.checkFieldNotMissing(nonNullableMyType, "nonNullableMyType");
         return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
       }
     }
   }
 
   public static class NullableMyType {
+    @Nullable
     public Integer nullableInt;
 
     public int nonNullableInt;
@@ -355,7 +373,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public NullableMyType(Integer nullableInt, int nonNullableInt) {
+    public NullableMyType(@Nullable Integer nullableInt, int nonNullableInt) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
     }
@@ -417,7 +435,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       Builder() {
       }
 
-      public Builder nullableInt(Integer nullableInt) {
+      public Builder nullableInt(@Nullable Integer nullableInt) {
         this.nullableInt = nullableInt;
         return this;
       }
@@ -434,6 +452,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static class NonNullableMyType {
+    @Nullable
     public Integer nullableInt;
 
     public int nonNullableInt;
@@ -444,7 +463,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
 
     private transient volatile String $toString;
 
-    public NonNullableMyType(Integer nullableInt, int nonNullableInt) {
+    public NonNullableMyType(@Nullable Integer nullableInt, int nonNullableInt) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
     }
@@ -506,7 +525,7 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       Builder() {
       }
 
-      public Builder nullableInt(Integer nullableInt) {
+      public Builder nullableInt(@Nullable Integer nullableInt) {
         this.nullableInt = nullableInt;
         return this;
       }

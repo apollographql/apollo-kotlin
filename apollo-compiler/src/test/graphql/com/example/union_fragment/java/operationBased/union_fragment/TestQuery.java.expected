@@ -19,6 +19,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "6b4ab40afa26bf3c0c7d80ce98ca5288378f0323da59c6643d893efa510a6fec";
@@ -135,6 +137,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public List<Search> search;
 
     private transient volatile int $hashCode;
@@ -143,7 +146,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(List<Search> search) {
+    public Data(@Nullable List<Search> search) {
       this.search = search;
     }
 
@@ -183,16 +186,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Search {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Starship
      */
+    @Nullable
     public OnStarship onStarship;
 
     /**
      * Synthetic field for 'Starship'
      */
+    @Nullable
     public Starship starship;
 
     private transient volatile int $hashCode;
@@ -201,7 +207,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Search(String __typename, OnStarship onStarship, Starship starship) {
+    public Search(@NotNull String __typename, @Nullable OnStarship onStarship,
+        @Nullable Starship starship) {
       this.__typename = __typename;
       this.onStarship = onStarship;
       this.starship = starship;
@@ -254,6 +261,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the starship
      */
+    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -262,7 +270,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnStarship(String id) {
+    public OnStarship(@NotNull String id) {
       this.id = id;
     }
 

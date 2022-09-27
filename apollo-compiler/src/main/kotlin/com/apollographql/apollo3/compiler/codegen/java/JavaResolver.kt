@@ -26,6 +26,7 @@ import com.apollographql.apollo3.compiler.ir.IrScalarType
 import com.apollographql.apollo3.compiler.ir.IrScalarType2
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrType2
+import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
@@ -91,22 +92,22 @@ internal class JavaResolver(
       return if (generatePrimitiveTypes && type.ofType is IrScalarType) {
         resolveIrScalarType(type.ofType, asPrimitiveType = true)
       } else {
-        resolveIrType(type.ofType).let { if (wrapNullableFieldsInOptional) unwrapFromOptional(it) else it }
-      }
+        resolveIrType(type.ofType).let { if (wrapNullableFieldsInOptional) unwrapFromOptional(it) else it.withoutAnnotations() }
+      }.addNonNullableAnnotation()
     }
 
     return when (type) {
       is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
       is IrOptionalType -> resolveIrType(type.ofType).boxIfPrimitiveType().wrapInOptional()
-      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).boxIfPrimitiveType())
+      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).withoutAnnotations().boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
-    }.let { if (wrapNullableFieldsInOptional) it.wrapInOptional() else it }
+    }.let { if (wrapNullableFieldsInOptional) it.wrapInOptional() else it.addNullableAnnotation() }
   }
 
   private fun TypeName.wrapInOptional(): TypeName {
-    return ParameterizedTypeName.get(optionalClassName, this)
+    return ParameterizedTypeName.get(optionalClassName, this.withoutAnnotations())
   }
 
   internal fun unwrapFromOptional(typeName: TypeName): TypeName {
@@ -115,6 +116,15 @@ internal class JavaResolver(
 
   internal fun isOptional(typeName: TypeName): Boolean {
     return typeName is ParameterizedTypeName && typeName.rawType == optionalClassName
+  }
+
+  private fun TypeName.addNullableAnnotation(): TypeName {
+    return this.annotated(AnnotationSpec.builder(JavaClassNames.JetBrainsNullable).build())
+  }
+
+  private fun TypeName.addNonNullableAnnotation(): TypeName {
+    if (this in primitiveTypeNames) return this
+    return this.annotated(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
   }
 
   private fun resolveIrScalarType(type: IrScalarType, asPrimitiveType: Boolean): TypeName {

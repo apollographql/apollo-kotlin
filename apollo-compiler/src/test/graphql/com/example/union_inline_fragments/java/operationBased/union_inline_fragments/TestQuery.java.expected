@@ -19,6 +19,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "2c2de063c729a4ce1b51648279b6afd6372ac91ae33c304f4e33d20fb098cfc6";
@@ -155,6 +157,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public List<Search> search;
 
     private transient volatile int $hashCode;
@@ -163,7 +166,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(List<Search> search) {
+    public Data(@Nullable List<Search> search) {
       this.search = search;
     }
 
@@ -203,16 +206,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Search {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @Nullable
     public OnCharacter onCharacter;
 
     /**
      * Synthetic field for inline fragment on Starship
      */
+    @Nullable
     public OnStarship onStarship;
 
     private transient volatile int $hashCode;
@@ -221,7 +227,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Search(String __typename, OnCharacter onCharacter, OnStarship onStarship) {
+    public Search(@NotNull String __typename, @Nullable OnCharacter onCharacter,
+        @Nullable OnStarship onStarship) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
       this.onStarship = onStarship;
@@ -274,16 +281,19 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
+    @NotNull
     public String id;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * The friends of the character, or an empty list if they have none
      */
+    @Nullable
     public List<Friend> friends;
 
     private transient volatile int $hashCode;
@@ -292,7 +302,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(String id, String name, List<Friend> friends) {
+    public OnCharacter(@NotNull String id, @NotNull String name, @Nullable List<Friend> friends) {
       this.id = id;
       this.name = name;
       this.friends = friends;
@@ -342,21 +352,25 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @NotNull
     public OnCharacter1 onCharacter;
 
     /**
      * Synthetic field for inline fragment on Human
      */
+    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -365,7 +379,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend(String __typename, OnCharacter1 onCharacter, OnHuman onHuman, OnDroid onDroid) {
+    public Friend(@NotNull String __typename, @NotNull OnCharacter1 onCharacter,
+        @Nullable OnHuman onHuman, @Nullable OnDroid onDroid) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
       this.onHuman = onHuman;
@@ -423,6 +438,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -431,7 +447,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter1(String name) {
+    public OnCharacter1(@NotNull String name) {
       this.name = name;
     }
 
@@ -474,11 +490,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The home planet of the human, or null if unknown
      */
+    @Nullable
     public String homePlanet;
 
     /**
      * This human's friends, or an empty list if they have none
      */
+    @Nullable
     public List<Friend1> friends;
 
     private transient volatile int $hashCode;
@@ -487,7 +505,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(String homePlanet, List<Friend1> friends) {
+    public OnHuman(@Nullable String homePlanet, @Nullable List<Friend1> friends) {
       this.homePlanet = homePlanet;
       this.friends = friends;
     }
@@ -532,11 +550,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Friend1 {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @NotNull
     public OnCharacter2 onCharacter;
 
     private transient volatile int $hashCode;
@@ -545,7 +565,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend1(String __typename, OnCharacter2 onCharacter) {
+    public Friend1(@NotNull String __typename, @NotNull OnCharacter2 onCharacter) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
     }
@@ -593,6 +613,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The movie this character first appears in
      */
+    @NotNull
     public Episode firstAppearsIn;
 
     private transient volatile int $hashCode;
@@ -601,7 +622,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter2(Episode firstAppearsIn) {
+    public OnCharacter2(@NotNull Episode firstAppearsIn) {
       this.firstAppearsIn = firstAppearsIn;
     }
 
@@ -644,11 +665,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
+    @Nullable
     public String primaryFunction;
 
     /**
      * This droid's friends, or an empty list if they have none
      */
+    @Nullable
     public List<Friend2> friends;
 
     private transient volatile int $hashCode;
@@ -657,7 +680,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(String primaryFunction, List<Friend2> friends) {
+    public OnDroid(@Nullable String primaryFunction, @Nullable List<Friend2> friends) {
       this.primaryFunction = primaryFunction;
       this.friends = friends;
     }
@@ -705,6 +728,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the character
      */
+    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -713,7 +737,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Friend2(String id) {
+    public Friend2(@NotNull String id) {
       this.id = id;
     }
 
@@ -756,6 +780,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the starship
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -764,7 +789,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnStarship(String name) {
+    public OnStarship(@NotNull String name) {
       this.name = name;
     }
 

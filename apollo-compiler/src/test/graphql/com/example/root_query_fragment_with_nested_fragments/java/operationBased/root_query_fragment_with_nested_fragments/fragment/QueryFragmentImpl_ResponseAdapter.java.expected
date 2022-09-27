@@ -34,7 +34,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human _human = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
@@ -83,7 +83,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -123,7 +123,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -163,7 +163,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -204,7 +204,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       String _homePlanet = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;

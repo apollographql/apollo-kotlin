@@ -36,7 +36,7 @@ public class GetPage_ResponseAdapter {
       GetPage.Collection _collection = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _collection = new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -70,7 +70,7 @@ public class GetPage_ResponseAdapter {
       List<GetPage.Item> _items = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
@@ -120,7 +120,7 @@ public class GetPage_ResponseAdapter {
       String _title = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _title = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -153,7 +153,7 @@ public class GetPage_ResponseAdapter {
       List<GetPage.Item1> _items = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -186,7 +186,7 @@ public class GetPage_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -229,7 +229,7 @@ public class GetPage_ResponseAdapter {
       String _image = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _image = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

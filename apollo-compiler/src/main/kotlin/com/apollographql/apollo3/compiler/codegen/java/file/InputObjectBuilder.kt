@@ -11,6 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.ir.IrInputObject
 import com.squareup.javapoet.ClassName
+import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -52,17 +53,17 @@ internal class InputObjectBuilder(
       return this
     } else {
       val builderFields = inputObject.fields.map {
-        context.layout.propertyName(it.name) to context.resolver.resolveIrType(it.type)
+        FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.propertyName(it.name))
+            .applyIf(!it.description.isNullOrBlank()) {
+              addJavadoc(it.description)
+            }
+            .build()
       }
-      val javaDocs = inputObject.fields
-          .filter { !it.description.isNullOrBlank() }
-          .associate { context.layout.propertyName(it.name) to it.description!! }
       return addMethod(Builder.builderFactoryMethod())
           .addType(
               Builder(
                   targetObjectClassName = ClassName.get(packageName, simpleName),
                   fields = builderFields,
-                  fieldJavaDocs = javaDocs,
                   context = context
               ).build()
           )

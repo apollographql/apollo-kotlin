@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CatQuery implements Query<CatQuery.Data> {
   public static final String OPERATION_ID = "1339b44a5c30437b050faa2883275f02a22fffe77aa08983f50bccdab674d7ed";
@@ -137,6 +139,7 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Cat cat;
 
     private transient volatile int $hashCode;
@@ -145,7 +148,7 @@ public class CatQuery implements Query<CatQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Cat cat) {
+    public Data(@Nullable Cat cat) {
       this.cat = cat;
     }
 
@@ -185,11 +188,13 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   public static class Cat {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'AnimalFragment'
      */
+    @NotNull
     public AnimalFragment animalFragment;
 
     private transient volatile int $hashCode;
@@ -198,7 +203,7 @@ public class CatQuery implements Query<CatQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Cat(String __typename, AnimalFragment animalFragment) {
+    public Cat(@NotNull String __typename, @NotNull AnimalFragment animalFragment) {
       this.__typename = __typename;
       this.animalFragment = animalFragment;
     }

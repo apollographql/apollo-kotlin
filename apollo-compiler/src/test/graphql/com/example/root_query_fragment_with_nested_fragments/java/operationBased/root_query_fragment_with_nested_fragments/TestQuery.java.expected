@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "28a70b2a9a393b236756d92edea600a8d90d3e5cfb24cdfeda92fec1b5778794";
@@ -153,11 +154,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'QueryFragment'
      */
+    @NotNull
     public QueryFragment queryFragment;
 
     private transient volatile int $hashCode;
@@ -166,7 +169,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(String __typename, QueryFragment queryFragment) {
+    public Data(@NotNull String __typename, @NotNull QueryFragment queryFragment) {
       this.__typename = __typename;
       this.queryFragment = queryFragment;
     }

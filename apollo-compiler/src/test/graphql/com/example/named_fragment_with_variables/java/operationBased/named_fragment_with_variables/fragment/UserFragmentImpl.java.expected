@@ -19,8 +19,10 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class UserFragmentImpl implements Fragment<UserFragment> {
+  @NotNull
   public final Integer size;
 
   private transient volatile int $hashCode;
@@ -29,7 +31,7 @@ public class UserFragmentImpl implements Fragment<UserFragment> {
 
   private transient volatile String $toString;
 
-  public UserFragmentImpl(Integer size) {
+  public UserFragmentImpl(@NotNull Integer size) {
     this.size = size;
   }
 

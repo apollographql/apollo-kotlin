@@ -41,7 +41,7 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
       SpreadMultipleWithDeferWithIf.Hero _hero = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -73,7 +73,7 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
 
       List<Object> __path = reader.getPath();
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

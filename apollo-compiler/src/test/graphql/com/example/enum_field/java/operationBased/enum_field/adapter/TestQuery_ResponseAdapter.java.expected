@@ -34,7 +34,7 @@ public class TestQuery_ResponseAdapter {
       GravityAsEnum _gravityAsEnum = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
           case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;

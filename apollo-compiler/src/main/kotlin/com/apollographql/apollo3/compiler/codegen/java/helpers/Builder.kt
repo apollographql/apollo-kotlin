@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.ClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
@@ -18,8 +16,7 @@ import javax.lang.model.element.Modifier
 
 internal class Builder(
     val targetObjectClassName: ClassName,
-    val fields: List<Pair<String, TypeName>>,
-    val fieldJavaDocs: Map<String, String>,
+    val fields: List<FieldSpec>,
     val context: JavaContext,
 ) {
   fun build(): TypeSpec {
@@ -33,38 +30,37 @@ internal class Builder(
   }
 
   private fun builderFields(): List<FieldSpec> {
-    return fields.map { (fieldName, fieldType) ->
-      FieldSpec.builder(fieldType, fieldName)
-          .addModifiers(Modifier.PRIVATE)
+    return fields.map {
+      FieldSpec.builder(it.type, it.name, Modifier.PRIVATE)
+
           .build()
     }
   }
 
   private fun fieldSetterMethodSpecs(): List<MethodSpec> {
-    return fields.map { (fieldName, fieldType) ->
-      val javaDoc = fieldJavaDocs[fieldName]
-      fieldSetterMethodSpec(fieldName, fieldType, javaDoc)
+    return fields.map {
+      fieldSetterMethodSpec(it)
     }
   }
 
-  private fun fieldSetterMethodSpec(fieldName: String, fieldType: TypeName, javaDoc: String?): MethodSpec {
-    return MethodSpec.methodBuilder(fieldName)
+  private fun fieldSetterMethodSpec(field: FieldSpec): MethodSpec {
+    return MethodSpec.methodBuilder(field.name)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(
-            ParameterSpec.builder(context.resolver.unwrapFromOptional(fieldType), fieldName)
-                .applyIf(context.resolver.isOptional(fieldType)) {
-                  // TODO: Other flavors of Nullable annotations will be supported later
-                  addAnnotation(JavaClassNames.JetBrainsNullable)
+            ParameterSpec.builder(context.resolver.unwrapFromOptional(field.type), field.name)
+                .apply {
+                  if (context.resolver.isOptional(field.type)) {
+                    // TODO: Other flavors of Nullable annotations will be supported later
+                    addAnnotation(JavaClassNames.JetBrainsNullable)
+                  } else {
+                    addAnnotations(field.annotations)
+                  }
                 }
                 .build()
         )
-        .apply {
-          if (!javaDoc.isNullOrBlank()) {
-            addJavadoc(CodeBlock.of("\$L\n", javaDoc))
-          }
-        }
+        .addJavadoc(field.javadoc)
         .returns(JavaClassNames.Builder)
-        .addStatement("this.\$L = \$L", fieldName, wrapValueInOptional(fieldName, fieldType, context.nullableFieldStyle))
+        .addStatement("this.\$L = \$L", field.name, wrapValueInOptional(field.name, field.type, context.nullableFieldStyle))
         .addStatement("return this")
         .build()
   }
@@ -82,10 +78,11 @@ internal class Builder(
   }
 
   private fun buildMethod(): MethodSpec {
-    val validationCodeBuilder = fields.filter { (_, fieldType) ->
-      !fieldType.isPrimitive && fieldType.annotations.contains(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
-    }.map { (fieldName, _) ->
-      CodeBlock.of("\$T.checkFieldNotMissing(\$L, \$S);\n", ClassNames.Assertions, fieldName, fieldName)
+    val validationCodeBuilder = fields.filter {
+      // TODO Hardcoded annotation type
+      !it.type.isPrimitive && it.annotations.contains(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
+    }.map {
+      CodeBlock.of("\$T.checkFieldNotMissing(\$L, \$S);\n", JavaClassNames.Assertions, it.name, it.name)
     }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
 
     return MethodSpec
@@ -96,7 +93,7 @@ internal class Builder(
         .addStatement(
             "return new \$T\$L",
             targetObjectClassName,
-            fields.joinToString(prefix = "(", separator = ", ", postfix = ")") { it.first }
+            fields.joinToString(prefix = "(", separator = ", ", postfix = ")") { it.name }
         )
         .build()
   }

@@ -6,6 +6,7 @@
 package com.example.antlr_tokens;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
@@ -40,6 +42,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final Optional<String> operation;
 
   private transient volatile int $hashCode;
@@ -48,7 +51,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Optional<String> operation) {
+  public TestQuery(@NotNull Optional<String> operation) {
     this.operation = operation;
   }
 
@@ -138,11 +141,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(operation, "operation");
       return new TestQuery(operation);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public TypeWithGraphQLKeywords typeWithGraphQLKeywords;
 
     private transient volatile int $hashCode;
@@ -151,7 +156,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(TypeWithGraphQLKeywords typeWithGraphQLKeywords) {
+    public Data(@Nullable TypeWithGraphQLKeywords typeWithGraphQLKeywords) {
       this.typeWithGraphQLKeywords = typeWithGraphQLKeywords;
     }
 
@@ -191,10 +196,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class TypeWithGraphQLKeywords {
+    @Nullable
     public String on;
 
+    @Nullable
     public String null_;
 
+    @Nullable
     public String alias;
 
     private transient volatile int $hashCode;
@@ -203,7 +211,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public TypeWithGraphQLKeywords(String on, String null_, String alias) {
+    public TypeWithGraphQLKeywords(@Nullable String on, @Nullable String null_,
+        @Nullable String alias) {
       this.on = on;
       this.null_ = null_;
       this.alias = alias;

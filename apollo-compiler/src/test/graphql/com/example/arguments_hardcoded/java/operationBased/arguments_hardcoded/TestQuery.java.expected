@@ -19,6 +19,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "a15321a7f7103480873db29a761ae001023b059eb7ad1af9e2816d1a2458c1b5";
@@ -129,8 +131,10 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public List<Review> reviews;
 
+    @NotNull
     public Integer testNullableArguments;
 
     private transient volatile int $hashCode;
@@ -139,7 +143,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(List<Review> reviews, Integer testNullableArguments) {
+    public Data(@Nullable List<Review> reviews, @NotNull Integer testNullableArguments) {
       this.reviews = reviews;
       this.testNullableArguments = testNullableArguments;
     }
@@ -187,11 +191,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The number of stars this review gave, 1-5
      */
+    @NotNull
     public Integer stars;
 
     /**
      * Comment about the movie
      */
+    @Nullable
     public String commentary;
 
     private transient volatile int $hashCode;
@@ -200,7 +206,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Review(Integer stars, String commentary) {
+    public Review(@NotNull Integer stars, @Nullable String commentary) {
       this.stars = stars;
       this.commentary = commentary;
     }

@@ -26,11 +26,13 @@ internal class NamedType(
 
 
 internal fun NamedType.toParameterSpec(context: JavaContext): ParameterSpec {
+  val irType = context.resolver.resolveIrType(type)
   return ParameterSpec
       .builder(
-          context.resolver.resolveIrType(type),
+          irType.withoutAnnotations(),
           context.layout.propertyName(graphQlName),
       )
+      .addAnnotations(irType.annotations)
       .build()
 }
 

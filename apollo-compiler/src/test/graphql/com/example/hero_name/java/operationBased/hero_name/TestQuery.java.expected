@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "17e30561f6043a4c67f3de02bc6c76798edb2d584095975a2f75862222ef4912";
@@ -130,6 +132,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -138,7 +141,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -178,21 +181,25 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * The date character was born.
      */
+    @NotNull
     public Object birthDate;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -201,7 +208,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, String name, Object birthDate, OnDroid onDroid) {
+    public Hero(@NotNull String __typename, @NotNull String name, @NotNull Object birthDate,
+        @Nullable OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.birthDate = birthDate;
@@ -259,6 +267,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
+    @Nullable
     public String primaryFunction;
 
     private transient volatile int $hashCode;
@@ -267,7 +276,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(String primaryFunction) {
+    public OnDroid(@Nullable String primaryFunction) {
       this.primaryFunction = primaryFunction;
     }
 

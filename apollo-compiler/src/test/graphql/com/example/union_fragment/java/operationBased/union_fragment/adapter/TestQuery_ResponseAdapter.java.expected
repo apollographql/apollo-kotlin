@@ -38,7 +38,7 @@ public class TestQuery_ResponseAdapter {
       List<TestQuery.Search> _search = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _search = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -69,7 +69,7 @@ public class TestQuery_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -123,7 +123,7 @@ public class TestQuery_ResponseAdapter {
       String _id = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

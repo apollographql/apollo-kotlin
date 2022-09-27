@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "73b2c830dc5cf246957890f00500cb83e254c050a6e6ad3ab8e6d9e4e26dbd60";
@@ -149,6 +151,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -157,7 +160,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -197,16 +200,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Hero {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'DroidDetails'
      */
+    @Nullable
     public DroidDetails droidDetails;
 
     /**
      * Synthetic field for 'HumanDetails'
      */
+    @Nullable
     public HumanDetails humanDetails;
 
     private transient volatile int $hashCode;
@@ -215,7 +221,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, DroidDetails droidDetails, HumanDetails humanDetails) {
+    public Hero(@NotNull String __typename, @Nullable DroidDetails droidDetails,
+        @Nullable HumanDetails humanDetails) {
       this.__typename = __typename;
       this.droidDetails = droidDetails;
       this.humanDetails = humanDetails;

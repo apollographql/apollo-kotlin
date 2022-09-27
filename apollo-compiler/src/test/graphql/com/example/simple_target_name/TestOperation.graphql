@@ -1,0 +1,9 @@
+query TestQuery {
+  scalar
+  object {
+    a
+  }
+  object2 {
+    a
+  }
+}

@@ -6,6 +6,7 @@
 package com.example.deprecation;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -22,6 +23,7 @@ import java.lang.Deprecated;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
@@ -43,6 +45,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final Optional<Episode> episode;
 
   private transient volatile int $hashCode;
@@ -51,7 +54,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Optional<Episode> episode) {
+  public TestQuery(@NotNull Optional<Episode> episode) {
     this.episode = episode;
   }
 
@@ -141,11 +144,13 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(episode, "episode");
       return new TestQuery(episode);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -154,7 +159,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -197,12 +202,14 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * Test deprecated field
      * For test purpose only
      */
+    @NotNull
     @Deprecated
     public String deprecated;
 
@@ -210,6 +217,7 @@ public class TestQuery implements Query<TestQuery.Data> {
      * Test deprecated field
      * For test purpose only
      */
+    @NotNull
     @Deprecated
     public Boolean deprecatedBool;
 
@@ -219,7 +227,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name, String deprecated, Boolean deprecatedBool) {
+    public Hero(@NotNull String name, @NotNull @Deprecated String deprecated,
+        @NotNull @Deprecated Boolean deprecatedBool) {
       this.name = name;
       this.deprecated = deprecated;
       this.deprecatedBool = deprecatedBool;

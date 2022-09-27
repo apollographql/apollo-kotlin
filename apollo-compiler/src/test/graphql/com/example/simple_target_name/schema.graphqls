@@ -1,0 +1,15 @@
+type Query {
+  """This type is a scalar."""
+  scalar: Scalar
+
+  """This type is an object."""
+  object: MyType
+
+  object2: MyType!
+}
+
+scalar Scalar
+
+type MyType {
+  a: String
+}

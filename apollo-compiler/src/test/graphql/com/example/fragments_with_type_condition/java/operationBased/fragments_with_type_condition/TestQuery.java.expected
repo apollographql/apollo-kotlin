@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "7d805690a4b15b327a23b61c94049254b0e6613ec62e9b913b716be71bb2e54c";
@@ -144,8 +146,10 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public R2 r2;
 
+    @Nullable
     public Luke luke;
 
     private transient volatile int $hashCode;
@@ -154,7 +158,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(R2 r2, Luke luke) {
+    public Data(@Nullable R2 r2, @Nullable Luke luke) {
       this.r2 = r2;
       this.luke = luke;
     }
@@ -199,16 +203,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class R2 {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'HumanDetails'
      */
+    @Nullable
     public HumanDetails humanDetails;
 
     /**
      * Synthetic field for 'DroidDetails'
      */
+    @Nullable
     public DroidDetails droidDetails;
 
     private transient volatile int $hashCode;
@@ -217,7 +224,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public R2(String __typename, HumanDetails humanDetails, DroidDetails droidDetails) {
+    public R2(@NotNull String __typename, @Nullable HumanDetails humanDetails,
+        @Nullable DroidDetails droidDetails) {
       this.__typename = __typename;
       this.humanDetails = humanDetails;
       this.droidDetails = droidDetails;
@@ -267,16 +275,19 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Luke {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'HumanDetails'
      */
+    @Nullable
     public HumanDetails humanDetails;
 
     /**
      * Synthetic field for 'DroidDetails'
      */
+    @Nullable
     public DroidDetails droidDetails;
 
     private transient volatile int $hashCode;
@@ -285,7 +296,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Luke(String __typename, HumanDetails humanDetails, DroidDetails droidDetails) {
+    public Luke(@NotNull String __typename, @Nullable HumanDetails humanDetails,
+        @Nullable DroidDetails droidDetails) {
       this.__typename = __typename;
       this.humanDetails = humanDetails;
       this.droidDetails = droidDetails;

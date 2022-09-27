@@ -10,21 +10,26 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DroidDetails implements Fragment.Data {
   /**
    * What others call this droid
    */
+  @NotNull
   public String name;
 
   /**
    * This droid's primary function
    */
+  @Nullable
   public String primaryFunction;
 
   /**
    * This droid's friends, or an empty list if they have none
    */
+  @Nullable
   public List<Friend> friends;
 
   private transient volatile int $hashCode;
@@ -33,7 +38,8 @@ public class DroidDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public DroidDetails(String name, String primaryFunction, List<Friend> friends) {
+  public DroidDetails(@NotNull String name, @Nullable String primaryFunction,
+      @Nullable List<Friend> friends) {
     this.name = name;
     this.primaryFunction = primaryFunction;
     this.friends = friends;
@@ -85,6 +91,7 @@ public class DroidDetails implements Fragment.Data {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -93,7 +100,7 @@ public class DroidDetails implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Friend(String name) {
+    public Friend(@NotNull String name) {
       this.name = name;
     }
 

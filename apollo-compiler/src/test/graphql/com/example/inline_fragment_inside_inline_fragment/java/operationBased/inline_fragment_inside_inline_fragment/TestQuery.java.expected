@@ -18,6 +18,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "4f32ea4bdd2a95a29bde61273602c22c698cd333f1701001d1a339fb276c6438";
@@ -136,6 +138,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public List<Search> search;
 
     private transient volatile int $hashCode;
@@ -144,7 +147,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(List<Search> search) {
+    public Data(@Nullable List<Search> search) {
       this.search = search;
     }
 
@@ -184,11 +187,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Search {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @Nullable
     public OnCharacter onCharacter;
 
     private transient volatile int $hashCode;
@@ -197,7 +202,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Search(String __typename, OnCharacter onCharacter) {
+    public Search(@NotNull String __typename, @Nullable OnCharacter onCharacter) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
     }
@@ -242,21 +247,25 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class OnCharacter {
+    @NotNull
     public String __typename;
 
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     /**
      * Synthetic field for inline fragment on Human
      */
+    @Nullable
     public OnHuman onHuman;
 
     /**
      * Synthetic field for inline fragment on Droid
      */
+    @Nullable
     public OnDroid onDroid;
 
     private transient volatile int $hashCode;
@@ -265,7 +274,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnCharacter(String __typename, String name, OnHuman onHuman, OnDroid onDroid) {
+    public OnCharacter(@NotNull String __typename, @NotNull String name, @Nullable OnHuman onHuman,
+        @Nullable OnDroid onDroid) {
       this.__typename = __typename;
       this.name = name;
       this.onHuman = onHuman;
@@ -323,6 +333,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The home planet of the human, or null if unknown
      */
+    @Nullable
     public String homePlanet;
 
     private transient volatile int $hashCode;
@@ -331,7 +342,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(String homePlanet) {
+    public OnHuman(@Nullable String homePlanet) {
       this.homePlanet = homePlanet;
     }
 
@@ -374,6 +385,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * This droid's primary function
      */
+    @Nullable
     public String primaryFunction;
 
     private transient volatile int $hashCode;
@@ -382,7 +394,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public OnDroid(String primaryFunction) {
+    public OnDroid(@Nullable String primaryFunction) {
       this.primaryFunction = primaryFunction;
     }
 

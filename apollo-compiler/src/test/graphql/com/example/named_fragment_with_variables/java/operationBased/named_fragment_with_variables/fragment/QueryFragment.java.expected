@@ -10,8 +10,11 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QueryFragment implements Fragment.Data {
+  @Nullable
   public Organization organization;
 
   private transient volatile int $hashCode;
@@ -20,7 +23,7 @@ public class QueryFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public QueryFragment(Organization organization) {
+  public QueryFragment(@Nullable Organization organization) {
     this.organization = organization;
   }
 
@@ -59,8 +62,10 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class Organization {
+    @NotNull
     public String id;
 
+    @NotNull
     public List<User> user;
 
     private transient volatile int $hashCode;
@@ -69,7 +74,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public Organization(String id, List<User> user) {
+    public Organization(@NotNull String id, @NotNull List<User> user) {
       this.id = id;
       this.user = user;
     }
@@ -114,11 +119,13 @@ public class QueryFragment implements Fragment.Data {
   }
 
   public static class User {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'UserFragment'
      */
+    @NotNull
     public UserFragment userFragment;
 
     private transient volatile int $hashCode;
@@ -127,7 +134,7 @@ public class QueryFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public User(String __typename, UserFragment userFragment) {
+    public User(@NotNull String __typename, @NotNull UserFragment userFragment) {
       this.__typename = __typename;
       this.userFragment = userFragment;
     }

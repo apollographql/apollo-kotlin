@@ -6,6 +6,7 @@
 package com.example.starships;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -20,6 +21,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "ec95d84c104260ea1c99e15341279aaabe98b7364279c2886a9ffe9adfeefb7f";
@@ -40,6 +43,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final String id;
 
   private transient volatile int $hashCode;
@@ -48,7 +52,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(String id) {
+  public TestQuery(@NotNull String id) {
     this.id = id;
   }
 
@@ -132,17 +136,19 @@ public class TestQuery implements Query<TestQuery.Data> {
     Builder() {
     }
 
-    public Builder id(String id) {
+    public Builder id(@NotNull String id) {
       this.id = id;
       return this;
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(id, "id");
       return new TestQuery(id);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Starship starship;
 
     private transient volatile int $hashCode;
@@ -151,7 +157,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Starship starship) {
+    public Data(@Nullable Starship starship) {
       this.starship = starship;
     }
 
@@ -194,13 +200,16 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The ID of the starship
      */
+    @NotNull
     public String id;
 
     /**
      * The name of the starship
      */
+    @NotNull
     public String name;
 
+    @Nullable
     public List<List<Double>> coordinates;
 
     private transient volatile int $hashCode;
@@ -209,7 +218,8 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Starship(String id, String name, List<List<Double>> coordinates) {
+    public Starship(@NotNull String id, @NotNull String name,
+        @Nullable List<List<Double>> coordinates) {
       this.id = id;
       this.name = name;
       this.coordinates = coordinates;

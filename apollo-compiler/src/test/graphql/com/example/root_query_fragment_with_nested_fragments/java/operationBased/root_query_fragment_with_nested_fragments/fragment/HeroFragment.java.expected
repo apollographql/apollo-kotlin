@@ -9,11 +9,13 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class HeroFragment implements Fragment.Data {
   /**
    * The name of the character
    */
+  @NotNull
   public String name;
 
   private transient volatile int $hashCode;
@@ -22,7 +24,7 @@ public class HeroFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HeroFragment(String name) {
+  public HeroFragment(@NotNull String name) {
     this.name = name;
   }
 

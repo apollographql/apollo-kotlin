@@ -20,12 +20,16 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class QueryFragmentImpl implements Fragment<QueryFragment> {
+  @NotNull
   public final String organizationId;
 
+  @NotNull
   public final UserQuery query;
 
+  @NotNull
   public final Integer size;
 
   private transient volatile int $hashCode;
@@ -34,7 +38,8 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
 
   private transient volatile String $toString;
 
-  public QueryFragmentImpl(String organizationId, UserQuery query, Integer size) {
+  public QueryFragmentImpl(@NotNull String organizationId, @NotNull UserQuery query,
+      @NotNull Integer size) {
     this.organizationId = organizationId;
     this.query = query;
     this.size = size;

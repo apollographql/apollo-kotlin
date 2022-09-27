@@ -37,7 +37,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
       CreateReviewForEpisode.CreateReview _createReview = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -73,7 +73,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
       List<List<CreateReviewForEpisode.ListOfListOfObject>> _listOfListOfObject = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
@@ -131,7 +131,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
           default: break loop;

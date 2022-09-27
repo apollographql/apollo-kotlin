@@ -35,7 +35,7 @@ public class AFragmentImpl_ResponseAdapter {
       com.example.multiple_fragments.fragment.AFragment.Node _node = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -66,7 +66,7 @@ public class AFragmentImpl_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

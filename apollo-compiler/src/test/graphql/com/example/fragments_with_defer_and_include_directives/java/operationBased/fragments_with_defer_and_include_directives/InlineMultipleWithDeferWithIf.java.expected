@@ -6,6 +6,7 @@
 package com.example.fragments_with_defer_and_include_directives;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -19,6 +20,8 @@ import java.lang.Boolean;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDeferWithIf.Data> {
   public static final String OPERATION_ID = "9dc79c78df7375c3d860d16df3ea839ea45c7f8420976f63414610d338f0caf1";
@@ -46,6 +49,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
   public static final String OPERATION_NAME = "InlineMultipleWithDeferWithIf";
 
+  @NotNull
   public final Boolean cond;
 
   private transient volatile int $hashCode;
@@ -54,7 +58,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
   private transient volatile String $toString;
 
-  public InlineMultipleWithDeferWithIf(Boolean cond) {
+  public InlineMultipleWithDeferWithIf(@NotNull Boolean cond) {
     this.cond = cond;
   }
 
@@ -138,17 +142,19 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     Builder() {
     }
 
-    public Builder cond(Boolean cond) {
+    public Builder cond(@NotNull Boolean cond) {
       this.cond = cond;
       return this;
     }
 
     public InlineMultipleWithDeferWithIf build() {
+      Assertions.checkFieldNotMissing(cond, "cond");
       return new InlineMultipleWithDeferWithIf(cond);
     }
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -157,7 +163,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@Nullable Hero hero) {
       this.hero = hero;
     }
 
@@ -197,21 +203,25 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
   }
 
   public static class Hero {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @NotNull
     public OnCharacter onCharacter;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @Nullable
     public OnCharacterDeferF_second onCharacterDeferF_second;
 
     /**
      * Synthetic field for inline fragment on Character
      */
+    @Nullable
     public OnCharacterDeferF_third onCharacterDeferF_third;
 
     private transient volatile int $hashCode;
@@ -220,9 +230,9 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, OnCharacter onCharacter,
-        OnCharacterDeferF_second onCharacterDeferF_second,
-        OnCharacterDeferF_third onCharacterDeferF_third) {
+    public Hero(@NotNull String __typename, @NotNull OnCharacter onCharacter,
+        @Nullable OnCharacterDeferF_second onCharacterDeferF_second,
+        @Nullable OnCharacterDeferF_third onCharacterDeferF_third) {
       this.__typename = __typename;
       this.onCharacter = onCharacter;
       this.onCharacterDeferF_second = onCharacterDeferF_second;
@@ -280,6 +290,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     /**
      * The ID of the character
      */
+    @NotNull
     public String id;
 
     private transient volatile int $hashCode;
@@ -288,7 +299,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public OnCharacter(String id) {
+    public OnCharacter(@NotNull String id) {
       this.id = id;
     }
 
@@ -331,6 +342,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -339,7 +351,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public OnCharacterDeferF_second(String name) {
+    public OnCharacterDeferF_second(@NotNull String name) {
       this.name = name;
     }
 
@@ -382,6 +394,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -390,7 +403,7 @@ public class InlineMultipleWithDeferWithIf implements Query<InlineMultipleWithDe
 
     private transient volatile String $toString;
 
-    public OnCharacterDeferF_third(String name) {
+    public OnCharacterDeferF_third(@NotNull String name) {
       this.name = name;
     }
 

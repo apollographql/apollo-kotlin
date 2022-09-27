@@ -35,7 +35,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection _friendsConnection = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _profileLink = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
@@ -80,7 +80,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> _edges = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -112,7 +112,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       com.example.named_fragment_delegate.fragment.HumanDetails.Node _node = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -143,7 +143,7 @@ public class HumanDetailsImpl_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

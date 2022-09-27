@@ -18,6 +18,8 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "0308cbb678ba65068f98c1e2db76c79bc46b6d4a171d6310a4bb5d98356651c5";
@@ -132,6 +134,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public Tree tree;
 
     private transient volatile int $hashCode;
@@ -140,7 +143,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Tree tree) {
+    public Data(@Nullable Tree tree) {
       this.tree = tree;
     }
 
@@ -180,10 +183,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Tree {
+    @NotNull
     public String name;
 
+    @NotNull
     public List<Child> children;
 
+    @Nullable
     public Parent parent;
 
     private transient volatile int $hashCode;
@@ -192,7 +198,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Tree(String name, List<Child> children, Parent parent) {
+    public Tree(@NotNull String name, @NotNull List<Child> children, @Nullable Parent parent) {
       this.name = name;
       this.children = children;
       this.parent = parent;
@@ -242,6 +248,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Child {
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -250,7 +257,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Child(String name) {
+    public Child(@NotNull String name) {
       this.name = name;
     }
 
@@ -290,6 +297,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Parent {
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -298,7 +306,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Parent(String name) {
+    public Parent(@NotNull String name) {
       this.name = name;
     }
 

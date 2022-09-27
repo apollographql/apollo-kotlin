@@ -5,20 +5,25 @@
 //
 package com.example.fragment_with_inline_fragment.fragment;
 
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DroidDetails implements Fragment.Data {
   /**
    * What others call this droid
    */
+  @NotNull
   public String name;
 
   /**
    * This droid's primary function
    */
+  @Nullable
   public String primaryFunction;
 
   private transient volatile int $hashCode;
@@ -27,7 +32,7 @@ public class DroidDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public DroidDetails(String name, String primaryFunction) {
+  public DroidDetails(@NotNull String name, @Nullable String primaryFunction) {
     this.name = name;
     this.primaryFunction = primaryFunction;
   }
@@ -89,17 +94,24 @@ public class DroidDetails implements Fragment.Data {
     Builder() {
     }
 
-    public Builder name(String name) {
+    /**
+     * What others call this droid
+     */
+    public Builder name(@NotNull String name) {
       this.name = name;
       return this;
     }
 
-    public Builder primaryFunction(String primaryFunction) {
+    /**
+     * This droid's primary function
+     */
+    public Builder primaryFunction(@Nullable String primaryFunction) {
       this.primaryFunction = primaryFunction;
       return this;
     }
 
     public DroidDetails build() {
+      Assertions.checkFieldNotMissing(name, "name");
       return new DroidDetails(name, primaryFunction);
     }
   }

@@ -9,12 +9,14 @@ import com.apollographql.apollo3.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Circle ref to review input
  */
 public class ReviewRefInput {
+  @NotNull
   public final Optional<ReviewInput> reviewInput;
 
   private transient volatile int $hashCode;
@@ -23,7 +25,7 @@ public class ReviewRefInput {
 
   private transient volatile String $toString;
 
-  public ReviewRefInput(Optional<ReviewInput> reviewInput) {
+  public ReviewRefInput(@NotNull Optional<ReviewInput> reviewInput) {
     this.reviewInput = reviewInput;
   }
 

@@ -35,7 +35,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.Luke _luke = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _r2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.R2>(R2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           case 1: _luke = new NullableAdapter<>(new ObjectAdapter<TestQuery.Luke>(Luke.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
@@ -72,7 +72,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.FriendsConnection _friendsConnection = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _friendsConnection = new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
@@ -112,7 +112,7 @@ public class TestQuery_ResponseAdapter {
       List<TestQuery.Edge> _edges = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
@@ -148,7 +148,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.Node _node = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node>(Node.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -179,7 +179,7 @@ public class TestQuery_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -214,7 +214,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.FriendsConnection1 _friendsConnection = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
@@ -260,7 +260,7 @@ public class TestQuery_ResponseAdapter {
       List<TestQuery.Edge1> _edges = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
           case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Edge1>(Edge1.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
@@ -296,7 +296,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.Node1 _node = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _node = new NullableAdapter<>(new ObjectAdapter<TestQuery.Node1>(Node1.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -327,7 +327,7 @@ public class TestQuery_ResponseAdapter {
       String _name = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

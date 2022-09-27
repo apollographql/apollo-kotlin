@@ -33,7 +33,7 @@ public class AllStarships_ResponseAdapter {
       com.example.nested_named_fragments.AllStarships.AllStarships1 _allStarships = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _allStarships = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -64,7 +64,7 @@ public class AllStarships_ResponseAdapter {
       List<com.example.nested_named_fragments.AllStarships.Edge> _edges = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -95,7 +95,7 @@ public class AllStarships_ResponseAdapter {
       com.example.nested_named_fragments.AllStarships.Node _node = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -126,7 +126,7 @@ public class AllStarships_ResponseAdapter {
       String __typename = null;
 
       loop:
-      while(true) {
+      while (true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;

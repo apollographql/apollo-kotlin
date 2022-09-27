@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "784a97bf4fc33e2f184539f66ee6a732e219042070b1b85f7c9e88d92fc2855f";
@@ -134,6 +136,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @Nullable
     public I i;
 
     private transient volatile int $hashCode;
@@ -142,7 +145,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(I i) {
+    public Data(@Nullable I i) {
       this.i = i;
     }
 
@@ -182,11 +185,13 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class I {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for 'iFragment'
      */
+    @NotNull
     public IFragment iFragment;
 
     private transient volatile int $hashCode;
@@ -195,7 +200,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public I(String __typename, IFragment iFragment) {
+    public I(@NotNull String __typename, @NotNull IFragment iFragment) {
       this.__typename = __typename;
       this.iFragment = iFragment;
     }

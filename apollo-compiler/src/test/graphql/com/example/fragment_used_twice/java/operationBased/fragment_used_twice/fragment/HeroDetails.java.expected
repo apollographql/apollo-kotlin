@@ -9,18 +9,22 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class HeroDetails implements Fragment.Data {
+  @NotNull
   public String __typename;
 
   /**
    * The name of the character
    */
+  @NotNull
   public String name;
 
   /**
    * Synthetic field for 'CharacterDetails'
    */
+  @NotNull
   public CharacterDetails characterDetails;
 
   private transient volatile int $hashCode;
@@ -29,7 +33,8 @@ public class HeroDetails implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public HeroDetails(String __typename, String name, CharacterDetails characterDetails) {
+  public HeroDetails(@NotNull String __typename, @NotNull String name,
+      @NotNull CharacterDetails characterDetails) {
     this.__typename = __typename;
     this.name = name;
     this.characterDetails = characterDetails;

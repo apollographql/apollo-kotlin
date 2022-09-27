@@ -18,6 +18,8 @@ import java.lang.Double;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GetHuman implements Query<GetHuman.Data> {
   public static final String OPERATION_ID = "b5ec6431463438b91c2cf1c33eb4b6a1f9e2580b51fcf5150ef3685b9108a12c";
@@ -134,8 +136,10 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   public static class Data implements Query.Data {
+    @NotNull
     public Human human;
 
+    @NotNull
     public Node node;
 
     private transient volatile int $hashCode;
@@ -144,7 +148,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Human human, Node node) {
+    public Data(@NotNull Human human, @NotNull Node node) {
       this.human = human;
       this.node = node;
     }
@@ -189,10 +193,13 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   public static class Human {
+    @NotNull
     public String id;
 
+    @NotNull
     public String name;
 
+    @NotNull
     public Double height;
 
     private transient volatile int $hashCode;
@@ -201,7 +208,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     private transient volatile String $toString;
 
-    public Human(String id, String name, Double height) {
+    public Human(@NotNull String id, @NotNull String name, @NotNull Double height) {
       this.id = id;
       this.name = name;
       this.height = height;
@@ -251,11 +258,13 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   public static class Node {
+    @NotNull
     public String __typename;
 
     /**
      * Synthetic field for inline fragment on Human
      */
+    @Nullable
     public OnHuman onHuman;
 
     private transient volatile int $hashCode;
@@ -264,7 +273,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     private transient volatile String $toString;
 
-    public Node(String __typename, OnHuman onHuman) {
+    public Node(@NotNull String __typename, @Nullable OnHuman onHuman) {
       this.__typename = __typename;
       this.onHuman = onHuman;
     }
@@ -309,6 +318,7 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   public static class OnHuman {
+    @NotNull
     public Double height;
 
     private transient volatile int $hashCode;
@@ -317,7 +327,7 @@ public class GetHuman implements Query<GetHuman.Data> {
 
     private transient volatile String $toString;
 
-    public OnHuman(Double height) {
+    public OnHuman(@NotNull Double height) {
       this.height = height;
     }
 

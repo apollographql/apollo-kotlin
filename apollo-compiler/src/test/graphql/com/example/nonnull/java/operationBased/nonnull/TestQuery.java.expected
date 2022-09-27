@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "80edf9806419cf2cc984f0c70d2322ee692e8b96d4b0a8c13b67f19fe63b56e4";
@@ -125,6 +126,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static class Data implements Query.Data {
+    @NotNull
     public Hero hero;
 
     private transient volatile int $hashCode;
@@ -133,7 +135,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(@NotNull Hero hero) {
       this.hero = hero;
     }
 
@@ -176,6 +178,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     /**
      * The name of the character
      */
+    @NotNull
     public String name;
 
     private transient volatile int $hashCode;
@@ -184,7 +187,7 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(String name) {
+    public Hero(@NotNull String name) {
       this.name = name;
     }
 

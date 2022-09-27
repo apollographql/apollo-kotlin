@@ -6,6 +6,7 @@
 package com.example.hero_with_review;
 
 import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Mutation;
@@ -20,6 +21,8 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Mutation<TestQuery.Data> {
   public static final String OPERATION_ID = "1faa220c7551ff1343a9bce722af8c12b87c70cc579f743aff1374ae1066f163";
@@ -49,6 +52,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
 
   public static final String OPERATION_NAME = "TestQuery";
 
+  @NotNull
   public final Episode ep;
 
   private transient volatile int $hashCode;
@@ -57,7 +61,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
 
   private transient volatile String $toString;
 
-  public TestQuery(Episode ep) {
+  public TestQuery(@NotNull Episode ep) {
     this.ep = ep;
   }
 
@@ -141,17 +145,19 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     Builder() {
     }
 
-    public Builder ep(Episode ep) {
+    public Builder ep(@NotNull Episode ep) {
       this.ep = ep;
       return this;
     }
 
     public TestQuery build() {
+      Assertions.checkFieldNotMissing(ep, "ep");
       return new TestQuery(ep);
     }
   }
 
   public static class Data implements Mutation.Data {
+    @Nullable
     public CreateReview createReview;
 
     private transient volatile int $hashCode;
@@ -160,7 +166,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(CreateReview createReview) {
+    public Data(@Nullable CreateReview createReview) {
       this.createReview = createReview;
     }
 
@@ -203,11 +209,13 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     /**
      * The number of stars this review gave, 1-5
      */
+    @NotNull
     public Integer stars;
 
     /**
      * Comment about the movie
      */
+    @Nullable
     public String commentary;
 
     private transient volatile int $hashCode;
@@ -216,7 +224,7 @@ public class TestQuery implements Mutation<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public CreateReview(Integer stars, String commentary) {
+    public CreateReview(@NotNull Integer stars, @Nullable String commentary) {
       this.stars = stars;
       this.commentary = commentary;
     }

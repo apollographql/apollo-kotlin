@@ -9,11 +9,13 @@ import com.apollographql.apollo3.api.Fragment;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import org.jetbrains.annotations.Nullable;
 
 public class DroidDetails2 implements Fragment.Data {
   /**
    * This droid's primary function
    */
+  @Nullable
   public String primaryFunction;
 
   private transient volatile int $hashCode;
@@ -22,7 +24,7 @@ public class DroidDetails2 implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public DroidDetails2(String primaryFunction) {
+  public DroidDetails2(@Nullable String primaryFunction) {
     this.primaryFunction = primaryFunction;
   }
 
