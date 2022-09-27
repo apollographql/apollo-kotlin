@@ -3,6 +3,7 @@
 
 Test:                                                                                      Total LOC:
 <<<<<<< HEAD
+<<<<<<< HEAD
 aggregate-all                                                                                  204157
 aggregate-kotlin-responseBased                                                                  52273
 aggregate-kotlin-operationBased                                                                 35445
@@ -23,6 +24,13 @@ aggregate-kotlin-compat                                                         
 aggregate-java-operationBased                                                                   77141
 >>>>>>> 20b75670d (update test fixtures)
 >>>>>>> 20f727447 (update test fixtures)
+=======
+aggregate-all                                                                                  210064
+aggregate-kotlin-responseBased                                                                  54200
+aggregate-kotlin-operationBased                                                                 36566
+aggregate-kotlin-compat                                                                         37991
+aggregate-java-operationBased                                                                   81307
+>>>>>>> 58b314488 (resolve conflicts)
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5566
 kotlin-compat-fragments_with_defer_and_include_directives                                        3612
@@ -223,11 +231,16 @@ kotlin-operationBased-fragment_with_multiple_fieldsets                          
 kotlin-responseBased-input_object_variable_and_argument                                           519
 kotlin-responseBased-root_query_fragment                                                          519
 <<<<<<< HEAD
+<<<<<<< HEAD
 java-operationBased-antlr_tokens                                                                  517
 =======
 java-operationBased-antlr_tokens                                                                  518
 kotlin-operationBased-operationbased2_ex7                                                         518
 >>>>>>> 20f727447 (update test fixtures)
+=======
+kotlin-operationBased-operationbased2_ex7                                                         518
+java-operationBased-antlr_tokens                                                                  517
+>>>>>>> 58b314488 (resolve conflicts)
 kotlin-responseBased-typename_always_first                                                        516
 kotlin-responseBased-interface_on_interface                                                       513
 java-operationBased-subscriptions                                                                 512
