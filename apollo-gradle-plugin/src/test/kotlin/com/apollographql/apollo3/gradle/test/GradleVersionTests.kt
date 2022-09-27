@@ -5,9 +5,9 @@ import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companio
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.TestUtils.withTestProject
 import com.google.common.truth.Truth
-import junit.framework.Assert.fail
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
+import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
@@ -34,7 +34,7 @@ class GradleVersionTests {
       dir.setApolloPluginVersion()
       try {
         TestUtils.executeGradleWithVersion(dir, "5.4","generateApolloSources")
-        fail("Compiling with an old version of Gradle should fail")
+        Assert.fail("Compiling with an old version of Gradle should fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater")
       }

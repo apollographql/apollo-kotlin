@@ -27,7 +27,7 @@ class ConfigurationCacheTests {
 
     dir.resolve("build.gradle.kts").replaceInText("ENDPOINT", server.url("/").toString())
 
-    val buildResult = TestUtils.executeGradle(
+    TestUtils.executeGradle(
         dir,
         "--configuration-cache",
         "generateApolloSources",

@@ -13,6 +13,7 @@ import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import com.android.build.api.dsl.LibraryExtension
 
 fun Project.configurePublishing() {
   apply {
@@ -27,6 +28,11 @@ fun Project.configurePublishing() {
   }
   pluginManager.withPlugin("org.jetbrains.kotlin.multiplatform") {
     configureDokka()
+  }
+  pluginManager.withPlugin("com.android.library") {
+    extensions.findByType(LibraryExtension::class.java)!!.publishing {
+      singleVariant("release")
+    }
   }
   configurePublishingInternal()
 }

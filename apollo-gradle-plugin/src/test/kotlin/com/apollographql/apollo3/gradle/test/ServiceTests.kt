@@ -9,11 +9,9 @@ import com.apollographql.apollo3.gradle.util.replaceInText
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
-import org.hamcrest.CoreMatchers.containsString
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
@@ -216,7 +214,7 @@ class ServiceTests {
         TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("All apollo versions should be the same"))
+        Truth.assertThat(e.message).contains("All apollo versions should be the same")
       }
       assertNotNull(exception)
     }
@@ -238,7 +236,7 @@ class ServiceTests {
         TestUtils.executeTask("checkApolloVersions", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("All apollo versions should be the same"))
+        Truth.assertThat(e.message).contains("All apollo versions should be the same")
       }
       assertNotNull(exception)
     }
@@ -252,7 +250,7 @@ class ServiceTests {
         TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        assertThat(e.message, containsString("All apollo versions should be the same"))
+        Truth.assertThat(e.message).contains("All apollo versions should be the same")
       }
       assertNotNull(exception)
     }
@@ -279,10 +277,10 @@ class ServiceTests {
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
       val expectedOperationId = "292319c237e71c9dfec7a7d7f993e9c91bd81361a786f251840e105f4b6c9145"
       val operationOutput = File(dir, "build/generated/operationOutput/apollo/service/operationOutput.json")
-      assertThat(operationOutput.readText(), containsString(expectedOperationId))
+      Truth.assertThat(operationOutput.readText()).contains(expectedOperationId)
 
       val queryJavaFile = dir.generatedChild("service/com/example/DroidDetailsQuery.kt")
-      assertThat(queryJavaFile.readText(), containsString(expectedOperationId))
+      Truth.assertThat(queryJavaFile.readText()).contains(expectedOperationId)
     }
   }
 
@@ -370,13 +368,13 @@ class ServiceTests {
       TestUtils.executeTask("build", dir)
 
       assertTrue(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("internal class"))
+      Truth.assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText()).contains("internal class")
 
       assertTrue(dir.generatedChild("service/com/example/type/DateTime.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/type/DateTime.kt").readText(), containsString("internal class DateTime"))
+      Truth.assertThat(dir.generatedChild("service/com/example/type/DateTime.kt").readText()).contains("internal class DateTime")
 
       assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
-      assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText(), containsString("internal data class"))
+      Truth.assertThat(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").readText()).contains("internal data class")
     }
   }
 

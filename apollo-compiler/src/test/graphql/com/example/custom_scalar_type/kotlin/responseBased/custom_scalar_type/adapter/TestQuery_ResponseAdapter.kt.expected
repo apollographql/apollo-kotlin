@@ -15,9 +15,9 @@ import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.TestQuery
 import com.example.custom_scalar_type.type.GraphQLID
-import java.lang.Long
 import java.util.Date
 import kotlin.Any
+import kotlin.Long
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -58,12 +58,12 @@ public object TestQuery_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.Hero {
         var _id: Long? = null
-        var _name: java.lang.String? = null
+        var _name: String? = null
         var _birthDate: Date? = null
         var _appearanceDates: List<Date>? = null
         var _fieldWithUnsupportedType: Any? = null
-        var _profileLink: java.lang.String? = null
-        var _links: List<java.lang.String>? = null
+        var _profileLink: String? = null
+        var _links: List<String>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {

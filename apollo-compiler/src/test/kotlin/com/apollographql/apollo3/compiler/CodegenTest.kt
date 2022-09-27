@@ -118,18 +118,17 @@ class CodegenTest {
         JAVA -> JavaCompiler.assertCompiles(actualFiles.toSet())
         else -> {
           /**
-           * Some tests generate warnings.
-           * Most of the time because they are using deprecated fields and/or unused arguments
-           * Fine tune this list as we go.
+           * Some tests generate warnings because they are using deprecated fields
+           *
+           * We want to keep this for the user to easily locate them but can't tell the compiler to ignore
+           * them specifically. See also https://youtrack.jetbrains.com/issue/KT-24746
            */
           val expectedWarnings = folder.name in listOf(
-              "arguments_complex",
-              "arguments_simple",
+              "__schema",
               "case_sensitive_enum",
-              "enums_as_sealed",
-              "custom_scalar_type",
               "deprecated_merged_field",
               "deprecation",
+              "enums_as_sealed",
               "enum_field",
               "fragment_with_inline_fragment",
               "hero_name_query_long_name",
@@ -146,8 +145,6 @@ class CodegenTest {
               "union_inline_fragments",
               "unique_type_name",
               "variable_default_value",
-              "monomorphic",
-              "__schema"
           )
 
           KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
@@ -341,12 +338,22 @@ class CodegenTest {
               "custom_scalar_type",
               "input_object_type",
               "mutation_create_review")) {
-        mapOf(
-            "Date" to ScalarInfo("java.util.Date"),
-            "URL" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer(if (targetLanguage == JAVA) "com.example.UrlAdapter.INSTANCE" else "com.example.UrlAdapter")),
-            "ID" to ScalarInfo("java.lang.Long"),
-            "String" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer(if (targetLanguage == JAVA) "new com.example.MyStringAdapter()" else "com.example.MyStringAdapter()")),
-        )
+        if (targetLanguage == JAVA) {
+          mapOf(
+              "Date" to ScalarInfo("java.util.Date"),
+              "URL" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("com.example.UrlAdapter.INSTANCE")),
+              "ID" to ScalarInfo("java.lang.Long"),
+              "String" to ScalarInfo("java.lang.String", ExpressionAdapterInitializer("new com.example.MyStringAdapter()")),
+          )
+        } else {
+          mapOf(
+              "Date" to ScalarInfo("java.util.Date"),
+              "URL" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.UrlAdapter")),
+              "ID" to ScalarInfo("kotlin.Long"),
+              "String" to ScalarInfo("kotlin.String", ExpressionAdapterInitializer("com.example.MyStringAdapter()")),
+          )
+
+        }
       } else {
         emptyMap()
       }

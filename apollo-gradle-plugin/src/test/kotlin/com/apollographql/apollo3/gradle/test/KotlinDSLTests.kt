@@ -2,9 +2,9 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.generatedChild
+import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
-import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -36,7 +36,7 @@ class KotlinDSLTests {
         TestUtils.executeGradle(dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        Assert.assertThat(e.message, CoreMatchers.containsString("Unresolved reference: services"))
+        Truth.assertThat(e.message).contains("Unresolved reference: services")
       }
       Assert.assertNotNull(exception)
     }

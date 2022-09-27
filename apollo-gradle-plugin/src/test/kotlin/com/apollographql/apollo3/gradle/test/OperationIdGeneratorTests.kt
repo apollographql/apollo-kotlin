@@ -5,11 +5,10 @@ import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo3.gradle.util.TestUtils.withTestProject
 import com.apollographql.apollo3.gradle.util.generatedChild
 import com.apollographql.apollo3.gradle.util.replaceInText
-import junit.framework.Assert.assertTrue
+import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
-import org.hamcrest.CoreMatchers
 import org.junit.Assert
-import org.junit.Ignore
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
@@ -132,10 +131,8 @@ class OperationIdGeneratorTests {
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
 
-      Assert.assertThat(
-          dir.generatedChild("service/com/example/GreetingQuery.kt").readText(),
-          CoreMatchers.containsString("OPERATION_ID: String = \"GreetingCustomId\"")
-      )
+      Truth.assertThat(dir.generatedChild("service/com/example/GreetingQuery.kt").readText())
+          .contains("OPERATION_ID: String = \"GreetingCustomId\"")
 
       // Change the implementation of the operation ID generator and check again
       File(dir,"build.gradle.kts").replaceInText("CustomId", "anotherCustomId")
@@ -145,10 +142,8 @@ class OperationIdGeneratorTests {
 
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
 
-      Assert.assertThat(
-          dir.generatedChild("service/com/example/GreetingQuery.kt").readText(),
-          CoreMatchers.containsString("anotherCustomId")
-      )
+      Truth.assertThat(dir.generatedChild("service/com/example/GreetingQuery.kt").readText())
+          .contains("anotherCustomId")
     }
   }
 }

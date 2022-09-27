@@ -58,8 +58,8 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           CreateReviewForEpisode.Data.CreateReview {
         var _stars: Int? = null
-        var _commentary: java.lang.String? = null
-        var _listOfListOfString: List<List<java.lang.String>>? = null
+        var _commentary: String? = null
+        var _listOfListOfString: List<List<String>>? = null
         var _listOfListOfEnum: List<List<Episode>>? = null
         var _listOfListOfCustom: List<List<Date>>? = null
         var _listOfListOfObject: List<List<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject>>? = null
@@ -127,7 +127,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         public override fun fromJson(reader: JsonReader,
             customScalarAdapters: CustomScalarAdapters):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
-          var _name: java.lang.String? = null
+          var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {

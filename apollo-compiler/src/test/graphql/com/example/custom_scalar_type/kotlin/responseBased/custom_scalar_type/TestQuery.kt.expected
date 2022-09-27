@@ -14,11 +14,11 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.custom_scalar_type.adapter.TestQuery_ResponseAdapter
 import com.example.custom_scalar_type.selections.TestQuerySelections
-import java.lang.Long
 import java.util.Date
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
+import kotlin.Long
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -60,7 +60,7 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * The name of the character
        */
-      public val name: java.lang.String,
+      public val name: String,
       /**
        * The date character was born.
        */
@@ -76,11 +76,11 @@ public class TestQuery() : Query<TestQuery.Data> {
       /**
        * Profile link
        */
-      public val profileLink: java.lang.String,
+      public val profileLink: String,
       /**
        * Links
        */
-      public val links: List<java.lang.String>,
+      public val links: List<String>,
     )
   }
 

@@ -25,12 +25,10 @@ class GradleBuildCacheTests {
         replaceInText("../../..", "../../../..")
       }
 
-      println("Generate sources project1")
       var result = TestUtils.executeTask("generateServiceApolloSources", project1, "--build-cache")
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateServiceApolloSources")!!.outcome)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":checkServiceApolloDuplicates")!!.outcome)
 
-      println("Generate sources project2")
       result = TestUtils.executeTask("generateServiceApolloSources", project2, "--build-cache")
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateServiceApolloSources")!!.outcome)
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":checkServiceApolloDuplicates")!!.outcome)

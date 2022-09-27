@@ -5,11 +5,9 @@ import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.TestUtils.withSimpleProject
 import com.apollographql.apollo3.gradle.util.generatedChild
 import com.apollographql.apollo3.gradle.util.replaceInText
+import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThat
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
@@ -35,7 +33,7 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
   }
 
-  fun `nothing changed, task up to date`(dir: File) {
+  private fun `nothing changed, task up to date`(dir: File) {
     val result = TestUtils.executeTask("generateApolloSources", dir)
 
     assertEquals(TaskOutcome.UP_TO_DATE, result.task(":generateApolloSources")!!.outcome)
@@ -46,7 +44,7 @@ class UpToDateTests {
     assertTrue(dir.generatedChild("service/com/example/fragment/SpeciesInformation.kt").isFile)
   }
 
-  fun `adding a custom scalar to the build script re-generates the CustomScalars`(dir: File) {
+  private fun `adding a custom scalar to the build script re-generates the CustomScalars`(dir: File) {
     val apolloBlock = """
       
       apollo {
@@ -74,14 +72,14 @@ class UpToDateTests {
       var result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), containsString("classification"))
+      Truth.assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText()).contains("classification")
 
       File(dir, "src/main/graphql/com/example/DroidDetails.graphql").replaceInText("classification", "")
 
       result = TestUtils.executeTask("generateApolloSources", dir, "-i")
 
       assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
-      assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText(), not(containsString("classification")))
+      Truth.assertThat(dir.generatedChild("service/com/example/DroidDetailsQuery.kt").readText()).doesNotContain("classification")
     }
   }
 

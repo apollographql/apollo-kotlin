@@ -12,6 +12,6 @@ import com.apollographql.apollo3.api.CustomScalarType
  */
 public class URL {
   public companion object {
-    public val type: CustomScalarType = CustomScalarType("URL", "java.lang.String")
+    public val type: CustomScalarType = CustomScalarType("URL", "kotlin.String")
   }
 }

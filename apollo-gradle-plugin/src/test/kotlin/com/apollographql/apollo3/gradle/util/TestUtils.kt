@@ -1,13 +1,13 @@
 package com.apollographql.apollo3.gradle.util
 
 
+import com.google.common.truth.Truth
+import okio.blackholeSink
+import okio.buffer
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.not
 import org.junit.Assert
-import org.junit.Assert.assertThat
 import java.io.File
 
 object TestUtils {
@@ -33,7 +33,7 @@ object TestUtils {
     block(dest)
 
     // It's ok to not delete the directory as it will be deleted before next test
-    // During developement, it's easy to keep the testProject around to investigate if something goes wrong
+    // During development, it's easy to keep the testProject around to investigate if something goes wrong
     // dest.deleteRecursively()
   }
 
@@ -162,9 +162,12 @@ object TestUtils {
   }
 
   fun executeGradleWithVersion(projectDir: File, gradleVersion: String?, vararg args: String): BuildResult {
+    val output = blackholeSink().buffer()
+    val error = blackholeSink().buffer()
+
     return GradleRunner.create()
-        .forwardStdOutput(System.out.writer())
-        .forwardStdError(System.err.writer())
+        .forwardStdOutput(output.outputStream().writer())
+        .forwardStdError(error.outputStream().writer())
         .withProjectDir(projectDir)
         .withDebug(true)
         .withArguments("--stacktrace", *args)
@@ -182,17 +185,7 @@ object TestUtils {
 
   fun assertFileContains(projectDir: File, path: String, content: String) {
     val text = projectDir.generatedChild(path).readText()
-    assertThat(text, containsString(content))
-  }
-
-  fun assertFileDoesNotContain(projectDir: File, path: String, content: String) {
-    val text = projectDir.generatedChild(path).readText()
-    assertThat(text, not(containsString(content)))
-  }
-
-  fun fileContains(projectDir: File, path: String, content: String): Boolean {
-    return projectDir.generatedChild(path).readText()
-        .contains(content)
+    Truth.assertThat(text).contains(content)
   }
 
   fun fixturesDirectory() = File(System.getProperty("user.dir"), "src/test/files")
