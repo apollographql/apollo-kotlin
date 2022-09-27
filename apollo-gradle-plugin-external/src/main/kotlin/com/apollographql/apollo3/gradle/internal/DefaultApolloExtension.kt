@@ -297,16 +297,19 @@ abstract class DefaultApolloExtension(
         )
     )
 
-    if (service.testDirAction == null) {
-      service.testDirAction = defaultTestDirAction
+    @Suppress("DEPRECATION")
+    if (service.generateTestBuilders.getOrElse(false)) {
+      if (service.testDirAction == null) {
+        service.testDirAction = defaultTestDirAction
+      }
+      service.testDirAction!!.execute(
+          DefaultDirectoryConnection(
+              project = project,
+              task = codegenProvider,
+              outputDir = codegenProvider.flatMap { it.testDir }
+          )
+      )
     }
-    service.testDirAction!!.execute(
-        DefaultDirectoryConnection(
-            project = project,
-            task = codegenProvider,
-            outputDir = codegenProvider.flatMap { it.testDir }
-        )
-    )
 
     rootProvider.configure {
       it.dependsOn(codegenProvider)
