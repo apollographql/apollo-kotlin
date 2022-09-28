@@ -154,7 +154,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Episode> episode;
+    private Episode episode;
 
     private Integer stars;
 
@@ -164,7 +164,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public Builder episode(@Nullable Episode episode) {
-      this.episode = Optional.presentIfNotNull(episode);
+      this.episode = episode;
       return this;
     }
 
@@ -179,7 +179,9 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      return new TestQuery(episode, stars, greenValue);
+      return new TestQuery(Optional.presentIfNotNull(episode),
+          stars,
+          greenValue);
     }
   }
 

@@ -210,7 +210,8 @@ public class HeroDetails implements Fragment.Data {
       }
 
       public FriendsConnection build() {
-        return new FriendsConnection(totalCount, edges);
+        return new FriendsConnection(totalCount,
+            edges);
       }
     }
   }
@@ -305,7 +306,8 @@ public class HeroDetails implements Fragment.Data {
       }
 
       public OnDroid build() {
-        return new OnDroid(__typename, droidDetails);
+        return new OnDroid(__typename,
+            droidDetails);
       }
     }
   }
@@ -522,7 +524,11 @@ public class HeroDetails implements Fragment.Data {
     }
 
     public HeroDetails build() {
-      return new HeroDetails(__typename, name, friendsConnection, onDroid, humanDetails);
+      return new HeroDetails(__typename,
+          name,
+          friendsConnection,
+          onDroid,
+          humanDetails);
     }
   }
 }

@@ -66,18 +66,18 @@ public class ReviewRefInput {
   }
 
   public static final class Builder {
-    private Optional<ReviewInput> reviewInput;
+    private ReviewInput reviewInput;
 
     Builder() {
     }
 
     public Builder reviewInput(@Nullable ReviewInput reviewInput) {
-      this.reviewInput = Optional.presentIfNotNull(reviewInput);
+      this.reviewInput = reviewInput;
       return this;
     }
 
     public ReviewRefInput build() {
-      return new ReviewRefInput(reviewInput);
+      return new ReviewRefInput(Optional.presentIfNotNull(reviewInput));
     }
   }
 }

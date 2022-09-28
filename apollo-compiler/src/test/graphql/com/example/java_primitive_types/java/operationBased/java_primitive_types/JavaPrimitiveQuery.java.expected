@@ -174,23 +174,23 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Integer> nullableInt;
+    private Integer nullableInt;
 
     private int nonNullableInt;
 
-    private Optional<Integer> nonNullableIntWithDefault;
+    private Integer nonNullableIntWithDefault;
 
-    private Optional<MyInput> nullableInput;
+    private MyInput nullableInput;
 
     private MyInput nonNullableInput;
 
-    private Optional<MyInput> nonNullableInputWithDefault;
+    private MyInput nonNullableInputWithDefault;
 
     Builder() {
     }
 
     public Builder nullableInt(@Nullable Integer nullableInt) {
-      this.nullableInt = Optional.presentIfNotNull(nullableInt);
+      this.nullableInt = nullableInt;
       return this;
     }
 
@@ -200,12 +200,12 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     }
 
     public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = Optional.presentIfNotNull(nonNullableIntWithDefault);
+      this.nonNullableIntWithDefault = nonNullableIntWithDefault;
       return this;
     }
 
     public Builder nullableInput(@Nullable MyInput nullableInput) {
-      this.nullableInput = Optional.presentIfNotNull(nullableInput);
+      this.nullableInput = nullableInput;
       return this;
     }
 
@@ -215,12 +215,17 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     }
 
     public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
-      this.nonNullableInputWithDefault = Optional.presentIfNotNull(nonNullableInputWithDefault);
+      this.nonNullableInputWithDefault = nonNullableInputWithDefault;
       return this;
     }
 
     public JavaPrimitiveQuery build() {
-      return new JavaPrimitiveQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
+      return new JavaPrimitiveQuery(Optional.presentIfNotNull(nullableInt),
+          nonNullableInt,
+          Optional.presentIfNotNull(nonNullableIntWithDefault),
+          Optional.presentIfNotNull(nullableInput),
+          nonNullableInput,
+          Optional.presentIfNotNull(nonNullableInputWithDefault));
     }
   }
 
@@ -339,7 +344,10 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       }
 
       public Data build() {
-        return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
+        return new Data(nullableInt,
+            nonNullableInt,
+            nullableMyType,
+            nonNullableMyType);
       }
     }
   }
@@ -428,7 +436,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       }
 
       public NullableMyType build() {
-        return new NullableMyType(nullableInt, nonNullableInt);
+        return new NullableMyType(nullableInt,
+            nonNullableInt);
       }
     }
   }
@@ -517,7 +526,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       }
 
       public NonNullableMyType build() {
-        return new NonNullableMyType(nullableInt, nonNullableInt);
+        return new NonNullableMyType(nullableInt,
+            nonNullableInt);
       }
     }
   }

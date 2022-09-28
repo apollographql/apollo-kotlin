@@ -63,18 +63,18 @@ public class renamedInput {
   }
 
   public static final class Builder {
-    private Optional<String> field;
+    private String field;
 
     Builder() {
     }
 
     public Builder field(@Nullable String field) {
-      this.field = Optional.presentIfNotNull(field);
+      this.field = field;
       return this;
     }
 
     public renamedInput build() {
-      return new renamedInput(field);
+      return new renamedInput(Optional.presentIfNotNull(field));
     }
   }
 }

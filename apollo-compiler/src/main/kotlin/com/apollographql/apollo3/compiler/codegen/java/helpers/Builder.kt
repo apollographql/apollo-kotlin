@@ -4,7 +4,6 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
-import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -31,9 +30,7 @@ internal class Builder(
 
   private fun builderFields(): List<FieldSpec> {
     return fields.map {
-      FieldSpec.builder(it.type, it.name, Modifier.PRIVATE)
-
-          .build()
+      FieldSpec.builder(context.resolver.unwrapFromOptional(it.type), it.name, Modifier.PRIVATE).build()
     }
   }
 
@@ -50,8 +47,7 @@ internal class Builder(
             ParameterSpec.builder(context.resolver.unwrapFromOptional(field.type), field.name)
                 .apply {
                   if (context.resolver.isOptional(field.type)) {
-                    // TODO: Other flavors of Nullable annotations will be supported later
-                    addAnnotation(JavaClassNames.JetBrainsNullable)
+                    addAnnotation(context.resolver.nullableAnnotationClassName ?: JavaClassNames.JetBrainsNullable)
                   } else {
                     addAnnotations(field.annotations)
                   }
@@ -60,7 +56,7 @@ internal class Builder(
         )
         .addJavadoc(field.javadoc)
         .returns(JavaClassNames.Builder)
-        .addStatement("this.\$L = \$L", field.name, wrapValueInOptional(field.name, field.type, context.nullableFieldStyle))
+        .addStatement("this.\$L = \$L", field.name, field.name)
         .addStatement("return this")
         .build()
   }
@@ -78,22 +74,18 @@ internal class Builder(
   }
 
   private fun buildMethod(): MethodSpec {
-    val validationCodeBuilder = fields.filter {
-      // TODO Hardcoded annotation type
-      !it.type.isPrimitive && it.annotations.contains(AnnotationSpec.builder(JavaClassNames.JetBrainsNonNull).build())
-    }.map {
-      CodeBlock.of("\$T.checkFieldNotMissing(\$L, \$S);\n", JavaClassNames.Assertions, it.name, it.name)
-    }.fold(CodeBlock.builder(), CodeBlock.Builder::add)
+    val parametersCodeBlock = CodeBlock.join(fields.map {
+      CodeBlock.of("\$L", wrapValueInOptional(it.name, it.type, context.nullableFieldStyle))
+    }, ",\n")
 
     return MethodSpec
         .methodBuilder("build")
         .addModifiers(Modifier.PUBLIC)
         .returns(targetObjectClassName)
-        .addCode(validationCodeBuilder.build())
         .addStatement(
-            "return new \$T\$L",
+            "return new \$T(\$L)",
             targetObjectClassName,
-            fields.joinToString(prefix = "(", separator = ", ", postfix = ")") { it.name }
+            parametersCodeBlock
         )
         .build()
   }

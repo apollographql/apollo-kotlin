@@ -127,18 +127,18 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<String> operation;
+    private String operation;
 
     Builder() {
     }
 
     public Builder operation(@Nullable String operation) {
-      this.operation = Optional.presentIfNotNull(operation);
+      this.operation = operation;
       return this;
     }
 
     public TestQuery build() {
-      return new TestQuery(operation);
+      return new TestQuery(Optional.presentIfNotNull(operation));
     }
   }
 

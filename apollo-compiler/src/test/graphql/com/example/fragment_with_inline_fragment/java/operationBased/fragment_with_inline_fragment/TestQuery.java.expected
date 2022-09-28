@@ -363,7 +363,10 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
 
       public Hero build() {
-        return new Hero(__typename, name, appearsIn, heroDetails);
+        return new Hero(__typename,
+            name,
+            appearsIn,
+            heroDetails);
       }
     }
   }

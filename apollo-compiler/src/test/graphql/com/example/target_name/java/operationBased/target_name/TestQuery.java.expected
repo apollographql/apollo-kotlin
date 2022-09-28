@@ -152,32 +152,34 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<renamedInput> input;
+    private renamedInput input;
 
-    private Optional<java.lang.Object> scalar;
+    private java.lang.Object scalar;
 
-    private Optional<renamedEnum> enum_;
+    private renamedEnum enum_;
 
     Builder() {
     }
 
     public Builder input(@Nullable renamedInput input) {
-      this.input = Optional.presentIfNotNull(input);
+      this.input = input;
       return this;
     }
 
     public Builder scalar(@Nullable java.lang.Object scalar) {
-      this.scalar = Optional.presentIfNotNull(scalar);
+      this.scalar = scalar;
       return this;
     }
 
     public Builder enum_(@Nullable renamedEnum enum_) {
-      this.enum_ = Optional.presentIfNotNull(enum_);
+      this.enum_ = enum_;
       return this;
     }
 
     public TestQuery build() {
-      return new TestQuery(input, scalar, enum_);
+      return new TestQuery(Optional.presentIfNotNull(input),
+          Optional.presentIfNotNull(scalar),
+          Optional.presentIfNotNull(enum_));
     }
   }
 

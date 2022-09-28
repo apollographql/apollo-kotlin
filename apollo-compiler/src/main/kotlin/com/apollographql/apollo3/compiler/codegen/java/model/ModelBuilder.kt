@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.model
 
+import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperCamelCaseIgnoringNonLetters
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -18,6 +19,7 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -128,7 +130,7 @@ internal class ModelBuilder(
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
           .addCode(fields
-              .map { CodeBlock.of("\$L.\$L = \$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name)) }
+              .map { CodeBlock.of("\$L.\$L = \$L\$L;\n", builderVariable, context.layout.propertyName(it.name), context.layout.propertyName(it.name), optionalWrappedValue(it.type)) }
               .fold(CodeBlock.builder()) { builder, code -> builder.add(code) }
               .build()
           )
@@ -145,6 +147,16 @@ internal class ModelBuilder(
                   context = context
               ).build()
           ).build()
+    }
+  }
+
+  private fun optionalWrappedValue(fieldType: TypeName): String {
+    if (!context.resolver.isOptional(fieldType)) return ""
+    return when (context.nullableFieldStyle) {
+      JavaNullable.APOLLO_OPTIONAL -> ".getOrNull()"
+      JavaNullable.JAVA_OPTIONAL -> ".orElse(null)"
+      JavaNullable.GUAVA_OPTIONAL -> ".orNull()"
+      else -> ""
     }
   }
 }

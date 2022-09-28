@@ -153,7 +153,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      return new TestQuery(includeName, skipFriends);
+      return new TestQuery(includeName,
+          skipFriends);
     }
   }
 

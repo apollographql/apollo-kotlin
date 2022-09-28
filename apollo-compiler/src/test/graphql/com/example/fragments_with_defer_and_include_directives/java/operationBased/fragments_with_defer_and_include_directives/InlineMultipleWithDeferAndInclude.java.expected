@@ -196,7 +196,10 @@ public class InlineMultipleWithDeferAndInclude implements Query<InlineMultipleWi
     }
 
     public InlineMultipleWithDeferAndInclude build() {
-      return new InlineMultipleWithDeferAndInclude(cond1, cond2, cond3, cond4);
+      return new InlineMultipleWithDeferAndInclude(cond1,
+          cond2,
+          cond3,
+          cond4);
     }
   }
 

@@ -180,7 +180,9 @@ public class GetUser implements Query<GetUser.Data> {
     }
 
     public GetUser build() {
-      return new GetUser(organizationId, query, size);
+      return new GetUser(organizationId,
+          query,
+          size);
     }
   }
 

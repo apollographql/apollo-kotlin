@@ -130,18 +130,18 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Episode> episode;
+    private Episode episode;
 
     Builder() {
     }
 
     public Builder episode(@Nullable Episode episode) {
-      this.episode = Optional.presentIfNotNull(episode);
+      this.episode = episode;
       return this;
     }
 
     public TestQuery build() {
-      return new TestQuery(episode);
+      return new TestQuery(Optional.presentIfNotNull(episode));
     }
   }
 

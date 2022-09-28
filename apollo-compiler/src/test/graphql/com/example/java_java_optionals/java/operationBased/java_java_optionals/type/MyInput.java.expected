@@ -79,17 +79,17 @@ public class MyInput {
   }
 
   public static final class Builder {
-    private Optional<Optional<Integer>> nullableInt;
+    private Optional<Integer> nullableInt;
 
     private int nonNullableInt;
 
-    private Optional<Integer> nonNullableIntWithDefault;
+    private Integer nonNullableIntWithDefault;
 
     Builder() {
     }
 
     public Builder nullableInt(@Nullable Optional<Integer> nullableInt) {
-      this.nullableInt = Optional.ofNullable(nullableInt);
+      this.nullableInt = nullableInt;
       return this;
     }
 
@@ -99,12 +99,14 @@ public class MyInput {
     }
 
     public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = Optional.ofNullable(nonNullableIntWithDefault);
+      this.nonNullableIntWithDefault = nonNullableIntWithDefault;
       return this;
     }
 
     public MyInput build() {
-      return new MyInput(nullableInt, nonNullableInt, nonNullableIntWithDefault);
+      return new MyInput(Optional.ofNullable(nullableInt),
+          nonNullableInt,
+          Optional.ofNullable(nonNullableIntWithDefault));
     }
   }
 }

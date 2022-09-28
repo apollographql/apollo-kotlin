@@ -73,7 +73,7 @@ public class UserQuery {
   public static final class Builder {
     private String name;
 
-    private Optional<Boolean> isAdmin;
+    private Boolean isAdmin;
 
     Builder() {
     }
@@ -84,12 +84,13 @@ public class UserQuery {
     }
 
     public Builder isAdmin(@Nullable Boolean isAdmin) {
-      this.isAdmin = Optional.presentIfNotNull(isAdmin);
+      this.isAdmin = isAdmin;
       return this;
     }
 
     public UserQuery build() {
-      return new UserQuery(name, isAdmin);
+      return new UserQuery(name,
+          Optional.presentIfNotNull(isAdmin));
     }
   }
 }

@@ -229,47 +229,47 @@ public class ReviewInput {
   public static final class Builder {
     private Integer stars;
 
-    private Optional<Integer> nullableIntFieldWithDefaultValue;
+    private Integer nullableIntFieldWithDefaultValue;
 
-    private Optional<String> commentary;
+    private String commentary;
 
     private ColorInput favoriteColor;
 
-    private Optional<Episode> enumWithDefaultValue;
+    private Episode enumWithDefaultValue;
 
-    private Optional<Episode> nonNullableEnumWithDefaultValue;
+    private Episode nonNullableEnumWithDefaultValue;
 
-    private Optional<Episode> nullableEnum;
+    private Episode nullableEnum;
 
-    private Optional<List<Object>> listOfCustomScalar;
+    private List<Object> listOfCustomScalar;
 
-    private Optional<Object> customScalar;
+    private Object customScalar;
 
-    private Optional<List<Episode>> listOfEnums;
+    private List<Episode> listOfEnums;
 
-    private Optional<List<Integer>> listOfInt;
+    private List<Integer> listOfInt;
 
-    private Optional<List<String>> listOfString;
+    private List<String> listOfString;
 
     private List<String> listOfStringNonOptional;
 
-    private Optional<List<ColorInput>> listOfInputTypes;
+    private List<ColorInput> listOfInputTypes;
 
-    private Optional<Boolean> booleanWithDefaultValue;
+    private Boolean booleanWithDefaultValue;
 
-    private Optional<Boolean> booleanNonOptional;
+    private Boolean booleanNonOptional;
 
-    private Optional<List<List<String>>> listOfListOfString;
+    private List<List<String>> listOfListOfString;
 
-    private Optional<List<List<Episode>>> listOfListOfEnum;
+    private List<List<Episode>> listOfListOfEnum;
 
-    private Optional<List<List<Object>>> listOfListOfCustom;
+    private List<List<Object>> listOfListOfCustom;
 
-    private Optional<List<List<ColorInput>>> listOfListOfObject;
+    private List<List<ColorInput>> listOfListOfObject;
 
-    private Optional<String> CapitalizedField;
+    private String CapitalizedField;
 
-    private Optional<Integer> CapitalizedInt;
+    private Integer CapitalizedInt;
 
     Builder() {
     }
@@ -287,7 +287,7 @@ public class ReviewInput {
      */
     public Builder nullableIntFieldWithDefaultValue(
         @Nullable Integer nullableIntFieldWithDefaultValue) {
-      this.nullableIntFieldWithDefaultValue = Optional.presentIfNotNull(nullableIntFieldWithDefaultValue);
+      this.nullableIntFieldWithDefaultValue = nullableIntFieldWithDefaultValue;
       return this;
     }
 
@@ -295,7 +295,7 @@ public class ReviewInput {
      * Comment about the movie, optional
      */
     public Builder commentary(@Nullable String commentary) {
-      this.commentary = Optional.presentIfNotNull(commentary);
+      this.commentary = commentary;
       return this;
     }
 
@@ -311,7 +311,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
-      this.enumWithDefaultValue = Optional.presentIfNotNull(enumWithDefaultValue);
+      this.enumWithDefaultValue = enumWithDefaultValue;
       return this;
     }
 
@@ -320,7 +320,7 @@ public class ReviewInput {
      */
     public Builder nonNullableEnumWithDefaultValue(
         @Nullable Episode nonNullableEnumWithDefaultValue) {
-      this.nonNullableEnumWithDefaultValue = Optional.presentIfNotNull(nonNullableEnumWithDefaultValue);
+      this.nonNullableEnumWithDefaultValue = nonNullableEnumWithDefaultValue;
       return this;
     }
 
@@ -328,7 +328,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder nullableEnum(@Nullable Episode nullableEnum) {
-      this.nullableEnum = Optional.presentIfNotNull(nullableEnum);
+      this.nullableEnum = nullableEnum;
       return this;
     }
 
@@ -336,7 +336,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfCustomScalar(@Nullable List<Object> listOfCustomScalar) {
-      this.listOfCustomScalar = Optional.presentIfNotNull(listOfCustomScalar);
+      this.listOfCustomScalar = listOfCustomScalar;
       return this;
     }
 
@@ -344,7 +344,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder customScalar(@Nullable Object customScalar) {
-      this.customScalar = Optional.presentIfNotNull(customScalar);
+      this.customScalar = customScalar;
       return this;
     }
 
@@ -352,7 +352,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfEnums(@Nullable List<Episode> listOfEnums) {
-      this.listOfEnums = Optional.presentIfNotNull(listOfEnums);
+      this.listOfEnums = listOfEnums;
       return this;
     }
 
@@ -360,7 +360,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfInt(@Nullable List<Integer> listOfInt) {
-      this.listOfInt = Optional.presentIfNotNull(listOfInt);
+      this.listOfInt = listOfInt;
       return this;
     }
 
@@ -368,7 +368,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfString(@Nullable List<String> listOfString) {
-      this.listOfString = Optional.presentIfNotNull(listOfString);
+      this.listOfString = listOfString;
       return this;
     }
 
@@ -384,7 +384,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfInputTypes(@Nullable List<ColorInput> listOfInputTypes) {
-      this.listOfInputTypes = Optional.presentIfNotNull(listOfInputTypes);
+      this.listOfInputTypes = listOfInputTypes;
       return this;
     }
 
@@ -392,7 +392,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder booleanWithDefaultValue(@Nullable Boolean booleanWithDefaultValue) {
-      this.booleanWithDefaultValue = Optional.presentIfNotNull(booleanWithDefaultValue);
+      this.booleanWithDefaultValue = booleanWithDefaultValue;
       return this;
     }
 
@@ -400,7 +400,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder booleanNonOptional(@Nullable Boolean booleanNonOptional) {
-      this.booleanNonOptional = Optional.presentIfNotNull(booleanNonOptional);
+      this.booleanNonOptional = booleanNonOptional;
       return this;
     }
 
@@ -408,7 +408,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfListOfString(@Nullable List<List<String>> listOfListOfString) {
-      this.listOfListOfString = Optional.presentIfNotNull(listOfListOfString);
+      this.listOfListOfString = listOfListOfString;
       return this;
     }
 
@@ -416,7 +416,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfListOfEnum(@Nullable List<List<Episode>> listOfListOfEnum) {
-      this.listOfListOfEnum = Optional.presentIfNotNull(listOfListOfEnum);
+      this.listOfListOfEnum = listOfListOfEnum;
       return this;
     }
 
@@ -424,7 +424,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfListOfCustom(@Nullable List<List<Object>> listOfListOfCustom) {
-      this.listOfListOfCustom = Optional.presentIfNotNull(listOfListOfCustom);
+      this.listOfListOfCustom = listOfListOfCustom;
       return this;
     }
 
@@ -432,7 +432,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder listOfListOfObject(@Nullable List<List<ColorInput>> listOfListOfObject) {
-      this.listOfListOfObject = Optional.presentIfNotNull(listOfListOfObject);
+      this.listOfListOfObject = listOfListOfObject;
       return this;
     }
 
@@ -440,7 +440,7 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder CapitalizedField(@Nullable String CapitalizedField) {
-      this.CapitalizedField = Optional.presentIfNotNull(CapitalizedField);
+      this.CapitalizedField = CapitalizedField;
       return this;
     }
 
@@ -448,12 +448,33 @@ public class ReviewInput {
      * for test purpose only
      */
     public Builder CapitalizedInt(@Nullable Integer CapitalizedInt) {
-      this.CapitalizedInt = Optional.presentIfNotNull(CapitalizedInt);
+      this.CapitalizedInt = CapitalizedInt;
       return this;
     }
 
     public ReviewInput build() {
-      return new ReviewInput(stars, nullableIntFieldWithDefaultValue, commentary, favoriteColor, enumWithDefaultValue, nonNullableEnumWithDefaultValue, nullableEnum, listOfCustomScalar, customScalar, listOfEnums, listOfInt, listOfString, listOfStringNonOptional, listOfInputTypes, booleanWithDefaultValue, booleanNonOptional, listOfListOfString, listOfListOfEnum, listOfListOfCustom, listOfListOfObject, CapitalizedField, CapitalizedInt);
+      return new ReviewInput(stars,
+          Optional.presentIfNotNull(nullableIntFieldWithDefaultValue),
+          Optional.presentIfNotNull(commentary),
+          favoriteColor,
+          Optional.presentIfNotNull(enumWithDefaultValue),
+          Optional.presentIfNotNull(nonNullableEnumWithDefaultValue),
+          Optional.presentIfNotNull(nullableEnum),
+          Optional.presentIfNotNull(listOfCustomScalar),
+          Optional.presentIfNotNull(customScalar),
+          Optional.presentIfNotNull(listOfEnums),
+          Optional.presentIfNotNull(listOfInt),
+          Optional.presentIfNotNull(listOfString),
+          listOfStringNonOptional,
+          Optional.presentIfNotNull(listOfInputTypes),
+          Optional.presentIfNotNull(booleanWithDefaultValue),
+          Optional.presentIfNotNull(booleanNonOptional),
+          Optional.presentIfNotNull(listOfListOfString),
+          Optional.presentIfNotNull(listOfListOfEnum),
+          Optional.presentIfNotNull(listOfListOfCustom),
+          Optional.presentIfNotNull(listOfListOfObject),
+          Optional.presentIfNotNull(CapitalizedField),
+          Optional.presentIfNotNull(CapitalizedInt));
     }
   }
 }

@@ -160,7 +160,8 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     }
 
     public CreateReviewForEpisode build() {
-      return new CreateReviewForEpisode(ep, review);
+      return new CreateReviewForEpisode(ep,
+          review);
     }
   }
 

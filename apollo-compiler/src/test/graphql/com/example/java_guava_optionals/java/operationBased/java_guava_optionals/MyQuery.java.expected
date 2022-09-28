@@ -174,23 +174,23 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Optional<Integer>> nullableInt;
+    private Optional<Integer> nullableInt;
 
     private int nonNullableInt;
 
-    private Optional<Integer> nonNullableIntWithDefault;
+    private Integer nonNullableIntWithDefault;
 
-    private Optional<Optional<MyInput>> nullableInput;
+    private Optional<MyInput> nullableInput;
 
     private MyInput nonNullableInput;
 
-    private Optional<MyInput> nonNullableInputWithDefault;
+    private MyInput nonNullableInputWithDefault;
 
     Builder() {
     }
 
     public Builder nullableInt(@Nullable Optional<Integer> nullableInt) {
-      this.nullableInt = Optional.fromNullable(nullableInt);
+      this.nullableInt = nullableInt;
       return this;
     }
 
@@ -200,12 +200,12 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = Optional.fromNullable(nonNullableIntWithDefault);
+      this.nonNullableIntWithDefault = nonNullableIntWithDefault;
       return this;
     }
 
     public Builder nullableInput(@Nullable Optional<MyInput> nullableInput) {
-      this.nullableInput = Optional.fromNullable(nullableInput);
+      this.nullableInput = nullableInput;
       return this;
     }
 
@@ -215,12 +215,17 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
-      this.nonNullableInputWithDefault = Optional.fromNullable(nonNullableInputWithDefault);
+      this.nonNullableInputWithDefault = nonNullableInputWithDefault;
       return this;
     }
 
     public MyQuery build() {
-      return new MyQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
+      return new MyQuery(Optional.fromNullable(nullableInt),
+          nonNullableInt,
+          Optional.fromNullable(nonNullableIntWithDefault),
+          Optional.fromNullable(nullableInput),
+          nonNullableInput,
+          Optional.fromNullable(nonNullableInputWithDefault));
     }
   }
 
@@ -295,9 +300,9 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     public Builder toBuilder() {
       Builder builder = new Builder();
-      builder.nullableInt = nullableInt;
+      builder.nullableInt = nullableInt.orNull();
       builder.nonNullableInt = nonNullableInt;
-      builder.nullableMyType = nullableMyType;
+      builder.nullableMyType = nullableMyType.orNull();
       builder.nonNullableMyType = nonNullableMyType;
       return builder;
     }
@@ -307,11 +312,11 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public static final class Builder {
-      private Optional<Integer> nullableInt;
+      private Integer nullableInt;
 
       private int nonNullableInt;
 
-      private Optional<NullableMyType> nullableMyType;
+      private NullableMyType nullableMyType;
 
       private NonNullableMyType nonNullableMyType;
 
@@ -319,7 +324,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public Builder nullableInt(@Nullable Integer nullableInt) {
-        this.nullableInt = Optional.fromNullable(nullableInt);
+        this.nullableInt = nullableInt;
         return this;
       }
 
@@ -329,7 +334,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public Builder nullableMyType(@Nullable NullableMyType nullableMyType) {
-        this.nullableMyType = Optional.fromNullable(nullableMyType);
+        this.nullableMyType = nullableMyType;
         return this;
       }
 
@@ -339,7 +344,10 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public Data build() {
-        return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
+        return new Data(Optional.fromNullable(nullableInt),
+            nonNullableInt,
+            Optional.fromNullable(nullableMyType),
+            nonNullableMyType);
       }
     }
   }
@@ -400,7 +408,7 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     public Builder toBuilder() {
       Builder builder = new Builder();
-      builder.nullableInt = nullableInt;
+      builder.nullableInt = nullableInt.orNull();
       builder.nonNullableInt = nonNullableInt;
       return builder;
     }
@@ -410,7 +418,7 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public static final class Builder {
-      private Optional<Integer> nullableInt;
+      private Integer nullableInt;
 
       private int nonNullableInt;
 
@@ -418,7 +426,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public Builder nullableInt(@Nullable Integer nullableInt) {
-        this.nullableInt = Optional.fromNullable(nullableInt);
+        this.nullableInt = nullableInt;
         return this;
       }
 
@@ -428,7 +436,8 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public NullableMyType build() {
-        return new NullableMyType(nullableInt, nonNullableInt);
+        return new NullableMyType(Optional.fromNullable(nullableInt),
+            nonNullableInt);
       }
     }
   }
@@ -489,7 +498,7 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     public Builder toBuilder() {
       Builder builder = new Builder();
-      builder.nullableInt = nullableInt;
+      builder.nullableInt = nullableInt.orNull();
       builder.nonNullableInt = nonNullableInt;
       return builder;
     }
@@ -499,7 +508,7 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public static final class Builder {
-      private Optional<Integer> nullableInt;
+      private Integer nullableInt;
 
       private int nonNullableInt;
 
@@ -507,7 +516,7 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public Builder nullableInt(@Nullable Integer nullableInt) {
-        this.nullableInt = Optional.fromNullable(nullableInt);
+        this.nullableInt = nullableInt;
         return this;
       }
 
@@ -517,7 +526,8 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
 
       public NonNullableMyType build() {
-        return new NonNullableMyType(nullableInt, nonNullableInt);
+        return new NonNullableMyType(Optional.fromNullable(nullableInt),
+            nonNullableInt);
       }
     }
   }

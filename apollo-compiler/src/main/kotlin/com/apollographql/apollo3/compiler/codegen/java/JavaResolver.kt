@@ -66,7 +66,7 @@ internal class JavaResolver(
       JavaNullable.GUAVA_OPTIONAL,
   )
 
-  private val nullableAnnotationClassName: ClassName? = when (nullableFieldStyle) {
+  val nullableAnnotationClassName: ClassName? = when (nullableFieldStyle) {
     JavaNullable.JETBRAINS_ANNOTATIONS -> JavaClassNames.JetBrainsNullable
     JavaNullable.ANDROID_ANNOTATIONS -> JavaClassNames.JetBrainsNullable // TODO
     JavaNullable.JSR_305_ANNOTATIONS -> JavaClassNames.JetBrainsNullable // TODO

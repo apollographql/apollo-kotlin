@@ -152,7 +152,8 @@ public class TestQuery implements Mutation<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      return new TestQuery(ep, review);
+      return new TestQuery(ep,
+          review);
     }
   }
 
