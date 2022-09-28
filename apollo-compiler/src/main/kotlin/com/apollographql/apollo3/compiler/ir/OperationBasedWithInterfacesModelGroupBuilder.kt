@@ -23,7 +23,8 @@ import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
  * - it doesn't support `@include` and `@defer`
  * - it generates interfaces for polymorphic selection sets
  *
- * For that last point, it starts just like [OperationBasedModelGroupBuilder] and once it has a list of nodes
+ * For that last point, it starts just like [OperationBasedModelGroupBuilder] and once it has a tree of nodes,
+ * it converts nodes that contains fragments into a modelGroup that has multiple models
  */
 internal class OperationBasedWithInterfacesModelGroupBuilder(
     private val schema: Schema,
