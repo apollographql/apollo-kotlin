@@ -367,7 +367,8 @@ class CodegenTest {
       val outputDir = File("build/generated/test/${folder.name}/$targetLanguagePath/$codegenModels/")
 
       val generatePrimitiveTypes = when (folder.name) {
-        "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations" -> true
+        "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations",
+        "java_android_annotations", "java_jsr305_annotations" -> true
         else -> false
       }
 
@@ -376,6 +377,8 @@ class CodegenTest {
         "java_guava_optionals" -> JavaNullable.GUAVA_OPTIONAL
         "java_java_optionals" -> JavaNullable.JAVA_OPTIONAL
         "java_jetbrains_annotations" -> JavaNullable.JETBRAINS_ANNOTATIONS
+        "java_android_annotations" -> JavaNullable.ANDROID_ANNOTATIONS
+        "java_jsr305_annotations" -> JavaNullable.JSR_305_ANNOTATIONS
         else -> JavaNullable.NONE
       }
 
