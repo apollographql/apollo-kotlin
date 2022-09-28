@@ -66,9 +66,7 @@ internal class ModelBuilder(
           .applyIf(it.override) {
             addAnnotation(JavaClassNames.Override)
           }
-          .applyIf(irType.isAnnotated) {
-            addAnnotations(irType.annotations)
-          }
+          .addAnnotations(irType.annotations)
           .maybeAddDescription(it.info.description)
           .maybeAddDeprecation(it.info.deprecationReason)
           .build()

@@ -123,10 +123,13 @@ public final class com/apollographql/apollo3/compiler/IncomingOptions$Companion 
 }
 
 public final class com/apollographql/apollo3/compiler/JavaNullable : java/lang/Enum {
+	public static final field ANDROID_ANNOTATIONS Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static final field APOLLO_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static final field Companion Lcom/apollographql/apollo3/compiler/JavaNullable$Companion;
 	public static final field GUAVA_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static final field JAVA_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullable;
+	public static final field JETBRAINS_ANNOTATIONS Lcom/apollographql/apollo3/compiler/JavaNullable;
+	public static final field JSR_305_ANNOTATIONS Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static final field NONE Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/JavaNullable;
