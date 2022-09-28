@@ -15,7 +15,6 @@ object KotlinCompiler {
       sources = kotlinFiles
 
       this.allWarningsAsErrors = allWarningsAsErrors
-      this.suppressWarnings
       inheritClassPath = true
       verbose = false
     }.compile()
