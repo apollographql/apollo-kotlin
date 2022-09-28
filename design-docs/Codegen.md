@@ -13,7 +13,7 @@ For more complex queries, involving [merged fields](https://spec.graphql.org/dra
 
 `operationBased` will generate less code but will use more memory and expose less type information.
 
-`experimental_operationBasedWithInterfaces` same as `operationBased` but will generate interfaces to access model similar to `responseBased`. 
+`experimental_operationBasedWithInterfaces` same as `operationBased` but generates interfaces for selection sets that contain fragments to make it easier to use `when` statements. 
 
 
 # responseBased codegen

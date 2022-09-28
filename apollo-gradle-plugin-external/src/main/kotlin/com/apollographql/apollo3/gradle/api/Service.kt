@@ -459,8 +459,8 @@ interface Service {
    * - "operationBased" generates models that map 1:1 with the GraphQL operation
    * - "responseBased" generates models that map 1:1 with the Json response
    * - "compat" is for compatibility with 2.x and will be removed in a future version
-   * - "experimental_operationBasedWithInterfaces" is like "operationBased" except it will generate an interface for polymorphic
-   * selection sets
+   * - "experimental_operationBasedWithInterfaces" is like "operationBased" except it will generate an interface for selection
+   * sets that contain fragments to make it easier to use `when` statements
    *
    * Default value: "operationBased"
    */
