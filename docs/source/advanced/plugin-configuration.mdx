@@ -68,6 +68,65 @@ apollo {
 }
 ```
 
+## Android variants support
+
+It is sometimes useful to have different operations or schemas depending on the [variant](https://developer.android.com/studio/build/build-variants) of your Android project.
+
+To do this, you can instruct the Gradle plugin to automatically configure a Service per variant, like so:
+
+```kotlin
+apollo {
+  createAllAndroidVariantServices(sourceFolder = ".", nameSuffix = "") {
+    // Configure the service here
+    packageName.set("...")
+  }
+}
+```
+
+- `sourceFolder` where to find the GraphQL relative to "src/$sourceSetName/graphql". Pass "." to look into "src/$sourceSetName/graphql".
+- `nameSuffix` a suffix to use for the service name. Leave blank to use the variant name as is.
+
+Similarly to what the Android variant system does with source code, the GraphQL files are handled additively, and files in `src/main/graphql` are included in all services. This means your project could look like this (e.g. when certain operations must only exist in debug builds):
+
+```
+- main
+    - graphql
+        - schema.graphqls // Schema for all variants
+        - operations.graphql // Operations shared by all variants
+- debug
+    - graphql
+        - operations.graphql // Operations specific to the 'debug' build type
+```
+
+Or for instance like this (specific backend per flavor):
+
+```
+- main
+- demo
+    - graphql
+        - schema.graphqls // Schema for the 'demo' flavor
+        - operations.graphql // Operations specific to the 'demo' flavor
+- full
+    - graphql
+        - schema.graphqls // Schema for the 'full' flavor
+        - operations.graphql // Operations specific to the 'full' flavor
+```
+
+If you want several variants to share the same operations/schema, you can set the GraphQL source folder in the Service lambda, based on the variant name, for instance:
+
+```kotlin
+apollo {
+  createAllAndroidVariantServices(".", "") {
+    if (name.startsWith("debug")) {
+      srcDir(file("src/debug/graphql/"))
+    } else if (name.startsWith("release")) {
+      srcDir(file("src/release/graphql/"))
+    }
+  }
+}
+```
+
+
 ## Downloading a schema
 
 By default, the Gradle plugin registers a `downloadApolloSchema` task that you can use from the command line:
