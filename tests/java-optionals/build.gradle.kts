@@ -7,13 +7,13 @@ plugins {
 dependencies {
   implementation(golatac.lib("apollo.api.java"))
   implementation(golatac.lib("guava.jre"))
+  implementation(golatac.lib("androidx.annotation"))
   testImplementation(golatac.lib("junit"))
 }
 
 apollo {
-  service("apollo") {
+  service("apolloOptional") {
     packageName.set("optionals.apollo")
-    generateKotlinModels.set(false)
     outputDirConnection {
       connectToJavaSourceSet("main")
     }
@@ -21,9 +21,8 @@ apollo {
     generateModelBuilder.set(true)
   }
 
-  service("java") {
+  service("javaOptional") {
     packageName.set("optionals.java")
-    generateKotlinModels.set(false)
     outputDirConnection {
       connectToJavaSourceSet("main")
     }
@@ -31,13 +30,40 @@ apollo {
     generateModelBuilder.set(true)
   }
 
-  service("guava") {
+  service("guavaOptional") {
     packageName.set("optionals.guava")
-    generateKotlinModels.set(false)
     outputDirConnection {
       connectToJavaSourceSet("main")
     }
     nullableFieldStyle.set("guavaOptional")
     generateModelBuilder.set(true)
   }
+
+  service("jetbrainsAnnotations") {
+    packageName.set("annotations.jetbrains")
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    nullableFieldStyle.set("jetbrainsAnnotations")
+    generateModelBuilder.set(true)
+  }
+
+  service("androidAnnotations") {
+    packageName.set("annotations.android")
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    nullableFieldStyle.set("androidAnnotations")
+    generateModelBuilder.set(true)
+  }
+
+  service("jsr305Annotations") {
+    packageName.set("annotations.jsr305")
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    nullableFieldStyle.set("jsr305Annotations")
+    generateModelBuilder.set(true)
+  }
+
 }
