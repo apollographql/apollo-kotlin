@@ -338,16 +338,25 @@ public class TestQuery implements Query<TestQuery.Data> {
         return this;
       }
 
+      /**
+       * The name of the character
+       */
       public Builder name(String name) {
         this.name = name;
         return this;
       }
 
+      /**
+       * The movies this character appears in
+       */
       public Builder appearsIn(List<Episode> appearsIn) {
         this.appearsIn = appearsIn;
         return this;
       }
 
+      /**
+       * Synthetic field for 'HeroDetails'
+       */
       public Builder heroDetails(HeroDetails heroDetails) {
         this.heroDetails = heroDetails;
         return this;

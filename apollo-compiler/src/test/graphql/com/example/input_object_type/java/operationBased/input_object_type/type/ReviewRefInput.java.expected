@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Circle ref to review input
@@ -66,13 +65,13 @@ public class ReviewRefInput {
   }
 
   public static final class Builder {
-    private Optional<ReviewInput> reviewInput;
+    private Optional<ReviewInput> reviewInput = Optional.absent();
 
     Builder() {
     }
 
-    public Builder reviewInput(@Nullable ReviewInput reviewInput) {
-      this.reviewInput = Optional.presentIfNotNull(reviewInput);
+    public Builder reviewInput(ReviewInput reviewInput) {
+      this.reviewInput = Optional.present(reviewInput);
       return this;
     }
 

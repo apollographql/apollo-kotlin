@@ -76,6 +76,9 @@ public class HumanDetails implements Fragment.Data {
     Builder() {
     }
 
+    /**
+     * What this human calls themselves
+     */
     public Builder name(String name) {
       this.name = name;
       return this;

@@ -38,6 +38,7 @@ fun TypeSpec.Builder.makeDataClassFromParameters(parameters: List<ParameterSpec>
         FieldSpec.builder(it.type, it.name)
             .addModifiers(Modifier.FINAL)
             .addModifiers(Modifier.PUBLIC)
+            .addAnnotations(it.annotations)
             .build()
       }
   )
@@ -60,7 +61,10 @@ fun TypeSpec.Builder.makeDataClassFromProperties(fields: List<FieldSpec>): TypeS
           .addModifiers(Modifier.PUBLIC)
           .addParameters(
               fields.map {
-                ParameterSpec.builder(it.type, it.name).build()
+                ParameterSpec
+                    .builder(it.type, it.name)
+                    .addAnnotations(it.annotations.filterNot { it.type == JavaClassNames.Deprecated })
+                    .build()
               }
           )
           .addCode(

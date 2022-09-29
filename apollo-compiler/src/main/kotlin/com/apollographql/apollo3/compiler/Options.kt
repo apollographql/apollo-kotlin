@@ -42,7 +42,7 @@ enum class TargetLanguage {
 
 enum class JavaNullable {
   /**
-   * Fields will be generated with the same type whether they are nullable or not.
+   * Fields will be generated with the same type and no annotations whether they are nullable or not.
    * This is the default value.
    */
   NONE,
@@ -61,6 +61,24 @@ enum class JavaNullable {
    * Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
    */
   GUAVA_OPTIONAL,
+
+  /**
+   * Fields will be generated with Jetbrain's `org.jetbrains.annotations.Nullable` annotation if nullable, or
+   * `org.jetbrains.annotations.NotNull` if not.
+   */
+  JETBRAINS_ANNOTATIONS,
+
+  /**
+   * Fields will be generated with Android's `androidx.annotation.Nullable` annotation if nullable, or
+   * `androidx.annotation.NonNull` if not.
+   */
+  ANDROID_ANNOTATIONS,
+
+  /**
+   * Fields will be generated with JSR 305's `javax.annotation.Nullable` annotation if nullable, or
+   * `javax.annotation.Nonnull` if not.
+   */
+  JSR_305_ANNOTATIONS,
   ;
 
   companion object {
@@ -70,6 +88,9 @@ enum class JavaNullable {
         "apolloOptional" -> APOLLO_OPTIONAL
         "javaOptional" -> JAVA_OPTIONAL
         "guavaOptional" -> GUAVA_OPTIONAL
+        "jetbrainsAnnotations" -> JETBRAINS_ANNOTATIONS
+        "androidAnnotations" -> ANDROID_ANNOTATIONS
+        "jsr305Annotations" -> JSR_305_ANNOTATIONS
         else -> null
       }
     }
@@ -283,6 +304,12 @@ class Options(
      * - `apolloOptional`: Fields will be generated as Apollo's `com.apollographql.apollo3.api.Optional<Type>` if nullable, or `Type` if not.
      * - `javaOptional`: Fields will be generated as Java's `java.util.Optional<Type>` if nullable, or `Type` if not.
      * - `guavaOptional`: Fields will be generated as Guava's `com.google.common.base.Optional<Type>` if nullable, or `Type` if not.
+     * - `jetbrainsAnnotations`: Fields will be generated with Jetbrain's `org.jetbrains.annotations.Nullable` annotation if nullable, or
+     * `org.jetbrains.annotations.NotNull` if not.
+     * - `androidAnnotations`: Fields will be generated with Android's `androidx.annotation.Nullable` annotation if nullable, or
+     * `androidx.annotation.NonNull` if not.
+     * - `jsr305Annotations`: Fields will be generated with JSR 305's `javax.annotation.Nullable` annotation if nullable, or
+     * `javax.annotation.Nonnull` if not.
      *
      * Default: `none`
      */

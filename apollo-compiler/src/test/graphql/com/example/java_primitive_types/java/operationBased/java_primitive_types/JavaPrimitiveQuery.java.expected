@@ -21,7 +21,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   public static final String OPERATION_ID = "955e634c34cd7cd1d999806876aec12f800dbb9d36cc914e313b7a0050342605";
@@ -174,23 +173,23 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Integer> nullableInt;
+    private Optional<Integer> nullableInt = Optional.absent();
 
     private int nonNullableInt;
 
-    private Optional<Integer> nonNullableIntWithDefault;
+    private Optional<Integer> nonNullableIntWithDefault = Optional.absent();
 
-    private Optional<MyInput> nullableInput;
+    private Optional<MyInput> nullableInput = Optional.absent();
 
     private MyInput nonNullableInput;
 
-    private Optional<MyInput> nonNullableInputWithDefault;
+    private Optional<MyInput> nonNullableInputWithDefault = Optional.absent();
 
     Builder() {
     }
 
-    public Builder nullableInt(@Nullable Integer nullableInt) {
-      this.nullableInt = Optional.presentIfNotNull(nullableInt);
+    public Builder nullableInt(Integer nullableInt) {
+      this.nullableInt = Optional.present(nullableInt);
       return this;
     }
 
@@ -199,13 +198,13 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = Optional.presentIfNotNull(nonNullableIntWithDefault);
+    public Builder nonNullableIntWithDefault(Integer nonNullableIntWithDefault) {
+      this.nonNullableIntWithDefault = Optional.present(nonNullableIntWithDefault);
       return this;
     }
 
-    public Builder nullableInput(@Nullable MyInput nullableInput) {
-      this.nullableInput = Optional.presentIfNotNull(nullableInput);
+    public Builder nullableInput(MyInput nullableInput) {
+      this.nullableInput = Optional.present(nullableInput);
       return this;
     }
 
@@ -214,8 +213,8 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
-      this.nonNullableInputWithDefault = Optional.presentIfNotNull(nonNullableInputWithDefault);
+    public Builder nonNullableInputWithDefault(MyInput nonNullableInputWithDefault) {
+      this.nonNullableInputWithDefault = Optional.present(nonNullableInputWithDefault);
       return this;
     }
 

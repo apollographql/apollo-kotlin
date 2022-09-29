@@ -89,11 +89,17 @@ public class DroidDetails implements Fragment.Data {
     Builder() {
     }
 
+    /**
+     * What others call this droid
+     */
     public Builder name(String name) {
       this.name = name;
       return this;
     }
 
+    /**
+     * This droid's primary function
+     */
     public Builder primaryFunction(String primaryFunction) {
       this.primaryFunction = primaryFunction;
       return this;

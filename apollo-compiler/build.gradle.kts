@@ -24,10 +24,6 @@ dependencies {
   implementation(golatac.lib("moshi"))
   implementation(golatac.lib("moshix.sealed.runtime"))
 
-  implementation(project(":apollo-api-java")) {
-    because("For Java and Guava Optional adapter use in the Java generated code")
-  }
-
   ksp(golatac.lib("moshix.sealed.codegen"))
   ksp(golatac.lib("moshix.ksp"))
 
@@ -36,6 +32,12 @@ dependencies {
   testImplementation(golatac.lib("truth"))
   testImplementation(golatac.lib("kotlin.test.junit"))
   testImplementation(golatac.lib("google.testparameterinjector"))
+  testImplementation(project(":apollo-api-java")) {
+    because("Generated Java code references Java and Guava Optionals")
+  }
+  testImplementation(golatac.lib("androidx.annotation")) {
+    because("Used in the Java generated code")
+  }
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {

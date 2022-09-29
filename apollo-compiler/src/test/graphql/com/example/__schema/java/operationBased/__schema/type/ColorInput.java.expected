@@ -11,7 +11,6 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * The input object sent when passing in a color
@@ -97,15 +96,15 @@ public class ColorInput {
   }
 
   public static final class Builder {
-    private Optional<Integer> red;
+    private Optional<Integer> red = Optional.absent();
 
-    private Optional<Double> green;
+    private Optional<Double> green = Optional.absent();
 
-    private Optional<Double> blue;
+    private Optional<Double> blue = Optional.absent();
 
-    private Optional<Episode> enumWithDefaultValue;
+    private Optional<Episode> enumWithDefaultValue = Optional.absent();
 
-    private Optional<ReviewRefInput> reviewRefInput;
+    private Optional<ReviewRefInput> reviewRefInput = Optional.absent();
 
     Builder() {
     }
@@ -113,40 +112,40 @@ public class ColorInput {
     /**
      * Red color
      */
-    public Builder red(@Nullable Integer red) {
-      this.red = Optional.presentIfNotNull(red);
+    public Builder red(Integer red) {
+      this.red = Optional.present(red);
       return this;
     }
 
     /**
      * Green color
      */
-    public Builder green(@Nullable Double green) {
-      this.green = Optional.presentIfNotNull(green);
+    public Builder green(Double green) {
+      this.green = Optional.present(green);
       return this;
     }
 
     /**
      * Blue color
      */
-    public Builder blue(@Nullable Double blue) {
-      this.blue = Optional.presentIfNotNull(blue);
+    public Builder blue(Double blue) {
+      this.blue = Optional.present(blue);
       return this;
     }
 
     /**
      * for test purpose only
      */
-    public Builder enumWithDefaultValue(@Nullable Episode enumWithDefaultValue) {
-      this.enumWithDefaultValue = Optional.presentIfNotNull(enumWithDefaultValue);
+    public Builder enumWithDefaultValue(Episode enumWithDefaultValue) {
+      this.enumWithDefaultValue = Optional.present(enumWithDefaultValue);
       return this;
     }
 
     /**
      * Circle ref to review input
      */
-    public Builder reviewRefInput(@Nullable ReviewRefInput reviewRefInput) {
-      this.reviewRefInput = Optional.presentIfNotNull(reviewRefInput);
+    public Builder reviewRefInput(ReviewRefInput reviewRefInput) {
+      this.reviewRefInput = Optional.present(reviewRefInput);
       return this;
     }
 

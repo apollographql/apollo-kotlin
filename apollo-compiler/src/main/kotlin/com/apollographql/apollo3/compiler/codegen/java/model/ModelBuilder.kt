@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperC
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
-import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
+import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
@@ -54,15 +54,17 @@ internal class ModelBuilder(
   }
 
   fun IrModel.typeSpec(): TypeSpec {
-    val fields = properties.map {
+    val fields: List<FieldSpec> = properties.map {
+      val irType = context.resolver.resolveIrType(it.info.type)
       FieldSpec.builder(
-          context.resolver.resolveIrType(it.info.type),
+          irType.withoutAnnotations(),
           context.layout.propertyName(it.info.responseName),
       )
           .addModifiers(Modifier.PUBLIC)
           .applyIf(it.override) {
             addAnnotation(JavaClassNames.Override)
           }
+          .addAnnotations(irType.annotations)
           .maybeAddDescription(it.info.description)
           .maybeAddDeprecation(it.info.deprecationReason)
           .build()
@@ -119,7 +121,7 @@ internal class ModelBuilder(
     } else {
       val builderVariable = JavaClassNames.Builder.simpleName().decapitalizeFirstLetter()
       val builderClass = ClassName.get("", JavaClassNames.Builder.simpleName())
-      val toBuilderMethod = MethodSpec.methodBuilder(Builder.TO_BUILDER_METHOD_NAME)
+      val toBuilderMethod = MethodSpec.methodBuilder(BuilderBuilder.TO_BUILDER_METHOD_NAME)
           .addModifiers(Modifier.PUBLIC)
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
@@ -133,12 +135,11 @@ internal class ModelBuilder(
 
       return toBuilder()
           .addMethod(toBuilderMethod)
-          .addMethod(Builder.builderFactoryMethod())
+          .addMethod(BuilderBuilder.builderFactoryMethod())
           .addType(
-              Builder(
+              BuilderBuilder(
                   targetObjectClassName = ClassName.get("", name),
-                  fields = fields.map { context.layout.propertyName(it.name) to it.type },
-                  fieldJavaDocs = emptyMap(),
+                  fields = fields,
                   context = context
               ).build()
           ).build()

@@ -116,6 +116,10 @@ internal object JavaClassNames {
 
   val JetBrainsNullable = ClassNames.JetBrainsNullable.toJavaPoetClassName()
   val JetBrainsNonNull = ClassNames.JetBrainsNonNull.toJavaPoetClassName()
+  val AndroidNullable = ClassName.get("androidx.annotation", "Nullable")
+  val AndroidNonNull = ClassName.get("androidx.annotation", "NonNull")
+  val Jsr305Nullable = ClassName.get("javax.annotation", "Nullable")
+  val Jsr305NonNull = ClassName.get("javax.annotation", "Nonnull")
 
   val GuavaOptional = ClassName.get("com.google.common.base", "Optional")
 }

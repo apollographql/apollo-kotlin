@@ -68,7 +68,7 @@ internal fun readFromResponseCodeBlock(
 ): CodeBlock {
   val (regularProperties, syntheticProperties) = model.properties.partition { !it.isSynthetic }
   val prefix = regularProperties.map { property ->
-    val resolvedType = context.resolver.resolveIrType(property.info.type)
+    val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
     val variableInitializer = when {
       hasTypenameArgument && property.info.responseName == "__typename" -> CodeBlock.of(typename)
       (property.info.type is IrNonNullType && property.info.type.ofType is IrOptionalType) -> CodeBlock.of(T, JavaClassNames.Absent)
@@ -146,7 +146,7 @@ internal fun readFromResponseCodeBlock(
           if (property.condition != BooleanExpression.True) {
             add(
                 "$T $L = null;\n",
-                context.resolver.resolveIrType(property.info.type),
+                context.resolver.resolveIrType(property.info.type).withoutAnnotations(),
                 context.layout.variableName(property.info.responseName),
             )
             val pathLiteral = if (path.isNotEmpty()) {
@@ -163,7 +163,7 @@ internal fun readFromResponseCodeBlock(
           } else {
             checkedProperties.add(property.info.responseName)
             add("$reader.rewind();\n")
-            add("$T ", context.resolver.resolveIrType(property.info.type))
+            add("$T ", context.resolver.resolveIrType(property.info.type).withoutAnnotations())
           }
         }
         .add(

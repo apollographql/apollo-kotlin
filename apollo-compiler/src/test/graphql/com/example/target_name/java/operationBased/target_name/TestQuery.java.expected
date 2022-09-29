@@ -20,7 +20,6 @@ import com.example.target_name.type.renamedInput;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class TestQuery implements Query<TestQuery.Data> {
   public static final String OPERATION_ID = "42f2acf77ef3db730fa970cbbba1ca04133fcea023d8355d4eb0c27ebe51e30f";
@@ -152,27 +151,27 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<renamedInput> input;
+    private Optional<renamedInput> input = Optional.absent();
 
-    private Optional<java.lang.Object> scalar;
+    private Optional<java.lang.Object> scalar = Optional.absent();
 
-    private Optional<renamedEnum> enum_;
+    private Optional<renamedEnum> enum_ = Optional.absent();
 
     Builder() {
     }
 
-    public Builder input(@Nullable renamedInput input) {
-      this.input = Optional.presentIfNotNull(input);
+    public Builder input(renamedInput input) {
+      this.input = Optional.present(input);
       return this;
     }
 
-    public Builder scalar(@Nullable java.lang.Object scalar) {
-      this.scalar = Optional.presentIfNotNull(scalar);
+    public Builder scalar(java.lang.Object scalar) {
+      this.scalar = Optional.present(scalar);
       return this;
     }
 
-    public Builder enum_(@Nullable renamedEnum enum_) {
-      this.enum_ = Optional.presentIfNotNull(enum_);
+    public Builder enum_(renamedEnum enum_) {
+      this.enum_ = Optional.present(enum_);
       return this;
     }
 

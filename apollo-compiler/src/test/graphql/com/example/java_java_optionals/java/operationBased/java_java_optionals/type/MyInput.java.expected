@@ -10,7 +10,7 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Optional;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class MyInput {
   public final Optional<Optional<Integer>> nullableInt;
@@ -79,17 +79,17 @@ public class MyInput {
   }
 
   public static final class Builder {
-    private Optional<Optional<Integer>> nullableInt;
+    private Optional<Optional<Integer>> nullableInt = Optional.empty();
 
     private int nonNullableInt;
 
-    private Optional<Integer> nonNullableIntWithDefault;
+    private Optional<Integer> nonNullableIntWithDefault = Optional.empty();
 
     Builder() {
     }
 
-    public Builder nullableInt(@Nullable Optional<Integer> nullableInt) {
-      this.nullableInt = Optional.ofNullable(nullableInt);
+    public Builder nullableInt(@NotNull Optional<Integer> nullableInt) {
+      this.nullableInt = Optional.of(nullableInt);
       return this;
     }
 
@@ -98,8 +98,8 @@ public class MyInput {
       return this;
     }
 
-    public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = Optional.ofNullable(nonNullableIntWithDefault);
+    public Builder nonNullableIntWithDefault(Integer nonNullableIntWithDefault) {
+      this.nonNullableIntWithDefault = Optional.of(nonNullableIntWithDefault);
       return this;
     }
 

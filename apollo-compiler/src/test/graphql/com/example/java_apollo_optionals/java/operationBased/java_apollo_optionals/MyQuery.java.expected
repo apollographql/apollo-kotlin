@@ -21,7 +21,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class MyQuery implements Query<MyQuery.Data> {
   public static final String OPERATION_ID = "75a121303b1c722fd9a9f0cfc451ae9cd36dc1860445c6f3b1191350ead43bd7";
@@ -174,23 +174,23 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   public static final class Builder {
-    private Optional<Optional<Integer>> nullableInt;
+    private Optional<Optional<Integer>> nullableInt = Optional.absent();
 
     private int nonNullableInt;
 
-    private Optional<Integer> nonNullableIntWithDefault;
+    private Optional<Integer> nonNullableIntWithDefault = Optional.absent();
 
-    private Optional<Optional<MyInput>> nullableInput;
+    private Optional<Optional<MyInput>> nullableInput = Optional.absent();
 
     private MyInput nonNullableInput;
 
-    private Optional<MyInput> nonNullableInputWithDefault;
+    private Optional<MyInput> nonNullableInputWithDefault = Optional.absent();
 
     Builder() {
     }
 
-    public Builder nullableInt(@Nullable Optional<Integer> nullableInt) {
-      this.nullableInt = Optional.presentIfNotNull(nullableInt);
+    public Builder nullableInt(@NotNull Optional<Integer> nullableInt) {
+      this.nullableInt = Optional.present(nullableInt);
       return this;
     }
 
@@ -199,13 +199,13 @@ public class MyQuery implements Query<MyQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = Optional.presentIfNotNull(nonNullableIntWithDefault);
+    public Builder nonNullableIntWithDefault(Integer nonNullableIntWithDefault) {
+      this.nonNullableIntWithDefault = Optional.present(nonNullableIntWithDefault);
       return this;
     }
 
-    public Builder nullableInput(@Nullable Optional<MyInput> nullableInput) {
-      this.nullableInput = Optional.presentIfNotNull(nullableInput);
+    public Builder nullableInput(@NotNull Optional<MyInput> nullableInput) {
+      this.nullableInput = Optional.present(nullableInput);
       return this;
     }
 
@@ -214,8 +214,8 @@ public class MyQuery implements Query<MyQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
-      this.nonNullableInputWithDefault = Optional.presentIfNotNull(nonNullableInputWithDefault);
+    public Builder nonNullableInputWithDefault(MyInput nonNullableInputWithDefault) {
+      this.nonNullableInputWithDefault = Optional.present(nonNullableInputWithDefault);
       return this;
     }
 
@@ -307,19 +307,19 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public static final class Builder {
-      private Optional<Integer> nullableInt;
+      private Optional<Integer> nullableInt = Optional.absent();
 
       private int nonNullableInt;
 
-      private Optional<NullableMyType> nullableMyType;
+      private Optional<NullableMyType> nullableMyType = Optional.absent();
 
       private NonNullableMyType nonNullableMyType;
 
       Builder() {
       }
 
-      public Builder nullableInt(@Nullable Integer nullableInt) {
-        this.nullableInt = Optional.presentIfNotNull(nullableInt);
+      public Builder nullableInt(Integer nullableInt) {
+        this.nullableInt = Optional.present(nullableInt);
         return this;
       }
 
@@ -328,8 +328,8 @@ public class MyQuery implements Query<MyQuery.Data> {
         return this;
       }
 
-      public Builder nullableMyType(@Nullable NullableMyType nullableMyType) {
-        this.nullableMyType = Optional.presentIfNotNull(nullableMyType);
+      public Builder nullableMyType(NullableMyType nullableMyType) {
+        this.nullableMyType = Optional.present(nullableMyType);
         return this;
       }
 
@@ -410,15 +410,15 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public static final class Builder {
-      private Optional<Integer> nullableInt;
+      private Optional<Integer> nullableInt = Optional.absent();
 
       private int nonNullableInt;
 
       Builder() {
       }
 
-      public Builder nullableInt(@Nullable Integer nullableInt) {
-        this.nullableInt = Optional.presentIfNotNull(nullableInt);
+      public Builder nullableInt(Integer nullableInt) {
+        this.nullableInt = Optional.present(nullableInt);
         return this;
       }
 
@@ -499,15 +499,15 @@ public class MyQuery implements Query<MyQuery.Data> {
     }
 
     public static final class Builder {
-      private Optional<Integer> nullableInt;
+      private Optional<Integer> nullableInt = Optional.absent();
 
       private int nonNullableInt;
 
       Builder() {
       }
 
-      public Builder nullableInt(@Nullable Integer nullableInt) {
-        this.nullableInt = Optional.presentIfNotNull(nullableInt);
+      public Builder nullableInt(Integer nullableInt) {
+        this.nullableInt = Optional.present(nullableInt);
         return this;
       }
 

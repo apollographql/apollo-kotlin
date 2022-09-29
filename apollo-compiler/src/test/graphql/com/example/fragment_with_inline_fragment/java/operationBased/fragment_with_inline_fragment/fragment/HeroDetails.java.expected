@@ -193,11 +193,17 @@ public class HeroDetails implements Fragment.Data {
       Builder() {
       }
 
+      /**
+       * The total number of friends
+       */
       public Builder totalCount(Integer totalCount) {
         this.totalCount = totalCount;
         return this;
       }
 
+      /**
+       * The edges for each of the character's friends.
+       */
       public Builder edges(List<Edge> edges) {
         this.edges = edges;
         return this;
@@ -290,6 +296,9 @@ public class HeroDetails implements Fragment.Data {
         return this;
       }
 
+      /**
+       * Synthetic field for 'DroidDetails'
+       */
       public Builder droidDetails(DroidDetails droidDetails) {
         this.droidDetails = droidDetails;
         return this;
@@ -367,6 +376,9 @@ public class HeroDetails implements Fragment.Data {
       Builder() {
       }
 
+      /**
+       * The character represented by this friendship edge
+       */
       public Builder node(Node node) {
         this.node = node;
         return this;
@@ -444,6 +456,9 @@ public class HeroDetails implements Fragment.Data {
       Builder() {
       }
 
+      /**
+       * The name of the character
+       */
       public Builder name(String name) {
         this.name = name;
         return this;
@@ -474,21 +489,33 @@ public class HeroDetails implements Fragment.Data {
       return this;
     }
 
+    /**
+     * The name of the character
+     */
     public Builder name(String name) {
       this.name = name;
       return this;
     }
 
+    /**
+     * The friends of the character exposed as a connection with edges
+     */
     public Builder friendsConnection(FriendsConnection friendsConnection) {
       this.friendsConnection = friendsConnection;
       return this;
     }
 
+    /**
+     * Synthetic field for inline fragment on Droid
+     */
     public Builder onDroid(OnDroid onDroid) {
       this.onDroid = onDroid;
       return this;
     }
 
+    /**
+     * Synthetic field for 'HumanDetails'
+     */
     public Builder humanDetails(HumanDetails humanDetails) {
       this.humanDetails = humanDetails;
       return this;
