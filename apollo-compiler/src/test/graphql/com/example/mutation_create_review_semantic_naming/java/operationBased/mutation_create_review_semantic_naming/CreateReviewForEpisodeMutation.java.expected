@@ -152,8 +152,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
     }
 
     public CreateReviewForEpisodeMutation build() {
-      return new CreateReviewForEpisodeMutation(ep,
-          review);
+      return new CreateReviewForEpisodeMutation(ep, review);
     }
   }
 

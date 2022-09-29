@@ -161,8 +161,7 @@ public class TestQuery implements Query<TestQuery.Data> {
     }
 
     public TestQuery build() {
-      return new TestQuery(withDetails,
-          skipHumanDetails);
+      return new TestQuery(withDetails, skipHumanDetails);
     }
   }
 

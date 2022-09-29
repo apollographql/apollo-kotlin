@@ -106,8 +106,7 @@ public class DroidDetails implements Fragment.Data {
     }
 
     public DroidDetails build() {
-      return new DroidDetails(name,
-          primaryFunction);
+      return new DroidDetails(name, primaryFunction);
     }
   }
 }

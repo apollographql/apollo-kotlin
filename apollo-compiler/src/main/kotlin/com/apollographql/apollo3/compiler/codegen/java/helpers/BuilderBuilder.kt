@@ -1,9 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.JavaNullable
+import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
+import com.apollographql.apollo3.compiler.codegen.java.T
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -30,7 +32,19 @@ internal class BuilderBuilder(
 
   private fun builderFields(): List<FieldSpec> {
     return fields.map {
-      FieldSpec.builder(context.resolver.unwrapFromOptional(it.type), it.name, Modifier.PRIVATE).build()
+      FieldSpec.builder(it.type, it.name, Modifier.PRIVATE)
+          .applyIf(context.resolver.isOptional(it.type)) {
+            initializer(absentOptionalInitializer())
+          }
+          .build()
+    }
+  }
+
+  private fun absentOptionalInitializer(): CodeBlock {
+    return when (context.nullableFieldStyle) {
+      JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("$T.empty()", JavaClassNames.JavaOptional)
+      JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("$T.absent()", JavaClassNames.GuavaOptional)
+      else -> CodeBlock.of("$T.absent()", JavaClassNames.Optional)
     }
   }
 
@@ -41,14 +55,15 @@ internal class BuilderBuilder(
   }
 
   private fun fieldSetterMethodSpec(field: FieldSpec): MethodSpec {
+    val unwrappedFieldType = context.resolver.unwrapFromOptional(field.type)
     return MethodSpec.methodBuilder(field.name)
         .addModifiers(Modifier.PUBLIC)
         .addParameter(
-            ParameterSpec.builder(context.resolver.unwrapFromOptional(field.type), field.name)
+            ParameterSpec.builder(unwrappedFieldType, field.name)
                 .apply {
-                  if (context.resolver.isOptional(field.type)) {
-                    addAnnotation(context.resolver.nullableAnnotationClassName ?: JavaClassNames.JetBrainsNullable)
-                  } else {
+                  if (context.resolver.isOptional(unwrappedFieldType)) {
+                    addAnnotation(context.resolver.notNullAnnotationClassName ?: JavaClassNames.JetBrainsNonNull)
+                  } else if (!context.resolver.isOptional(field.type)) {
                     addAnnotations(field.annotations)
                   }
                 }
@@ -56,7 +71,7 @@ internal class BuilderBuilder(
         )
         .addJavadoc(field.javadoc)
         .returns(JavaClassNames.Builder)
-        .addStatement("this.\$L = \$L", field.name, field.name)
+        .addStatement("this.$L = $L", field.name, wrapValueInOptional(field.name, field.type, context.nullableFieldStyle))
         .addStatement("return this")
         .build()
   }
@@ -66,26 +81,22 @@ internal class BuilderBuilder(
       CodeBlock.of(L, value)
     } else {
       when (nullableFieldStyle) {
-        JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("\$T.ofNullable(\$L)", JavaClassNames.JavaOptional, value)
-        JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("\$T.fromNullable(\$L)", JavaClassNames.GuavaOptional, value)
-        else -> CodeBlock.of("\$T.presentIfNotNull(\$L)", JavaClassNames.Optional, value)
+        JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("$T.of($L)", JavaClassNames.JavaOptional, value)
+        JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("$T.of($L)", JavaClassNames.GuavaOptional, value)
+        else -> CodeBlock.of("$T.present($L)", JavaClassNames.Optional, value)
       }
     }
   }
 
   private fun buildMethod(): MethodSpec {
-    val parametersCodeBlock = CodeBlock.join(fields.map {
-      CodeBlock.of("\$L", wrapValueInOptional(it.name, it.type, context.nullableFieldStyle))
-    }, ",\n")
-
     return MethodSpec
         .methodBuilder("build")
         .addModifiers(Modifier.PUBLIC)
         .returns(targetObjectClassName)
         .addStatement(
-            "return new \$T(\$L)",
+            "return new $T$L",
             targetObjectClassName,
-            parametersCodeBlock
+            fields.joinToString(prefix = "(", separator = ", ", postfix = ")") { it.name }
         )
         .build()
   }
@@ -98,7 +109,7 @@ internal class BuilderBuilder(
           .methodBuilder("builder")
           .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
           .returns(JavaClassNames.Builder)
-          .addStatement("return new \$T()", JavaClassNames.Builder)
+          .addStatement("return new $T()", JavaClassNames.Builder)
           .build()
     }
   }

@@ -189,10 +189,7 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
     }
 
     public SpreadMultipleWithDeferAndInclude build() {
-      return new SpreadMultipleWithDeferAndInclude(cond1,
-          cond2,
-          cond3,
-          cond4);
+      return new SpreadMultipleWithDeferAndInclude(cond1, cond2, cond3, cond4);
     }
   }
 

@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Optional;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
 
 public class renamedInput {
   public final Optional<String> field;
@@ -63,18 +62,18 @@ public class renamedInput {
   }
 
   public static final class Builder {
-    private String field;
+    private Optional<String> field = Optional.absent();
 
     Builder() {
     }
 
-    public Builder field(@Nullable String field) {
-      this.field = field;
+    public Builder field(String field) {
+      this.field = Optional.present(field);
       return this;
     }
 
     public renamedInput build() {
-      return new renamedInput(Optional.presentIfNotNull(field));
+      return new renamedInput(field);
     }
   }
 }

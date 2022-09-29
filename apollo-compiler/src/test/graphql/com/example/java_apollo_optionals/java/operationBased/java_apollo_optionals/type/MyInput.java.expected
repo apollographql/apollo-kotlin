@@ -10,7 +10,7 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class MyInput {
   public final Optional<Optional<Integer>> nullableInt;
@@ -79,17 +79,17 @@ public class MyInput {
   }
 
   public static final class Builder {
-    private Optional<Integer> nullableInt;
+    private Optional<Optional<Integer>> nullableInt = Optional.absent();
 
     private int nonNullableInt;
 
-    private Integer nonNullableIntWithDefault;
+    private Optional<Integer> nonNullableIntWithDefault = Optional.absent();
 
     Builder() {
     }
 
-    public Builder nullableInt(@Nullable Optional<Integer> nullableInt) {
-      this.nullableInt = nullableInt;
+    public Builder nullableInt(@NotNull Optional<Integer> nullableInt) {
+      this.nullableInt = Optional.present(nullableInt);
       return this;
     }
 
@@ -98,15 +98,13 @@ public class MyInput {
       return this;
     }
 
-    public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = nonNullableIntWithDefault;
+    public Builder nonNullableIntWithDefault(Integer nonNullableIntWithDefault) {
+      this.nonNullableIntWithDefault = Optional.present(nonNullableIntWithDefault);
       return this;
     }
 
     public MyInput build() {
-      return new MyInput(Optional.presentIfNotNull(nullableInt),
-          nonNullableInt,
-          Optional.presentIfNotNull(nonNullableIntWithDefault));
+      return new MyInput(nullableInt, nonNullableInt, nonNullableIntWithDefault);
     }
   }
 }

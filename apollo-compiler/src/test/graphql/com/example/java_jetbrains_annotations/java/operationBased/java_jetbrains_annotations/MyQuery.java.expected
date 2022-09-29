@@ -181,23 +181,23 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   public static final class Builder {
-    private Integer nullableInt;
+    private Optional<Integer> nullableInt = Optional.absent();
 
     private int nonNullableInt;
 
-    private Integer nonNullableIntWithDefault;
+    private Optional<Integer> nonNullableIntWithDefault = Optional.absent();
 
-    private MyInput nullableInput;
+    private Optional<MyInput> nullableInput = Optional.absent();
 
     private MyInput nonNullableInput;
 
-    private MyInput nonNullableInputWithDefault;
+    private Optional<MyInput> nonNullableInputWithDefault = Optional.absent();
 
     Builder() {
     }
 
-    public Builder nullableInt(@Nullable Integer nullableInt) {
-      this.nullableInt = nullableInt;
+    public Builder nullableInt(Integer nullableInt) {
+      this.nullableInt = Optional.present(nullableInt);
       return this;
     }
 
@@ -206,13 +206,13 @@ public class MyQuery implements Query<MyQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableIntWithDefault(@Nullable Integer nonNullableIntWithDefault) {
-      this.nonNullableIntWithDefault = nonNullableIntWithDefault;
+    public Builder nonNullableIntWithDefault(Integer nonNullableIntWithDefault) {
+      this.nonNullableIntWithDefault = Optional.present(nonNullableIntWithDefault);
       return this;
     }
 
-    public Builder nullableInput(@Nullable MyInput nullableInput) {
-      this.nullableInput = nullableInput;
+    public Builder nullableInput(MyInput nullableInput) {
+      this.nullableInput = Optional.present(nullableInput);
       return this;
     }
 
@@ -221,18 +221,13 @@ public class MyQuery implements Query<MyQuery.Data> {
       return this;
     }
 
-    public Builder nonNullableInputWithDefault(@Nullable MyInput nonNullableInputWithDefault) {
-      this.nonNullableInputWithDefault = nonNullableInputWithDefault;
+    public Builder nonNullableInputWithDefault(MyInput nonNullableInputWithDefault) {
+      this.nonNullableInputWithDefault = Optional.present(nonNullableInputWithDefault);
       return this;
     }
 
     public MyQuery build() {
-      return new MyQuery(Optional.presentIfNotNull(nullableInt),
-          nonNullableInt,
-          Optional.presentIfNotNull(nonNullableIntWithDefault),
-          Optional.presentIfNotNull(nullableInput),
-          nonNullableInput,
-          Optional.presentIfNotNull(nonNullableInputWithDefault));
+      return new MyQuery(nullableInt, nonNullableInt, nonNullableIntWithDefault, nullableInput, nonNullableInput, nonNullableInputWithDefault);
     }
   }
 
@@ -307,6 +302,56 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
       return $toString;
     }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.nullableInt = nullableInt;
+      builder.nonNullableInt = nonNullableInt;
+      builder.nullableMyType = nullableMyType;
+      builder.nonNullableMyType = nonNullableMyType;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer nullableInt;
+
+      private int nonNullableInt;
+
+      private NullableMyType nullableMyType;
+
+      private NonNullableMyType nonNullableMyType;
+
+      Builder() {
+      }
+
+      public Builder nullableInt(@Nullable Integer nullableInt) {
+        this.nullableInt = nullableInt;
+        return this;
+      }
+
+      public Builder nonNullableInt(int nonNullableInt) {
+        this.nonNullableInt = nonNullableInt;
+        return this;
+      }
+
+      public Builder nullableMyType(@Nullable NullableMyType nullableMyType) {
+        this.nullableMyType = nullableMyType;
+        return this;
+      }
+
+      public Builder nonNullableMyType(@NotNull NonNullableMyType nonNullableMyType) {
+        this.nonNullableMyType = nonNullableMyType;
+        return this;
+      }
+
+      public Data build() {
+        return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
+      }
+    }
   }
 
   public static class NullableMyType {
@@ -363,6 +408,40 @@ public class MyQuery implements Query<MyQuery.Data> {
       }
       return $toString;
     }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.nullableInt = nullableInt;
+      builder.nonNullableInt = nonNullableInt;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer nullableInt;
+
+      private int nonNullableInt;
+
+      Builder() {
+      }
+
+      public Builder nullableInt(@Nullable Integer nullableInt) {
+        this.nullableInt = nullableInt;
+        return this;
+      }
+
+      public Builder nonNullableInt(int nonNullableInt) {
+        this.nonNullableInt = nonNullableInt;
+        return this;
+      }
+
+      public NullableMyType build() {
+        return new NullableMyType(nullableInt, nonNullableInt);
+      }
+    }
   }
 
   public static class NonNullableMyType {
@@ -418,6 +497,40 @@ public class MyQuery implements Query<MyQuery.Data> {
           + "}";
       }
       return $toString;
+    }
+
+    public Builder toBuilder() {
+      Builder builder = new Builder();
+      builder.nullableInt = nullableInt;
+      builder.nonNullableInt = nonNullableInt;
+      return builder;
+    }
+
+    public static Builder builder() {
+      return new Builder();
+    }
+
+    public static final class Builder {
+      private Integer nullableInt;
+
+      private int nonNullableInt;
+
+      Builder() {
+      }
+
+      public Builder nullableInt(@Nullable Integer nullableInt) {
+        this.nullableInt = nullableInt;
+        return this;
+      }
+
+      public Builder nonNullableInt(int nonNullableInt) {
+        this.nonNullableInt = nonNullableInt;
+        return this;
+      }
+
+      public NonNullableMyType build() {
+        return new NonNullableMyType(nullableInt, nonNullableInt);
+      }
     }
   }
 }
