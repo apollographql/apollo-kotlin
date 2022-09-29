@@ -60,6 +60,7 @@ import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.ScalarInfo
 
@@ -98,6 +99,11 @@ internal class IrBuilder(
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         compat = false,
+    )
+    MODELS_OPERATION_BASED_WITH_INTERFACES -> OperationBasedWithInterfacesModelGroupBuilder(
+        schema = schema,
+        allFragmentDefinitions = allFragmentDefinitions,
+        fieldMerger = this,
     )
     MODELS_RESPONSE_BASED -> responseBasedBuilder
     else -> error("codegenModels='$codegenModels' is not supported")
@@ -809,6 +815,15 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
     is IrNonNullType -> IrNonNullType(ofType = ofType.replacePlaceholder(newPath))
     is IrListType -> IrListType(ofType = ofType.replacePlaceholder(newPath))
     is IrModelType -> copy(path = newPath)
+    else -> error("Not a compound type?")
+  }
+}
+
+internal fun IrType.replacePath(transform: (String) -> String): IrType {
+  return when (this) {
+    is IrNonNullType -> IrNonNullType(ofType = ofType.replacePath(transform))
+    is IrListType -> IrListType(ofType = ofType.replacePath(transform))
+    is IrModelType -> copy(path = transform(path))
     else -> error("Not a compound type?")
   }
 }

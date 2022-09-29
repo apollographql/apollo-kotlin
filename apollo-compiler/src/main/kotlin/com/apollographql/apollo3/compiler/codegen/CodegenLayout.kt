@@ -175,6 +175,15 @@ internal abstract class CodegenLayout(
       }
     }
 
+    /**
+     * Build a name for a model
+     *
+     * @param info the field info, including responseName and whether this field is of list type. If the field is of
+     * list type, the model name will be singularized
+     * @param typeSet the different type conditions for this model
+     * @param rawTypename the type of the field. Because it is always satisfied, it is not included in the model name
+     * @param isOther whether this is a fallback type
+     */
     internal fun modelName(info: IrFieldInfo, typeSet: TypeSet, rawTypename: String, isOther: Boolean): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()
@@ -186,6 +195,9 @@ internal abstract class CodegenLayout(
       return (if (isOther) "Other" else "") + name
     }
 
+    /**
+     * Build a simple model name. See also [modelName] for a more complex version that can use typeSets and fallback types
+     */
     internal fun modelName(info: IrFieldInfo): String {
       val responseName = if (info.type.isList()) {
         info.responseName.singularize()

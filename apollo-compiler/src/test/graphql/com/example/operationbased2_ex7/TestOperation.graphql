@@ -1,0 +1,15 @@
+query TestOperation {
+  animal {
+    ... on Animal {
+      species
+      # Nested WarmBlooded
+      ... on WarmBlooded {
+        temperature
+      }
+      # Nested Pet
+      ... on Pet {
+        name
+      }
+    }
+  }
+}

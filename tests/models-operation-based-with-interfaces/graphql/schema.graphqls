@@ -1,0 +1,37 @@
+schema {
+  query: Query
+}
+
+interface Animal {
+  species: String!
+}
+
+interface Pet {
+  name: String!
+}
+
+interface WarmBlooded {
+  temperature: Int!
+}
+
+type Lion implements Animal & WarmBlooded {
+  species: String!
+  temperature: Int!
+}
+type Cat implements Animal & WarmBlooded & Pet {
+  species: String!
+  name: String!
+  temperature: Int!
+}
+type Turtle implements Animal & Pet {
+  species: String!
+  name: String!
+}
+type Panther implements Animal & WarmBlooded {
+  species: String!
+  temperature: Int!
+}
+
+type Query {
+  animal: Animal
+}

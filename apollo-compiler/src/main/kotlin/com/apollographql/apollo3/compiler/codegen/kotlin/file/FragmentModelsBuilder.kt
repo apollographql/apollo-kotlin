@@ -19,6 +19,13 @@ internal class FragmentModelsBuilder(
 
   private val packageName = context.layout.fragmentPackageName(fragment.filePath)
 
+
+  /**
+   * For experimental_operationBasedWithInterfaces, fragments may have interfaces that are
+   * only used locally. In that case, we can generate them as sealed interfaces
+   */
+  private val localInheritance = modelGroup.models.any { !it.isInterface }
+
   /**
    * Fragments need to be flattened at depth 1 to avoid having all classes poluting the fragments package name
    */
@@ -29,7 +36,7 @@ internal class FragmentModelsBuilder(
             model = it,
             superClassName = if (addSuperInterface && it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
             path = listOf(packageName),
-            hasSubclassesInSamePackage = false,
+            hasSubclassesInSamePackage = it.isInterface && localInheritance,
             adaptableWith = null
         )
       }

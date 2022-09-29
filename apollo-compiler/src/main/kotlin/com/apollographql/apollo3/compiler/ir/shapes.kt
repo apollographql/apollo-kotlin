@@ -12,6 +12,23 @@ internal data class Shape(val typeSet: TypeSet, val possibleTypes: PossibleTypes
 
 /**
  * This function computes the different shapes a given field can take.
+ *
+ * TODO: refactor to use [buckets]
+ * TODO: right now this function keeps user type sets even if some of them are redundant:
+ *
+ * ```
+ * {
+ *   cat {
+ *     # generates a `interface AnimalCat`
+ *     ... on Animal {
+ *       species
+ *     }
+ *   }
+ * }
+ * ```
+ *
+ * Simplify to not generate that code
+ *
  */
 internal fun shapes(
     schema: Schema,
@@ -19,19 +36,17 @@ internal fun shapes(
     selections: List<GQLSelection>,
     rawTypename: String,
 ): List<Shape> {
-  /**
-   * Collect all different type sets requested by the user from the inline & named fragments
-   */
+
   val userTypeSets = selections.collectUserTypeSets(allFragmentDefinitions, setOf(rawTypename)).toSet()
 
-  val typeConditionToPossibleTypes = userTypeSets.union().map {
-    it to schema.typeDefinition(it).possibleTypes(schema)
-  }.toMap()
+  val typeConditionToPossibleTypes = userTypeSets.union().associateWith {
+    schema.typeDefinition(it).possibleTypes(schema)
+  }
 
-  val shapes = userTypeSets.map {
+  val shapes = userTypeSets.map { userTypeSet ->
     ShapeInternal(
-        it,
-        it.map { typeConditionToPossibleTypes[it]!! }.intersection(),
+        userTypeSet,
+        userTypeSet.map { typeConditionToPossibleTypes[it]!! }.intersection(),
         emptySet()
     )
   }.toMutableList()

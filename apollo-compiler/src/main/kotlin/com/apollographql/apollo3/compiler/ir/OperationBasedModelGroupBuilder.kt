@@ -160,7 +160,7 @@ internal class OperationBasedModelGroupBuilder(
   /**
    * @param path the path up to but not including this field
    * @param info information about this field
-   * @param selections the sub-selections of these fields. If [collectAllInlineFragmentFields] is true, might contain parent fields that
+   * @param selections the sub-selections of this field. If [collectAllInlineFragmentFields] is true, might contain parent fields that
    * might not all be on the same parent type. Hence [SelectionWithParent]
    * @param condition the condition for this field. Might be a mix of include directives and type conditions
    * @param usedNames the used names for 2.x compat name conflicts resolution
@@ -188,7 +188,7 @@ internal class OperationBasedModelGroupBuilder(
     /**
      * Merge fragments with the same type condition and include directive to avoid name clashes
      *
-     * We don't merge inline fragments with different include directives as nested fields would all have to become nullable:
+     * We don't merge inline fragments with different @include directives as nested fields would all have to become nullable:
      *
      * ```
      * {
@@ -223,9 +223,24 @@ internal class OperationBasedModelGroupBuilder(
         }.entries.flatMap {
           val typeCondition = it.key
 
-          // If there is only one fragment, no need to disambiguate it
-          val nameNeedsCondition = it.value.size > 1
           val inlineFragmentsWithSameTypeCondition = it.value.map { it.selection as GQLInlineFragment }
+          // If there is only one fragment, no need to disambiguate it
+          /**
+           * TODO: we could go one step further and check the condition too
+           *
+           * Right now this:
+           * {
+           *   ... on Cat @include(if: $foo) {
+           *     #
+           *   }
+           *   ... on Cat @include(if: $foo) {
+           *     #
+           *   }
+           * }
+           *
+           * Will create a `OnCatIfFoo` when `OnCat` would have been enough
+           */
+          val nameNeedsCondition = inlineFragmentsWithSameTypeCondition.size > 1
 
           /**
            * Because fragments are not merged regardless of [collectAllInlineFragmentFields], all inline fragments
@@ -398,11 +413,19 @@ internal class OperationBasedModelGroupBuilder(
     val fields = fieldMerger.merge(fieldsWithParent).map { mergedField ->
       val childInfo = mergedField.info.maybeNullable(mergedField.condition != BooleanExpression.True)
 
+      /**
+       * We always pass True here because the non-synthetic fields are always read. This simplifies the generated code
+       * This means:
+       * - `@defer` doesn't work on fields but this is ok because it is not supposed to
+       * - we cannot detect if a field returns `null` whereas it should have been @skipped
+       */
+      val fieldCondition = BooleanExpression.True
+
       buildField(
           path = selfPath,
           info = childInfo,
           selections = mergedField.selections.map { SelectionWithParent(it, mergedField.rawTypeName) },
-          condition = BooleanExpression.True,
+          condition = fieldCondition,
           usedNames = usedNames,
           parentTypeConditions = listOf(mergedField.rawTypeName)
       )
