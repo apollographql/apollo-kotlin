@@ -1,12 +1,13 @@
 rootProject.name = "apollo-kotlin"
 
 rootProject.projectDir
+    .resolve("libraries")
     .listFiles()!!
     .filter { it.isDirectory }
     .filter { it.name.startsWith("apollo-") }
     .filter { File(it, "build.gradle.kts").exists() }
     .forEach {
-      include(it.name)
+      include(":libraries:${it.name}")
     }
 
 pluginManagement {
