@@ -373,6 +373,7 @@ class CodegenTest {
       }
 
       val nullableFieldStyle = when (folder.name) {
+        "java8annotation" -> JavaNullable.JETBRAINS_ANNOTATIONS
         "java_apollo_optionals" -> JavaNullable.APOLLO_OPTIONAL
         "java_guava_optionals" -> JavaNullable.GUAVA_OPTIONAL
         "java_java_optionals" -> JavaNullable.JAVA_OPTIONAL
