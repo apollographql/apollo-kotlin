@@ -16,7 +16,7 @@ object KotlinCompiler {
 
       this.allWarningsAsErrors = allWarningsAsErrors
       inheritClassPath = true
-      verbose = true
+      verbose = false
     }.compile()
 
     if (result.exitCode != KotlinCompilation.ExitCode.OK) {

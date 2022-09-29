@@ -32,6 +32,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier

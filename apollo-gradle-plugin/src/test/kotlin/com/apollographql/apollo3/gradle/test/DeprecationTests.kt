@@ -2,7 +2,6 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.google.common.truth.Truth
-import junit.framework.Assert.fail
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
 import org.junit.Assert
@@ -44,7 +43,7 @@ class DeprecationTests {
       """.trimIndent())
       try {
         TestUtils.executeTask("generateServiceApolloSources", dir)
-        fail("generateServiceApolloSources was expected to fail")
+        Assert.fail("generateServiceApolloSources was expected to fail")
       } catch (e: UnexpectedBuildFailure) {
         Truth.assertThat(e.message).contains("Warnings found and 'failOnWarnings' is true, aborting")
       }
