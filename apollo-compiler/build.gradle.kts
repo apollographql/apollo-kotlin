@@ -33,7 +33,7 @@ dependencies {
   testImplementation(golatac.lib("kotlin.test.junit"))
   testImplementation(golatac.lib("google.testparameterinjector"))
   testImplementation(project(":apollo-api-java")) {
-    because("For Java and Guava Optional adapter use in the Java generated code")
+    because("Generated Java code references Java and Guava Optionals")
   }
   testImplementation(golatac.lib("androidx.annotation")) {
     because("Used in the Java generated code")
