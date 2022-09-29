@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
+import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
@@ -59,9 +59,9 @@ internal class InputObjectBuilder(
             }
             .build()
       }
-      return addMethod(Builder.builderFactoryMethod())
+      return addMethod(BuilderBuilder.builderFactoryMethod())
           .addType(
-              Builder(
+              BuilderBuilder(
                   targetObjectClassName = ClassName.get(packageName, simpleName),
                   fields = builderFields,
                   context = context

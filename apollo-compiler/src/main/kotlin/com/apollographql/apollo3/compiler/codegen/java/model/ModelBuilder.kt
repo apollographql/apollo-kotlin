@@ -6,7 +6,7 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout.Companion.upperC
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.adapter.toClassName
-import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
+import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromProperties
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
@@ -123,7 +123,7 @@ internal class ModelBuilder(
     } else {
       val builderVariable = JavaClassNames.Builder.simpleName().decapitalizeFirstLetter()
       val builderClass = ClassName.get("", JavaClassNames.Builder.simpleName())
-      val toBuilderMethod = MethodSpec.methodBuilder(Builder.TO_BUILDER_METHOD_NAME)
+      val toBuilderMethod = MethodSpec.methodBuilder(BuilderBuilder.TO_BUILDER_METHOD_NAME)
           .addModifiers(Modifier.PUBLIC)
           .returns(builderClass)
           .addStatement("\$T \$L = new \$T()", builderClass, builderVariable, builderClass)
@@ -137,9 +137,9 @@ internal class ModelBuilder(
 
       return toBuilder()
           .addMethod(toBuilderMethod)
-          .addMethod(Builder.builderFactoryMethod())
+          .addMethod(BuilderBuilder.builderFactoryMethod())
           .addType(
-              Builder(
+              BuilderBuilder(
                   targetObjectClassName = ClassName.get("", name),
                   fields = fields,
                   context = context

@@ -18,7 +18,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.codegen.java.helpers.Builder
+import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
@@ -250,13 +250,13 @@ internal class OperationBuilder(
   }
 
   private fun TypeSpec.Builder.addBuilder(context: JavaContext): TypeSpec.Builder {
-    addMethod(Builder.builderFactoryMethod())
+    addMethod(BuilderBuilder.builderFactoryMethod())
 
     val operationClassName = ClassName.get(packageName, simpleName)
 
     if (operation.variables.isEmpty()) {
       return addType(
-          Builder(
+          BuilderBuilder(
               targetObjectClassName = operationClassName,
               fields = emptyList(),
               context = context
@@ -272,7 +272,7 @@ internal class OperationBuilder(
               .build()
         }
         .let {
-          Builder(
+          BuilderBuilder(
               targetObjectClassName = operationClassName,
               fields = it,
               context = context

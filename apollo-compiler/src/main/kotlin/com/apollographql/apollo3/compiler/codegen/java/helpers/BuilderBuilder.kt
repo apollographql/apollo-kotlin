@@ -13,7 +13,7 @@ import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-internal class Builder(
+internal class BuilderBuilder(
     val targetObjectClassName: ClassName,
     val fields: List<FieldSpec>,
     val context: JavaContext,
