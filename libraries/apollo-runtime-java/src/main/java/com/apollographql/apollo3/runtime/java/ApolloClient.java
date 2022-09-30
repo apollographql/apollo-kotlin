@@ -105,6 +105,9 @@ public class ApolloClient {
           @Nullable @Override public MediaType contentType() {
             return MediaType.parse(httpRequest.getBody().getContentType());
           }
+          @Override public long contentLength() {
+            return httpRequest.getBody().getContentLength();
+          }
 
           @Override public void writeTo(@NotNull BufferedSink bufferedSink) throws IOException {
             httpRequest.getBody().writeTo(bufferedSink);
