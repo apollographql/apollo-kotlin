@@ -147,7 +147,7 @@ public class ApolloClient {
     }
 
     public Builder serverUrl(@NotNull String serverUrl) {
-      this.serverUrl = serverUrl;
+      this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
       return this;
     }
 
