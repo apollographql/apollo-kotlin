@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * ApolloInterceptorChain is responsible for building chain of {@link ApolloInterceptor} .
  */
-public interface ApolloInterceptorChain<D extends Operation.Data> {
+public interface ApolloInterceptorChain {
   boolean isDisposed();
 
   /**
@@ -18,5 +18,5 @@ public interface ApolloInterceptorChain<D extends Operation.Data> {
    * @param request outgoing request object.
    * @param callBack the callback which will handle the response or a failure exception.
    */
-  void proceed(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callBack);
+  <D extends Operation.Data> void proceed(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callBack);
 }

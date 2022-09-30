@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
@@ -40,15 +41,19 @@ public class ApolloClient {
   private String serverUrl;
   private Call.Factory callFactory;
   private Executor executor;
+  private List<ApolloInterceptor> interceptors;
+
 
   private ApolloClient(
       String serverUrl,
       Call.Factory callFactory,
-      Executor executor
+      Executor executor,
+      List<ApolloInterceptor> interceptors
   ) {
     this.serverUrl = serverUrl;
     this.callFactory = callFactory;
     this.executor = executor;
+    this.interceptors = interceptors;
   }
 
   public <D extends Query.Data> ApolloCall<D> query(Query<D> operation) {
@@ -62,15 +67,15 @@ public class ApolloClient {
   public <D extends Operation.Data> ApolloDisposable execute(ApolloRequest<D> request, ApolloCallback<D> callback) {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
-    ArrayList<ApolloInterceptor<D>> interceptors = new ArrayList<>();
-    interceptors.add(new NetworkInterceptor<>(callFactory, serverUrl));
+    ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
+    interceptors.add(new NetworkInterceptor(callFactory, serverUrl));
 
-    executor.execute(() -> new DefaultInterceptorChain<>(interceptors, 0, disposable).proceed(request, callback));
+    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
 
     return disposable;
   }
 
-  private static class NetworkInterceptor<D extends Operation.Data> implements ApolloInterceptor<D> {
+  private static class NetworkInterceptor implements ApolloInterceptor {
     private Call.Factory callFactory;
     private HttpRequestComposer requestComposer;
 
@@ -79,7 +84,8 @@ public class ApolloClient {
       this.requestComposer = new DefaultHttpRequestComposer(serverUrl);
     }
 
-    @Override public void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain<D> chain, @NotNull ApolloCallback<D> callback) {
+    @Override
+    public <D extends Operation.Data> void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback<D> callback) {
       HttpRequest httpRequest = requestComposer.compose(request);
       Request.Builder builder = new Request.Builder()
           .url(httpRequest.getUrl());
@@ -133,6 +139,7 @@ public class ApolloClient {
     private String serverUrl;
     private Call.Factory callFactory;
     private Executor executor;
+    private List<ApolloInterceptor> interceptors = new ArrayList<>();
 
     public Builder() {
     }
@@ -172,6 +179,21 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder addInterceptor(@NotNull ApolloInterceptor interceptor) {
+      this.interceptors.add(checkNotNull(interceptor, "interceptor is null"));
+      return this;
+    }
+
+    public Builder addInterceptors(@NotNull List<ApolloInterceptor> interceptors) {
+      this.interceptors.addAll(checkNotNull(interceptors, "interceptors is null"));
+      return this;
+    }
+
+    public Builder interceptors(@NotNull List<ApolloInterceptor> interceptors) {
+      this.interceptors = checkNotNull(interceptors, "interceptors is null");
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(serverUrl, "serverUrl is missing");
       if (callFactory == null) {
@@ -181,7 +203,7 @@ public class ApolloClient {
       if (executor == null) {
         executor = defaultExecutor();
       }
-      return new ApolloClient(serverUrl, callFactory, executor);
+      return new ApolloClient(serverUrl, callFactory, executor, interceptors);
     }
   }
 

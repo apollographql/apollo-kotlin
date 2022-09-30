@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-class DefaultInterceptorChain<D extends Operation.Data> implements ApolloInterceptorChain<D> {
-  private ArrayList<ApolloInterceptor<D>> interceptors;
+class DefaultInterceptorChain implements ApolloInterceptorChain {
+  private ArrayList<ApolloInterceptor> interceptors;
   private int index;
   private DefaultApolloDisposable disposable;
 
   DefaultInterceptorChain(
-      ArrayList<ApolloInterceptor<D>> interceptors,
+      ArrayList<ApolloInterceptor> interceptors,
       int index,
       DefaultApolloDisposable disposable
   ) {
@@ -27,10 +27,11 @@ class DefaultInterceptorChain<D extends Operation.Data> implements ApolloInterce
     return disposable.isDisposed();
   }
 
-  @Override public void proceed(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callBack) {
-    interceptors.get(index).intercept(
+  @Override public <D extends Operation.Data> void proceed(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callBack) {
+    ApolloInterceptor apolloInterceptor = interceptors.get(index);
+    apolloInterceptor.intercept(
         request,
-        new DefaultInterceptorChain<>(interceptors, index + 1, disposable),
+        new DefaultInterceptorChain(interceptors, index + 1, disposable),
         callBack
     );
   }

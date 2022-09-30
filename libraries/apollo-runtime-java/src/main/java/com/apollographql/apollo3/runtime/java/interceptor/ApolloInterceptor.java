@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * Typical responsibilities include adding or removing headers from the request or response objects, transforming the returned responses
  * from one type to another, etc.
  */
-public interface ApolloInterceptor<D extends Operation.Data> {
+public interface ApolloInterceptor {
   /**
    * Intercepts the outgoing request and performs non-blocking operations on the request or the response returned by the next set of
    * interceptors in the chain.
@@ -19,5 +19,5 @@ public interface ApolloInterceptor<D extends Operation.Data> {
    * @param chain the ApolloInterceptorChain object containing the next set of interceptors.
    * @param callback the Callback which will handle the interceptor's response or failure exception.
    */
-  void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain<D> chain, @NotNull ApolloCallback<D> callback);
+  <D extends Operation.Data> void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback<D> callback);
 }
