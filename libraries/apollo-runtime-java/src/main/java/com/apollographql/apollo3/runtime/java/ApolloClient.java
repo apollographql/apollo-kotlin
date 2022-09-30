@@ -65,18 +65,7 @@ public class ApolloClient {
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>();
     interceptors.add(new NetworkInterceptor(callFactory, serverUrl));
 
-    ApolloCallback<D> callbackWrapper = new ApolloCallback<D>() {
-
-      @Override public void onResponse(@NotNull ApolloResponse<D> response) {
-        callback.onResponse(response);
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        callback.onFailure(e);
-      }
-    };
-
-    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callbackWrapper));
+    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
 
     return disposable;
   }
