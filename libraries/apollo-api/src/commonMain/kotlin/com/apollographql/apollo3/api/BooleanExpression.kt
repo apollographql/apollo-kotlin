@@ -136,7 +136,7 @@ fun BooleanExpression<BTerm>.evaluate(
   val croppedPath = path?.drop(1)
   return evaluate {
     when (it) {
-      is BVariable -> variables.contains(it.name)
+      is BVariable -> !variables.contains(it.name)
       is BLabel -> adapterContext.hasDeferredFragment(croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }

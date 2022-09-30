@@ -137,19 +137,23 @@ class DeferWithRouterTest {
   }
 
   @Test
-  @Ignore
-  // TODO Ignored for now, not passing the variable makes the Router crash (no issue yet)
-  // TODO Not sure if this one is correct - see https://github.com/apollographql/router/issues/1820
   fun doesNotDisableDeferWithNullIfArgument() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
-    // {"data":{"computers":[{"id":"Computer1","cpu":"386"},{"id":"Computer2","cpu":"486"}]},"hasNext":false}
+    // {"data":{"computers":[{"id":"Computer1"},{"id":"Computer2"}]},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"cpu":"386"},"path":["computers",0]},{"data":{"cpu":"486"},"path":["computers",1]}]}
     val expectedDataList = listOf(
+        DoesNotDisableDeferWithNullIfArgumentQuery.Data(
+            listOf(
+                DoesNotDisableDeferWithNullIfArgumentQuery.Computer("Computer", "Computer1", null),
+                DoesNotDisableDeferWithNullIfArgumentQuery.Computer("Computer", "Computer2", null),
+            )
+        ),
         DoesNotDisableDeferWithNullIfArgumentQuery.Data(
             listOf(
                 DoesNotDisableDeferWithNullIfArgumentQuery.Computer("Computer", "Computer1", DoesNotDisableDeferWithNullIfArgumentQuery.OnComputer("386")),
                 DoesNotDisableDeferWithNullIfArgumentQuery.Computer("Computer", "Computer2", DoesNotDisableDeferWithNullIfArgumentQuery.OnComputer("486")),
             )
-        ),
+        )
     )
     val actualDataList = apolloClient.query(DoesNotDisableDeferWithNullIfArgumentQuery(Optional.Absent)).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
@@ -157,11 +161,11 @@ class DeferWithRouterTest {
 
   @Test
   @Ignore
-  // TODO Ignored for now, currently not supported by Router - see https://github.com/apollographql/router/issues/1800
+  // TODO Ignored for now, currently the Router doesn't return the __typename on initial payload which breaks parsing - see https://github.com/apollographql/router/issues/1800#issuecomment-1263678302
   fun canDeferFragmentsOnTheTopLevelQueryField() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
-    // {"data":{},"hasNext":true}
-    // {"incremental":[{"data":{"computers":[{"id":"Computer1"},{"id":"Computer2"}]},"path":[]}],"hasNext":false}
+    // {"data":{"__typename":"Query"},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"computers":[{"id":"Computer1"},{"id":"Computer2"}]},"path":[]}]}
     val expectedDataList = listOf(
         CanDeferFragmentsOnTheTopLevelQueryFieldQuery.Data(
             "Query",
