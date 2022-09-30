@@ -149,7 +149,11 @@ internal class JavaResolver(
     }
   }
 
-  private fun TypeName.withoutAnnotationsForGenerics(): TypeName {
+  /**
+   * Only keep the annotations that support TYPE_USE targets for use 
+   * in generics like `List<@NotNull String>` for an example
+   */
+  private fun TypeName.filterTypeUseAnnotations(): TypeName {
     // Only the JetBrains nullability annotations have a target including ElementType.TYPE_USE
     return if (annotations.isEmpty()) {
       this
