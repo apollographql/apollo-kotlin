@@ -1,3 +1,7 @@
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCall {
+	public abstract fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
+}
+
 public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCallback {
 	public abstract fun onFailure (Lcom/apollographql/apollo3/exception/ApolloException;)V
 	public abstract fun onResponse (Lcom/apollographql/apollo3/api/ApolloResponse;)V
@@ -9,15 +13,17 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient {
 }
 
 public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder {
+	public fun <init> ()V
 	public fun build ()Lcom/apollographql/apollo3/runtime/java/ApolloClient;
 	public fun callFactory (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun dispatcher (Ljava/util/concurrent/Executor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 }
 
 public class com/apollographql/apollo3/runtime/java/DefaultApolloCall : com/apollographql/apollo3/runtime/java/ApolloCall {
 	public fun <init> (Lcom/apollographql/apollo3/runtime/java/ApolloClient;Lcom/apollographql/apollo3/api/Operation;)V
-	public fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+	public fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
 }
 
 public class com/apollographql/apollo3/runtime/java/DefaultApolloDisposable : com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable {
@@ -28,6 +34,7 @@ public class com/apollographql/apollo3/runtime/java/DefaultApolloDisposable : co
 
 public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable {
 	public abstract fun dispose ()V
+	public abstract fun isDisposed ()Z
 }
 
 public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor {
