@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
+import static java.util.concurrent.Executors.newCachedThreadPool;
 
 public class ApolloClient {
   private String serverUrl;
@@ -110,6 +111,7 @@ public class ApolloClient {
           ArrayList<HttpHeader> headers = new ArrayList<>();
           response.headers().forEach(pair -> headers.add(new HttpHeader(pair.getFirst(), pair.getSecond())));
 
+          // TODO: include body in exception
           callback.onFailure(new ApolloHttpException(response.code(), headers, null, "HTTP error", null));
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.body().source());
@@ -184,7 +186,6 @@ public class ApolloClient {
   }
 
   static private Executor defaultExecutor() {
-    return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60, TimeUnit.SECONDS,
-        new SynchronousQueue<>(), runnable -> new Thread(runnable, "Apollo Dispatcher"));
+    return newCachedThreadPool(runnable -> new Thread(runnable, "Apollo Dispatcher"));
   }
 }
