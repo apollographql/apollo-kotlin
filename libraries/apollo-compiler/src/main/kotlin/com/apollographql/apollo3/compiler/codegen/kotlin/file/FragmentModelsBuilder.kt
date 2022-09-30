@@ -24,8 +24,8 @@ internal class FragmentModelsBuilder(
    * For experimental_operationBasedWithInterfaces, fragments may have interfaces that are
    * only used locally. In that case, we can generate them as sealed interfaces
    */
-  private val localInheritance = modelGroup.models.any { !it.isInterface }
-
+  private val localInheritance = modelGroup.models.any { it.isInterface } &&
+      modelGroup.models.any { !it.isInterface }
   /**
    * Fragments need to be flattened at depth 1 to avoid having all classes poluting the fragments package name
    */

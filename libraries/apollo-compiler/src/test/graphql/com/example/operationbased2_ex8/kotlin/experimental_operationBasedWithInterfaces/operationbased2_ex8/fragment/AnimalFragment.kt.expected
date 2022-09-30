@@ -13,7 +13,7 @@ public data class AnimalFragment(
   public val species: String,
   public val parent: Parent,
 ) : Fragment.Data {
-  public interface Parent {
+  public sealed interface Parent {
     public val __typename: String
 
     public val species: String
