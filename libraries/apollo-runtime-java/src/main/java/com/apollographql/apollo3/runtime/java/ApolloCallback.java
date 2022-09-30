@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface ApolloCallback<D extends Operation.Data> {
   /**
-   * Gets called when GraphQL response is received and parsed successfully. D
+   * Gets called when GraphQL response is received and parsed successfully.
    *
    * @param response the GraphQL response
    */
