@@ -131,8 +131,11 @@ public class GuavaOptionalsTest {
         "          \"nonNullableMyType\": {\n" +
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 2\n" +
-        "          }\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null\n" +
         "      }");
+    ;
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
     MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
@@ -162,7 +165,9 @@ public class GuavaOptionalsTest {
         "          \"nonNullableMyType\": {\n" +
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 4\n" +
-        "          }\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
     actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
