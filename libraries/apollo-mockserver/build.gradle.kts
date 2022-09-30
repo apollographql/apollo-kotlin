@@ -19,7 +19,7 @@ kotlin {
         implementation(golatac.lib("atomicfu")) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
         }
-        implementation(golatac.lib("kotlinx.coroutines"))
+        api(golatac.lib("kotlinx.coroutines"))
       }
     }
 

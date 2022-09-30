@@ -1,0 +1,41 @@
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCallback {
+	public abstract fun onFailure (Lcom/apollographql/apollo3/exception/ApolloException;)V
+	public abstract fun onResponse (Lcom/apollographql/apollo3/api/ApolloResponse;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/ApolloClient {
+	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
+	public fun query (Lcom/apollographql/apollo3/api/Operation;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+}
+
+public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder {
+	public fun build ()Lcom/apollographql/apollo3/runtime/java/ApolloClient;
+	public fun callFactory (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun dispatcher (Ljava/util/concurrent/Executor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+}
+
+public class com/apollographql/apollo3/runtime/java/DefaultApolloCall : com/apollographql/apollo3/runtime/java/ApolloCall {
+	public fun <init> (Lcom/apollographql/apollo3/runtime/java/ApolloClient;Lcom/apollographql/apollo3/api/Operation;)V
+	public fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/DefaultApolloDisposable : com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable {
+	public fun <init> ()V
+	public fun dispose ()V
+	public fun isDisposed ()Z
+}
+
+public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable {
+	public abstract fun dispose ()V
+}
+
+public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor {
+	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptorChain;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+}
+
+public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptorChain {
+	public abstract fun isDisposed ()Z
+	public abstract fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+}
+
