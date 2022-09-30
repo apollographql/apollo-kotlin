@@ -7,7 +7,7 @@ plugins {
 dependencies {
   implementation(golatac.lib("apollo.runtime.java"))
   implementation(golatac.lib("apollo.mockserver"))
-  implementation(golatac.lib("rx.java3"))
+  implementation(golatac.lib("apollo.rx3.java"))
   testImplementation(golatac.lib("junit"))
   testImplementation(golatac.lib("truth"))
 }
