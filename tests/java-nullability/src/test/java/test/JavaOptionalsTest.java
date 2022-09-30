@@ -131,7 +131,9 @@ public class JavaOptionalsTest {
         "          \"nonNullableMyType\": {\n" +
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 2\n" +
-        "          }\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
     MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -144,7 +146,9 @@ public class JavaOptionalsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ Optional.empty(),
                 /* nonNullableInt = */ 2
-            )
+            ),
+            /* nullableListOfNullableString = */ Optional.empty(),
+            /* nullableListOfNonNullableString = */ Optional.empty()
         ),
         actualData
     );
@@ -160,7 +164,9 @@ public class JavaOptionalsTest {
         "          \"nonNullableMyType\": {\n" +
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 4\n" +
-        "          }\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
     actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -177,7 +183,9 @@ public class JavaOptionalsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ Optional.empty(),
                 /* nonNullableInt = */ 4
-            )
+            ),
+            /* nullableListOfNullableString = */ Optional.empty(),
+            /* nullableListOfNonNullableString = */ Optional.empty()
         ),
         actualData
     );

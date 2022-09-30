@@ -20,11 +20,12 @@ import java.lang.Integer;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.util.List;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
 public class MyQuery implements Query<MyQuery.Data> {
-  public static final String OPERATION_ID = "75a121303b1c722fd9a9f0cfc451ae9cd36dc1860445c6f3b1191350ead43bd7";
+  public static final String OPERATION_ID = "c9a856ba761821117e6a30df290b1259be46190a67a93d351fe3a648a4713435";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -44,9 +45,11 @@ public class MyQuery implements Query<MyQuery.Data> {
    *     nullableInt
    *     nonNullableInt
    *   }
+   *   nullableListOfNullableString
+   *   nullableListOfNonNullableString
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query MyQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault) nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } }";
+  public static final String OPERATION_DOCUMENT = "query MyQuery($nullableInt: Int, $nonNullableInt: Int!, $nonNullableIntWithDefault: Int! = 4 , $nullableInput: MyInput, $nonNullableInput: MyInput!, $nonNullableInputWithDefault: MyInput! = { nonNullableInt: 4 } ) { nullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault) nonNullableInt(nullableInt: $nullableInt, nonNullableInt: $nonNullableInt, nonNullableIntWithDefault: $nonNullableIntWithDefault, nullableInput: $nullableInput, nonNullableInput: $nonNullableInput, nonNullableInputWithDefault: $nonNullableInputWithDefault) nullableMyType { nullableInt nonNullableInt } nonNullableMyType { nullableInt nonNullableInt } nullableListOfNullableString nullableListOfNonNullableString }";
 
   public static final String OPERATION_NAME = "MyQuery";
 
@@ -233,6 +236,10 @@ public class MyQuery implements Query<MyQuery.Data> {
 
     public NonNullableMyType nonNullableMyType;
 
+    public Optional<List<Optional<String>>> nullableListOfNullableString;
+
+    public Optional<List<String>> nullableListOfNonNullableString;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
@@ -240,11 +247,15 @@ public class MyQuery implements Query<MyQuery.Data> {
     private transient volatile String $toString;
 
     public Data(Optional<Integer> nullableInt, int nonNullableInt,
-        Optional<NullableMyType> nullableMyType, NonNullableMyType nonNullableMyType) {
+        Optional<NullableMyType> nullableMyType, NonNullableMyType nonNullableMyType,
+        Optional<List<Optional<String>>> nullableListOfNullableString,
+        Optional<List<String>> nullableListOfNonNullableString) {
       this.nullableInt = nullableInt;
       this.nonNullableInt = nonNullableInt;
       this.nullableMyType = nullableMyType;
       this.nonNullableMyType = nonNullableMyType;
+      this.nullableListOfNullableString = nullableListOfNullableString;
+      this.nullableListOfNonNullableString = nullableListOfNonNullableString;
     }
 
     @Override
@@ -257,7 +268,9 @@ public class MyQuery implements Query<MyQuery.Data> {
         return ((this.nullableInt == null) ? (that.nullableInt == null) : this.nullableInt.equals(that.nullableInt))
          &&this.nonNullableInt == that.nonNullableInt
          &&((this.nullableMyType == null) ? (that.nullableMyType == null) : this.nullableMyType.equals(that.nullableMyType))
-         &&((this.nonNullableMyType == null) ? (that.nonNullableMyType == null) : this.nonNullableMyType.equals(that.nonNullableMyType));
+         &&((this.nonNullableMyType == null) ? (that.nonNullableMyType == null) : this.nonNullableMyType.equals(that.nonNullableMyType))
+         &&((this.nullableListOfNullableString == null) ? (that.nullableListOfNullableString == null) : this.nullableListOfNullableString.equals(that.nullableListOfNullableString))
+         &&((this.nullableListOfNonNullableString == null) ? (that.nullableListOfNonNullableString == null) : this.nullableListOfNonNullableString.equals(that.nullableListOfNonNullableString));
       }
       return false;
     }
@@ -274,6 +287,10 @@ public class MyQuery implements Query<MyQuery.Data> {
         h ^= (nullableMyType == null) ? 0 : nullableMyType.hashCode();
         h *= 1000003;
         h ^= (nonNullableMyType == null) ? 0 : nonNullableMyType.hashCode();
+        h *= 1000003;
+        h ^= (nullableListOfNullableString == null) ? 0 : nullableListOfNullableString.hashCode();
+        h *= 1000003;
+        h ^= (nullableListOfNonNullableString == null) ? 0 : nullableListOfNonNullableString.hashCode();
         $hashCode = h;
         $hashCodeMemoized = true;
       }
@@ -287,7 +304,9 @@ public class MyQuery implements Query<MyQuery.Data> {
           + "nullableInt=" + nullableInt + ", "
           + "nonNullableInt=" + nonNullableInt + ", "
           + "nullableMyType=" + nullableMyType + ", "
-          + "nonNullableMyType=" + nonNullableMyType
+          + "nonNullableMyType=" + nonNullableMyType + ", "
+          + "nullableListOfNullableString=" + nullableListOfNullableString + ", "
+          + "nullableListOfNonNullableString=" + nullableListOfNonNullableString
           + "}";
       }
       return $toString;
@@ -299,6 +318,8 @@ public class MyQuery implements Query<MyQuery.Data> {
       builder.nonNullableInt = nonNullableInt;
       builder.nullableMyType = nullableMyType;
       builder.nonNullableMyType = nonNullableMyType;
+      builder.nullableListOfNullableString = nullableListOfNullableString;
+      builder.nullableListOfNonNullableString = nullableListOfNonNullableString;
       return builder;
     }
 
@@ -314,6 +335,10 @@ public class MyQuery implements Query<MyQuery.Data> {
       private Optional<NullableMyType> nullableMyType = Optional.empty();
 
       private NonNullableMyType nonNullableMyType;
+
+      private Optional<List<Optional<String>>> nullableListOfNullableString = Optional.empty();
+
+      private Optional<List<String>> nullableListOfNonNullableString = Optional.empty();
 
       Builder() {
       }
@@ -338,8 +363,19 @@ public class MyQuery implements Query<MyQuery.Data> {
         return this;
       }
 
+      public Builder nullableListOfNullableString(
+          List<Optional<String>> nullableListOfNullableString) {
+        this.nullableListOfNullableString = Optional.of(nullableListOfNullableString);
+        return this;
+      }
+
+      public Builder nullableListOfNonNullableString(List<String> nullableListOfNonNullableString) {
+        this.nullableListOfNonNullableString = Optional.of(nullableListOfNonNullableString);
+        return this;
+      }
+
       public Data build() {
-        return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType);
+        return new Data(nullableInt, nonNullableInt, nullableMyType, nonNullableMyType, nullableListOfNullableString, nullableListOfNonNullableString);
       }
     }
   }

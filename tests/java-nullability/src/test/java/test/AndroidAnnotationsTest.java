@@ -140,7 +140,9 @@ public class AndroidAnnotationsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ null,
                 /* nonNullableInt = */ 2
-            )
+            ),
+            /* nullableListOfNullableString = */ null,
+            /* nullableListOfNonNullableString = */ null
         ),
         actualData
     );
@@ -173,7 +175,9 @@ public class AndroidAnnotationsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ null,
                 /* nonNullableInt = */ 4
-            )
+            ),
+            /* nullableListOfNullableString = */ null,
+            /* nullableListOfNonNullableString = */ null
         ),
         actualData
     );

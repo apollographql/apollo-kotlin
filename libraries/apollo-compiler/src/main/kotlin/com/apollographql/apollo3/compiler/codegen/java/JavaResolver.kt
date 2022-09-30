@@ -114,7 +114,7 @@ internal class JavaResolver(
     return when (type) {
       is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
       is IrOptionalType -> resolveIrType(type.ofType).boxIfPrimitiveType().wrapInOptional()
-      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).withoutAnnotations().boxIfPrimitiveType())
+      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).filterTypeUseAnnotations().boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
@@ -122,7 +122,7 @@ internal class JavaResolver(
   }
 
   private fun TypeName.wrapInOptional(): TypeName {
-    return ParameterizedTypeName.get(optionalClassName, this.withoutAnnotations())
+    return ParameterizedTypeName.get(optionalClassName, this.filterTypeUseAnnotations())
   }
 
   internal fun unwrapFromOptional(typeName: TypeName): TypeName {
@@ -146,6 +146,19 @@ internal class JavaResolver(
       this
     } else {
       annotated(AnnotationSpec.builder(notNullAnnotationClassName).build())
+    }
+  }
+
+  /**
+   * Only keep the annotations that support TYPE_USE targets for use 
+   * in generics like `List<@NotNull String>` for an example
+   */
+  private fun TypeName.filterTypeUseAnnotations(): TypeName {
+    // Only the JetBrains nullability annotations have a target including ElementType.TYPE_USE
+    return if (annotations.isEmpty()) {
+      this
+    } else {
+      withoutAnnotations().annotated(annotations.filter { it.type == JavaClassNames.JetBrainsNullable || it.type == JavaClassNames.JetBrainsNonNull })
     }
   }
 

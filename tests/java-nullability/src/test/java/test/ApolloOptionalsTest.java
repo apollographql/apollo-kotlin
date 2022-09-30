@@ -131,7 +131,9 @@ public class ApolloOptionalsTest {
         "          \"nonNullableMyType\": {\n" +
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 2\n" +
-        "          }\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
     MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -144,7 +146,9 @@ public class ApolloOptionalsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ Optional.absent(),
                 /* nonNullableInt = */ 2
-            )
+            ),
+            /* nullableListOfNullableString = */ Optional.absent(),
+            /* nullableListOfNonNullableString = */ Optional.absent()
         ),
         actualData
     );
@@ -160,7 +164,9 @@ public class ApolloOptionalsTest {
         "          \"nonNullableMyType\": {\n" +
         "            \"nullableInt\": null,\n" +
         "            \"nonNullableInt\": 4\n" +
-        "          }\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
     actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -177,7 +183,9 @@ public class ApolloOptionalsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ Optional.absent(),
                 /* nonNullableInt = */ 4
-            )
+            ),
+            /* nullableListOfNullableString = */ Optional.absent(),
+            /* nullableListOfNonNullableString = */ Optional.absent()
         ),
         actualData
     );

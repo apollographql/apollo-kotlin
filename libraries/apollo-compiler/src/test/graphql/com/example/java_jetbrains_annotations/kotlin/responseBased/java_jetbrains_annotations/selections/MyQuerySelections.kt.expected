@@ -9,8 +9,10 @@ import com.apollographql.apollo3.api.CompiledArgument
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CompiledSelection
 import com.apollographql.apollo3.api.CompiledVariable
+import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.java_jetbrains_annotations.type.GraphQLInt
+import com.example.java_jetbrains_annotations.type.GraphQLString
 import com.example.java_jetbrains_annotations.type.MyType
 import kotlin.collections.List
 
@@ -71,6 +73,14 @@ public object MyQuerySelections {
           name = "nonNullableMyType",
           type = MyType.type.notNull()
         ).selections(__nonNullableMyType)
-        .build()
+        .build(),
+        CompiledField.Builder(
+          name = "nullableListOfNullableString",
+          type = GraphQLString.type.list()
+        ).build(),
+        CompiledField.Builder(
+          name = "nullableListOfNonNullableString",
+          type = GraphQLString.type.notNull().list()
+        ).build()
       )
 }

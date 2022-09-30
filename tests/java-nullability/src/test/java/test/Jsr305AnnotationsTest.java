@@ -1,7 +1,7 @@
 package test;
 
-import annotations.jetbrains.MyQuery;
-import annotations.jetbrains.type.MyInput;
+import annotations.jsr305.MyQuery;
+import annotations.jsr305.type.MyInput;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
@@ -17,7 +17,7 @@ import static test.MapUtils.entry;
 import static test.MapUtils.mapOf;
 
 @SuppressWarnings("unchecked")
-public class JetbrainsAnnotationsTest {
+public class Jsr305AnnotationsTest {
   @Test
   public void serializeVariablesPresent() throws Exception {
     MyQuery query = MyQuery.builder()
@@ -140,7 +140,9 @@ public class JetbrainsAnnotationsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ null,
                 /* nonNullableInt = */ 2
-            )
+            ),
+            /* nullableListOfNullableString = */ null,
+            /* nullableListOfNonNullableString = */ null
         ),
         actualData
     );
@@ -173,7 +175,9 @@ public class JetbrainsAnnotationsTest {
             new MyQuery.NonNullableMyType(
                 /* nullableInt = */ null,
                 /* nonNullableInt = */ 4
-            )
+            ),
+            /* nullableListOfNullableString = */ null,
+            /* nullableListOfNonNullableString = */ null
         ),
         actualData
     );

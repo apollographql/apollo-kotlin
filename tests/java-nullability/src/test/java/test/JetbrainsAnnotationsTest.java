@@ -1,33 +1,37 @@
 package test;
 
+import annotations.jetbrains.MyQuery;
+import annotations.jetbrains.type.MyInput;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.MapJsonWriter;
-import com.google.common.base.Optional;
 import okio.Buffer;
-import optionals.guava.MyQuery;
-import optionals.guava.type.MyInput;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static test.MapUtils.entry;
 import static test.MapUtils.mapOf;
 
 @SuppressWarnings("unchecked")
-public class GuavaOptionalsTest {
+public class JetbrainsAnnotationsTest {
   @Test
   public void serializeVariablesPresent() throws Exception {
-    MyQuery query = new MyQuery(
-        /* nullableInt = */ Optional.of(Optional.of(0)),
-        /* nonNullableInt = */ 1,
-        /* nonNullableIntWithDefault = */ Optional.of(2),
-        /* nullableInput = */ Optional.of(Optional.of(myInputPresent())),
-        /* nonNullableInput = */ myInputPresent(),
-        /* nonNullableInputWithDefault = */ Optional.of(myInputPresent())
-    );
+    MyQuery query = MyQuery.builder()
+        .nullableInt(0)
+        .nonNullableInt(1)
+        .nonNullableIntWithDefault(2)
+        .nullableInput(myInputPresent())
+        .nonNullableInput(myInputPresent())
+        .nonNullableInputWithDefault(myInputPresent())
+        .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
     query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
@@ -60,14 +64,10 @@ public class GuavaOptionalsTest {
 
   @Test
   public void serializeVariablesAbsent() throws Exception {
-    MyQuery query = new MyQuery(
-        /* nullableInt = */ Optional.absent(),
-        /* nonNullableInt = */ 1,
-        /* nonNullableIntWithDefault = */ Optional.absent(),
-        /* nullableInput = */ Optional.absent(),
-        /* nonNullableInput = */ myInputOptionalAbsent(),
-        /* nonNullableInputWithDefault = */ Optional.absent()
-    );
+    MyQuery query = MyQuery.builder()
+        .nonNullableInt(1)
+        .nonNullableInput(myInputOptionalAbsent())
+        .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
     query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
@@ -86,14 +86,14 @@ public class GuavaOptionalsTest {
 
   @Test
   public void serializeVariablesMixed() throws Exception {
-    MyQuery query = new MyQuery(
-        /* nullableInt = */ Optional.of(Optional.absent()),
-        /* nonNullableInt = */ 1,
-        /* nonNullableIntWithDefault = */ Optional.of(2),
-        /* nullableInput = */ Optional.of(Optional.absent()),
-        /* nonNullableInput = */ myInputMixed(),
-        /* nonNullableInputWithDefault = */ Optional.of(myInputMixed())
-    );
+    MyQuery query = MyQuery.builder()
+        .nullableInt(null)
+        .nonNullableInt(1)
+        .nonNullableIntWithDefault(2)
+        .nullableInput(null)
+        .nonNullableInput(myInputMixed())
+        .nonNullableInputWithDefault(myInputMixed())
+        .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
     query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
@@ -137,14 +137,16 @@ public class GuavaOptionalsTest {
     MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
-            /* nullableInt = */ Optional.absent(),
+            /* nullableInt = */ null,
             /* nonNullableInt = */ 1,
-            /* nullableMyType = */ Optional.absent(),
+            /* nullableMyType = */ null,
             /* nonNullableMyType = */
             new MyQuery.NonNullableMyType(
-                /* nullableInt = */ Optional.absent(),
+                /* nullableInt = */ null,
                 /* nonNullableInt = */ 2
-            )
+            ),
+            /* nullableListOfNullableString = */ null,
+            /* nullableListOfNonNullableString = */ null
         ),
         actualData
     );
@@ -166,45 +168,71 @@ public class GuavaOptionalsTest {
     actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
-            /* nullableInt = */ Optional.of(0),
+            /* nullableInt = */ 0,
             /* nonNullableInt = */ 1,
             /* nullableMyType = */
-            Optional.of(new MyQuery.NullableMyType(
-                /* nullableInt = */ Optional.of(2),
+            new MyQuery.NullableMyType(
+                /* nullableInt = */ 2,
                 /* nonNullableInt = */ 3
-            )),
+            ),
             /* nonNullableMyType = */
             new MyQuery.NonNullableMyType(
-                /* nullableInt = */ Optional.absent(),
+                /* nullableInt = */ null,
                 /* nonNullableInt = */ 4
-            )
+            ),
+            /* nullableListOfNullableString = */ null,
+            /* nullableListOfNonNullableString = */ null
         ),
         actualData
     );
   }
 
+  /**
+   * Not a test, but demonstrates annotations on the generated code by displaying warnings in the IDE.
+   */
+  private void annotationWarnings() {
+    List<@Nullable String> listOfNullableString = new ArrayList<>();
+    List<@NotNull String> listOfNotNullString = new ArrayList<>();
+    MyQuery.Data data = MyQuery.Data.builder()
+        .nullableInt(null)
+        .nonNullableInt(null) // warning
+        .nullableMyType(null)
+        .nonNullableMyType(null) // warning
+        .nullableListOfNullableString(listOfNotNullString)
+        .nullableListOfNonNullableString(listOfNullableString) // warning
+        .build();
+
+    Optional<@Nullable Integer> optionalOfNullableInteger = Optional.present(null);
+    Optional<@Nullable MyInput> optionalOfNullableMyInput = Optional.present(null);
+    MyQuery query = new MyQuery(
+        optionalOfNullableInteger,
+        0,
+        optionalOfNullableInteger,
+        optionalOfNullableMyInput,
+        myInputPresent(),
+        optionalOfNullableMyInput
+    );
+  }
 
   private static MyInput myInputPresent() {
-    return new MyInput(
-        /* nullableInt = */ Optional.of(Optional.of(3)),
-        /* nonNullableInt = */ 4,
-        /* nonNullableIntWithDefault = */ Optional.of(5)
-    );
+    return MyInput.builder()
+        .nullableInt(3)
+        .nonNullableInt(4)
+        .nonNullableIntWithDefault(5)
+        .build();
   }
 
   private static MyInput myInputOptionalAbsent() {
-    return new MyInput(
-        /* nullableInt = */ Optional.absent(),
-        /* nonNullableInt = */ 4,
-        /* nonNullableIntWithDefault = */ Optional.absent()
-    );
+    return MyInput.builder()
+        .nonNullableInt(4)
+        .build();
   }
 
   private static MyInput myInputMixed() {
-    return new MyInput(
-        /* nullableInt = */ Optional.of(Optional.absent()),
-        /* nonNullableInt = */ 4,
-        /* nonNullableIntWithDefault = */ Optional.of(5)
-    );
+    return MyInput.builder()
+        .nullableInt(null)
+        .nonNullableInt(4)
+        .nonNullableIntWithDefault(5)
+        .build();
   }
 }
