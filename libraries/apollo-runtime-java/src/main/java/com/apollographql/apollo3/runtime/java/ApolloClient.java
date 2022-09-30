@@ -132,7 +132,7 @@ public class ApolloClient {
           }
         }
       } catch (IOException e) {
-        callback.onFailure(new ApolloNetworkException("HTTP error", e));
+        callback.onFailure(new ApolloNetworkException("Network error", e));
       }
     }
   }
