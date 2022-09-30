@@ -1,6 +1,5 @@
 package test;
 
-import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.exception.ApolloException;
@@ -15,11 +14,7 @@ import io.reactivex.rxjava3.annotations.CheckReturnValue;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.exceptions.Exceptions;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import javatest.CreateCatMutation;
 import javatest.GetRandomQuery;
 import kotlin.coroutines.Continuation;
@@ -58,8 +53,11 @@ public class ClientTest {
   public void simple() {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = from(apolloClient.query(GetRandomQuery.builder().build()), BackpressureStrategy.BUFFER).blockingFirst();
-
     Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
+
+    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
+    @NonNull ApolloResponse<CreateCatMutation.Data> mutationResponse = from(apolloClient.mutation(CreateCatMutation.builder().build()), BackpressureStrategy.BUFFER).blockingFirst();
+    Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
   }
 
   @NotNull
@@ -68,9 +66,9 @@ public class ClientTest {
     checkNotNull(call, "originalCall == null");
     checkNotNull(backpressureStrategy, "backpressureStrategy == null");
     return Flowable.create(emitter -> {
-      ApolloDisposable disposable = call.enqueue(new ApolloCallback() {
+      ApolloDisposable disposable = call.enqueue(new ApolloCallback<T>() {
 
-        @Override public void onResponse(@NotNull ApolloResponse response) {
+        @Override public void onResponse(@NotNull ApolloResponse<T> response) {
           if (!emitter.isCancelled()) {
             emitter.onNext(response);
           }

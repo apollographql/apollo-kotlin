@@ -3,6 +3,7 @@ package com.apollographql.apollo3.runtime.java;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Operations;
 import com.apollographql.apollo3.api.Query;
@@ -12,14 +13,12 @@ import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.api.http.HttpRequest;
 import com.apollographql.apollo3.api.http.HttpRequestComposer;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.ApolloParseException;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
-import kotlin.Pair;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -33,10 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
 import static java.util.concurrent.Executors.newCachedThreadPool;
@@ -56,22 +51,26 @@ public class ApolloClient {
     this.executor = executor;
   }
 
-  public <D extends Query.Data> ApolloCall<D> query(Operation<D> operation) {
-    return new DefaultApolloCall(this, operation);
+  public <D extends Query.Data> ApolloCall<D> query(Query<D> operation) {
+    return new DefaultApolloCall<>(this, operation);
   }
 
-  public <D extends Query.Data> ApolloDisposable execute(ApolloRequest<D> request, ApolloCallback<D> callback) {
+  public <D extends Mutation.Data> ApolloCall<D> mutation(Mutation<D> operation) {
+    return new DefaultApolloCall<>(this, operation);
+  }
+
+  public <D extends Operation.Data> ApolloDisposable execute(ApolloRequest<D> request, ApolloCallback<D> callback) {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
-    ArrayList<ApolloInterceptor> interceptors = new ArrayList<>();
-    interceptors.add(new NetworkInterceptor(callFactory, serverUrl));
+    ArrayList<ApolloInterceptor<D>> interceptors = new ArrayList<>();
+    interceptors.add(new NetworkInterceptor<>(callFactory, serverUrl));
 
-    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
+    executor.execute(() -> new DefaultInterceptorChain<>(interceptors, 0, disposable).proceed(request, callback));
 
     return disposable;
   }
 
-  private static class NetworkInterceptor implements ApolloInterceptor {
+  private static class NetworkInterceptor<D extends Operation.Data> implements ApolloInterceptor<D> {
     private Call.Factory callFactory;
     private HttpRequestComposer requestComposer;
 
@@ -80,7 +79,7 @@ public class ApolloClient {
       this.requestComposer = new DefaultHttpRequestComposer(serverUrl);
     }
 
-    @Override public void intercept(@NotNull ApolloRequest request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback callback) {
+    @Override public void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain<D> chain, @NotNull ApolloCallback<D> callback) {
       HttpRequest httpRequest = requestComposer.compose(request);
       Request.Builder builder = new Request.Builder()
           .url(httpRequest.getUrl());
@@ -95,6 +94,7 @@ public class ApolloClient {
           @Nullable @Override public MediaType contentType() {
             return MediaType.parse(httpRequest.getBody().getContentType());
           }
+
           @Override public long contentLength() {
             return httpRequest.getBody().getContentLength();
           }
@@ -116,7 +116,7 @@ public class ApolloClient {
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.body().source());
           try {
-            ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, CustomScalarAdapters.Empty);
+            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, CustomScalarAdapters.Empty);
             callback.onResponse(apolloResponse);
           } catch (Exception e) {
             callback.onFailure(new ApolloParseException("Cannot parse response", e));
