@@ -19,7 +19,7 @@ class AdapterContext private constructor(
     }
 
     return variables.valueMap.filter {
-      it.value == true
+      it.value == false
     }.keys
   }
 
