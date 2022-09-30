@@ -114,7 +114,7 @@ internal class JavaResolver(
     return when (type) {
       is IrNonNullType -> error("") // make the compiler happy, this case is handled as a fast path
       is IrOptionalType -> resolveIrType(type.ofType).boxIfPrimitiveType().wrapInOptional()
-      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).withoutAnnotationsForGenerics().boxIfPrimitiveType())
+      is IrListType -> ParameterizedTypeName.get(JavaClassNames.List, resolveIrType(type.ofType).filterTypeUseAnnotations().boxIfPrimitiveType())
       is IrModelType -> resolveAndAssert(ResolverKeyKind.Model, type.path)
       is IrScalarType -> resolveIrScalarType(type, asPrimitiveType = false)
       is IrNamedType -> resolveAndAssert(ResolverKeyKind.SchemaType, type.name)
@@ -122,7 +122,7 @@ internal class JavaResolver(
   }
 
   private fun TypeName.wrapInOptional(): TypeName {
-    return ParameterizedTypeName.get(optionalClassName, this.withoutAnnotationsForGenerics())
+    return ParameterizedTypeName.get(optionalClassName, this.filterTypeUseAnnotations())
   }
 
   internal fun unwrapFromOptional(typeName: TypeName): TypeName {
