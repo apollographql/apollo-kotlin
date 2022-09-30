@@ -5,11 +5,13 @@ import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
+import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
@@ -125,4 +127,44 @@ public class ClientTest {
     return Rx3Apollo.single(apolloClient.mutation(mutation), BackpressureStrategy.BUFFER).blockingGet();
   }
 
+  @Test
+  public void cancellation() {
+    mockServer.enqueue(
+        new MockResponse.Builder()
+            .body("{\"data\": {\"random\": 42}}")
+            .delayMillis(500)
+            .build()
+    );
+
+    final Object[] received = new Object[1];
+
+    ApolloDisposable disposable = apolloClient.query(GetRandomQuery.builder().build()).enqueue(new ApolloCallback<GetRandomQuery.Data>() {
+      @Override public void onResponse(@NotNull ApolloResponse<GetRandomQuery.Data> response) {
+        received[0] = response;
+      }
+
+      @Override public void onFailure(@NotNull ApolloException e) {
+        received[0] = e;
+      }
+    });
+
+    sleep(100);
+
+    disposable.dispose();
+
+    sleep(1000);
+
+    /*
+     * Cancellation do not emit anything
+     */
+    Truth.assertThat(received[0]).isEqualTo(null);
+  }
+
+  private void sleep(int millis) {
+    try {
+      Thread.sleep(millis);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
 }

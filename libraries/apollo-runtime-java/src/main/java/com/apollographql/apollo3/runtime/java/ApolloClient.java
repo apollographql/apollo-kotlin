@@ -117,8 +117,20 @@ public class ApolloClient {
         });
       }
 
+      Call call = callFactory.newCall(builder.build());
+
+      ApolloDisposable.Listener listener = () -> call.cancel();
+
+      ApolloDisposable disposable = chain.getDisposable();
+      disposable.addListener(listener);
+
       try {
-        Response response = callFactory.newCall(builder.build()).execute();
+        // It might be that we are cancelled even before we registered the listener
+        // Do an early check for that case
+        if (disposable.isDisposed()) {
+          return;
+        }
+        Response response = call.execute();
         if (!response.isSuccessful()) {
           ArrayList<HttpHeader> headers = new ArrayList<>();
           response.headers().forEach(pair -> headers.add(new HttpHeader(pair.getFirst(), pair.getSecond())));
@@ -131,11 +143,19 @@ public class ApolloClient {
             ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters);
             callback.onResponse(apolloResponse);
           } catch (Exception e) {
+            if (disposable.isDisposed()) {
+              return;
+            }
             callback.onFailure(new ApolloParseException("Cannot parse response", e));
           }
         }
       } catch (IOException e) {
+        if (disposable.isDisposed()) {
+          return;
+        }
         callback.onFailure(new ApolloNetworkException("Network error", e));
+      } finally {
+        chain.getDisposable().removeCancellationListener(listener);
       }
     }
   }
