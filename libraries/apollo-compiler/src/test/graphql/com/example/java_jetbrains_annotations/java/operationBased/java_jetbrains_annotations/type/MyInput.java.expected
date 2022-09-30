@@ -11,10 +11,11 @@ import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MyInput {
   @NotNull
-  public final Optional<Integer> nullableInt;
+  public final Optional<@Nullable Integer> nullableInt;
 
   public final int nonNullableInt;
 
@@ -27,7 +28,7 @@ public class MyInput {
 
   private transient volatile String $toString;
 
-  public MyInput(@NotNull Optional<Integer> nullableInt, int nonNullableInt,
+  public MyInput(@NotNull Optional<@Nullable Integer> nullableInt, int nonNullableInt,
       @NotNull Optional<Integer> nonNullableIntWithDefault) {
     this.nullableInt = nullableInt;
     this.nonNullableInt = nonNullableInt;
@@ -81,7 +82,7 @@ public class MyInput {
   }
 
   public static final class Builder {
-    private Optional<Integer> nullableInt = Optional.absent();
+    private Optional<@Nullable Integer> nullableInt = Optional.absent();
 
     private int nonNullableInt;
 
@@ -90,7 +91,7 @@ public class MyInput {
     Builder() {
     }
 
-    public Builder nullableInt(Integer nullableInt) {
+    public Builder nullableInt(@Nullable Integer nullableInt) {
       this.nullableInt = Optional.present(nullableInt);
       return this;
     }

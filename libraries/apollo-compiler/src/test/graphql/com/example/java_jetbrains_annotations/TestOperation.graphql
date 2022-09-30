@@ -16,5 +16,7 @@ query MyQuery(
     nullableInt
     nonNullableInt
   }
+  nullableListOfNullableString
+  nullableListOfNonNullableString
 }
 

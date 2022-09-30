@@ -9,8 +9,11 @@ import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.java_java_optionals.MyQuery
@@ -22,7 +25,8 @@ import kotlin.collections.List
 public object MyQuery_ResponseAdapter {
   public object Data : Adapter<MyQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
-        "nullableMyType", "nonNullableMyType")
+        "nullableMyType", "nonNullableMyType", "nullableListOfNullableString",
+        "nullableListOfNonNullableString")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         MyQuery.Data {
@@ -30,6 +34,8 @@ public object MyQuery_ResponseAdapter {
       var _nonNullableInt: Int? = null
       var _nullableMyType: MyQuery.Data.NullableMyType? = null
       var _nonNullableMyType: MyQuery.Data.NonNullableMyType? = null
+      var _nullableListOfNullableString: List<String?>? = null
+      var _nullableListOfNonNullableString: List<String>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
@@ -38,6 +44,10 @@ public object MyQuery_ResponseAdapter {
           2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader,
               customScalarAdapters)
           3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, customScalarAdapters)
+          4 -> _nullableListOfNullableString = NullableStringAdapter.list().nullable().fromJson(reader,
+              customScalarAdapters)
+          5 -> _nullableListOfNonNullableString = StringAdapter.list().nullable().fromJson(reader,
+              customScalarAdapters)
           else -> break
         }
       }
@@ -46,7 +56,9 @@ public object MyQuery_ResponseAdapter {
         nullableInt = _nullableInt,
         nonNullableInt = _nonNullableInt!!,
         nullableMyType = _nullableMyType,
-        nonNullableMyType = _nonNullableMyType!!
+        nonNullableMyType = _nonNullableMyType!!,
+        nullableListOfNullableString = _nullableListOfNullableString,
+        nullableListOfNonNullableString = _nullableListOfNonNullableString
       )
     }
 
@@ -66,6 +78,14 @@ public object MyQuery_ResponseAdapter {
 
       writer.name("nonNullableMyType")
       NonNullableMyType.obj().toJson(writer, customScalarAdapters, value.nonNullableMyType)
+
+      writer.name("nullableListOfNullableString")
+      NullableStringAdapter.list().nullable().toJson(writer, customScalarAdapters,
+          value.nullableListOfNullableString)
+
+      writer.name("nullableListOfNonNullableString")
+      StringAdapter.list().nullable().toJson(writer, customScalarAdapters,
+          value.nullableListOfNonNullableString)
     }
 
     private object NullableMyType : Adapter<MyQuery.Data.NullableMyType> {

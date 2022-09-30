@@ -4,20 +4,20 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.MapJsonWriter;
+import com.google.common.base.Optional;
 import okio.Buffer;
-import optionals.java.MyQuery;
-import optionals.java.type.MyInput;
+import optionals.guava.MyQuery;
+import optionals.guava.type.MyInput;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static test.MapUtils.entry;
 import static test.MapUtils.mapOf;
 
 @SuppressWarnings("unchecked")
-public class JavaOptionalsTest {
+public class GuavaOptionalsTest {
   @Test
   public void serializeVariablesPresent() throws Exception {
     MyQuery query = new MyQuery(
@@ -61,12 +61,12 @@ public class JavaOptionalsTest {
   @Test
   public void serializeVariablesAbsent() throws Exception {
     MyQuery query = new MyQuery(
-        /* nullableInt = */ Optional.empty(),
+        /* nullableInt = */ Optional.absent(),
         /* nonNullableInt = */ 1,
-        /* nonNullableIntWithDefault = */ Optional.empty(),
-        /* nullableInput = */ Optional.empty(),
+        /* nonNullableIntWithDefault = */ Optional.absent(),
+        /* nullableInput = */ Optional.absent(),
         /* nonNullableInput = */ myInputOptionalAbsent(),
-        /* nonNullableInputWithDefault = */ Optional.empty()
+        /* nonNullableInputWithDefault = */ Optional.absent()
     );
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
@@ -87,10 +87,10 @@ public class JavaOptionalsTest {
   @Test
   public void serializeVariablesMixed() throws Exception {
     MyQuery query = new MyQuery(
-        /* nullableInt = */ Optional.of(Optional.empty()),
+        /* nullableInt = */ Optional.of(Optional.absent()),
         /* nonNullableInt = */ 1,
         /* nonNullableIntWithDefault = */ Optional.of(2),
-        /* nullableInput = */ Optional.of(Optional.empty()),
+        /* nullableInput = */ Optional.of(Optional.absent()),
         /* nonNullableInput = */ myInputMixed(),
         /* nonNullableInputWithDefault = */ Optional.of(myInputMixed())
     );
@@ -122,7 +122,7 @@ public class JavaOptionalsTest {
 
   @Test
   public void dataAdapter() throws Exception {
-    MyQuery query = new MyQuery(Optional.empty(), 0, Optional.empty(), Optional.empty(), myInputOptionalAbsent(), Optional.empty());
+    MyQuery query = new MyQuery(Optional.absent(), 0, Optional.absent(), Optional.absent(), myInputOptionalAbsent(), Optional.absent());
     Buffer buffer = new Buffer();
     buffer.writeUtf8("{\n" +
         "          \"nullableInt\": null,\n" +
@@ -137,14 +137,16 @@ public class JavaOptionalsTest {
     MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
-            /* nullableInt = */ Optional.empty(),
+            /* nullableInt = */ Optional.absent(),
             /* nonNullableInt = */ 1,
-            /* nullableMyType = */ Optional.empty(),
+            /* nullableMyType = */ Optional.absent(),
             /* nonNullableMyType = */
             new MyQuery.NonNullableMyType(
-                /* nullableInt = */ Optional.empty(),
+                /* nullableInt = */ Optional.absent(),
                 /* nonNullableInt = */ 2
-            )
+            ),
+            /* nullableListOfNullableString = */ Optional.absent(),
+            /* nullableListOfNonNullableString = */ Optional.absent()
         ),
         actualData
     );
@@ -175,13 +177,16 @@ public class JavaOptionalsTest {
             )),
             /* nonNullableMyType = */
             new MyQuery.NonNullableMyType(
-                /* nullableInt = */ Optional.empty(),
+                /* nullableInt = */ Optional.absent(),
                 /* nonNullableInt = */ 4
-            )
+            ),
+            /* nullableListOfNullableString = */ Optional.absent(),
+            /* nullableListOfNonNullableString = */ Optional.absent()
         ),
         actualData
     );
   }
+
 
   private static MyInput myInputPresent() {
     return new MyInput(
@@ -193,15 +198,15 @@ public class JavaOptionalsTest {
 
   private static MyInput myInputOptionalAbsent() {
     return new MyInput(
-        /* nullableInt = */ Optional.empty(),
+        /* nullableInt = */ Optional.absent(),
         /* nonNullableInt = */ 4,
-        /* nonNullableIntWithDefault = */ Optional.empty()
+        /* nonNullableIntWithDefault = */ Optional.absent()
     );
   }
 
   private static MyInput myInputMixed() {
     return new MyInput(
-        /* nullableInt = */ Optional.of(Optional.empty()),
+        /* nullableInt = */ Optional.of(Optional.absent()),
         /* nonNullableInt = */ 4,
         /* nonNullableIntWithDefault = */ Optional.of(5)
     );

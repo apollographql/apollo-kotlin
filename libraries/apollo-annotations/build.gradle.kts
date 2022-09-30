@@ -13,6 +13,7 @@ kotlin {
     val commonMain by getting {
       dependencies {
         api(golatac.lib("kotlin.stdlib"))
+        api(golatac.lib("jetbrains.annotations"))
       }
     }
 
