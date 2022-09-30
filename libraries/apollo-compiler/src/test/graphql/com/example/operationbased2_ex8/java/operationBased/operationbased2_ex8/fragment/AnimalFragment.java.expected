@@ -12,19 +12,9 @@ import java.lang.Override;
 import java.lang.String;
 
 public class AnimalFragment implements Fragment.Data {
-  public String __typename;
-
   public String species;
 
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public OnWarmBlooded onWarmBlooded;
-
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public OnPet onPet;
+  public Parent parent;
 
   private transient volatile int $hashCode;
 
@@ -32,12 +22,9 @@ public class AnimalFragment implements Fragment.Data {
 
   private transient volatile String $toString;
 
-  public AnimalFragment(String __typename, String species, OnWarmBlooded onWarmBlooded,
-      OnPet onPet) {
-    this.__typename = __typename;
+  public AnimalFragment(String species, Parent parent) {
     this.species = species;
-    this.onWarmBlooded = onWarmBlooded;
-    this.onPet = onPet;
+    this.parent = parent;
   }
 
   @Override
@@ -47,10 +34,8 @@ public class AnimalFragment implements Fragment.Data {
     }
     if (o instanceof AnimalFragment) {
       AnimalFragment that = (AnimalFragment) o;
-      return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
-       &&((this.species == null) ? (that.species == null) : this.species.equals(that.species))
-       &&((this.onWarmBlooded == null) ? (that.onWarmBlooded == null) : this.onWarmBlooded.equals(that.onWarmBlooded))
-       &&((this.onPet == null) ? (that.onPet == null) : this.onPet.equals(that.onPet));
+      return ((this.species == null) ? (that.species == null) : this.species.equals(that.species))
+       &&((this.parent == null) ? (that.parent == null) : this.parent.equals(that.parent));
     }
     return false;
   }
@@ -60,13 +45,9 @@ public class AnimalFragment implements Fragment.Data {
     if (!$hashCodeMemoized) {
       int h = 1;
       h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
-      h *= 1000003;
       h ^= (species == null) ? 0 : species.hashCode();
       h *= 1000003;
-      h ^= (onWarmBlooded == null) ? 0 : onWarmBlooded.hashCode();
-      h *= 1000003;
-      h ^= (onPet == null) ? 0 : onPet.hashCode();
+      h ^= (parent == null) ? 0 : parent.hashCode();
       $hashCode = h;
       $hashCodeMemoized = true;
     }
@@ -77,16 +58,89 @@ public class AnimalFragment implements Fragment.Data {
   public String toString() {
     if ($toString == null) {
       $toString = "AnimalFragment{"
-        + "__typename=" + __typename + ", "
         + "species=" + species + ", "
-        + "onWarmBlooded=" + onWarmBlooded + ", "
-        + "onPet=" + onPet
+        + "parent=" + parent
         + "}";
     }
     return $toString;
   }
 
-  public static class OnWarmBlooded {
+  public static class Parent {
+    public String __typename;
+
+    public String species;
+
+    /**
+     * Synthetic field for inline fragment on Lion
+     */
+    public OnLion onLion;
+
+    /**
+     * Synthetic field for inline fragment on Cat
+     */
+    public OnCat onCat;
+
+    private transient volatile int $hashCode;
+
+    private transient volatile boolean $hashCodeMemoized;
+
+    private transient volatile String $toString;
+
+    public Parent(String __typename, String species, OnLion onLion, OnCat onCat) {
+      this.__typename = __typename;
+      this.species = species;
+      this.onLion = onLion;
+      this.onCat = onCat;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) {
+        return true;
+      }
+      if (o instanceof Parent) {
+        Parent that = (Parent) o;
+        return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
+         &&((this.species == null) ? (that.species == null) : this.species.equals(that.species))
+         &&((this.onLion == null) ? (that.onLion == null) : this.onLion.equals(that.onLion))
+         &&((this.onCat == null) ? (that.onCat == null) : this.onCat.equals(that.onCat));
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      if (!$hashCodeMemoized) {
+        int h = 1;
+        h *= 1000003;
+        h ^= (__typename == null) ? 0 : __typename.hashCode();
+        h *= 1000003;
+        h ^= (species == null) ? 0 : species.hashCode();
+        h *= 1000003;
+        h ^= (onLion == null) ? 0 : onLion.hashCode();
+        h *= 1000003;
+        h ^= (onCat == null) ? 0 : onCat.hashCode();
+        $hashCode = h;
+        $hashCodeMemoized = true;
+      }
+      return $hashCode;
+    }
+
+    @Override
+    public String toString() {
+      if ($toString == null) {
+        $toString = "Parent{"
+          + "__typename=" + __typename + ", "
+          + "species=" + species + ", "
+          + "onLion=" + onLion + ", "
+          + "onCat=" + onCat
+          + "}";
+      }
+      return $toString;
+    }
+  }
+
+  public static class OnLion {
     public Integer temperature;
 
     private transient volatile int $hashCode;
@@ -95,7 +149,7 @@ public class AnimalFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnWarmBlooded(Integer temperature) {
+    public OnLion(Integer temperature) {
       this.temperature = temperature;
     }
 
@@ -104,8 +158,8 @@ public class AnimalFragment implements Fragment.Data {
       if (o == this) {
         return true;
       }
-      if (o instanceof OnWarmBlooded) {
-        OnWarmBlooded that = (OnWarmBlooded) o;
+      if (o instanceof OnLion) {
+        OnLion that = (OnLion) o;
         return ((this.temperature == null) ? (that.temperature == null) : this.temperature.equals(that.temperature));
       }
       return false;
@@ -126,7 +180,7 @@ public class AnimalFragment implements Fragment.Data {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnWarmBlooded{"
+        $toString = "OnLion{"
           + "temperature=" + temperature
           + "}";
       }
@@ -134,7 +188,7 @@ public class AnimalFragment implements Fragment.Data {
     }
   }
 
-  public static class OnPet {
+  public static class OnCat {
     public String name;
 
     private transient volatile int $hashCode;
@@ -143,7 +197,7 @@ public class AnimalFragment implements Fragment.Data {
 
     private transient volatile String $toString;
 
-    public OnPet(String name) {
+    public OnCat(String name) {
       this.name = name;
     }
 
@@ -152,8 +206,8 @@ public class AnimalFragment implements Fragment.Data {
       if (o == this) {
         return true;
       }
-      if (o instanceof OnPet) {
-        OnPet that = (OnPet) o;
+      if (o instanceof OnCat) {
+        OnCat that = (OnCat) o;
         return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
       }
       return false;
@@ -174,7 +228,7 @@ public class AnimalFragment implements Fragment.Data {
     @Override
     public String toString() {
       if ($toString == null) {
-        $toString = "OnPet{"
+        $toString = "OnCat{"
           + "name=" + name
           + "}";
       }

@@ -9,78 +9,70 @@ import com.apollographql.apollo3.api.Fragment
 import kotlin.Int
 import kotlin.String
 
-public sealed interface AnimalFragment : Fragment.Data {
-  public val __typename: String
+public data class AnimalFragment(
+  public val species: String,
+  public val parent: Parent,
+) : Fragment.Data {
+  public interface Parent {
+    public val __typename: String
 
-  public val species: String
+    public val species: String
 
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public val onWarmBlooded: OnWarmBlooded?
+    /**
+     * Synthetic field for inline fragment on Lion
+     */
+    public val onLion: OnLion?
 
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public val onPet: OnPet?
+    /**
+     * Synthetic field for inline fragment on Cat
+     */
+    public val onCat: OnCat?
 
-  public data class OnWarmBlooded(
-    public val temperature: Int,
-  )
+    public data class OnLion(
+      public val temperature: Int,
+    )
 
-  public data class OnPet(
-    public val name: String,
-  )
+    public data class OnCat(
+      public val name: String,
+    )
+  }
+
+  public data class LionParent(
+    public override val __typename: String,
+    public override val species: String,
+    /**
+     * Synthetic field for inline fragment on Lion
+     */
+    public override val onLion: Parent.OnLion,
+    /**
+     * Synthetic field for inline fragment on Cat
+     */
+    public override val onCat: Parent.OnCat?,
+  ) : Parent
+
+  public data class CatParent(
+    public override val __typename: String,
+    public override val species: String,
+    /**
+     * Synthetic field for inline fragment on Lion
+     */
+    public override val onLion: Parent.OnLion?,
+    /**
+     * Synthetic field for inline fragment on Cat
+     */
+    public override val onCat: Parent.OnCat,
+  ) : Parent
+
+  public data class OtherParent(
+    public override val __typename: String,
+    public override val species: String,
+    /**
+     * Synthetic field for inline fragment on Lion
+     */
+    public override val onLion: Parent.OnLion?,
+    /**
+     * Synthetic field for inline fragment on Cat
+     */
+    public override val onCat: Parent.OnCat?,
+  ) : Parent
 }
-
-public data class WarmBloodedAnimalFragment(
-  public override val __typename: String,
-  public override val species: String,
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public override val onWarmBlooded: AnimalFragment.OnWarmBlooded,
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public override val onPet: AnimalFragment.OnPet?,
-) : AnimalFragment
-
-public data class PetAnimalFragment(
-  public override val __typename: String,
-  public override val species: String,
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public override val onWarmBlooded: AnimalFragment.OnWarmBlooded?,
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public override val onPet: AnimalFragment.OnPet,
-) : AnimalFragment
-
-public data class WarmBloodedPetAnimalFragment(
-  public override val __typename: String,
-  public override val species: String,
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public override val onWarmBlooded: AnimalFragment.OnWarmBlooded,
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public override val onPet: AnimalFragment.OnPet,
-) : AnimalFragment
-
-public data class OtherAnimalFragment(
-  public override val __typename: String,
-  public override val species: String,
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public override val onWarmBlooded: AnimalFragment.OnWarmBlooded?,
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public override val onPet: AnimalFragment.OnPet?,
-) : AnimalFragment

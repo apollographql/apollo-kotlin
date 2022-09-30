@@ -20,7 +20,7 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestOperation implements Query<TestOperation.Data> {
-  public static final String OPERATION_ID = "ed5f969304fe69ba717cddf9bcd69bbc47ad364ec3ea1234081362c85d90ccb1";
+  public static final String OPERATION_ID = "76f3639043a382e1d3caf22f8e89b4062473f12ffdda9067b6cc46c54259e2e2";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -34,17 +34,20 @@ public class TestOperation implements Query<TestOperation.Data> {
    * }
    *
    * fragment AnimalFragment on Animal {
-   *   __typename
    *   species
-   *   ... on WarmBlooded {
-   *     temperature
-   *   }
-   *   ... on Pet {
-   *     name
+   *   parent {
+   *     __typename
+   *     species
+   *     ... on Lion {
+   *       temperature
+   *     }
+   *     ... on Cat {
+   *       name
+   *     }
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename species ... on WarmBlooded { temperature } ... on Pet { name } }";
+  public static final String OPERATION_DOCUMENT = "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { species parent { __typename species ... on Lion { temperature } ... on Cat { name } } }";
 
   public static final String OPERATION_NAME = "TestOperation";
 

@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
+import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import kotlin.Int
 import kotlin.String
@@ -21,20 +22,25 @@ import kotlin.collections.List
 
 public object AnimalFragmentImpl_ResponseAdapter {
   public object AnimalFragment : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
+    public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
+
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.operationbased2_ex8.fragment.AnimalFragment {
-      val __typename = reader.readTypename()
-      return when(__typename) {
-        "Cat",
-        -> WarmBloodedPetAnimalFragment.fromJson(reader, customScalarAdapters, __typename)
-        "Lion",
-        "Panther",
-        -> WarmBloodedAnimalFragment.fromJson(reader, customScalarAdapters, __typename)
-        "Turtle",
-        -> PetAnimalFragment.fromJson(reader, customScalarAdapters, __typename)
-        else
-        -> OtherAnimalFragment.fromJson(reader, customScalarAdapters, __typename)
+      var _species: String? = null
+      var _parent: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent? = null
+
+      while(true) {
+        when (reader.selectName(RESPONSE_NAMES)) {
+          0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _parent = Parent.obj(true).fromJson(reader, customScalarAdapters)
+          else -> break
+        }
       }
+
+      return com.example.operationbased2_ex8.fragment.AnimalFragment(
+        species = _species!!,
+        parent = _parent!!
+      )
     }
 
     public override fun toJson(
@@ -42,323 +48,298 @@ public object AnimalFragmentImpl_ResponseAdapter {
       customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.operationbased2_ex8.fragment.AnimalFragment,
     ): Unit {
-      when(value) {
-        is com.example.operationbased2_ex8.fragment.WarmBloodedPetAnimalFragment ->
-            WarmBloodedPetAnimalFragment.toJson(writer, customScalarAdapters, value)
-        is com.example.operationbased2_ex8.fragment.WarmBloodedAnimalFragment ->
-            WarmBloodedAnimalFragment.toJson(writer, customScalarAdapters, value)
-        is com.example.operationbased2_ex8.fragment.PetAnimalFragment ->
-            PetAnimalFragment.toJson(writer, customScalarAdapters, value)
-        is com.example.operationbased2_ex8.fragment.OtherAnimalFragment ->
-            OtherAnimalFragment.toJson(writer, customScalarAdapters, value)
-      }
-    }
-  }
-
-  public object WarmBloodedAnimalFragment {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
-
-    public fun fromJson(
-      reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
-      typename: String,
-    ): com.example.operationbased2_ex8.fragment.WarmBloodedAnimalFragment {
-      var __typename: String? = typename
-      var _species: String? = null
-
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
-        }
-      }
-
-      check(__typename != null) {
-        "__typename was not found"
-      }
-
-      reader.rewind()
-      val _onWarmBlooded = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.fromJson(reader,
-          customScalarAdapters)
-
-      var _onPet: com.example.operationbased2_ex8.fragment.AnimalFragment.OnPet? = null
-      if (possibleTypes("Cat","Turtle").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
-        reader.rewind()
-        _onPet = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.fromJson(reader,
-            customScalarAdapters)
-      }
-
-      return com.example.operationbased2_ex8.fragment.WarmBloodedAnimalFragment(
-        __typename = __typename,
-        species = _species!!,
-        onWarmBlooded = _onWarmBlooded,
-        onPet = _onPet
-      )
-    }
-
-    public fun toJson(
-      writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.operationbased2_ex8.fragment.WarmBloodedAnimalFragment,
-    ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
-
       writer.name("species")
       StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
-      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.toJson(writer,
-          customScalarAdapters, value.onWarmBlooded)
-
-      if (value.onPet != null) {
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.toJson(writer,
-            customScalarAdapters, value.onPet)
-      }
+      writer.name("parent")
+      Parent.obj(true).toJson(writer, customScalarAdapters, value.parent)
     }
-  }
 
-  public object PetAnimalFragment {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
-
-    public fun fromJson(
-      reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
-      typename: String,
-    ): com.example.operationbased2_ex8.fragment.PetAnimalFragment {
-      var __typename: String? = typename
-      var _species: String? = null
-
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
+    private object Parent : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>
+        {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          com.example.operationbased2_ex8.fragment.AnimalFragment.Parent {
+        val __typename = reader.readTypename()
+        return when(__typename) {
+          "Lion",
+          -> LionParent.fromJson(reader, customScalarAdapters, __typename)
+          "Cat",
+          -> CatParent.fromJson(reader, customScalarAdapters, __typename)
+          else
+          -> OtherParent.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      check(__typename != null) {
-        "__typename was not found"
+      public override fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent,
+      ): Unit {
+        when(value) {
+          is com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent ->
+              LionParent.toJson(writer, customScalarAdapters, value)
+          is com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent ->
+              CatParent.toJson(writer, customScalarAdapters, value)
+          is com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent ->
+              OtherParent.toJson(writer, customScalarAdapters, value)
+        }
       }
 
-      var _onWarmBlooded: com.example.operationbased2_ex8.fragment.AnimalFragment.OnWarmBlooded? = null
-      if (possibleTypes("Lion","Cat","Panther").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+      public object OnLion :
+          Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion> {
+        public val RESPONSE_NAMES: List<String> = listOf("temperature")
+
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
+            com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion {
+          var _temperature: Int? = null
+
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
+              0 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
+              else -> break
+            }
+          }
+
+          return com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion(
+            temperature = _temperature!!
+          )
+        }
+
+        public override fun toJson(
+          writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
+          `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion,
+        ): Unit {
+          writer.name("temperature")
+          IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
+        }
+      }
+
+      public object OnCat :
+          Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat> {
+        public val RESPONSE_NAMES: List<String> = listOf("name")
+
+        public override fun fromJson(reader: JsonReader,
+            customScalarAdapters: CustomScalarAdapters):
+            com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat {
+          var _name: String? = null
+
+          while(true) {
+            when (reader.selectName(RESPONSE_NAMES)) {
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              else -> break
+            }
+          }
+
+          return com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat(
+            name = _name!!
+          )
+        }
+
+        public override fun toJson(
+          writer: JsonWriter,
+          customScalarAdapters: CustomScalarAdapters,
+          `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat,
+        ): Unit {
+          writer.name("name")
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        }
+      }
+    }
+
+    public object LionParent {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
+
+      public fun fromJson(
+        reader: JsonReader,
+        customScalarAdapters: CustomScalarAdapters,
+        typename: String,
+      ): com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent {
+        var __typename: String? = typename
+        var _species: String? = null
+
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
+
+        check(__typename != null) {
+          "__typename was not found"
+        }
+
         reader.rewind()
-        _onWarmBlooded = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.fromJson(reader,
+        val _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
             customScalarAdapters)
+
+        var _onCat: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat? = null
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          reader.rewind()
+          _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent(
+          __typename = __typename,
+          species = _species!!,
+          onLion = _onLion,
+          onCat = _onCat
+        )
       }
 
-      reader.rewind()
-      val _onPet = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.fromJson(reader,
-          customScalarAdapters)
+      public fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent,
+      ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      return com.example.operationbased2_ex8.fragment.PetAnimalFragment(
-        __typename = __typename,
-        species = _species!!,
-        onWarmBlooded = _onWarmBlooded,
-        onPet = _onPet
-      )
-    }
+        writer.name("species")
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
-    public fun toJson(
-      writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.operationbased2_ex8.fragment.PetAnimalFragment,
-    ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
+            customScalarAdapters, value.onLion)
 
-      writer.name("species")
-      StringAdapter.toJson(writer, customScalarAdapters, value.species)
-
-      if (value.onWarmBlooded != null) {
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.toJson(writer,
-            customScalarAdapters, value.onWarmBlooded)
-      }
-
-      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.toJson(writer,
-          customScalarAdapters, value.onPet)
-    }
-  }
-
-  public object WarmBloodedPetAnimalFragment {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
-
-    public fun fromJson(
-      reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
-      typename: String,
-    ): com.example.operationbased2_ex8.fragment.WarmBloodedPetAnimalFragment {
-      var __typename: String? = typename
-      var _species: String? = null
-
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
+        if (value.onCat != null) {
+          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
+              customScalarAdapters, value.onCat)
         }
       }
-
-      reader.rewind()
-      val _onWarmBlooded = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.fromJson(reader,
-          customScalarAdapters)
-
-      reader.rewind()
-      val _onPet = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.fromJson(reader,
-          customScalarAdapters)
-
-      return com.example.operationbased2_ex8.fragment.WarmBloodedPetAnimalFragment(
-        __typename = __typename!!,
-        species = _species!!,
-        onWarmBlooded = _onWarmBlooded,
-        onPet = _onPet
-      )
     }
 
-    public fun toJson(
-      writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.operationbased2_ex8.fragment.WarmBloodedPetAnimalFragment,
-    ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+    public object CatParent {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-      writer.name("species")
-      StringAdapter.toJson(writer, customScalarAdapters, value.species)
+      public fun fromJson(
+        reader: JsonReader,
+        customScalarAdapters: CustomScalarAdapters,
+        typename: String,
+      ): com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent {
+        var __typename: String? = typename
+        var _species: String? = null
 
-      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.toJson(writer,
-          customScalarAdapters, value.onWarmBlooded)
-
-      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.toJson(writer,
-          customScalarAdapters, value.onPet)
-    }
-  }
-
-  public object OtherAnimalFragment {
-    public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
-
-    public fun fromJson(
-      reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
-      typename: String,
-    ): com.example.operationbased2_ex8.fragment.OtherAnimalFragment {
-      var __typename: String? = typename
-      var _species: String? = null
-
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
         }
-      }
 
-      check(__typename != null) {
-        "__typename was not found"
-      }
+        check(__typename != null) {
+          "__typename was not found"
+        }
 
-      var _onWarmBlooded: com.example.operationbased2_ex8.fragment.AnimalFragment.OnWarmBlooded? = null
-      if (possibleTypes("Lion","Cat","Panther").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        var _onLion: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion? = null
+        if (possibleTypes("Lion").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          reader.rewind()
+          _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
+              customScalarAdapters)
+        }
+
         reader.rewind()
-        _onWarmBlooded = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.fromJson(reader,
+        val _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
             customScalarAdapters)
+
+        return com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent(
+          __typename = __typename,
+          species = _species!!,
+          onLion = _onLion,
+          onCat = _onCat
+        )
       }
 
-      var _onPet: com.example.operationbased2_ex8.fragment.AnimalFragment.OnPet? = null
-      if (possibleTypes("Cat","Turtle").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
-        reader.rewind()
-        _onPet = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.fromJson(reader,
-            customScalarAdapters)
-      }
+      public fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent,
+      ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-      return com.example.operationbased2_ex8.fragment.OtherAnimalFragment(
-        __typename = __typename,
-        species = _species!!,
-        onWarmBlooded = _onWarmBlooded,
-        onPet = _onPet
-      )
+        writer.name("species")
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
+
+        if (value.onLion != null) {
+          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
+              customScalarAdapters, value.onLion)
+        }
+
+        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
+            customScalarAdapters, value.onCat)
+      }
     }
 
-    public fun toJson(
-      writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.operationbased2_ex8.fragment.OtherAnimalFragment,
-    ): Unit {
-      writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+    public object OtherParent {
+      public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-      writer.name("species")
-      StringAdapter.toJson(writer, customScalarAdapters, value.species)
+      public fun fromJson(
+        reader: JsonReader,
+        customScalarAdapters: CustomScalarAdapters,
+        typename: String,
+      ): com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent {
+        var __typename: String? = typename
+        var _species: String? = null
 
-      if (value.onWarmBlooded != null) {
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnWarmBlooded.toJson(writer,
-            customScalarAdapters, value.onWarmBlooded)
+        while(true) {
+          when (reader.selectName(RESPONSE_NAMES)) {
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            else -> break
+          }
+        }
+
+        check(__typename != null) {
+          "__typename was not found"
+        }
+
+        var _onLion: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion? = null
+        if (possibleTypes("Lion").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          reader.rewind()
+          _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        var _onCat: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat? = null
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          reader.rewind()
+          _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        return com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent(
+          __typename = __typename,
+          species = _species!!,
+          onLion = _onLion,
+          onCat = _onCat
+        )
       }
 
-      if (value.onPet != null) {
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnPet.toJson(writer,
-            customScalarAdapters, value.onPet)
-      }
-    }
-  }
+      public fun toJson(
+        writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
+        `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent,
+      ): Unit {
+        writer.name("__typename")
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-  private object OnWarmBlooded :
-      Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnWarmBlooded> {
-    public val RESPONSE_NAMES: List<String> = listOf("temperature")
+        writer.name("species")
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.operationbased2_ex8.fragment.AnimalFragment.OnWarmBlooded {
-      var _temperature: Int? = null
+        if (value.onLion != null) {
+          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
+              customScalarAdapters, value.onLion)
+        }
 
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
+        if (value.onCat != null) {
+          com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
+              customScalarAdapters, value.onCat)
         }
       }
-
-      return com.example.operationbased2_ex8.fragment.AnimalFragment.OnWarmBlooded(
-        temperature = _temperature!!
-      )
-    }
-
-    public override fun toJson(
-      writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.OnWarmBlooded,
-    ): Unit {
-      writer.name("temperature")
-      IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
-    }
-  }
-
-  private object OnPet : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnPet> {
-    public val RESPONSE_NAMES: List<String> = listOf("name")
-
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        com.example.operationbased2_ex8.fragment.AnimalFragment.OnPet {
-      var _name: String? = null
-
-      while(true) {
-        when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          else -> break
-        }
-      }
-
-      return com.example.operationbased2_ex8.fragment.AnimalFragment.OnPet(
-        name = _name!!
-      )
-    }
-
-    public override fun toJson(
-      writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
-      `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.OnPet,
-    ): Unit {
-      writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
     }
   }
 }

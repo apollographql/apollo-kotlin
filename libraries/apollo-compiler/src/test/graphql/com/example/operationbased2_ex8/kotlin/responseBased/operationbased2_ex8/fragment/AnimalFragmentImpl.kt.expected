@@ -38,57 +38,37 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
   .selections(selections = AnimalFragmentSelections.__root)
   .build()
 
-  public interface Data : AnimalFragment, Fragment.Data {
-    public override val __typename: String
+  public data class Data(
+    public override val species: String,
+    public override val parent: Parent,
+  ) : AnimalFragment, Fragment.Data {
+    public interface Parent : AnimalFragment.Parent {
+      public override val __typename: String
 
-    public override val species: String
+      public override val species: String
 
-    public companion object {
-      public fun Data.asWarmBlooded() = this as? WarmBloodedData
+      public companion object {
+        public fun Parent.asLion() = this as? LionParent
 
-      public fun Data.asPet() = this as? PetData
-
-      public fun Data.asWarmBloodedPet() = this as? PetWarmBloodedData
+        public fun Parent.asCat() = this as? CatParent
+      }
     }
+
+    public data class LionParent(
+      public override val __typename: String,
+      public override val species: String,
+      public override val temperature: Int,
+    ) : Parent, AnimalFragment.LionParent
+
+    public data class CatParent(
+      public override val __typename: String,
+      public override val species: String,
+      public override val name: String,
+    ) : Parent, AnimalFragment.CatParent
+
+    public data class OtherParent(
+      public override val __typename: String,
+      public override val species: String,
+    ) : Parent, AnimalFragment.Parent
   }
-
-  public interface WarmBloodedData : Data, WarmBloodedAnimalFragment {
-    public override val __typename: String
-
-    public override val species: String
-
-    public override val temperature: Int
-  }
-
-  public interface PetData : Data, PetAnimalFragment {
-    public override val __typename: String
-
-    public override val species: String
-
-    public override val name: String
-  }
-
-  public data class PetWarmBloodedData(
-    public override val __typename: String,
-    public override val species: String,
-    public override val temperature: Int,
-    public override val name: String,
-  ) : WarmBloodedData, PetData, PetWarmBloodedAnimalFragment
-
-  public data class OtherData(
-    public override val __typename: String,
-    public override val species: String,
-  ) : Data, AnimalFragment
-
-  public data class OtherWarmBloodedData(
-    public override val __typename: String,
-    public override val species: String,
-    public override val temperature: Int,
-  ) : WarmBloodedData, WarmBloodedAnimalFragment
-
-  public data class OtherPetData(
-    public override val __typename: String,
-    public override val species: String,
-    public override val name: String,
-  ) : PetData, PetAnimalFragment
 }

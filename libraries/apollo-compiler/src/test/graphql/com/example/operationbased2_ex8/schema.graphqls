@@ -4,6 +4,7 @@ schema {
 
 interface Animal {
   species: String!
+  parent: Animal!
 }
 
 interface Pet {
@@ -17,19 +18,23 @@ interface WarmBlooded {
 type Lion implements Animal & WarmBlooded {
   species: String!
   temperature: Int!
+  parent: Animal!
 }
 type Cat implements Animal & WarmBlooded & Pet {
   species: String!
   name: String!
   temperature: Int!
+  parent: Animal!
 }
 type Turtle implements Animal & Pet {
   species: String!
   name: String!
+  parent: Animal!
 }
 type Panther implements Animal & WarmBlooded {
   species: String!
   temperature: Int!
+  parent: Animal!
 }
 
 type Query {

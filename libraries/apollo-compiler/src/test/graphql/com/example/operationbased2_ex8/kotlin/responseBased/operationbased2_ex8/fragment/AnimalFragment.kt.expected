@@ -9,41 +9,35 @@ import kotlin.Int
 import kotlin.String
 
 public interface AnimalFragment {
-  public val __typename: String
-
   public val species: String
 
-  public companion object {
-    public fun AnimalFragment.asWarmBlooded() = this as? WarmBloodedAnimalFragment
+  public val parent: Parent
 
-    public fun AnimalFragment.asPet() = this as? PetAnimalFragment
+  public interface Parent {
+    public val __typename: String
 
-    public fun AnimalFragment.asWarmBloodedPet() = this as? PetWarmBloodedAnimalFragment
+    public val species: String
+
+    public companion object {
+      public fun Parent.asLion() = this as? LionParent
+
+      public fun Parent.asCat() = this as? CatParent
+    }
   }
-}
 
-public interface WarmBloodedAnimalFragment : AnimalFragment {
-  public override val __typename: String
+  public interface LionParent : Parent {
+    public override val __typename: String
 
-  public override val species: String
+    public override val species: String
 
-  public val temperature: Int
-}
+    public val temperature: Int
+  }
 
-public interface PetAnimalFragment : AnimalFragment {
-  public override val __typename: String
+  public interface CatParent : Parent {
+    public override val __typename: String
 
-  public override val species: String
+    public override val species: String
 
-  public val name: String
-}
-
-public interface PetWarmBloodedAnimalFragment : WarmBloodedAnimalFragment, PetAnimalFragment {
-  public override val __typename: String
-
-  public override val species: String
-
-  public override val temperature: Int
-
-  public override val name: String
+    public val name: String
+  }
 }
