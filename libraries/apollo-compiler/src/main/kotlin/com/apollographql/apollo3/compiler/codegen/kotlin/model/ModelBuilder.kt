@@ -31,21 +31,14 @@ internal class ModelBuilder(
     private val hasSubclassesInSamePackage: Boolean,
     private val adaptableWith: String?
 ) {
-  private val nestedBuilders = model.modelGroups.flatMap { modelGroup ->
-    /**
-     * For experimental_operationBasedWithInterfaces, nested model may have interfaces that
-     * are only used locally. In that case, we can generate them as sealed interfaces
-     */
-    val localInheritance = modelGroup.models.any { it.isInterface } &&
-        modelGroup.models.any { !it.isInterface }
-
-    modelGroup.models.map {
+  private val nestedBuilders = model.modelGroups.flatMap {
+    it.models.map {
       ModelBuilder(
           context = context,
           model = it,
           superClassName = null,
           path = path + model.modelName,
-          hasSubclassesInSamePackage = it.isInterface && localInheritance,
+          hasSubclassesInSamePackage = hasSubclassesInSamePackage,
           adaptableWith = null
       )
     }
