@@ -31,6 +31,7 @@ com.apollographql.apollo3.api.json
 com.apollographql.apollo3.api.test
 com.apollographql.apollo3.exception
 module:apollo-api-java
+com.apollographql.apollo3.api.java
 com.apollographql.apollo3.api.java.adapter
 module:apollo-ast
 com.apollographql.apollo3.ast
@@ -80,6 +81,9 @@ com.apollographql.apollo3.internal
 com.apollographql.apollo3.network
 com.apollographql.apollo3.network.http
 com.apollographql.apollo3.network.ws
+module:apollo-runtime-java
+com.apollographql.apollo3.runtime.java
+com.apollographql.apollo3.runtime.java.interceptor
 module:apollo-rx2-support
 com.apollographql.apollo3.rx2
 module:apollo-rx3-support
