@@ -51,6 +51,8 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
  *  "extensions": ...
  * }
  * ```
+ *
+ * This method takes ownership of [jsonReader] and will always close it
  */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
