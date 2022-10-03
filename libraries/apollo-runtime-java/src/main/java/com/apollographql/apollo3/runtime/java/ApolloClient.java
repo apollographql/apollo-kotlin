@@ -56,15 +56,15 @@ public class ApolloClient {
     this.interceptors = interceptors;
   }
 
-  public <D extends Query.Data> ApolloCall<D> query(Query<D> operation) {
+  public <D extends Query.Data> ApolloCall<D> query(@NotNull Query<D> operation) {
     return new DefaultApolloCall<>(this, operation);
   }
 
-  public <D extends Mutation.Data> ApolloCall<D> mutation(Mutation<D> operation) {
+  public <D extends Mutation.Data> ApolloCall<D> mutation(@NotNull Mutation<D> operation) {
     return new DefaultApolloCall<>(this, operation);
   }
 
-  public <D extends Operation.Data> ApolloDisposable execute(ApolloRequest<D> request, ApolloCallback<D> callback) {
+  public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback) {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
