@@ -41,7 +41,7 @@ public class AFragmentImpl() : Fragment<AFragmentImpl.Data> {
   public data class Data(
     public override val node: Node?,
   ) : AFragment, Fragment.Data {
-    public interface Node : AFragment.Node {
+    public sealed interface Node : AFragment.Node {
       public override val __typename: String
 
       public companion object {

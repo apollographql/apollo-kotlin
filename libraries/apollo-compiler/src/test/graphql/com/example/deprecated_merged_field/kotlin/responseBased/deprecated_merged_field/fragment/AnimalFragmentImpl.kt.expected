@@ -39,7 +39,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
   .selections(selections = AnimalFragmentSelections.__root)
   .build()
 
-  public interface Data : AnimalFragment, Fragment.Data {
+  public sealed interface Data : AnimalFragment, Fragment.Data {
     public override val __typename: String
 
     public companion object {

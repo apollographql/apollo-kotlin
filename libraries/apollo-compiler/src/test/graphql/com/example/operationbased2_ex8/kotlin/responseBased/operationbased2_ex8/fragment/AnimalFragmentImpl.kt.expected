@@ -42,7 +42,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragmentImpl.Data> {
     public override val species: String,
     public override val parent: Parent,
   ) : AnimalFragment, Fragment.Data {
-    public interface Parent : AnimalFragment.Parent {
+    public sealed interface Parent : AnimalFragment.Parent {
       public override val __typename: String
 
       public override val species: String

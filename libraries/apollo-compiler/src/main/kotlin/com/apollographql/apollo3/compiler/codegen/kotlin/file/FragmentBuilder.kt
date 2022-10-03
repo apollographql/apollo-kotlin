@@ -47,7 +47,7 @@ internal class FragmentBuilder(
           model = it,
           superClassName = if (it.id == fragment.dataModelGroup.baseModelId) KotlinSymbols.FragmentData else null,
           path = listOf(packageName, simpleName),
-          hasSubclassesInSamePackage = false,
+          hasSubclassesInSamePackage = true,
           adaptableWith = null
       )
     }
