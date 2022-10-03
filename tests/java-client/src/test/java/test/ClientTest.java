@@ -2,7 +2,9 @@ package test;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
+import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
@@ -16,12 +18,14 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.CreateCatMutation;
 import javatest.GetRandomQuery;
+import javatest.LocationQuery;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
+import scalar.GeoPointAdapter;
 
 import java.util.Arrays;
 
@@ -98,13 +102,26 @@ public class ClientTest {
     Truth.assertThat(mockRequest.getHeaders().get("interceptor3")).isEqualTo("true");
   }
 
+  @Test
+  public void customScalarAdapters() {
+    apolloClient = new ApolloClient.Builder()
+        .serverUrl(mockServerUrl)
+        .addCustomScalarAdapter(javatest.type.GeoPoint.type, new GeoPointAdapter())
+        .build();
+
+    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"location\": {\"latitude\": 10.5, \"longitude\": 20.5}}}").build());
+    ApolloResponse<LocationQuery.Data> queryResponse = blockingQuery(LocationQuery.builder().build());
+    Truth.assertThat(queryResponse.dataAssertNoErrors().location.latitude).isEqualTo(10.5);
+    Truth.assertThat(queryResponse.dataAssertNoErrors().location.longitude).isEqualTo(20.5);
+  }
+
   @NotNull
-  private ApolloResponse<GetRandomQuery.Data> blockingQuery(GetRandomQuery query) {
+  private <D extends Query.Data> ApolloResponse<D> blockingQuery(Query<D> query) {
     return Rx3Apollo.single(apolloClient.query(query), BackpressureStrategy.BUFFER).blockingGet();
   }
 
   @NotNull
-  private ApolloResponse<CreateCatMutation.Data> blockingMutation(CreateCatMutation mutation) {
+  private <D extends Mutation.Data> ApolloResponse<D> blockingMutation(Mutation<D> mutation) {
     return Rx3Apollo.single(apolloClient.mutation(mutation), BackpressureStrategy.BUFFER).blockingGet();
   }
 

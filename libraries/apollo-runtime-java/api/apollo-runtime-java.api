@@ -15,10 +15,12 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient {
 
 public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder {
 	public fun <init> ()V
+	public fun addCustomScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun build ()Lcom/apollographql/apollo3/runtime/java/ApolloClient;
 	public fun callFactory (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun dispatcher (Ljava/util/concurrent/Executor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
