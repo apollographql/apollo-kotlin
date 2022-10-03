@@ -86,8 +86,12 @@ com.apollographql.apollo3.runtime.java
 com.apollographql.apollo3.runtime.java.interceptor
 module:apollo-rx2-support
 com.apollographql.apollo3.rx2
+module:apollo-rx2-support-java
+com.apollographql.apollo3.rx2.java
 module:apollo-rx3-support
 com.apollographql.apollo3.rx3
+module:apollo-rx3-support-java
+com.apollographql.apollo3.rx3.java
 module:apollo-testing-support
 com.apollographql.apollo3.testing
 com.apollographql.apollo3.testing.internal
