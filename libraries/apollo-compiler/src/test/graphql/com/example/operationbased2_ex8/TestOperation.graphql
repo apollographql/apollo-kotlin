@@ -5,10 +5,13 @@ query TestOperation {
 }
 fragment AnimalFragment on Animal {
   species
-  ... on WarmBlooded {
-    temperature
-  }
-  ... on Pet {
-    name
+  parent {
+    species
+    ... on Lion {
+      temperature
+    }
+    ... on Cat {
+      name
+    }
   }
 }

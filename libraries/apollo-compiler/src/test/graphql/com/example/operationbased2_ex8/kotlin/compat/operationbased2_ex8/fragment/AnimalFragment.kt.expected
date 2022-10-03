@@ -10,24 +10,29 @@ import kotlin.Int
 import kotlin.String
 
 public data class AnimalFragment(
-  public val __typename: String,
   public val species: String,
-  /**
-   * Synthetic field for inline fragment on WarmBlooded
-   */
-  public val asWarmBlooded: AsWarmBlooded?,
-  /**
-   * Synthetic field for inline fragment on Pet
-   */
-  public val asPet: AsPet?,
+  public val parent: Parent,
 ) : Fragment.Data {
-  public data class AsWarmBlooded(
+  public data class Parent(
+    public val __typename: String,
+    public val species: String,
+    /**
+     * Synthetic field for inline fragment on Lion
+     */
+    public val asLion: AsLion?,
+    /**
+     * Synthetic field for inline fragment on Cat
+     */
+    public val asCat: AsCat?,
+  )
+
+  public data class AsLion(
     public val __typename: String,
     public val species: String,
     public val temperature: Int,
   )
 
-  public data class AsPet(
+  public data class AsCat(
     public val __typename: String,
     public val species: String,
     public val name: String,

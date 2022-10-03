@@ -106,7 +106,7 @@ public class TestOperation() : Query<TestOperation.Data> {
         public override val onPet: OnAnimal.OnPet,
       ) : OnAnimal
 
-      public data class WarmBloodedPetOnAnimal(
+      public data class PetWarmBloodedOnAnimal(
         public override val __typename: String,
         public override val species: String,
         /**

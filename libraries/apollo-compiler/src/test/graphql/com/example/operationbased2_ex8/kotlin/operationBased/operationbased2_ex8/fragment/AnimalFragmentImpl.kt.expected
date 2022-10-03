@@ -29,7 +29,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragment> {
   }
 
   public override fun adapter(): Adapter<AnimalFragment> =
-      AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj(true)
+      AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

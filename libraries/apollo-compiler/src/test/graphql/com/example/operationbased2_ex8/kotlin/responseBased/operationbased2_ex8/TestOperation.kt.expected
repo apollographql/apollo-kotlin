@@ -14,9 +14,6 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.operationbased2_ex8.adapter.TestOperation_ResponseAdapter
 import com.example.operationbased2_ex8.fragment.AnimalFragment
-import com.example.operationbased2_ex8.fragment.PetAnimalFragment
-import com.example.operationbased2_ex8.fragment.PetWarmBloodedAnimalFragment
-import com.example.operationbased2_ex8.fragment.WarmBloodedAnimalFragment
 import com.example.operationbased2_ex8.selections.TestOperationSelections
 import kotlin.Any
 import kotlin.Boolean
@@ -53,66 +50,49 @@ public class TestOperation() : Query<TestOperation.Data> {
   public data class Data(
     public val animal: Animal?,
   ) : Query.Data {
-    public sealed interface Animal : AnimalFragment {
-      public override val __typename: String
+    public data class Animal(
+      public val __typename: String,
+      public override val species: String,
+      public override val parent: Parent,
+    ) : AnimalFragment {
+      public sealed interface Parent : AnimalFragment.Parent {
+        public override val __typename: String
 
-      public override val species: String
+        public override val species: String
+
+        public companion object {
+          public fun Parent.asLion() = this as? LionParent
+
+          public fun Parent.asCat() = this as? CatParent
+        }
+      }
+
+      public data class LionParent(
+        public override val __typename: String,
+        public override val species: String,
+        public override val temperature: Int,
+      ) : Parent, AnimalFragment.LionParent
+
+      public data class CatParent(
+        public override val __typename: String,
+        public override val species: String,
+        public override val name: String,
+      ) : Parent, AnimalFragment.CatParent
+
+      public data class OtherParent(
+        public override val __typename: String,
+        public override val species: String,
+      ) : Parent, AnimalFragment.Parent
 
       public companion object {
         public fun Animal.animalFragment() = this as? AnimalFragment
-
-        public fun Animal.asWarmBlooded() = this as? WarmBloodedAnimal
-
-        public fun Animal.asPet() = this as? PetAnimal
-
-        public fun Animal.asWarmBloodedPet() = this as? PetWarmBloodedAnimal
       }
     }
-
-    public sealed interface WarmBloodedAnimal : Animal, WarmBloodedAnimalFragment {
-      public override val __typename: String
-
-      public override val species: String
-
-      public override val temperature: Int
-    }
-
-    public sealed interface PetAnimal : Animal, PetAnimalFragment {
-      public override val __typename: String
-
-      public override val species: String
-
-      public override val name: String
-    }
-
-    public data class PetWarmBloodedAnimal(
-      public override val __typename: String,
-      public override val species: String,
-      public override val temperature: Int,
-      public override val name: String,
-    ) : WarmBloodedAnimal, PetAnimal, PetWarmBloodedAnimalFragment
-
-    public data class OtherAnimal(
-      public override val __typename: String,
-      public override val species: String,
-    ) : Animal, AnimalFragment
-
-    public data class OtherWarmBloodedAnimal(
-      public override val __typename: String,
-      public override val species: String,
-      public override val temperature: Int,
-    ) : WarmBloodedAnimal, WarmBloodedAnimalFragment
-
-    public data class OtherPetAnimal(
-      public override val __typename: String,
-      public override val species: String,
-      public override val name: String,
-    ) : PetAnimal, PetAnimalFragment
   }
 
   public companion object {
     public const val OPERATION_ID: String =
-        "ed5f969304fe69ba717cddf9bcd69bbc47ad364ec3ea1234081362c85d90ccb1"
+        "76f3639043a382e1d3caf22f8e89b4062473f12ffdda9067b6cc46c54259e2e2"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -126,19 +106,22 @@ public class TestOperation() : Query<TestOperation.Data> {
      * }
      *
      * fragment AnimalFragment on Animal {
-     *   __typename
      *   species
-     *   ... on WarmBlooded {
-     *     temperature
-     *   }
-     *   ... on Pet {
-     *     name
+     *   parent {
+     *     __typename
+     *     species
+     *     ... on Lion {
+     *       temperature
+     *     }
+     *     ... on Cat {
+     *       name
+     *     }
      *   }
      * }
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { __typename species ... on WarmBlooded { temperature } ... on Pet { name } }"
+          "query TestOperation { animal { __typename ...AnimalFragment } }  fragment AnimalFragment on Animal { species parent { __typename species ... on Lion { temperature } ... on Cat { name } } }"
 
     public const val OPERATION_NAME: String = "TestOperation"
   }
