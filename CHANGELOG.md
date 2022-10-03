@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+# Version 3.6.1
+
+_2022-10-03_
+
+A patch version to fix an issue with data builder and multi modules. Many thanks to @agrosner and @eduardb for catching this.
+
+## 👷‍ All changes
+
+* Fix data builders in multi-modules scenarios (#4402)
+
 # Version 3.6.0
 
 _2022-09-08_
