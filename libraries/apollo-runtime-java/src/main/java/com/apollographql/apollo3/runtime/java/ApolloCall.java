@@ -2,7 +2,7 @@ package com.apollographql.apollo3.runtime.java;
 
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public interface ApolloCall<D extends Operation.Data> {
   /**
@@ -10,5 +10,5 @@ public interface ApolloCall<D extends Operation.Data> {
    *
    * @param callback Callback which will handle the response or a failure exception.
    */
-  ApolloDisposable enqueue(@Nullable ApolloCallback<D> callback);
+  ApolloDisposable enqueue(@NotNull ApolloCallback<D> callback);
 }
