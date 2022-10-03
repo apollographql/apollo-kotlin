@@ -9,8 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * ApolloInterceptorChain is responsible for building chain of {@link ApolloInterceptor} .
  */
 public interface ApolloInterceptorChain {
-  boolean isDisposed();
-
+  ApolloDisposable getDisposable();
   /**
    * Passes the control over to the next {@link ApolloInterceptor} in the responsibility chain and immediately exits as this is a
    * non-blocking call. In order to receive the results back, pass in a callback which will handle the received response or error.
