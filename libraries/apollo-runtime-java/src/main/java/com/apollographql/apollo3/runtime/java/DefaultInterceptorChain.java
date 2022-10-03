@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.runtime.java;
 
 import com.apollographql.apollo3.api.ApolloRequest;
+import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +27,9 @@ class DefaultInterceptorChain implements ApolloInterceptorChain {
     return disposable.isDisposed();
   }
 
-  @Override public void proceed(@NotNull ApolloRequest request, @NotNull ApolloCallback callBack) {
-    interceptors.get(index).intercept(
+  @Override public <D extends Operation.Data> void proceed(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callBack) {
+    ApolloInterceptor apolloInterceptor = interceptors.get(index);
+    apolloInterceptor.intercept(
         request,
         new DefaultInterceptorChain(interceptors, index + 1, disposable),
         callBack

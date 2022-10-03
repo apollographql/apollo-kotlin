@@ -3,6 +3,7 @@ package com.apollographql.apollo3.runtime.java;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Operations;
 import com.apollographql.apollo3.api.Query;
@@ -12,14 +13,12 @@ import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.api.http.HttpRequest;
 import com.apollographql.apollo3.api.http.HttpRequestComposer;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.ApolloParseException;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
-import kotlin.Pair;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -32,11 +31,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
 import static java.util.concurrent.Executors.newCachedThreadPool;
@@ -45,25 +41,33 @@ public class ApolloClient {
   private String serverUrl;
   private Call.Factory callFactory;
   private Executor executor;
+  private List<ApolloInterceptor> interceptors;
+
 
   private ApolloClient(
       String serverUrl,
       Call.Factory callFactory,
-      Executor executor
+      Executor executor,
+      List<ApolloInterceptor> interceptors
   ) {
     this.serverUrl = serverUrl;
     this.callFactory = callFactory;
     this.executor = executor;
+    this.interceptors = interceptors;
   }
 
-  public <D extends Query.Data> ApolloCall<D> query(Operation<D> operation) {
-    return new DefaultApolloCall(this, operation);
+  public <D extends Query.Data> ApolloCall<D> query(Query<D> operation) {
+    return new DefaultApolloCall<>(this, operation);
   }
 
-  public <D extends Query.Data> ApolloDisposable execute(ApolloRequest<D> request, ApolloCallback<D> callback) {
+  public <D extends Mutation.Data> ApolloCall<D> mutation(Mutation<D> operation) {
+    return new DefaultApolloCall<>(this, operation);
+  }
+
+  public <D extends Operation.Data> ApolloDisposable execute(ApolloRequest<D> request, ApolloCallback<D> callback) {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
-    ArrayList<ApolloInterceptor> interceptors = new ArrayList<>();
+    ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
     interceptors.add(new NetworkInterceptor(callFactory, serverUrl));
 
     executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
@@ -80,7 +84,8 @@ public class ApolloClient {
       this.requestComposer = new DefaultHttpRequestComposer(serverUrl);
     }
 
-    @Override public void intercept(@NotNull ApolloRequest request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback callback) {
+    @Override
+    public <D extends Operation.Data> void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback<D> callback) {
       HttpRequest httpRequest = requestComposer.compose(request);
       Request.Builder builder = new Request.Builder()
           .url(httpRequest.getUrl());
@@ -95,6 +100,7 @@ public class ApolloClient {
           @Nullable @Override public MediaType contentType() {
             return MediaType.parse(httpRequest.getBody().getContentType());
           }
+
           @Override public long contentLength() {
             return httpRequest.getBody().getContentLength();
           }
@@ -116,7 +122,7 @@ public class ApolloClient {
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.body().source());
           try {
-            ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, CustomScalarAdapters.Empty);
+            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, CustomScalarAdapters.Empty);
             callback.onResponse(apolloResponse);
           } catch (Exception e) {
             callback.onFailure(new ApolloParseException("Cannot parse response", e));
@@ -133,6 +139,7 @@ public class ApolloClient {
     private String serverUrl;
     private Call.Factory callFactory;
     private Executor executor;
+    private List<ApolloInterceptor> interceptors = new ArrayList<>();
 
     public Builder() {
     }
@@ -172,6 +179,21 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder addInterceptor(@NotNull ApolloInterceptor interceptor) {
+      this.interceptors.add(checkNotNull(interceptor, "interceptor is null"));
+      return this;
+    }
+
+    public Builder addInterceptors(@NotNull List<ApolloInterceptor> interceptors) {
+      this.interceptors.addAll(checkNotNull(interceptors, "interceptors is null"));
+      return this;
+    }
+
+    public Builder interceptors(@NotNull List<ApolloInterceptor> interceptors) {
+      this.interceptors = checkNotNull(interceptors, "interceptors is null");
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(serverUrl, "serverUrl is missing");
       if (callFactory == null) {
@@ -181,7 +203,7 @@ public class ApolloClient {
       if (executor == null) {
         executor = defaultExecutor();
       }
-      return new ApolloClient(serverUrl, callFactory, executor);
+      return new ApolloClient(serverUrl, callFactory, executor, interceptors);
     }
   }
 
