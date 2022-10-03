@@ -15,6 +15,7 @@ import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo3.runtime.java.internal.HttpNetworkTransport;
+import com.apollographql.apollo3.runtime.java.internal.WebSocketNetworkTransport;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
@@ -25,6 +26,7 @@ import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
 import com.apollographql.apollo3.runtime.java.internal.DefaultInterceptorChain;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
+import okhttp3.WebSocket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 public class ApolloClient {
   private String serverUrl;
   private Call.Factory callFactory;
+  private WebSocket.Factory webSocketFactory;
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
   private CustomScalarAdapters customScalarAdapters;
@@ -44,12 +47,14 @@ public class ApolloClient {
   private ApolloClient(
       String serverUrl,
       Call.Factory callFactory,
+      WebSocket.Factory webSocketFactory,
       Executor executor,
       List<ApolloInterceptor> interceptors,
       CustomScalarAdapters customScalarAdapters
   ) {
     this.serverUrl = serverUrl;
     this.callFactory = callFactory;
+    this.webSocketFactory = webSocketFactory;
     this.executor = executor;
     this.interceptors = interceptors;
     this.customScalarAdapters = customScalarAdapters;
@@ -67,7 +72,7 @@ public class ApolloClient {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
-    interceptors.add(new NetworkInterceptor(callFactory, serverUrl, customScalarAdapters));
+    interceptors.add(new NetworkInterceptor(callFactory, webSocketFactory, serverUrl, customScalarAdapters));
 
     executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
 
@@ -76,10 +81,12 @@ public class ApolloClient {
 
   private static class NetworkInterceptor implements ApolloInterceptor {
     private HttpNetworkTransport httpNetworkTransport;
+    private WebSocketNetworkTransport webSocketNetworkTransport;
 
-    private NetworkInterceptor(Call.Factory callFactory, String serverUrl, CustomScalarAdapters customScalarAdapters) {
+    private NetworkInterceptor(Call.Factory callFactory, WebSocket.Factory webSocketFactory, String serverUrl, CustomScalarAdapters customScalarAdapters) {
       HttpRequestComposer httpRequestComposer = new DefaultHttpRequestComposer(serverUrl);
       httpNetworkTransport = new HttpNetworkTransport(callFactory, httpRequestComposer, customScalarAdapters);
+      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, httpRequestComposer, customScalarAdapters);
     }
 
     @Override
@@ -87,7 +94,7 @@ public class ApolloClient {
       if (request.getOperation() instanceof Query || request.getOperation() instanceof Mutation) {
         httpNetworkTransport.execute(request, callback, chain.getDisposable());
       } else {
-        throw new RuntimeException(); // TODO
+        webSocketNetworkTransport.execute(request, callback, chain.getDisposable());
       }
     }
   }
@@ -96,6 +103,7 @@ public class ApolloClient {
   public static class Builder implements MutableExecutionOptions<Builder> {
     private String serverUrl;
     private Call.Factory callFactory;
+    private WebSocket.Factory webSocketFactory;
     private Executor executor;
     private List<ApolloInterceptor> interceptors = new ArrayList<>();
     private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
@@ -123,6 +131,7 @@ public class ApolloClient {
      */
     public Builder okHttpClient(@NotNull OkHttpClient okHttpClient) {
       this.callFactory = checkNotNull(okHttpClient, "okHttpClient is null");
+      this.webSocketFactory = okHttpClient;
       return null;
     }
 
@@ -132,6 +141,15 @@ public class ApolloClient {
      */
     public Builder callFactory(@NotNull Call.Factory factory) {
       this.callFactory = checkNotNull(factory, "factory is null");
+      return this;
+    }
+
+    /**
+     * Set the custom call factory for creating {@link WebSocket} instances. <p> Note: Calling {@link #okHttpClient(OkHttpClient)}
+     * automatically sets this value.
+     */
+    public Builder webSocketFactory(@NotNull WebSocket.Factory factory) {
+      this.webSocketFactory = checkNotNull(factory, "factory is null");
       return this;
     }
 
@@ -184,11 +202,15 @@ public class ApolloClient {
         callFactory = new OkHttpClient();
       }
 
+      if (webSocketFactory == null) {
+        webSocketFactory = callFactory instanceof OkHttpClient ? (OkHttpClient) callFactory : new OkHttpClient();
+      }
+
       if (executor == null) {
         executor = defaultExecutor();
       }
 
-      return new ApolloClient(serverUrl, callFactory, executor, interceptors, customScalarAdaptersBuilder.build());
+      return new ApolloClient(serverUrl, callFactory, webSocketFactory, executor, interceptors, customScalarAdaptersBuilder.build());
     }
 
     public Builder autoPersistedQueries() {
