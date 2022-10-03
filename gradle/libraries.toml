@@ -59,6 +59,7 @@ apollo-plugin = { group = "com.apollographql.apollo3", name = "apollo-gradle-plu
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 apollo-runtime-java = { group = "com.apollographql.apollo3", name = "apollo-runtime-java", version.ref = "apollo" }
 apollo-rx2 = { group = "com.apollographql.apollo3", name = "apollo-rx2-support", version.ref = "apollo" }
+apollo-rx3-java = { group = "com.apollographql.apollo3", name = "apollo-rx3-support-java", version.ref = "apollo" }
 apollo-testingsupport = { group = "com.apollographql.apollo3", name = "apollo-testing-support", version.ref = "apollo" }
 assertj = { group = "org.assertj", name = "assertj-core", version = "3.21.0" }
 atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version = "0.17.0" }
