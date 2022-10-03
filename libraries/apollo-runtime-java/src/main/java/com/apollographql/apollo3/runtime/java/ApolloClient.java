@@ -155,7 +155,7 @@ public class ApolloClient {
         }
         callback.onFailure(new ApolloNetworkException("Network error", e));
       } finally {
-        chain.getDisposable().removeCancellationListener(listener);
+        chain.getDisposable().removeListener(listener);
       }
     }
   }

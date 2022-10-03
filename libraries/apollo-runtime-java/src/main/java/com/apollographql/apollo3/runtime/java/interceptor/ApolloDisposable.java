@@ -7,9 +7,9 @@ public interface ApolloDisposable {
 
   void addListener(Listener listener);
 
-  void removeCancellationListener(Listener listener);
+  void removeListener(Listener listener);
 
   interface Listener {
-    void onCancelled();
+    void onDisposed();
   }
 }

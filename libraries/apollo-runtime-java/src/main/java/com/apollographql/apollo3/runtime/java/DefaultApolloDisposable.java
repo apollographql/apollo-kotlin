@@ -20,7 +20,7 @@ public class DefaultApolloDisposable implements ApolloDisposable {
     }
   }
 
-  @Override public void removeCancellationListener(Listener listener) {
+  @Override public void removeListener(Listener listener) {
     synchronized (listeners) {
       listeners.remove(listener);
     }
@@ -29,7 +29,7 @@ public class DefaultApolloDisposable implements ApolloDisposable {
   @Override public void dispose() {
     synchronized (listeners) {
       listeners.forEach(listener -> {
-        listener.onCancelled();
+        listener.onDisposed();
       });
     }
     isDisposed.set(true);
