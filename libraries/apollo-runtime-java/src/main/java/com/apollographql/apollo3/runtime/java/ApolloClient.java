@@ -1,8 +1,10 @@
 package com.apollographql.apollo3.runtime.java;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.CustomScalarType;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Operations;
@@ -42,18 +44,20 @@ public class ApolloClient {
   private Call.Factory callFactory;
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
-
+  private CustomScalarAdapters customScalarAdapters;
 
   private ApolloClient(
       String serverUrl,
       Call.Factory callFactory,
       Executor executor,
-      List<ApolloInterceptor> interceptors
+      List<ApolloInterceptor> interceptors,
+      CustomScalarAdapters customScalarAdapters
   ) {
     this.serverUrl = serverUrl;
     this.callFactory = callFactory;
     this.executor = executor;
     this.interceptors = interceptors;
+    this.customScalarAdapters = customScalarAdapters;
   }
 
   public <D extends Query.Data> ApolloCall<D> query(@NotNull Query<D> operation) {
@@ -68,7 +72,7 @@ public class ApolloClient {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
-    interceptors.add(new NetworkInterceptor(callFactory, serverUrl));
+    interceptors.add(new NetworkInterceptor(callFactory, serverUrl, customScalarAdapters));
 
     executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
 
@@ -78,10 +82,12 @@ public class ApolloClient {
   private static class NetworkInterceptor implements ApolloInterceptor {
     private Call.Factory callFactory;
     private HttpRequestComposer requestComposer;
+    private CustomScalarAdapters customScalarAdapters;
 
-    private NetworkInterceptor(Call.Factory callFactory, String serverUrl) {
+    private NetworkInterceptor(Call.Factory callFactory, String serverUrl, CustomScalarAdapters customScalarAdapters) {
       this.callFactory = callFactory;
       this.requestComposer = new DefaultHttpRequestComposer(serverUrl);
+      this.customScalarAdapters = customScalarAdapters;
     }
 
     @Override
@@ -122,7 +128,7 @@ public class ApolloClient {
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.body().source());
           try {
-            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, CustomScalarAdapters.Empty);
+            ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters);
             callback.onResponse(apolloResponse);
           } catch (Exception e) {
             callback.onFailure(new ApolloParseException("Cannot parse response", e));
@@ -140,6 +146,7 @@ public class ApolloClient {
     private Call.Factory callFactory;
     private Executor executor;
     private List<ApolloInterceptor> interceptors = new ArrayList<>();
+    private CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
 
     public Builder() {
     }
@@ -170,7 +177,7 @@ public class ApolloClient {
     }
 
     /**
-     * The #{@link Executor} to use for dispatching the requests.
+     * The {@link Executor} to use for dispatching the requests.
      *
      * @return The {@link Builder} object to be used for chaining method calls
      */
@@ -194,6 +201,24 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder customScalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
+      this.customScalarAdaptersBuilder.clear();
+      this.customScalarAdaptersBuilder.addAll(customScalarAdapters);
+      return this;
+    }
+
+    /**
+     * Registers the given customScalarAdapter.
+     *
+     * @param customScalarType a generated {@link CustomScalarType}. Every GraphQL custom scalar has a generated class with a static `type`
+     * property. For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
+     * @param customScalarAdapter the {@link Adapter} to use for this custom scalar
+     */
+    public <T> Builder addCustomScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
+      customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter);
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(serverUrl, "serverUrl is missing");
       if (callFactory == null) {
@@ -203,7 +228,8 @@ public class ApolloClient {
       if (executor == null) {
         executor = defaultExecutor();
       }
-      return new ApolloClient(serverUrl, callFactory, executor, interceptors);
+
+      return new ApolloClient(serverUrl, callFactory, executor, interceptors, customScalarAdaptersBuilder.build());
     }
   }
 

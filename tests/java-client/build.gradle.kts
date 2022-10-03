@@ -18,4 +18,5 @@ apollo {
   mapScalarToJavaString("LanguageCode")
   mapScalarToJavaObject("Json")
   mapScalarToJavaLong("Long")
+  mapScalar("GeoPoint", "scalar.GeoPoint")
 }
