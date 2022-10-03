@@ -208,7 +208,7 @@ pluginManagement {
   }
 }
 ```
-And then use the `3.6.1-SNAPSHOT` version for the plugin and libraries.
+And then use the `3.7.0-SNAPSHOT` version for the plugin and libraries.
 
 ## Contributing
 
