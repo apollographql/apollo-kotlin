@@ -7,26 +7,37 @@ interface ExecutionOptions {
   val executionContext: ExecutionContext
 
   /**
+   *
+   * The HTTP method to use for the request
+   *
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val httpMethod: HttpMethod?
 
   /**
+   *
+   * HTTP headers to use for the request
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val httpHeaders: List<HttpHeader>?
 
   /**
+   *
+   * Whether to send the Auto Persisted Queries extensions
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val sendApqExtensions: Boolean?
 
   /**
+   *
+   * Whether to send the document
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val sendDocument: Boolean?
 
   /**
+   *
+   * Whether to enable Auto Persisted Queries and try to send a hashed query first
    * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
    */
   val enableAutoPersistedQueries: Boolean?
@@ -59,7 +70,7 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun httpHeaders(httpHeaders: List<HttpHeader>?): T
 
   /**
-   * Add a HTTP header to be sent with the request.
+   * Add an HTTP header to be sent with the request.
    */
   fun addHttpHeader(name: String, value: String): T
 

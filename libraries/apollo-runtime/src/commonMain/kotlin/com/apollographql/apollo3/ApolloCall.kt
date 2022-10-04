@@ -8,10 +8,13 @@ import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 
+/**
+ * An [ApolloCall] is a thin class that builds a [ApolloRequest] and calls [ApolloClient].execute() with it.
+ * [ApolloCall] is mutable and designed to allow chaining calls.
+ */
 class ApolloCall<D : Operation.Data> internal constructor(
     internal val apolloClient: ApolloClient,
     val operation: Operation<D>,

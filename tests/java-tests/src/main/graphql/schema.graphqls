@@ -9,6 +9,7 @@ type Query {
 
 type Mutation {
   createAnimal(input: AnimalInput!): Animal
+  ping: Boolean
 }
 
 type Subscription {

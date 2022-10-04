@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.runtime.java.ApolloCall;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
+import com.apollographql.apollo3.runtime.java.ApolloDisposable;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
