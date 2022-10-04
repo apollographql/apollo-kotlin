@@ -3,7 +3,6 @@ package com.apollographql.apollo.sample.server
 import com.expediagroup.graphql.server.spring.subscriptions.ApolloSubscriptionProtocolHandler
 import com.fasterxml.jackson.databind.ObjectMapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.springframework.boot.web.servlet.server.Session
 import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.WebSocketSession
 import reactor.core.publisher.Mono
@@ -45,7 +44,7 @@ class MyWebSocketHandler(
     return session.send(response)
   }
 
-  override fun getSubProtocols(): List<String> = listOf("graphql-ws")
+  override fun getSubProtocols(): List<String> = listOf("graphql-ws", "graphql-transport-ws")
 
   companion object {
     var index = 0

@@ -10,6 +10,7 @@ dependencies {
   implementation(golatac.lib("apollo.rx3.java"))
   testImplementation(golatac.lib("junit"))
   testImplementation(golatac.lib("truth"))
+  testImplementation(project(":sample-server"))
 }
 
 apollo {

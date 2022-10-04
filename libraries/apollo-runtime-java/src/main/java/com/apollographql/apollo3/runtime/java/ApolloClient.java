@@ -14,8 +14,8 @@ import com.apollographql.apollo3.api.http.HttpRequestComposer;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
-import com.apollographql.apollo3.runtime.java.internal.HttpNetworkTransport;
-import com.apollographql.apollo3.runtime.java.internal.WebSocketNetworkTransport;
+import com.apollographql.apollo3.runtime.java.internal.http.HttpNetworkTransport;
+import com.apollographql.apollo3.runtime.java.internal.ws.WebSocketNetworkTransport;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
@@ -86,7 +86,7 @@ public class ApolloClient {
     private NetworkInterceptor(Call.Factory callFactory, WebSocket.Factory webSocketFactory, String serverUrl, CustomScalarAdapters customScalarAdapters) {
       HttpRequestComposer httpRequestComposer = new DefaultHttpRequestComposer(serverUrl);
       httpNetworkTransport = new HttpNetworkTransport(callFactory, httpRequestComposer, customScalarAdapters);
-      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, httpRequestComposer, customScalarAdapters);
+      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, serverUrl, customScalarAdapters);
     }
 
     @Override

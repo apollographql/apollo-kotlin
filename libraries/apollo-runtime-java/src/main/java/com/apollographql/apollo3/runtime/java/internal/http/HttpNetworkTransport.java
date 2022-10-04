@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.runtime.java.internal;
+package com.apollographql.apollo3.runtime.java.internal.http;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
