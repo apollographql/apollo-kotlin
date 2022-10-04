@@ -38,7 +38,7 @@ public class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
   .selections(selections = HumanDetailsSelections.__root)
   .build()
 
-  public interface Data : HumanDetails, Fragment.Data {
+  public sealed interface Data : HumanDetails, Fragment.Data {
     public override val __typename: String
 
     /**

@@ -39,7 +39,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
   .selections(selections = HeroDetailsSelections.__root)
   .build()
 
-  public interface Data : HeroDetails, Fragment.Data {
+  public sealed interface Data : HeroDetails, Fragment.Data {
     public override val __typename: String
 
     /**
@@ -52,7 +52,7 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
      */
     public override val friendsConnection: FriendsConnection
 
-    public interface FriendsConnection : HeroDetails.FriendsConnection {
+    public sealed interface FriendsConnection : HeroDetails.FriendsConnection {
       /**
        * The total number of friends
        */
@@ -63,13 +63,13 @@ public class HeroDetailsImpl() : Fragment<HeroDetailsImpl.Data> {
        */
       public override val edges: List<Edge?>?
 
-      public interface Edge : HeroDetails.FriendsConnection.Edge {
+      public sealed interface Edge : HeroDetails.FriendsConnection.Edge {
         /**
          * The character represented by this friendship edge
          */
         public override val node: Node?
 
-        public interface Node : HeroDetails.FriendsConnection.Edge.Node {
+        public sealed interface Node : HeroDetails.FriendsConnection.Edge.Node {
           /**
            * The name of the character
            */
