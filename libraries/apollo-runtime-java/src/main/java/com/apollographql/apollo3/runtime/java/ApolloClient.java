@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpRequestComposer;
@@ -41,6 +42,7 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 
 public class ApolloClient {
   private String serverUrl;
+  private String webSocketServerUrl;
   private Call.Factory callFactory;
   private WebSocket.Factory webSocketFactory;
   private Executor executor;
@@ -51,6 +53,7 @@ public class ApolloClient {
 
   private ApolloClient(
       String serverUrl,
+      String webSocketServerUrl,
       Call.Factory callFactory,
       WebSocket.Factory webSocketFactory,
       Executor executor,
@@ -60,6 +63,7 @@ public class ApolloClient {
       List<HttpHeader> wsHeaders
   ) {
     this.serverUrl = serverUrl;
+    this.webSocketServerUrl = webSocketServerUrl;
     this.callFactory = callFactory;
     this.webSocketFactory = webSocketFactory;
     this.executor = executor;
@@ -77,11 +81,24 @@ public class ApolloClient {
     return new DefaultApolloCall<>(this, operation);
   }
 
+  public <D extends Subscription.Data> ApolloCall<D> subscription(@NotNull Subscription<D> operation) {
+    return new DefaultApolloCall<>(this, operation);
+  }
+
   public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback) {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
-    interceptors.add(new NetworkInterceptor(callFactory, webSocketFactory, serverUrl, customScalarAdapters, wsProtocolFactory, wsHeaders));
+    interceptors.add(new NetworkInterceptor(
+        callFactory,
+        webSocketFactory,
+        serverUrl,
+        webSocketServerUrl,
+        customScalarAdapters,
+        wsProtocolFactory,
+        wsHeaders,
+        executor
+    ));
 
     executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
 
@@ -96,13 +113,15 @@ public class ApolloClient {
         Call.Factory callFactory,
         WebSocket.Factory webSocketFactory,
         String serverUrl,
+        String webSocketServerUrl,
         CustomScalarAdapters customScalarAdapters,
         WsProtocol.Factory wsProtocolFactory,
-        List<HttpHeader> wsHeaders
+        List<HttpHeader> wsHeaders,
+        Executor executor
     ) {
       HttpRequestComposer httpRequestComposer = new DefaultHttpRequestComposer(serverUrl);
       httpNetworkTransport = new HttpNetworkTransport(callFactory, httpRequestComposer, customScalarAdapters);
-      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, serverUrl, wsHeaders);
+      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, webSocketServerUrl, wsHeaders, executor);
     }
 
     @Override
@@ -122,6 +141,7 @@ public class ApolloClient {
 
   public static class Builder implements MutableExecutionOptions<Builder> {
     private String serverUrl;
+    private String webSocketServerUrl;
     private Call.Factory callFactory;
     private WebSocket.Factory webSocketFactory;
     private Executor executor;
@@ -143,6 +163,11 @@ public class ApolloClient {
 
     public Builder serverUrl(@NotNull String serverUrl) {
       this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
+      return this;
+    }
+
+    public Builder webSocketServerUrl(@NotNull String webSocketServerUrl) {
+      this.webSocketServerUrl = checkNotNull(webSocketServerUrl, "webSocketServerUrl is null");
       return this;
     }
 
@@ -241,6 +266,11 @@ public class ApolloClient {
 
     public ApolloClient build() {
       checkNotNull(serverUrl, "serverUrl is missing");
+
+      if (webSocketServerUrl == null) {
+        webSocketServerUrl = serverUrl;
+      }
+
       if (callFactory == null) {
         callFactory = new OkHttpClient();
       }
@@ -260,6 +290,7 @@ public class ApolloClient {
 
       return new ApolloClient(
           serverUrl,
+          webSocketServerUrl,
           callFactory,
           webSocketFactory,
           executor,

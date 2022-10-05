@@ -4,6 +4,7 @@ import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -34,16 +35,38 @@ public class ApolloWsProtocol extends WsProtocol {
     sendMessageMap(message, frameType);
 
     Map<String, Object> map = receiveMessageMap();
-    Object type = map.get("type");
-    if ("connection_error".equals(type)) {
-      // TODO
-    } else if (!"connection_ack".equals(type)) {
-      System.out.println("unknown graphql-ws message while waiting for connection_ack: " + type);
+    if (map == null) {
+      // Connection closed
+      listener.networkError(new IOException("Connection closed"));
+    } else {
+      Object type = map.get("type");
+      if ("connection_error".equals(type)) {
+        listener.networkError(new IOException("connection_error received " + map));
+      } else if (!"connection_ack".equals(type)) {
+        System.out.println("unknown graphql-ws message while waiting for connection_ack: " + type);
+      }
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override void handleServerMessage(Map<String, Object> messageMap) {
-
+    String type = (String) messageMap.get("type");
+    switch (type) {
+      case "data":
+        listener.operationResponse((String) messageMap.get("id"), (Map<String, Object>) messageMap.get("payload"));
+        break;
+      case "error":
+        String id = (String) messageMap.get("id");
+        if (id != null) {
+          listener.operationError(id, (Map<String, Object>) messageMap.get("payload"));
+        } else {
+          listener.generalError((Map<String, Object>) messageMap.get("payload"));
+        }
+        break;
+      case "complete":
+        listener.operationComplete((String) messageMap.get("id"));
+        break;
+    }
   }
 
   @Override <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
@@ -58,7 +81,13 @@ public class ApolloWsProtocol extends WsProtocol {
   }
 
   @Override <D extends Operation.Data> void stopOperation(ApolloRequest<D> request) {
-
+    sendMessageMap(
+        mapOf(
+            entry("type", "stop"),
+            entry("id", request.getRequestUuid().toString())
+        ),
+        frameType
+    );
   }
 
   public static class Factory implements WsProtocol.Factory {

@@ -32,8 +32,14 @@ public class Rx2Apollo {
 
         @Override public void onFailure(@NotNull ApolloException e) {
           if (!emitter.isCancelled()) {
-            emitter.onComplete();
+            emitter.onError(e);
           }
+        }
+      });
+
+      disposable.addListener(() -> {
+        if (!emitter.isCancelled()) {
+          emitter.onComplete();
         }
       });
 

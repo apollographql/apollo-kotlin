@@ -17,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class WebSocketConnection {
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = true; // TODO
   private static final long OPEN_TIMEOUT_MS = 10_000;
 
   private static final int CLOSE_NORMAL = 1000;
@@ -95,6 +95,7 @@ public class WebSocketConnection {
   }
 
   public void close() {
+    if (DEBUG) System.out.println("close");
     webSocket.close(CLOSE_NORMAL, null);
   }
 

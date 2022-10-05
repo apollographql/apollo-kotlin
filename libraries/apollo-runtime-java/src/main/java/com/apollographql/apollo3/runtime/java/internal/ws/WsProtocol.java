@@ -8,13 +8,14 @@ import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import okio.Buffer;
 import okio.ByteString;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Map;
 
 public abstract class WsProtocol {
   private WebSocketConnection webSocketConnection;
-  private Listener listener;
+  protected Listener listener;
 
   public WsProtocol(WebSocketConnection webSocketConnection, Listener listener) {
     this.webSocketConnection = webSocketConnection;
@@ -51,14 +52,31 @@ public abstract class WsProtocol {
 
   /**
    * Receive a new WebMessage message as a `Map<String, Any?>`. Messages that aren't Json objects are ignored and the method will block
-   * until the next message.
+   * until the next message. Returns null if the connection is closed.
    */
+  @Nullable
   protected Map<String, Object> receiveMessageMap() {
     while (true) {
-      Map<String, Object> map = toMessageMap(webSocketConnection.receive());
+      String messageJson = webSocketConnection.receive();
+      if (messageJson == null) {
+        return null;
+      }
+      Map<String, Object> map = toMessageMap(messageJson);
       if (map != null) {
         return map;
       }
+    }
+  }
+
+  protected void run() {
+    while (true) {
+      Map<String, Object> messageMap = receiveMessageMap();
+      if (messageMap == null) {
+        // Connection closed
+        // TODO: should we call listener.networkError()?
+        return;
+      }
+      handleServerMessage(messageMap);
     }
   }
 
@@ -89,6 +107,10 @@ public abstract class WsProtocol {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  public void close() {
+    webSocketConnection.close();
   }
 
 

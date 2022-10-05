@@ -31,6 +31,8 @@ import scalar.GeoPointAdapter;
 
 import java.util.Arrays;
 
+import static test.Utils.sleep;
+
 public class ClientTest {
   MockServer mockServer;
   ApolloClient apolloClient;
@@ -158,13 +160,5 @@ public class ClientTest {
      * Cancellation do not emit anything
      */
     Truth.assertThat(received[0]).isEqualTo(null);
-  }
-
-  private void sleep(int millis) {
-    try {
-      Thread.sleep(millis);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
   }
 }
