@@ -10,12 +10,15 @@ import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
+import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpRequestComposer;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo3.runtime.java.internal.http.HttpNetworkTransport;
+import com.apollographql.apollo3.runtime.java.internal.ws.ApolloWsProtocol;
 import com.apollographql.apollo3.runtime.java.internal.ws.WebSocketNetworkTransport;
+import com.apollographql.apollo3.runtime.java.internal.ws.WsProtocol;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
@@ -43,6 +46,8 @@ public class ApolloClient {
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
   private CustomScalarAdapters customScalarAdapters;
+  private WsProtocol.Factory wsProtocolFactory;
+  private List<HttpHeader> wsHeaders;
 
   private ApolloClient(
       String serverUrl,
@@ -50,7 +55,9 @@ public class ApolloClient {
       WebSocket.Factory webSocketFactory,
       Executor executor,
       List<ApolloInterceptor> interceptors,
-      CustomScalarAdapters customScalarAdapters
+      CustomScalarAdapters customScalarAdapters,
+      WsProtocol.Factory wsProtocolFactory,
+      List<HttpHeader> wsHeaders
   ) {
     this.serverUrl = serverUrl;
     this.callFactory = callFactory;
@@ -58,6 +65,8 @@ public class ApolloClient {
     this.executor = executor;
     this.interceptors = interceptors;
     this.customScalarAdapters = customScalarAdapters;
+    this.wsProtocolFactory = wsProtocolFactory;
+    this.wsHeaders = wsHeaders;
   }
 
   public <D extends Query.Data> ApolloCall<D> query(@NotNull Query<D> operation) {
@@ -72,7 +81,7 @@ public class ApolloClient {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
 
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
-    interceptors.add(new NetworkInterceptor(callFactory, webSocketFactory, serverUrl, customScalarAdapters));
+    interceptors.add(new NetworkInterceptor(callFactory, webSocketFactory, serverUrl, customScalarAdapters, wsProtocolFactory, wsHeaders));
 
     executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
 
@@ -83,10 +92,17 @@ public class ApolloClient {
     private HttpNetworkTransport httpNetworkTransport;
     private WebSocketNetworkTransport webSocketNetworkTransport;
 
-    private NetworkInterceptor(Call.Factory callFactory, WebSocket.Factory webSocketFactory, String serverUrl, CustomScalarAdapters customScalarAdapters) {
+    private NetworkInterceptor(
+        Call.Factory callFactory,
+        WebSocket.Factory webSocketFactory,
+        String serverUrl,
+        CustomScalarAdapters customScalarAdapters,
+        WsProtocol.Factory wsProtocolFactory,
+        List<HttpHeader> wsHeaders
+    ) {
       HttpRequestComposer httpRequestComposer = new DefaultHttpRequestComposer(serverUrl);
       httpNetworkTransport = new HttpNetworkTransport(callFactory, httpRequestComposer, customScalarAdapters);
-      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, serverUrl, customScalarAdapters);
+      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, serverUrl, wsHeaders);
     }
 
     @Override
@@ -99,6 +115,10 @@ public class ApolloClient {
     }
   }
 
+  public CustomScalarAdapters getCustomScalarAdapters() {
+    return customScalarAdapters;
+  }
+
 
   public static class Builder implements MutableExecutionOptions<Builder> {
     private String serverUrl;
@@ -106,6 +126,9 @@ public class ApolloClient {
     private WebSocket.Factory webSocketFactory;
     private Executor executor;
     private List<ApolloInterceptor> interceptors = new ArrayList<>();
+    private CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
+    private WsProtocol.Factory wsProtocolFactory;
+    private List<HttpHeader> wsHeaders = new ArrayList<>();
     private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
     private ExecutionContext executionContext;
     private HttpMethod httpMethod;
@@ -196,6 +219,26 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder wsProtocolFactory(@NotNull WsProtocol.Factory wsProtocolFactory) {
+      this.wsProtocolFactory = checkNotNull(wsProtocolFactory, "wsProtocolFactory is null");
+      return this;
+    }
+
+    public Builder addWsHeader(@NotNull HttpHeader header) {
+      this.wsHeaders.add(checkNotNull(header, "header is null"));
+      return this;
+    }
+
+    public Builder addWsHeaders(@NotNull List<HttpHeader> headers) {
+      this.wsHeaders.addAll(checkNotNull(headers, "headers is null"));
+      return this;
+    }
+
+    public Builder wsHeaders(@NotNull List<HttpHeader> headers) {
+      this.wsHeaders = checkNotNull(headers, "headers is null");
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(serverUrl, "serverUrl is missing");
       if (callFactory == null) {
@@ -210,7 +253,21 @@ public class ApolloClient {
         executor = defaultExecutor();
       }
 
-      return new ApolloClient(serverUrl, callFactory, webSocketFactory, executor, interceptors, customScalarAdaptersBuilder.build());
+      if (wsProtocolFactory == null) {
+        // TODO change the default to GraphQLWsProtocol.Factory
+        wsProtocolFactory = new ApolloWsProtocol.Factory();
+      }
+
+      return new ApolloClient(
+          serverUrl,
+          callFactory,
+          webSocketFactory,
+          executor,
+          interceptors,
+          customScalarAdaptersBuilder.build(),
+          wsProtocolFactory,
+          wsHeaders
+      );
     }
 
     public Builder autoPersistedQueries() {

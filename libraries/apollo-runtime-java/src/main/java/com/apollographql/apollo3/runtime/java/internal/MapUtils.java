@@ -1,4 +1,4 @@
-package test;
+package com.apollographql.apollo3.runtime.java.internal;
 
 import java.util.AbstractMap;
 import java.util.HashMap;

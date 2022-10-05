@@ -1,13 +1,98 @@
 package com.apollographql.apollo3.runtime.java.internal.ws;
 
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloRequest;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Operation;
-import okhttp3.WebSocket;
+import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
+import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
+import okio.Buffer;
+import okio.ByteString;
 
+import java.io.IOException;
 import java.util.Map;
 
 public abstract class WsProtocol {
-  public interface Listener {
+  private WebSocketConnection webSocketConnection;
+  private Listener listener;
+
+  public WsProtocol(WebSocketConnection webSocketConnection, Listener listener) {
+    this.webSocketConnection = webSocketConnection;
+    this.listener = listener;
+  }
+
+  abstract void connectionInit();
+
+  abstract void handleServerMessage(Map<String, Object> messageMap);
+
+  abstract <D extends Operation.Data> void startOperation(ApolloRequest<D> request);
+
+  abstract <D extends Operation.Data> void stopOperation(ApolloRequest<D> request);
+
+
+  protected void sendMessageMap(Map<String, Object> messageMap, WsFrameType frameType) {
+    switch (frameType) {
+      case Text:
+        sendMessageMapText(messageMap);
+        break;
+      case Binary:
+        sendMessageMapBinary(messageMap);
+        break;
+    }
+  }
+
+  protected void sendMessageMapText(Map<String, Object> messageMap) {
+    webSocketConnection.send(toJsonString(messageMap));
+  }
+
+  protected void sendMessageMapBinary(Map<String, Object> messageMap) {
+    webSocketConnection.send(toJsonByteString(messageMap));
+  }
+
+  /**
+   * Receive a new WebMessage message as a `Map<String, Any?>`. Messages that aren't Json objects are ignored and the method will block
+   * until the next message.
+   */
+  protected Map<String, Object> receiveMessageMap() {
+    while (true) {
+      Map<String, Object> map = toMessageMap(webSocketConnection.receive());
+      if (map != null) {
+        return map;
+      }
+    }
+  }
+
+  private static String toJsonString(Map<String, Object> messageMap) {
+    Buffer buffer = new Buffer();
+    BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
+    try {
+      Adapters.AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, messageMap);
+    } catch (IOException ignored) {
+    }
+    return buffer.readUtf8();
+  }
+
+  private ByteString toJsonByteString(Map<String, Object> messageMap) {
+    Buffer buffer = new Buffer();
+    BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
+    try {
+      Adapters.AnyAdapter.toJson(writer, CustomScalarAdapters.Empty, messageMap);
+    } catch (IOException ignored) {
+    }
+    return buffer.readByteString();
+  }
+
+  private static Map<String, Object> toMessageMap(String messageJson) {
+    try {
+      //noinspection unchecked
+      return (Map<String, Object>) Adapters.AnyAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), CustomScalarAdapters.Empty);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+
+  interface Listener {
     /**
      * A response was received. payload might contain "errors". For subscriptions, several responses might be received.
      */
@@ -35,20 +120,14 @@ public abstract class WsProtocol {
     void networkError(Throwable cause);
   }
 
-
-  private WebSocket webSocket;
-  private Listener listener;
-
-  public WsProtocol(WebSocket webSocket, Listener listener) {
-    this.webSocket = webSocket;
-    this.listener = listener;
+  public enum WsFrameType {
+    Text,
+    Binary
   }
 
-  abstract void connectionInit();
+  public interface Factory {
+    String getName();
 
-  abstract void handleServerMessage(Map<String, Object> messageMap);
-
-  abstract <D extends Operation.Data> void startOperation(ApolloRequest<D> request);
-
-  abstract <D extends Operation.Data> void stopOperation(ApolloRequest<D> request);
+    WsProtocol create(WebSocketConnection webSocketConnection, Listener listener);
+  }
 }
