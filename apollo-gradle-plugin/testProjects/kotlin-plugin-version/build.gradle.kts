@@ -9,8 +9,7 @@ buildscript {
   }
   dependencies {
     classpath(libs.apollo.plugin)
-    // This project is run with Gradle 5.4 and Kotlin 1.5 doesn't support that so stick with 1.4.32
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:KOTLIN_VERSION")
+    classpath(libs.kotlin.plugin.min)
   }
 }
 
