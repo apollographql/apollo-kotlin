@@ -93,6 +93,7 @@ kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 kotlin-plugin-duringideasync = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-duringideasync" }
 # For Gradle integration tests to make sure we stay compatible with 1.5.0
 kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = "1.5.0" }
+kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = "1.7.20" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # the Kotlin plugin resolves the version
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin-stdlib" }
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-stdlib" }

@@ -9,6 +9,7 @@ import com.android.build.gradle.api.TestVariant
 import com.android.build.gradle.api.UnitTestVariant
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.gradle.api.androidExtensionOrThrow
+import com.apollographql.apollo3.gradle.api.kotlinProjectExtension
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.Directory
@@ -48,11 +49,7 @@ fun connectToAndroidSourceSet(project: Project, sourceSetName: String, outputDir
     }
   }
 
-  val androidSourceSet = project.androidExtensionOrThrow
-      .sourceSets
-      .getByName(sourceSetName)
-
-  val kotlinSourceSet = androidSourceSet.kotlinSourceSet()
+  val kotlinSourceSet = project.kotlinProjectExtension?.sourceSets?.getByName(sourceSetName)?.kotlin
   if (kotlinSourceSet != null) {
     kotlinSourceSet.srcDir(outputDir)
   }
