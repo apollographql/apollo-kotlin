@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+# Version 3.6.2
+
+_2022-10-05_
+
+A patch version to fix compatibility with Kotlin 1.7.20 and another fix when calling `ApolloStore.dump()` with the SQL normalized cache.
+
+## 👷‍ All changes
+
+* Add support for KGP 1.7.20 (#4439)
+* Fix SQLNormalizedCache.dump() (#4437)
+ 
 # Version 3.6.1
 
 _2022-10-03_
