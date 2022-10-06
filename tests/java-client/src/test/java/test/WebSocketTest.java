@@ -179,4 +179,35 @@ public class WebSocketTest {
     latch.await(1, TimeUnit.SECONDS);
     Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
   }
+
+  @Test
+  public void disposeStopsSubscription() throws Exception {
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/subscriptions")
+        .build();
+
+    List<Integer> items = new ArrayList<>();
+    CountDownLatch latch = new CountDownLatch(1);
+    ApolloDisposable[] disposable = {null};
+    disposable[0] = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+      @Override
+      public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        items.add(response.data.count);
+        if (response.data.count == 5) {
+          disposable[0].dispose();
+          latch.countDown();
+        }
+      }
+
+      @Override
+      public void onFailure(@NotNull ApolloException e) {
+        throw new AssertionError("Should not be called");
+      }
+    });
+
+    latch.await(1, TimeUnit.SECONDS);
+    // Wait a bit to be sure we don't receive any other items after the dispose
+    sleep(500);
+    Truth.assertThat(items).containsExactly(0, 1, 2, 3, 4, 5).inOrder();
+  }
 }
