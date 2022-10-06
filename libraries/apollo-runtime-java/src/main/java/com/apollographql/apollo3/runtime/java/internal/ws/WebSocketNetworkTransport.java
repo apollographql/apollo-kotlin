@@ -14,12 +14,15 @@ import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import okhttp3.WebSocket;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WebSocketNetworkTransport {
   private WebSocket.Factory webSocketFactory;
@@ -28,9 +31,8 @@ public class WebSocketNetworkTransport {
   private List<HttpHeader> headers;
   private Executor executor;
 
-  // TODO make this synchronized
-  private Map<String, SubscriptionInfo> activeSubscriptions = new HashMap<>();
-  private WsProtocol wsProtocol;
+  private Map<String, SubscriptionInfo> activeSubscriptions = Collections.synchronizedMap(new HashMap<>());
+  private AtomicReference<WsProtocol> wsProtocol = new AtomicReference<>();
 
   public WebSocketNetworkTransport(
       WebSocket.Factory webSocketFactory,
@@ -53,28 +55,36 @@ public class WebSocketNetworkTransport {
     disposable.addListener(() -> {
       if (activeSubscriptions.containsKey(id)) {
         // Caller has cancelled the subscription by calling ApolloDisposable.dispose()
-        if (wsProtocol != null) wsProtocol.stopOperation(request);
+        WsProtocol curWsProtocol = wsProtocol.get();
+        if (curWsProtocol != null) curWsProtocol.stopOperation(request);
         disposeSubscription(id);
       }
     });
-    if (ensureWsProtocolRunning()) {
-      wsProtocol.startOperation(request);
-    }
+    WsProtocol runningWsProtocol = ensureWsProtocolRunning();
+    if (runningWsProtocol != null) runningWsProtocol.startOperation(request);
   }
 
-  private boolean ensureWsProtocolRunning() {
-    if (wsProtocol == null) {
-      WebSocketConnection webSocket;
-      try {
-        webSocket = openWebSocket();
-      } catch (Throwable e) {
-        listener.networkError(e);
-        return false;
+  @Nullable
+  private WsProtocol ensureWsProtocolRunning() {
+    synchronized (this) {
+      WsProtocol curWsProtocol = wsProtocol.get();
+      if (curWsProtocol == null) {
+        WebSocketConnection webSocket;
+        try {
+          webSocket = openWebSocket();
+        } catch (Throwable e) {
+          listener.networkError(e);
+          return null;
+        }
+        WsProtocol newWsProtocol = wsProtocolFactory.create(webSocket, listener);
+        wsProtocol.set(newWsProtocol);
+        newWsProtocol.connectionInit();
+        executor.execute(newWsProtocol::run);
+        return newWsProtocol;
+      } else {
+        return curWsProtocol;
       }
-      initWsProtocol(webSocket);
-      executor.execute(() -> wsProtocol.run());
     }
-    return true;
   }
 
   private WebSocketConnection openWebSocket() throws Throwable {
@@ -87,16 +97,12 @@ public class WebSocketNetworkTransport {
     return webSocketConnection;
   }
 
-  private void initWsProtocol(WebSocketConnection webSocket) {
-    wsProtocol = wsProtocolFactory.create(webSocket, listener);
-    wsProtocol.connectionInit();
-  }
-
   private void stopWsProtocolIfNoMoreSubscriptions() {
     // TODO do this after a configurable idle timeout
-    if (activeSubscriptions.isEmpty() && wsProtocol != null) {
-      wsProtocol.close();
-      wsProtocol = null;
+    WsProtocol curWsProtocol = wsProtocol.get();
+    if (activeSubscriptions.isEmpty() && curWsProtocol != null) {
+      curWsProtocol.close();
+      wsProtocol.set(null);
     }
   }
 

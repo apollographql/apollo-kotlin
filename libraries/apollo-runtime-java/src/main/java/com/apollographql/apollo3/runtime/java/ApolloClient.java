@@ -50,6 +50,7 @@ public class ApolloClient {
   private CustomScalarAdapters customScalarAdapters;
   private WsProtocol.Factory wsProtocolFactory;
   private List<HttpHeader> wsHeaders;
+  private NetworkInterceptor networkInterceptor;
 
   private ApolloClient(
       String serverUrl,
@@ -71,6 +72,16 @@ public class ApolloClient {
     this.customScalarAdapters = customScalarAdapters;
     this.wsProtocolFactory = wsProtocolFactory;
     this.wsHeaders = wsHeaders;
+    networkInterceptor = new NetworkInterceptor(
+        callFactory,
+        webSocketFactory,
+        serverUrl,
+        webSocketServerUrl,
+        customScalarAdapters,
+        wsProtocolFactory,
+        wsHeaders,
+        executor
+    );
   }
 
   public <D extends Query.Data> ApolloCall<D> query(@NotNull Query<D> operation) {
@@ -87,21 +98,9 @@ public class ApolloClient {
 
   public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback) {
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
-
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
-    interceptors.add(new NetworkInterceptor(
-        callFactory,
-        webSocketFactory,
-        serverUrl,
-        webSocketServerUrl,
-        customScalarAdapters,
-        wsProtocolFactory,
-        wsHeaders,
-        executor
-    ));
-
+    interceptors.add(networkInterceptor);
     executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
-
     return disposable;
   }
 
