@@ -3,6 +3,8 @@ package test;
 import com.apollographql.apollo.sample.server.DefaultApplication;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.exception.ApolloException;
+import com.apollographql.apollo3.exception.ApolloNetworkException;
+import com.apollographql.apollo3.exception.SubscriptionOperationException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
@@ -10,6 +12,7 @@ import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.CountSubscription;
+import javatest.OperationErrorSubscription;
 import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -19,6 +22,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -39,7 +43,7 @@ public class WebSocketTest {
   }
 
   @Test
-  public void simple() throws InterruptedException {
+  public void simple() throws Exception {
     ApolloClient apolloClient = new ApolloClient.Builder()
         .serverUrl("http://localhost:8080/subscriptions")
         .build();
@@ -87,7 +91,7 @@ public class WebSocketTest {
   }
 
   @Test
-  public void interleavedSubscriptions() throws InterruptedException {
+  public void interleavedSubscriptions() throws Exception {
     ApolloClient apolloClient = new ApolloClient.Builder()
         .serverUrl("http://localhost:8080/subscriptions")
         .build();
@@ -117,8 +121,62 @@ public class WebSocketTest {
         throw e;
       }
     }).addListener(latch::countDown);
-    ;
 
     latch.await(30, TimeUnit.SECONDS);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void operationError() throws Exception {
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/subscriptions")
+        .build();
+
+    ApolloException[] failure = {null};
+    CountDownLatch latch = new CountDownLatch(1);
+    apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
+      @Override
+      public void onResponse(@NotNull ApolloResponse<OperationErrorSubscription.Data> response) {
+        throw new AssertionError("Should not be called");
+      }
+
+      @Override
+      public void onFailure(@NotNull ApolloException e) {
+        failure[0] = e;
+        latch.countDown();
+      }
+    });
+
+    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(failure[0]).isInstanceOf(SubscriptionOperationException.class);
+    SubscriptionOperationException exception = (SubscriptionOperationException) failure[0];
+    Map<String, Object> payload = (Map<String, Object>) exception.getPayload();
+    List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
+    Truth.assertThat(errors.get(0).get("message")).isEqualTo("Woops");
+  }
+
+  @Test
+  public void connectError() throws Exception {
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://nonexistant")
+        .build();
+
+    ApolloException[] failure = {null};
+    CountDownLatch latch = new CountDownLatch(1);
+    apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
+      @Override
+      public void onResponse(@NotNull ApolloResponse<OperationErrorSubscription.Data> response) {
+        throw new AssertionError("Should not be called");
+      }
+
+      @Override
+      public void onFailure(@NotNull ApolloException e) {
+        failure[0] = e;
+        latch.countDown();
+      }
+    });
+
+    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
   }
 }

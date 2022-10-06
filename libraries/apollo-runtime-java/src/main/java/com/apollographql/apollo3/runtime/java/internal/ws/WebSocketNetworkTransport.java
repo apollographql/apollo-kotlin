@@ -28,6 +28,7 @@ public class WebSocketNetworkTransport {
   private List<HttpHeader> headers;
   private Executor executor;
 
+  // TODO make this synchronized
   private Map<String, SubscriptionInfo> activeSubscriptions = new HashMap<>();
   private WsProtocol wsProtocol;
 
@@ -46,40 +47,43 @@ public class WebSocketNetworkTransport {
   }
 
   public <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
-    SubscriptionInfo<D> subscriptionInfo = new SubscriptionInfo<>(request, callback, disposable);
-    activeSubscriptions.put(request.getRequestUuid().toString(), subscriptionInfo);
-    // TODO use disposable
-    subscribe(request);
-  }
-
-  private <D extends Operation.Data> void subscribe(ApolloRequest<D> request) {
-    ensureWsProtocolRunning();
-    wsProtocol.startOperation(request);
-  }
-
-  private void ensureWsProtocolRunning() {
-    if (wsProtocol == null) {
-      WebSocketConnection webSocket = openWebSocket();
-      if (webSocket == null) {
-        // TODO
-      } else {
-        initWsProtocol(webSocket);
+    SubscriptionInfo subscriptionInfo = new SubscriptionInfo(request, callback, disposable);
+    String id = request.getRequestUuid().toString();
+    activeSubscriptions.put(id, subscriptionInfo);
+    disposable.addListener(() -> {
+      if (activeSubscriptions.containsKey(id)) {
+        // Caller has cancelled the subscription by calling ApolloDisposable.dispose()
+        if (wsProtocol != null) wsProtocol.stopOperation(request);
+        disposeSubscription(id);
       }
-      executor.execute(() -> wsProtocol.run());
+    });
+    if (ensureWsProtocolRunning()) {
+      wsProtocol.startOperation(request);
     }
   }
 
-  private WebSocketConnection openWebSocket() {
+  private boolean ensureWsProtocolRunning() {
+    if (wsProtocol == null) {
+      WebSocketConnection webSocket;
+      try {
+        webSocket = openWebSocket();
+      } catch (Throwable e) {
+        listener.networkError(e);
+        return false;
+      }
+      initWsProtocol(webSocket);
+      executor.execute(() -> wsProtocol.run());
+    }
+    return true;
+  }
+
+  private WebSocketConnection openWebSocket() throws Throwable {
     List<HttpHeader> headers = new ArrayList<>(this.headers);
     if (headers.stream().noneMatch(it -> it.getName().equals("Sec-WebSocket-Protocol"))) {
       headers.add(new HttpHeader("Sec-WebSocket-Protocol", wsProtocolFactory.getName()));
     }
     WebSocketConnection webSocketConnection = new WebSocketConnection(webSocketFactory, serverUrl, headers);
-    boolean openSuccess = webSocketConnection.open();
-    if (!openSuccess) {
-      // TODO
-      return null;
-    }
+    webSocketConnection.open();
     return webSocketConnection;
   }
 
@@ -89,24 +93,24 @@ public class WebSocketNetworkTransport {
   }
 
   private void stopWsProtocolIfNoMoreSubscriptions() {
-    if (activeSubscriptions.isEmpty()) {
+    // TODO do this after a configurable idle timeout
+    if (activeSubscriptions.isEmpty() && wsProtocol != null) {
       wsProtocol.close();
       wsProtocol = null;
     }
   }
 
   private void disposeSubscription(String id) {
-    SubscriptionInfo<?> subscriptionInfo = activeSubscriptions.get(id);
+    SubscriptionInfo subscriptionInfo = activeSubscriptions.get(id);
     if (subscriptionInfo == null) return;
-    subscriptionInfo.disposable.dispose();
     activeSubscriptions.remove(id);
+    subscriptionInfo.disposable.dispose();
     stopWsProtocolIfNoMoreSubscriptions();
   }
 
   private final WsProtocol.Listener listener = new WsProtocol.Listener() {
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override public void operationResponse(String id, Map<String, Object> payload) {
-      SubscriptionInfo<?> subscriptionInfo = activeSubscriptions.get(id);
+      SubscriptionInfo subscriptionInfo = activeSubscriptions.get(id);
       if (subscriptionInfo == null) return;
       ApolloRequest<?> request = subscriptionInfo.request;
       CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
@@ -115,11 +119,12 @@ public class WebSocketNetworkTransport {
           .newBuilder()
           .requestUuid(request.getRequestUuid())
           .build();
+      //noinspection unchecked
       subscriptionInfo.callback.onResponse(apolloResponse);
     }
 
     @Override public void operationError(String id, Map<String, Object> payload) {
-      SubscriptionInfo<?> subscriptionInfo = activeSubscriptions.get(id);
+      SubscriptionInfo subscriptionInfo = activeSubscriptions.get(id);
       if (subscriptionInfo == null) return;
       subscriptionInfo.callback.onFailure(new SubscriptionOperationException(subscriptionInfo.request.getOperation().name(), payload));
       disposeSubscription(id);
@@ -138,22 +143,23 @@ public class WebSocketNetworkTransport {
 
     @Override public void networkError(Throwable cause) {
       ApolloNetworkException networkException = new ApolloNetworkException("Network error", cause);
-      for (SubscriptionInfo<?> subscriptionInfo : activeSubscriptions.values()) {
+      List<SubscriptionInfo> activeSubscriptionList = new ArrayList<>(activeSubscriptions.values());
+      activeSubscriptions.clear();
+      for (SubscriptionInfo subscriptionInfo : activeSubscriptionList) {
         subscriptionInfo.callback.onFailure(networkException);
         subscriptionInfo.disposable.dispose();
       }
-      activeSubscriptions.clear();
       stopWsProtocolIfNoMoreSubscriptions();
     }
   };
 
 
-  private static class SubscriptionInfo<D extends Operation.Data> {
-    private ApolloRequest<D> request;
-    private ApolloCallback<D> callback;
+  private static class SubscriptionInfo {
+    private ApolloRequest<?> request;
+    private ApolloCallback<?> callback;
     private ApolloDisposable disposable;
 
-    public SubscriptionInfo(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
+    public SubscriptionInfo(@NotNull ApolloRequest<?> request, @NotNull ApolloCallback<?> callback, ApolloDisposable disposable) {
       this.request = request;
       this.callback = callback;
       this.disposable = disposable;

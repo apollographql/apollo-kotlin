@@ -38,12 +38,13 @@ public class WebSocketConnection {
     this.headers = headers;
   }
 
-  public boolean open() {
+  public void open() throws Throwable {
     CountDownLatch openLatch = new CountDownLatch(1);
     Request request = new Request.Builder()
         .url(serverUrl)
         .headers(toOkHttpHeaders(headers))
         .build();
+    final Throwable[] onFailureThrowable = {null};
     webSocket = webSocketFactory.newWebSocket(request, new WebSocketListener() {
       @Override public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
         if (DEBUG) System.out.println("onOpen");
@@ -65,6 +66,7 @@ public class WebSocketConnection {
         if (DEBUG) System.out.println("onFailure: " + t.getMessage());
         isWebSocketOpen = false;
         messageQueue.add(MESSAGE_CLOSED);
+        onFailureThrowable[0] = t;
         openLatch.countDown();
       }
 
@@ -87,7 +89,9 @@ public class WebSocketConnection {
       openLatch.await(OPEN_TIMEOUT_MS, TimeUnit.MILLISECONDS);
     } catch (InterruptedException ignored) {
     }
-    return isWebSocketOpen;
+    if (onFailureThrowable[0] != null) {
+      throw onFailureThrowable[0];
+    }
   }
 
   public boolean isOpen() {

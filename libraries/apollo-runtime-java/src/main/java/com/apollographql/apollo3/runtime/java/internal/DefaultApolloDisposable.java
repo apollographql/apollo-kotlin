@@ -27,11 +27,11 @@ public class DefaultApolloDisposable implements ApolloDisposable {
   }
 
   @Override public void dispose() {
+    isDisposed.set(true);
     synchronized (listeners) {
       listeners.forEach(listener -> {
         listener.onDisposed();
       });
     }
-    isDisposed.set(true);
   }
 }
