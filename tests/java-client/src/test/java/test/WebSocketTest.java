@@ -83,11 +83,12 @@ public class WebSocketTest {
         .serverUrl("http://localhost:8080/subscriptions")
         .build();
 
-    Iterable<Integer> iterable = Rx3Apollo.flowable(apolloClient.subscription(new CountSubscription(5, 100)), BackpressureStrategy.BUFFER)
+    Rx3Apollo.flowable(apolloClient.subscription(new CountSubscription(5, 100)), BackpressureStrategy.BUFFER)
         .map(response -> response.data.count)
-        .blockingIterable();
-
-    Truth.assertThat(iterable).containsExactly(0, 1, 2, 3, 4).inOrder();
+        .test()
+        .awaitDone(1, TimeUnit.SECONDS)
+        .assertValueCount(5)
+        .assertValues(0, 1, 2, 3, 4);
   }
 
   @Test
@@ -153,6 +154,25 @@ public class WebSocketTest {
     Map<String, Object> payload = (Map<String, Object>) exception.getPayload();
     List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
     Truth.assertThat(errors.get(0).get("message")).isEqualTo("Woops");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void operationErrorWithRx() throws Exception {
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/subscriptions")
+        .build();
+
+    Rx3Apollo.flowable(apolloClient.subscription(new OperationErrorSubscription()), BackpressureStrategy.BUFFER)
+        .map(response -> response)
+        .toList()
+        .test()
+        .awaitDone(1, TimeUnit.SECONDS)
+        .assertError(e -> {
+          Map<String, Object> payload = (Map<String, Object>) ((SubscriptionOperationException) e).getPayload();
+          List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
+          return errors.get(0).get("message").equals("Woops");
+        });
   }
 
   @Test
