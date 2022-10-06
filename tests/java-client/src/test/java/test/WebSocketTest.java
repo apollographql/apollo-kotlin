@@ -11,6 +11,7 @@ import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
+import javatest.CloseSocketQuery;
 import javatest.CountSubscription;
 import javatest.OperationErrorSubscription;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static test.Utils.sleep;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class WebSocketTest {
   private static ConfigurableApplicationContext context;
 
@@ -229,5 +231,50 @@ public class WebSocketTest {
     // Wait a bit to be sure we don't receive any other items after the dispose
     sleep(500);
     Truth.assertThat(items).containsExactly(0, 1, 2, 3, 4, 5).inOrder();
+  }
+
+  @Test
+  public void networkError() throws Exception {
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .build();
+
+    List<Integer> items = new ArrayList<>();
+    ApolloException[] failure = {null};
+    CountDownLatch latch = new CountDownLatch(1);
+    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+      @Override
+      public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        System.out.println("Received " + response.data.count);
+        items.add(response.data.count);
+        if (response.data.count == 5) {
+          // Provoke a network error by closing the websocket
+          apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+            }
+          });
+        }
+      }
+
+      @Override
+      public void onFailure(@NotNull ApolloException e) {
+        failure[0] = e;
+        latch.countDown();
+      }
+    });
+
+    latch.await(1, TimeUnit.SECONDS);
+    // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
+    Truth.assertThat(items).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    // But definitely not the whole list
+    Truth.assertThat(items.size()).isLessThan(50);
+    Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
+    Truth.assertThat(disposable.isDisposed()).isTrue();
   }
 }

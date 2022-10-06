@@ -73,7 +73,7 @@ public abstract class WsProtocol {
       Map<String, Object> messageMap = receiveMessageMap();
       if (messageMap == null) {
         // Connection closed
-        // TODO: should we call listener.networkError()?
+        listener.networkError(new IOException("Connection closed"));
         return;
       }
       handleServerMessage(messageMap);
