@@ -9,10 +9,8 @@ import com.apollographql.apollo3.runtime.java.ApolloCall;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +109,6 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   }
 
   @Override public ApolloCall<D> canBeBatched(@Nullable Boolean canBeBatched) {
-    throw new NotImplementedException();
+    throw new UnsupportedOperationException();
   }
 }

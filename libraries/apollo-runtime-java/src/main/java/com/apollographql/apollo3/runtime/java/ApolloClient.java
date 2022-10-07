@@ -33,7 +33,6 @@ import okhttp3.Response;
 import okio.BufferedSink;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -361,7 +360,7 @@ public class ApolloClient {
     }
 
     @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
-      throw new NotImplementedException();
+      throw new UnsupportedOperationException();
     }
 
   }
