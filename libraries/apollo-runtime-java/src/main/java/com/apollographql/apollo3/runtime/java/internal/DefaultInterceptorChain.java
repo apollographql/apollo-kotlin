@@ -15,7 +15,7 @@ public class DefaultInterceptorChain implements ApolloInterceptorChain {
   private int index;
   private DefaultApolloDisposable disposable;
 
-  DefaultInterceptorChain(
+  public DefaultInterceptorChain(
       ArrayList<ApolloInterceptor> interceptors,
       int index,
       DefaultApolloDisposable disposable
