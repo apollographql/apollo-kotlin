@@ -106,7 +106,7 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
         val protocols = protocolHeaderNames.mapNotNull { headers.getAll(it) }.flatten().toTypedArray()
         js("new ws_capturingHack(urlString_capturingHack, protocols, { headers: headers_capturingHack })")
       } else {
-        js("new WebSocket(urlString_capturingHack)")
+        js("new WebSocket(urlString_capturingHack, protocols)")
       }
 
   private suspend fun WebSocket.awaitConnection(): WebSocket = suspendCancellableCoroutine { continuation ->
