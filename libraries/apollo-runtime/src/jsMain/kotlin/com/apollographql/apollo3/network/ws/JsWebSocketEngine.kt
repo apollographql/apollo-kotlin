@@ -95,19 +95,20 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
   // Adding "_capturingHack" to reduce chances of JS IR backend to rename variable,
   // so it can be accessed inside js("") function
   @Suppress("UNUSED_PARAMETER", "UnsafeCastFromDynamic", "UNUSED_VARIABLE", "LocalVariableName")
-  private fun createWebSocket(urlString_capturingHack: String, headers: Headers): WebSocket =
-      val protocolHeaderNames = headers.names().filter { it.equals("sec-websocket-protocol", true) }
-      val protocols = protocolHeaderNames.mapNotNull { headers.getAll(it) }.flatten().toTypedArray()
-      if (PlatformUtils.IS_NODE) {
-        val ws_capturingHack = js("eval('require')('ws')")
-        val headers_capturingHack: dynamic = object {}
-        headers.forEach { name, values ->
-          headers_capturingHack[name] = values.joinToString(",")
-        }
-        js("new ws_capturingHack(urlString_capturingHack, protocols, { headers: headers_capturingHack })")
-      } else {
-        js("new WebSocket(urlString_capturingHack, protocols)")
+  private fun createWebSocket(urlString_capturingHack: String, headers: Headers): WebSocket {
+    val protocolHeaderNames = headers.names().filter { it.equals("sec-websocket-protocol", true) }
+    val protocols = protocolHeaderNames.mapNotNull { headers.getAll(it) }.flatten().toTypedArray()
+    return if (PlatformUtils.IS_NODE) {
+      val ws_capturingHack = js("eval('require')('ws')")
+      val headers_capturingHack: dynamic = object {}
+      headers.forEach { name, values ->
+        headers_capturingHack[name] = values.joinToString(",")
       }
+      js("new ws_capturingHack(urlString_capturingHack, protocols, { headers: headers_capturingHack })")
+    } else {
+      js("new WebSocket(urlString_capturingHack, protocols)")
+    }
+  }
 
   private suspend fun WebSocket.awaitConnection(): WebSocket = suspendCancellableCoroutine { continuation ->
     if (continuation.isCancelled) return@suspendCancellableCoroutine
