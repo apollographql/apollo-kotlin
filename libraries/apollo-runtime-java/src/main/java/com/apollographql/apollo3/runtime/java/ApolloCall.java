@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.runtime.java;
 
+import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import org.jetbrains.annotations.NotNull;
 
-public interface ApolloCall<D extends Operation.Data> {
+public interface ApolloCall<D extends Operation.Data> extends MutableExecutionOptions<ApolloCall<D>> {
   /**
    * Schedules the request to be executed at some point in the future.
    *

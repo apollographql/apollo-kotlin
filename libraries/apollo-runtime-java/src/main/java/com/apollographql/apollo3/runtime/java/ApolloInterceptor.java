@@ -1,8 +1,7 @@
-package com.apollographql.apollo3.runtime.java.interceptor;
+package com.apollographql.apollo3.runtime.java;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import org.jetbrains.annotations.NotNull;
 
 /**

@@ -5,6 +5,8 @@ import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo3.api.ExecutionContext;
+import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Operations;
@@ -18,9 +20,10 @@ import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.ApolloParseException;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo3.runtime.java.internal.AutoPersistedQueryInterceptor;
+import com.apollographql.apollo3.runtime.java.internal.DefaultApolloCall;
+import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
+import com.apollographql.apollo3.runtime.java.internal.DefaultInterceptorChain;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -161,12 +164,19 @@ public class ApolloClient {
   }
 
 
-  public static class Builder {
+  public static class Builder implements MutableExecutionOptions<Builder> {
     private String serverUrl;
     private Call.Factory callFactory;
     private Executor executor;
     private List<ApolloInterceptor> interceptors = new ArrayList<>();
-    private CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
+    private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
+    private ExecutionContext executionContext;
+    private HttpMethod httpMethod;
+    private final ArrayList<HttpHeader> httpHeaders = new ArrayList<>();
+    private Boolean sendApqExtensions;
+    private Boolean sendDocument;
+    private Boolean enableAutoPersistedQueries;
+    private Boolean canBeBatched;
 
     public Builder() {
     }
@@ -251,6 +261,108 @@ public class ApolloClient {
 
       return new ApolloClient(serverUrl, callFactory, executor, interceptors, customScalarAdaptersBuilder.build());
     }
+
+    public Builder autoPersistedQueries() {
+      return autoPersistedQueries(HttpMethod.Get, HttpMethod.Post, true);
+    }
+
+    public Builder autoPersistedQueries(
+        HttpMethod httpMethodForHashedQueries
+    ) {
+      return autoPersistedQueries(httpMethodForHashedQueries, HttpMethod.Post, true);
+    }
+
+    public Builder autoPersistedQueries(
+        HttpMethod httpMethodForHashedQueries,
+        HttpMethod httpMethodForDocumentQueries
+    ) {
+      return autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, true);
+    }
+
+    public Builder autoPersistedQueries(
+        HttpMethod httpMethodForHashedQueries,
+        HttpMethod httpMethodForDocumentQueries,
+        boolean enableByDefault
+    ) {
+      addInterceptor(
+          new AutoPersistedQueryInterceptor(
+              httpMethodForHashedQueries,
+              httpMethodForDocumentQueries
+          )
+      );
+      enableAutoPersistedQueries(enableByDefault);
+
+      return this;
+    }
+
+    @NotNull @Override public ExecutionContext getExecutionContext() {
+      return executionContext;
+    }
+
+    @Nullable @Override public HttpMethod getHttpMethod() {
+      return httpMethod;
+    }
+
+    @Nullable @Override public List<HttpHeader> getHttpHeaders() {
+      return httpHeaders;
+    }
+
+    @Nullable @Override public Boolean getSendApqExtensions() {
+      return sendApqExtensions;
+    }
+
+    @Nullable @Override public Boolean getSendDocument() {
+      return sendDocument;
+    }
+
+    @Nullable @Override public Boolean getEnableAutoPersistedQueries() {
+      return enableAutoPersistedQueries;
+    }
+
+    @Nullable @Override public Boolean getCanBeBatched() {
+      return canBeBatched;
+    }
+
+    @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {
+      this.executionContext = this.executionContext.plus(executionContext);
+      return this;
+    }
+
+    @Override public Builder httpMethod(@Nullable HttpMethod httpMethod) {
+      this.httpMethod = httpMethod;
+      return this;
+    }
+
+    @Override public Builder httpHeaders(@Nullable List<HttpHeader> list) {
+      this.httpHeaders.clear();
+      this.httpHeaders.addAll(list);
+      return this;
+    }
+
+    @Override public Builder addHttpHeader(@NotNull String name, @NotNull String value) {
+      this.httpHeaders.add(new HttpHeader(name, value));
+      return this;
+    }
+
+    @Override public Builder sendApqExtensions(@Nullable Boolean sendApqExtensions) {
+      this.sendApqExtensions = sendApqExtensions;
+      return this;
+    }
+
+    @Override public Builder sendDocument(@Nullable Boolean sendDocument) {
+      this.sendDocument = sendDocument;
+      return this;
+    }
+
+    @Override public Builder enableAutoPersistedQueries(@Nullable Boolean enableAutoPersistedQueries) {
+      this.enableAutoPersistedQueries = enableAutoPersistedQueries;
+      return this;
+    }
+
+    @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
+      throw new UnsupportedOperationException();
+    }
+
   }
 
   static private Executor defaultExecutor() {
