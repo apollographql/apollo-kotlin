@@ -8,7 +8,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.SubscriptionOperationException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
+import com.apollographql.apollo3.runtime.java.ApolloDisposable;
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.core.BackpressureStrategy;

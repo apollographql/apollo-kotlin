@@ -11,8 +11,8 @@ import com.apollographql.apollo3.api.json.MapJsonReader;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.SubscriptionOperationException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
+import com.apollographql.apollo3.runtime.java.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.NetworkTransport;
-import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import okhttp3.WebSocket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,14 +36,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
   private Map<String, SubscriptionInfo> activeSubscriptions = Collections.synchronizedMap(new HashMap<>());
   private AtomicReference<WsProtocol> wsProtocol = new AtomicReference<>();
 
-  public WebSocketNetworkTransport(
-      WebSocket.Factory webSocketFactory,
-      WsProtocol.Factory wsProtocolFactory,
-      String serverUrl,
-      List<HttpHeader> headers,
-      ReopenWhen reopenWhen,
-      Executor executor
-  ) {
+  public WebSocketNetworkTransport(WebSocket.Factory webSocketFactory, WsProtocol.Factory wsProtocolFactory, String serverUrl, List<HttpHeader> headers, ReopenWhen reopenWhen, Executor executor) {
     this.webSocketFactory = webSocketFactory;
     this.serverUrl = serverUrl;
     this.wsProtocolFactory = wsProtocolFactory;
@@ -52,8 +45,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
     this.executor = executor;
   }
 
-  @Override
-  public <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
+  @Override public <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
     SubscriptionInfo subscriptionInfo = new SubscriptionInfo(request, callback, disposable);
     String id = request.getRequestUuid().toString();
     activeSubscriptions.put(id, subscriptionInfo);
@@ -69,8 +61,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
     if (runningWsProtocol != null) runningWsProtocol.startOperation(request);
   }
 
-  @Nullable
-  private WsProtocol ensureWsProtocolRunning() {
+  @Nullable private WsProtocol ensureWsProtocolRunning() {
     synchronized (this) {
       WsProtocol curWsProtocol = wsProtocol.get();
       if (curWsProtocol == null) {
@@ -126,10 +117,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
       ApolloRequest<?> request = subscriptionInfo.request;
       CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
       JsonReader jsonReader = new MapJsonReader(payload);
-      ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters)
-          .newBuilder()
-          .requestUuid(request.getRequestUuid())
-          .build();
+      ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters).newBuilder().requestUuid(request.getRequestUuid()).build();
       //noinspection unchecked
       subscriptionInfo.callback.onResponse(apolloResponse);
     }
