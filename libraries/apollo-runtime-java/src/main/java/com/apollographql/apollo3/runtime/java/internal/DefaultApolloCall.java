@@ -18,7 +18,7 @@ import java.util.List;
 public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D> {
   private final ApolloClient apolloClient;
   private final Operation<D> operation;
-  private ExecutionContext executionContext;
+  private ExecutionContext executionContext = ExecutionContext.Empty;
   private HttpMethod httpMethod;
   private final ArrayList<HttpHeader> httpHeaders = new ArrayList<>();
   private Boolean sendApqExtensions;
