@@ -2,6 +2,7 @@ package test;
 
 import com.apollographql.apollo.sample.server.DefaultApplication;
 import com.apollographql.apollo3.api.ApolloResponse;
+import com.apollographql.apollo3.api.ImmutableMapBuilder;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.SubscriptionOperationException;
@@ -29,8 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.entry;
-import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.mapOf;
 import static test.Utils.sleep;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -345,7 +344,7 @@ public class WebSocketTest {
   public void reopenWhenKillServer() throws Exception {
     // Create a specific server for this test, because we want to kill it
     SpringApplication app = new SpringApplication(DefaultApplication.class);
-    app.setDefaultProperties(mapOf(entry("server.port", "8081")));
+    app.setDefaultProperties(new ImmutableMapBuilder<String, Object>().put("server.port", "8081").build());
     context = app.run();
 
     AtomicBoolean hasReopenOccurred = new AtomicBoolean(false);

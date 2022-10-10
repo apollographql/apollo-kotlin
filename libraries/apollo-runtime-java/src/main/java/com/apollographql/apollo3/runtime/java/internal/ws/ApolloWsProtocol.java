@@ -1,15 +1,13 @@
 package com.apollographql.apollo3.runtime.java.internal.ws;
 
 import com.apollographql.apollo3.api.ApolloRequest;
+import com.apollographql.apollo3.api.ImmutableMapBuilder;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.entry;
-import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.mapOf;
 
 public class ApolloWsProtocol extends WsProtocol {
   private Supplier<Map<String, Object>> connectionPayload;
@@ -27,7 +25,7 @@ public class ApolloWsProtocol extends WsProtocol {
   }
 
   @Override void connectionInit() {
-    Map<String, Object> message = mapOf(entry("type", "connection_init"));
+    Map<String, Object> message = new ImmutableMapBuilder<String, Object>().put("type", "connection_init").build();
     Map<String, Object> payload = connectionPayload.get();
     if (payload != null) {
       message.put("payload", payload);
@@ -71,21 +69,21 @@ public class ApolloWsProtocol extends WsProtocol {
 
   @Override <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
     sendMessageMap(
-        mapOf(
-            entry("type", "start"),
-            entry("id", request.getRequestUuid().toString()),
-            entry("payload", DefaultHttpRequestComposer.Companion.composePayload(request))
-        ),
+        new ImmutableMapBuilder<String, Object>()
+            .put("type", "start")
+            .put("id", request.getRequestUuid().toString())
+            .put("payload", DefaultHttpRequestComposer.Companion.composePayload(request))
+            .build(),
         frameType
     );
   }
 
   @Override <D extends Operation.Data> void stopOperation(ApolloRequest<D> request) {
     sendMessageMap(
-        mapOf(
-            entry("type", "stop"),
-            entry("id", request.getRequestUuid().toString())
-        ),
+        new ImmutableMapBuilder<String, Object>()
+            .put("type", "stop")
+            .put("id", request.getRequestUuid().toString())
+            .build(),
         frameType
     );
   }

@@ -14,6 +14,7 @@ import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.ApolloParseException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
+import com.apollographql.apollo3.runtime.java.NetworkTransport;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -27,17 +28,16 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class HttpNetworkTransport {
+public class HttpNetworkTransport implements NetworkTransport {
   private Call.Factory callFactory;
   private HttpRequestComposer requestComposer;
-  private CustomScalarAdapters customScalarAdapters;
 
-  public HttpNetworkTransport(Call.Factory callFactory, HttpRequestComposer httpRequestComposer, CustomScalarAdapters customScalarAdapters) {
+  public HttpNetworkTransport(Call.Factory callFactory, HttpRequestComposer httpRequestComposer) {
     this.callFactory = callFactory;
     this.requestComposer = httpRequestComposer;
-    this.customScalarAdapters = customScalarAdapters;
   }
 
+  @Override
   public <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
     HttpRequest httpRequest = requestComposer.compose(request);
     Request.Builder builder = new Request.Builder()
@@ -86,6 +86,7 @@ public class HttpNetworkTransport {
       } else {
         BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.body().source());
         try {
+          CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
           ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters);
           callback.onResponse(apolloResponse);
         } catch (Exception e) {

@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 import com.apollographql.apollo3.api.http.HttpHeader;
-import com.apollographql.apollo3.api.http.HttpRequestComposer;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
@@ -41,50 +40,24 @@ import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
 public class ApolloClient {
-  private String serverUrl;
-  private String webSocketServerUrl;
-  private Call.Factory callFactory;
-  private WebSocket.Factory webSocketFactory;
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
   private CustomScalarAdapters customScalarAdapters;
-  private WsProtocol.Factory wsProtocolFactory;
-  private List<HttpHeader> wsHeaders;
   private NetworkInterceptor networkInterceptor;
-  private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
 
   private ApolloClient(
-      String serverUrl,
-      String webSocketServerUrl,
-      Call.Factory callFactory,
-      WebSocket.Factory webSocketFactory,
       Executor executor,
+      NetworkTransport httpNetworkTransport,
+      NetworkTransport subscriptionNetworkTransport,
       List<ApolloInterceptor> interceptors,
-      CustomScalarAdapters customScalarAdapters,
-      WsProtocol.Factory wsProtocolFactory,
-      List<HttpHeader> wsHeaders,
-      WebSocketNetworkTransport.ReopenWhen wsReopenWhen
+      CustomScalarAdapters customScalarAdapters
   ) {
-    this.serverUrl = serverUrl;
-    this.webSocketServerUrl = webSocketServerUrl;
-    this.callFactory = callFactory;
-    this.webSocketFactory = webSocketFactory;
     this.executor = executor;
     this.interceptors = interceptors;
     this.customScalarAdapters = customScalarAdapters;
-    this.wsProtocolFactory = wsProtocolFactory;
-    this.wsHeaders = wsHeaders;
-    this.wsReopenWhen = wsReopenWhen;
     networkInterceptor = new NetworkInterceptor(
-        callFactory,
-        webSocketFactory,
-        serverUrl,
-        webSocketServerUrl,
-        customScalarAdapters,
-        wsProtocolFactory,
-        wsHeaders,
-        wsReopenWhen,
-        executor
+        httpNetworkTransport,
+        subscriptionNetworkTransport
     );
   }
 
@@ -109,23 +82,12 @@ public class ApolloClient {
   }
 
   private static class NetworkInterceptor implements ApolloInterceptor {
-    private HttpNetworkTransport httpNetworkTransport;
-    private WebSocketNetworkTransport webSocketNetworkTransport;
+    private NetworkTransport httpNetworkTransport;
+    private NetworkTransport subscriptionNetworkTransport;
 
-    private NetworkInterceptor(
-        Call.Factory callFactory,
-        WebSocket.Factory webSocketFactory,
-        String serverUrl,
-        String webSocketServerUrl,
-        CustomScalarAdapters customScalarAdapters,
-        WsProtocol.Factory wsProtocolFactory,
-        List<HttpHeader> wsHeaders,
-        WebSocketNetworkTransport.ReopenWhen wsReopenWhen,
-        Executor executor
-    ) {
-      HttpRequestComposer httpRequestComposer = new DefaultHttpRequestComposer(serverUrl);
-      httpNetworkTransport = new HttpNetworkTransport(callFactory, httpRequestComposer, customScalarAdapters);
-      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, webSocketServerUrl, wsHeaders, wsReopenWhen, executor);
+    private NetworkInterceptor(NetworkTransport httpNetworkTransport, NetworkTransport subscriptionNetworkTransport) {
+      this.httpNetworkTransport = httpNetworkTransport;
+      this.subscriptionNetworkTransport = subscriptionNetworkTransport;
     }
 
     @Override
@@ -133,7 +95,7 @@ public class ApolloClient {
       if (request.getOperation() instanceof Query || request.getOperation() instanceof Mutation) {
         httpNetworkTransport.execute(request, callback, chain.getDisposable());
       } else {
-        webSocketNetworkTransport.execute(request, callback, chain.getDisposable());
+        subscriptionNetworkTransport.execute(request, callback, chain.getDisposable());
       }
     }
   }
@@ -144,7 +106,9 @@ public class ApolloClient {
 
 
   public static class Builder implements MutableExecutionOptions<Builder> {
-    private String serverUrl;
+    private NetworkTransport networkTransport;
+    private NetworkTransport subscriptionNetworkTransport;
+    private String httpServerUrl;
     private String webSocketServerUrl;
     private Call.Factory callFactory;
     private WebSocket.Factory webSocketFactory;
@@ -166,11 +130,27 @@ public class ApolloClient {
     public Builder() {
     }
 
+    /**
+     * The url of the GraphQL server used for HTTP. This is the same as {@link #httpServerUrl(String)}. See also
+     * {@link #networkTransport(NetworkTransport)} for more customization
+     */
     public Builder serverUrl(@NotNull String serverUrl) {
-      this.serverUrl = checkNotNull(serverUrl, "serverUrl is null");
+      this.httpServerUrl = checkNotNull(serverUrl, "serverUrl is null");
       return this;
     }
 
+    /**
+     * The url of the GraphQL server used for HTTP. See also {@link #networkTransport(NetworkTransport)} for more customization
+     */
+    public Builder httpServerUrl(@NotNull String httpServerUrl) {
+      this.httpServerUrl = checkNotNull(httpServerUrl, "httpServerUrl is null");
+      return this;
+    }
+
+    /**
+     * The url of the GraphQL server used for WebSockets. See also {@link #subscriptionNetworkTransport(NetworkTransport)} for more
+     * customization
+     */
     public Builder webSocketServerUrl(@NotNull String webSocketServerUrl) {
       this.webSocketServerUrl = checkNotNull(webSocketServerUrl, "webSocketServerUrl is null");
       return this;
@@ -274,45 +254,69 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder networkTransport(@NotNull NetworkTransport networkTransport) {
+      this.networkTransport = checkNotNull(networkTransport, "networkTransport is null");
+      return this;
+    }
+
+    public Builder subscriptionNetworkTransport(@NotNull NetworkTransport subscriptionNetworkTransport) {
+      this.subscriptionNetworkTransport = checkNotNull(subscriptionNetworkTransport, "subscriptionNetworkTransport is null");
+      return this;
+    }
+
     public ApolloClient build() {
-      checkNotNull(serverUrl, "serverUrl is missing");
-
-      if (webSocketServerUrl == null) {
-        webSocketServerUrl = serverUrl;
-      }
-
-      if (callFactory == null) {
-        callFactory = new OkHttpClient();
-      }
-
-      if (webSocketFactory == null) {
-        webSocketFactory = callFactory instanceof OkHttpClient ? (OkHttpClient) callFactory : new OkHttpClient();
-      }
-
       if (executor == null) {
         executor = defaultExecutor();
       }
 
-      if (wsProtocolFactory == null) {
-        // TODO change the default to GraphQLWsProtocol.Factory
-        wsProtocolFactory = new ApolloWsProtocol.Factory();
+      NetworkTransport networkTransport;
+      if (this.networkTransport != null) {
+        if (httpServerUrl != null) throw new IllegalStateException("Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set");
+        if (callFactory != null) throw new IllegalStateException("Apollo: 'callFactory' has no effect if 'networkTransport' is set");
+        networkTransport = this.networkTransport;
+      } else {
+        checkNotNull(httpServerUrl, "serverUrl is missing");
+        if (callFactory == null) {
+          callFactory = new OkHttpClient();
+        }
+        networkTransport = new HttpNetworkTransport(callFactory, new DefaultHttpRequestComposer(httpServerUrl));
       }
 
-      if (wsReopenWhen == null) {
-        wsReopenWhen = (throwable, attempt) -> false;
+      NetworkTransport subscriptionNetworkTransport;
+      if (this.subscriptionNetworkTransport != null) {
+        if (webSocketServerUrl != null)
+          throw new IllegalStateException("Apollo: 'webSocketServerUrl' has no effect if 'subscriptionNetworkTransport' is set");
+        if (webSocketFactory != null)
+          throw new IllegalStateException("Apollo: 'webSocketFactory' has no effect if 'subscriptionNetworkTransport' is set");
+        if (wsProtocolFactory != null)
+          throw new IllegalStateException("Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set");
+        if (wsHeaders != null)
+          throw new IllegalStateException("Apollo: 'wsHeaders' has no effect if 'subscriptionNetworkTransport' is set");
+        subscriptionNetworkTransport = this.subscriptionNetworkTransport;
+      } else {
+        if (webSocketServerUrl == null) {
+          webSocketServerUrl = httpServerUrl;
+        }
+        checkNotNull(webSocketServerUrl, "webSocketServerUrl is missing");
+        if (webSocketFactory == null) {
+          webSocketFactory = callFactory instanceof OkHttpClient ? (OkHttpClient) callFactory : new OkHttpClient();
+        }
+        if (wsProtocolFactory == null) {
+          // TODO change the default to GraphQLWsProtocol.Factory
+          wsProtocolFactory = new ApolloWsProtocol.Factory();
+        }
+        if (wsReopenWhen == null) {
+          wsReopenWhen = (throwable, attempt) -> false;
+        }
+        subscriptionNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, webSocketServerUrl, wsHeaders, wsReopenWhen, executor);
       }
 
       return new ApolloClient(
-          serverUrl,
-          webSocketServerUrl,
-          callFactory,
-          webSocketFactory,
           executor,
+          networkTransport,
+          subscriptionNetworkTransport,
           interceptors,
-          customScalarAdaptersBuilder.build(),
-          wsProtocolFactory,
-          wsHeaders,
-          wsReopenWhen
+          customScalarAdaptersBuilder.build()
       );
     }
 

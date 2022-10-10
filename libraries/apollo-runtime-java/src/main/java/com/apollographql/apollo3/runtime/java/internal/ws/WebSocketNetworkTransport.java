@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.SubscriptionOperationException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
+import com.apollographql.apollo3.runtime.java.NetworkTransport;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloDisposable;
 import okhttp3.WebSocket;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class WebSocketNetworkTransport {
+public class WebSocketNetworkTransport implements NetworkTransport {
   private WebSocket.Factory webSocketFactory;
   private String serverUrl;
   private WsProtocol.Factory wsProtocolFactory;
@@ -51,6 +52,7 @@ public class WebSocketNetworkTransport {
     this.executor = executor;
   }
 
+  @Override
   public <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
     SubscriptionInfo subscriptionInfo = new SubscriptionInfo(request, callback, disposable);
     String id = request.getRequestUuid().toString();
