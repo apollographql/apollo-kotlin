@@ -112,6 +112,7 @@ public class ApolloClient {
     private WsProtocol.Factory wsProtocolFactory;
     private List<HttpHeader> wsHeaders = new ArrayList<>();
     private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
+    private Long wsIdleTimeoutMillis;
     private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
     private ExecutionContext executionContext;
     private HttpMethod httpMethod;
@@ -248,6 +249,11 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder wsIdleTimeoutMillis(long wsIdleTimeoutMillis) {
+      this.wsIdleTimeoutMillis = wsIdleTimeoutMillis;
+      return this;
+    }
+
     public Builder networkTransport(@NotNull NetworkTransport networkTransport) {
       this.networkTransport = checkNotNull(networkTransport, "networkTransport is null");
       return this;
@@ -286,6 +292,8 @@ public class ApolloClient {
           throw new IllegalStateException("Apollo: 'wsProtocolFactory' has no effect if 'subscriptionNetworkTransport' is set");
         if (wsHeaders != null)
           throw new IllegalStateException("Apollo: 'wsHeaders' has no effect if 'subscriptionNetworkTransport' is set");
+        if (wsIdleTimeoutMillis != null)
+          throw new IllegalStateException("Apollo: 'wsIdleTimeoutMillis' has no effect if 'subscriptionNetworkTransport' is set");
         subscriptionNetworkTransport = this.subscriptionNetworkTransport;
       } else {
         if (webSocketServerUrl == null) {
@@ -302,7 +310,18 @@ public class ApolloClient {
         if (wsReopenWhen == null) {
           wsReopenWhen = (throwable, attempt) -> false;
         }
-        subscriptionNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, webSocketServerUrl, wsHeaders, wsReopenWhen, executor);
+        if (wsIdleTimeoutMillis == null) {
+          wsIdleTimeoutMillis = 60_000L;
+        }
+        subscriptionNetworkTransport = new WebSocketNetworkTransport(
+            webSocketFactory,
+            wsProtocolFactory,
+            webSocketServerUrl,
+            wsHeaders,
+            wsReopenWhen,
+            executor,
+            wsIdleTimeoutMillis
+        );
       }
 
       return new ApolloClient(

@@ -32,17 +32,27 @@ public class WebSocketNetworkTransport implements NetworkTransport {
   private List<HttpHeader> headers;
   private ReopenWhen reopenWhen;
   private Executor executor;
+  private long idleTimeoutMillis;
 
   private Map<String, SubscriptionInfo> activeSubscriptions = Collections.synchronizedMap(new HashMap<>());
   private AtomicReference<WsProtocol> wsProtocol = new AtomicReference<>();
 
-  public WebSocketNetworkTransport(WebSocket.Factory webSocketFactory, WsProtocol.Factory wsProtocolFactory, String serverUrl, List<HttpHeader> headers, ReopenWhen reopenWhen, Executor executor) {
+  public WebSocketNetworkTransport(
+      WebSocket.Factory webSocketFactory,
+      WsProtocol.Factory wsProtocolFactory,
+      String serverUrl,
+      List<HttpHeader> headers,
+      ReopenWhen reopenWhen,
+      Executor executor,
+      long idleTimeoutMillis
+  ) {
     this.webSocketFactory = webSocketFactory;
     this.serverUrl = serverUrl;
     this.wsProtocolFactory = wsProtocolFactory;
     this.headers = headers;
     this.reopenWhen = reopenWhen;
     this.executor = executor;
+    this.idleTimeoutMillis = idleTimeoutMillis;
   }
 
   @Override public <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable) {
@@ -93,8 +103,17 @@ public class WebSocketNetworkTransport implements NetworkTransport {
     return webSocketConnection;
   }
 
+  private void scheduleStopWsProtocolIfNoMoreSubscriptions() {
+    executor.execute(() -> {
+      try {
+        Thread.sleep(idleTimeoutMillis);
+      } catch (InterruptedException ignored) {
+      }
+      stopWsProtocolIfNoMoreSubscriptions();
+    });
+  }
+
   private void stopWsProtocolIfNoMoreSubscriptions() {
-    // TODO do this after a configurable idle timeout
     WsProtocol curWsProtocol = wsProtocol.get();
     if (activeSubscriptions.isEmpty() && curWsProtocol != null) {
       curWsProtocol.close();
@@ -107,7 +126,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
     if (subscriptionInfo == null) return;
     activeSubscriptions.remove(id);
     subscriptionInfo.disposable.dispose();
-    stopWsProtocolIfNoMoreSubscriptions();
+    scheduleStopWsProtocolIfNoMoreSubscriptions();
   }
 
   private final WsProtocol.Listener listener = new WsProtocol.Listener() {

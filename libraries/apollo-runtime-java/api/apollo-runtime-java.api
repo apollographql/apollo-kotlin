@@ -62,6 +62,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun webSocketFactory (Lokhttp3/WebSocket$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun webSocketServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun wsHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun wsIdleTimeoutMillis (J)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun wsProtocolFactory (Lcom/apollographql/apollo3/runtime/java/internal/ws/WsProtocol$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun wsReopenWhen (Lcom/apollographql/apollo3/runtime/java/internal/ws/WebSocketNetworkTransport$ReopenWhen;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 }
