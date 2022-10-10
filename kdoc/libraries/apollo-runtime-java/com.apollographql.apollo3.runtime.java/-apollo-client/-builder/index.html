@@ -45,10 +45,10 @@ if(savedDarkMode === true){
   <div class="breadcrumbs"><a href="../../../index.html">apollo-runtime-java</a><span class="delimiter">/</span><a href="../../index.html">com.apollographql.apollo3.runtime.java</a><span class="delimiter">/</span><a href="../index.html">ApolloClient</a><span class="delimiter">/</span><a href="index.html">Builder</a></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Builder</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">Builder</a> : <a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-mutable-execution-options/index.html">T</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
     <div class="tabs-section-body">
       <h2 class="tabbedcontent">Constructors</h2>
       <div class="table" data-togglable="Constructors"><a data-name="1218679070%2FConstructors%2F-542104698" anchor-label="Builder" id="1218679070%2FConstructors%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
@@ -78,37 +78,82 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="add-custom-scalar-adapter.html">T</a><span class="token operator">&gt; </span><a href="add-custom-scalar-adapter.html"><span class="token function">addCustomScalarAdapter</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>customScalarType<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-custom-scalar-type/index.html">CustomScalarType</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>customScalarAdapter<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-adapter/index.html">Adapter</a><span class="token operator">&lt;</span><a href="add-custom-scalar-adapter.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Registers the given customScalarAdapter.</div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="add-custom-scalar-adapter.html">T</a><span class="token operator">&gt; </span><a href="add-custom-scalar-adapter.html"><span class="token function">addCustomScalarAdapter</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>customScalarType<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-custom-scalar-type/index.html">CustomScalarType</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>customScalarAdapter<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-adapter/index.html">Adapter</a><span class="token operator">&lt;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-mutable-execution-options/index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief ">Registers the given customScalarAdapter.</div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="555562011%2FFunctions%2F-542104698" anchor-label="addInterceptor" id="555562011%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+<a data-name="1027587883%2FFunctions%2F-542104698" anchor-label="addExecutionContext" id="1027587883%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="add-execution-context.html"><span>add</span><wbr><span>Execution</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1027587883%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add-execution-context.html"><span class="token function">addExecutionContext</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>executionContext<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-execution-context/index.html">ExecutionContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1497555204%2FFunctions%2F-542104698" anchor-label="addHttpHeader" id="-1497555204%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="add-http-header.html"><span>add</span><wbr><span>Http</span><wbr><span><span>Header</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1497555204%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add-http-header.html"><span class="token function">addHttpHeader</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>name<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>value<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2128239858%2FFunctions%2F-542104698" anchor-label="addInterceptor" id="2128239858%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
                 <div><a href="add-interceptor.html"><span>add</span><wbr><span><span>Interceptor</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="555562011%2FFunctions%2F-542104698"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2128239858%2FFunctions%2F-542104698"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add-interceptor.html"><span class="token function">addInterceptor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>interceptor<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../../com.apollographql.apollo3.runtime.java.interceptor/-apollo-interceptor/index.html">ApolloInterceptor</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add-interceptor.html"><span class="token function">addInterceptor</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>interceptor<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="../../-apollo-interceptor/index.html">ApolloInterceptor</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="415314988%2FFunctions%2F-542104698" anchor-label="addInterceptors" id="415314988%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+<a data-name="1002119861%2FFunctions%2F-542104698" anchor-label="addInterceptors" id="1002119861%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
                 <div><a href="add-interceptors.html"><span>add</span><wbr><span><span>Interceptors</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="415314988%2FFunctions%2F-542104698"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1002119861%2FFunctions%2F-542104698"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add-interceptors.html"><span class="token function">addInterceptors</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>interceptors<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../../../com.apollographql.apollo3.runtime.java.interceptor/-apollo-interceptor/index.html">ApolloInterceptor</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="add-interceptors.html"><span class="token function">addInterceptors</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>interceptors<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../../-apollo-interceptor/index.html">ApolloInterceptor</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1845476629%2FFunctions%2F-542104698" anchor-label="autoPersistedQueries" id="1845476629%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="auto-persisted-queries.html"><span>auto</span><wbr><span>Persisted</span><wbr><span><span>Queries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1845476629%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="auto-persisted-queries.html"><span class="token function">autoPersistedQueries</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="auto-persisted-queries.html"><span class="token function">autoPersistedQueries</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpMethodForHashedQueries<span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="auto-persisted-queries.html"><span class="token function">autoPersistedQueries</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">httpMethodForHashedQueries<span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token punctuation">, </span></span><span class="parameter ">httpMethodForDocumentQueries<span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="auto-persisted-queries.html"><span class="token function">autoPersistedQueries</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;httpMethodForHashedQueries<span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;httpMethodForDocumentQueries<span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;enableByDefault<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>
@@ -143,6 +188,21 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
+<a data-name="551140531%2FFunctions%2F-542104698" anchor-label="canBeBatched" id="551140531%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="can-be-batched.html"><span>can</span><wbr><span>Be</span><wbr><span><span>Batched</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="551140531%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="can-be-batched.html"><span class="token function">canBeBatched</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span>canBeBatched<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
 <a data-name="994423872%2FFunctions%2F-542104698" anchor-label="customScalarAdapters" id="994423872%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -173,17 +233,167 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
-<a data-name="-1748220331%2FFunctions%2F-542104698" anchor-label="interceptors" id="-1748220331%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+<a data-name="1320490930%2FFunctions%2F-542104698" anchor-label="enableAutoPersistedQueries" id="1320490930%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="interceptors.html"><span><span>interceptors</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1748220331%2FFunctions%2F-542104698"></span>
+                <div><a href="enable-auto-persisted-queries.html"><span>enable</span><wbr><span>Auto</span><wbr><span>Persisted</span><wbr><span><span>Queries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1320490930%2FFunctions%2F-542104698"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="interceptors.html"><span class="token function">interceptors</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>interceptors<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../../../com.apollographql.apollo3.runtime.java.interceptor/-apollo-interceptor/index.html">ApolloInterceptor</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="enable-auto-persisted-queries.html"><span class="token function">enableAutoPersistedQueries</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span>enableAutoPersistedQueries<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1579598582%2FFunctions%2F-542104698" anchor-label="getCanBeBatched" id="-1579598582%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-1579598582%2FFunctions%2F-542104698"><span>get</span><wbr><span>Can</span><wbr><span>Be</span><wbr><span><span>Batched</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1579598582%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-1579598582%2FFunctions%2F-542104698"><span class="token function">getCanBeBatched</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1723640299%2FFunctions%2F-542104698" anchor-label="getEnableAutoPersistedQueries" id="1723640299%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#1723640299%2FFunctions%2F-542104698"><span>get</span><wbr><span>Enable</span><wbr><span>Auto</span><wbr><span>Persisted</span><wbr><span><span>Queries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1723640299%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#1723640299%2FFunctions%2F-542104698"><span class="token function">getEnableAutoPersistedQueries</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-2055929127%2FFunctions%2F-542104698" anchor-label="getExecutionContext" id="-2055929127%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-2055929127%2FFunctions%2F-542104698"><span>get</span><wbr><span>Execution</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2055929127%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-2055929127%2FFunctions%2F-542104698"><span class="token function">getExecutionContext</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-execution-context/index.html">ExecutionContext</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-255120359%2FFunctions%2F-542104698" anchor-label="getHttpHeaders" id="-255120359%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-http-headers.html"><span>get</span><wbr><span>Http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-255120359%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-http-headers.html"><span class="token function">getHttpHeaders</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-header/index.html">HttpHeader</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="487716167%2FFunctions%2F-542104698" anchor-label="getHttpMethod" id="487716167%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#487716167%2FFunctions%2F-542104698"><span>get</span><wbr><span>Http</span><wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="487716167%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#487716167%2FFunctions%2F-542104698"><span class="token function">getHttpMethod</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="53950972%2FFunctions%2F-542104698" anchor-label="getSendApqExtensions" id="53950972%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#53950972%2FFunctions%2F-542104698"><span>get</span><wbr><span>Send</span><wbr><span>Apq</span><wbr><span><span>Extensions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="53950972%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#53950972%2FFunctions%2F-542104698"><span class="token function">getSendApqExtensions</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1714406259%2FFunctions%2F-542104698" anchor-label="getSendDocument" id="-1714406259%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-1714406259%2FFunctions%2F-542104698"><span>get</span><wbr><span>Send</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1714406259%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-1714406259%2FFunctions%2F-542104698"><span class="token function">getSendDocument</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-879003513%2FFunctions%2F-542104698" anchor-label="httpHeaders" id="-879003513%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="http-headers.html"><span>http</span><wbr><span><span>Headers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-879003513%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="http-headers.html"><span class="token function">httpHeaders</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span>list<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-header/index.html">HttpHeader</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1793175110%2FFunctions%2F-542104698" anchor-label="httpMethod" id="-1793175110%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="http-method.html"><span>http</span><wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1793175110%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="http-method.html"><span class="token function">httpMethod</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span>httpMethod<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="477719134%2FFunctions%2F-542104698" anchor-label="interceptors" id="477719134%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="interceptors.html"><span><span>interceptors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="477719134%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="interceptors.html"><span class="token function">interceptors</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>interceptors<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a><span class="token operator">&lt;</span><a href="../../-apollo-interceptor/index.html">ApolloInterceptor</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>
@@ -203,6 +413,36 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
+<a data-name="1703152835%2FFunctions%2F-542104698" anchor-label="sendApqExtensions" id="1703152835%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="send-apq-extensions.html"><span>send</span><wbr><span>Apq</span><wbr><span><span>Extensions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1703152835%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="send-apq-extensions.html"><span class="token function">sendApqExtensions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span>sendApqExtensions<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="981947280%2FFunctions%2F-542104698" anchor-label="sendDocument" id="981947280%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="send-document.html"><span>send</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="981947280%2FFunctions%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="send-document.html"><span class="token function">sendDocument</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span>sendDocument<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
 <a data-name="-946700408%2FFunctions%2F-542104698" anchor-label="serverUrl" id="-946700408%2FFunctions%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -214,6 +454,128 @@ if(savedDarkMode === true){
             <div>
               <div class="title">
                 <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="server-url.html"><span class="token function">serverUrl</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span>serverUrl<span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ApolloClient.Builder</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-91357944%2FProperties%2F-542104698" anchor-label="CAN_BE_BATCHED" id="-91357944%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-91357944%2FProperties%2F-542104698"><span><span>CAN_BE_BATCHED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-91357944%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="-91357944%2FProperties%2F-542104698" anchor-label="CAN_BE_BATCHED" id="-91357944%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-91357944%2FProperties%2F-542104698">CAN_BE_BATCHED</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1902985691%2FProperties%2F-542104698" anchor-label="canBeBatched" id="1902985691%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="can-be-batched.html"><span>can</span><wbr><span>Be</span><wbr><span><span>Batched</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1902985691%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="1902985691%2FProperties%2F-542104698" anchor-label="canBeBatched" id="1902985691%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="can-be-batched.html">canBeBatched</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1241699590%2FProperties%2F-542104698" anchor-label="Companion" id="-1241699590%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-1241699590%2FProperties%2F-542104698"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1241699590%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="-1241699590%2FProperties%2F-542104698" anchor-label="Companion" id="-1241699590%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../../com.apollographql.apollo3.runtime.java.internal/-default-apollo-call/index.html#-1241699590%2FProperties%2F-542104698">Companion</a><span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-execution-options/-companion/index.html">ExecutionOptions.Companion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="756772092%2FProperties%2F-542104698" anchor-label="enableAutoPersistedQueries" id="756772092%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="enable-auto-persisted-queries.html"><span>enable</span><wbr><span>Auto</span><wbr><span>Persisted</span><wbr><span><span>Queries</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="756772092%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="756772092%2FProperties%2F-542104698" anchor-label="enableAutoPersistedQueries" id="756772092%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="enable-auto-persisted-queries.html">enableAutoPersistedQueries</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1360513238%2FProperties%2F-542104698" anchor-label="executionContext" id="-1360513238%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="execution-context.html"><span>execution</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1360513238%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="-1360513238%2FProperties%2F-542104698" anchor-label="executionContext" id="-1360513238%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="execution-context.html">executionContext</a><span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api/-execution-context/index.html">ExecutionContext</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-657261992%2FProperties%2F-542104698" anchor-label="httpMethod" id="-657261992%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="http-method.html"><span>http</span><wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-657261992%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="-657261992%2FProperties%2F-542104698" anchor-label="httpMethod" id="-657261992%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="http-method.html">httpMethod</a><span class="token operator">: </span><a href="../../../../../libraries/apollo-api/com.apollographql.apollo3.api.http/-http-method/index.html">HttpMethod</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="137007051%2FProperties%2F-542104698" anchor-label="sendApqExtensions" id="137007051%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="send-apq-extensions.html"><span>send</span><wbr><span>Apq</span><wbr><span><span>Extensions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="137007051%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="137007051%2FProperties%2F-542104698" anchor-label="sendApqExtensions" id="137007051%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="send-apq-extensions.html">sendApqExtensions</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1768178014%2FProperties%2F-542104698" anchor-label="sendDocument" id="1768178014%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":libraries:apollo-runtime-java:dokkaHtmlPartial/main" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="send-document.html"><span>send</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1768178014%2FProperties%2F-542104698"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"><a data-name="1768178014%2FProperties%2F-542104698" anchor-label="sendDocument" id="1768178014%2FProperties%2F-542104698" data-filterable-set=":libraries:apollo-runtime-java:dokkaHtmlPartial/main"></a><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@get:</span><span data-unresolved-link="org.jetbrains.annotations/Nullable///PointingToDeclaration/"><span class="token annotation">Nullable</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="send-document.html">sendDocument</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Boolean.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>

@@ -83,7 +83,7 @@ com.apollographql.apollo3.network.http
 com.apollographql.apollo3.network.ws
 module:apollo-runtime-java
 com.apollographql.apollo3.runtime.java
-com.apollographql.apollo3.runtime.java.interceptor
+com.apollographql.apollo3.runtime.java.internal
 module:apollo-rx2-support
 com.apollographql.apollo3.rx2
 module:apollo-rx2-support-java
