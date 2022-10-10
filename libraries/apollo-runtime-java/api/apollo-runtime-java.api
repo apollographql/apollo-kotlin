@@ -1,5 +1,5 @@
-public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCall {
-	public abstract fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCall : com/apollographql/apollo3/api/MutableExecutionOptions {
+	public abstract fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
 }
 
 public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCallback {
@@ -8,55 +8,116 @@ public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCal
 }
 
 public class com/apollographql/apollo3/runtime/java/ApolloClient {
-	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
+	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
 	public fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
 	public fun query (Lcom/apollographql/apollo3/api/Query;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
 }
 
-public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder {
+public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/apollographql/apollo3/api/MutableExecutionOptions {
 	public fun <init> ()V
 	public fun addCustomScalarAdapter (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
+	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun autoPersistedQueries ()Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;Z)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun build ()Lcom/apollographql/apollo3/runtime/java/ApolloClient;
 	public fun callFactory (Lokhttp3/Call$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun customScalarAdapters (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun dispatcher (Ljava/util/concurrent/Executor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun getCanBeBatched ()Ljava/lang/Boolean;
+	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
+	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun getHttpHeaders ()Ljava/util/List;
+	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public fun getSendApqExtensions ()Ljava/lang/Boolean;
+	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
+	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 }
 
-public class com/apollographql/apollo3/runtime/java/DefaultApolloCall : com/apollographql/apollo3/runtime/java/ApolloCall {
-	public fun <init> (Lcom/apollographql/apollo3/runtime/java/ApolloClient;Lcom/apollographql/apollo3/api/Operation;)V
-	public fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
-}
-
-public class com/apollographql/apollo3/runtime/java/DefaultApolloDisposable : com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable {
-	public fun <init> ()V
-	public fun addListener (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable$Listener;)V
-	public fun dispose ()V
-	public fun isDisposed ()Z
-	public fun removeListener (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable$Listener;)V
-}
-
-public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable {
-	public abstract fun addListener (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable$Listener;)V
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloDisposable {
+	public abstract fun addListener (Lcom/apollographql/apollo3/runtime/java/ApolloDisposable$Listener;)V
 	public abstract fun dispose ()V
 	public abstract fun isDisposed ()Z
-	public abstract fun removeListener (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable$Listener;)V
+	public abstract fun removeListener (Lcom/apollographql/apollo3/runtime/java/ApolloDisposable$Listener;)V
 }
 
-public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable$Listener {
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloDisposable$Listener {
 	public abstract fun onDisposed ()V
 }
 
-public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor {
-	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptorChain;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloInterceptor {
+	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloInterceptorChain;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
 }
 
-public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptorChain {
-	public abstract fun getDisposable ()Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloDisposable;
+public abstract interface class com/apollographql/apollo3/runtime/java/ApolloInterceptorChain {
+	public abstract fun getDisposable ()Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
 	public abstract fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/internal/AutoPersistedQueryInterceptor : com/apollographql/apollo3/runtime/java/ApolloInterceptor {
+	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)V
+	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloInterceptorChain;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/internal/DefaultApolloCall : com/apollographql/apollo3/runtime/java/ApolloCall {
+	public fun <init> (Lcom/apollographql/apollo3/runtime/java/ApolloClient;Lcom/apollographql/apollo3/api/Operation;)V
+	public fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
+	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
+	public fun canBeBatched (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun canBeBatched (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun enableAutoPersistedQueries (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun enqueue (Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
+	public fun getCanBeBatched ()Ljava/lang/Boolean;
+	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
+	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
+	public fun getHttpHeaders ()Ljava/util/List;
+	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+	public fun getSendApqExtensions ()Ljava/lang/Boolean;
+	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
+	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
+	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
+	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+}
+
+public class com/apollographql/apollo3/runtime/java/internal/DefaultApolloDisposable : com/apollographql/apollo3/runtime/java/ApolloDisposable {
+	public fun <init> ()V
+	public fun addListener (Lcom/apollographql/apollo3/runtime/java/ApolloDisposable$Listener;)V
+	public fun dispose ()V
+	public fun isDisposed ()Z
+	public fun removeListener (Lcom/apollographql/apollo3/runtime/java/ApolloDisposable$Listener;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/internal/DefaultInterceptorChain : com/apollographql/apollo3/runtime/java/ApolloInterceptorChain {
+	public fun <init> (Ljava/util/ArrayList;ILcom/apollographql/apollo3/runtime/java/internal/DefaultApolloDisposable;)V
+	public fun getDisposable ()Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
+	public fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
 }
 
