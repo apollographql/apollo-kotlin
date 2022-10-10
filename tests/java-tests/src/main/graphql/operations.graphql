@@ -2,10 +2,6 @@ query GetRandom {
   random
 }
 
-mutation Ping {
-  ping
-}
-
 query GetScalars {
   languageCode
   json

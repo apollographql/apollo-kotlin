@@ -1,17 +1,17 @@
 package test;
 
-import com.apollographql.apollo3.ApolloClient;
+import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.api.http.HttpMethod;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
-import com.apollographql.apollo3.rx2.Rx2Apollo;
+import com.apollographql.apollo3.rx3.java.Rx3Apollo;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.GetRandomQuery;
 import javatest.PingMutation;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
-import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Assert;
@@ -59,7 +59,7 @@ public class AutoPersistedQueriesTest {
         .autoPersistedQueries()
         .build();
 
-    Rx2Apollo.flowable(apolloClient.query(new GetRandomQuery())).blockingFirst();
+    Rx3Apollo.flowable(apolloClient.query(new GetRandomQuery()), BackpressureStrategy.BUFFER).blockingFirst();
     MockRequest request = mockServer.takeRequest();
 
     Assert.assertFalse(request.getBody().utf8().contains("query"));
@@ -79,8 +79,10 @@ public class AutoPersistedQueriesTest {
         .autoPersistedQueries()
         .build();
 
-    Rx2Apollo.flowable(apolloClient.query(new GetRandomQuery())
-        .enableAutoPersistedQueries(false)
+    Rx3Apollo.flowable(apolloClient.query(
+                new GetRandomQuery())
+            .enableAutoPersistedQueries(false),
+        BackpressureStrategy.BUFFER
     ).blockingFirst();
 
     MockRequest request = mockServer.takeRequest();
@@ -109,7 +111,7 @@ public class AutoPersistedQueriesTest {
         .autoPersistedQueries()
         .build();
 
-    Rx2Apollo.flowable(apolloClient.query(new GetRandomQuery())).blockingFirst();
+    Rx3Apollo.flowable(apolloClient.query(new GetRandomQuery()), BackpressureStrategy.BUFFER).blockingFirst();
 
     MockRequest request = mockServer.takeRequest();
     Assert.assertFalse(request.getBody().utf8().contains("query"));
@@ -136,7 +138,7 @@ public class AutoPersistedQueriesTest {
         .autoPersistedQueries(HttpMethod.Get, HttpMethod.Get)
         .build();
 
-    Rx2Apollo.flowable(apolloClient.mutation(new PingMutation())).blockingFirst();
+    Rx3Apollo.flowable(apolloClient.mutation(new PingMutation()), BackpressureStrategy.BUFFER).blockingFirst();
 
     MockRequest request = mockServer.takeRequest();
     Assert.assertTrue(request.getMethod().toLowerCase(Locale.ROOT).equals("post"));
