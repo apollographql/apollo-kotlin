@@ -29,6 +29,7 @@ public class WebSocketNetworkTransport {
   private String serverUrl;
   private WsProtocol.Factory wsProtocolFactory;
   private List<HttpHeader> headers;
+  private ReopenWhen reopenWhen;
   private Executor executor;
 
   private Map<String, SubscriptionInfo> activeSubscriptions = Collections.synchronizedMap(new HashMap<>());
@@ -39,12 +40,14 @@ public class WebSocketNetworkTransport {
       WsProtocol.Factory wsProtocolFactory,
       String serverUrl,
       List<HttpHeader> headers,
+      ReopenWhen reopenWhen,
       Executor executor
   ) {
     this.webSocketFactory = webSocketFactory;
     this.serverUrl = serverUrl;
     this.wsProtocolFactory = wsProtocolFactory;
     this.headers = headers;
+    this.reopenWhen = reopenWhen;
     this.executor = executor;
   }
 
@@ -147,15 +150,33 @@ public class WebSocketNetworkTransport {
       System.out.println("Received general error: " + payload);
     }
 
+    private int reopenAttempt = -1;
+
+
     @Override public void networkError(Throwable cause) {
-      ApolloNetworkException networkException = new ApolloNetworkException("Network error", cause);
-      List<SubscriptionInfo> activeSubscriptionList = new ArrayList<>(activeSubscriptions.values());
-      activeSubscriptions.clear();
-      for (SubscriptionInfo subscriptionInfo : activeSubscriptionList) {
-        subscriptionInfo.callback.onFailure(networkException);
-        subscriptionInfo.disposable.dispose();
+      wsProtocol.set(null);
+      reopenAttempt++;
+      if (reopenWhen.reopenWhen(cause, reopenAttempt)) {
+        WsProtocol runningWsProtocol = ensureWsProtocolRunning();
+        if (runningWsProtocol != null) {
+          reopenAttempt = -1;
+          // Re-subscribe to all active subscriptions
+          List<SubscriptionInfo> activeSubscriptionList = new ArrayList<>(activeSubscriptions.values());
+          for (SubscriptionInfo subscriptionInfo : activeSubscriptionList) {
+            runningWsProtocol.startOperation(subscriptionInfo.request);
+          }
+        }
+      } else {
+        reopenAttempt = -1;
+        ApolloNetworkException networkException = new ApolloNetworkException("Network error", cause);
+        List<SubscriptionInfo> activeSubscriptionList = new ArrayList<>(activeSubscriptions.values());
+        activeSubscriptions.clear();
+        for (SubscriptionInfo subscriptionInfo : activeSubscriptionList) {
+          subscriptionInfo.callback.onFailure(networkException);
+          subscriptionInfo.disposable.dispose();
+        }
+        stopWsProtocolIfNoMoreSubscriptions();
       }
-      stopWsProtocolIfNoMoreSubscriptions();
     }
   };
 
@@ -170,5 +191,9 @@ public class WebSocketNetworkTransport {
       this.callback = callback;
       this.disposable = disposable;
     }
+  }
+
+  public interface ReopenWhen {
+    boolean reopenWhen(Throwable throwable, long attempt);
   }
 }

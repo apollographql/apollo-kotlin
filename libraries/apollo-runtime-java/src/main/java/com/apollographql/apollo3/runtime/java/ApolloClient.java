@@ -51,6 +51,7 @@ public class ApolloClient {
   private WsProtocol.Factory wsProtocolFactory;
   private List<HttpHeader> wsHeaders;
   private NetworkInterceptor networkInterceptor;
+  private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
 
   private ApolloClient(
       String serverUrl,
@@ -61,7 +62,8 @@ public class ApolloClient {
       List<ApolloInterceptor> interceptors,
       CustomScalarAdapters customScalarAdapters,
       WsProtocol.Factory wsProtocolFactory,
-      List<HttpHeader> wsHeaders
+      List<HttpHeader> wsHeaders,
+      WebSocketNetworkTransport.ReopenWhen wsReopenWhen
   ) {
     this.serverUrl = serverUrl;
     this.webSocketServerUrl = webSocketServerUrl;
@@ -72,6 +74,7 @@ public class ApolloClient {
     this.customScalarAdapters = customScalarAdapters;
     this.wsProtocolFactory = wsProtocolFactory;
     this.wsHeaders = wsHeaders;
+    this.wsReopenWhen = wsReopenWhen;
     networkInterceptor = new NetworkInterceptor(
         callFactory,
         webSocketFactory,
@@ -80,6 +83,7 @@ public class ApolloClient {
         customScalarAdapters,
         wsProtocolFactory,
         wsHeaders,
+        wsReopenWhen,
         executor
     );
   }
@@ -116,11 +120,12 @@ public class ApolloClient {
         CustomScalarAdapters customScalarAdapters,
         WsProtocol.Factory wsProtocolFactory,
         List<HttpHeader> wsHeaders,
+        WebSocketNetworkTransport.ReopenWhen wsReopenWhen,
         Executor executor
     ) {
       HttpRequestComposer httpRequestComposer = new DefaultHttpRequestComposer(serverUrl);
       httpNetworkTransport = new HttpNetworkTransport(callFactory, httpRequestComposer, customScalarAdapters);
-      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, webSocketServerUrl, wsHeaders, executor);
+      webSocketNetworkTransport = new WebSocketNetworkTransport(webSocketFactory, wsProtocolFactory, webSocketServerUrl, wsHeaders, wsReopenWhen, executor);
     }
 
     @Override
@@ -148,6 +153,7 @@ public class ApolloClient {
     private CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
     private WsProtocol.Factory wsProtocolFactory;
     private List<HttpHeader> wsHeaders = new ArrayList<>();
+    private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
     private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
     private ExecutionContext executionContext;
     private HttpMethod httpMethod;
@@ -263,6 +269,11 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder wsReopenWhen(@NotNull WebSocketNetworkTransport.ReopenWhen reopenWhen) {
+      this.wsReopenWhen = checkNotNull(reopenWhen, "reopenWhen is null");
+      return this;
+    }
+
     public ApolloClient build() {
       checkNotNull(serverUrl, "serverUrl is missing");
 
@@ -287,6 +298,10 @@ public class ApolloClient {
         wsProtocolFactory = new ApolloWsProtocol.Factory();
       }
 
+      if (wsReopenWhen == null) {
+        wsReopenWhen = (throwable, attempt) -> false;
+      }
+
       return new ApolloClient(
           serverUrl,
           webSocketServerUrl,
@@ -296,7 +311,8 @@ public class ApolloClient {
           interceptors,
           customScalarAdaptersBuilder.build(),
           wsProtocolFactory,
-          wsHeaders
+          wsHeaders,
+          wsReopenWhen
       );
     }
 

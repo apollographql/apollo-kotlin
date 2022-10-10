@@ -27,7 +27,10 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
+import static com.apollographql.apollo3.runtime.java.internal.MapUtils.entry;
+import static com.apollographql.apollo3.runtime.java.internal.MapUtils.mapOf;
 import static test.Utils.sleep;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -246,7 +249,6 @@ public class WebSocketTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        System.out.println("Received " + response.data.count);
         items.add(response.data.count);
         if (response.data.count == 5) {
           // Provoke a network error by closing the websocket
@@ -277,4 +279,116 @@ public class WebSocketTest {
     Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
     Truth.assertThat(disposable.isDisposed()).isTrue();
   }
+
+  @Test
+  public void reopenWhenCloseWebSocket() throws Exception {
+    AtomicBoolean hasReopenOccurred = new AtomicBoolean(false);
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://localhost:8080/graphql")
+        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .wsReopenWhen((throwable, attempt) -> {
+          boolean shouldReopen = !hasReopenOccurred.get();
+          hasReopenOccurred.set(true);
+          return shouldReopen;
+        })
+        .build();
+
+    List<Integer> itemsBeforeReopen = new ArrayList<>();
+    List<Integer> itemsAfterReopen = new ArrayList<>();
+    ApolloException[] failure = {null};
+    CountDownLatch latch = new CountDownLatch(1);
+    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+      @Override
+      public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        if (hasReopenOccurred.get()) {
+          itemsAfterReopen.add(response.data.count);
+        } else {
+          itemsBeforeReopen.add(response.data.count);
+        }
+        if (response.data.count == 5) {
+          // Provoke a network error by closing the websocket
+          apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+            @Override
+            public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+            }
+
+            @Override
+            public void onFailure(@NotNull ApolloException e) {
+            }
+          });
+        }
+      }
+
+      @Override
+      public void onFailure(@NotNull ApolloException e) {
+        failure[0] = e;
+        latch.countDown();
+      }
+    });
+
+    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(hasReopenOccurred.get()).isTrue();
+    // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
+    Truth.assertThat(itemsBeforeReopen).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    // But definitely not the whole list
+    Truth.assertThat(itemsBeforeReopen.size()).isLessThan(50);
+
+    // reopen re-subscribed the subscription, so we should received the items again
+    Truth.assertThat(itemsAfterReopen).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    Truth.assertThat(itemsAfterReopen.size()).isLessThan(50);
+
+    Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
+    Truth.assertThat(disposable.isDisposed()).isTrue();
+  }
+
+  @Test
+  public void reopenWhenKillServer() throws Exception {
+    // Create a specific server for this test, because we want to kill it
+    SpringApplication app = new SpringApplication(DefaultApplication.class);
+    app.setDefaultProperties(mapOf(entry("server.port", "8081")));
+    context = app.run();
+
+    AtomicBoolean hasReopenOccurred = new AtomicBoolean(false);
+    AtomicLong reopenAttempt = new AtomicLong(0);
+    ApolloClient apolloClient = new ApolloClient.Builder()
+        .serverUrl("http://localhost:8081/subscriptions")
+        .wsReopenWhen((throwable, attempt) -> {
+          reopenAttempt.set(attempt);
+          boolean shouldReopen = !hasReopenOccurred.get();
+          hasReopenOccurred.set(true);
+          return shouldReopen;
+        })
+        .build();
+
+    List<Integer> itemsBeforeReopen = new ArrayList<>();
+    ApolloException[] failure = {null};
+    CountDownLatch latch = new CountDownLatch(1);
+    ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 200)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+      @Override
+      public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+        itemsBeforeReopen.add(response.data.count);
+        if (response.data.count == 5) {
+          // Provoke a network error by stopping the whole server
+          context.close();
+        }
+      }
+
+      @Override
+      public void onFailure(@NotNull ApolloException e) {
+        failure[0] = e;
+        latch.countDown();
+      }
+    });
+
+    latch.await(30, TimeUnit.SECONDS);
+    Truth.assertThat(hasReopenOccurred.get()).isTrue();
+    // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
+    Truth.assertThat(itemsBeforeReopen).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
+    // But definitely not the whole list
+    Truth.assertThat(itemsBeforeReopen.size()).isLessThan(50);
+
+    Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
+    Truth.assertThat(disposable.isDisposed()).isTrue();
+  }
+
 }
