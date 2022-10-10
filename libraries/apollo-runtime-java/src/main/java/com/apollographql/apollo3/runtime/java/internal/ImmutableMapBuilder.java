@@ -4,7 +4,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapUtils {
+public class ImmutableMapBuilder {
   @SafeVarargs
   public static <K, V> Map<K, V> mapOf(Map.Entry<K, V>... entries) {
     Map<K, V> map = new HashMap<>();

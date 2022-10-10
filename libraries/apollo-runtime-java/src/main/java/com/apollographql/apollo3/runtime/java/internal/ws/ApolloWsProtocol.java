@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.apollographql.apollo3.runtime.java.internal.MapUtils.entry;
-import static com.apollographql.apollo3.runtime.java.internal.MapUtils.mapOf;
+import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.entry;
+import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.mapOf;
 
 public class ApolloWsProtocol extends WsProtocol {
   private Supplier<Map<String, Object>> connectionPayload;

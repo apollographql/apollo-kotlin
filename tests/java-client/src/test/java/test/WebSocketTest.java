@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.apollographql.apollo3.runtime.java.internal.MapUtils.entry;
-import static com.apollographql.apollo3.runtime.java.internal.MapUtils.mapOf;
+import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.entry;
+import static com.apollographql.apollo3.runtime.java.internal.ImmutableMapBuilder.mapOf;
 import static test.Utils.sleep;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
