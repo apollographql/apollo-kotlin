@@ -19,6 +19,7 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
         // Since we don't use @JvmDefault anywhere, the option has no effect, but suppresses the bogus compiler error
         // See also https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-default/
         // See also https://blog.jetbrains.com/kotlin/2020/07/kotlin-1-4-m3-generating-default-methods-in-interfaces/
+        // TODO for v4, set "-Xjvm-default=all" to remove all DefaultImpls
         freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=compatibility"
       }
       apiVersion = "1.5"
