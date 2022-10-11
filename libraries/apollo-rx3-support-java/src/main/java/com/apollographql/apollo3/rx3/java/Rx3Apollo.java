@@ -9,10 +9,10 @@ import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.runtime.java.ApolloCall;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
+import io.reactivex.rxjava3.annotations.CheckReturnValue;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.annotations.CheckReturnValue;
 import io.reactivex.rxjava3.disposables.Disposable;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +35,14 @@ public class Rx3Apollo {
 
         @Override public void onFailure(@NotNull ApolloException e) {
           if (!emitter.isCancelled()) {
-            emitter.onComplete();
+            emitter.onError(e);
           }
+        }
+      });
+
+      disposable.addListener(() -> {
+        if (!emitter.isCancelled()) {
+          emitter.onComplete();
         }
       });
 
