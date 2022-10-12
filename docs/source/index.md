@@ -76,7 +76,7 @@ Add the runtime dependency:
 
 ```kotlin
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime:3.6.0")
+  implementation("com.apollographql.apollo3:apollo-runtime:3.6.2")
 }
 ```
 
@@ -172,13 +172,13 @@ repositories {
 }
 
 dependencies {
-  implementation("com.apollographql.apollo3:apollo-runtime:3.6.0")
+  implementation("com.apollographql.apollo3:apollo-runtime:3.6.2")
 
   // optional: if you want to use the normalized cache
-  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:3.6.0")
+  implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:3.6.2")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
   // and use apollo-api instead
-  implementation("com.apollographql.apollo3:apollo-api:3.6.0")
+  implementation("com.apollographql.apollo3:apollo-api:3.6.2")
 }
 ```
 
