@@ -16,6 +16,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
 import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
+import com.apollographql.apollo3.compiler.Options.Companion.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldsOnDisjointTypesMustMerge
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
@@ -235,6 +236,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val nullableFieldStyle: Property<JavaNullable>
 
+  @get:Input
+  @get:Optional
+  abstract val decapitalizeFields: Property<Boolean>
+
   @TaskAction
   fun taskAction() {
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
@@ -286,6 +291,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         }
         true
       }
+
       else -> flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
     }
     val codegenModels = when {
@@ -295,6 +301,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         }
         MODELS_OPERATION_BASED
       }
+
       else -> commonMetadata.codegenModels
     }
 
@@ -339,7 +346,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge),
         generatePrimitiveTypes = fieldsOnDisjointTypesMustMerge.getOrElse(defaultGeneratePrimitiveTypes),
-        nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle)
+        nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle),
+        decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

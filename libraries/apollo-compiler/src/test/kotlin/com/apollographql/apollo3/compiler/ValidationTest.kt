@@ -27,11 +27,17 @@ class ValidationTest(name: String, private val graphQLFile: File) {
         parseResult.issues
       } else {
         val mustMerge = graphQLFile.name != "merging_allowed.graphql"
-        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = mustMerge).issues + if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
-          checkCapitalizedFields(parseResult.value!!.definitions)
-        } else {
-          emptyList()
-        }
+        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = mustMerge).issues +
+            if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
+              checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = false)
+            } else {
+              emptyList()
+            } +
+            if (graphQLFile.name == "capitalized_fields_allowed_with_fragment_spread.graphql") {
+              checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = true)
+            } else {
+              emptyList()
+            }
       }
     } else {
       if (parseResult.issues.isNotEmpty()) {

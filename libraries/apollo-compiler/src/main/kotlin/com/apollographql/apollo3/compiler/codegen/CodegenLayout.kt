@@ -25,6 +25,7 @@ internal abstract class CodegenLayout(
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val useSchemaPackageNameForFragments: Boolean,
+    private val decapitalizeFields: Boolean,
 ) {
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
     val allTypes: List<IrSchemaType> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions)
@@ -124,7 +125,7 @@ internal abstract class CodegenLayout(
 
   // Variables are escaped to avoid a clash with the model name if they are capitalized
   internal fun variableName(name: String) = if (name == "__typename") name else regularIdentifier("_$name")
-  internal fun propertyName(name: String) = regularIdentifier(name)
+  internal fun propertyName(name: String) = regularIdentifier(name).let { if (decapitalizeFields) it.decapitalizeFirstLetter() else it }
 
   internal fun compiledSelectionsName(name: String) = regularIdentifier("__$name")
 

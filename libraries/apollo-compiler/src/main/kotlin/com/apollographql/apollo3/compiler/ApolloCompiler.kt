@@ -94,8 +94,9 @@ object ApolloCompiler {
     checkApolloReservedEnumValueNames(schema).checkNoErrors()
     checkApolloTargetNameClashes(schema).checkNoErrors()
 
-    if (!options.flattenModels) {
-      checkCapitalizedFields(definitions).checkNoErrors()
+    if (!options.decapitalizeFields) {
+      // When flattenModels is true, we still must check capitalized fields inside fragment spreads
+      checkCapitalizedFields(definitions, checkFragmentsOnly = options.flattenModels).checkNoErrors()
     }
 
     val warnings = validationResult.issues.filter {
@@ -212,8 +213,10 @@ object ApolloCompiler {
             generateModelBuilder = options.generateModelBuilder,
             generatePrimitiveTypes = options.generatePrimitiveTypes,
             nullableFieldStyle = options.nullableFieldStyle,
+            decapitalizeFields = options.decapitalizeFields,
         ).write(outputDir = outputDir)
       }
+
       else -> {
         KotlinCodeGen(
             ir = ir,
@@ -237,6 +240,7 @@ object ApolloCompiler {
             scalarMapping = options.scalarMapping,
             addJvmOverloads = options.addJvmOverloads,
             requiresOptInAnnotation = options.requiresOptInAnnotation,
+            decapitalizeFields = options.decapitalizeFields,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }

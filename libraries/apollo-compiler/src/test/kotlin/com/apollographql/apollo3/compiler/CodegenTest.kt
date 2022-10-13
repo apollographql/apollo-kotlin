@@ -314,7 +314,9 @@ class CodegenTest {
 
       val generateModelBuilder = when (folder.name) {
         "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals",
-        "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations" -> true
+        "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations",
+        -> true
+
         else -> false
       }
 
@@ -369,7 +371,9 @@ class CodegenTest {
 
       val generatePrimitiveTypes = when (folder.name) {
         "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals", "java_jetbrains_annotations",
-        "java_android_annotations", "java_jsr305_annotations" -> true
+        "java_android_annotations", "java_jsr305_annotations",
+        -> true
+
         else -> false
       }
 
@@ -382,6 +386,11 @@ class CodegenTest {
         "java_android_annotations" -> JavaNullable.ANDROID_ANNOTATIONS
         "java_jsr305_annotations" -> JavaNullable.JSR_305_ANNOTATIONS
         else -> JavaNullable.NONE
+      }
+
+      val decapitalizeFields = when (folder.name) {
+        "decapitalized_fields" -> true
+        else -> false
       }
 
       return Options(
@@ -408,6 +417,7 @@ class CodegenTest {
           addJvmOverloads = addJvmOverloads,
           generatePrimitiveTypes = generatePrimitiveTypes,
           nullableFieldStyle = nullableFieldStyle,
+          decapitalizeFields = decapitalizeFields,
       )
     }
 

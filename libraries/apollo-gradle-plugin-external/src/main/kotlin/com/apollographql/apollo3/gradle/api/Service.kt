@@ -614,6 +614,13 @@ interface Service {
   val nullableFieldStyle: Property<String>
 
   /**
+   * Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`).
+   *
+   * Default: false
+   */
+  val decapitalizeFields: Property<Boolean>
+
+  /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen
    *
    * In practice, it does the following:

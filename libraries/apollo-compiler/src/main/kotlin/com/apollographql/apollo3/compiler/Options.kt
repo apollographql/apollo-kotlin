@@ -314,6 +314,13 @@ class Options(
      * Default: `none`
      */
     val nullableFieldStyle: JavaNullable = defaultNullableFieldStyle,
+
+    /**
+     * Whether to decapitalize field names in the generated models (for instance `FooBar` -> `fooBar`).
+     *
+     * Default: false
+     */
+    val decapitalizeFields: Boolean = defaultDecapitalizeFields,
 ) {
 
   /**
@@ -376,6 +383,7 @@ class Options(
       fieldsOnDisjointTypesMustMerge: Boolean = this.fieldsOnDisjointTypesMustMerge,
       generatePrimitiveTypes: Boolean = this.generatePrimitiveTypes,
       nullableFieldStyle: JavaNullable = this.nullableFieldStyle,
+      decapitalizeFields: Boolean = this.decapitalizeFields,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -416,6 +424,7 @@ class Options(
       fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
+      decapitalizeFields = decapitalizeFields,
   )
 
   companion object {
@@ -451,6 +460,7 @@ class Options(
     const val defaultFieldsOnDisjointTypesMustMerge = true
     const val defaultGeneratePrimitiveTypes = false
     val defaultNullableFieldStyle = JavaNullable.NONE
+    const val defaultDecapitalizeFields = false
   }
 }
 

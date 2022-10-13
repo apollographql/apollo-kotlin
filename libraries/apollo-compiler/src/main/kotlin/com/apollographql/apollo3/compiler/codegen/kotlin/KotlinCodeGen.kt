@@ -7,8 +7,8 @@ import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarAdaptersBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsSealedBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
@@ -32,7 +32,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -72,6 +71,7 @@ internal class KotlinCodeGen(
     private val scalarMapping: Map<String, ScalarInfo>,
     private val addJvmOverloads: Boolean,
     private val requiresOptInAnnotation: String?,
+    private val decapitalizeFields: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -88,6 +88,7 @@ internal class KotlinCodeGen(
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
+        decapitalizeFields = decapitalizeFields,
     )
 
     val context = KotlinContext(
@@ -208,7 +209,7 @@ internal class KotlinCodeGen(
       builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
     }
 
-    if (ir.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null ) {
+    if (ir.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
       builders.add(PaginationBuilder(context, ir.connectionTypes))
     }
 
