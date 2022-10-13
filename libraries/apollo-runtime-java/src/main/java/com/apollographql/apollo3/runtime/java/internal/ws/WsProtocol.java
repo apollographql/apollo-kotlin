@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public abstract class WsProtocol {
-  private WebSocketConnection webSocketConnection;
+  protected WebSocketConnection webSocketConnection;
   protected Listener listener;
 
   public WsProtocol(WebSocketConnection webSocketConnection, Listener listener) {
@@ -53,11 +53,13 @@ public abstract class WsProtocol {
   /**
    * Receive a new WebMessage message as a `Map<String, Any?>`. Messages that aren't Json objects are ignored and the method will block
    * until the next message. Returns null if the connection is closed.
+   *
+   * @param timeoutMs the timeout in milliseconds or -1 for no timeout
    */
   @Nullable
-  protected Map<String, Object> receiveMessageMap() {
+  protected Map<String, Object> receiveMessageMap(long timeoutMs) {
     while (true) {
-      String messageJson = webSocketConnection.receive();
+      String messageJson = webSocketConnection.receive(timeoutMs);
       if (messageJson == null) {
         return null;
       }
@@ -70,7 +72,7 @@ public abstract class WsProtocol {
 
   protected void run() {
     while (true) {
-      Map<String, Object> messageMap = receiveMessageMap();
+      Map<String, Object> messageMap = receiveMessageMap(-1L);
       if (messageMap == null) {
         // Connection closed
         listener.networkError(new IOException("Connection closed"));

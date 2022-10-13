@@ -18,7 +18,7 @@ import com.apollographql.apollo3.runtime.java.internal.DefaultApolloCall;
 import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
 import com.apollographql.apollo3.runtime.java.internal.DefaultInterceptorChain;
 import com.apollographql.apollo3.runtime.java.internal.http.HttpNetworkTransport;
-import com.apollographql.apollo3.runtime.java.internal.ws.ApolloWsProtocol;
+import com.apollographql.apollo3.runtime.java.internal.ws.GraphQLWsProtocol;
 import com.apollographql.apollo3.runtime.java.internal.ws.WebSocketNetworkTransport;
 import com.apollographql.apollo3.runtime.java.internal.ws.WsProtocol;
 import okhttp3.Call;
@@ -304,8 +304,7 @@ public class ApolloClient {
           webSocketFactory = callFactory instanceof OkHttpClient ? (OkHttpClient) callFactory : new OkHttpClient();
         }
         if (wsProtocolFactory == null) {
-          // TODO change the default to GraphQLWsProtocol.Factory
-          wsProtocolFactory = new ApolloWsProtocol.Factory();
+          wsProtocolFactory = new GraphQLWsProtocol.Factory();
         }
         if (wsReopenWhen == null) {
           wsReopenWhen = (throwable, attempt) -> false;

@@ -9,6 +9,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * A {@link WsProtocol} for <a href="https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md">Apollo's GraphQL
+ * over WebSocket Protocol</a>.
+ * <p>
+ * Note: This protocol is no longer actively maintained, and {@link GraphQLWsProtocol} should be favored instead.
+ */
 public class ApolloWsProtocol extends WsProtocol {
   private Supplier<Map<String, Object>> connectionPayload;
   private WsFrameType frameType;
@@ -32,7 +38,7 @@ public class ApolloWsProtocol extends WsProtocol {
     }
     sendMessageMap(message, frameType);
 
-    Map<String, Object> map = receiveMessageMap();
+    Map<String, Object> map = receiveMessageMap(-1L);
     if (map == null) {
       // Connection closed
       listener.networkError(new IOException("Connection closed"));
