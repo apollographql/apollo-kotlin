@@ -71,24 +71,6 @@ public class AppSyncWsProtocol extends WsProtocol {
   }
 
   @Override <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
-/*
-    // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request), CustomScalarAdapters.Empty, )
-
-    sendMessageMapText(
-        mapOf(
-            "type" to "start",
-            "id" to request.requestUuid.toString(),
-            "payload" to mapOf(
-                "data" to data,
-                "extensions" to mapOf(
-                    "authorization" to authorization
-                )
-            )
-        )
-    )
-
- */
     String data = toJsonString(DefaultHttpRequestComposer.Companion.composePayload(request));
     sendMessageMapText(
         new ImmutableMapBuilder<String, Object>()
