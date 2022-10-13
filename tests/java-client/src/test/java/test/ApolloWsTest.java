@@ -9,6 +9,7 @@ import com.apollographql.apollo3.exception.SubscriptionOperationException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
+import com.apollographql.apollo3.runtime.java.internal.ws.ApolloWsProtocol;
 import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -33,7 +34,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static test.Utils.sleep;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class WebSocketTest {
+public class ApolloWsTest {
   private static ConfigurableApplicationContext context;
 
   @BeforeClass
@@ -46,12 +47,13 @@ public class WebSocketTest {
     context.close();
   }
 
+  private ApolloClient apolloClient = new ApolloClient.Builder()
+      .serverUrl("http://localhost:8080/subscriptions")
+      .wsProtocolFactory(new ApolloWsProtocol.Factory())
+      .build();
+
   @Test
   public void simple() throws Exception {
-    ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
-        .build();
-
     CountDownLatch latch = new CountDownLatch(6);
 
     List<Integer> actual = new ArrayList<>();
@@ -61,7 +63,7 @@ public class WebSocketTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(5, 100)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        actual.add(response.data.count);
+        actual.add(response.dataAssertNoErrors().count);
         latch.countDown();
       }
 
@@ -83,12 +85,8 @@ public class WebSocketTest {
 
   @Test
   public void simpleWithRx() {
-    ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
-        .build();
-
     Rx3Apollo.flowable(apolloClient.subscription(new CountSubscription(5, 100)), BackpressureStrategy.BUFFER)
-        .map(response -> response.data.count)
+        .map(response -> response.dataAssertNoErrors().count)
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertValueCount(5)
@@ -97,16 +95,12 @@ public class WebSocketTest {
 
   @Test
   public void interleavedSubscriptions() throws Exception {
-    ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
-        .build();
-
     List<Integer> items = new ArrayList<>();
     CountDownLatch latch = new CountDownLatch(2);
     apolloClient.subscription(new CountSubscription(5, 1000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.data.count * 2);
+        items.add(response.dataAssertNoErrors().count * 2);
       }
 
       @Override public void onFailure(@NotNull ApolloException e) {
@@ -119,7 +113,7 @@ public class WebSocketTest {
     apolloClient.subscription(new CountSubscription(5, 1000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.data.count * 2 + 1);
+        items.add(response.dataAssertNoErrors().count * 2 + 1);
       }
 
       @Override public void onFailure(@NotNull ApolloException e) {
@@ -128,15 +122,12 @@ public class WebSocketTest {
     }).addListener(latch::countDown);
 
     latch.await(30, TimeUnit.SECONDS);
+    Truth.assertThat(items).containsExactly(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).inOrder();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void operationError() throws Exception {
-    ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
-        .build();
-
     ApolloException[] failure = {null};
     CountDownLatch latch = new CountDownLatch(1);
     apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
@@ -163,10 +154,6 @@ public class WebSocketTest {
   @Test
   @SuppressWarnings("unchecked")
   public void operationErrorWithRx() throws Exception {
-    ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
-        .build();
-
     Rx3Apollo.flowable(apolloClient.subscription(new OperationErrorSubscription()), BackpressureStrategy.BUFFER)
         .map(response -> response)
         .toList()
@@ -206,18 +193,14 @@ public class WebSocketTest {
 
   @Test
   public void disposeStopsSubscription() throws Exception {
-    ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
-        .build();
-
     List<Integer> items = new ArrayList<>();
     CountDownLatch latch = new CountDownLatch(1);
     ApolloDisposable[] disposable = {null};
     disposable[0] = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.data.count);
-        if (response.data.count == 5) {
+        items.add(response.dataAssertNoErrors().count);
+        if (response.dataAssertNoErrors().count == 5) {
           disposable[0].dispose();
           latch.countDown();
         }
@@ -240,6 +223,7 @@ public class WebSocketTest {
     ApolloClient apolloClient = new ApolloClient.Builder()
         .serverUrl("http://localhost:8080/graphql")
         .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .wsProtocolFactory(new ApolloWsProtocol.Factory())
         .build();
 
     List<Integer> items = new ArrayList<>();
@@ -248,8 +232,8 @@ public class WebSocketTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.data.count);
-        if (response.data.count == 5) {
+        items.add(response.dataAssertNoErrors().count);
+        if (response.dataAssertNoErrors().count == 5) {
           // Provoke a network error by closing the websocket
           apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
             @Override
@@ -285,6 +269,7 @@ public class WebSocketTest {
     ApolloClient apolloClient = new ApolloClient.Builder()
         .serverUrl("http://localhost:8080/graphql")
         .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .wsProtocolFactory(new ApolloWsProtocol.Factory())
         .wsReopenWhen((throwable, attempt) -> {
           boolean shouldReopen = !hasReopenOccurred.get();
           hasReopenOccurred.set(true);
@@ -300,11 +285,11 @@ public class WebSocketTest {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
         if (hasReopenOccurred.get()) {
-          itemsAfterReopen.add(response.data.count);
+          itemsAfterReopen.add(response.dataAssertNoErrors().count);
         } else {
-          itemsBeforeReopen.add(response.data.count);
+          itemsBeforeReopen.add(response.dataAssertNoErrors().count);
         }
-        if (response.data.count == 5) {
+        if (response.dataAssertNoErrors().count == 5) {
           // Provoke a network error by closing the websocket
           apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
             @Override
@@ -351,6 +336,7 @@ public class WebSocketTest {
     AtomicLong reopenAttempt = new AtomicLong(0);
     ApolloClient apolloClient = new ApolloClient.Builder()
         .serverUrl("http://localhost:8081/subscriptions")
+        .wsProtocolFactory(new ApolloWsProtocol.Factory())
         .wsReopenWhen((throwable, attempt) -> {
           reopenAttempt.set(attempt);
           boolean shouldReopen = !hasReopenOccurred.get();
@@ -365,8 +351,8 @@ public class WebSocketTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 200)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        itemsBeforeReopen.add(response.data.count);
-        if (response.data.count == 5) {
+        itemsBeforeReopen.add(response.dataAssertNoErrors().count);
+        if (response.dataAssertNoErrors().count == 5) {
           // Provoke a network error by stopping the whole server
           context.close();
         }
