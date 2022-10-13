@@ -75,7 +75,7 @@ public class AppSyncWsProtocol extends WsProtocol {
     sendMessageMapText(
         new ImmutableMapBuilder<String, Object>()
             .put("type", "start")
-            .put("id", request.requestUuid().toString())
+            .put("id", request.getRequestUuid().toString())
             .put("payload", new ImmutableMapBuilder<String, Object>()
                 .put("data", data)
                 .put("extensions", new ImmutableMapBuilder<String, Object>()
