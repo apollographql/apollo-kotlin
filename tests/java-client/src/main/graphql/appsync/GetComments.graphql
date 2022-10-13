@@ -1,0 +1,6 @@
+subscription Comments {
+  subscribeToEventComments(eventId: "875a64b9-7b6c-41b5-8b93-4aa41f9155cd") {
+    content
+    eventId
+  }
+}

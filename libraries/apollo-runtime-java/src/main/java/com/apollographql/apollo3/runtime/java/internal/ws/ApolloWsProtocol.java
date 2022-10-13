@@ -40,8 +40,7 @@ public class ApolloWsProtocol extends WsProtocol {
 
     Map<String, Object> map = receiveMessageMap(-1L);
     if (map == null) {
-      // Connection closed
-      listener.networkError(new IOException("Connection closed"));
+      listener.networkError(new IOException("Connection closed while waiting for connection_ack"));
     } else {
       Object type = map.get("type");
       if ("connection_error".equals(type)) {

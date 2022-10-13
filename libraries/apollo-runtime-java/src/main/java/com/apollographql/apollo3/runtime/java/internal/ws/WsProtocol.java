@@ -82,7 +82,7 @@ public abstract class WsProtocol {
     }
   }
 
-  private static String toJsonString(Map<String, Object> messageMap) {
+  protected static String toJsonString(Map<String, Object> messageMap) {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
@@ -92,7 +92,7 @@ public abstract class WsProtocol {
     return buffer.readUtf8();
   }
 
-  private ByteString toJsonByteString(Map<String, Object> messageMap) {
+  protected static ByteString toJsonByteString(Map<String, Object> messageMap) {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {

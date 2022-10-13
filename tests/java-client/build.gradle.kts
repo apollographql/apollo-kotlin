@@ -29,4 +29,11 @@ apollo {
     packageName.set("graphqlws")
     generateModelBuilder.set(true)
   }
+
+  service("appsync") {
+    srcDir("src/main/graphql/appsync")
+    packageName.set("appsync")
+    generateModelBuilder.set(true)
+  }
+
 }

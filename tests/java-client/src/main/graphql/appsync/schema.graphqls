@@ -1,0 +1,119 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Comment {
+  #  A unique identifier for the comment.
+  commentId: String!
+  #  The comment's content.
+  content: String!
+  #  The comment timestamp. This field is indexed to enable sorted pagination.
+  createdAt: String!
+  #  The id of the comment's parent event.
+  eventId: ID!
+}
+
+type CommentConnection {
+  items: [Comment]
+  nextToken: String
+}
+
+type Event {
+  #  Paginate through all comments belonging to an individual post.
+  comments(limit: Int, nextToken: String): CommentConnection
+  description: String
+  id: ID!
+  name: String
+  when: String
+  where: String
+}
+
+type EventConnection {
+  items: [Event]
+  nextToken: String
+}
+
+type Mutation {
+  #  Comment on an event.
+  commentOnEvent(content: String!, createdAt: String!, eventId: ID!): Comment
+  #  Create a single event.
+  createEvent(description: String!, name: String!, when: String!, where: String!): Event
+  #  Delete a single event by id.
+  deleteEvent(id: ID!): Event
+}
+
+type Query {
+  #  Get a single event by id.
+  getEvent(id: ID!): Event
+  #  Paginate through events.
+  listEvents(filter: TableEventFilterInput, limit: Int, nextToken: String): EventConnection
+}
+
+type Subscription {
+  subscribeToEventComments(eventId: String!): Comment @aws_subscribe(mutations : ["commentOnEvent"])
+}
+
+input TableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input TableEventFilterInput {
+  description: TableStringFilterInput
+  id: TableIDFilterInput
+  name: TableStringFilterInput
+  when: TableStringFilterInput
+  where: TableStringFilterInput
+}
+
+input TableFloatFilterInput {
+  between: [Float]
+  contains: Float
+  eq: Float
+  ge: Float
+  gt: Float
+  le: Float
+  lt: Float
+  ne: Float
+  notContains: Float
+}
+
+input TableIDFilterInput {
+  beginsWith: ID
+  between: [ID]
+  contains: ID
+  eq: ID
+  ge: ID
+  gt: ID
+  le: ID
+  lt: ID
+  ne: ID
+  notContains: ID
+}
+
+input TableIntFilterInput {
+  between: [Int]
+  contains: Int
+  eq: Int
+  ge: Int
+  gt: Int
+  le: Int
+  lt: Int
+  ne: Int
+  notContains: Int
+}
+
+input TableStringFilterInput {
+  beginsWith: String
+  between: [String]
+  contains: String
+  eq: String
+  ge: String
+  gt: String
+  le: String
+  lt: String
+  ne: String
+  notContains: String
+}

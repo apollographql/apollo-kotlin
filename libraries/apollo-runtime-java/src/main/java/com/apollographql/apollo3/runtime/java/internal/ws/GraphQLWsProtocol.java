@@ -55,8 +55,7 @@ public class GraphQLWsProtocol extends WsProtocol {
 
     Map<String, Object> map = receiveMessageMap(connectionAcknowledgeTimeoutMs);
     if (map == null) {
-      // Connection closed
-      listener.networkError(new IOException("Connection closed"));
+      listener.networkError(new IOException("Connection closed or timeout while waiting for connection_ack"));
     } else {
       Object type = map.get("type");
       if ("connection_error".equals(type)) {
