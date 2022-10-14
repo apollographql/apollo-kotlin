@@ -595,6 +595,7 @@ abstract class DefaultApolloExtension(
       val nullableFieldStyle: String? = service.nullableFieldStyle.orNull
       task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullable.fromName(nullableFieldStyle)
           ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
+      task.decapitalizeFields.set(service.decapitalizeFields)
     }
   }
 

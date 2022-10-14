@@ -14,16 +14,16 @@ import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.internal.IssuesScope
 
 @ApolloInternal
-fun checkCapitalizedFields(definitions: List<GQLDefinition>): List<Issue> {
+fun checkCapitalizedFields(definitions: List<GQLDefinition>, checkFragmentsOnly: Boolean): List<Issue> {
   val scope = object : ValidationScope {
     override val issues = mutableListOf<Issue>()
     override val fragmentsByName = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }
   }
 
-  definitions.forEach {
-    when (it) {
-      is GQLOperationDefinition -> scope.checkCapitalizedFields(it.selectionSet.selections)
-      is GQLFragmentDefinition -> scope.checkCapitalizedFields(it.selectionSet.selections)
+  definitions.forEach { definition ->
+    when {
+      definition is GQLOperationDefinition && !checkFragmentsOnly -> scope.checkCapitalizedFields(definition.selectionSet.selections)
+      definition is GQLFragmentDefinition -> scope.checkCapitalizedFields(definition.selectionSet.selections)
     }
   }
 
@@ -48,7 +48,7 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
           }
         } else if (isFirstLetterUpperCase(it.name)) {
           issues.add(Issue.UpperCaseField(message = """
-                      Capitalized field '${it.name}' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' compiler option.
+                      Capitalized field '${it.name}' is not supported as it causes name clashes with the generated models. Use an alias instead or the 'flattenModels' or 'decapitalizeFields' compiler option.
                     """.trimIndent(),
               sourceLocation = it.sourceLocation)
           )
@@ -57,6 +57,7 @@ private fun ValidationScope.checkCapitalizedFields(selections: List<GQLSelection
           checkCapitalizedFields(selectionSet.selections)
         }
       }
+
       is GQLInlineFragment -> checkCapitalizedFields(it.selectionSet.selections)
       // it might be that the fragment is defined in an upstream module. In that case, it is validated
       // already, no need to check it again

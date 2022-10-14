@@ -16,7 +16,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":apollo-compiler:test" />
+          <option value=":libraries:apollo-compiler:test" />
           <option value="--tests" />
           <option value="&quot;com.apollographql.apollo3.compiler.CodegenTest&quot;" />
         </list>

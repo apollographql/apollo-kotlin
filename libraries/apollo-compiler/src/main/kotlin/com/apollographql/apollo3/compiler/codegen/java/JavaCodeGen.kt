@@ -67,6 +67,7 @@ internal class JavaCodeGen(
     private val generateDataBuilders: Boolean,
     private val generatePrimitiveTypes: Boolean,
     private val nullableFieldStyle: JavaNullable,
+    private val decapitalizeFields: Boolean,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -83,6 +84,7 @@ internal class JavaCodeGen(
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
+        decapitalizeFields = decapitalizeFields,
     )
 
     val context = JavaContext(
