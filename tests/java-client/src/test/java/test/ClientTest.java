@@ -2,9 +2,7 @@ package test;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
@@ -14,10 +12,8 @@ import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.ApolloInterceptorChain;
-import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.CreateCatMutation;
 import javatest.GetRandomQuery;
 import javatest.LocationQuery;
@@ -31,6 +27,8 @@ import scalar.GeoPointAdapter;
 
 import java.util.Arrays;
 
+import static test.Utils.blockingMutation;
+import static test.Utils.blockingQuery;
 import static test.Utils.sleep;
 
 public class ClientTest {
@@ -60,11 +58,11 @@ public class ClientTest {
   @Test
   public void simple() {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
-    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(GetRandomQuery.builder().build());
+    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
     Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
-    @NonNull ApolloResponse<CreateCatMutation.Data> mutationResponse = blockingMutation(CreateCatMutation.builder().build());
+    @NonNull ApolloResponse<CreateCatMutation.Data> mutationResponse = blockingMutation(apolloClient, CreateCatMutation.builder().build());
     Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
   }
 
@@ -99,7 +97,7 @@ public class ClientTest {
         .build();
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
-    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(GetRandomQuery.builder().build());
+    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
     MockRequest mockRequest = mockServer.takeRequest();
     Truth.assertThat(mockRequest.getHeaders().get("interceptor1")).isEqualTo("true");
     Truth.assertThat(mockRequest.getHeaders().get("interceptor2")).isEqualTo("true");
@@ -114,19 +112,9 @@ public class ClientTest {
         .build();
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"location\": {\"latitude\": 10.5, \"longitude\": 20.5}}}").build());
-    ApolloResponse<LocationQuery.Data> queryResponse = blockingQuery(LocationQuery.builder().build());
+    ApolloResponse<LocationQuery.Data> queryResponse = blockingQuery(apolloClient, LocationQuery.builder().build());
     Truth.assertThat(queryResponse.dataAssertNoErrors().location.latitude).isEqualTo(10.5);
     Truth.assertThat(queryResponse.dataAssertNoErrors().location.longitude).isEqualTo(20.5);
-  }
-
-  @NotNull
-  private <D extends Query.Data> ApolloResponse<D> blockingQuery(Query<D> query) {
-    return Rx3Apollo.single(apolloClient.query(query), BackpressureStrategy.BUFFER).blockingGet();
-  }
-
-  @NotNull
-  private <D extends Mutation.Data> ApolloResponse<D> blockingMutation(Mutation<D> mutation) {
-    return Rx3Apollo.single(apolloClient.mutation(mutation), BackpressureStrategy.BUFFER).blockingGet();
   }
 
   @Test

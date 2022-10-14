@@ -18,7 +18,7 @@ import com.apollographql.apollo3.runtime.java.internal.DefaultApolloCall;
 import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
 import com.apollographql.apollo3.runtime.java.internal.DefaultInterceptorChain;
 import com.apollographql.apollo3.runtime.java.internal.http.HttpNetworkTransport;
-import com.apollographql.apollo3.runtime.java.internal.ws.ApolloWsProtocol;
+import com.apollographql.apollo3.runtime.java.internal.ws.GraphQLWsProtocol;
 import com.apollographql.apollo3.runtime.java.internal.ws.WebSocketNetworkTransport;
 import com.apollographql.apollo3.runtime.java.internal.ws.WsProtocol;
 import okhttp3.Call;
@@ -299,29 +299,33 @@ public class ApolloClient {
         if (webSocketServerUrl == null) {
           webSocketServerUrl = httpServerUrl;
         }
-        checkNotNull(webSocketServerUrl, "webSocketServerUrl is missing");
-        if (webSocketFactory == null) {
-          webSocketFactory = callFactory instanceof OkHttpClient ? (OkHttpClient) callFactory : new OkHttpClient();
+        if (webSocketServerUrl == null) {
+          // Fallback to the regular NetworkTransport. This is unlikely to work but chances are
+          // that the user is not going to use subscription, so it's better than failing
+          subscriptionNetworkTransport = networkTransport;
+        } else {
+          if (webSocketFactory == null) {
+            webSocketFactory = callFactory instanceof OkHttpClient ? (OkHttpClient) callFactory : new OkHttpClient();
+          }
+          if (wsProtocolFactory == null) {
+            wsProtocolFactory = new GraphQLWsProtocol.Factory();
+          }
+          if (wsReopenWhen == null) {
+            wsReopenWhen = (throwable, attempt) -> false;
+          }
+          if (wsIdleTimeoutMillis == null) {
+            wsIdleTimeoutMillis = 60_000L;
+          }
+          subscriptionNetworkTransport = new WebSocketNetworkTransport(
+              webSocketFactory,
+              wsProtocolFactory,
+              webSocketServerUrl,
+              wsHeaders,
+              wsReopenWhen,
+              executor,
+              wsIdleTimeoutMillis
+          );
         }
-        if (wsProtocolFactory == null) {
-          // TODO change the default to GraphQLWsProtocol.Factory
-          wsProtocolFactory = new ApolloWsProtocol.Factory();
-        }
-        if (wsReopenWhen == null) {
-          wsReopenWhen = (throwable, attempt) -> false;
-        }
-        if (wsIdleTimeoutMillis == null) {
-          wsIdleTimeoutMillis = 60_000L;
-        }
-        subscriptionNetworkTransport = new WebSocketNetworkTransport(
-            webSocketFactory,
-            wsProtocolFactory,
-            webSocketServerUrl,
-            wsHeaders,
-            wsReopenWhen,
-            executor,
-            wsIdleTimeoutMillis
-        );
       }
 
       return new ApolloClient(

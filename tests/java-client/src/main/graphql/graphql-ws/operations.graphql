@@ -1,0 +1,11 @@
+query Hello {
+  hello
+}
+
+mutation SetHello {
+  hello
+}
+
+subscription Greetings {
+  greetings
+}

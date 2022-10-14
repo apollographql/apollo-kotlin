@@ -14,10 +14,26 @@ dependencies {
 }
 
 apollo {
-  packageName.set("javatest")
-  generateModelBuilder.set(true)
-  mapScalarToJavaString("LanguageCode")
-  mapScalarToJavaObject("Json")
-  mapScalarToJavaLong("Long")
-  mapScalar("GeoPoint", "scalar.GeoPoint")
+  service("main") {
+    srcDir("src/main/graphql/main")
+    packageName.set("javatest")
+    generateModelBuilder.set(true)
+    mapScalarToJavaString("LanguageCode")
+    mapScalarToJavaObject("Json")
+    mapScalarToJavaLong("Long")
+    mapScalar("GeoPoint", "scalar.GeoPoint")
+  }
+
+  service("graphql-ws") {
+    srcDir("src/main/graphql/graphql-ws")
+    packageName.set("graphqlws")
+    generateModelBuilder.set(true)
+  }
+
+  service("appsync") {
+    srcDir("src/main/graphql/appsync")
+    packageName.set("appsync")
+    generateModelBuilder.set(true)
+  }
+
 }

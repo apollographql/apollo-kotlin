@@ -103,11 +103,14 @@ public class WebSocketConnection {
     webSocket.close(CLOSE_NORMAL, null);
   }
 
+  /**
+   * @param timeoutMs the timeout in milliseconds or -1 for no timeout
+   */
   @Nullable
-  public String receive() {
+  public String receive(long timeoutMs) {
     if (!isWebSocketOpen) return null;
     try {
-      String message = messageQueue.take();
+      String message = timeoutMs == -1L ? messageQueue.take() : messageQueue.poll(timeoutMs, TimeUnit.MILLISECONDS);
       if (message.equals(MESSAGE_CLOSED)) {
         return null;
       }
