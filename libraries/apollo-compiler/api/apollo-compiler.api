@@ -18,13 +18,13 @@ public abstract interface class com/apollographql/apollo3/compiler/ApolloCompile
 
 public final class com/apollographql/apollo3/compiler/ApolloMetadata {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ApolloMetadata$Companion;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)V
 	public fun <init> (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;Z)V
 	public final fun component1 ()Lcom/apollographql/apollo3/compiler/CommonMetadata;
 	public final fun component2 ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
 	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Z
-	public final fun copy (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;Z)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ApolloMetadata;Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;ZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ApolloMetadata;Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCommonMetadata ()Lcom/apollographql/apollo3/compiler/CommonMetadata;
 	public final fun getCompilerMetadata ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;

@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler
 
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
@@ -7,6 +8,7 @@ import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.squareup.moshi.FromJson
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
@@ -25,6 +27,7 @@ import java.io.File
  * better error messages
  */
 @JsonClass(generateAdapter = true)
+//@ApolloInternal
 data class ApolloMetadata(
     /**
      * Only non-null for the root module
@@ -32,8 +35,16 @@ data class ApolloMetadata(
     val commonMetadata: CommonMetadata?,
     val compilerMetadata: CompilerMetadata,
     val moduleName: String,
-    val generateDataBuilders: Boolean,
 ) {
+  @Transient
+  private var _generateDataBuilders: Boolean = false
+  val generateDataBuilders: Boolean
+    get() = _generateDataBuilders
+
+  constructor(commonMetadata: CommonMetadata?, compilerMetadata: CompilerMetadata, moduleName: String, generateDataBuilders: Boolean): this(commonMetadata, compilerMetadata, moduleName) {
+    _generateDataBuilders = generateDataBuilders
+  }
+
   companion object {
 
     /**
