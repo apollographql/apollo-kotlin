@@ -36,13 +36,10 @@ data class ApolloMetadata(
     val compilerMetadata: CompilerMetadata,
     val moduleName: String,
 ) {
-  @Transient
-  private var _generateDataBuilders: Boolean = false
-  val generateDataBuilders: Boolean
-    get() = _generateDataBuilders
+  var generateDataBuilders: Boolean = false
 
   constructor(commonMetadata: CommonMetadata?, compilerMetadata: CompilerMetadata, moduleName: String, generateDataBuilders: Boolean): this(commonMetadata, compilerMetadata, moduleName) {
-    _generateDataBuilders = generateDataBuilders
+    this.generateDataBuilders = generateDataBuilders
   }
 
   companion object {
