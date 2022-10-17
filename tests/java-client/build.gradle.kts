@@ -36,4 +36,10 @@ apollo {
     generateModelBuilder.set(true)
   }
 
+  service("batching") {
+    srcDir("src/main/graphql/batching")
+    packageName.set("batching")
+    generateModelBuilder.set(true)
+  }
+
 }

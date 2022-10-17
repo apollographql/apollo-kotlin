@@ -34,12 +34,12 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   @Override public ApolloDisposable enqueue(@NotNull ApolloCallback<D> callback) {
     ApolloRequest<D> apolloRequest = new ApolloRequest.Builder<>(operation)
         .executionContext(executionContext)
-        .addExecutionContext(apolloClient.getCustomScalarAdapters())
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .canBeBatched(canBeBatched)
         .build();
 
     return apolloClient.execute(apolloRequest, callback);
@@ -110,6 +110,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   }
 
   @Override public ApolloCall<D> canBeBatched(@Nullable Boolean canBeBatched) {
-    throw new UnsupportedOperationException();
+    this.canBeBatched = canBeBatched;
+    return this;
   }
 }
