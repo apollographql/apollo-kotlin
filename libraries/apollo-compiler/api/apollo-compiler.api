@@ -31,6 +31,7 @@ public final class com/apollographql/apollo3/compiler/ApolloMetadata {
 	public final fun getGenerateDataBuilders ()Z
 	public final fun getModuleName ()Ljava/lang/String;
 	public fun hashCode ()I
+	public final fun setGenerateDataBuilders (Z)V
 	public fun toString ()Ljava/lang/String;
 	public final fun writeTo (Ljava/io/File;)V
 }
