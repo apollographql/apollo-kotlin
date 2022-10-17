@@ -75,7 +75,8 @@ class MetadataTest {
     ApolloMetadata(
         commonMetadata = outputCommonMetadata,
         compilerMetadata = compilerMetadata,
-        moduleName = "test"
+        moduleName = "test",
+        generateDataBuilders = false
     ).writeTo(metadataOutputFile)
   }
 

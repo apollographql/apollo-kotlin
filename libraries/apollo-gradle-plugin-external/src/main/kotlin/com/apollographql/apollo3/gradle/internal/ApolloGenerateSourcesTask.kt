@@ -252,6 +252,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
     var commonMetadata = commonMetadatas.singleOrNull()
     var rememberCommonMetadata = false
+    val generateDataBuilders = generateDataBuilders.getOrElse(defaultGenerateDataBuilders)
+    val moduleName = projectName.get()
 
     if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
@@ -262,6 +264,13 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       }
       check(scalarTypeMapping.getOrElse(emptyMap()).isEmpty()) {
         "Mapping scalars can only be done in the schema module"
+      }
+      if (generateDataBuilders) {
+        metadata.forEach {
+          check(it.generateDataBuilders) {
+            "Apollo: set `generateDataBuilders.set(true)` in upstream module '${it.moduleName}' in order to use data builders from current module '$moduleName'"
+          }
+        }
       }
     } else {
       val codegenModels = codegenModels.getOrElse(defaultCodegenModels)
@@ -326,7 +335,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
-        moduleName = projectName.get(),
+        moduleName = moduleName,
         // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
         flattenModels = flattenModels,
         incomingCompilerMetadata = metadata.map { it.compilerMetadata },
@@ -338,7 +347,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
         generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
-        generateDataBuilders = generateDataBuilders.getOrElse(defaultGenerateDataBuilders),
+        generateDataBuilders = generateDataBuilders,
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),
         generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
@@ -357,7 +366,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       ApolloMetadata(
           commonMetadata = if (rememberCommonMetadata) commonMetadata else null,
           compilerMetadata = outputCompilerMetadata,
-          moduleName = projectName.get()
+          moduleName = projectName.get(),
+          generateDataBuilders = generateDataBuilders,
       ).writeTo(metadataOutputFile)
     }
   }

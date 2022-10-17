@@ -31,7 +31,8 @@ data class ApolloMetadata(
      */
     val commonMetadata: CommonMetadata?,
     val compilerMetadata: CompilerMetadata,
-    val moduleName: String
+    val moduleName: String,
+    val generateDataBuilders: Boolean,
 ) {
   companion object {
 
