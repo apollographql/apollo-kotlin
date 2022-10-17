@@ -47,6 +47,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun httpBatching (JIZZ)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpEngine (Lcom/apollographql/apollo3/runtime/java/network/http/HttpEngine;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpExposeErrorBody (Z)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
