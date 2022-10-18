@@ -2,7 +2,7 @@
   "title": "Client (Kotlin)",
   "version": "v3",
   "algoliaFilters": [
-    "docset:android"
+    "docset:apollo-kotlin"
   ],
   "sidebar": {
     "Get Started": "/",
