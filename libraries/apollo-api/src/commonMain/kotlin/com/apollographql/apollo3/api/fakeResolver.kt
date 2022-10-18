@@ -261,14 +261,14 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
       "Boolean" -> context.cacheKey.hashCode() % 2 == 0
       "String" -> {
         val index = context.path.indexOfLast { it is String }
-        context.path.subList(index, context.path.size).joinToString { it.toPathComponent() }
+        context.path.subList(index, context.path.size).joinToString(separator = "") { it.toPathComponent() }
       }
 
-      "ID" -> context.path.joinToString { it.toString() }
+      "ID" -> context.path.joinToString(separator = "") { it.toPathComponent() }
       else -> {
         val type = enumTypes.find { it.name == name } ?: error("Don't know how to instantiate leaf $name")
 
-        type.values[context.cacheKey.hashCode() % type.values.size]
+        type.values[context.cacheKey.hashCode().mod(type.values.size)]
       }
     }
   }
@@ -291,7 +291,7 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
 
     // XXX: Cache this computation
     val possibleTypes = possibleTypes(allTypes, rawType)
-    val index = context.cacheKey.hashCode() % possibleTypes.size
+    val index = context.cacheKey.hashCode().mod(possibleTypes.size)
     return possibleTypes[index].name
   }
 }

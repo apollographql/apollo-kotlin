@@ -161,19 +161,17 @@ class DataBuilderTest {
   fun fakeValues() {
     val data = GetEverythingQuery.Data()
 
-    assertEquals(Direction.SOUTH, data.direction)
-    assertEquals(0, data.nullableInt)
-    assertEquals(1, data.nonNullableInt)
+    assertEquals(Direction.NORTH, data.direction)
+    assertEquals(-34, data.nullableInt)
+    assertEquals(-99, data.nonNullableInt)
     assertEquals(listOf(
-        listOf(2, 3, 4),
-        listOf(5, 6, 7),
-        listOf(8, 9, 10)
+        listOf(73, 74, 75),
+        listOf(4, 5, 6),
+        listOf(35, 36, 37)
     ), data.listOfListOfInt)
-    assertEquals(11, data.cat.mustaches)
-    assertEquals("Lion", data.animal.__typename)
-    assertEquals("Cat", data.feline.__typename)
-
-    println(data)
+    assertEquals(53, data.cat.mustaches)
+    assertEquals("Cat", data.animal.__typename)
+    assertEquals("Lion", data.feline.__typename)
   }
 
   @Test
@@ -194,7 +192,7 @@ class DataBuilderTest {
                 listOf(
                     GetPartialQuery.ListOfListOfAnimal(
                         __typename = "Lion",
-                        id = "",
+                        id = "listOfListOfAnimal[0][0]id",
                         species = "FooSpecies",
                         onLion = GetPartialQuery.OnLion("roar")
                     )
