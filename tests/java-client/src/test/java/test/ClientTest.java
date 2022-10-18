@@ -12,6 +12,7 @@ import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.annotations.NonNull;
 import javatest.CreateCatMutation;
@@ -67,7 +68,7 @@ public class ClientTest {
   }
 
   @Test
-  public void interceptors() {
+  public void apolloInterceptors() {
     ApolloInterceptor interceptor1 = new ApolloInterceptor() {
       @Override
       public <D extends Operation.Data> void intercept(@NotNull ApolloRequest<D> request, @NotNull ApolloInterceptorChain chain, @NotNull ApolloCallback<D> callback) {
@@ -97,7 +98,38 @@ public class ClientTest {
         .build();
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
-    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
+    blockingQuery(apolloClient, GetRandomQuery.builder().build());
+    MockRequest mockRequest = mockServer.takeRequest();
+    Truth.assertThat(mockRequest.getHeaders().get("interceptor1")).isEqualTo("true");
+    Truth.assertThat(mockRequest.getHeaders().get("interceptor2")).isEqualTo("true");
+    Truth.assertThat(mockRequest.getHeaders().get("interceptor3")).isEqualTo("true");
+  }
+
+  @Test
+  public void httpInterceptors() {
+    HttpInterceptor interceptor1 = (request, chain, callback) -> {
+      request = request.newBuilder().addHeader("interceptor1", "true").build();
+      chain.proceed(request, callback);
+    };
+
+    HttpInterceptor interceptor2 = (request, chain, callback) -> {
+      request = request.newBuilder().addHeader("interceptor2", "true").build();
+      chain.proceed(request, callback);
+    };
+
+    HttpInterceptor interceptor3 = (request, chain, callback) -> {
+      request = request.newBuilder().addHeader("interceptor3", "true").build();
+      chain.proceed(request, callback);
+    };
+
+    apolloClient = new ApolloClient.Builder()
+        .serverUrl(mockServerUrl)
+        .addHttpInterceptor(interceptor1)
+        .addHttpInterceptors(Arrays.asList(interceptor2, interceptor3))
+        .build();
+
+    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
+    blockingQuery(apolloClient, GetRandomQuery.builder().build());
     MockRequest mockRequest = mockServer.takeRequest();
     Truth.assertThat(mockRequest.getHeaders().get("interceptor1")).isEqualTo("true");
     Truth.assertThat(mockRequest.getHeaders().get("interceptor2")).isEqualTo("true");
