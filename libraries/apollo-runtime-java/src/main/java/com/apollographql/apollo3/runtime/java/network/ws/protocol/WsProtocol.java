@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.runtime.java.internal.ws;
+package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloRequest;
@@ -6,6 +6,7 @@ import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
+import com.apollographql.apollo3.runtime.java.network.ws.WebSocketConnection;
 import okio.Buffer;
 import okio.ByteString;
 import org.jetbrains.annotations.Nullable;
@@ -22,13 +23,13 @@ public abstract class WsProtocol {
     this.listener = listener;
   }
 
-  abstract void connectionInit();
+  public abstract void connectionInit();
 
-  abstract void handleServerMessage(Map<String, Object> messageMap);
+  public abstract void handleServerMessage(Map<String, Object> messageMap);
 
-  abstract <D extends Operation.Data> void startOperation(ApolloRequest<D> request);
+  public abstract <D extends Operation.Data> void startOperation(ApolloRequest<D> request);
 
-  abstract <D extends Operation.Data> void stopOperation(ApolloRequest<D> request);
+  public abstract <D extends Operation.Data> void stopOperation(ApolloRequest<D> request);
 
 
   protected void sendMessageMap(Map<String, Object> messageMap, WsFrameType frameType) {
@@ -70,7 +71,7 @@ public abstract class WsProtocol {
     }
   }
 
-  protected void run() {
+  public void run() {
     while (true) {
       Map<String, Object> messageMap = receiveMessageMap(-1L);
       if (messageMap == null) {
@@ -116,7 +117,7 @@ public abstract class WsProtocol {
   }
 
 
-  interface Listener {
+  public interface Listener {
     /**
      * A response was received. payload might contain "errors". For subscriptions, several responses might be received.
      */

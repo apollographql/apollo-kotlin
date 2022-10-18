@@ -22,7 +22,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public synthetic fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Ljava/lang/Object;
 	public fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
-	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun addInterceptor (Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addWsHeader (Lcom/apollographql/apollo3/api/http/HttpHeader;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun addWsHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
@@ -51,20 +51,20 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
 	public fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun networkTransport (Lcom/apollographql/apollo3/runtime/java/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun networkTransport (Lcom/apollographql/apollo3/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun okHttpClient (Lokhttp3/OkHttpClient;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/runtime/java/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun webSocketFactory (Lokhttp3/WebSocket$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun webSocketServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun wsHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun wsIdleTimeoutMillis (J)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun wsProtocolFactory (Lcom/apollographql/apollo3/runtime/java/internal/ws/WsProtocol$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun wsReopenWhen (Lcom/apollographql/apollo3/runtime/java/internal/ws/WebSocketNetworkTransport$ReopenWhen;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun wsProtocolFactory (Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun wsReopenWhen (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketNetworkTransport$ReopenWhen;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 }
 
 public abstract interface class com/apollographql/apollo3/runtime/java/ApolloDisposable {
@@ -78,16 +78,126 @@ public abstract interface class com/apollographql/apollo3/runtime/java/ApolloDis
 	public abstract fun onDisposed ()V
 }
 
-public abstract interface class com/apollographql/apollo3/runtime/java/ApolloInterceptor {
-	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloInterceptorChain;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
+public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptor {
+	public abstract fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptorChain;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
 }
 
-public abstract interface class com/apollographql/apollo3/runtime/java/ApolloInterceptorChain {
+public abstract interface class com/apollographql/apollo3/runtime/java/interceptor/ApolloInterceptorChain {
 	public abstract fun getDisposable ()Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
 	public abstract fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)V
 }
 
-public abstract interface class com/apollographql/apollo3/runtime/java/NetworkTransport {
+public abstract interface class com/apollographql/apollo3/runtime/java/network/NetworkTransport {
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/network/http/HttpNetworkTransport : com/apollographql/apollo3/runtime/java/network/NetworkTransport {
+	public fun <init> (Lokhttp3/Call$Factory;Lcom/apollographql/apollo3/api/http/HttpRequestComposer;)V
+	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection {
+	public fun <init> (Lokhttp3/WebSocket$Factory;Ljava/lang/String;Ljava/util/List;)V
+	public fun close ()V
+	public fun isOpen ()Z
+	public fun open ()V
+	public fun receive (J)Ljava/lang/String;
+	public fun send (Ljava/lang/String;)V
+	public fun send (Lokio/ByteString;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/WebSocketNetworkTransport : com/apollographql/apollo3/runtime/java/network/NetworkTransport {
+	public fun <init> (Lokhttp3/WebSocket$Factory;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Factory;Ljava/lang/String;Ljava/util/List;Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketNetworkTransport$ReopenWhen;Ljava/util/concurrent/Executor;J)V
+	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;)V
+}
+
+public abstract interface class com/apollographql/apollo3/runtime/java/network/ws/WebSocketNetworkTransport$ReopenWhen {
+	public abstract fun reopenWhen (Ljava/lang/Throwable;J)Z
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/protocol/ApolloWsProtocol : com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol {
+	public fun <init> (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;Ljava/util/function/Supplier;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;)V
+	public fun connectionInit ()V
+	public fun handleServerMessage (Ljava/util/Map;)V
+	public fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+	public fun stopOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/protocol/ApolloWsProtocol$Factory : com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Factory {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/function/Supplier;)V
+	public fun <init> (Ljava/util/function/Supplier;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;)V
+	public fun create (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;)Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol;
+	public fun getName ()Ljava/lang/String;
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/protocol/AppSyncWsProtocol : com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol {
+	public fun <init> (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;Ljava/util/Map;J)V
+	public static fun buildUrl (Ljava/lang/String;Ljava/util/Map;Ljava/util/Map;)Ljava/lang/String;
+	public fun connectionInit ()V
+	public fun handleServerMessage (Ljava/util/Map;)V
+	public fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+	public fun stopOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/protocol/AppSyncWsProtocol$Factory : com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Factory {
+	public fun <init> (Ljava/util/Map;)V
+	public fun <init> (Ljava/util/Map;J)V
+	public fun create (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;)Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol;
+	public fun getName ()Ljava/lang/String;
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/protocol/GraphQLWsProtocol : com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol {
+	public fun <init> (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;Ljava/util/function/Supplier;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;Ljava/util/Map;Ljava/util/Map;JJ)V
+	public fun connectionInit ()V
+	public fun handleServerMessage (Ljava/util/Map;)V
+	public fun run ()V
+	public fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+	public fun stopOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+}
+
+public class com/apollographql/apollo3/runtime/java/network/ws/protocol/GraphQLWsProtocol$Factory : com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Factory {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/function/Supplier;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;Ljava/util/Map;Ljava/util/Map;JJ)V
+	public fun create (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;)Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol;
+	public fun getName ()Ljava/lang/String;
+}
+
+public abstract class com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol {
+	protected field listener Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;
+	protected field webSocketConnection Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;
+	public fun <init> (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;)V
+	public fun close ()V
+	public abstract fun connectionInit ()V
+	public abstract fun handleServerMessage (Ljava/util/Map;)V
+	protected fun receiveMessageMap (J)Ljava/util/Map;
+	public fun run ()V
+	protected fun sendMessageMap (Ljava/util/Map;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;)V
+	protected fun sendMessageMapBinary (Ljava/util/Map;)V
+	protected fun sendMessageMapText (Ljava/util/Map;)V
+	public abstract fun startOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+	public abstract fun stopOperation (Lcom/apollographql/apollo3/api/ApolloRequest;)V
+	protected static fun toJsonByteString (Ljava/util/Map;)Lokio/ByteString;
+	protected static fun toJsonString (Ljava/util/Map;)Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Factory {
+	public abstract fun create (Lcom/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener;)Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public abstract interface class com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$Listener {
+	public abstract fun generalError (Ljava/util/Map;)V
+	public abstract fun networkError (Ljava/lang/Throwable;)V
+	public abstract fun operationComplete (Ljava/lang/String;)V
+	public abstract fun operationError (Ljava/lang/String;Ljava/util/Map;)V
+	public abstract fun operationResponse (Ljava/lang/String;Ljava/util/Map;)V
+}
+
+public final class com/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType : java/lang/Enum {
+	public static final field Binary Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;
+	public static final field Text Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;
+	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;
+	public static fun values ()[Lcom/apollographql/apollo3/runtime/java/network/ws/protocol/WsProtocol$WsFrameType;
 }
 

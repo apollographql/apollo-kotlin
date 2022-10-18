@@ -1,9 +1,10 @@
-package com.apollographql.apollo3.runtime.java.internal.ws;
+package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ImmutableMapBuilder;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
+import com.apollographql.apollo3.runtime.java.network.ws.WebSocketConnection;
 
 import java.io.IOException;
 import java.util.Map;
@@ -30,7 +31,8 @@ public class ApolloWsProtocol extends WsProtocol {
     this.frameType = frameType;
   }
 
-  @Override void connectionInit() {
+  @Override
+  public void connectionInit() {
     Map<String, Object> message = new ImmutableMapBuilder<String, Object>().put("type", "connection_init").build();
     Map<String, Object> payload = connectionPayload.get();
     if (payload != null) {
@@ -52,7 +54,8 @@ public class ApolloWsProtocol extends WsProtocol {
   }
 
   @SuppressWarnings("unchecked")
-  @Override void handleServerMessage(Map<String, Object> messageMap) {
+  @Override
+  public void handleServerMessage(Map<String, Object> messageMap) {
     String type = (String) messageMap.get("type");
     switch (type) {
       case "data":
@@ -72,7 +75,8 @@ public class ApolloWsProtocol extends WsProtocol {
     }
   }
 
-  @Override <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
+  @Override
+  public <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
     sendMessageMap(
         new ImmutableMapBuilder<String, Object>()
             .put("type", "start")
@@ -83,7 +87,8 @@ public class ApolloWsProtocol extends WsProtocol {
     );
   }
 
-  @Override <D extends Operation.Data> void stopOperation(ApolloRequest<D> request) {
+  @Override
+  public <D extends Operation.Data> void stopOperation(ApolloRequest<D> request) {
     sendMessageMap(
         new ImmutableMapBuilder<String, Object>()
             .put("type", "stop")

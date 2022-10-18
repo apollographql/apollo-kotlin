@@ -1,11 +1,12 @@
-package com.apollographql.apollo3.runtime.java.internal;
+package com.apollographql.apollo3.runtime.java.interceptor.internal;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
-import com.apollographql.apollo3.runtime.java.ApolloInterceptor;
-import com.apollographql.apollo3.runtime.java.ApolloInterceptorChain;
+import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
+import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
+import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
