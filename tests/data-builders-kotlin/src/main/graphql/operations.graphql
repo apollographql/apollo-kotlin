@@ -46,6 +46,9 @@ query GetNode {
 
 query GetFeline {
   feline {
+    ... on Animal {
+      id
+    }
     ... on Cat {
       mustaches
     }
@@ -67,6 +70,9 @@ query GetEverything {
     species
   }
   feline {
+    ... on Animal {
+      id
+    }
     ... on Lion {
       roar
     }
@@ -81,3 +87,28 @@ query GetPartial {
     }
   }
 }
+
+query GetEgotisticalCat {
+  cat {
+    id
+    species
+    mustaches
+    # This cat will be its own best friend :)
+    bestFriend {
+      species
+      ... on Cat {
+        mustaches
+      }
+    }
+  }
+}
+
+query GetCatAnimal {
+  animal {
+    ... on Cat {
+      species
+      mustaches
+    }
+  }
+}
+

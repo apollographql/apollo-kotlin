@@ -471,9 +471,8 @@ public final class com/apollographql/apollo3/api/CustomTypeValue$GraphQLString :
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public final class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollographql/apollo3/api/FakeResolver {
+public class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollographql/apollo3/api/FakeResolver {
 	public fun <init> (Ljava/util/List;)V
-	public final fun getTypes ()Ljava/util/List;
 	public fun resolveLeaf (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/Object;
 	public fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
 	public fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
@@ -619,7 +618,7 @@ public abstract interface class com/apollographql/apollo3/api/FakeResolver {
 }
 
 public final class com/apollographql/apollo3/api/FakeResolverContext {
-	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/api/CompiledField;)V
+	public final fun getCacheKey ()Ljava/lang/String;
 	public final fun getMergedField ()Lcom/apollographql/apollo3/api/CompiledField;
 	public final fun getPath ()Ljava/util/List;
 }
