@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static test.Utils.sleep;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class ApolloWsTest {
   private static ConfigurableApplicationContext context;
 
@@ -77,7 +76,7 @@ public class ApolloWsTest {
       disposed.set(true);
     });
 
-    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     Truth.assertThat(actual).containsExactly(0, 1, 2, 3, 4).inOrder();
     Truth.assertThat(failure[0]).isNull();
     Truth.assertThat(disposed.get()).isTrue();
@@ -143,7 +142,7 @@ public class ApolloWsTest {
       }
     });
 
-    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     Truth.assertThat(failure[0]).isInstanceOf(SubscriptionOperationException.class);
     SubscriptionOperationException exception = (SubscriptionOperationException) failure[0];
     Map<String, Object> payload = (Map<String, Object>) exception.getPayload();
@@ -187,7 +186,7 @@ public class ApolloWsTest {
       }
     });
 
-    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     Truth.assertThat(failure[0]).isInstanceOf(ApolloNetworkException.class);
   }
 
@@ -212,7 +211,7 @@ public class ApolloWsTest {
       }
     });
 
-    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     // Wait a bit to be sure we don't receive any other items after the dispose
     sleep(500);
     Truth.assertThat(items).containsExactly(0, 1, 2, 3, 4, 5).inOrder();
@@ -254,7 +253,7 @@ public class ApolloWsTest {
       }
     });
 
-    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
     Truth.assertThat(items).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
     // But definitely not the whole list
@@ -310,7 +309,7 @@ public class ApolloWsTest {
       }
     });
 
-    latch.await(1, TimeUnit.SECONDS);
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     Truth.assertThat(hasReopenOccurred.get()).isTrue();
     // Use "at least" because closing the socket takes a little while, and we still receive a few elements during that time
     Truth.assertThat(itemsBeforeReopen).containsAtLeast(0, 1, 2, 3, 4, 5).inOrder();
