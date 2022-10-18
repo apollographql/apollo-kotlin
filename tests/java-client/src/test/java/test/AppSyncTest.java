@@ -6,7 +6,7 @@ import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
-import com.apollographql.apollo3.runtime.java.internal.ws.AppSyncWsProtocol;
+import com.apollographql.apollo3.runtime.java.network.ws.protocol.AppSyncWsProtocol;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Ignore;
 import org.junit.Test;

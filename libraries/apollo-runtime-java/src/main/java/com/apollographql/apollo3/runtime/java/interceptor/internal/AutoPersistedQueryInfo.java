@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.runtime.java.internal;
+package com.apollographql.apollo3.runtime.java.interceptor.internal;
 
 import com.apollographql.apollo3.api.ExecutionContext;
 import kotlin.jvm.functions.Function2;

@@ -131,6 +131,7 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "com.apollographql.apollo3.gradle.internal",
           "com.apollographql.apollo3.cache.normalized.sql.internal",
           "com.apollographql.apollo3.runtime.java.internal",
+          "com.apollographql.apollo3.runtime.java.interceptor.internal",
       )
   )
   ignoredProjects.addAll(

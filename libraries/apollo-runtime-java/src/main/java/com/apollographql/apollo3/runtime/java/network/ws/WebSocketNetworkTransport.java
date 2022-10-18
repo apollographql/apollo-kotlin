@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.runtime.java.internal.ws;
+package com.apollographql.apollo3.runtime.java.network.ws;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
@@ -12,7 +12,8 @@ import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.SubscriptionOperationException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
-import com.apollographql.apollo3.runtime.java.NetworkTransport;
+import com.apollographql.apollo3.runtime.java.network.NetworkTransport;
+import com.apollographql.apollo3.runtime.java.network.ws.protocol.WsProtocol;
 import okhttp3.WebSocket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

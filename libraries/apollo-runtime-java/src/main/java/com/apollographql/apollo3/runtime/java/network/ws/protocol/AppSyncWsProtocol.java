@@ -1,9 +1,10 @@
-package com.apollographql.apollo3.runtime.java.internal.ws;
+package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ImmutableMapBuilder;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
+import com.apollographql.apollo3.runtime.java.network.ws.WebSocketConnection;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -29,7 +30,8 @@ public class AppSyncWsProtocol extends WsProtocol {
     this.connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs;
   }
 
-  @Override void connectionInit() {
+  @Override
+  public void connectionInit() {
     Map<String, Object> message = new ImmutableMapBuilder<String, Object>().put("type", "connection_init").build();
     sendMessageMapText(message);
 
@@ -47,7 +49,8 @@ public class AppSyncWsProtocol extends WsProtocol {
   }
 
   @SuppressWarnings("unchecked")
-  @Override void handleServerMessage(Map<String, Object> messageMap) {
+  @Override
+  public void handleServerMessage(Map<String, Object> messageMap) {
     String type = (String) messageMap.get("type");
     switch (type) {
       case "data":
@@ -70,7 +73,8 @@ public class AppSyncWsProtocol extends WsProtocol {
     }
   }
 
-  @Override <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
+  @Override
+  public <D extends Operation.Data> void startOperation(ApolloRequest<D> request) {
     String data = toJsonString(DefaultHttpRequestComposer.Companion.composePayload(request));
     sendMessageMapText(
         new ImmutableMapBuilder<String, Object>()
@@ -88,7 +92,8 @@ public class AppSyncWsProtocol extends WsProtocol {
     );
   }
 
-  @Override <D extends Operation.Data> void stopOperation(ApolloRequest<D> request) {
+  @Override
+  public <D extends Operation.Data> void stopOperation(ApolloRequest<D> request) {
     sendMessageMapText(
         new ImmutableMapBuilder<String, Object>()
             .put("type", "stop")
