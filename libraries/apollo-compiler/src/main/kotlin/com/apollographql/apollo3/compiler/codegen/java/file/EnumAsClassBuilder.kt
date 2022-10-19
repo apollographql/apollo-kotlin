@@ -12,6 +12,7 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeSuppressDeprecation
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -73,6 +74,7 @@ internal class EnumAsClassBuilder(
         )
         .addMethod(
             MethodSpec.methodBuilder(safeValueOf)
+                .maybeSuppressDeprecation(enum.values)
                 .addParameter(JavaClassNames.String, rawValue)
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.STATIC)

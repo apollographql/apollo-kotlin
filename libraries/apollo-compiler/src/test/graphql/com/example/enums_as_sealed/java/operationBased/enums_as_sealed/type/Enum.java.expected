@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 
 public class Enum {
@@ -30,6 +31,7 @@ public class Enum {
     this.rawValue = rawValue;
   }
 
+  @SuppressWarnings("deprecation")
   public static Enum safeValueOf(String rawValue) {
     switch(rawValue) {
       case "north": return Enum.north;

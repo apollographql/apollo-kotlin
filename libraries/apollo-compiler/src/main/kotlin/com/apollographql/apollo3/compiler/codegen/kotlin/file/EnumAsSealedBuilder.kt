@@ -8,7 +8,9 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddOptIn
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddRequiresOptIn
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeSuppressDeprecation
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -118,6 +120,8 @@ internal class EnumAsSealedBuilder(
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(safeValueOf)
         .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", className())
+        .maybeSuppressDeprecation(enum.values)
+        .maybeAddOptIn(context.resolver, enum.values)
         .addParameter("rawValue", KotlinSymbols.String)
         .returns(className())
         .beginControlFlow("return·when(rawValue)")
@@ -134,6 +138,8 @@ internal class EnumAsSealedBuilder(
   private fun IrEnum.knownValuesFunSpec(): FunSpec {
     return FunSpec.builder(knownValues)
         .addKdoc("Returns all [%T] known at compile time", className())
+        .maybeSuppressDeprecation(enum.values)
+        .maybeAddOptIn(context.resolver, enum.values)
         .returns(KotlinSymbols.Array.parameterizedBy(className()))
         .addCode(
             CodeBlock.builder()

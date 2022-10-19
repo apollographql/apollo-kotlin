@@ -98,8 +98,9 @@ internal object JavaClassNames {
   val Double: ClassName = ClassName.get("java.lang", "Double")
   val Object: ClassName = ClassName.get("java.lang", "Object")
   val Boolean: ClassName = ClassName.get("java.lang", "Boolean")
-  val Deprecated = ClassName.get("java.lang", "Deprecated")
-  val Override = ClassName.get("java.lang", "Override")
+  val Deprecated: ClassName = ClassName.get("java.lang", "Deprecated")
+  val Override: ClassName = ClassName.get("java.lang", "Override")
+  val SuppressWarnings: ClassName = ClassName.get("java.lang", "SuppressWarnings")
 
   val List: ClassName = ClassName.get("java.util", "List")
   val ArrayList: ClassName = ClassName.get("java.util", "ArrayList")

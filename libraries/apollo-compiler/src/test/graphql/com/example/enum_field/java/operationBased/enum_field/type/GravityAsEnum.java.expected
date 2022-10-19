@@ -8,6 +8,7 @@ package com.example.enum_field.type;
 import com.apollographql.apollo3.api.EnumType;
 import java.lang.Deprecated;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 
 public enum GravityAsEnum {
@@ -54,6 +55,7 @@ public enum GravityAsEnum {
     this.rawValue = rawValue;
   }
 
+  @SuppressWarnings("deprecation")
   public static GravityAsEnum safeValueOf(String rawValue) {
     switch (rawValue) {
       case "TOP": return GravityAsEnum.TOP;
