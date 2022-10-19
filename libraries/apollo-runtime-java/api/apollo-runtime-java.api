@@ -47,7 +47,7 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
-	public fun httpBatching (JIZZ)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
+	public fun httpBatching (JIZ)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpEngine (Lcom/apollographql/apollo3/runtime/java/network/http/HttpEngine;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpExposeErrorBody (Z)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
@@ -120,18 +120,6 @@ public class com/apollographql/apollo3/runtime/java/network/http/HttpNetworkTran
 	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/runtime/java/network/http/HttpEngine;Ljava/util/List;Z)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;)V
-}
-
-public class com/apollographql/apollo3/runtime/java/network/http/internal/DefaultHttpInterceptorChain : com/apollographql/apollo3/runtime/java/network/http/HttpInterceptorChain {
-	public fun <init> (Ljava/util/List;I)V
-	public fun proceed (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/runtime/java/network/http/HttpCallback;)V
-}
-
-public class com/apollographql/apollo3/runtime/java/network/http/internal/OkHttpHttpEngine : com/apollographql/apollo3/runtime/java/network/http/HttpEngine {
-	public fun <init> (JJ)V
-	public fun <init> (Lokhttp3/Call$Factory;)V
-	public fun dispose ()V
-	public fun execute (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/runtime/java/network/http/HttpCallback;Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;)V
 }
 
 public class com/apollographql/apollo3/runtime/java/network/ws/WebSocketConnection {

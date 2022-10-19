@@ -20,7 +20,7 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   private final Operation<D> operation;
   private ExecutionContext executionContext = ExecutionContext.Empty;
   private HttpMethod httpMethod;
-  private final ArrayList<HttpHeader> httpHeaders = new ArrayList<>();
+  private List<HttpHeader> httpHeaders;
   private Boolean sendApqExtensions;
   private Boolean sendDocument;
   private Boolean enableAutoPersistedQueries;
@@ -84,12 +84,14 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
   }
 
   @Override public ApolloCall<D> httpHeaders(@Nullable List<HttpHeader> list) {
-    this.httpHeaders.clear();
-    this.httpHeaders.addAll(list);
+    this.httpHeaders = list;
     return this;
   }
 
   @Override public ApolloCall<D> addHttpHeader(@NotNull String name, @NotNull String value) {
+    if (this.httpHeaders == null) {
+      this.httpHeaders = new ArrayList<>();
+    }
     this.httpHeaders.add(new HttpHeader(name, value));
     return this;
   }

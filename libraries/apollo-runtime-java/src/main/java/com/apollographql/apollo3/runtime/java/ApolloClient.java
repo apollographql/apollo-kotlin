@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.CustomScalarType;
 import com.apollographql.apollo3.api.ExecutionContext;
+import com.apollographql.apollo3.api.ExecutionOptions;
 import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
@@ -13,18 +14,17 @@ import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.http.HttpMethod;
-import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo3.runtime.java.interceptor.internal.AutoPersistedQueryInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.internal.DefaultInterceptorChain;
-import com.apollographql.apollo3.runtime.java.internal.BatchingInterceptor;
 import com.apollographql.apollo3.runtime.java.internal.DefaultApolloCall;
 import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
 import com.apollographql.apollo3.runtime.java.network.NetworkTransport;
 import com.apollographql.apollo3.runtime.java.network.http.HttpEngine;
 import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
 import com.apollographql.apollo3.runtime.java.network.http.HttpNetworkTransport;
+import com.apollographql.apollo3.runtime.java.network.http.internal.BatchingHttpInterceptor;
 import com.apollographql.apollo3.runtime.java.network.http.internal.OkHttpHttpEngine;
 import com.apollographql.apollo3.runtime.java.network.ws.WebSocketNetworkTransport;
 import com.apollographql.apollo3.runtime.java.network.ws.protocol.GraphQLWsProtocol;
@@ -103,13 +103,12 @@ public class ApolloClient {
         .httpHeaders(httpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .canBeBatched(canBeBatched);
+        .enableAutoPersistedQueries(enableAutoPersistedQueries);
     if (apolloRequest.getHttpMethod() != null) {
       requestBuilder.httpMethod(apolloRequest.getHttpMethod());
     }
-    for (HttpHeader httpHeader : apolloRequest.getHttpHeaders()) {
-      requestBuilder.addHttpHeader(httpHeader.getName(), httpHeader.getValue());
+    if (apolloRequest.getHttpHeaders() != null) {
+      requestBuilder.httpHeaders(apolloRequest.getHttpHeaders());
     }
     if (apolloRequest.getSendApqExtensions() != null) {
       requestBuilder.sendApqExtensions(apolloRequest.getSendApqExtensions());
@@ -473,14 +472,13 @@ public class ApolloClient {
      * every request in the batch is now as slow as the slowest one. Some servers might have a per-HTTP-call cache making it faster to
      * resolve 1 big array of n queries compared to resolving the n queries separately.
      * <p>
-     * See also {@link BatchingInterceptor}.
+     * See also {@link BatchingHttpInterceptor}.
      *
      * @param batchIntervalMillis the interval between two batches
      * @param maxBatchSize always send the batch when this threshold is reached
-     * @param exposeErrorBody if true, the error body will be exposed in the {@link ApolloHttpException} if the server returns an error
      */
-    public Builder httpBatching(long batchIntervalMillis, int maxBatchSize, boolean exposeErrorBody, boolean enableByDefault) {
-//      TODO = new BatchingInterceptor(batchIntervalMillis, maxBatchSize, exposeErrorBody);
+    public Builder httpBatching(long batchIntervalMillis, int maxBatchSize, boolean enableByDefault) {
+      addHttpInterceptor(new BatchingHttpInterceptor(batchIntervalMillis, maxBatchSize, httpExposeErrorBody != null && httpExposeErrorBody));
       canBeBatched(enableByDefault);
       return this;
     }
@@ -551,6 +549,7 @@ public class ApolloClient {
 
     @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
       this.canBeBatched = canBeBatched;
+      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString());
       return this;
     }
 

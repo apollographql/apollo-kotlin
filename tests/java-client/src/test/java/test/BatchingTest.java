@@ -31,7 +31,7 @@ import static com.apollographql.apollo3.api.ExecutionOptions.CAN_BE_BATCHED;
 import static org.junit.Assert.fail;
 import static test.Utils.sleep;
 
-@SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
+@SuppressWarnings("unchecked")
 public class BatchingTest {
   MockServer mockServer;
   ApolloClient apolloClient;
@@ -63,7 +63,7 @@ public class BatchingTest {
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .httpBatching(300, 10, true, true)
+        .httpBatching(300, 10, true)
         .build();
 
     List<String> items = new ArrayList<>();
@@ -97,14 +97,7 @@ public class BatchingTest {
       }
     });
 
-    try {
-      latch.await(1, TimeUnit.SECONDS);
-    } catch (InterruptedException ignored) {
-      ignored.printStackTrace();
-    }
-    System.out.println(items);
-
-
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
     Truth.assertThat(items).containsExactly("83", "84");
 
     MockRequest request = mockServer.takeRequest();
@@ -123,13 +116,13 @@ public class BatchingTest {
   }
 
   @Test
-  public void queriesAreNotBatchedIfSubmittedFarApart() {
+  public void queriesAreNotBatchedIfSubmittedFarApart() throws Exception {
     mockServer.enqueue(new MockResponse.Builder().body("[{\"data\":{\"launch\":{\"id\":\"83\"}}}]").build());
     mockServer.enqueue(new MockResponse.Builder().body("[{\"data\":{\"launch\":{\"id\":\"84\"}}}]").build());
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .httpBatching(10, 10, true, true)
+        .httpBatching(10, 10, true)
         .build();
 
     List<String> items = new ArrayList<>();
@@ -162,10 +155,7 @@ public class BatchingTest {
       }
     });
 
-    try {
-      latch.await(1, TimeUnit.SECONDS);
-    } catch (InterruptedException ignored) {
-    }
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
 
     Truth.assertThat(items).containsExactly("83", "84");
 
@@ -174,13 +164,13 @@ public class BatchingTest {
   }
 
   @Test
-  public void queriesCanBeOptOutOfBatching() {
+  public void queriesCanBeOptOutOfBatching() throws Exception {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\":{\"launch\":{\"id\":\"83\"}}}").build());
     mockServer.enqueue(new MockResponse.Builder().body("[{\"data\":{\"launch\":{\"id\":\"84\"}}}]").build());
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .httpBatching(300, 10, true, true)
+        .httpBatching(300, 10, true)
         .build();
 
     List<String> items = new ArrayList<>();
@@ -215,10 +205,7 @@ public class BatchingTest {
       }
     });
 
-    try {
-      latch.await(1, TimeUnit.SECONDS);
-    } catch (InterruptedException ignored) {
-    }
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
 
     Truth.assertThat(items).containsExactly("83", "84");
 
@@ -232,7 +219,7 @@ public class BatchingTest {
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .httpBatching(300, 10, true, true)
+        .httpBatching(300, 10, true)
         // Opt out by default
         .canBeBatched(false)
         .build();
@@ -273,10 +260,7 @@ public class BatchingTest {
           }
         });
 
-    try {
-      latch.await(1, TimeUnit.SECONDS);
-    } catch (InterruptedException ignored) {
-    }
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
 
     Truth.assertThat(items).containsExactly("83", "84");
 
@@ -301,7 +285,7 @@ public class BatchingTest {
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .httpBatching(300, 10, true, true)
+        .httpBatching(300, 10, true)
         .addHttpHeader("client0", "0")
         .addHttpHeader("client1", "1")
         .build();
@@ -309,19 +293,18 @@ public class BatchingTest {
 
     List<String> items = new ArrayList<>();
     CountDownLatch latch = new CountDownLatch(2);
-    apolloClient.query(new GetLaunchQuery())
-        .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
-          @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
-            synchronized (items) {
-              items.add(response.dataAssertNoErrors().launch.id);
-            }
-            latch.countDown();
-          }
+    apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
+      @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
+        synchronized (items) {
+          items.add(response.dataAssertNoErrors().launch.id);
+        }
+        latch.countDown();
+      }
 
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
-          }
-        });
+      @Override public void onFailure(@NotNull ApolloException e) {
+        throw e;
+      }
+    });
 
     sleep(50);
 
@@ -338,10 +321,7 @@ public class BatchingTest {
       }
     });
 
-    try {
-      latch.await(1, TimeUnit.SECONDS);
-    } catch (InterruptedException ignored) {
-    }
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
 
     Truth.assertThat(items).containsExactly("83", "84");
 
@@ -352,12 +332,12 @@ public class BatchingTest {
   }
 
   @Test
-  public void commonHttpHeadersOnRequestsAreKept() {
+  public void commonHttpHeadersOnRequestsAreKept() throws Exception {
     mockServer.enqueue(new MockResponse.Builder().body("[{\"data\":{\"launch\":{\"id\":\"83\"}}},{\"data\":{\"launch\":{\"id\":\"84\"}}}]").build());
 
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .httpBatching(300, 10, true, true)
+        .httpBatching(300, 10, true)
         .build();
 
     List<String> items = new ArrayList<>();
@@ -400,10 +380,7 @@ public class BatchingTest {
           }
         });
 
-    try {
-      latch.await(1, TimeUnit.SECONDS);
-    } catch (InterruptedException ignored) {
-    }
+    Truth.assertThat(latch.await(2, TimeUnit.SECONDS)).isTrue();
 
     Truth.assertThat(items).containsExactly("83", "84");
 
