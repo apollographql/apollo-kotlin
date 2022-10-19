@@ -88,6 +88,7 @@ com.apollographql.apollo3.runtime.java.interceptor.internal
 com.apollographql.apollo3.runtime.java.internal
 com.apollographql.apollo3.runtime.java.network
 com.apollographql.apollo3.runtime.java.network.http
+com.apollographql.apollo3.runtime.java.network.http.internal
 com.apollographql.apollo3.runtime.java.network.ws
 com.apollographql.apollo3.runtime.java.network.ws.protocol
 module:apollo-rx2-support
