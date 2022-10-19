@@ -20,7 +20,10 @@ import com.apollographql.apollo3.runtime.java.interceptor.internal.DefaultInterc
 import com.apollographql.apollo3.runtime.java.internal.DefaultApolloCall;
 import com.apollographql.apollo3.runtime.java.internal.DefaultApolloDisposable;
 import com.apollographql.apollo3.runtime.java.network.NetworkTransport;
+import com.apollographql.apollo3.runtime.java.network.http.HttpEngine;
+import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
 import com.apollographql.apollo3.runtime.java.network.http.HttpNetworkTransport;
+import com.apollographql.apollo3.runtime.java.network.http.internal.OkHttpHttpEngine;
 import com.apollographql.apollo3.runtime.java.network.ws.WebSocketNetworkTransport;
 import com.apollographql.apollo3.runtime.java.network.ws.protocol.GraphQLWsProtocol;
 import com.apollographql.apollo3.runtime.java.network.ws.protocol.WsProtocol;
@@ -104,6 +107,7 @@ public class ApolloClient {
 
 
   public static class Builder implements MutableExecutionOptions<Builder> {
+    private HttpEngine httpEngine;
     private NetworkTransport networkTransport;
     private NetworkTransport subscriptionNetworkTransport;
     private String httpServerUrl;
@@ -112,6 +116,7 @@ public class ApolloClient {
     private WebSocket.Factory webSocketFactory;
     private Executor executor;
     private List<ApolloInterceptor> interceptors = new ArrayList<>();
+    private List<HttpInterceptor> httpInterceptors = new ArrayList<>();
     private WsProtocol.Factory wsProtocolFactory;
     private List<HttpHeader> wsHeaders = new ArrayList<>();
     private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
@@ -124,6 +129,7 @@ public class ApolloClient {
     private Boolean sendDocument;
     private Boolean enableAutoPersistedQueries;
     private Boolean canBeBatched;
+    private Boolean httpExposeErrorBody;
 
     public Builder() {
     }
@@ -209,6 +215,21 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder addHttpInterceptor(@NotNull HttpInterceptor interceptor) {
+      this.httpInterceptors.add(checkNotNull(interceptor, "interceptor is null"));
+      return this;
+    }
+
+    public Builder addHttpInterceptors(@NotNull List<HttpInterceptor> interceptors) {
+      this.httpInterceptors.addAll(checkNotNull(interceptors, "interceptors is null"));
+      return this;
+    }
+
+    public Builder httpInterceptors(@NotNull List<HttpInterceptor> interceptors) {
+      this.httpInterceptors = checkNotNull(interceptors, "interceptors is null");
+      return this;
+    }
+
     public Builder customScalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
       this.customScalarAdaptersBuilder.clear();
       this.customScalarAdaptersBuilder.addAll(customScalarAdapters);
@@ -257,6 +278,16 @@ public class ApolloClient {
       return this;
     }
 
+    public Builder httpEngine(@NotNull HttpEngine httpEngine) {
+      this.httpEngine = checkNotNull(httpEngine, "httpEngine is null");
+      return this;
+    }
+
+    public Builder httpExposeErrorBody(boolean httpExposeErrorBody) {
+      this.httpExposeErrorBody = httpExposeErrorBody;
+      return this;
+    }
+
     public Builder networkTransport(@NotNull NetworkTransport networkTransport) {
       this.networkTransport = checkNotNull(networkTransport, "networkTransport is null");
       return this;
@@ -275,14 +306,27 @@ public class ApolloClient {
       NetworkTransport networkTransport;
       if (this.networkTransport != null) {
         if (httpServerUrl != null) throw new IllegalStateException("Apollo: 'httpServerUrl' has no effect if 'networkTransport' is set");
+        if (httpEngine != null) throw new IllegalStateException("Apollo: 'httpEngine' has no effect if 'networkTransport' is set");
         if (callFactory != null) throw new IllegalStateException("Apollo: 'callFactory' has no effect if 'networkTransport' is set");
+        if (httpExposeErrorBody != null)
+          throw new IllegalStateException("Apollo: 'httpExposeErrorBody' has no effect if 'networkTransport' is set");
         networkTransport = this.networkTransport;
       } else {
         checkNotNull(httpServerUrl, "serverUrl is missing");
-        if (callFactory == null) {
+        if (callFactory != null) {
+          if (httpEngine != null) {
+            throw new IllegalStateException("Apollo: 'httpEngine' has no effect if 'callFactory' is set");
+          }
+        } else {
           callFactory = new OkHttpClient();
         }
-        networkTransport = new HttpNetworkTransport(callFactory, new DefaultHttpRequestComposer(httpServerUrl));
+        if (httpEngine == null) {
+          httpEngine = new OkHttpHttpEngine(callFactory);
+        }
+        if (httpExposeErrorBody == null) {
+          httpExposeErrorBody = false;
+        }
+        networkTransport = new HttpNetworkTransport(new DefaultHttpRequestComposer(httpServerUrl), httpEngine, httpInterceptors, httpExposeErrorBody);
       }
 
       NetworkTransport subscriptionNetworkTransport;

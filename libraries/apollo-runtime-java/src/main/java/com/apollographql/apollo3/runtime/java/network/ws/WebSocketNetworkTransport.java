@@ -72,6 +72,9 @@ public class WebSocketNetworkTransport implements NetworkTransport {
     if (runningWsProtocol != null) runningWsProtocol.startOperation(request);
   }
 
+  @Override public void dispose() {
+  }
+
   @Nullable private WsProtocol ensureWsProtocolRunning() {
     synchronized (this) {
       WsProtocol curWsProtocol = wsProtocol.get();

@@ -8,4 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface NetworkTransport {
   <D extends Operation.Data> void execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback, ApolloDisposable disposable);
+
+  void dispose();
 }
