@@ -81,6 +81,7 @@ internal object KotlinSymbols {
   val MapOfStringToNullableAny = Map.parameterizedBy(String, Any.copy(nullable = true))
 
   val Suppress = ClassName("kotlin", "Suppress")
+  val OptIn = ClassName("kotlin", "OptIn")
   val JvmOverloads = ClassName("kotlin.jvm", "JvmOverloads")
 
   /**
