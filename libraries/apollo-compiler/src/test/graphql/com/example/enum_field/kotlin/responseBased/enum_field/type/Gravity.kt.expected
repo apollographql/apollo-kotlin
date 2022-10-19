@@ -8,6 +8,7 @@ package com.example.enum_field.type
 import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
+import kotlin.Suppress
 
 public enum class Gravity(
   public val rawValue: kotlin.String,
@@ -36,6 +37,7 @@ public enum class Gravity(
     /**
      * Returns all [Gravity] known at compile time
      */
+    @Suppress("DEPRECATION")
     public fun knownValues(): Array<Gravity> = arrayOf(
       TOP,
       CENTER,

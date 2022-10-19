@@ -12,6 +12,7 @@ import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Int
 import kotlin.String
+import kotlin.Suppress
 
 public sealed class Enum(
   public val rawValue: String,
@@ -22,6 +23,7 @@ public sealed class Enum(
     /**
      * Returns the [Enum] that represents the specified [rawValue].
      */
+    @Suppress("DEPRECATION")
     public fun safeValueOf(rawValue: String): Enum = when(rawValue) {
       "north" -> north
       "North" -> North
@@ -34,6 +36,7 @@ public sealed class Enum(
     /**
      * Returns all [Enum] known at compile time
      */
+    @Suppress("DEPRECATION")
     public fun knownValues(): Array<Enum> = arrayOf(
       north,
       North,

@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 
 /**
@@ -33,6 +34,7 @@ public class Episode {
     this.rawValue = rawValue;
   }
 
+  @SuppressWarnings("deprecation")
   public static Episode safeValueOf(String rawValue) {
     switch(rawValue) {
       case "NEWHOPE": return Episode.NEWHOPE;

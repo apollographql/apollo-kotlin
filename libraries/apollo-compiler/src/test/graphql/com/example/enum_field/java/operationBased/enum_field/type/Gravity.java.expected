@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.EnumType;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
+import java.lang.SuppressWarnings;
 import java.util.Arrays;
 
 public class Gravity {
@@ -34,6 +35,7 @@ public class Gravity {
     this.rawValue = rawValue;
   }
 
+  @SuppressWarnings("deprecation")
   public static Gravity safeValueOf(String rawValue) {
     switch(rawValue) {
       case "TOP": return Gravity.TOP;

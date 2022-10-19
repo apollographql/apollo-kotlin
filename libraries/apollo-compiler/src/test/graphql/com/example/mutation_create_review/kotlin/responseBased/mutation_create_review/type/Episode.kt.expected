@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
+import kotlin.Suppress
 
 /**
  * The episodes in the Star Wars trilogy
@@ -54,6 +55,7 @@ internal enum class Episode(
     /**
      * Returns all [Episode] known at compile time
      */
+    @Suppress("DEPRECATION")
     public fun knownValues(): Array<Episode> = arrayOf(
       NEWHOPE,
       EMPIRE,

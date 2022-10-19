@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.EnumType
 import kotlin.Array
 import kotlin.Deprecated
 import kotlin.String
+import kotlin.Suppress
 
 public enum class Enum(
   public val rawValue: String,
@@ -34,6 +35,7 @@ public enum class Enum(
     /**
      * Returns all [Enum] known at compile time
      */
+    @Suppress("DEPRECATION")
     public fun knownValues(): Array<Enum> = arrayOf(
       north,
       North,
