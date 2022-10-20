@@ -137,17 +137,9 @@ object ApolloCompiler {
       }
     }
 
-    var alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching
+    val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching
     val generateSchema = options.generateSchema || options.generateDataBuilders
 
-    if (options.generateSchema) {
-      // If we generate the __Schema class, we need all types for possibleTypes to work
-      /**
-       * XXX: 4.0 this could certainly be removed because the IRBuilder will add all the super and sub-types
-       * when generateSchema is true. It is only kept for backward compatibility
-       */
-      alwaysGenerateTypesMatching = alwaysGenerateTypesMatching + ".*"
-    }
     /**
      * Build the IR
      */
