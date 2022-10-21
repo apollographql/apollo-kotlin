@@ -26,7 +26,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       customTypeMapping.convention(null as Map<String, String>?)
       includes.convention(null as List<String>?)
       excludes.convention(null as List<String>?)
-      alwaysGenerateTypesMatching.convention(null as Set<String>?)
+      alwaysGenerateTypesMatching.convention(null as List<String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
       classesForEnumsMatching.convention(null as List<String>?)
     } else {
@@ -34,7 +34,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
       customTypeMapping.set(null as Map<String, String>?)
       includes.set(null as List<String>?)
       excludes.set(null as List<String>?)
-      alwaysGenerateTypesMatching.set(null as Set<String>?)
+      alwaysGenerateTypesMatching.set(null as List<String>?)
       sealedClassesForEnumsMatching.set(null as List<String>?)
       classesForEnumsMatching.set(null as List<String>?)
     }

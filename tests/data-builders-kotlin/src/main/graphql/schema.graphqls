@@ -16,6 +16,12 @@ type Query {
   long3: Long3
   listOfListOfInt: [[Int]!]
   listOfListOfAnimal: [[Animal]!]
+  unusedType: UnusedType
+  node: Node
+}
+
+type UnusedType {
+  foo: String!
 }
 
 enum Direction {
@@ -27,13 +33,19 @@ type MutationRoot {
   nullableInt: Int
 }
 
+interface Node {
+  id: String!
+}
+
 interface Animal {
   species: String!
 }
 
-type Cat implements Animal & Animal2 {
+type Cat implements Animal & Animal2 & Node {
+  id: String!
   species: String!
   mustaches: Int!
+  unusedField: String!
 }
 
 type Lion implements Animal {

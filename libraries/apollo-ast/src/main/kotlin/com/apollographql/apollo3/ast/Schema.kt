@@ -101,6 +101,14 @@ class Schema internal constructor(
         ?: throw SchemaValidationException("Cannot find type `$name`")
   }
 
+  /**
+   * returns all possible types:
+   * - for an object, return this object
+   * - for an interface, returns all objects implementing this interface (possibly transitively)
+   * - for an union, returns all members
+   *
+   * TODO v4: It's unclear whether we need this for scalar and enums.
+   */
   fun possibleTypes(typeDefinition: GQLTypeDefinition): Set<String> {
     return when (typeDefinition) {
       is GQLUnionTypeDefinition -> typeDefinition.memberTypes.map { it.name }.toSet()

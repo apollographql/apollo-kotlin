@@ -79,6 +79,11 @@ internal class IrBuilder(
 ) : FieldMerger {
   private val usedTypes = mutableListOf<String>()
 
+  /**
+   * a map of named type -> used field names
+   */
+  private val usedFields = mutableMapOf<String, Set<String>>()
+
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
       schema,
       allFragmentDefinitions,
@@ -94,17 +99,20 @@ internal class IrBuilder(
         fieldMerger = this,
         compat = true,
     )
+
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
         compat = false,
     )
+
     MODELS_OPERATION_BASED_WITH_INTERFACES -> OperationBasedWithInterfacesModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
     )
+
     MODELS_RESPONSE_BASED -> responseBasedBuilder
     else -> error("codegenModels='$codegenModels' is not supported")
   }
@@ -150,6 +158,7 @@ internal class IrBuilder(
     }
 
     // Input objects and Interfaces contain (possible reentrant) references, so we need to loop here
+    // This is also needed because objects pull their interfaces for databuilders/compiledtype needs
     while (usedTypes.isNotEmpty()) {
       val name = usedTypes.removeAt(0)
       if (visitedTypes.contains(name)) {
@@ -166,51 +175,16 @@ internal class IrBuilder(
         is GQLEnumTypeDefinition -> enums.add(typeDefinition.toIr())
         is GQLObjectTypeDefinition -> {
           objects.add(typeDefinition.toIr())
-          if (generateDataBuilders) {
-            // Add all direct super types because they are used in the MapTypes hierarchy
-            // class HumanMap(map: Map<String, Any?>): CharacterMap, Map<String, Any?> by map
-            usedTypes.addAll(typeDefinition.implementsInterfaces)
-            schema.typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach {
-              if (it.memberTypes.map { it.name }.contains(typeDefinition.name)) {
-                usedTypes.add(it.name)
-              }
-            }
-            // Add all fields types
-            typeDefinition.fields.forEach {
-              usedTypes.add(it.type.rawType().name)
-            }
-          }
         }
+
         is GQLUnionTypeDefinition -> {
           unions.add(typeDefinition.toIr())
-          if (generateDataBuilders) {
-            usedTypes.addAll(typeDefinition.memberTypes.map { it.name })
-          }
         }
+
         is GQLInterfaceTypeDefinition -> {
           interfaces.add(typeDefinition.toIr())
-          if (generateDataBuilders) {
-            // Add all direct super types
-            usedTypes.addAll(typeDefinition.implementsInterfaces)
-
-            // Add all direct sub types because the user might want to use any of them
-            // GetHeroQuery.Data {
-            //   hero = buildHuman {}  // or buildDroid {}
-            // }
-            schema.typeDefinitions.values.forEach {
-              if (it is GQLInterfaceTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)) {
-                usedTypes.add(it.name)
-              }
-              if (it is GQLObjectTypeDefinition && it.implementsInterfaces.contains(typeDefinition.name)) {
-                usedTypes.add(it.name)
-              }
-            }
-            // Add all fields types
-            typeDefinition.fields.forEach {
-              usedTypes.add(it.type.rawType().name)
-            }
-          }
         }
+
         is GQLScalarTypeDefinition -> customScalars.add(typeDefinition.toIr())
         is GQLInputObjectTypeDefinition -> inputObjects.add(typeDefinition.toIr())
       }
@@ -230,8 +204,22 @@ internal class IrBuilder(
   }
 
   private fun GQLObjectTypeDefinition.toIr(): IrObject {
-    // Needed to build the compiled type
+    // Needed to build the compiled type and data builders
+    // class HumanMap(map: Map<String, Any?>): CharacterMap, Map<String, Any?> by map
     usedTypes.addAll(implementsInterfaces)
+    if (generateDataBuilders) {
+      // Data builders also requires union to inherit from the marker interface
+      schema.typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach {
+        if (it.memberTypes.map { it.name }.contains(name)) {
+          usedTypes.add(it.name)
+        }
+      }
+    }
+
+    /**
+     * If generateDataBuilders is false, we do not track usedFields, fallback to an emptySet
+     */
+    val usedFields = usedFields.get(name) ?: emptySet()
 
     return IrObject(
         name = name,
@@ -244,7 +232,9 @@ internal class IrBuilder(
         embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
             directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
             connectionTypeEmbeddedFields(name, schema),
-        mapProperties = fields.map {
+        mapProperties = fields.filter {
+          usedFields.contains(it.name) || shouldAlwaysGenerate("${name}.${it.name}")
+        }.map {
           it.toIrMapProperty()
         },
         superTypes = schema.superTypes(this).toList()
@@ -259,25 +249,26 @@ internal class IrBuilder(
   }
 
   private fun GQLType.toIrType2(): IrType2 {
-    return when(this) {
+    return when (this) {
       is GQLNonNullType -> IrNonNullType2(type.toIrType2())
       is GQLListType -> IrListType2(type.toIrType2())
       is GQLNamedType -> {
         val typeDefinition = schema.typeDefinition(name)
-        when(typeDefinition) {
+        when (typeDefinition) {
           is GQLScalarTypeDefinition -> return IrScalarType2(name)
           is GQLEnumTypeDefinition -> return IrEnumType2(name)
           is GQLInputObjectTypeDefinition -> error("Input objects are not supported in data builders")
           is GQLInterfaceTypeDefinition,
           is GQLObjectTypeDefinition,
-          is GQLUnionTypeDefinition -> IrCompositeType2(name)
+          is GQLUnionTypeDefinition,
+          -> IrCompositeType2(name)
         }
       }
     }
   }
 
   private fun GQLInterfaceTypeDefinition.toIr(): IrInterface {
-    // Needed to build the compiled type
+    // Needed to build the compiled type as well as the data builders
     usedTypes.addAll(implementsInterfaces)
 
     return IrInterface(
@@ -433,6 +424,7 @@ internal class IrBuilder(
           rawTypeName = typeDefinition.name,
           operationName = name!!
       ).second
+
       else -> null
     }
 
@@ -506,10 +498,12 @@ internal class IrBuilder(
         // The variable is non-nullable and has no defaultValue => it must always be sent
         // Leave irType as-is
       }
+
       coercedDefaultValue != null -> {
         // the variable has a defaultValue meaning that there is a use case for not providing it
         irType = irType.makeOptional()
       }
+
       irType !is IrNonNullType -> {
         // The variable is nullable. By the GraphQL spec, it means it's also optional
         // In practice though, we often want it non-optional, because if the user added tha variable in
@@ -549,15 +543,19 @@ internal class IrBuilder(
           is GQLEnumTypeDefinition -> {
             IrEnumType(name = name)
           }
+
           is GQLInputObjectTypeDefinition -> {
             IrInputObjectType(name)
           }
+
           is GQLObjectTypeDefinition -> {
             IrModelType(MODEL_UNKNOWN)
           }
+
           is GQLInterfaceTypeDefinition -> {
             IrModelType(MODEL_UNKNOWN)
           }
+
           is GQLUnionTypeDefinition -> {
             IrModelType(MODEL_UNKNOWN)
           }
@@ -596,13 +594,39 @@ internal class IrBuilder(
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
-      val typeDefinition = schema.typeDefinition(fieldWithParent.parentType)
-      val fieldDefinition = gqlField.definitionFromScope(schema, typeDefinition)
+      val parentTypeDefinition = schema.typeDefinition(fieldWithParent.parentType)
+      val fieldDefinition = gqlField.definitionFromScope(schema, parentTypeDefinition)
 
       check(fieldDefinition != null) {
-        "cannot find field definition for field '${gqlField.responseName()}' of type '${typeDefinition.name}'"
+        "cannot find field definition for field '${gqlField.responseName()}' of type '${parentTypeDefinition.name}'"
       }
-      val forceNonNull = gqlField.directives.findNonnull(schema) || typeDefinition.isFieldNonNull(gqlField.name, schema)
+      val forceNonNull = gqlField.directives.findNonnull(schema) || parentTypeDefinition.isFieldNonNull(gqlField.name, schema)
+
+      if (generateDataBuilders) {
+        schema.possibleTypes(parentTypeDefinition).map {
+          schema.typeDefinition(it)
+        }
+            .filterIsInstance<GQLObjectTypeDefinition>()
+            .forEach {
+              /**
+               * Add all possible types because the user might want to use any of them
+               * GetHeroQuery.Data {
+               *   hero = buildHuman {}  // or buildDroid {}
+               * }
+               */
+              usedTypes.add(it.name)
+              /**
+               * And remember that this field is used
+               */
+              usedFields.compute(it.name) { _, v ->
+                if (v == null) {
+                  setOf(fieldDefinition.name)
+                } else {
+                  v + fieldDefinition.name
+                }
+              }
+            }
+      }
 
       CollectedField(
           name = gqlField.name,
@@ -751,6 +775,7 @@ internal fun GQLDirective.toIncludeBooleanExpression(): BooleanExpression<BVaria
     is GQLBooleanValue -> {
       if (value.value) BooleanExpression.True else BooleanExpression.False
     }
+
     is GQLVariableValue -> BooleanExpression.Element(BVariable(name = value.name))
     else -> throw IllegalStateException("Apollo: cannot pass ${value.toUtf8()} to '$name' directive")
   }.let {
@@ -792,10 +817,12 @@ internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? 
         BooleanExpression.Element(BLabel(label))
       }
     }
+
     is GQLVariableValue -> {
       // @defer(label: $lbl1, if: $var1) can be translated to BLabel("lbl1") || !BVariable("var1")
       BooleanExpression.Element(BLabel(label)).or(not(BooleanExpression.Element(BVariable(ifArgumentValue.name))))
     }
+
     else -> throw IllegalStateException("Apollo: cannot pass ${ifArgumentValue.toUtf8()} to 'if' argument of 'defer' directive")
   }
 }

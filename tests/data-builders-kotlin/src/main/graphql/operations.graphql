@@ -37,6 +37,13 @@ query GetAnimal {
   }
 }
 
+query GetNode {
+  node {
+    id
+  }
+}
+
+
 query GetFeline {
   feline {
     ... on Cat {
