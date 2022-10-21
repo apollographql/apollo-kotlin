@@ -16,6 +16,6 @@ If your GraphQL endpoint requires authentication, you can pass custom HTTP heade
 ```bash:title=(shell)
 ./gradlew downloadApolloSchema \
   --endpoint="https://your.domain/graphql/endpoint" \
-  --schema="app/src/main/graphql/com/example" \
+  --schema="app/src/main/graphql/com/example/schema.json" \
   --header="Authorization: Bearer $TOKEN"
 ```
