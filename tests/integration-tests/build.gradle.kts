@@ -112,7 +112,10 @@ fun configureApollo(generateKotlinModels: Boolean) {
                 generateFragmentImplementations.set(true)
               }
             }
-            generateSchema.set(it.name == "schema")
+            if (it.name == "schema") {
+              generateSchema.set(true)
+              alwaysGenerateTypesMatching.set(listOf(".*"))
+            }
             this.generateKotlinModels.set(generateKotlinModels)
             codegenModels.set("operationBased")
             packageName.set(it.name)
