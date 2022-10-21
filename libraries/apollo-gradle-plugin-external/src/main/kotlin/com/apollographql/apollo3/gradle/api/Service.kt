@@ -355,7 +355,7 @@ interface Service {
 
   /**
    * A list of [Regex] patterns matching [schema coordinates](https://github.com/magicmark/graphql-spec/blob/add_field_coordinates/rfcs/SchemaCoordinates.md)
-   * for types and fields should be generated whether they are used by queries/fragments in this module.
+   * for types and fields that should be generated whether they are used by queries/fragments in this module or not.
    *
    * When using multiple modules, Apollo Kotlin will generate all the types by default in the root module
    * because the root module doesn't know what types are going to be used by dependent modules. This can be prohibitive in terms
