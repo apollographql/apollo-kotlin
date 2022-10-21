@@ -354,11 +354,19 @@ interface Service {
   val generateApolloMetadata: Property<Boolean>
 
   /**
-   * A list of [Regex] patterns for input/scalar/enum types that should be generated whether they are used by queries/fragments
-   * in this module. When using multiple modules, Apollo Kotlin will generate all the types by default in the root module
+   * A list of [Regex] patterns matching [schema coordinates](https://github.com/magicmark/graphql-spec/blob/add_field_coordinates/rfcs/SchemaCoordinates.md)
+   * for types and fields that should be generated whether they are used by queries/fragments in this module or not.
+   *
+   * When using multiple modules, Apollo Kotlin will generate all the types by default in the root module
    * because the root module doesn't know what types are going to be used by dependent modules. This can be prohibitive in terms
    * of compilation speed for large projects. If that's the case, opt-in the types that are used by multiple dependent modules here.
    * You don't need to add types that are used by a single dependent module.
+   *
+   * Examples:
+   * - listOf(".*"): generate every type and every field in the schema
+   * - listOf("User"): generate the user type
+   * - listOf(".*User): generate all types ending with "User"
+   * - listOf("User\\..*"): generate all fields of type "User"
    *
    * Default value: if (generateApolloMetadata) listOf(".*") else listOf()
    */

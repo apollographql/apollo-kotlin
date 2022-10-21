@@ -10,9 +10,12 @@ import data.builders.GetDirectionQuery
 import data.builders.GetEverythingQuery
 import data.builders.GetFelineQuery
 import data.builders.GetIntQuery
+import data.builders.GetNodeQuery
 import data.builders.GetPartialQuery
 import data.builders.PutIntMutation
+import data.builders.type.CatBuilder
 import data.builders.type.Direction
+import data.builders.type.LionBuilder
 import data.builders.type.buildCat
 import data.builders.type.buildLion
 import kotlin.test.Test
@@ -68,6 +71,35 @@ class DataBuilderTest {
     assertEquals("Lion", data.animal.__typename)
     assertEquals("LionSpecies", data.animal.species)
     assertEquals("Rooooaaarr", data.animal.onLion?.roar)
+  }
+
+  @Test
+  fun unusedTypesAreNotGenerated() {
+    try {
+      Class.forName("data.builders.type.UnusedTypeBuilder")
+      error("The data.builders.type.UnusedTypeBuilder class should not exist")
+    } catch (_: ClassNotFoundException) {
+
+    }
+  }
+
+  @Test
+  fun fieldsOnInterfacesAreGeneratedInObjectBuilders() {
+    val data = GetNodeQuery.Data {
+      node = buildCat {
+        id = "42"
+      }
+    }
+
+    assertEquals("42", data.node?.id)
+  }
+
+  @Test
+  fun unusedFieldsAreNotGenerated() {
+    val methods = CatBuilder::class.java.declaredMethods
+
+    check(methods.any { it.name == "setMustaches" })
+    check(methods.none { it.name == "setUnusedField" })
   }
 
   @Test
