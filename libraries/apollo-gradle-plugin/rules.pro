@@ -14,7 +14,7 @@
 -keepattributes SourceFile,LineNumberTable
 
 # Keep all of KotlinPoet to allow usage in Apollo compiler hooks
--keepclassmembers class com.squareup.kotlinpoet.** {
+-keep class com.squareup.kotlinpoet.** {
     *;
 }
 
