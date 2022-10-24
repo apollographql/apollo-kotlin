@@ -16,6 +16,17 @@ public abstract interface class com/apollographql/apollo3/compiler/ApolloCompile
 	public abstract fun warning (Ljava/lang/String;)V
 }
 
+public abstract interface class com/apollographql/apollo3/compiler/ApolloCompilerKotlinHooks {
+	public abstract fun getVersion ()Ljava/lang/String;
+	public abstract fun overrideResolvedType (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public abstract fun postProcessFileSpec (Lcom/squareup/kotlinpoet/FileSpec;)Lcom/squareup/kotlinpoet/FileSpec;
+}
+
+public final class com/apollographql/apollo3/compiler/ApolloCompilerKotlinHooks$Default : com/apollographql/apollo3/compiler/DefaultApolloCompilerKotlinHooks {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ApolloCompilerKotlinHooks$Default;
+	public fun getVersion ()Ljava/lang/String;
+}
+
 public final class com/apollographql/apollo3/compiler/ApolloMetadata {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ApolloMetadata$Companion;
 	public fun <init> (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)V
@@ -99,6 +110,12 @@ public final class com/apollographql/apollo3/compiler/CompilerMetadataJsonAdapte
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract class com/apollographql/apollo3/compiler/DefaultApolloCompilerKotlinHooks : com/apollographql/apollo3/compiler/ApolloCompilerKotlinHooks {
+	public fun <init> ()V
+	public fun overrideResolvedType (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
+	public fun postProcessFileSpec (Lcom/squareup/kotlinpoet/FileSpec;)Lcom/squareup/kotlinpoet/FileSpec;
+}
+
 public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {
 	public fun <init> (Ljava/lang/String;)V
 	public final fun getExpression ()Ljava/lang/String;
@@ -175,6 +192,7 @@ public final class com/apollographql/apollo3/compiler/OperationOutputGenerator$D
 public final class com/apollographql/apollo3/compiler/Options$Companion {
 	public final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
 	public final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
+	public final fun getDefaultCompilerKotlinHooks ()Lcom/apollographql/apollo3/compiler/ApolloCompilerKotlinHooks$Default;
 	public final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
 	public final fun getDefaultNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
@@ -411,7 +429,7 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
-	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;)V
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/ApolloCompilerKotlinHooks;)V
 	public final fun canResolveSchemaType (Ljava/lang/String;)Z
 	public final fun entries ()Ljava/util/List;
 	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
