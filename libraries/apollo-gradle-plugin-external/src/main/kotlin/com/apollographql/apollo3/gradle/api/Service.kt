@@ -642,7 +642,10 @@ interface Service {
   /**
    * Hooks to customize the generated Kotlin code.
    *
-   * See [ApolloCompilerKotlinHooks] for more details
+   * See [ApolloCompilerKotlinHooks] for more details.
+   *
+   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this API,
+   * so the KotlinPoet classes are available in the classpath.
    */
   val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
 
