@@ -468,7 +468,7 @@ class Options(
     const val defaultGeneratePrimitiveTypes = false
     val defaultNullableFieldStyle = JavaNullable.NONE
     const val defaultDecapitalizeFields = false
-    val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Default
+    val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity
   }
 }
 

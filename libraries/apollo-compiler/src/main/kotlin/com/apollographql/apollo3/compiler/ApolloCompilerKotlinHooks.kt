@@ -37,12 +37,30 @@ interface ApolloCompilerKotlinHooks {
   /**
    * The default implementation of [ApolloCompilerKotlinHooks] that overrides nothing.
    */
-  object Default : DefaultApolloCompilerKotlinHooks() {
-    override val version: String = "ApolloCompilerKotlinHooks.Default.0"
+  object Identity : DefaultApolloCompilerKotlinHooks() {
+    override val version: String = "ApolloCompilerKotlinHooks.Identity.0"
   }
 }
 
 abstract class DefaultApolloCompilerKotlinHooks : ApolloCompilerKotlinHooks {
   override fun postProcessFileSpec(fileSpec: FileSpec) = fileSpec
   override fun overrideResolvedType(key: ResolverKey, resolved: ClassName?) = resolved
+}
+
+class ApolloCompilerKotlinHooksChain(
+    private val hooks: List<ApolloCompilerKotlinHooks>,
+) : ApolloCompilerKotlinHooks {
+  override val version: String = hooks.joinToString("/") { it.version }
+
+  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
+    return hooks.fold(fileSpec) { acc, hook ->
+      hook.postProcessFileSpec(acc)
+    }
+  }
+
+  override fun overrideResolvedType(key: ResolverKey, resolved: ClassName?): ClassName? {
+    return hooks.fold(resolved) { acc, hook ->
+      hook.overrideResolvedType(key, acc)
+    }
+  }
 }

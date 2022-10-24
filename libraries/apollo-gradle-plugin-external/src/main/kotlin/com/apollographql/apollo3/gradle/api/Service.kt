@@ -644,7 +644,7 @@ interface Service {
    *
    * See [ApolloCompilerKotlinHooks] for more details
    */
-  val compilerKotlinHooks: Property<ApolloCompilerKotlinHooks>
+  val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
 
   /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen

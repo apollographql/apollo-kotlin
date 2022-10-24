@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.ApolloCompilerKotlinHooksChain
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -597,7 +598,8 @@ abstract class DefaultApolloExtension(
       task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullable.fromName(nullableFieldStyle)
           ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
       task.decapitalizeFields.set(service.decapitalizeFields)
-      task.compilerKotlinHooks = service.compilerKotlinHooks.getOrElse(ApolloCompilerKotlinHooks.Default)
+      val compilerKotlinHooks = service.compilerKotlinHooks.orNull
+      task.compilerKotlinHooks = if (compilerKotlinHooks == null) ApolloCompilerKotlinHooks.Identity else ApolloCompilerKotlinHooksChain(compilerKotlinHooks)
     }
   }
 

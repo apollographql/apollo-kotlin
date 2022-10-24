@@ -24,22 +24,22 @@ dependencies {
 apollo {
   service("internalize") {
     packageName.set("hooks.internalize")
-    compilerKotlinHooks.set(InternalHooks(setOf("NodeQuery")))
+    compilerKotlinHooks.set(listOf(InternalHooks(setOf("NodeQuery"))))
   }
 
   service("defaultnullvalues") {
     packageName.set("hooks.defaultnullvalues")
-    compilerKotlinHooks.set(DefaultNullValuesHooks())
+    compilerKotlinHooks.set(listOf(DefaultNullValuesHooks()))
   }
 
   service("typenameinterface") {
     packageName.set("hooks.typenameinterface")
-    compilerKotlinHooks.set(TypeNameInterfaceHooks("hooks.typenameinterface.HasTypeName"))
+    compilerKotlinHooks.set(listOf(TypeNameInterfaceHooks("hooks.typenameinterface.HasTypeName")))
   }
 
   service("prefixnames") {
     packageName.set("hooks.prefixnames")
-    compilerKotlinHooks.set(PrefixNamesHooks("GQL"))
+    compilerKotlinHooks.set(listOf(PrefixNamesHooks("GQL")))
   }
 }
 
