@@ -1,4 +1,4 @@
-package com.apollographql.apollo3.compiler
+package com.apollographql.apollo3.compiler.hooks
 
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.squareup.kotlinpoet.ClassName

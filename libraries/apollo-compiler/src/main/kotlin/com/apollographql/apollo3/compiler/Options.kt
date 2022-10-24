@@ -8,6 +8,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File
