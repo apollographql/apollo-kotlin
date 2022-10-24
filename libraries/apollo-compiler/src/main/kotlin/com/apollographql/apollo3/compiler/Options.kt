@@ -321,6 +321,11 @@ class Options(
      * Default: false
      */
     val decapitalizeFields: Boolean = defaultDecapitalizeFields,
+
+    /**
+     * Hooks to customize the generated Kotlin code.
+     */
+    val compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
 ) {
 
   /**
@@ -384,6 +389,7 @@ class Options(
       generatePrimitiveTypes: Boolean = this.generatePrimitiveTypes,
       nullableFieldStyle: JavaNullable = this.nullableFieldStyle,
       decapitalizeFields: Boolean = this.decapitalizeFields,
+      compilerKotlinHooks: ApolloCompilerKotlinHooks = this.compilerKotlinHooks,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -425,6 +431,7 @@ class Options(
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
       decapitalizeFields = decapitalizeFields,
+      compilerKotlinHooks = compilerKotlinHooks,
   )
 
   companion object {
@@ -461,6 +468,7 @@ class Options(
     const val defaultGeneratePrimitiveTypes = false
     val defaultNullableFieldStyle = JavaNullable.NONE
     const val defaultDecapitalizeFields = false
+    val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Default
   }
 }
 

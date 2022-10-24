@@ -5,6 +5,7 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.compiler.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -637,6 +638,13 @@ interface Service {
    * Default: false
    */
   val decapitalizeFields: Property<Boolean>
+
+  /**
+   * Hooks to customize the generated Kotlin code.
+   *
+   * See [ApolloCompilerKotlinHooks] for more details
+   */
+  val compilerKotlinHooks: Property<ApolloCompilerKotlinHooks>
 
   /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen

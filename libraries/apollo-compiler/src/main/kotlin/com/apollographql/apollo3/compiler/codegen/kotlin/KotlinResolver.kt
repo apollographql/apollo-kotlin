@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.apollographql.apollo3.compiler.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
@@ -37,8 +38,9 @@ class KotlinResolver(
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
+    private val hooks: ApolloCompilerKotlinHooks,
 ) {
-  fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
+  fun resolve(key: ResolverKey): ClassName? = hooks.overrideResolvedType(key, classNames[key] ?: next?.resolve(key))
 
   private var classNames = entries.associateBy(
       keySelector = { it.key },

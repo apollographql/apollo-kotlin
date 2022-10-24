@@ -233,6 +233,7 @@ object ApolloCompiler {
             addJvmOverloads = options.addJvmOverloads,
             requiresOptInAnnotation = options.requiresOptInAnnotation,
             decapitalizeFields = options.decapitalizeFields,
+            hooks = options.compilerKotlinHooks,
         ).write(outputDir = outputDir, testDir = testDir)
       }
     }

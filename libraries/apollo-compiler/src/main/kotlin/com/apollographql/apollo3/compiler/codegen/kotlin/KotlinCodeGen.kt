@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.compiler.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
@@ -72,6 +73,7 @@ internal class KotlinCodeGen(
     private val addJvmOverloads: Boolean,
     private val requiresOptInAnnotation: String?,
     private val decapitalizeFields: Boolean,
+    private val hooks: ApolloCompilerKotlinHooks,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -79,7 +81,7 @@ internal class KotlinCodeGen(
    */
   fun write(outputDir: File, testDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
     }
 
     val layout = KotlinCodegenLayout(
@@ -93,7 +95,7 @@ internal class KotlinCodeGen(
 
     val context = KotlinContext(
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation),
+        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -253,6 +255,9 @@ internal class KotlinCodeGen(
 
           builder
               .build()
+              .let {
+                hooks.postProcessFileSpec(it)
+              }
               .writeTo(dir)
         }
 

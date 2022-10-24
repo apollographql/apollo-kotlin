@@ -17,7 +17,6 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.joinToCode
 
@@ -29,15 +28,17 @@ internal class EnumAsEnumBuilder(
   private val packageName = layout.typePackageName()
   private val simpleName = layout.enumName(enum.name)
 
-  private val selfClassName = ClassName(
-      packageName,
-      simpleName
-  )
+  private val selfClassName: ClassName
+    get() = context.resolver.resolveSchemaType(enum.name)
+
 
   override fun prepare() {
     context.resolver.registerSchemaType(
         enum.name,
-        selfClassName
+        ClassName(
+            packageName,
+            simpleName
+        )
     )
   }
 
@@ -75,10 +76,10 @@ internal class EnumAsEnumBuilder(
 
   private fun IrEnum.knownValuesFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.knownValues)
-        .addKdoc("Returns all [%T] known at compile time", className())
+        .addKdoc("Returns all [%T] known at compile time", selfClassName)
         .maybeSuppressDeprecation(enum.values)
         .maybeAddOptIn(context.resolver, enum.values)
-        .returns(KotlinSymbols.Array.parameterizedBy(className()))
+        .returns(KotlinSymbols.Array.parameterizedBy(selfClassName))
         .addCode(
             CodeBlock.builder()
                 .add("return·arrayOf(\n")
@@ -100,7 +101,7 @@ internal class EnumAsEnumBuilder(
         .builder("safeValueOf")
         .addParameter("rawValue", String::
         class)
-        .returns(ClassName("", simpleName))
+        .returns(selfClassName)
         .addStatement("return·values().find·{·it.rawValue·==·rawValue·} ?: $UNKNOWN__")
         .build()
   }
@@ -120,13 +121,6 @@ internal class EnumAsEnumBuilder(
         .addKdoc("%L", "Auto generated constant for unknown enum values\n")
         .addSuperclassConstructorParameter("%S", UNKNOWN__)
         .build()
-  }
-
-  fun className(): TypeName {
-    return ClassName(
-        packageName,
-        simpleName
-    )
   }
 
   private val primaryConstructorSpec =

@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloCompiler
+import com.apollographql.apollo3.compiler.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
@@ -240,6 +241,12 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val decapitalizeFields: Property<Boolean>
 
+  @get:Internal
+  lateinit var compilerKotlinHooks: ApolloCompilerKotlinHooks
+
+  @Input
+  fun getCompilerKotlinHooksVersion() = compilerKotlinHooks.version
+
   @TaskAction
   fun taskAction() {
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
@@ -357,6 +364,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generatePrimitiveTypes = fieldsOnDisjointTypesMustMerge.getOrElse(defaultGeneratePrimitiveTypes),
         nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle),
         decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
+        compilerKotlinHooks = compilerKotlinHooks,
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)
