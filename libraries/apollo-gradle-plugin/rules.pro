@@ -13,9 +13,10 @@
 # For debug
 -keepattributes SourceFile,LineNumberTable
 
-# Keep all of KotlinPoet to allow usage in Apollo compiler hooks
--keep class com.squareup.kotlinpoet.** {
-    *;
+# kotlinpoet uses EnumSetOf that makes a reflexive access to "values"
+# https://github.com/square/kotlinpoet/blob/9952ddcd5095a1fd09c86b9fb07faa347a4c04f0/kotlinpoet/src/main/java/com/squareup/kotlinpoet/PropertySpec.kt#L102
+-keepclassmembers class com.squareup.kotlinpoet.KModifier {
+    public static **[] values();
 }
 
 # Moshi uses reflection in StandardJsonAdapters

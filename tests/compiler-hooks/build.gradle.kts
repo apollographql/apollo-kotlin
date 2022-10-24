@@ -9,7 +9,9 @@ import com.squareup.kotlinpoet.TypeSpec
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("apollo.test")
-  id("com.apollographql.apollo3")
+
+  // Note: using the external plugin here to be able to reference kotlinpoet classes
+  id("com.apollographql.apollo3.external")
 }
 
 dependencies {
@@ -50,7 +52,6 @@ private class InternalHooks(internalOperations: Set<String>) : DefaultApolloComp
   override val version = "0"
 
   override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    println(fileSpec.name)
     return fileSpec
         .toBuilder()
         .apply {
@@ -160,8 +161,7 @@ private class TypeNameInterfaceHooks(private val interfaceName: String) : Defaul
             }
           }
           if (hasTypeName) {
-            // XXX addSuperinterface(ClassName.bestGuess(interfaceName)) doesn't compile for an unknown reason, but this is equivalent
-            superinterfaces[ClassName.bestGuess(interfaceName)] = null
+            addSuperinterface(ClassName.bestGuess(interfaceName))
           }
 
           // Recurse on nested types
@@ -200,7 +200,7 @@ private class PrefixNamesHooks(private val prefix: String) : DefaultApolloCompil
       // e.g. MyQuery -> PrefixMyQuery
       //      MyQuery.Data -> PrefixMyQuery.Data
       if (it.simpleNames.size == 1) {
-        ClassName(it.packageName, listOf(prefix + it.simpleName))
+        ClassName(it.packageName, prefix + it.simpleName)
       } else {
         ClassName(it.packageName, it.simpleNames.mapIndexed { idx, s -> if (idx == it.simpleNames.lastIndex) s else prefix + s })
       }
