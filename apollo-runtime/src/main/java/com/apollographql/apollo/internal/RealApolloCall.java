@@ -363,8 +363,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         return Optional.fromNullable(originalCallback.get());
       case IDLE:
       case TERMINATED:
-        throw new IllegalStateException(
-            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+        return Optional.absent();
       default:
         throw new IllegalStateException("Unknown state");
     }
@@ -380,8 +379,7 @@ public final class RealApolloCall<T> implements ApolloQueryCall<T>, ApolloMutati
         return Optional.fromNullable(originalCallback.getAndSet(null));
       case IDLE:
       case TERMINATED:
-        throw new IllegalStateException(
-            CallState.IllegalStateMessage.forCurrentState(state.get()).expected(ACTIVE, CANCELED));
+        return Optional.absent();
       default:
         throw new IllegalStateException("Unknown state");
     }
