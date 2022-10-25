@@ -12,5 +12,4 @@ In this project you can see examples of how to use the compiler hooks.
 ## Gradle plugin
 
 To use `compilerKotlinHooks` you must use `id("com.apollographql.apollo3.external")` instead of the
-usual `id("com.apollographql.apollo3")`. This is because this one includes the full dependency to KotlinPoet that the
-hooks api depends on.
+usual `id("com.apollographql.apollo3")`. This is because the external plugin doesn't relocate the KotlinPoet dependency that the hooks api depends on.
