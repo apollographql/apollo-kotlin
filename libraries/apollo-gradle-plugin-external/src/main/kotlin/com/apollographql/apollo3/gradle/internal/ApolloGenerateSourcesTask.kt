@@ -19,7 +19,6 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldsOnDisjointTypesMustMerge
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateDataBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
@@ -162,10 +161,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputDirectory
   @get:Optional
   abstract val debugDir: DirectoryProperty
-
-  @get:Input
-  @get:Optional
-  abstract val generateAsInternal: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -333,7 +328,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
         failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
         packageNameGenerator = packageNameGenerator,
-        generateAsInternal = generateAsInternal.getOrElse(defaultGenerateAsInternal),
+        generateAsInternal = false,
         generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateModelBuilders = generateModelBuilders.getOrElse(defaultGenerateModelBuilders),

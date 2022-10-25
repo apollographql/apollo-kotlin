@@ -4,11 +4,13 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.hooks.AddInternalCompilerHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooksChain
 import com.apollographql.apollo3.gradle.api.AndroidProject
@@ -570,7 +572,6 @@ abstract class DefaultApolloExtension(
           """.trimMargin()))
       }
       task.packageNameGenerator = packageNameGenerator
-      task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
@@ -599,7 +600,20 @@ abstract class DefaultApolloExtension(
           ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
       task.decapitalizeFields.set(service.decapitalizeFields)
       val compilerKotlinHooks = service.compilerKotlinHooks.orNull
-      task.compilerKotlinHooks = if (compilerKotlinHooks == null) ApolloCompilerKotlinHooks.Identity else ApolloCompilerKotlinHooksChain(compilerKotlinHooks)
+      val generateAsInternal = service.generateAsInternal.getOrElse(defaultGenerateAsInternal)
+      task.compilerKotlinHooks = if (compilerKotlinHooks == null) {
+        if (generateAsInternal) {
+          AddInternalCompilerHooks(setOf(".*"))
+        } else {
+          ApolloCompilerKotlinHooks.Identity
+        }
+      } else {
+        if (generateAsInternal) {
+          ApolloCompilerKotlinHooksChain(compilerKotlinHooks + AddInternalCompilerHooks(setOf(".*")))
+        } else {
+          ApolloCompilerKotlinHooksChain(compilerKotlinHooks)
+        }
+      }
     }
   }
 

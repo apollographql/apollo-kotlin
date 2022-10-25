@@ -1,14 +1,14 @@
 package test
 
-import hooks.internalize.NodeQuery
-import hooks.internalize.UserQuery
+import hooks.addinternal.NodeQuery
+import hooks.addinternal.UserQuery
 import org.junit.Test
 import kotlin.reflect.KVisibility
 import kotlin.test.assertEquals
 
-class InternalizeTest {
+class AddInternalTest {
   @Test
-  fun internalize() {
+  fun addInternal() {
     assertEquals(KVisibility.PUBLIC, UserQuery::class.visibility)
     assertEquals(KVisibility.INTERNAL, NodeQuery::class.visibility)
   }

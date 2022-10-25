@@ -8,6 +8,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
+import com.apollographql.apollo3.compiler.hooks.AddInternalCompilerHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
@@ -339,6 +340,9 @@ interface Service {
 
   /**
    * Whether to generate Kotlin models with `internal` visibility modifier.
+   *
+   * To specify which classes to generate as `internal`, [compilerKotlinHooks] with [AddInternalCompilerHooks]
+   * can be used instead.
    *
    * Default value: false
    */

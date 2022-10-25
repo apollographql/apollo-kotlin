@@ -1,0 +1,16 @@
+# Compiler hooks examples
+
+In this project you can see examples of how to use the compiler hooks.
+
+3 example implementations of `ApolloCompilerKotlinHooks` are defined in `build.gradle.kts`:
+
+- `DefaultNullValuesHooks` - Adds a default `null` value to data class fields that are nullable
+- `TypeNameInterfaceHooks` - Adds a super interface to models that expose `__typename`
+- `PrefixNamesHooks` - Prefix generated class names with the specified prefix. Shows how to make
+  `postProcessFileSpec` and `overrideResolvedType` work together.
+
+## Gradle plugin
+
+To use `compilerKotlinHooks` you must use `id("com.apollographql.apollo3.external")` instead of the
+usual `id("com.apollographql.apollo3")`. This is because this one includes the full dependency to KotlinPoet that the
+hooks api depends on.

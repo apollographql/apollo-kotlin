@@ -1,4 +1,5 @@
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.hooks.AddInternalCompilerHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -10,7 +11,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("apollo.test")
 
-  // Note: using the external plugin here to be able to reference kotlinpoet classes
+  // Note: using the external plugin here to be able to reference KotlinPoet classes
   id("com.apollographql.apollo3.external")
 }
 
@@ -22,9 +23,9 @@ dependencies {
 }
 
 apollo {
-  service("internalize") {
-    packageName.set("hooks.internalize")
-    compilerKotlinHooks.set(listOf(InternalHooks(setOf("NodeQuery"))))
+  service("addinternal") {
+    packageName.set("hooks.addinternal")
+    compilerKotlinHooks.set(listOf(AddInternalCompilerHooks(".*NodeQuery")))
   }
 
   service("defaultnullvalues") {
@@ -44,40 +45,10 @@ apollo {
 }
 
 /**
- * Adds an `internal` modifier to specific operations.
+ * Adds a default `null` value to data class fields that are nullable.
  */
-private class InternalHooks(internalOperations: Set<String>) : DefaultApolloCompilerKotlinHooks() {
-  private val internalTypes = internalOperations + internalOperations.map { it + "_ResponseAdapter" } + internalOperations.map { it + "Selections" }
-
-  override val version = "0"
-
-  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    return fileSpec
-        .toBuilder()
-        .apply {
-          members.replaceAll { member ->
-            if (member is TypeSpec) {
-              if (member.name in internalTypes) {
-                member.toBuilder()
-                    .addModifiers(KModifier.INTERNAL)
-                    .build()
-              } else {
-                member
-              }
-            } else {
-              member
-            }
-          }
-        }
-        .build()
-  }
-}
-
-/**
- * Adds a default value to data class fields that are not nullable.
- */
-private class DefaultNullValuesHooks : DefaultApolloCompilerKotlinHooks() {
-  override val version = "0"
+class DefaultNullValuesHooks : DefaultApolloCompilerKotlinHooks() {
+  override val version = "DefaultNullValuesHooks.0"
 
   override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
     return fileSpec
@@ -128,8 +99,8 @@ private class DefaultNullValuesHooks : DefaultApolloCompilerKotlinHooks() {
 /**
  * Adds a super interface to models that expose __typename.
  */
-private class TypeNameInterfaceHooks(private val interfaceName: String) : DefaultApolloCompilerKotlinHooks() {
-  override val version = "1"
+class TypeNameInterfaceHooks(private val interfaceName: String) : DefaultApolloCompilerKotlinHooks() {
+  override val version = "TypeNameInterfaceHooks.0{$interfaceName}"
 
   override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
     return fileSpec
@@ -176,8 +147,8 @@ private class TypeNameInterfaceHooks(private val interfaceName: String) : Defaul
 /**
  * Prefix generated class names with the specified [prefix].
  */
-private class PrefixNamesHooks(private val prefix: String) : DefaultApolloCompilerKotlinHooks() {
-  override val version = "0"
+class PrefixNamesHooks(private val prefix: String) : DefaultApolloCompilerKotlinHooks() {
+  override val version = "PrefixNamesHooks.0{$prefix}"
 
   override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
     return fileSpec
