@@ -9,6 +9,6 @@ class PrefixNamesTest {
   fun prefixNames() {
     val nodeQuery: GQLNodeQuery = GQLNodeQuery()
     val node: GQLNodeQuery.Node = GQLNodeQuery.Node("", "", null)
-    val onUser: GQLNodeQuery.OnUser = GQLNodeQuery.OnUser("John", GQLJob.ENGINEER)
+    val onUser: GQLNodeQuery.OnUser = GQLNodeQuery.OnUser("John", GQLJob.engineer)
   }
 }

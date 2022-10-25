@@ -42,6 +42,11 @@ apollo {
     packageName.set("hooks.prefixnames")
     compilerKotlinHooks.set(listOf(PrefixNamesHooks("GQL")))
   }
+
+  service("capitalizeenumvalues") {
+    packageName.set("hooks.capitalizeenumvalues")
+    compilerKotlinHooks.set(listOf(CapitalizeEnumValuesHooks()))
+  }
 }
 
 /**
@@ -176,5 +181,54 @@ class PrefixNamesHooks(private val prefix: String) : DefaultApolloCompilerKotlin
         ClassName(it.packageName, it.simpleNames.mapIndexed { idx, s -> if (idx == it.simpleNames.lastIndex) s else prefix + s })
       }
     }
+  }
+}
+
+
+/**
+ * Make generated enum values uppercase.
+ */
+class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
+  override val version = "CapitalizeEnumValuesHooks.0"
+
+  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
+    return fileSpec
+        .toBuilder()
+        .apply {
+          members.replaceAll { member ->
+            if (member is TypeSpec && member.isEnum) {
+              member.toBuilder()
+                  .apply {
+                    val capitalizedEnumConstants = enumConstants.mapKeys { (key, _) ->
+                      key.toUpperCase()
+                    }
+                    enumConstants.clear()
+                    enumConstants.putAll(capitalizedEnumConstants)
+
+                    // knownValues is in the companion object
+                    typeSpecs.replaceAll { typeSpec ->
+                      typeSpec.toBuilder()
+                          .apply {
+                            funSpecs.replaceAll { funSpec ->
+                              if (funSpec.name == "knownValues") {
+                                funSpec.toBuilder()
+                                    .clearBody()
+                                    .addStatement("return arrayOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                                    .build()
+                              } else {
+                                funSpec
+                              }
+                            }
+                          }
+                          .build()
+                    }
+                  }
+                  .build()
+            } else {
+              member
+            }
+          }
+        }
+        .build()
   }
 }

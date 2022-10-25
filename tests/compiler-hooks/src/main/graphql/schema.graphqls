@@ -14,7 +14,7 @@ type User implements Node {
 }
 
 enum Job {
-  ENGINEER
-  DESIGNER
-  PRODUCT_MANAGER
+  engineer
+  designer
+  product_manager
 }

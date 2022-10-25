@@ -2,12 +2,13 @@
 
 In this project you can see examples of how to use the compiler hooks.
 
-3 example implementations of `ApolloCompilerKotlinHooks` are defined in `build.gradle.kts`:
+A few example implementations of `ApolloCompilerKotlinHooks` are defined in `build.gradle.kts`:
 
 - `DefaultNullValuesHooks` - Adds a default `null` value to data class fields that are nullable
 - `TypeNameInterfaceHooks` - Adds a super interface to models that expose `__typename`
 - `PrefixNamesHooks` - Prefix generated class names with the specified prefix. Shows how to make
   `postProcessFileSpec` and `overrideResolvedType` work together.
+- `CapitalizeEnumValuesHooks` - Capitalize generated enum values
 
 ## Gradle plugin
 
