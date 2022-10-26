@@ -462,25 +462,49 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/Dat
 public abstract interface class com/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks {
 	public abstract fun getVersion ()Ljava/lang/String;
 	public abstract fun overrideResolvedType (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
-	public abstract fun postProcessJavaFile (Lcom/squareup/javapoet/JavaFile;)Lcom/squareup/javapoet/JavaFile;
+	public abstract fun postProcessFiles (Ljava/util/Collection;)Ljava/util/Collection;
+}
+
+public final class com/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$FileInfo {
+	public fun <init> (Lcom/squareup/javapoet/JavaFile;)V
+	public final fun component1 ()Lcom/squareup/javapoet/JavaFile;
+	public final fun copy (Lcom/squareup/javapoet/JavaFile;)Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$FileInfo;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$FileInfo;Lcom/squareup/javapoet/JavaFile;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$FileInfo;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getJavaFile ()Lcom/squareup/javapoet/JavaFile;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks {
 	public abstract fun getVersion ()Ljava/lang/String;
 	public abstract fun overrideResolvedType (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public abstract fun postProcessFileSpec (Lcom/squareup/kotlinpoet/FileSpec;)Lcom/squareup/kotlinpoet/FileSpec;
+	public abstract fun postProcessFiles (Ljava/util/Collection;)Ljava/util/Collection;
+}
+
+public final class com/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$FileInfo {
+	public fun <init> (Lcom/squareup/kotlinpoet/FileSpec;Z)V
+	public final fun component1 ()Lcom/squareup/kotlinpoet/FileSpec;
+	public final fun component2 ()Z
+	public final fun copy (Lcom/squareup/kotlinpoet/FileSpec;Z)Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$FileInfo;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$FileInfo;Lcom/squareup/kotlinpoet/FileSpec;ZILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$FileInfo;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFileSpec ()Lcom/squareup/kotlinpoet/FileSpec;
+	public final fun getTargetTestDir ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class com/apollographql/apollo3/compiler/hooks/DefaultApolloCompilerJavaHooks : com/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks {
 	public fun <init> ()V
 	public fun overrideResolvedType (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/squareup/javapoet/ClassName;)Lcom/squareup/javapoet/ClassName;
-	public fun postProcessJavaFile (Lcom/squareup/javapoet/JavaFile;)Lcom/squareup/javapoet/JavaFile;
+	public fun postProcessFiles (Ljava/util/Collection;)Ljava/util/Collection;
 }
 
 public abstract class com/apollographql/apollo3/compiler/hooks/DefaultApolloCompilerKotlinHooks : com/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks {
 	public fun <init> ()V
 	public fun overrideResolvedType (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public fun postProcessFileSpec (Lcom/squareup/kotlinpoet/FileSpec;)Lcom/squareup/kotlinpoet/FileSpec;
+	public fun postProcessFiles (Ljava/util/Collection;)Ljava/util/Collection;
 }
 
 public final class com/apollographql/apollo3/compiler/introspection/IntrospectionSchema {
