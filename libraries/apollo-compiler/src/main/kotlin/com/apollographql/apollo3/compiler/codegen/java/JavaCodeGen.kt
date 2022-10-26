@@ -55,7 +55,7 @@ internal class JavaCodeGen(
     private val generateQueryDocument: Boolean,
     private val generateSchema: Boolean,
     private val generatedSchemaName: String,
-    private val generateModelBuilder: Boolean,
+    private val generateModelBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
      * want to flatten at depth 1 to avoid name clashes, but it's ok to flatten fragment response adapters at
@@ -90,7 +90,7 @@ internal class JavaCodeGen(
     val context = JavaContext(
         layout = layout,
         resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes, nullableFieldStyle),
-        generateModelBuilder = generateModelBuilder,
+        generateModelBuilders = generateModelBuilders,
         nullableFieldStyle = nullableFieldStyle,
     )
     val builders = mutableListOf<JavaClassBuilder>()

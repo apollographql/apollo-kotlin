@@ -12,7 +12,7 @@ dependencies {
 apollo {
   packageName.set("model.builders")
   generateKotlinModels.set(false)
-  generateModelBuilder.set(true)
+  generateModelBuilders.set(true)
 }
 
 java {

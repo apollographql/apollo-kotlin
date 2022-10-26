@@ -459,7 +459,17 @@ interface Service {
    * Default: false
    */
   @ApolloExperimental
+  @Deprecated("use generateModelBuilders instead", ReplaceWith("generateModelBuilders"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_6_3)
   val generateModelBuilder: Property<Boolean>
+
+  /**
+   * Whether to generate response model builders for Java.
+   *
+   * Default: false
+   */
+  @ApolloExperimental
+  val generateModelBuilders: Property<Boolean>
 
   /**
    * What codegen to use. One of "operationBased", "responseBased", "compat" or "experimental_operationBasedWithInterfaces"

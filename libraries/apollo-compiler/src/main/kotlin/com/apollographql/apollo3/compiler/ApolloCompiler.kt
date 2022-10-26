@@ -202,7 +202,7 @@ object ApolloCompiler {
             classesForEnumsMatching = options.classesForEnumsMatching,
             scalarMapping = options.scalarMapping,
             generateDataBuilders = options.generateDataBuilders,
-            generateModelBuilder = options.generateModelBuilder,
+            generateModelBuilders = options.generateModelBuilders,
             generatePrimitiveTypes = options.generatePrimitiveTypes,
             nullableFieldStyle = options.nullableFieldStyle,
             decapitalizeFields = options.decapitalizeFields,

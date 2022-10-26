@@ -95,7 +95,7 @@ internal class ModelBuilder(
         .addSuperinterfaces(superInterfaces)
         .build()
         .let {
-          if (context.generateModelBuilder) {
+          if (context.generateModelBuilders) {
             it.addBuilder(context)
           } else {
             it
