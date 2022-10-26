@@ -754,6 +754,11 @@ interface Service {
      * @param name: the name of the source set. For an example, "main", "test" or "androidTest"
      * You can also use more qualified source sets like "demo", "debug" or "demoDebug"
      */
+    @Deprecated(
+        "This method doesn't mark the sources as \"generated\". This confuses some tools like lint that might do extra work on the generated files",
+        ReplaceWith("connectToAndroidVariant(variant)")
+    )
+    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_6_3)
     fun connectToAndroidSourceSet(name: String)
 
     /**
