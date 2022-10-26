@@ -356,40 +356,55 @@ class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
 }
 
 /**
- * TODO
+ * Add setters and getters to the models.
  */
 class AddGettersAndSettersHooks : DefaultApolloCompilerJavaHooks() {
-  override val version = "AddGettersAndSettersHooks.1"
+  override val version = "AddGettersAndSettersHooks.0"
 
   override fun postProcessFiles(files: Collection<ApolloCompilerJavaHooks.FileInfo>): Collection<ApolloCompilerJavaHooks.FileInfo> {
     return files.map {
       val javaFile = it.javaFile
       it.copy(javaFile = JavaFile.builder(
           javaFile.packageName,
-          javaFile.typeSpec!!.toBuilder()
-              .apply {
-                com.squareup.javapoet.TypeName.OBJECT.canonicalName()
-                typeSpecs.replaceAll { typeSpec ->
-                  typeSpec
-                      .toBuilder()
-                      .addMethods(javaFile.typeSpec.fieldSpecs.flatMap { fieldSpec ->
-                        listOf(
-                            MethodSpec.methodBuilder("get${fieldSpec.name.capitalize()}")
-                                .addModifiers(Modifier.PUBLIC)
-                                .returns(fieldSpec.type)
-                                .addStatement("return this.\$L", fieldSpec.name)
-                                .build(),
-                            MethodSpec.methodBuilder("set${fieldSpec.name.capitalize()}")
-                                .addModifiers(Modifier.PUBLIC)
-                                .addParameter(fieldSpec.type, fieldSpec.name)
-                                .addStatement("this.\$L = \$L", fieldSpec.name, fieldSpec.name)
-                                .build()
-                        )
-                      })
-                      .build()
+          // Only process operations (generated at the top level)
+          if (javaFile.packageName.endsWith(".adapter") ||
+              javaFile.packageName.endsWith(".selections") ||
+              javaFile.packageName.endsWith(".type") ||
+              javaFile.packageName.endsWith(".fragment")
+          ) {
+            javaFile.typeSpec
+          } else {
+            javaFile.typeSpec!!.toBuilder()
+                .apply {
+                  typeSpecs.replaceAll { typeSpec ->
+                    if (typeSpec.name == "Builder") {
+                      typeSpec
+                    } else {
+                      typeSpec
+                          .toBuilder()
+                          .addMethods(typeSpec.fieldSpecs
+                              // Ignore $hashCode, $toString etc.
+                              .filterNot { fieldSpec -> fieldSpec.hasModifier(Modifier.TRANSIENT) }
+                              .flatMap { fieldSpec ->
+                                listOf(
+                                    MethodSpec.methodBuilder("get${fieldSpec.name.removePrefix("__").capitalize()}")
+                                        .addModifiers(Modifier.PUBLIC)
+                                        .returns(fieldSpec.type)
+                                        .addStatement("return this.\$L", fieldSpec.name)
+                                        .build(),
+                                    MethodSpec.methodBuilder("set${fieldSpec.name.removePrefix("__").capitalize()}")
+                                        .addModifiers(Modifier.PUBLIC)
+                                        .addParameter(fieldSpec.type, fieldSpec.name)
+                                        .addStatement("this.\$L = \$L", fieldSpec.name, fieldSpec.name)
+                                        .build()
+                                )
+                              })
+                          .build()
+                    }
+                  }
                 }
-              }
-              .build())
+                .build()
+          })
           .build()
       )
     }

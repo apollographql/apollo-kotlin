@@ -9,6 +9,7 @@ A few example implementations of `ApolloCompilerKotlinHooks` are defined in `bui
 - `PrefixNamesKotlinHooks` / `PrefixNamesJavaHooks` - Prefix generated class names with the specified prefix. Shows how
   to make `postProcessFileSpec` and `overrideResolvedType` work together.
 - `CapitalizeEnumValuesHooks` - Capitalize generated enum values
+- `AddGettersAndSettersHooks` - Add getters and setters to the models
 
 ## Gradle plugin
 
