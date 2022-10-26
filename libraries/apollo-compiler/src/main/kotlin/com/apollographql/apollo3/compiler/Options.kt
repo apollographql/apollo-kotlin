@@ -332,7 +332,7 @@ class Options(
     val compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
 
     /**
-     * Hooks to customize the generated Kotlin code.
+     * Hooks to customize the generated Java code.
      *
      * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
      */

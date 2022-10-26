@@ -657,9 +657,9 @@ interface Service {
   val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
 
   /**
-   * Hooks to customize the generated Kotlin code.
+   * Hooks to customize the generated Java code.
    *
-   * See [ApolloCompilerKotlinHooks] for more details.
+   * See [ApolloCompilerJavaHooks] for more details.
    *
    * Only valid when [generateKotlinModels] is `false`
    *
