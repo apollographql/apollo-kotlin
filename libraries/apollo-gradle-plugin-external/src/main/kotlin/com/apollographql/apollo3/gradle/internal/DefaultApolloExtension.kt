@@ -372,7 +372,7 @@ abstract class DefaultApolloExtension(
       }
 
       project.androidExtension != null -> {
-        connection.connectToAndroidSourceSet("main")
+        connection.connectToAllAndroidVariants()
       }
 
       project.kotlinProjectExtension != null -> {

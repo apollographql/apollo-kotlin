@@ -16,7 +16,7 @@ configurations.create("gr8Classpath")
 val shadeConfiguration = configurations.create("shade")
 
 // Set to false to skip relocation and save some building time during development
-val relocateJar = true
+val relocateJar = false
 
 dependencies {
   /**
@@ -122,6 +122,8 @@ tasks.withType<Test> {
   dependsOn(":libraries:apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":libraries:apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
   dependsOn(":libraries:apollo-compiler:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":libraries:apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":libraries:apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")

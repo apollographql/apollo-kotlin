@@ -757,6 +757,12 @@ interface Service {
     fun connectToAndroidSourceSet(name: String)
 
     /**
+     * Connects the generated sources to all the Android variants
+     * Throws if the Android plugin is not applied
+     */
+    fun connectToAllAndroidVariants()
+
+    /**
      * Connects the generated sources to the given Android variant. This will
      * look up the most specific source set used by this variant. For an example, "demoDebug"
      *
