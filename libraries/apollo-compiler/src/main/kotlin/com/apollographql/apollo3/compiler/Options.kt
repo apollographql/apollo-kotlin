@@ -226,7 +226,7 @@ class Options(
      * Default value: false
      * Only valid for java models as kotlin has data classes
      */
-    val generateModelBuilder: Boolean = defaultGenerateModelBuilder,
+    val generateModelBuilders: Boolean = defaultGenerateModelBuilders,
 
     /**
      * A list of [Regex] patterns for GraphQL enums that should be generated as Kotlin sealed classes instead of the default Kotlin enums.
@@ -451,7 +451,7 @@ class Options(
     const val defaultGeneratedSchemaName = "__Schema"
     const val defaultGenerateTestBuilders = false
     const val defaultGenerateDataBuilders = false
-    const val defaultGenerateModelBuilder = false
+    const val defaultGenerateModelBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     val defaultClassesForEnumsMatching = listOf(".*")
     const val defaultGenerateOptionalOperationVariables = true

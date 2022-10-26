@@ -23,7 +23,7 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInt
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateDataBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateModelBuilder
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateModelBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateOptionalOperationVariables
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratePrimitiveTypes
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
@@ -128,7 +128,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateModelBuilder: Property<Boolean>
+  abstract val generateModelBuilders: Property<Boolean>
 
   @get:Input
   @get:Optional
@@ -329,7 +329,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generateAsInternal = generateAsInternal.getOrElse(defaultGenerateAsInternal),
         generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
-        generateModelBuilder = generateModelBuilder.getOrElse(defaultGenerateModelBuilder),
+        generateModelBuilders = generateModelBuilders.getOrElse(defaultGenerateModelBuilders),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),

@@ -576,7 +576,7 @@ abstract class DefaultApolloExtension(
       task.generateQueryDocument.set(service.generateQueryDocument)
       task.generateSchema.set(service.generateSchema)
       task.generatedSchemaName.set(service.generatedSchemaName)
-      task.generateModelBuilder.set(service.generateModelBuilder)
+      task.generateModelBuilders.set(service.generateModelBuilders.orElse(service.generateModelBuilder))
       task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)

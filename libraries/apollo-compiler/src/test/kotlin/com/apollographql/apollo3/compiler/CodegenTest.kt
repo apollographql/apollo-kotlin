@@ -312,7 +312,7 @@ class CodegenTest {
         else -> listOf(".*")
       }
 
-      val generateModelBuilder = when (folder.name) {
+      val generateModelBuilders = when (folder.name) {
         "fragment_with_inline_fragment", "java_primitive_types", "java_apollo_optionals", "java_guava_optionals", "java_java_optionals",
         "simple_target_name", "java_jetbrains_annotations", "java_android_annotations", "java_jsr305_annotations",
         -> true
@@ -408,7 +408,7 @@ class CodegenTest {
           generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
-          generateModelBuilder = generateModelBuilder,
+          generateModelBuilders = generateModelBuilders,
           generateSchema = generateSchema,
           moduleName = folder.name,
           targetLanguage = targetLanguage,
