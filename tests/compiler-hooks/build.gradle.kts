@@ -6,10 +6,12 @@ import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
+import javax.lang.model.element.Modifier
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
@@ -61,6 +63,16 @@ apollo {
     packageName.set("hooks.capitalizeenumvalues")
     compilerKotlinHooks.set(listOf(CapitalizeEnumValuesHooks()))
   }
+
+  service("gettersandsetters.java") {
+    packageName.set("hooks.gettersandsetters")
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    generateKotlinModels.set(false)
+    compilerJavaHooks.set(listOf(AddGettersAndSettersHooks()))
+  }
+
 }
 
 /**
@@ -347,6 +359,39 @@ class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
  * TODO
  */
 class AddGettersAndSettersHooks : DefaultApolloCompilerJavaHooks() {
-  override val version = "AddGettersAndSettersHooks.0"
+  override val version = "AddGettersAndSettersHooks.1"
 
+  override fun postProcessFiles(files: Collection<ApolloCompilerJavaHooks.FileInfo>): Collection<ApolloCompilerJavaHooks.FileInfo> {
+    return files.map {
+      val javaFile = it.javaFile
+      it.copy(javaFile = JavaFile.builder(
+          javaFile.packageName,
+          javaFile.typeSpec!!.toBuilder()
+              .apply {
+                com.squareup.javapoet.TypeName.OBJECT.canonicalName()
+                typeSpecs.replaceAll { typeSpec ->
+                  typeSpec
+                      .toBuilder()
+                      .addMethods(javaFile.typeSpec.fieldSpecs.flatMap { fieldSpec ->
+                        listOf(
+                            MethodSpec.methodBuilder("get${fieldSpec.name.capitalize()}")
+                                .addModifiers(Modifier.PUBLIC)
+                                .returns(fieldSpec.type)
+                                .addStatement("return this.\$L", fieldSpec.name)
+                                .build(),
+                            MethodSpec.methodBuilder("set${fieldSpec.name.capitalize()}")
+                                .addModifiers(Modifier.PUBLIC)
+                                .addParameter(fieldSpec.type, fieldSpec.name)
+                                .addStatement("this.\$L = \$L", fieldSpec.name, fieldSpec.name)
+                                .build()
+                        )
+                      })
+                      .build()
+                }
+              }
+              .build())
+          .build()
+      )
+    }
+  }
 }
