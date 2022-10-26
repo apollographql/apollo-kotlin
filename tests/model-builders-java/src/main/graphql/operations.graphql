@@ -1,0 +1,76 @@
+query GetInt {
+  nullableInt
+  nonNullableInt
+}
+
+query GetCustomScalar {
+  long1
+  long2
+  long3
+  listOfListOfLong1
+}
+
+query GetDirection {
+  direction
+}
+
+mutation PutInt {
+  nullableInt
+}
+
+query GetAliases {
+  aliasedNullableInt: nullableInt
+  cat {
+    species
+  }
+  aliasedCat: cat {
+    species
+  }
+}
+
+query GetAnimal {
+  animal {
+    species
+    ... on Lion {
+      roar
+    }
+  }
+}
+
+query GetFeline {
+  feline {
+    ... on Cat {
+      mustaches
+    }
+  }
+}
+
+query GetEverything {
+  nullableInt
+  nonNullableInt
+  listOfListOfInt
+  direction
+  listOfListOfAnimal {
+    species
+  }
+  cat {
+    mustaches
+  }
+  animal {
+    species
+  }
+  feline {
+    ... on Lion {
+      roar
+    }
+  }
+}
+
+query GetPartial {
+  listOfListOfAnimal {
+    species
+    ... on Lion {
+      roar
+    }
+  }
+}

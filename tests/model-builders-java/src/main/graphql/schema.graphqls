@@ -1,0 +1,55 @@
+schema {
+  query: Query
+  mutation: MutationRoot
+}
+
+type Query {
+  nullableInt: Int
+  nonNullableInt: Int!
+  direction: Direction!,
+  cat: Cat!
+  animal: Animal!
+  feline: Feline!
+  long1: Long1
+  listOfListOfLong1: [[Long1]!]
+  long2: Long2
+  long3: Long3
+  listOfListOfInt: [[Int]!]
+  listOfListOfAnimal: [[Animal]!]
+}
+
+enum Direction {
+  SOUTH,
+  NORTH
+}
+
+type MutationRoot {
+  nullableInt: Int
+}
+
+interface Animal {
+  species: String!
+}
+
+type Cat implements Animal & Animal2 {
+  species: String!
+  mustaches: Int!
+}
+
+type Lion implements Animal {
+  species: String!
+  roar: String!
+}
+
+union Feline = Cat | Lion
+
+# an interface that is not directly queried but still needs to be added because the data builders
+# will reference them
+interface Animal2 {
+  species: String!
+}
+union Feline2 = Cat | Lion
+
+scalar Long1
+scalar Long2
+scalar Long3
