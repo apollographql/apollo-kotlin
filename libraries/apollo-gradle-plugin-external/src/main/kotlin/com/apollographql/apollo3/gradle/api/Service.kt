@@ -8,8 +8,9 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.hooks.AddInternalCompilerHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
@@ -648,10 +649,24 @@ interface Service {
    *
    * See [ApolloCompilerKotlinHooks] for more details.
    *
-   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this API,
+   * Only valid when [generateKotlinModels] is `true`
+   *
+   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
    * so the KotlinPoet classes are available in the classpath.
    */
   val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
+
+  /**
+   * Hooks to customize the generated Kotlin code.
+   *
+   * See [ApolloCompilerKotlinHooks] for more details.
+   *
+   * Only valid when [generateKotlinModels] is `false`
+   *
+   * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
+   * so the JavaPoet classes are available in the classpath.
+   */
+  val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
   /**
    * A shorthand method that configures defaults that match Apollo Android 2.x codegen

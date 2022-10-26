@@ -252,7 +252,7 @@ internal class OperationBuilder(
   private fun TypeSpec.Builder.addBuilder(context: JavaContext): TypeSpec.Builder {
     addMethod(BuilderBuilder.builderFactoryMethod())
 
-    val operationClassName = ClassName.get(packageName, simpleName)
+    val operationClassName = context.resolver.resolveOperation(operation.name)
 
     if (operation.variables.isEmpty()) {
       return addType(

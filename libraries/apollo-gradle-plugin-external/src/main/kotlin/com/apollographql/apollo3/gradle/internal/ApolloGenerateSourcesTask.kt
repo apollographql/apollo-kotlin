@@ -40,6 +40,7 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -242,6 +243,12 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @Input
   fun getCompilerKotlinHooksVersion() = compilerKotlinHooks.version
 
+  @get:Internal
+  lateinit var compilerJavaHooks: ApolloCompilerJavaHooks
+
+  @Input
+  fun getCompilerJavaHooksVersion() = compilerJavaHooks.version
+
   @TaskAction
   fun taskAction() {
     val metadata = metadataFiles.files.toList().map { ApolloMetadata.readFrom(it) }
@@ -360,6 +367,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle),
         decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
         compilerKotlinHooks = compilerKotlinHooks,
+        compilerJavaHooks = compilerJavaHooks,
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

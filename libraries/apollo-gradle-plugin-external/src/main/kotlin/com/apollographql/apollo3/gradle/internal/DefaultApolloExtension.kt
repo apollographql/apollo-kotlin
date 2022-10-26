@@ -10,9 +10,11 @@ import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
-import com.apollographql.apollo3.compiler.hooks.AddInternalCompilerHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooksChain
+import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
+import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
+import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
@@ -613,6 +615,12 @@ abstract class DefaultApolloExtension(
         } else {
           ApolloCompilerKotlinHooksChain(compilerKotlinHooks)
         }
+      }
+      val compilerJavaHooks = service.compilerJavaHooks.orNull
+      task.compilerJavaHooks = if (compilerJavaHooks == null) {
+        ApolloCompilerJavaHooks.Identity
+      } else {
+        ApolloCompilerJavaHooksChain(compilerJavaHooks)
       }
     }
   }

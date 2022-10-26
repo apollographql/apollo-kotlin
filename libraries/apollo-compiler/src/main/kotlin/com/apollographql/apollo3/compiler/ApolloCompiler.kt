@@ -206,6 +206,7 @@ object ApolloCompiler {
             generatePrimitiveTypes = options.generatePrimitiveTypes,
             nullableFieldStyle = options.nullableFieldStyle,
             decapitalizeFields = options.decapitalizeFields,
+            hooks = options.compilerJavaHooks,
         ).write(outputDir = outputDir)
       }
 

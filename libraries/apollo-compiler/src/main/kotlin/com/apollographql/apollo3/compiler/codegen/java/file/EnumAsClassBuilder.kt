@@ -29,12 +29,14 @@ internal class EnumAsClassBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.enumName(enum.name)
-  private val selfClassName = ClassName.get(packageName, simpleName)
+
+  private val selfClassName: ClassName
+    get() = context.resolver.resolveSchemaType(enum.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(
         enum.name,
-        selfClassName
+        ClassName.get(packageName, simpleName)
     )
   }
 
@@ -84,10 +86,10 @@ internal class EnumAsClassBuilder(
                         .beginControlFlow("switch($rawValue)")
                         .apply {
                           values.forEach {
-                            add("case $S: return $L.$L;\n", it.name, layout.enumName(name), layout.enumValueName(it.targetName))
+                            add("case $S: return $T.$L;\n", it.name, selfClassName, layout.enumValueName(it.targetName))
                           }
                         }
-                        .add("default: return new $L.${Identifier.UNKNOWN__}($rawValue);\n", layout.enumName(name))
+                        .add("default: return new $T.${Identifier.UNKNOWN__}($rawValue);\n", selfClassName)
                         .endControlFlow()
                         .build()
                 )

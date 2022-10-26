@@ -1,6 +1,9 @@
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
-import com.apollographql.apollo3.compiler.hooks.AddInternalCompilerHooks
+import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
+import com.squareup.javapoet.JavaFile
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -25,6 +28,7 @@ dependencies {
 apollo {
   service("addinternal") {
     packageName.set("hooks.addinternal")
+    @OptIn(ApolloInternal::class)
     compilerKotlinHooks.set(listOf(AddInternalCompilerHooks(".*NodeQuery")))
   }
 
@@ -38,9 +42,18 @@ apollo {
     compilerKotlinHooks.set(listOf(TypeNameInterfaceHooks("hooks.typenameinterface.HasTypeName")))
   }
 
-  service("prefixnames") {
-    packageName.set("hooks.prefixnames")
-    compilerKotlinHooks.set(listOf(PrefixNamesHooks("GQL")))
+  service("prefixnames.kotlin") {
+    packageName.set("hooks.prefixnames.kotlin")
+    compilerKotlinHooks.set(listOf(PrefixNamesKotlinHooks("GQL")))
+  }
+
+  service("prefixnames.java") {
+    packageName.set("hooks.prefixnames.java")
+    outputDirConnection {
+      connectToJavaSourceSet("main")
+    }
+    generateKotlinModels.set(false)
+    compilerJavaHooks.set(listOf(PrefixNamesJavaHooks("GQL")))
   }
 
   service("capitalizeenumvalues") {
@@ -150,10 +163,10 @@ class TypeNameInterfaceHooks(private val interfaceName: String) : DefaultApolloC
 }
 
 /**
- * Prefix generated class names with the specified [prefix].
+ * Prefix generated class names with the specified [prefix] (Kotlin).
  */
-class PrefixNamesHooks(private val prefix: String) : DefaultApolloCompilerKotlinHooks() {
-  override val version = "PrefixNamesHooks.0{$prefix}"
+class PrefixNamesKotlinHooks(private val prefix: String) : DefaultApolloCompilerKotlinHooks() {
+  override val version = "PrefixNamesKotlinHooks.0{$prefix}"
 
   override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
     return fileSpec
@@ -179,6 +192,88 @@ class PrefixNamesHooks(private val prefix: String) : DefaultApolloCompilerKotlin
         ClassName(it.packageName, prefix + it.simpleName)
       } else {
         ClassName(it.packageName, it.simpleNames.mapIndexed { idx, s -> if (idx == it.simpleNames.lastIndex) s else prefix + s })
+      }
+    }
+  }
+}
+
+/**
+ * Prefix generated class names with the specified [prefix] (Java).
+ */
+class PrefixNamesJavaHooks(private val prefix: String) : DefaultApolloCompilerJavaHooks() {
+  override val version = "PrefixNamesJavaHooks.6{$prefix}"
+
+  override fun postProcessJavaFile(javaFile: JavaFile): JavaFile {
+    return JavaFile.builder(javaFile.packageName, javaFile.typeSpec!!.toBuilder(prefix + javaFile.typeSpec.name).build())
+        .build()
+  }
+
+  override fun overrideResolvedType(key: ResolverKey, resolved: com.squareup.javapoet.ClassName?): com.squareup.javapoet.ClassName? {
+    return resolved?.let {
+      // Don't prefix nested types.
+      // e.g. MyQuery -> PrefixMyQuery
+      //      MyQuery.Data -> PrefixMyQuery.Data
+      if (it.simpleNames().size == 1) {
+        com.squareup.javapoet.ClassName.get(it.packageName(), prefix + it.simpleName())
+      } else {
+        val simpleNames = it.simpleNames().mapIndexed { idx, s -> if (idx == it.simpleNames().lastIndex) s else prefix + s }
+        com.squareup.javapoet.ClassName.get(it.packageName(), simpleNames[0], *simpleNames.drop(1).toTypedArray())
+      }
+    }
+  }
+
+  private fun com.squareup.javapoet.TypeSpec.toBuilder(name: String): com.squareup.javapoet.TypeSpec.Builder {
+    return when (kind) {
+      com.squareup.javapoet.TypeSpec.Kind.CLASS -> {
+        com.squareup.javapoet.TypeSpec.classBuilder(name)
+            .addJavadoc(javadoc)
+            .addAnnotations(annotations)
+            .addModifiers(*modifiers.toTypedArray())
+            .addTypeVariables(typeVariables)
+            .superclass(superclass)
+            .addSuperinterfaces(superinterfaces)
+            .addFields(fieldSpecs)
+            // XXX Skip the equals methods which reference the generated class name
+            .addMethods(methodSpecs.filterNot { it.name == "equals" })
+            .addTypes(typeSpecs)
+            .addInitializerBlock(initializerBlock)
+            .addStaticBlock(staticBlock)
+      }
+
+      com.squareup.javapoet.TypeSpec.Kind.ENUM -> {
+        com.squareup.javapoet.TypeSpec.enumBuilder(name)
+            .addJavadoc(javadoc)
+            .addAnnotations(annotations)
+            .addModifiers(*modifiers.toTypedArray())
+            .addTypeVariables(typeVariables)
+            .addSuperinterfaces(superinterfaces)
+            .addFields(fieldSpecs)
+            .addMethods(methodSpecs.filterNot { it.name == "equals" })
+            .addTypes(typeSpecs)
+            .also {
+              enumConstants.forEach { (name, typeSpec) ->
+                it.addEnumConstant(name, typeSpec)
+              }
+            }
+      }
+
+      com.squareup.javapoet.TypeSpec.Kind.INTERFACE -> {
+        com.squareup.javapoet.TypeSpec.interfaceBuilder(name)
+            .addJavadoc(javadoc)
+            .addAnnotations(annotations)
+            .addModifiers(*modifiers.toTypedArray())
+            .addTypeVariables(typeVariables)
+            .superclass(superclass)
+            .addSuperinterfaces(superinterfaces)
+            .addFields(fieldSpecs)
+            .addMethods(methodSpecs.filterNot { it.name == "equals" })
+            .addTypes(typeSpecs)
+            .addInitializerBlock(initializerBlock)
+            .addStaticBlock(staticBlock)
+      }
+
+      else -> {
+        throw IllegalArgumentException("Unknown type kind: $kind")
       }
     }
   }
