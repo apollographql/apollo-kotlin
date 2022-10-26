@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.hooks
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks.FileInfo
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 
@@ -28,12 +29,10 @@ interface ApolloCompilerKotlinHooks {
   /**
    * Allows processing the generated files right before they are written to the disk.
    *
-   * This will be called once per file.
-   * To keep a file as-is, return [fileSpec].
-   *
-   * @param fileSpec the KotlinPoet representation of the file
+   * This will be called once after preparing all files.
+   * To keep the files as-is, return [files].
    */
-  fun postProcessFileSpec(fileSpec: FileSpec): FileSpec
+  fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo>
 
   /**
    * The default implementation of [ApolloCompilerKotlinHooks] that overrides nothing.
@@ -42,9 +41,21 @@ interface ApolloCompilerKotlinHooks {
   object Identity : DefaultApolloCompilerKotlinHooks() {
     override val version: String = "ApolloCompilerKotlinHooks.Identity.0"
   }
+
+  data class FileInfo(
+      /**
+       * The KotlinPoet representation of the file.
+       */
+      val fileSpec: FileSpec,
+
+      /**
+       * If `true` the file will be written to the test source set, otherwise it will be written to the main source set.
+       */
+      val targetTestDir: Boolean,
+  )
 }
 
 abstract class DefaultApolloCompilerKotlinHooks : ApolloCompilerKotlinHooks {
-  override fun postProcessFileSpec(fileSpec: FileSpec) = fileSpec
+  override fun postProcessFiles(files: Collection<FileInfo>) = files
   override fun overrideResolvedType(key: ResolverKey, resolved: ClassName?) = resolved
 }

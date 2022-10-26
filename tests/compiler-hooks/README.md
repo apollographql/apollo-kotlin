@@ -6,8 +6,8 @@ A few example implementations of `ApolloCompilerKotlinHooks` are defined in `bui
 
 - `DefaultNullValuesHooks` - Adds a default `null` value to data class fields that are nullable
 - `TypeNameInterfaceHooks` - Adds a super interface to models that expose `__typename`
-- `PrefixNamesHooks` - Prefix generated class names with the specified prefix. Shows how to make
-  `postProcessFileSpec` and `overrideResolvedType` work together.
+- `PrefixNamesKotlinHooks` / `PrefixNamesJavaHooks` - Prefix generated class names with the specified prefix. Shows how
+  to make `postProcessFileSpec` and `overrideResolvedType` work together.
 - `CapitalizeEnumValuesHooks` - Capitalize generated enum values
 
 ## Gradle plugin

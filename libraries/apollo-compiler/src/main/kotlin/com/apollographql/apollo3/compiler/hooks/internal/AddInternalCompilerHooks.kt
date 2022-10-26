@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.compiler.hooks.internal
 
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
-import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -23,29 +23,34 @@ class AddInternalCompilerHooks(namePatterns: Set<String>) : DefaultApolloCompile
 
   override val version = "AddInternalCompilerHooks.0{$namePatterns}"
 
-  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    return fileSpec
-        .toBuilder()
-        .apply {
-          members.replaceAll { member ->
-            if (member is TypeSpec) {
-              if (nameRegexes.any {
-                    it.matches(fileSpec.packageName + "." + member.name!!) ||
-                        // Also match response adapters and selections, so callers can pass operation names directly
-                        it.matches(fileSpec.packageName + "." + (member.name!!.removeSuffix("_ResponseAdapter"))) ||
-                        it.matches(fileSpec.packageName + "." + (member.name!!.removeSuffix("Selections")))
-                  }) {
-                member.toBuilder()
-                    .addModifiers(KModifier.INTERNAL)
-                    .build()
-              } else {
-                member
+  override fun postProcessFiles(files: Collection<ApolloCompilerKotlinHooks.FileInfo>): Collection<ApolloCompilerKotlinHooks.FileInfo> {
+    return files
+        .map { fileInfo ->
+          val fileSpec = fileInfo.fileSpec
+          fileInfo.copy(fileSpec =
+          fileSpec.toBuilder()
+              .apply {
+                members.replaceAll { member ->
+                  if (member is TypeSpec) {
+                    if (nameRegexes.any {
+                          it.matches(fileSpec.packageName + "." + member.name!!) ||
+                              // Also match response adapters and selections, so callers can pass operation names directly
+                              it.matches(fileSpec.packageName + "." + (member.name!!.removeSuffix("_ResponseAdapter"))) ||
+                              it.matches(fileSpec.packageName + "." + (member.name!!.removeSuffix("Selections")))
+                        }) {
+                      member.toBuilder()
+                          .addModifiers(KModifier.INTERNAL)
+                          .build()
+                    } else {
+                      member
+                    }
+                  } else {
+                    member
+                  }
+                }
               }
-            } else {
-              member
-            }
-          }
+              .build()
+          )
         }
-        .build()
   }
 }

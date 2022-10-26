@@ -204,13 +204,12 @@ internal class JavaCodeGen(
     }
 
     builders.forEach { it.prepare() }
-    builders
+    val fileInfos = builders
         .map {
-          it.build()
-        }.forEach {
-          val builder = JavaFile.builder(
-              it.packageName,
-              it.typeSpec
+          val codegenJavaFile = it.build()
+          val javaFile = JavaFile.builder(
+              codegenJavaFile.packageName,
+              codegenJavaFile.typeSpec
           ).addFileComment(
               """
                 
@@ -220,12 +219,15 @@ internal class JavaCodeGen(
                 
               """.trimIndent()
           )
-
-          builder
               .build()
-              .let { hooks.postProcessJavaFile(it) }
-              .writeTo(outputDir)
+          ApolloCompilerJavaHooks.FileInfo(javaFile = javaFile)
         }
+        .let { hooks.postProcessFiles(it) }
+
+    // Write the files to disk
+    fileInfos.forEach {
+      it.javaFile.writeTo(outputDir)
+    }
 
     return ResolverInfo(
         magic = "KotlinCodegen",

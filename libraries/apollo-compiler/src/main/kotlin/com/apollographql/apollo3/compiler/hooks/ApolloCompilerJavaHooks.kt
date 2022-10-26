@@ -2,6 +2,7 @@ package com.apollographql.apollo3.compiler.hooks
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks.FileInfo
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
 
@@ -28,12 +29,10 @@ interface ApolloCompilerJavaHooks {
   /**
    * Allows processing the generated files right before they are written to the disk.
    *
-   * This will be called once per file.
-   * To keep a file as-is, return [javaFile].
-   *
-   * @param javaFile the KotlinPoet representation of the file
+   * This will be called once after preparing all files.
+   * To keep the files as-is, return [files].
    */
-  fun postProcessJavaFile(javaFile: JavaFile): JavaFile
+  fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo>
 
   /**
    * The default implementation of [ApolloCompilerJavaHooks] that overrides nothing.
@@ -42,10 +41,17 @@ interface ApolloCompilerJavaHooks {
   object Identity : DefaultApolloCompilerJavaHooks() {
     override val version: String = "ApolloCompilerJavaHooks.Identity.0"
   }
+
+  data class FileInfo(
+      /**
+       * The JavaPoet representation of the file.
+       */
+      val javaFile: JavaFile,
+  )
 }
 
 abstract class DefaultApolloCompilerJavaHooks : ApolloCompilerJavaHooks {
-  override fun postProcessJavaFile(javaFile: JavaFile) = javaFile
+  override fun postProcessFiles(files: Collection<FileInfo>) = files
   override fun overrideResolvedType(key: ResolverKey, resolved: ClassName?) = resolved
 }
 

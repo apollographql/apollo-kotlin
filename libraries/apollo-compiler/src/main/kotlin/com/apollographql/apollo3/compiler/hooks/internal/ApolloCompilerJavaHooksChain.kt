@@ -3,8 +3,8 @@ package com.apollographql.apollo3.compiler.hooks.internal
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks.FileInfo
 import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.JavaFile
 
 @ApolloInternal
 class ApolloCompilerJavaHooksChain(
@@ -12,9 +12,9 @@ class ApolloCompilerJavaHooksChain(
 ) : ApolloCompilerJavaHooks {
   override val version: String = hooks.joinToString("/") { it.version }
 
-  override fun postProcessJavaFile(javaFile: JavaFile): JavaFile {
-    return hooks.fold(javaFile) { acc, hook ->
-      hook.postProcessJavaFile(acc)
+  override fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo> {
+    return hooks.fold(files) { acc, hook ->
+      hook.postProcessFiles(acc)
     }
   }
 

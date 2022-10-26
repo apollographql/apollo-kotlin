@@ -1,12 +1,13 @@
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks.FileInfo
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.squareup.javapoet.JavaFile
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -68,19 +69,22 @@ apollo {
 class DefaultNullValuesHooks : DefaultApolloCompilerKotlinHooks() {
   override val version = "DefaultNullValuesHooks.0"
 
-  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    return fileSpec
-        .toBuilder()
-        .apply {
-          members.replaceAll { member ->
-            if (member is TypeSpec) {
-              member.addDefaultValueToNullableProperties()
-            } else {
-              member
+  override fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo> {
+    return files.map {
+      it.copy(fileSpec = it.fileSpec
+          .toBuilder()
+          .apply {
+            members.replaceAll { member ->
+              if (member is TypeSpec) {
+                member.addDefaultValueToNullableProperties()
+              } else {
+                member
+              }
             }
           }
-        }
-        .build()
+          .build()
+      )
+    }
   }
 
   private fun TypeSpec.addDefaultValueToNullableProperties(): TypeSpec {
@@ -120,19 +124,22 @@ class DefaultNullValuesHooks : DefaultApolloCompilerKotlinHooks() {
 class TypeNameInterfaceHooks(private val interfaceName: String) : DefaultApolloCompilerKotlinHooks() {
   override val version = "TypeNameInterfaceHooks.0{$interfaceName}"
 
-  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    return fileSpec
-        .toBuilder()
-        .apply {
-          members.replaceAll { member ->
-            if (member is TypeSpec) {
-              member.addSuperInterfaceOnType()
-            } else {
-              member
+  override fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo> {
+    return files.map {
+      it.copy(fileSpec = it.fileSpec
+          .toBuilder()
+          .apply {
+            members.replaceAll { member ->
+              if (member is TypeSpec) {
+                member.addSuperInterfaceOnType()
+              } else {
+                member
+              }
             }
           }
-        }
-        .build()
+          .build()
+      )
+    }
   }
 
   private fun TypeSpec.addSuperInterfaceOnType(): TypeSpec {
@@ -168,19 +175,22 @@ class TypeNameInterfaceHooks(private val interfaceName: String) : DefaultApolloC
 class PrefixNamesKotlinHooks(private val prefix: String) : DefaultApolloCompilerKotlinHooks() {
   override val version = "PrefixNamesKotlinHooks.0{$prefix}"
 
-  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    return fileSpec
-        .toBuilder(name = prefix + fileSpec.name)
-        .apply {
-          members.replaceAll { member ->
-            if (member is TypeSpec) {
-              member.toBuilder(name = member.name?.let { prefix + it }).build()
-            } else {
-              member
+  override fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo> {
+    return files.map {
+      it.copy(fileSpec = it.fileSpec
+          .toBuilder(name = prefix + it.fileSpec.name)
+          .apply {
+            members.replaceAll { member ->
+              if (member is TypeSpec) {
+                member.toBuilder(name = member.name?.let { prefix + it }).build()
+              } else {
+                member
+              }
             }
           }
-        }
-        .build()
+          .build()
+      )
+    }
   }
 
   override fun overrideResolvedType(key: ResolverKey, resolved: ClassName?): ClassName? {
@@ -203,9 +213,12 @@ class PrefixNamesKotlinHooks(private val prefix: String) : DefaultApolloCompiler
 class PrefixNamesJavaHooks(private val prefix: String) : DefaultApolloCompilerJavaHooks() {
   override val version = "PrefixNamesJavaHooks.6{$prefix}"
 
-  override fun postProcessJavaFile(javaFile: JavaFile): JavaFile {
-    return JavaFile.builder(javaFile.packageName, javaFile.typeSpec!!.toBuilder(prefix + javaFile.typeSpec.name).build())
-        .build()
+  override fun postProcessFiles(files: Collection<ApolloCompilerJavaHooks.FileInfo>): Collection<ApolloCompilerJavaHooks.FileInfo> {
+    return files.map {
+      it.copy(javaFile = JavaFile.builder(it.javaFile.packageName, it.javaFile.typeSpec!!.toBuilder(prefix + it.javaFile.typeSpec.name).build())
+          .build()
+      )
+    }
   }
 
   override fun overrideResolvedType(key: ResolverKey, resolved: com.squareup.javapoet.ClassName?): com.squareup.javapoet.ClassName? {
@@ -279,51 +292,61 @@ class PrefixNamesJavaHooks(private val prefix: String) : DefaultApolloCompilerJa
   }
 }
 
-
 /**
  * Make generated enum values uppercase.
  */
 class CapitalizeEnumValuesHooks : DefaultApolloCompilerKotlinHooks() {
   override val version = "CapitalizeEnumValuesHooks.0"
 
-  override fun postProcessFileSpec(fileSpec: FileSpec): FileSpec {
-    return fileSpec
-        .toBuilder()
-        .apply {
-          members.replaceAll { member ->
-            if (member is TypeSpec && member.isEnum) {
-              member.toBuilder()
-                  .apply {
-                    val capitalizedEnumConstants = enumConstants.mapKeys { (key, _) ->
-                      key.toUpperCase()
-                    }
-                    enumConstants.clear()
-                    enumConstants.putAll(capitalizedEnumConstants)
+  override fun postProcessFiles(files: Collection<FileInfo>): Collection<FileInfo> {
+    return files.map {
+      it.copy(fileSpec = it.fileSpec
+          .toBuilder()
+          .apply {
+            members.replaceAll { member ->
+              if (member is TypeSpec && member.isEnum) {
+                member.toBuilder()
+                    .apply {
+                      val capitalizedEnumConstants = enumConstants.mapKeys { (key, _) ->
+                        key.toUpperCase()
+                      }
+                      enumConstants.clear()
+                      enumConstants.putAll(capitalizedEnumConstants)
 
-                    // knownValues is in the companion object
-                    typeSpecs.replaceAll { typeSpec ->
-                      typeSpec.toBuilder()
-                          .apply {
-                            funSpecs.replaceAll { funSpec ->
-                              if (funSpec.name == "knownValues") {
-                                funSpec.toBuilder()
-                                    .clearBody()
-                                    .addStatement("return arrayOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
-                                    .build()
-                              } else {
-                                funSpec
+                      // knownValues is in the companion object
+                      typeSpecs.replaceAll { typeSpec ->
+                        typeSpec.toBuilder()
+                            .apply {
+                              funSpecs.replaceAll { funSpec ->
+                                if (funSpec.name == "knownValues") {
+                                  funSpec.toBuilder()
+                                      .clearBody()
+                                      .addStatement("return arrayOf(%L)", capitalizedEnumConstants.keys.filterNot { it == "UNKNOWN__" }.joinToString())
+                                      .build()
+                                } else {
+                                  funSpec
+                                }
                               }
                             }
-                          }
-                          .build()
+                            .build()
+                      }
                     }
-                  }
-                  .build()
-            } else {
-              member
+                    .build()
+              } else {
+                member
+              }
             }
           }
-        }
-        .build()
+          .build()
+      )
+    }
   }
+}
+
+/**
+ * TODO
+ */
+class AddGettersAndSettersHooks : DefaultApolloCompilerJavaHooks() {
+  override val version = "AddGettersAndSettersHooks.0"
+
 }
