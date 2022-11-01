@@ -47,8 +47,7 @@
       "Using without apollo-runtime": "/advanced/no-runtime",
       "Fragments": "/essentials/fragments",
       "Inline Fragments": "/essentials/inline-fragments",
-      "Migration guides": "/essentials/migration",
-      "Operation safelisting (enterprise only)": "/advanced/operation-safelisting"
+      "Migration guides": "/essentials/migration"
     }
   }
 }
