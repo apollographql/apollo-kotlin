@@ -90,6 +90,12 @@ fun connectToAndroidSourceSet(
   }
 }
 
+/**
+ * This uses https://cs.android.com/android-studio/platform/tools/base/+/mirror-goog-studio-main:build-system/gradle-core/src/main/java/com/android/build/gradle/api/BaseVariant.java;l=539;drc=5ac687029454dec1e7bd50697dabbc24d5a9943c
+ *
+ * There's a newer API in 7.3 where AGP decides where the sources are put but we're not using that just yet
+ * https://github.com/android/gradle-recipes/blob/agp-7.3/Kotlin/addJavaSourceFromTask/app/build.gradle.kts
+ */
 private val lazyRegisterJavaGeneratingTask: Method? = BaseVariant::class.java.declaredMethods.singleOrNull {
   if (it.name != "registerJavaGeneratingTask") {
     return@singleOrNull false
