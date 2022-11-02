@@ -654,6 +654,7 @@ interface Service {
    * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
    * so the KotlinPoet classes are available in the classpath.
    */
+  @ApolloExperimental
   val compilerKotlinHooks: ListProperty<ApolloCompilerKotlinHooks>
 
   /**
@@ -666,6 +667,7 @@ interface Service {
    * Note: use the `com.apollographql.apollo3.external` Gradle plugin instead of `com.apollographql.apollo3` to use this,
    * so the JavaPoet classes are available in the classpath.
    */
+  @ApolloExperimental
   val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
   /**

@@ -329,6 +329,7 @@ class Options(
      *
      * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_5]
      */
+    @ApolloExperimental
     val compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
 
     /**
@@ -336,6 +337,7 @@ class Options(
      *
      * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
      */
+    @ApolloExperimental
     val compilerJavaHooks: ApolloCompilerJavaHooks = defaultCompilerJavaHooks,
 ) {
 
