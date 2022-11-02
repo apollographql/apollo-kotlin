@@ -374,7 +374,7 @@ abstract class DefaultApolloExtension(
       project.androidExtension != null -> {
         if (registerDefaultService) {
           // The default service is created from `afterEvaluate` and it looks like it's too late to register new sources
-          connection.connectToKotlinSourceSet("main")
+          connection.connectToAndroidSourceSet("main")
         } else {
           connection.connectToAllAndroidVariants()
         }
