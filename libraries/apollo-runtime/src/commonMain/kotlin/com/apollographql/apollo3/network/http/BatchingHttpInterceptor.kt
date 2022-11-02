@@ -18,9 +18,9 @@ import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -66,24 +66,10 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 ) : HttpInterceptor {
   private val dispatcher = CloseableSingleThreadDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
-  private val pendingRequestsMutex = Mutex()
-  private val loopMutex = Mutex(locked = true)
+  private val mutex = Mutex()
   private var disposed = false
 
-  private val job: Job
-
   private var interceptorChain: HttpInterceptorChain? = null
-
-  init {
-    job = scope.launch {
-      while (true) {
-        delay(batchIntervalMillis)
-        // Suspend until there are pending requests
-        loopMutex.lock()
-        executePendingRequests()
-      }
-    }
-  }
 
   class PendingRequest(
       val request: HttpRequest,
@@ -107,7 +93,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
 
     val pendingRequest = PendingRequest(request)
 
-    val sendNow = pendingRequestsMutex.withLock {
+    val sendNow = mutex.withLock {
       // if there was an error, the previous job was already canceled, ignore that error
       pendingRequests.add(pendingRequest)
       pendingRequests.size >= maxBatchSize
@@ -115,8 +101,9 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     if (sendNow) {
       executePendingRequests()
     } else {
-      if (loopMutex.isLocked) {
-        loopMutex.unlock()
+      scope.launch {
+        delay(batchIntervalMillis - (currentTimeMillis() % batchIntervalMillis) - 1)
+        executePendingRequests()
       }
     }
 
@@ -124,7 +111,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
   }
 
   private suspend fun executePendingRequests() {
-    val pending = pendingRequestsMutex.withLock {
+    val pending = mutex.withLock {
       val copy = pendingRequests.toList()
       pendingRequests.clear()
       copy
@@ -238,7 +225,6 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       interceptorChain = null
       scope.cancel()
       dispatcher.close()
-      job.cancel()
       disposed = true
     }
   }
