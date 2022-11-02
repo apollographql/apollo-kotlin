@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -56,35 +55,21 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
     });
   }
 
-  private static class PendingRequest {
-    private final HttpRequest request;
-    private final CountDownLatch latch = new CountDownLatch(1);
-    private HttpResponse response;
-    private ApolloNetworkException exception;
+  private static class PendingRequest implements HttpCallback {
+    private final @NotNull HttpRequest request;
+    private final @NotNull HttpCallback callback;
 
-    private PendingRequest(HttpRequest request) {
+    private PendingRequest(@NotNull HttpRequest request, @NotNull HttpCallback callback) {
       this.request = request;
+      this.callback = callback;
     }
 
-    private void setResponse(HttpResponse response) {
-      this.response = response;
-      latch.countDown();
+    @Override public void onResponse(@NotNull HttpResponse response) {
+      callback.onResponse(response);
     }
 
-    private void setException(ApolloNetworkException exception) {
-      this.exception = exception;
-      latch.countDown();
-    }
-
-    private HttpResponse getResponse() throws ApolloNetworkException {
-      try {
-        latch.await();
-      } catch (InterruptedException ignored) {
-      }
-      if (exception != null) {
-        throw exception;
-      }
-      return response;
+    @Override public void onFailure(@NotNull ApolloNetworkException exception) {
+      callback.onFailure(exception);
     }
   }
 
@@ -104,7 +89,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
     // Keep the chain for later
     interceptorChain = chain;
 
-    PendingRequest pendingRequest = new PendingRequest(request);
+    PendingRequest pendingRequest = new PendingRequest(request, callback);
     int pendingRequestsSize;
     synchronized (pendingRequests) {
       pendingRequests.add(pendingRequest);
@@ -114,12 +99,6 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
       executePendingRequests();
     } else {
       scheduleExecutePendingRequests();
-    }
-
-    try {
-      callback.onResponse(pendingRequest.getResponse());
-    } catch (ApolloNetworkException e) {
-      callback.onFailure(e);
     }
   }
 
@@ -223,7 +202,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
           }
           for (int i = 0; i < result.size(); i++) {
             // This works because the server must return the responses in order
-            pending.get(i).setResponse(new HttpResponse.Builder(200)
+            pending.get(i).onResponse(new HttpResponse.Builder(200)
                 .body(result.get(i))
                 .build()
             );
@@ -231,14 +210,14 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
 
         } catch (ApolloNetworkException e) {
           for (PendingRequest p : pending) {
-            p.setException(e);
+            p.onFailure(e);
           }
         }
       }
 
       @Override public void onFailure(@NotNull ApolloNetworkException exception) {
         for (PendingRequest p : pending) {
-          p.setException(exception);
+          p.onFailure(exception);
         }
       }
     });
