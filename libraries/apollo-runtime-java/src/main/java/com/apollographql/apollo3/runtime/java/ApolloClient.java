@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.CustomScalarType;
 import com.apollographql.apollo3.api.ExecutionContext;
+import com.apollographql.apollo3.api.ExecutionOptions;
 import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
@@ -23,6 +24,7 @@ import com.apollographql.apollo3.runtime.java.network.NetworkTransport;
 import com.apollographql.apollo3.runtime.java.network.http.HttpEngine;
 import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
 import com.apollographql.apollo3.runtime.java.network.http.HttpNetworkTransport;
+import com.apollographql.apollo3.runtime.java.network.http.internal.BatchingHttpInterceptor;
 import com.apollographql.apollo3.runtime.java.network.http.internal.OkHttpHttpEngine;
 import com.apollographql.apollo3.runtime.java.network.ws.WebSocketNetworkTransport;
 import com.apollographql.apollo3.runtime.java.network.ws.protocol.GraphQLWsProtocol;
@@ -45,17 +47,36 @@ public class ApolloClient {
   private List<ApolloInterceptor> interceptors;
   private CustomScalarAdapters customScalarAdapters;
   private NetworkInterceptor networkInterceptor;
+  private HttpMethod httpMethod;
+  private List<HttpHeader> httpHeaders;
+  private Boolean sendApqExtensions;
+  private Boolean sendDocument;
+  private Boolean enableAutoPersistedQueries;
+  private Boolean canBeBatched;
 
   private ApolloClient(
       Executor executor,
       NetworkTransport httpNetworkTransport,
       NetworkTransport subscriptionNetworkTransport,
       List<ApolloInterceptor> interceptors,
-      CustomScalarAdapters customScalarAdapters
+      CustomScalarAdapters customScalarAdapters,
+      HttpMethod httpMethod,
+      List<HttpHeader> httpHeaders,
+      Boolean sendApqExtensions,
+      Boolean sendDocument,
+      Boolean enableAutoPersistedQueries,
+      Boolean canBeBatched
   ) {
     this.executor = executor;
     this.interceptors = interceptors;
     this.customScalarAdapters = customScalarAdapters;
+    this.httpMethod = httpMethod;
+    this.httpHeaders = httpHeaders;
+    this.sendApqExtensions = sendApqExtensions;
+    this.sendDocument = sendDocument;
+    this.enableAutoPersistedQueries = enableAutoPersistedQueries;
+    this.canBeBatched = canBeBatched;
+
     networkInterceptor = new NetworkInterceptor(
         httpNetworkTransport,
         subscriptionNetworkTransport
@@ -74,11 +95,34 @@ public class ApolloClient {
     return new DefaultApolloCall<>(this, operation);
   }
 
-  public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> request, @NotNull ApolloCallback<D> callback) {
+  public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> apolloRequest, @NotNull ApolloCallback<D> callback) {
+    ApolloRequest.Builder<D> requestBuilder = new ApolloRequest.Builder<>(apolloRequest.getOperation())
+        .addExecutionContext(customScalarAdapters)
+        .addExecutionContext(apolloRequest.getExecutionContext())
+        .httpMethod(httpMethod)
+        .httpHeaders(httpHeaders)
+        .sendApqExtensions(sendApqExtensions)
+        .sendDocument(sendDocument)
+        .enableAutoPersistedQueries(enableAutoPersistedQueries);
+    if (apolloRequest.getHttpMethod() != null) {
+      requestBuilder.httpMethod(apolloRequest.getHttpMethod());
+    }
+    if (apolloRequest.getHttpHeaders() != null) {
+      requestBuilder.httpHeaders(apolloRequest.getHttpHeaders());
+    }
+    if (apolloRequest.getSendApqExtensions() != null) {
+      requestBuilder.sendApqExtensions(apolloRequest.getSendApqExtensions());
+    }
+    if (apolloRequest.getSendDocument() != null) {
+      requestBuilder.sendDocument(apolloRequest.getSendDocument());
+    }
+    if (apolloRequest.getEnableAutoPersistedQueries() != null) {
+      requestBuilder.enableAutoPersistedQueries(apolloRequest.getEnableAutoPersistedQueries());
+    }
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
     interceptors.add(networkInterceptor);
-    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, callback));
+    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(requestBuilder.build(), callback));
     return disposable;
   }
 
@@ -380,7 +424,13 @@ public class ApolloClient {
           networkTransport,
           subscriptionNetworkTransport,
           interceptors,
-          customScalarAdaptersBuilder.build()
+          customScalarAdaptersBuilder.build(),
+          httpMethod,
+          httpHeaders,
+          sendApqExtensions,
+          sendDocument,
+          enableAutoPersistedQueries,
+          canBeBatched
       );
     }
 
@@ -414,6 +464,22 @@ public class ApolloClient {
       );
       enableAutoPersistedQueries(enableByDefault);
 
+      return this;
+    }
+
+    /**
+     * Batch HTTP queries to execute multiple at once. This reduces the number of HTTP round trips at the price of increased latency as
+     * every request in the batch is now as slow as the slowest one. Some servers might have a per-HTTP-call cache making it faster to
+     * resolve 1 big array of n queries compared to resolving the n queries separately.
+     * <p>
+     * See also {@link BatchingHttpInterceptor}.
+     *
+     * @param batchIntervalMillis the interval between two batches
+     * @param maxBatchSize always send the batch when this threshold is reached
+     */
+    public Builder httpBatching(long batchIntervalMillis, int maxBatchSize, boolean enableByDefault) {
+      addHttpInterceptor(new BatchingHttpInterceptor(batchIntervalMillis, maxBatchSize, httpExposeErrorBody != null && httpExposeErrorBody));
+      canBeBatched(enableByDefault);
       return this;
     }
 
@@ -482,7 +548,9 @@ public class ApolloClient {
     }
 
     @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
-      throw new UnsupportedOperationException();
+      this.canBeBatched = canBeBatched;
+      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString());
+      return this;
     }
 
   }

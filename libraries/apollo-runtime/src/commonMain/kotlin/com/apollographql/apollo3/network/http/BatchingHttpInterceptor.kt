@@ -18,9 +18,9 @@ import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
+import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -69,18 +69,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
   private val mutex = Mutex()
   private var disposed = false
 
-  private val job: Job
-
   private var interceptorChain: HttpInterceptorChain? = null
-
-  init {
-    job = scope.launch {
-      while (true) {
-        delay(batchIntervalMillis)
-        executePendingRequests()
-      }
-    }
-  }
 
   class PendingRequest(
       val request: HttpRequest,
@@ -111,6 +100,11 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     }
     if (sendNow) {
       executePendingRequests()
+    } else {
+      scope.launch {
+        delay(batchIntervalMillis - (currentTimeMillis() % batchIntervalMillis) - 1)
+        executePendingRequests()
+      }
     }
 
     return pendingRequest.deferred.await()
