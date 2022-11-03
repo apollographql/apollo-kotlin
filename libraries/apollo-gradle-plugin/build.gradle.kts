@@ -122,6 +122,8 @@ tasks.withType<Test> {
   dependsOn(":libraries:apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
   dependsOn(":libraries:apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
   dependsOn(":libraries:apollo-compiler:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":libraries:apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":libraries:apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")

@@ -140,6 +140,7 @@ public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Service$DirectoryConnection {
+	public abstract fun connectToAllAndroidVariants ()V
 	public abstract fun connectToAndroidSourceSet (Ljava/lang/String;)V
 	public abstract fun connectToAndroidVariant (Ljava/lang/Object;)V
 	public abstract fun connectToJavaSourceSet (Ljava/lang/String;)V
