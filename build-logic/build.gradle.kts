@@ -56,6 +56,7 @@ dependencies {
 // 'compileJava' task (current target is 11) and 'compileKotlin' task (current target is 1.8) jvm target compatibility should be set to the same Java version.
 java {
   toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+  toolchain.vendor.set(JvmVendorSpec.AZUL)
 }
 
 gradlePlugin {
