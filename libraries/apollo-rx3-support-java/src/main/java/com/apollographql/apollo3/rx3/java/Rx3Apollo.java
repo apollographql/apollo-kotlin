@@ -60,7 +60,19 @@ public class Rx3Apollo {
 
   @NotNull
   @CheckReturnValue
+  public static <T extends Operation.Data> Flowable<ApolloResponse<T>> flowable(@NotNull final ApolloCall<T> call) {
+    return flowable(call, BackpressureStrategy.BUFFER);
+  }
+
+  @NotNull
+  @CheckReturnValue
   public static <T extends Operation.Data> Single<ApolloResponse<T>> single(@NotNull final ApolloCall<T> call, @NotNull BackpressureStrategy backpressureStrategy) {
     return flowable(call, backpressureStrategy).firstOrError();
+  }
+
+  @NotNull
+  @CheckReturnValue
+  public static <T extends Operation.Data> Single<ApolloResponse<T>> single(@NotNull final ApolloCall<T> call) {
+    return single(call, BackpressureStrategy.BUFFER);
   }
 }

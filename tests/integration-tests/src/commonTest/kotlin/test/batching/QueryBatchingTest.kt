@@ -93,7 +93,7 @@ class QueryBatchingTest {
   }
 
   @Test
-  fun queriesAreNotBatchedIfSubmittedFarAppart() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun queriesAreNotBatchedIfSubmittedFarApart() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("""[{"data":{"launch":{"id":"83"}}}]""")
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()

@@ -35,14 +35,16 @@ import okhttp3.WebSocket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import static com.apollographql.apollo3.api.java.Assertions.checkNotNull;
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
-public class ApolloClient {
+public class ApolloClient implements Closeable {
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
   private CustomScalarAdapters customScalarAdapters;
@@ -147,6 +149,12 @@ public class ApolloClient {
 
   public CustomScalarAdapters getCustomScalarAdapters() {
     return customScalarAdapters;
+  }
+
+  public void close() {
+    if (executor instanceof ApolloDefaultExecutor) {
+      ((ApolloDefaultExecutor) executor).shutdown();
+    }
   }
 
 
@@ -552,10 +560,21 @@ public class ApolloClient {
       if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString());
       return this;
     }
+  }
 
+  private static class ApolloDefaultExecutor implements Executor {
+    private final ExecutorService executor = newCachedThreadPool(runnable -> new Thread(runnable, "Apollo Dispatcher"));
+
+    @Override public void execute(@NotNull Runnable command) {
+      executor.execute(command);
+    }
+
+    public void shutdown() {
+      executor.shutdown();
+    }
   }
 
   static private Executor defaultExecutor() {
-    return newCachedThreadPool(runnable -> new Thread(runnable, "Apollo Dispatcher"));
+    return new ApolloDefaultExecutor();
   }
 }

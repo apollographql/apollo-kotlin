@@ -7,7 +7,8 @@ public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCal
 	public abstract fun onResponse (Lcom/apollographql/apollo3/api/ApolloResponse;)V
 }
 
-public class com/apollographql/apollo3/runtime/java/ApolloClient {
+public class com/apollographql/apollo3/runtime/java/ApolloClient : java/io/Closeable {
+	public fun close ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/runtime/java/ApolloCallback;)Lcom/apollographql/apollo3/runtime/java/ApolloDisposable;
 	public fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public fun mutation (Lcom/apollographql/apollo3/api/Mutation;)Lcom/apollographql/apollo3/runtime/java/ApolloCall;
