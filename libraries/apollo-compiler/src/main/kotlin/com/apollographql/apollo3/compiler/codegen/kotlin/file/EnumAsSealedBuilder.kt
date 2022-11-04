@@ -31,15 +31,16 @@ internal class EnumAsSealedBuilder(
   private val packageName = layout.typePackageName()
   private val simpleName = layout.enumName(enum.name)
 
-  private val selfClassName = ClassName(
-      packageName,
-      simpleName
-  )
+  private val selfClassName: ClassName
+    get() = context.resolver.resolveSchemaType(enum.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(
         enum.name,
-        selfClassName
+        ClassName(
+            packageName,
+            simpleName
+        )
     )
   }
 
@@ -61,7 +62,7 @@ internal class EnumAsSealedBuilder(
         .addProperty(rawValuePropertySpec)
         .addType(companionTypeSpec())
         .addTypes(values.map { value ->
-          value.toObjectTypeSpec(ClassName("", layout.enumName(name)))
+          value.toObjectTypeSpec(selfClassName)
         })
         .addType(unknownValueTypeSpec())
         .build()
@@ -89,7 +90,7 @@ internal class EnumAsSealedBuilder(
     return TypeSpec.classBuilder("UNKNOWN__")
         .addKdoc("%L", "An enum value that wasn't known at compile time.\n")
         .primaryConstructor(primaryConstructorSpec)
-        .superclass(ClassName("", layout.enumName(name)))
+        .superclass(selfClassName)
         .addSuperclassConstructorParameter("rawValue·=·rawValue")
         .addFunction(
             FunSpec.builder("equals")
@@ -119,11 +120,11 @@ internal class EnumAsSealedBuilder(
 
   private fun IrEnum.safeValueOfFunSpec(): FunSpec {
     return FunSpec.builder(safeValueOf)
-        .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", className())
+        .addKdoc("Returns the [%T] that represents the specified [rawValue].\n", selfClassName)
         .maybeSuppressDeprecation(enum.values)
         .maybeAddOptIn(context.resolver, enum.values)
         .addParameter("rawValue", KotlinSymbols.String)
-        .returns(className())
+        .returns(selfClassName)
         .beginControlFlow("return·when(rawValue)")
         .addCode(
             values
@@ -137,10 +138,10 @@ internal class EnumAsSealedBuilder(
 
   private fun IrEnum.knownValuesFunSpec(): FunSpec {
     return FunSpec.builder(knownValues)
-        .addKdoc("Returns all [%T] known at compile time", className())
+        .addKdoc("Returns all [%T] known at compile time", selfClassName)
         .maybeSuppressDeprecation(enum.values)
         .maybeAddOptIn(context.resolver, enum.values)
-        .returns(KotlinSymbols.Array.parameterizedBy(className()))
+        .returns(KotlinSymbols.Array.parameterizedBy(selfClassName))
         .addCode(
             CodeBlock.builder()
                 .add("return·arrayOf(\n")
@@ -158,18 +159,11 @@ internal class EnumAsSealedBuilder(
   }
 
   private fun IrEnum.Value.valueClassName(): ClassName {
-    return ClassName(packageName, simpleName, layout.enumAsSealedClassValueName(targetName))
+    return ClassName(selfClassName.packageName, selfClassName.simpleName, layout.enumAsSealedClassValueName(targetName))
   }
 
   private fun unknownValueClassName(): ClassName {
-    return ClassName(packageName, simpleName, "UNKNOWN__")
-  }
-
-  private fun className(): TypeName {
-    return ClassName(
-        packageName,
-        simpleName
-    )
+    return ClassName(selfClassName.packageName, selfClassName.simpleName, "UNKNOWN__")
   }
 
   private val primaryConstructorSpec =

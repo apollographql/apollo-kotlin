@@ -1,0 +1,20 @@
+type Query {
+  user: User
+  node: Node
+}
+
+interface Node {
+  id: ID!
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  job: Job
+}
+
+enum Job {
+  engineer
+  designer
+  product_manager
+}

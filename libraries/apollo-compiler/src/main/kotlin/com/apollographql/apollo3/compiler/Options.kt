@@ -8,6 +8,8 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import java.io.File
@@ -321,6 +323,22 @@ class Options(
      * Default: false
      */
     val decapitalizeFields: Boolean = defaultDecapitalizeFields,
+
+    /**
+     * Hooks to customize the generated Kotlin code.
+     *
+     * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_5]
+     */
+    @ApolloExperimental
+    val compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
+
+    /**
+     * Hooks to customize the generated Java code.
+     *
+     * Only valid when [targetLanguage] is [TargetLanguage.JAVA]
+     */
+    @ApolloExperimental
+    val compilerJavaHooks: ApolloCompilerJavaHooks = defaultCompilerJavaHooks,
 ) {
 
   /**
@@ -384,6 +402,8 @@ class Options(
       generatePrimitiveTypes: Boolean = this.generatePrimitiveTypes,
       nullableFieldStyle: JavaNullable = this.nullableFieldStyle,
       decapitalizeFields: Boolean = this.decapitalizeFields,
+      compilerKotlinHooks: ApolloCompilerKotlinHooks = this.compilerKotlinHooks,
+      compilerJavaHooks: ApolloCompilerJavaHooks = this.compilerJavaHooks,
   ) = Options(
       executableFiles = executableFiles,
       schema = schema,
@@ -425,6 +445,8 @@ class Options(
       generatePrimitiveTypes = generatePrimitiveTypes,
       nullableFieldStyle = nullableFieldStyle,
       decapitalizeFields = decapitalizeFields,
+      compilerKotlinHooks = compilerKotlinHooks,
+      compilerJavaHooks = compilerJavaHooks,
   )
 
   companion object {
@@ -461,6 +483,8 @@ class Options(
     const val defaultGeneratePrimitiveTypes = false
     val defaultNullableFieldStyle = JavaNullable.NONE
     const val defaultDecapitalizeFields = false
+    val defaultCompilerKotlinHooks = ApolloCompilerKotlinHooks.Identity
+    val defaultCompilerJavaHooks = ApolloCompilerJavaHooks.Identity
   }
 }
 

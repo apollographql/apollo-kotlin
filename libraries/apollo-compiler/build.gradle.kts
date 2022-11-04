@@ -15,11 +15,11 @@ dependencies {
   implementation(project(":libraries:apollo-api")) {
     because("For BooleanExpression")
   }
-  implementation(golatac.lib("poet.kotlin")) {
+  api(golatac.lib("poet.kotlin")) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")
   }
-  implementation(golatac.lib("poet.java"))
+  api(golatac.lib("poet.java"))
 
   implementation(golatac.lib("moshi"))
   implementation(golatac.lib("moshix.sealed.runtime"))

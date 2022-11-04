@@ -4,11 +4,17 @@ import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.Options
+import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
+import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
+import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
@@ -573,7 +579,6 @@ abstract class DefaultApolloExtension(
           """.trimMargin()))
       }
       task.packageNameGenerator = packageNameGenerator
-      task.generateAsInternal.set(service.generateAsInternal)
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
       task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectName.set(project.name)
@@ -601,6 +606,35 @@ abstract class DefaultApolloExtension(
       task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullable.fromName(nullableFieldStyle)
           ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
       task.decapitalizeFields.set(service.decapitalizeFields)
+      val compilerKotlinHooks = service.compilerKotlinHooks.orNull ?: emptyList()
+      val generateAsInternal = service.generateAsInternal.getOrElse(defaultGenerateAsInternal)
+      task.compilerKotlinHooks = if (compilerKotlinHooks.isEmpty()) {
+        if (generateAsInternal) {
+          AddInternalCompilerHooks(setOf(".*"))
+        } else {
+          ApolloCompilerKotlinHooks.Identity
+        }
+      } else {
+        checkExternalPlugin()
+        if (generateAsInternal) {
+          ApolloCompilerKotlinHooksChain(compilerKotlinHooks + AddInternalCompilerHooks(setOf(".*")))
+        } else {
+          ApolloCompilerKotlinHooksChain(compilerKotlinHooks)
+        }
+      }
+      val compilerJavaHooks = service.compilerJavaHooks.orNull ?: emptyList()
+      task.compilerJavaHooks = if (compilerJavaHooks.isEmpty()) {
+        ApolloCompilerJavaHooks.Identity
+      } else {
+        checkExternalPlugin()
+        ApolloCompilerJavaHooksChain(compilerJavaHooks)
+      }
+    }
+  }
+
+  private fun checkExternalPlugin() {
+    check(project.plugins.hasPlugin("com.apollographql.apollo3.external")) {
+      "Apollo: to use compilerJavaHooks or compilerKotlinHooks, you need to apply the 'com.apollographql.apollo3.external' Gradle plugin instead of 'com.apollographql.apollo3'"
     }
   }
 

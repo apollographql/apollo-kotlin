@@ -29,6 +29,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -72,6 +73,7 @@ internal class KotlinCodeGen(
     private val addJvmOverloads: Boolean,
     private val requiresOptInAnnotation: String?,
     private val decapitalizeFields: Boolean,
+    private val hooks: ApolloCompilerKotlinHooks,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -79,7 +81,7 @@ internal class KotlinCodeGen(
    */
   fun write(outputDir: File, testDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
-      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation)
+      KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
     }
 
     val layout = KotlinCodegenLayout(
@@ -93,7 +95,7 @@ internal class KotlinCodeGen(
 
     val context = KotlinContext(
         layout = layout,
-        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation),
+        resolver = KotlinResolver(emptyList(), upstreamResolver, scalarMapping, requiresOptInAnnotation, hooks),
         targetLanguageVersion = targetLanguageVersion,
     )
     val builders = mutableListOf<CgFileBuilder>()
@@ -219,10 +221,11 @@ internal class KotlinCodeGen(
     builders.forEach { it.prepare() }
 
     /**
-     * 2nd pass: build the [CgFile]s
+     * 2nd pass: build the [CgFile]s and go through hooks
      */
-    builders.map { it.build() }
-        .forEach { cgFile ->
+    val fileInfos = builders
+        .map {
+          val cgFile = it.build()
           val builder = FileSpec.builder(
               packageName = cgFile.packageName,
               fileName = cgFile.fileName
@@ -245,16 +248,14 @@ internal class KotlinCodeGen(
           cgFile.propertySpecs.map { propertySpec -> propertySpec.internal(generateAsInternal) }.forEach { propertySpec ->
             builder.addProperty(propertySpec)
           }
-          val dir = if (cgFile.isTest) {
-            testDir
-          } else {
-            outputDir
-          }
-
-          builder
-              .build()
-              .writeTo(dir)
+          ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build(), cgFile.isTest)
         }
+        .let { hooks.postProcessFiles(it) }
+
+    // Write the files to disk
+    fileInfos.forEach {
+      it.fileSpec.writeTo(if (it.targetTestDir) testDir else outputDir)
+    }
 
     return ResolverInfo(
         magic = "KotlinCodegen",

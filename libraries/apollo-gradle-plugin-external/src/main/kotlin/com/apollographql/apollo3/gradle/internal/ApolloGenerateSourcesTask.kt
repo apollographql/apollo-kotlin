@@ -19,7 +19,6 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
 import com.apollographql.apollo3.compiler.Options.Companion.defaultDecapitalizeFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
 import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldsOnDisjointTypesMustMerge
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateDataBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
@@ -41,6 +40,8 @@ import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -164,10 +165,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateAsInternal: Property<Boolean>
-
-  @get:Input
-  @get:Optional
   abstract val generateFilterNotNull: Property<Boolean>
 
   @get:Input
@@ -239,6 +236,18 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Input
   @get:Optional
   abstract val decapitalizeFields: Property<Boolean>
+
+  @get:Internal
+  lateinit var compilerKotlinHooks: ApolloCompilerKotlinHooks
+
+  @Input
+  fun getCompilerKotlinHooksVersion() = compilerKotlinHooks.version
+
+  @get:Internal
+  lateinit var compilerJavaHooks: ApolloCompilerJavaHooks
+
+  @Input
+  fun getCompilerJavaHooksVersion() = compilerJavaHooks.version
 
   @TaskAction
   fun taskAction() {
@@ -326,7 +335,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
         failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
         packageNameGenerator = packageNameGenerator,
-        generateAsInternal = generateAsInternal.getOrElse(defaultGenerateAsInternal),
+        generateAsInternal = false,
         generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
         generateModelBuilders = generateModelBuilders.getOrElse(defaultGenerateModelBuilders),
@@ -357,6 +366,8 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generatePrimitiveTypes = fieldsOnDisjointTypesMustMerge.getOrElse(defaultGeneratePrimitiveTypes),
         nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle),
         decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
+        compilerKotlinHooks = compilerKotlinHooks,
+        compilerJavaHooks = compilerJavaHooks,
     )
 
     val outputCompilerMetadata = ApolloCompiler.write(options)

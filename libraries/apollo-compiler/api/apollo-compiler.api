@@ -175,6 +175,8 @@ public final class com/apollographql/apollo3/compiler/OperationOutputGenerator$D
 public final class com/apollographql/apollo3/compiler/Options$Companion {
 	public final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
 	public final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
+	public final fun getDefaultCompilerJavaHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$Identity;
+	public final fun getDefaultCompilerKotlinHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$Identity;
 	public final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
 	public final fun getDefaultNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
@@ -411,7 +413,7 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
-	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;)V
+	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;)V
 	public final fun canResolveSchemaType (Ljava/lang/String;)Z
 	public final fun entries ()Ljava/util/List;
 	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;

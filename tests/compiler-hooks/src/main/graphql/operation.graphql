@@ -1,0 +1,21 @@
+query User {
+  user {
+    id
+    name
+    ... UserFragment
+  }
+}
+
+query Node {
+  node {
+    id
+    ... on User {
+      name
+      job
+    }
+  }
+}
+
+fragment UserFragment on User {
+  job
+}

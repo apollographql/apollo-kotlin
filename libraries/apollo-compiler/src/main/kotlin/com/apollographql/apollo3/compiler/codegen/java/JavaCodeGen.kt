@@ -31,6 +31,7 @@ import com.apollographql.apollo3.compiler.codegen.java.file.OperationVariablesAd
 import com.apollographql.apollo3.compiler.codegen.java.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionMapBuilder
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
@@ -68,6 +69,7 @@ internal class JavaCodeGen(
     private val generatePrimitiveTypes: Boolean,
     private val nullableFieldStyle: JavaNullable,
     private val decapitalizeFields: Boolean,
+    private val hooks: ApolloCompilerJavaHooks,
 ) {
   /**
    * @param outputDir: the directory where to write the Kotlin files
@@ -75,7 +77,7 @@ internal class JavaCodeGen(
    */
   fun write(outputDir: File): ResolverInfo {
     val upstreamResolver = resolverInfos.fold(null as JavaResolver?) { acc, resolverInfo ->
-      JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes, nullableFieldStyle)
+      JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes, nullableFieldStyle, hooks)
     }
 
     val layout = JavaCodegenLayout(
@@ -89,7 +91,7 @@ internal class JavaCodeGen(
 
     val context = JavaContext(
         layout = layout,
-        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes, nullableFieldStyle),
+        resolver = JavaResolver(emptyList(), upstreamResolver, scalarMapping, generatePrimitiveTypes, nullableFieldStyle, hooks),
         generateModelBuilders = generateModelBuilders,
         nullableFieldStyle = nullableFieldStyle,
     )
@@ -202,13 +204,12 @@ internal class JavaCodeGen(
     }
 
     builders.forEach { it.prepare() }
-    builders
+    val fileInfos = builders
         .map {
-          it.build()
-        }.forEach {
-          val builder = JavaFile.builder(
-              it.packageName,
-              it.typeSpec
+          val codegenJavaFile = it.build()
+          val javaFile = JavaFile.builder(
+              codegenJavaFile.packageName,
+              codegenJavaFile.typeSpec
           ).addFileComment(
               """
                 
@@ -218,11 +219,15 @@ internal class JavaCodeGen(
                 
               """.trimIndent()
           )
-
-          builder
               .build()
-              .writeTo(outputDir)
+          ApolloCompilerJavaHooks.FileInfo(javaFile = javaFile)
         }
+        .let { hooks.postProcessFiles(it) }
+
+    // Write the files to disk
+    fileInfos.forEach {
+      it.javaFile.writeTo(outputDir)
+    }
 
     return ResolverInfo(
         magic = "KotlinCodegen",

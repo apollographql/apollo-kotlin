@@ -13,6 +13,8 @@ import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateMeasurements
 import com.apollographql.apollo3.compiler.TestUtils.shouldUpdateTestFixtures
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import okio.buffer
@@ -405,7 +407,6 @@ class CodegenTest {
           codegenModels = codegenModels,
           flattenModels = flattenModels,
           useSemanticNaming = useSemanticNaming,
-          generateAsInternal = generateAsInternal,
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
           generateModelBuilders = generateModelBuilders,
@@ -418,6 +419,7 @@ class CodegenTest {
           generatePrimitiveTypes = generatePrimitiveTypes,
           nullableFieldStyle = nullableFieldStyle,
           decapitalizeFields = decapitalizeFields,
+          compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity
       )
     }
 

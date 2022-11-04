@@ -10,6 +10,7 @@ import com.apollographql.apollo3.compiler.codegen.ResolverEntry
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.obj
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
 import com.apollographql.apollo3.compiler.ir.IrEnumType
 import com.apollographql.apollo3.compiler.ir.IrEnumType2
@@ -37,8 +38,9 @@ class KotlinResolver(
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
     private val requiresOptInAnnotation: String?,
+    private val hooks: ApolloCompilerKotlinHooks,
 ) {
-  fun resolve(key: ResolverKey): ClassName? = classNames[key] ?: next?.resolve(key)
+  fun resolve(key: ResolverKey): ClassName? = hooks.overrideResolvedType(key, classNames[key] ?: next?.resolve(key))
 
   private var classNames = entries.associateBy(
       keySelector = { it.key },
