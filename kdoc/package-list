@@ -49,6 +49,8 @@ com.apollographql.apollo3.compiler.codegen.java.adapter
 com.apollographql.apollo3.compiler.codegen.java.helpers
 com.apollographql.apollo3.compiler.codegen.kotlin
 com.apollographql.apollo3.compiler.codegen.kotlin.helpers
+com.apollographql.apollo3.compiler.hooks
+com.apollographql.apollo3.compiler.hooks.internal
 com.apollographql.apollo3.compiler.introspection
 com.apollographql.apollo3.compiler.operationoutput
 module:apollo-gradle-plugin-external
