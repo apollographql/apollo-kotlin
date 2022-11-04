@@ -64,6 +64,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     private val maxBatchSize: Int = 10,
     private val exposeErrorBody: Boolean = false,
 ) : HttpInterceptor {
+  private val creationTime = currentTimeMillis()
   private val dispatcher = CloseableSingleThreadDispatcher()
   private val scope = CoroutineScope(dispatcher.coroutineDispatcher)
   private val mutex = Mutex()
@@ -102,7 +103,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
       executePendingRequests()
     } else {
       scope.launch {
-        delay(batchIntervalMillis - (currentTimeMillis() % batchIntervalMillis) - 1)
+        delay(batchIntervalMillis - ((currentTimeMillis() - creationTime) % batchIntervalMillis) - 1)
         executePendingRequests()
       }
     }

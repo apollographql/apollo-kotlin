@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -65,7 +64,6 @@ class QueryBatchingTest {
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)
         .build()
-    alignWithCurrentTime(300)
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery()).execute()
@@ -157,7 +155,6 @@ class QueryBatchingTest {
         // Opt out by default
         .canBeBatched(false)
         .build()
-    alignWithCurrentTime(300)
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery())
@@ -205,7 +202,6 @@ class QueryBatchingTest {
         .addHttpHeader("client0", "0")
         .addHttpHeader("client1", "1")
         .build()
-    alignWithCurrentTime(300)
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery()).execute()
@@ -233,7 +229,6 @@ class QueryBatchingTest {
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)
         .build()
-    alignWithCurrentTime(300)
 
     val result1 = async {
       apolloClient.query(GetLaunchQuery())
@@ -260,10 +255,5 @@ class QueryBatchingTest {
     assertFalse(request.headers.keys.contains("query2-only"))
     assertFalse(request.headers.keys.contains("query1+query2-different-value"))
     assertFalse(request.headers.keys.contains(CAN_BE_BATCHED))
-  }
-
-  private suspend fun alignWithCurrentTime(batchIntervalMillis: Int) {
-    // Pending requests in BatchingHttpInterceptor are scheduled with a delay that depends on the current time. Align with it to ensure the tests are reproducible
-    delay(batchIntervalMillis - currentTimeMillis() % batchIntervalMillis - 1)
   }
 }
