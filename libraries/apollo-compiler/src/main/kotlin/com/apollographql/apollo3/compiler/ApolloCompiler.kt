@@ -30,6 +30,28 @@ object ApolloCompiler {
     fun warning(message: String)
   }
 
+  /**
+   * Parses the given files. Throws if there are parsing errors
+   */
+  private fun Collection<File>.definitions(): List<GQLDefinition> {
+    val definitions = mutableListOf<GQLDefinition>()
+    val parseIssues = mutableListOf<Issue>()
+    map { file ->
+      val parseResult = file.source().buffer().parseAsGQLDocument(file.path)
+      if (parseResult.issues.isNotEmpty()) {
+        parseIssues.addAll(parseResult.issues)
+      } else {
+        // We can force cast here because we're guaranteed the parsing step will produce either issues
+        // or a value
+        definitions.addAll(parseResult.value!!.definitions)
+      }
+    }
+    // Parsing issues are fatal
+    parseIssues.checkNoErrors()
+
+    return definitions
+  }
+
   fun write(
       options: Options,
   ): CompilerMetadata {
@@ -59,21 +81,7 @@ object ApolloCompiler {
     /**
      * Step 1: parse the documents
      */
-    val definitions = mutableListOf<GQLDefinition>()
-    val parseIssues = mutableListOf<Issue>()
-    executableFiles.map { file ->
-      val parseResult = file.source().buffer().parseAsGQLDocument(file.path)
-      if (parseResult.issues.isNotEmpty()) {
-        parseIssues.addAll(parseResult.issues)
-      } else {
-        // We can force cast here because we're guaranteed the parsing step will produce either issues
-        // or a value
-        definitions.addAll(parseResult.value!!.definitions)
-      }
-    }
-
-    // Parsing issues are fatal
-    parseIssues.checkNoErrors()
+    val definitions = executableFiles.definitions()
 
     val incomingFragments = options.incomingCompilerMetadata.flatMap { it.fragments }
 
@@ -261,6 +269,10 @@ object ApolloCompiler {
     check(unknownScalars.isEmpty()) {
       "Apollo: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
     }
+  }
+
+  fun writeUsedCoordinates(schema: Schema, files: Set<File>, outputFile: File) {
+    usedCoordinates(schema, files.definitions()).writeTo(outputFile)
   }
 
   val NoOpLogger = object : Logger {

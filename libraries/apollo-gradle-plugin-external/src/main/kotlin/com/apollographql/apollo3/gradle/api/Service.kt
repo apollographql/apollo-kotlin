@@ -24,6 +24,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.TaskProvider
+import java.io.File
 
 /**
  * A [Service] represents a GraphQL schema and associated queries.
@@ -690,6 +691,21 @@ interface Service {
       "and will be removed in a future version")
   @ApolloDeprecatedSince(v3_0_0)
   fun useVersion2Compat(rootPackageName: String? = null)
+
+  /**
+   * By default, the used coordinates are computed automatically from all modules sharing a schema. This means that
+   * changing a query in a module might trigger task execution in a completely different module. If your used coordinates
+   * do not change too often, you can opt-in to save them in a file that is read instead of checking all modules.
+   *
+   * This is more performant but more error prone because you'll need to keep this file up to date by calling `generate${service}ApolloUsedCoordinates`
+   *
+   * We recommend checking the file in source control. For an example in `src/main/graphql/used-coordinates.json`
+   *
+   * @param file A Json file containing an array of GraphQL coordinates
+   *
+   */
+  fun usedCoordinates(file: File)
+  fun usedCoordinates(file: String)
 
   /**
    * Configures [Introspection] to download an introspection Json schema

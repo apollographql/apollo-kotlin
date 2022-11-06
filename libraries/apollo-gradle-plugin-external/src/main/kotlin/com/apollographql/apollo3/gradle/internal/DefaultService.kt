@@ -10,10 +10,13 @@ import com.apollographql.apollo3.gradle.api.Service
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.util.GradleVersion
+import java.io.File
 import javax.inject.Inject
 
 abstract class DefaultService @Inject constructor(val project: Project, override val name: String)
   : Service {
+
+  internal var usedCoordinates: File? = null
 
   val objects = project.objects
 
@@ -118,6 +121,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     packageNamesFromFilePaths(rootPackageName)
     codegenModels.set(MODELS_COMPAT)
     useSchemaPackageNameForFragments.set(true)
+  }
+
+  override fun usedCoordinates(file: File) {
+    usedCoordinates = file
+  }
+
+  override fun usedCoordinates(file: String) {
+    usedCoordinates(project.file(file))
   }
 
   override fun testDirConnection(action: Action<in Service.DirectoryConnection>) {

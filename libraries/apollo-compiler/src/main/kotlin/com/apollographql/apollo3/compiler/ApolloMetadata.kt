@@ -1,14 +1,11 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.squareup.moshi.FromJson
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
