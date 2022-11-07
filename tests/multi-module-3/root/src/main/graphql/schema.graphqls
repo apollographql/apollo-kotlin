@@ -1,0 +1,17 @@
+type Query {
+  user: User
+  search(searchInput: SearchInput): [User]
+}
+
+input SearchInput {
+  firstName: String
+  lastName: String
+  dateOfBirth: String
+}
+
+type User {
+  firstName: String
+  lastName: String
+  dateOfBirth: String
+}
+

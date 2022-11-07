@@ -19,6 +19,18 @@ object BuildDirLayout {
     )
   }
 
+  internal fun usedCoordinates(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/usedCoordinates/apollo/${service.name}/usedCoordinates.json"
+    )
+  }
+
+  internal fun schema(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/schema/apollo/${service.name}/schema.graphqls"
+    )
+  }
+
   internal fun outputDir(project: Project, service: Service): Provider<Directory> {
     return project.layout.buildDirectory.dir(
         "generated/source/apollo/${service.name}"

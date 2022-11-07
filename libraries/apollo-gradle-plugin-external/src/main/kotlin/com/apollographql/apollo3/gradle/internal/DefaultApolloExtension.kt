@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
+import com.apollographql.apollo3.compiler.toUsedCoordinates
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
@@ -51,7 +52,9 @@ abstract class DefaultApolloExtension(
 
   private val services = mutableListOf<DefaultService>()
   private val checkVersionsTask: TaskProvider<Task>
-  private val apolloConfiguration: Configuration
+  private val metadataConfiguration: Configuration
+  private val schemaConfiguration: Configuration
+  private val usedCoordinatesConfiguration: Configuration
   private val rootProvider: TaskProvider<Task>
   private var registerDefaultService = true
   private var adhocComponentWithVariants: AdhocComponentWithVariants? = null
@@ -65,12 +68,30 @@ abstract class DefaultApolloExtension(
       "apollo-android requires Gradle version $MIN_GRADLE_VERSION or greater"
     }
 
-    apolloConfiguration = project.configurations.create(ModelNames.apolloConfiguration()) {
+    usedCoordinatesConfiguration = project.configurations.create(ModelNames.usedCoordinatesConfiguration()) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+
+      it.attributes {
+        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_USED_COORDINATES))
+      }
+    }
+
+    metadataConfiguration = project.configurations.create(ModelNames.metadataConfiguration()) {
       it.isCanBeConsumed = false
       it.isCanBeResolved = false
 
       it.attributes {
         it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
+      }
+    }
+
+    schemaConfiguration = project.configurations.create(ModelNames.schemaConfiguration()) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+
+      it.attributes {
+        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_SCHEMA))
       }
     }
 
@@ -217,57 +238,115 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  private fun createConfiguration(
+      name: String,
+      isCanBeConsumed: Boolean,
+      extendsFrom: Configuration?,
+      usage: String,
+      serviceName: String,
+  ): Configuration {
+    return project.configurations.create(name) {
+      it.isCanBeConsumed = isCanBeConsumed
+      it.isCanBeResolved = !isCanBeConsumed
+
+      if (extendsFrom != null) {
+        it.extendsFrom(extendsFrom)
+      }
+
+      it.attributes {
+        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, usage))
+        it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, serviceName))
+      }
+    }
+  }
+
   private fun registerService(service: DefaultService) {
     check(services.find { it.name == service.name } == null) {
       "There is already a service named ${service.name}, please use another name"
     }
     services.add(service)
 
-    val producerConfigurationName = ModelNames.producerConfiguration(service)
+    val metadataProducerConfiguration = createConfiguration(
+        name = ModelNames.metadataProducerConfiguration(service),
+        isCanBeConsumed = true,
+        extendsFrom = metadataConfiguration,
+        usage = USAGE_APOLLO_METADATA,
+        serviceName = service.name,
+    )
 
-    val producerConfiguration = project.configurations.create(producerConfigurationName) {
-      it.isCanBeConsumed = true
-      it.isCanBeResolved = false
+    val metadataConsumerConfiguration = createConfiguration(
+        name = ModelNames.metadataConsumerConfiguration(service),
+        isCanBeConsumed = false,
+        extendsFrom = metadataConfiguration,
+        usage = USAGE_APOLLO_METADATA,
+        serviceName = service.name,
+    )
 
-      /**
-       * Expose transitive dependencies to downstream consumers
-       */
-      it.extendsFrom(apolloConfiguration)
+    val usedCoordinatesProducerConfiguration = createConfiguration(
+        name = ModelNames.usedCoordinatesProducerConfiguration(service),
+        isCanBeConsumed = true,
+        extendsFrom = usedCoordinatesConfiguration,
+        usage = USAGE_APOLLO_USED_COORDINATES,
+        serviceName = service.name,
+    )
 
-      it.attributes {
-        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
-        it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, service.name))
+    val usedCoordinatesConsumerConfiguration = createConfiguration(
+        name = ModelNames.usedCoordinatesConsumerConfiguration(service),
+        isCanBeConsumed = false,
+        extendsFrom = usedCoordinatesConfiguration,
+        usage = USAGE_APOLLO_USED_COORDINATES,
+        serviceName = service.name,
+    )
+
+    val schemaProducerConfiguration = createConfiguration(
+        name = ModelNames.schemaProducerConfiguration(service),
+        isCanBeConsumed = true,
+        extendsFrom = null,
+        usage = USAGE_APOLLO_SCHEMA,
+        serviceName = service.name,
+    )
+
+    val schemaConsumerConfiguration = createConfiguration(
+        name = ModelNames.schemaConsumerConfiguration(service),
+        isCanBeConsumed = false,
+        extendsFrom = schemaConfiguration,
+        usage = USAGE_APOLLO_SCHEMA,
+        serviceName = service.name,
+    )
+
+    val usedCoordinatesTaskProvider = registerUsedCoordinatesTask(project, service, schemaConsumerConfiguration)
+    if (service.usedCoordinates != null) {
+      registerUsedCoordinatesAggregateTask(project, service, usedCoordinatesTaskProvider, usedCoordinatesConsumerConfiguration)
+    }
+    val codegenTaskProvider = registerCodeGenTask(project, service, metadataConsumerConfiguration, usedCoordinatesConsumerConfiguration)
+    val schemaTaskProvider = registerSchemaTask(project, service, schemaConsumerConfiguration)
+
+    project.artifacts {
+      it.add(usedCoordinatesProducerConfiguration.name, usedCoordinatesTaskProvider.flatMap { it.outputFile }) {
+        it.classifier = service.name
+      }
+      it.add(schemaProducerConfiguration.name, schemaTaskProvider.flatMap { it.outputFile }) {
+        it.classifier = service.name
       }
     }
-
-    val consumerConfiguration = project.configurations.create(ModelNames.consumerConfiguration(service)) {
-      it.isCanBeResolved = true
-      it.isCanBeConsumed = false
-
-      it.extendsFrom(apolloConfiguration)
-
-      it.attributes {
-        it.attribute(Usage.USAGE_ATTRIBUTE, project.objects.named(Usage::class.java, USAGE_APOLLO_METADATA))
-        it.attribute(ApolloAttributes.APOLLO_SERVICE_ATTRIBUTE, project.objects.named(ApolloAttributes.Service::class.java, service.name))
-      }
-    }
-
-    val codegenProvider = registerCodeGenTask(project, service, consumerConfiguration)
 
     project.afterEvaluate {
       if (shouldGenerateMetadata(service)) {
-        maybeSetupPublishingForConfiguration(producerConfiguration)
+        maybeSetupPublishingForConfiguration(metadataProducerConfiguration)
         project.artifacts {
-          it.add(producerConfigurationName, codegenProvider.flatMap { it.metadataOutputFile }) {
+          it.add(metadataProducerConfiguration.name, codegenTaskProvider.flatMap { it.metadataOutputFile }) {
             it.classifier = service.name
           }
         }
       }
     }
 
-    codegenProvider.configure {
+    codegenTaskProvider.configure {
       it.dependsOn(checkVersionsTask)
-      it.dependsOn(consumerConfiguration)
+      it.dependsOn(metadataConsumerConfiguration)
+      if (service.usedCoordinates == null) {
+        it.dependsOn(usedCoordinatesConsumerConfiguration)
+      }
     }
 
     val checkApolloDuplicates = maybeRegisterCheckDuplicates(project.rootProject, service)
@@ -280,14 +359,14 @@ abstract class DefaultApolloExtension(
       )
     }
 
-    codegenProvider.configure {
+    codegenTaskProvider.configure {
       it.finalizedBy(checkApolloDuplicates)
     }
 
     if (service.operationOutputAction != null) {
       val operationOutputConnection = Service.OperationOutputConnection(
-          task = codegenProvider,
-          operationOutputFile = codegenProvider.flatMap { it.operationOutputFile }
+          task = codegenTaskProvider,
+          operationOutputFile = codegenTaskProvider.flatMap { it.operationOutputFile }
       )
       service.operationOutputAction!!.execute(operationOutputConnection)
     }
@@ -298,8 +377,8 @@ abstract class DefaultApolloExtension(
     service.outputDirAction!!.execute(
         DefaultDirectoryConnection(
             project = project,
-            task = codegenProvider,
-            outputDir = codegenProvider.flatMap { it.outputDir }
+            task = codegenTaskProvider,
+            outputDir = codegenTaskProvider.flatMap { it.outputDir }
         )
     )
 
@@ -311,18 +390,90 @@ abstract class DefaultApolloExtension(
       service.testDirAction!!.execute(
           DefaultDirectoryConnection(
               project = project,
-              task = codegenProvider,
-              outputDir = codegenProvider.flatMap { it.testDir }
+              task = codegenTaskProvider,
+              outputDir = codegenTaskProvider.flatMap { it.testDir }
           )
       )
     }
 
     rootProvider.configure {
-      it.dependsOn(codegenProvider)
+      it.dependsOn(codegenTaskProvider)
     }
 
     registerDownloadSchemaTasks(service)
-    maybeRegisterRegisterOperationsTasks(project, service, codegenProvider)
+    maybeRegisterRegisterOperationsTasks(project, service, codegenTaskProvider)
+  }
+
+  private fun registerUsedCoordinatesTask(
+      project: Project,
+      service: DefaultService,
+      schemaConsumerConfiguration: Configuration,
+  ): TaskProvider<ApolloGenerateUsedCoordinatesTask> {
+    return project.tasks.register(ModelNames.generateApolloUsedCoordinates(service), ApolloGenerateUsedCoordinatesTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate Apollo used coordinates for ${service.name} GraphQL queries"
+
+      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
+        val sourceFolder = service.sourceFolder.getOrElse("")
+        val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql/$sourceFolder")
+
+        service.graphqlSourceDirectorySet.srcDir(dir)
+      }
+      service.graphqlSourceDirectorySet.include(service.includes.getOrElse(listOf("**/*.graphql", "**/*.gql")))
+      service.graphqlSourceDirectorySet.exclude(service.excludes.getOrElse(emptyList()))
+
+      task.outputFile.apply {
+        set(BuildDirLayout.usedCoordinates(project, service))
+        disallowChanges()
+      }
+      task.graphqlFiles.setFrom(service.graphqlSourceDirectorySet)
+      // Since this is stored as a list of string, the order matter hence the sorting
+      task.rootFolders.set(project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
+      // This has to be lazy in case the schema is not written yet during configuration
+      // See the `graphql files can be generated by another task` test
+      task.schemaFiles.from(project.provider { service.lazySchemaFiles(project) })
+
+      task.incomingSchemaFiles.from(schemaConsumerConfiguration)
+    }
+  }
+
+  private fun registerUsedCoordinatesAggregateTask(
+      project: Project,
+      service: DefaultService,
+      selfUsedCoordinatesTaskProvider: TaskProvider<ApolloGenerateUsedCoordinatesTask>,
+      incomingUsedCoordinates: Configuration,
+  ): TaskProvider<ApolloGenerateUsedCoordinatesAggregateTask> {
+    return project.tasks.register(ModelNames.generateApolloUsedCoordinatesAggregate(service), ApolloGenerateUsedCoordinatesAggregateTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate Apollo all used coordinates for ${service.name} GraphQL queries"
+
+      task.outputFile.set(service.usedCoordinates!!)
+      task.incomingUsedCoordinates.from(incomingUsedCoordinates)
+      task.incomingUsedCoordinates.from(selfUsedCoordinatesTaskProvider.flatMap { it.outputFile })
+    }
+  }
+
+  private fun registerSchemaTask(
+      project: Project,
+      service: DefaultService,
+      schemaConsumerConfiguration: Configuration,
+  ): TaskProvider<ApolloGenerateSchemaTask> {
+    return project.tasks.register(ModelNames.generateApolloSchema(service), ApolloGenerateSchemaTask::class.java) { task ->
+      task.group = TASK_GROUP
+      task.description = "Generate Apollo schema for ${service.name}"
+
+      task.outputFile.apply {
+        set(BuildDirLayout.schema(project, service))
+        disallowChanges()
+      }
+      // Since this is stored as a list of string, the order matter hence the sorting
+      task.rootFolders.set(project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
+      // This has to be lazy in case the schema is not written yet during configuration
+      // See the `graphql files can be generated by another task` test
+      task.schemaFiles.from(project.provider { service.lazySchemaFiles(project) })
+
+      task.incomingSchemaFiles.from(schemaConsumerConfiguration)
+    }
   }
 
   private fun maybeSetupPublishingForConfiguration(producerConfiguration: Configuration) {
@@ -365,7 +516,7 @@ abstract class DefaultApolloExtension(
    */
   private fun shouldGenerateMetadata(service: DefaultService): Boolean {
     return service.generateApolloMetadata.getOrElse(false)
-        || apolloConfiguration.dependencies.isNotEmpty()
+        || metadataConfiguration.dependencies.isNotEmpty()
   }
 
   /**
@@ -450,7 +601,8 @@ abstract class DefaultApolloExtension(
   private fun registerCodeGenTask(
       project: Project,
       service: DefaultService,
-      consumerConfiguration: Configuration,
+      metadataConsumerConfiguration: Configuration,
+      usedCoordinatesConsumerConfiguration: Configuration,
   ): TaskProvider<ApolloGenerateSourcesTask> {
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesTask::class.java) { task ->
       task.group = TASK_GROUP
@@ -559,7 +711,7 @@ abstract class DefaultApolloExtension(
         }
       }
 
-      task.metadataFiles.from(consumerConfiguration)
+      task.metadataFiles.from(metadataConsumerConfiguration)
 
       check(!(service.packageName.isPresent && service.packageNameGenerator.isPresent)) {
         "Apollo: it is an error to specify both 'packageName' and 'packageNameGenerator' " +
@@ -580,7 +732,17 @@ abstract class DefaultApolloExtension(
       }
       task.packageNameGenerator = packageNameGenerator
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
-      task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
+      task.alwaysGenerateTypesMatching.set(project.provider {
+        val jsonFiles = if (service.usedCoordinates != null) {
+          listOf(service.usedCoordinates!!)
+        } else {
+          usedCoordinatesConsumerConfiguration.files
+        }
+        jsonFiles.map { it.toUsedCoordinates() }
+            .fold(service.alwaysGenerateTypesMatching.getOrElse(emptySet())) { acc, new ->
+              acc + new
+            }
+      })
       task.projectName.set(project.name)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateQueryDocument.set(service.generateQueryDocument)
@@ -741,6 +903,8 @@ abstract class DefaultApolloExtension(
     const val MIN_GRADLE_VERSION = "5.6"
 
     private const val USAGE_APOLLO_METADATA = "apollo-metadata"
+    private const val USAGE_APOLLO_USED_COORDINATES = "apollo-used-coordinates"
+    private const val USAGE_APOLLO_SCHEMA = "apollo-schema"
 
 
     private fun getDeps(configurations: ConfigurationContainer): List<String> {
@@ -784,7 +948,10 @@ abstract class DefaultApolloExtension(
       }
 
       return graphqlSourceDirectorySet.srcDirs.flatMap { srcDir ->
-        srcDir.walkTopDown().filter { it.extension in listOf("json", "sdl", "graphqls") }.toList()
+        srcDir.walkTopDown().filter {
+          it.extension in listOf("json", "sdl", "graphqls")
+              && !it.name.startsWith("used") // Avoid detecting the used coordinates as a schema
+        }.toList()
       }.toSet()
     }
   }

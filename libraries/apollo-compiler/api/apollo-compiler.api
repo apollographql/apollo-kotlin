@@ -49,6 +49,11 @@ public final class com/apollographql/apollo3/compiler/ApolloMetadataJsonAdapter 
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/apollographql/apollo3/compiler/ApolloUsedCoordinatesKt {
+	public static final fun toUsedCoordinates (Ljava/io/File;)Ljava/util/Set;
+	public static final fun writeTo (Ljava/util/Set;Ljava/io/File;)V
+}
+
 public final class com/apollographql/apollo3/compiler/CommonMetadata {
 	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
 	public final fun component1 ()Lcom/apollographql/apollo3/ast/Schema;

@@ -17,6 +17,9 @@ object ModelNames {
   // Task names
   fun generateApolloSources() = "generateApolloSources"
   fun generateApolloSources(service: Service) = camelCase("generate", service.name, "ApolloSources")
+  fun generateApolloSchema(service: Service) = camelCase("generate", service.name, "ApolloSchema")
+  fun generateApolloUsedCoordinates(service: Service) = camelCase("generate", service.name, "ApolloUsedCoordinates")
+  fun generateApolloUsedCoordinatesAggregate(service: Service) = camelCase("generate", service.name, "ApolloUsedCoordinatesAggregate")
   fun downloadApolloSchema() = camelCase("downloadApolloSchema")
   fun downloadApolloSchemaIntrospection(service: Service) = camelCase("download", service.name, "ApolloSchemaFromIntrospection")
   fun downloadApolloSchemaRegistry(service: Service) = camelCase("download", service.name, "ApolloSchemaFromRegistry")
@@ -30,9 +33,15 @@ object ModelNames {
   /**
    * A bucket configuration
    */
-  fun apolloConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension
-  fun producerConfiguration(service: Service) = camelCase("apollo", service.name, "Producer")
-  fun consumerConfiguration(service: Service) = camelCase("apollo", service.name, "Consumer")
+  fun metadataConfiguration() = "apolloMetadata" // not just 'apollo' to avoid name clashing with the apollo {} extension
+  fun usedCoordinatesConfiguration() = "apolloUsedCoordinates" // not just 'apollo' to avoid name clashing with the apollo {} extension
+  fun schemaConfiguration() = "apolloSchema" // not just 'apollo' to avoid name clashing with the apollo {} extension
+  fun metadataProducerConfiguration(service: Service) = camelCase("apollo", service.name, "Producer")
+  fun metadataConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "Consumer")
+  fun usedCoordinatesProducerConfiguration(service: Service) = camelCase("apollo", service.name, "UsedCoordinatesProducer")
+  fun usedCoordinatesConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "UsedCoordinatesConsumer")
+  fun schemaProducerConfiguration(service: Service) = camelCase("apollo", service.name, "SchemaProducer")
+  fun schemaConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "SchemaConsumer")
 
   /**
    * A resolvable configuration that will collect all metadata for a given service name
