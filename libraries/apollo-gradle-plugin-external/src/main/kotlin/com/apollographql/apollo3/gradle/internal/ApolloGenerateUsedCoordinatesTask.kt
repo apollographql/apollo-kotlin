@@ -43,17 +43,21 @@ abstract class ApolloGenerateUsedCoordinatesTask : DefaultTask() {
 
   @TaskAction
   fun taskAction() {
-    val schemas = incomingSchemaFiles.files.toList().map { it.toSchema() }
+    try {
+      val schemas = incomingSchemaFiles.files.toList().map { it.toSchema() }
 
-    check(schemas.size <= 1) {
-      "Apollo: multiple incoming schemas"
+      check(schemas.size <= 1) {
+        "Apollo: multiple incoming schemas"
+      }
+
+      var schema = schemas?.singleOrNull()
+      if (schema == null) {
+        schema = resolveSchema(schemaFiles.files, rootFolders.get()).first
+      }
+
+      ApolloCompiler.writeUsedCoordinates(schema, graphqlFiles.files, outputFile.get().asFile)
+    } catch (e: Exception) {
+      outputFile.get().asFile.writeText("[]")
     }
-
-    var schema = schemas?.singleOrNull()
-    if (schema == null) {
-      schema = resolveSchema(schemaFiles.files, rootFolders.get()).first
-    }
-
-    ApolloCompiler.writeUsedCoordinates(schema, graphqlFiles.files, outputFile.get().asFile)
   }
 }

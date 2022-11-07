@@ -94,15 +94,20 @@ abstract class ApolloGenerateSchemaTask : DefaultTask() {
       "Apollo: multiple upstream schemas found"
     }
 
-    val incomingSchema = schemas.singleOrNull()
-    val schema = if (incomingSchema != null) {
-      incomingSchema.source().buffer().use {
-        it.toSchema(incomingSchema.absolutePath)
+    val schemaText = try {
+      val incomingSchema = schemas.singleOrNull()
+      val schema = if (incomingSchema != null) {
+        incomingSchema.source().buffer().use {
+          it.toSchema(incomingSchema.absolutePath)
+        }
+      } else {
+        resolveSchema(schemaFiles.files, rootFolders.get()).first
       }
-    } else {
-      resolveSchema(schemaFiles.files, rootFolders.get()).first
+      schema.toGQLDocument().toUtf8()
+    } catch (e: Throwable) {
+      "Could not find a schema, make sure to add dependencies to the `apolloSchema` configuration"
     }
 
-    outputFile.get().asFile.writeText(schema.toGQLDocument().toUtf8())
+    outputFile.get().asFile.writeText(schemaText)
   }
 }
