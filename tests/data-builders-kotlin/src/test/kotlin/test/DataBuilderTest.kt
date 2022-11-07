@@ -2,7 +2,6 @@ package test
 
 import com.apollographql.apollo3.api.Builder
 import com.apollographql.apollo3.api.DefaultFakeResolver
-import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.FakeResolverContext
 import com.example.MyLong
 import data.builders.GetAliasesQuery
@@ -19,7 +18,6 @@ import data.builders.GetPartialQuery
 import data.builders.PutIntMutation
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
-import data.builders.type.LionBuilder
 import data.builders.type.__CustomScalarAdapters
 import data.builders.type.__Schema
 import data.builders.type.buildCat

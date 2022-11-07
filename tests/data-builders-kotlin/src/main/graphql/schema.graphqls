@@ -39,6 +39,7 @@ interface Node {
 }
 
 interface Animal @typePolicy(keyFields: "id") {
+  id: ID!
   species: String!
 }
 
