@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
@@ -30,6 +31,11 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
       .addFunction(writeToResponseFunSpec(context, adaptedTypeName))
+      .apply {
+        if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
+          addAnnotation(suppressDeprecationAnnotationSpec)
+        }
+      }
       .build()
 }
 

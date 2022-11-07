@@ -1,0 +1,12 @@
+type Cat {
+    mustaches: Int!
+}
+
+type Query {
+    search(filter: Filter): Cat
+}
+
+input Filter {
+    name: String
+    deprecated: String @deprecated(reason: "For test only")
+}

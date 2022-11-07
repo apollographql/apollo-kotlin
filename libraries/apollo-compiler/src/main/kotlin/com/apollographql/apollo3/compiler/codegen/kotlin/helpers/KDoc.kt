@@ -87,11 +87,12 @@ internal fun ParameterSpec.Builder.maybeAddRequiresOptIn(resolver: KotlinResolve
   return addAnnotation(AnnotationSpec.builder(annotation).build())
 }
 
+internal val suppressDeprecationAnnotationSpec = AnnotationSpec.builder(KotlinSymbols.Suppress)
+    .addMember("%S", "DEPRECATION")
+    .build()
+
 internal fun FunSpec.Builder.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): FunSpec.Builder = applyIf(enumValues.any { !it.deprecationReason.isNullOrBlank() }) {
-  addAnnotation(AnnotationSpec.builder(KotlinSymbols.Suppress)
-      .addMember("%S", "DEPRECATION")
-      .build()
-  )
+  addAnnotation(suppressDeprecationAnnotationSpec)
 }
 
 internal fun FunSpec.Builder.maybeAddOptIn(

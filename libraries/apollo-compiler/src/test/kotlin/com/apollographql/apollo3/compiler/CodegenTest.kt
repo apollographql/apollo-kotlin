@@ -125,28 +125,9 @@ class CodegenTest {
            * We want to keep this for the user to easily locate them but can't tell the compiler to ignore
            * them specifically. See also https://youtrack.jetbrains.com/issue/KT-24746
            */
-          val expectedWarnings = folder.name in listOf(
-              "__schema",
-              "case_sensitive_enum",
+          val expectedWarnings = folder.name in listOf<String>(
               "deprecated_merged_field",
               "deprecation",
-              "enums_as_sealed",
-              "enum_field",
-              "fragment_with_inline_fragment",
-              "hero_name_query_long_name",
-              "hero_with_review",
-              "inline_fragments_with_friends",
-              "input_object_type",
-              "input_object_variable_and_argument",
-              "mutation_create_review",
-              "mutation_create_review_semantic_naming",
-              "named_fragment_inside_inline_fragment",
-              "nested_conditional_inline",
-              "optional",
-              "root_query_inline_fragment",
-              "union_inline_fragments",
-              "unique_type_name",
-              "variable_default_value",
           )
 
           KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
