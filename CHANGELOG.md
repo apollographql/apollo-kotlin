@@ -72,7 +72,7 @@ if (animal.onCat != null) {
 }
 ```
 
-Some of the combinations could be impossible. Maybe all the pets in your schema are warm blooded. Or maybe only cat is a warm blooded. To model this better and work around KT-8819, @chalermpong implemented a new codegen that adds a base sealed interface. Different implementations contain the same synthetic fragment fields as in the default codegen except that their nullability will be updated depending the branch:
+Some of the combinations could be impossible. Maybe all the pets in your schema are warm blooded. Or maybe only cat is a warm blooded. To model this better and work around [KT-8819](https://youtrack.jetbrains.com/issue/KT-8819), @chalermpong implemented a new codegen that adds a base sealed interface. Different implementations contain the same synthetic fragment fields as in the default codegen except that their nullability will be updated depending the branch:
 
 ```kotlin
 when (animal) {
