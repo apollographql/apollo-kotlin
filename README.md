@@ -20,7 +20,7 @@ This library is designed primarily with Android in mind, but you can use it in a
 
 * Java and Kotlin Multiplatform code generation
 * Queries, Mutations and Subscriptions
-* Reflection-free parsing 
+* Reflection-free parsing
 * Normalized cache
 * Custom scalar types
 * HTTP cache
@@ -49,17 +49,24 @@ Here's the current matrix of supported features per platform:
 
 ¹: Apple currently includes:
 
-- `macosX64`
-- `macosArm64`
-- `iosArm64`
-- `iosX64`
-- `iosSimulatorArm64`
-- `watchosArm32`
-- `watchosArm64`
-- `watchosSimulatorArm64`
-- `tvosArm64`
-- `tvosX64`
-- `tvosSimulatorArm64`
+* `macosX64`
+* `macosArm64`
+* `iosArm64`
+* `iosX64`
+* `iosSimulatorArm64`
+* `watchosArm32`
+* `watchosArm64`
+* `watchosSimulatorArm64`
+* `tvosArm64`
+* `tvosX64`
+* `tvosSimulatorArm64`
+
+## Maintainers
+
+* [martinbonnin](https://github.com/martinbonnin)
+* [BoD](https://github.com/BoD)
+* [@bignimbus](https://github.com/bignimbus)
+* [@jpvajda](https://github.com/jpvajda)
 
 ## Documentation
 
@@ -82,7 +89,7 @@ plugins {
 Add the runtime dependency:
 
 ```kotlin
-dependencies { 
+dependencies {
   implementation("com.apollographql.apollo3:apollo-runtime:3.7.0")
 }
 ```
@@ -96,14 +103,14 @@ apollo {
 ```
 
 Apollo Kotlin supports three types of files:
-- `.graphqls` schema files: describes the types in your backend using the GraphQL syntax.  
-- `.json` schema files: describes the types in your backend using the Json syntax.
-- `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
+* `.graphqls` schema files: describes the types in your backend using the GraphQL syntax.
+* `.json` schema files: describes the types in your backend using the Json syntax.
+* `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
 
 By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
 
 ```
-cp ${schema} ${module}/src/main/graphql/ 
+cp ${schema} ${module}/src/main/graphql/
 ```
 
 Write a query in a `${module}/src/main/graphql/GetRepository.graphql` file:
@@ -155,7 +162,6 @@ Check the [changelog](https://github.com/apollographql/apollo-android/releases) 
 
 Releases are hosted on [Maven Central](https://repo1.maven.org/maven2/com/apollographql/apollo3/). The plugin is additionally hosted on the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 
-
 ```kotlin
 plugins {
   id("com.apollographql.apollo3").version("3.7.0")
@@ -171,7 +177,7 @@ dependencies {
   // optional: if you want to use the normalized cache
   implementation("com.apollographql.apollo3:apollo-normalized-cache-sqlite:3.7.0")
   // optional: if you just want the generated models and parsers and write your own HTTP code/cache code, you can remove apollo-runtime
-  // and use apollo-api instead  
+  // and use apollo-api instead
   implementation("com.apollographql.apollo3:apollo-api:3.7.0")
 }
 ```
@@ -202,6 +208,7 @@ pluginManagement {
   }
 }
 ```
+
 And then use the `3.7.1-SNAPSHOT` version for the plugin and libraries.
 
 ## Requirements
@@ -223,18 +230,18 @@ If you'd like to contribute, please see [Contributing.md](https://github.com/apo
 
 ## Community integrations
 
-* If you're using the [Maven](https://maven.apache.org/) build tool, https://github.com/aoudiamoncef/apollo-client-maven-plugin is a Maven plugin that calls the Apollo Android compiler to generate your Java/Kotlin sources.
+* If you're using the [Maven](https://maven.apache.org/) build tool, <https://github.com/aoudiamoncef/apollo-client-maven-plugin> is a Maven plugin that calls the Apollo Android compiler to generate your Java/Kotlin sources.
 * If you're using [Absinthe Phoenix subscriptions](https://hexdocs.pm/absinthe_phoenix/readme.html), [kotlin-phoenix](https://github.com/ajacquierbret/kotlin-phoenix) has a [PhoenixNetworkTransport](https://github.com/ajacquierbret/kotlin-phoenix/blob/main/kotlinphoenix-adapters/src/commonMain/kotlin/io/github/ajacquierbret/kotlinphoenix/adapters/apollo/PhoenixNetworkTransport.kt) that you can use together with `ApolloClient` ([doc](https://github.com/ajacquierbret/kotlin-phoenix/tree/main/kotlinphoenix-adapters))
 
 ## Additional resources
 
-- [MortyComposeKMM](https://github.com/joreilly/MortyComposeKMM): A Kotlin Multiplatform Github template using Apollo Kotlin, SwiftUI and Jetpack Compose.
-- [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
-- [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Kotlin and the entire journey.
-- [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
-- [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
-- [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
-- [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
+* [MortyComposeKMM](https://github.com/joreilly/MortyComposeKMM): A Kotlin Multiplatform Github template using Apollo Kotlin, SwiftUI and Jetpack Compose.
+* [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
+* [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Kotlin and the entire journey.
+* [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
+* [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
+* [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
+* [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
 
 ## Who is Apollo?
 
