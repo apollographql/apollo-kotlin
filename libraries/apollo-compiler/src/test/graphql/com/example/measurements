@@ -2,11 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  215907
-aggregate-kotlin-responseBased                                                                  55669
+aggregate-all                                                                                  217189
+aggregate-kotlin-responseBased                                                                  56171
 aggregate-kotlin-operationBased                                                                 37266
 aggregate-kotlin-compat                                                                         38679
-aggregate-java-operationBased                                                                   84293
+aggregate-java-operationBased                                                                   85073
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5566
 kotlin-compat-fragments_with_defer_and_include_directives                                        3612
@@ -108,6 +108,7 @@ kotlin-operationBased-inline_fragment_merge_fields                              
 java-operationBased-hero_details_semantic_naming                                                  782
 java-operationBased-operationbased2_ex7                                                           781
 kotlin-responseBased-two_heroes_with_friends                                                      781
+java-operationBased-suppressed_warnings                                                           780
 kotlin-operationBased-named_fragment_inside_inline_fragment                                       769
 java-operationBased-path_vs_flat_accessors                                                        761
 kotlin-responseBased-inline_fragments_with_friends                                                757
@@ -222,6 +223,7 @@ java-operationBased-subscriptions                                               
 kotlin-operationBased-path_vs_flat_accessors                                                      511
 kotlin-operationBased-typename_always_first                                                       509
 kotlin-compat-typename_always_first                                                               509
+kotlin-responseBased-suppressed_warnings                                                          502
 kotlin-compat-root_query_fragment                                                                 501
 kotlin-compat-operationbased2_ex7                                                                 499
 kotlin-compat-interface_on_interface                                                              497

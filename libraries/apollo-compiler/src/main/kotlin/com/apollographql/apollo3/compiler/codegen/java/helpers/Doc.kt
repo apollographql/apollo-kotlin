@@ -44,8 +44,5 @@ internal fun FieldSpec.Builder.maybeAddDeprecation(deprecationReason: String?): 
 }
 
 internal fun MethodSpec.Builder.maybeSuppressDeprecation(enumValues: List<IrEnum.Value>): MethodSpec.Builder = applyIf(enumValues.any { !it.deprecationReason.isNullOrBlank() }) {
-  addAnnotation(AnnotationSpec.builder(JavaClassNames.SuppressWarnings)
-      .addMember("value", S, "deprecation")
-      .build()
-  )
+  addAnnotation(suppressDeprecatedAnnotation())
 }

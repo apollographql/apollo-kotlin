@@ -11,3 +11,4 @@ union Animal = Cat | Dog
 type Query {
     cat: Cat
 }
+

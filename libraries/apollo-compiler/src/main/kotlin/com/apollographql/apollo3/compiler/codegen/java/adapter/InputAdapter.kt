@@ -15,6 +15,7 @@ import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.writeToResponseCodeBlock
+import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
@@ -33,6 +34,11 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
       .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
+      .apply {
+        if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
+          addAnnotation(suppressDeprecatedAnnotation())
+        }
+      }
       .build()
 }
 

@@ -590,7 +590,7 @@ interface Service {
    * - AnnotationTarget.PROPERTY
    * - AnnotationTarget.CLASS
    *
-   * Default: "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+   * Default: "none"
    */
   @ApolloExperimental
   val requiresOptInAnnotation: Property<String>
