@@ -1,6 +1,171 @@
 Change Log
 ==========
 
+# Version 3.7.0
+
+_2022-11-08_
+
+This version adds multiple new low level features. These new features expose a lot of API surface, and they will probably stay experimental until 4.0. Feedback is always very welcome.    
+
+## ✨️ [new & experimental] compiler hooks API (#4474, #4026)
+
+Compiler hooks allow you to tweak the generated models by exposing the underlying JavaPoet/KotlinPoet structures. You can use it for an example to:
+
+- Add a 'null' default value to model arguments ([source](https://github.com/apollographql/apollo-kotlin/blob/fb51dafaa4b02a55b6926546927d176078513543/tests/compiler-hooks/build.gradle.kts#L81))
+- Introduce a common interface for all models that implement `__typename` ([source](https://github.com/apollographql/apollo-kotlin/blob/fb51dafaa4b02a55b6926546927d176078513543/tests/compiler-hooks/build.gradle.kts#L136))
+- Add a prefix to generated models ([source](https://github.com/apollographql/apollo-kotlin/blob/fb51dafaa4b02a55b6926546927d176078513543/tests/compiler-hooks/build.gradle.kts#L185))
+- Any other thing you can think of
+
+To do so, make sure to use the "external" version of the plugin:
+
+```kotlin
+plugins {
+  // Note: using the external plugin here to be able to reference KotlinPoet classes
+  id("com.apollographql.apollo3.external")
+}
+```
+
+And then register your hook to the plugin:
+
+```kotlin
+apollo {
+  service("defaultnullvalues") {
+    packageName.set("hooks.defaultnullvalues")
+    compilerKotlinHooks.set(listOf(DefaultNullValuesHooks()))
+  }
+}
+```
+
+## ✨️ [new & experimental] operationBasedWithInterfaces codegen (#4370)
+
+By default, Apollo Kotlin models fragments with synthetic nullable fields. If you have a lot of fragments, checking these fields requires using `if` statements. For an example, with a query like so:
+
+```graphql
+{
+  animal {
+    species
+    ... on WarmBlooded {
+      temperature
+    }
+    ... on Pet {
+      name
+    }
+    ... on Cat {
+      mustaches
+    }
+  }
+}
+```
+
+you can access data like so:
+
+```kotlin
+if (animal.onWarmBlooded != null) {
+  // Cannot smart cast because of https://youtrack.jetbrains.com/issue/KT-8819/
+  println(animal.onWarmBlooded!!.temperature)
+}
+if (animal.onPet != null) {
+  println(animal.onPet!!.name) 
+}
+if (animal.onCat != null) {
+  println(animal.onCat!!.mustaches)
+}
+```
+
+Some of the combinations could be impossible. Maybe all the pets in your schema are warm blooded. Or maybe only cat is a warm blooded. To model this better and work around [KT-8819](https://youtrack.jetbrains.com/issue/KT-8819), @chalermpong implemented a new codegen that adds a base sealed interface. Different implementations contain the same synthetic fragment fields as in the default codegen except that their nullability will be updated depending the branch:
+
+```kotlin
+when (animal) {
+  is WarmBloodedPetAnimal -> {
+    println(animal.onWarmBlooded!!.temperature)
+    println(animal.onPet!!.name)
+  }
+  is PetAnimal -> {
+    // Some pet that is not warm blooded, e.g. a Turtle maybe?
+    println(animal.onPet!!.name)
+  }
+  is OtherAnimal -> {
+    println(animal.species)
+  }
+  // Note how there is no branch for Cat because it's a WarmBloodedPetAnimal
+  // Also no branch for WarmBlooded animal because all pets in this (fictional) sample schema are WarmBlooded. This could be different in another schema
+}
+```
+
+Many many thanks to @chalermpong for diving into this 💙
+
+## ✨️ [new & experimental] usedCoordinates auto detection (#4494)
+
+By default, Apollo Kotlin only generates the types that are used in your queries. This is important because some schemas are really big and generating all the types would waste a lot of CPU cycles. In multi-modules scenarios, the codegen only knows about types that are used locally in that module. If two sibling modules use the same type and that type is not used upstream, that could lead to errors like this:
+
+```
+duplicate Type '$Foo' generated in modules: feature1, feature2
+Use 'alwaysGenerateTypesMatching' in a parent module to generate the type only once
+```
+
+This version introduces new options to detect the used types automatically. It does so by doing a first pass at the GraphQL queries to determine the used type. Upstream modules can use the results of that computation without creating a circular dependency. To set up auto detection of used coordinates, configure your schema module to get the used coordinates from the feature module using the `apolloUsedCoordinates` configuration:
+
+```kotlin
+// schema/build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-runtime")
+  // Get the used coordinates from your feature module
+  apolloUsedCoordinates(project(":feature"))
+  // If you have several, add several dependencies
+  apolloUsedCoordinates(project(":feature-2"))
+}
+
+apollo {
+  service("my-api") {
+    packageName.set("com.example.schema")
+    generateApolloMetadata.set(true)
+  }
+}
+```
+
+And in each of your feature module, configure the `apolloSchema` dependency:
+
+```kotlin
+// feature/build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-runtime")
+  // Depend on the codegen from the schema
+  apolloMetadata(project(":schema"))
+  // But also from the schema so as not to create a circular dependency
+  apolloSchema(project(":schema"))
+}
+
+apollo {
+  // The service names must match
+  service("my-api") {
+    packageName.set("com.example.feature")
+  }
+}
+```
+
+## 👷‍ All changes
+
+* Add usedCoordinates configuration and use it to automatically compute the used coordinates (#4494)
+* Compiler hooks (#4474)
+* 🐘 Use `registerJavaGeneratingTask`, fixes lint trying to scan generated sources  (#4486)
+* Rename `generateModelBuilder` to `generateModelBuilders` and add test (#4476)
+* Data builders: only generate used fields (#4472)
+* Only generate used types when generateSchema is true (#4471)
+* Suppress deprecation warnings, and opt-in in generated code (#4470)
+* Multi-module: fail if inconsistent generateDataBuilders parameters (#4462)
+* Add a decapitalizeFields option (#4454)
+* Pass protocols to WebSocket constructor in `JSWebSocketEngine` (#4445)
+* SQLNormalized cache: implement selectAll, fixes calling dump() (#4437)
+* Java codegen: Nullability annotations on generics (#4419)
+* Java codegen: nullability annotations (#4415)
+* OperationBasedWithInterfaces (#4370)
+* Connect test sourceSet only when testBuilders are enabled (#4412)
+* Java codegen: add support for Optional or nullable fields (#4411)
+* Add generatePrimitiveTypes option to Java codegen (#4407)
+* Add classesForEnumsMatching codegen option to generate enums as Java enums (#4404)
+* Fix data builders + multi module (#4402)
+* Relocate the plugin without obfuscating it (#4376)
+
 # Version 3.6.2
 
 _2022-10-05_
