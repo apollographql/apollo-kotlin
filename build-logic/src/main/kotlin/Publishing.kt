@@ -16,9 +16,19 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import com.android.build.api.dsl.LibraryExtension
 
 fun Project.configurePublishing() {
-  apply {
-    plugin("signing")
+  if (
+      name in setOf(
+          "apollo-runtime-java",
+          "apollo-rx2-support-java",
+          "apollo-rx3-support-java",
+      )
+  ) {
+    return
   }
+
+  apply {
+      plugin("signing")
+    }
   apply {
     plugin("maven-publish")
   }
@@ -37,7 +47,7 @@ fun Project.configurePublishing() {
   configurePublishingInternal()
 }
 
-fun Project.configureDokka() {
+private fun Project.configureDokka() {
   apply {
     plugin("org.jetbrains.dokka")
   }
@@ -59,7 +69,7 @@ fun Project.configureDokka() {
   }
 }
 
-fun Project.getOssStagingUrl(): String {
+private fun Project.getOssStagingUrl(): String {
   val url = try {
     this.extensions.extraProperties["ossStagingUrl"] as String?
   } catch (e: ExtraPropertiesExtension.UnknownPropertyException) {
