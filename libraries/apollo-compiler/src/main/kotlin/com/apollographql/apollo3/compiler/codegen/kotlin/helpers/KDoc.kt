@@ -5,6 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ParameterSpec
@@ -95,13 +96,16 @@ internal fun FunSpec.Builder.maybeSuppressDeprecation(enumValues: List<IrEnum.Va
   addAnnotation(suppressDeprecationAnnotationSpec)
 }
 
+internal fun requiresOptInAnnotation(annotation: ClassName): AnnotationSpec {
+  return AnnotationSpec.builder(KotlinSymbols.OptIn)
+      .addMember(CodeBlock.of("%T::class", annotation))
+      .build()
+}
+
 internal fun FunSpec.Builder.maybeAddOptIn(
     resolver: KotlinResolver,
     enumValues: List<IrEnum.Value>,
 ): FunSpec.Builder = applyIf(enumValues.any { !it.optInFeature.isNullOrBlank() }) {
   val annotation = resolver.resolveRequiresOptInAnnotation() ?: return@applyIf
-  addAnnotation(AnnotationSpec.builder(KotlinSymbols.OptIn)
-      .addMember(CodeBlock.of("%T::class", annotation))
-      .build()
-  )
+  addAnnotation(requiresOptInAnnotation(annotation))
 }

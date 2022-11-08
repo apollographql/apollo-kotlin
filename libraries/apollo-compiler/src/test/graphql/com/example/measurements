@@ -2,17 +2,11 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                    5132
-aggregate-kotlin-responseBased                                                                   1630
-aggregate-kotlin-operationBased                                                                   619
-aggregate-kotlin-compat                                                                           662
-aggregate-java-operationBased                                                                    2221
+aggregate-all                                                                                    1282
+aggregate-kotlin-responseBased                                                                    502
+aggregate-kotlin-operationBased                                                                     0
+aggregate-kotlin-compat                                                                             0
+aggregate-java-operationBased                                                                     780
 
-java-operationBased-deprecated_merged_field                                                       926
-kotlin-responseBased-deprecated_merged_field                                                      748
-java-operationBased-deprecation                                                                   667
-kotlin-compat-deprecated_merged_field                                                             662
-java-operationBased-deprecated_input_field                                                        628
-kotlin-operationBased-deprecated_merged_field                                                     619
-kotlin-responseBased-deprecation                                                                  483
-kotlin-responseBased-deprecated_input_field                                                       399
+java-operationBased-suppressed_warnings                                                           780
+kotlin-responseBased-suppressed_warnings                                                          502

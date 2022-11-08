@@ -13,6 +13,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDepreca
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.requiresOptInAnnotation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.writeToResponseCodeBlock
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -20,7 +21,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
-
 
 internal fun List<NamedType>.inputAdapterTypeSpec(
     context: KotlinContext,
@@ -34,6 +34,10 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .apply {
         if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
           addAnnotation(suppressDeprecationAnnotationSpec)
+          val requiresOptInAnnotation = context.resolver.resolveRequiresOptInAnnotation()
+          if (requiresOptInAnnotation != null) {
+            addAnnotation(requiresOptInAnnotation(requiresOptInAnnotation))
+          }
         }
       }
       .build()

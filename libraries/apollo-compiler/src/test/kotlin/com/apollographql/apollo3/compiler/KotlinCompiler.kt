@@ -16,10 +16,11 @@ object KotlinCompiler {
     val result = KotlinCompilation().apply {
       sources = kotlinFiles
 
+      kotlincArguments = kotlincArguments + "-opt-in=kotlin.RequiresOptIn"
       this.allWarningsAsErrors = allWarningsAsErrors
       inheritClassPath = true
       verbose = false
-      this.messageOutputStream = okio.blackholeSink().buffer().outputStream()
+      messageOutputStream = okio.blackholeSink().buffer().outputStream()
     }.compile()
 
     if (result.exitCode != KotlinCompilation.ExitCode.OK) {

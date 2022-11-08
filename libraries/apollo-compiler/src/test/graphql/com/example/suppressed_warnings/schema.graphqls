@@ -1,0 +1,20 @@
+type Cat {
+    mustaches: Int!
+}
+
+type Query {
+    search(filter: Filter): Cat
+    direction: Direction
+}
+
+input Filter {
+    name: String
+    deprecated: String @deprecated(reason: "For test only")
+    experimental: String @requiresOptIn(feature: "testOnly")
+}
+
+enum Direction {
+    South @deprecated(reason: "for test only")
+    North @requiresOptIn(feature: "testOnly")
+    East
+}

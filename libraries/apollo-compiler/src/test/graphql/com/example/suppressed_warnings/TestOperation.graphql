@@ -1,0 +1,7 @@
+query CatQuery($filter: Filter) {
+    search(filter: $filter) {
+        mustaches
+    }
+    direction
+}
+

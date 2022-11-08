@@ -285,6 +285,7 @@ class CodegenTest {
         else -> true
       }
 
+
       val sealedClassesForEnumsMatching = when (folder.name) {
         "enums_as_sealed" -> listOf(".*")
         else -> emptyList()
@@ -400,7 +401,8 @@ class CodegenTest {
           generatePrimitiveTypes = generatePrimitiveTypes,
           nullableFieldStyle = nullableFieldStyle,
           decapitalizeFields = decapitalizeFields,
-          compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity
+          compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity,
+          requiresOptInAnnotation = "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
       )
     }
 
