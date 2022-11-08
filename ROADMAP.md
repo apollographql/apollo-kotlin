@@ -33,7 +33,7 @@ Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to
 
 ### Release 4.0
 
-The next major release of Apollo Kotlin 4.0 which will include breaking changes in a state of pre planning.
+The next major release of Apollo Kotlin 4.0 which will include breaking changes is currently in a state of pre planning.
 
 ### `release-2.x` branch
 
