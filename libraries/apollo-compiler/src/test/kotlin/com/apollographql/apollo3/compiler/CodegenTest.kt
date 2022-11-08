@@ -377,6 +377,11 @@ class CodegenTest {
         else -> false
       }
 
+      val requiresOptInAnnotation = when(folder.name) {
+        "suppressed_warnings"-> "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+        else -> "none"
+      }
+
       return Options(
           executableFiles = graphqlFiles,
           schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors(),
@@ -402,7 +407,7 @@ class CodegenTest {
           nullableFieldStyle = nullableFieldStyle,
           decapitalizeFields = decapitalizeFields,
           compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity,
-          requiresOptInAnnotation = "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+          requiresOptInAnnotation = requiresOptInAnnotation
       )
     }
 

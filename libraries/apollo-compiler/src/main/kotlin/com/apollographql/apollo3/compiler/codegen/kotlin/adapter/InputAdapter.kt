@@ -35,9 +35,11 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
         if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
           addAnnotation(suppressDeprecationAnnotationSpec)
         }
-        val requiresOptInAnnotation = context.resolver.resolveRequiresOptInAnnotation()
-        if (requiresOptInAnnotation != null) {
-          addAnnotation(requiresOptInAnnotation(requiresOptInAnnotation))
+        if (any { it.optInFeature != null }) {
+          val requiresOptInAnnotation = context.resolver.resolveRequiresOptInAnnotation()
+          if (requiresOptInAnnotation != null) {
+            addAnnotation(requiresOptInAnnotation(requiresOptInAnnotation))
+          }
         }
       }
       .build()
