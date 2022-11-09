@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: Sept 2022**
+**Last updated: Nov 2022**
 
 For up to date release notes, refer to the project [Change Log](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -15,9 +15,7 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 ## Upcoming Releases
 
-### Release TBD
-
-- This release will focus on providing better Java support in Apollo Kotlin.  See Github [Java Support Release TBD](https://github.com/apollographql/apollo-kotlin/milestone/25) for more details.
+The next few minor releases for the Kotlin Client will focus on smaller iterative improvements. Please so our [GitHub milestones](https://github.com/apollographql/apollo-kotlin/milestones) for what might be in each release.
 
 ## Longer Term
 
@@ -32,6 +30,10 @@ Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to
 ### Better support for Jetpack Compose
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin. We'd like to offer better support for Android developers who wish to use Jetpack Compose with our Kotlin Client.
+
+### Release 4.0
+
+The next major release of Apollo Kotlin 4.0 which will include breaking changes is currently in a state of pre planning.
 
 ### `release-2.x` branch
 
