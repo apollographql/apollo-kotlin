@@ -15,7 +15,7 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 ## Upcoming Releases
 
-The next few minor releases for the Kotlin Client will focus on smaller iterative improvements. Please so our [GitHub milestones[(<https://github.com/apollographql/apollo-kotlin/milestones>) for what might be in each release.
+The next few minor releases for the Kotlin Client will focus on smaller iterative improvements. Please so our [GitHub milestones](https://github.com/apollographql/apollo-kotlin/milestones) for what might be in each release.
 
 ## Longer Term
 
