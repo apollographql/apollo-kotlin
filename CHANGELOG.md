@@ -92,6 +92,14 @@ when (animal) {
 }
 ```
 
+To try it out, add this to your Gradle scripts:
+
+```kotlin
+apollo {
+  codegenModels.set("experimental_operationBasedWithInterfaces") 
+}
+```
+
 Many many thanks to @chalermpong for diving into this 💙
 
 ## ✨️ [new & experimental] usedCoordinates auto detection (#4494)
