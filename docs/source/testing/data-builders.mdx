@@ -89,6 +89,37 @@ Similarly, values for the ship's speed, the 1st friend's last name and 2nd frien
 
 > You can replace `buildHuman` above with `buildDroid` to create a `Droid` object instead.
 
+## Aliases
+
+Because data builders are schema-based and aliases are defined in your queries, there is no way for the codegen to generate builder fields for them. Instead, you'll need to specify them explicitly.
+
+Given a query like this:
+
+```graphql
+query GetHeroes {
+  luke: hero(id: "1002") {
+    name
+  }
+  leia: hero(id: "1003") {
+    name
+  }
+}
+```
+
+You can generate a fake data model like so:
+
+```kotlin
+val data = GetHeroes.Data {
+  this["luke"] = buildHumanHero {
+    name = "Luke"
+  }
+  this["leia"] = buildHumanHero {
+    name = "Leia"
+  }
+}
+```
+
+
 ## Configuring default field values
 
 To assign default values to fields, data builders use an implementation of the `FakeResolver` interface. By default, they use an instance of `DefaultFakeResolver`.
