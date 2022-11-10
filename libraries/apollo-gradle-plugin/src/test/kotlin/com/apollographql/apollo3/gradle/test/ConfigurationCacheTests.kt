@@ -23,15 +23,23 @@ class ConfigurationCacheTests {
         }
       """.trimIndent()
 
-    server.enqueue(MockResponse().setBody(minimalValidSchema))
-
     dir.resolve("build.gradle.kts").replaceInText("ENDPOINT", server.url("/").toString())
 
+    server.enqueue(MockResponse().setBody(minimalValidSchema))
     TestUtils.executeGradle(
         dir,
         "--configuration-cache",
         "generateApolloSources",
         "downloadServiceApolloSchemaFromIntrospection"
     )
+
+    server.enqueue(MockResponse().setBody(minimalValidSchema))
+    val result = TestUtils.executeGradle(
+        dir,
+        "--configuration-cache",
+        "generateApolloSources",
+        "downloadServiceApolloSchemaFromIntrospection"
+    )
+    assert(result.output.contains("Reusing configuration cache."))
   }
 }
