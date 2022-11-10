@@ -12,6 +12,7 @@ dependencies {
 apollo {
   service("multimodule3") {
     packageName.set("multimodule3.root")
+    alwaysGenerateTypesMatching.set(listOf("Cat"))
     //usedCoordinates("src/main/graphql/used-coordinates.json")
     generateApolloMetadata.set(true)
     generateDataBuilders.set(true)

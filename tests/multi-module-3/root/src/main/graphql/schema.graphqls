@@ -1,8 +1,22 @@
 type Query {
   user: User
   search(searchInput: SearchInput): [User]
+  animal: Animal!
 }
 
+interface Animal {
+  species: String!
+}
+
+type Cat implements Animal {
+  species: String!
+  mustaches: Int!
+}
+
+type Lion implements Animal {
+  species: String!
+  roar: String!
+}
 input SearchInput {
   firstName: String
   lastName: String

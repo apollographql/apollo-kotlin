@@ -3,3 +3,9 @@ query GetUser($input: SearchInput) {
     firstName
   }
 }
+
+query GetAnimal {
+  animal {
+    species
+  }
+}
