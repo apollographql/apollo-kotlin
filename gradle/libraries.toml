@@ -85,7 +85,7 @@ graphqlkotlin = { group = "com.expediagroup", name = "graphql-kotlin-spring-serv
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen" } # the Kotlin plugin resolves the version
+kotlin-allopen = { group = "org.jetbrains.kotlin", name = "kotlin-allopen", version.ref = "kotlin-plugin" }
 kotlin-compiletesting = { group = "com.github.tschuchortdev", name = "kotlin-compile-testing", version = "1.4.6" }
 # The main kotlin version for build-logic and Gradle tests
 kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin" }
