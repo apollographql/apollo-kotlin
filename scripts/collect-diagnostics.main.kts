@@ -25,7 +25,7 @@ val coreDir = File("$home/Library/Logs/DiagnosticReports/")
 
 ZipOutputStream(File("diagnostics.zip").outputStream()).use { zipOutputStream ->
   if (coreDir.exists()) {
-    zipOutputStream.addDirectory(coreDir, "diagnostics/cores")
+    zipOutputStream.addDirectory(coreDir, coreDir, "diagnostics/cores")
   }
 
   File(".").walk().filter {
@@ -35,14 +35,14 @@ ZipOutputStream(File("diagnostics.zip").outputStream()).use { zipOutputStream ->
   }.filter {
     it.exists()
   }.forEach {
-    val projectDir = it.parentFile.parentFile
-    zipOutputStream.addDirectory(it, "diagnostics/tests/${projectDir.name}")
+    zipOutputStream.addDirectory(File("."), it, "diagnostics/tests")
   }
 }
 
-fun ZipOutputStream.addDirectory(dir: File, prefix: String) {
-  dir.walk().filter { it.isFile }.forEach {
-    val name = "$prefix/${it.relativeTo(dir).path}"
+fun ZipOutputStream.addDirectory(repoDir: File, reportsDir: File, prefix: String) {
+  reportsDir.walk().filter { it.isFile }.forEach {
+    val path = it.relativeTo(repoDir).path
+    val name = "$prefix/$path"
     println("- $name")
 
     putNextEntry(ZipEntry(name))
