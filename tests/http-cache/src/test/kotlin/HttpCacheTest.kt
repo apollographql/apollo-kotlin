@@ -243,7 +243,7 @@ class HttpCacheTest {
     mockServer.enqueueData(data)
 
     try {
-      var response = apolloClient.query(GetRandomQuery())
+      apolloClient.query(GetRandomQuery())
           .addHttpHeader("foo", "bar")
           .execute()
       fail("An exception was expected")
