@@ -477,6 +477,7 @@ public class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollograph
 	public fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
 	public fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
 	public fun resolveTypename (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/String;
+	public fun stableIdForObject (Ljava/util/Map;Lcom/apollographql/apollo3/api/CompiledField;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/DefaultUpload : com/apollographql/apollo3/api/Upload {
@@ -615,10 +616,11 @@ public abstract interface class com/apollographql/apollo3/api/FakeResolver {
 	public abstract fun resolveListSize (Lcom/apollographql/apollo3/api/FakeResolverContext;)I
 	public abstract fun resolveMaybeNull (Lcom/apollographql/apollo3/api/FakeResolverContext;)Z
 	public abstract fun resolveTypename (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/String;
+	public abstract fun stableIdForObject (Ljava/util/Map;Lcom/apollographql/apollo3/api/CompiledField;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/api/FakeResolverContext {
-	public final fun getCacheKey ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
 	public final fun getMergedField ()Lcom/apollographql/apollo3/api/CompiledField;
 	public final fun getPath ()Ljava/util/List;
 }
