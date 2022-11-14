@@ -23,6 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
+import kotlin.test.fail
 
 class HttpCacheTest {
   lateinit var mockServer: MockServer
@@ -47,7 +48,7 @@ class HttpCacheTest {
   }
 
   private suspend fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
     mockServer.stop()
   }
 
@@ -230,6 +231,24 @@ class HttpCacheTest {
     // Should not have been cached
     assertFailsWith<HttpCacheMissException> {
       apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
+    }
+  }
+
+  @Test
+  fun CanSetTheDefaultBehaviourAtTheClientLevel() = runTest(before = { before() }, after = { tearDown() }) {
+    apolloClient = apolloClient.newBuilder()
+        .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+        .build()
+
+    mockServer.enqueueData(data)
+
+    try {
+      var response = apolloClient.query(GetRandomQuery())
+          .addHttpHeader("foo", "bar")
+          .execute()
+      fail("An exception was expected")
+    } catch (e: Exception) {
+
     }
   }
 }
