@@ -112,3 +112,15 @@ query GetCatAnimal {
   }
 }
 
+query GetProduct {
+  product {
+    name
+    price
+  }
+  promo {
+    product {
+      name
+      price
+    }
+  }
+}

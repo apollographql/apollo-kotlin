@@ -15,6 +15,7 @@ import data.builders.GetFelineQuery
 import data.builders.GetIntQuery
 import data.builders.GetNodeQuery
 import data.builders.GetPartialQuery
+import data.builders.GetProductQuery
 import data.builders.PutIntMutation
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
@@ -22,6 +23,8 @@ import data.builders.type.__CustomScalarAdapters
 import data.builders.type.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
+import data.builders.type.buildProduct
+import data.builders.type.buildPromo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -246,5 +249,22 @@ class DataBuilderTest {
     assertEquals(cat1.mustaches, cat2.onCat?.mustaches)
     assertEquals(cat1.species, cat3.onCat?.species)
     assertEquals(cat1.mustaches, cat3.onCat?.mustaches)
+  }
+
+  @Test
+  fun using__stableId() {
+    val productData = Builder(__CustomScalarAdapters).buildProduct {
+      this["__stableId"] = "42"
+    }
+
+    val data = GetProductQuery.Data {
+      product = productData
+      promo = buildPromo {
+        product = productData
+      }
+    }
+
+    assertEquals(data.product?.name, data.promo?.product?.name)
+    assertEquals(data.product?.price, data.promo?.product?.price)
   }
 }

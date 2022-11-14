@@ -18,6 +18,17 @@ type Query {
   listOfListOfAnimal: [[Animal]!]
   unusedType: UnusedType
   node: Node
+  product: Product
+  promo: Promo
+}
+
+type Promo {
+  product: Product!
+}
+
+type Product {
+  name: String!
+  price: Float!Ò
 }
 
 type UnusedType {

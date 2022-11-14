@@ -37,6 +37,10 @@ interface CacheKeyGenerator {
  */
 class CacheKeyGeneratorContext(
     val field: CompiledField,
+    /**
+     * XXX: we don't use variables anywhere at the moment. It's not clear how much of a problem that is. Removing this
+     * would allow to share the interface with FakeResolver
+     */
     val variables: Executable.Variables,
 )
 
