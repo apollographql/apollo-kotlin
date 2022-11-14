@@ -5,11 +5,13 @@ package com.apollographql.apollo3.cache.http
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -47,6 +49,13 @@ enum class HttpFetchPolicy {
   NetworkOnly,
 }
 
+internal class HttpFetchPolicyContext(val httpFetchPolicy: HttpFetchPolicy) : ExecutionContext.Element {
+  override val key: ExecutionContext.Key<*>
+    get() = Key
+
+  companion object Key : ExecutionContext.Key<HttpFetchPolicyContext>
+}
+
 /**
  * Configures a persistent LRU HTTP cache for the ApolloClient.
  *
@@ -74,6 +83,15 @@ fun ApolloClient.Builder.httpCache(
       cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+
+      val policy =  request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
+      val policyStr = when (policy) {
+        HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
+        HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
+        HttpFetchPolicy.NetworkFirst -> CachingHttpInterceptor.NETWORK_FIRST
+        HttpFetchPolicy.NetworkOnly -> CachingHttpInterceptor.NETWORK_ONLY
+      }
+
       return chain.proceed(
           request.newBuilder()
               .addHttpHeader(
@@ -85,6 +103,7 @@ fun ApolloClient.Builder.httpCache(
                     else -> error("Unknown operation type")
                   }
               )
+              .addHttpHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr)
               .build()
       ).catch { throwable ->
         // Revert caching of responses with errors
@@ -100,6 +119,14 @@ fun ApolloClient.Builder.httpCache(
   })
 }
 
+private fun defaultPolicy(operation: Operation<*>): HttpFetchPolicy {
+  return if (operation is Query) {
+    HttpFetchPolicy.CacheFirst
+  } else {
+    HttpFetchPolicy.NetworkOnly
+  }
+}
+
 val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
   get() = executionContext[HttpInfo]?.headers?.any {
     // This will return true whatever the value in the header. We might want to fine tune this
@@ -110,16 +137,7 @@ val <D : Operation.Data> ApolloResponse<D>.isFromHttpCache
  * Configures the [HttpFetchPolicy]
  */
 fun <T> MutableExecutionOptions<T>.httpFetchPolicy(httpFetchPolicy: HttpFetchPolicy): T {
-  val policyStr = when (httpFetchPolicy) {
-    HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
-    HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
-    HttpFetchPolicy.NetworkFirst -> CachingHttpInterceptor.NETWORK_FIRST
-    HttpFetchPolicy.NetworkOnly -> CachingHttpInterceptor.NETWORK_ONLY
-  }
-
-  return addHttpHeader(
-      CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr
-  )
+  return addExecutionContext(HttpFetchPolicyContext(httpFetchPolicy))
 }
 
 /**

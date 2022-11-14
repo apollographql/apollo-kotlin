@@ -23,6 +23,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
+import kotlin.test.fail
 
 class HttpCacheTest {
   lateinit var mockServer: MockServer
@@ -47,8 +48,23 @@ class HttpCacheTest {
   }
 
   private suspend fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
     mockServer.stop()
+  }
+
+  @Test
+  fun DefaultIsCacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueData(data)
+
+    runBlocking {
+      var response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(false, response.isFromHttpCache)
+
+      response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(true, response.isFromHttpCache)
+    }
   }
 
   @Test
@@ -60,7 +76,9 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      response = apolloClient.query(GetRandomQuery()).execute()
+      response = apolloClient.query(GetRandomQuery())
+          .httpFetchPolicy(HttpFetchPolicy.CacheFirst)
+          .execute()
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
     }
@@ -216,4 +234,21 @@ class HttpCacheTest {
     }
   }
 
+  @Test
+  fun CanSetTheDefaultBehaviourAtTheClientLevel() = runTest(before = { before() }, after = { tearDown() }) {
+    apolloClient = apolloClient.newBuilder()
+        .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+        .build()
+
+    mockServer.enqueueData(data)
+
+    try {
+      apolloClient.query(GetRandomQuery())
+          .addHttpHeader("foo", "bar")
+          .execute()
+      fail("An exception was expected")
+    } catch (e: Exception) {
+
+    }
+  }
 }
