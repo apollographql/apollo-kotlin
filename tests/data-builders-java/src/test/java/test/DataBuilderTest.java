@@ -1,5 +1,6 @@
 package test;
 
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.FakeResolver;
 import com.apollographql.apollo3.api.FakeResolverContext;
 import data.builders.GetAliasesQuery;
@@ -15,10 +16,12 @@ import data.builders.type.Direction;
 import data.builders.type.builder.BuilderFactory;
 import data.builders.MyLong;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -226,6 +229,10 @@ public class DataBuilderTest {
 
     @NotNull @Override public String resolveTypename(@NotNull FakeResolverContext context) {
       throw new IllegalStateException();
+    }
+
+    @Nullable @Override public String stableIdForObject(@NotNull Map<String, ?> obj, @NotNull CompiledField mergedField) {
+      return null;
     }
   }
 
