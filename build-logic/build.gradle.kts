@@ -37,9 +37,13 @@ dependencies {
   if (System.getProperty("idea.sync.active") == null) {
     implementation(golatac.lib("kotlin.plugin"))
     runtimeOnly(golatac.lib("ksp"))
+    // XXX: This is only needed for tests. We could have different build logic for different
+    // builds but this seems just overkill for now
+    runtimeOnly(golatac.lib("kotlin.allopen"))
   } else {
     implementation(golatac.lib("kotlin.plugin.duringideasync"))
     runtimeOnly(golatac.lib("ksp.duringideasync"))
+    runtimeOnly(golatac.lib("kotlin.allopen.duringideasync"))
   }
 
   runtimeOnly(golatac.lib("sqldelight.plugin"))
@@ -47,9 +51,6 @@ dependencies {
   runtimeOnly(golatac.lib("benmanes.versions"))
   runtimeOnly(golatac.lib("gr8"))
   runtimeOnly(golatac.lib("kotlinx.binarycompatibilityvalidator"))
-  // XXX: This is only needed for tests. We could have different build logic for different
-  // builds but this seems just overkill for now
-  runtimeOnly(golatac.lib("kotlin.allopen"))
 }
 
 // This shuts down a warning in Kotlin 1.5.30:
