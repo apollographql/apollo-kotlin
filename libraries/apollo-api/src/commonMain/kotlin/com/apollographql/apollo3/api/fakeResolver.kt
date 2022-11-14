@@ -252,8 +252,7 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
         val index = context.path.indexOfLast { it is String }
         context.path.subList(index, context.path.size).joinToString(separator = "") { it.toPathComponent() }
       }
-
-      "ID" -> context.path.joinToString(separator = "") { it.toPathComponent() }
+      "ID" -> context.id.hashCode().toString()
       else -> {
         val type = enumTypes.find { it.name == name } ?: error("Don't know how to instantiate leaf $name")
 
