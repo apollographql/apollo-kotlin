@@ -14,6 +14,7 @@ import defer.DoesNotDisableDeferWithNullIfArgumentQuery
 import defer.HandlesErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownInDeferredFragmentsQuery
 import defer.HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery
+import defer.WithFragmentSpreadsMutation
 import defer.WithFragmentSpreadsQuery
 import defer.WithInlineFragmentsQuery
 import defer.fragment.ComputerErrorField
@@ -117,6 +118,43 @@ class DeferWithRouterTest {
         ),
     )
     val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    assertEquals(expectedDataList, actualDataList)
+  }
+
+  @Test
+  fun deferWithFragmentSpreadsMutation() = runTest(before = { setUp() }, after = { tearDown() }) {
+    // Expected payloads:
+    // {"data":{"computers":[{"id":"Computer1"},{"id":"Computer2"}]},"hasNext":true}
+    // {"hasNext":true,"incremental":[{"data":{"cpu":"386","year":1993,"screen":{"resolution":"640x480"}},"path":["computers",0]},{"data":{"cpu":"486","year":1996,"screen":{"resolution":"800x600"}},"path":["computers",1]}]}
+    // {"hasNext":false,"incremental":[{"label":"a","data":{"isColor":false},"path":["computers",0,"screen"]},{"label":"a","data":{"isColor":true},"path":["computers",1,"screen"]}]}
+    val expectedDataList = listOf(
+        WithFragmentSpreadsMutation.Data(
+            listOf(
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer1", null),
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer2", null),
+            )
+        ),
+        WithFragmentSpreadsMutation.Data(
+            listOf(
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480", null))),
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600", null))),
+            )
+        ),
+        WithFragmentSpreadsMutation.Data(
+            listOf(
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer1", ComputerFields("386", 1993,
+                    ComputerFields.Screen("Screen", "640x480",
+                        ScreenFields(false)))),
+                WithFragmentSpreadsMutation.Computer("Computer", "Computer2", ComputerFields("486", 1996,
+                    ComputerFields.Screen("Screen", "800x600",
+                        ScreenFields(true)))),
+            )
+        ),
+    )
+
+    val actualDataList = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
   }
 

@@ -18,6 +18,11 @@ const resolvers = {
             return computers.find(p => p.id === args.id);
         }
     },
+    Mutation: {
+        computers: (_, args, context) => {
+            return computers;
+        }
+    },
     Computer: {
         errorField: (_, args, context) => {
             throw new Error("Error field");
