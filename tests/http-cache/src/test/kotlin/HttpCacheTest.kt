@@ -52,7 +52,7 @@ class HttpCacheTest {
   }
 
   @Test
-  fun CacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
+  fun DefaultIsCacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueueData(data)
 
     runBlocking {
@@ -61,6 +61,23 @@ class HttpCacheTest {
       assertEquals(false, response.isFromHttpCache)
 
       response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(true, response.isFromHttpCache)
+    }
+  }
+
+  @Test
+  fun CacheFirst() = runTest(before = { before() }, after = { tearDown() }) {
+    mockServer.enqueueData(data)
+
+    runBlocking {
+      var response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(false, response.isFromHttpCache)
+
+      response = apolloClient.query(GetRandomQuery())
+          .httpFetchPolicy(HttpFetchPolicy.CacheFirst)
+          .execute()
       assertEquals(42, response.data?.random)
       assertEquals(true, response.isFromHttpCache)
     }
@@ -215,5 +232,4 @@ class HttpCacheTest {
       apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
     }
   }
-
 }
