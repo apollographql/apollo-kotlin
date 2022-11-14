@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.MapJsonReader
+import kotlin.math.absoluteValue
 
 /**
  * @property path the path to the element being resolved. [path] is a list of [String] or [Int]
@@ -252,7 +253,7 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
         val index = context.path.indexOfLast { it is String }
         context.path.subList(index, context.path.size).joinToString(separator = "") { it.toPathComponent() }
       }
-      "ID" -> context.id.hashCode().toString()
+      "ID" -> context.id.hashCode().absoluteValue.toString()
       else -> {
         val type = enumTypes.find { it.name == name } ?: error("Don't know how to instantiate leaf $name")
 

@@ -193,7 +193,7 @@ class DataBuilderTest {
                 listOf(
                     GetPartialQuery.ListOfListOfAnimal(
                         __typename = "Lion",
-                        id = "listOfListOfAnimal[0][0]id",
+                        id = "574122978",
                         species = "FooSpecies",
                         onLion = GetPartialQuery.OnLion("roar")
                     )
