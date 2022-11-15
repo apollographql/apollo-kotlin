@@ -149,3 +149,17 @@ configure<kotlinx.validation.ApiValidationExtension> {
       )
   )
 }
+
+tasks.register("rmbuild") {
+  doLast {
+    file(".").walk().onEnter {
+      if (it.isDirectory && it.name == "build") {
+        println("deleting: $it")
+        it.deleteRecursively()
+        false
+      } else {
+        true
+      }
+    }.count()
+  }
+}
