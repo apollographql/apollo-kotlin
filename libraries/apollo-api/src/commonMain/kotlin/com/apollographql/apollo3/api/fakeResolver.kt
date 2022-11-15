@@ -238,7 +238,18 @@ private fun buildFieldOfNonNullType(
 }
 
 /**
+ * A [FakeResolver] that generates:
+ * - values based on the object id hashcode for Int/Float/Boolean/ID
+ * - values based on the field name for strings
  *
+ * For object id, [DefaultFakeResolver] uses `@typePolicy` if present. Or you can also override it by setting the
+ * "__stableId" property:
+ *
+ * ```kotlin
+ * val cat = buildCat {
+ *   this["stableId"] = "foo"
+ * }
+ * ```
  */
 open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
   private val enumTypes = types.filterIsInstance<EnumType>()
@@ -287,6 +298,10 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
   override fun stableIdForObject(obj: Map<String, Any?>, mergedField: CompiledField): String? {
     val keyFields = mergedField.type.rawType().keyFields()
 
+    if (obj.containsKey("__stableId")) {
+      return obj.get("__stableId").toString()
+    }
+
     if (keyFields.isNotEmpty()) {
       return buildString {
         append(obj["__typename"].toString())
@@ -294,10 +309,6 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
           append(obj[it].toString())
         }
       }
-    }
-
-    if (obj.containsKey("__stableId")) {
-      return obj.get("__stableId").toString()
     }
 
     return null
