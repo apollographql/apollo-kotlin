@@ -56,7 +56,7 @@ interface FakeResolver {
   /**
    * Use [stableIdForObject] to provide [FakeResolverContext.id]. You can then use [FakeResolverContext.id]
    * to derive stable values in the resolveXyz() methods above. This way, you're guaranteed that a fake object will have
-   * the same field values no matter it's path in the query.
+   * the same field values no matter its path in the query.
    * @param obj the representation of the object. It contains all user defined values. If you do not provide a value, this
    * method is not called.
    * @return a cache key for the given field
