@@ -145,7 +145,7 @@ Whenever Apollo Kotlin _writes_ data to the cache, those writes propagate down _
 
 ## Setting a fetch policy
 
-After you add a normalized cache to your `ApolloClient` initialization, Apollo Kotlin automatically uses `FetchPolicy.CacheFirst` as default (client-wide) policy for all queries. In order to change it, you need to call **fetch policy** on the client builder:
+After you add a normalized cache to your `ApolloClient` initialization, Apollo Kotlin automatically uses `FetchPolicy.CacheFirst` as the default (client-wide) **fetch policy** for all queries. To change the default, you can call `fetchPolicy` on the client builder:
 
 ```kotlin
 val apolloClient = ApolloClient.Builder()
