@@ -1,17 +1,14 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 
-buildscript {
-  apply(from = "../../testProjects/buildscript.gradle.kts")
+plugins {
+  alias(libs.plugins.apollo)
+  alias(libs.plugins.kotlin.jvm)
 }
-
-apply(plugin = "org.jetbrains.kotlin.jvm")
-apply(plugin = "com.apollographql.apollo3")
 
 dependencies {
   add("testImplementation", libs.apollo.api)
 }
 
-configure<ApolloExtension> {
+apollo {
   packageNamesFromFilePaths()
   outputDirConnection {
     connectToKotlinSourceSet("test")

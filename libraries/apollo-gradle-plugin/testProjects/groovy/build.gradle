@@ -3,10 +3,6 @@ plugins {
   alias(libs.plugins.apollo)
 }
 
-repositories {
-  mavenCentral()
-}
-
 apollo {
   // Make sure Action<> can be called from Groovy
   service("main") {

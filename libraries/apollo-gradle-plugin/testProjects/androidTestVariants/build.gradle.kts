@@ -1,13 +1,10 @@
 import com.android.build.gradle.BaseExtension
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 
-buildscript {
-  apply(from = "../../testProjects/buildscript.gradle.kts")
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.apollo)
 }
-
-apply(plugin = "com.android.library")
-apply(plugin = "org.jetbrains.kotlin.android")
-apply(plugin = "com.apollographql.apollo3")
 
 dependencies {
   add("implementation", libs.apollo.api)
@@ -33,7 +30,7 @@ configure<BaseExtension> {
   }
 }
 
-configure<ApolloExtension> {
+apollo {
   service("test") {
     srcDir("src/test/graphql")
     packageName.set("com.example")

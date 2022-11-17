@@ -5,10 +5,6 @@ plugins {
 
 golatac.init(file("../gradle/libraries.toml"))
 
-repositories {
-  mavenCentral()
-}
-
 rootProject.configureNode()
 
 tasks.register("ciBuild") {

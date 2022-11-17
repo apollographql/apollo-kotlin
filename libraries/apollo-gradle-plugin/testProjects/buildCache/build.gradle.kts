@@ -1,4 +1,8 @@
-buildscript {
-    rootProject.extra.set("apolloDepth", "../../../../..")
-    apply(from = "../../../testProjects/buildscript.gradle.kts")
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.apollo)
+}
+
+apollo {
+    packageName.set("com.example")
 }

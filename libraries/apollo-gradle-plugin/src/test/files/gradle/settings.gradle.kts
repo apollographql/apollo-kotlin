@@ -1,12 +1,6 @@
 rootProject.name="testProject"
 
-dependencyResolutionManagement {
-  versionCatalogs {
-    create("libs") {
-      from(files("../../../../gradle/libraries.toml"))
-    }
-  }
-}
+apply(from = "../../../../gradle/test.settings.gradle.kts")
 pluginManagement {
   repositories {
     maven {

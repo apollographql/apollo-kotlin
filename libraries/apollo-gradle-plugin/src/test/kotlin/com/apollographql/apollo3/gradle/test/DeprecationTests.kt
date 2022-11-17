@@ -23,7 +23,7 @@ class DeprecationTests {
   fun `deprecation warnings can be silenced`() {
     TestUtils.withTestProject("deprecationWarnings") { dir ->
       File(dir, "build.gradle.kts").appendText("""
-        configure<ApolloExtension> {
+        apollo {
           warnOnDeprecatedUsages.set(false)
         }
       """.trimIndent())
@@ -37,7 +37,7 @@ class DeprecationTests {
   fun `failOnWarnings works as expected`() {
     TestUtils.withTestProject("deprecationWarnings") { dir ->
       File(dir, "build.gradle.kts").appendText("""
-        configure<ApolloExtension> {
+        apollo {
           failOnWarnings.set(true)
         }
       """.trimIndent())

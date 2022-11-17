@@ -5,10 +5,6 @@ plugins {
   id("com.apollographql.apollo3")
 }
 
-repositories {
-  mavenCentral()
-}
-
 dependencies {
   implementation(golatac.lib("apollo.runtime"))
   implementation(golatac.lib("apollo.rx2"))

@@ -100,10 +100,6 @@ tasks.register("ciBuild") {
   dependsOn(subprojectTasks("build"))
 }
 
-repositories {
-  mavenCentral() // for dokka
-}
-
 tasks.named("dokkaHtmlMultiModule").configure {
   this as org.jetbrains.dokka.gradle.DokkaMultiModuleTask
   outputDirectory.set(buildDir.resolve("dokkaHtml/kdoc"))

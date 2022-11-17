@@ -39,7 +39,7 @@ class KotlinPluginVersionTests {
   fun `kotlin Android max version succeeds`() {
     TestUtils.withTestProject("kotlin-android-plugin-version") { dir ->
       val gradleScript = dir.resolve("build.gradle.kts")
-      gradleScript.writeText(gradleScript.readText().replace("libs.kotlin.plugin.min", "libs.kotlin.plugin.max"))
+      gradleScript.writeText(gradleScript.readText().replace("libs.plugins.kotlin.android.min", "libs.plugins.kotlin.android.max"))
       val result = TestUtils.executeTask("build", dir)
 
       Truth.assertThat(result.task(":build")!!.outcome).isEqualTo(TaskOutcome.SUCCESS)

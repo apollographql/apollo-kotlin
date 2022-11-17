@@ -3,7 +3,6 @@ package com.apollographql.apollo3.buildlogic.plugin
 import configureJavaAndKotlinCompilers
 import configureMppDefaults
 import configurePublishing
-import configureRepositories
 import configureTesting
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -18,8 +17,6 @@ class LibraryConventionPlugin : Plugin<Project> {
     with(project) {
       group = property("GROUP")!!
       version = property("VERSION_NAME")!!
-
-      configureRepositories()
 
       extensions.create("apolloLibrary", Extension::class.java)
 

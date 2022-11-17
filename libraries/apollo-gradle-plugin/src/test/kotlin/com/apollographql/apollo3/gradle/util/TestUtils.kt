@@ -19,8 +19,8 @@ object TestUtils {
   val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "kotlin.plugin")
   val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apollo.plugin")
 
-  fun withDirectory(block: (File) -> Unit) {
-    val dest = File(File(System.getProperty("user.dir")), "build/testProject")
+  fun withDirectory(testDir: String = "testProject", block: (File) -> Unit) {
+    val dest = File(File(System.getProperty("user.dir")), "build/$testDir")
     dest.deleteRecursively()
 
     // See https://github.com/apollographql/apollo-android/issues/2184
@@ -136,7 +136,7 @@ object TestUtils {
     block(dir)
   }
 
-  fun withTestProject(name: String, block: (File) -> Unit) = withDirectory { dir ->
+  fun withTestProject(name: String, testDir: String = "testProject", block: (File) -> Unit) = withDirectory(testDir) { dir ->
     File(System.getProperty("user.dir"), "testProjects/$name").copyRecursively(dir, overwrite = true)
     block(dir)
   }
@@ -162,12 +162,14 @@ object TestUtils {
   }
 
   fun executeGradleWithVersion(projectDir: File, gradleVersion: String?, vararg args: String): BuildResult {
-    val output = blackholeSink().buffer()
-    val error = blackholeSink().buffer()
+//    val output = System.out.writer()
+//    val error = System.err.writer()
+    val output = blackholeSink().buffer().outputStream().writer()
+    val error = blackholeSink().buffer().outputStream().writer()
 
     return GradleRunner.create()
-        .forwardStdOutput(output.outputStream().writer())
-        .forwardStdError(error.outputStream().writer())
+        .forwardStdOutput(output)
+        .forwardStdError(error)
         .withProjectDir(projectDir)
         .withDebug(true)
         .withArguments("--stacktrace", *args)
