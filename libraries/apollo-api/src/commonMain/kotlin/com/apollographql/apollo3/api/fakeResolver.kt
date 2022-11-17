@@ -1,13 +1,17 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.MapJsonReader
+import kotlin.math.absoluteValue
 
 /**
  * @property path the path to the element being resolved. [path] is a list of [String] or [Int]
+ * @property id the id of the field. By default, it is the path of the field or the cache key
+ * if `@typePolicy` is used. You can override this with [FakeResolver.stableIdForObject]
  * @property mergedField the field being resolved
  */
-class FakeResolverContext(
+class FakeResolverContext internal constructor(
     val path: List<Any>,
+    val id: String,
     val mergedField: CompiledField,
 )
 
@@ -48,6 +52,16 @@ interface FakeResolver {
    * @return a concrete type that implements the type in `context.mergedField.type.rawType()`
    */
   fun resolveTypename(context: FakeResolverContext): String
+
+  /**
+   * Use [stableIdForObject] to provide [FakeResolverContext.id]. You can then use [FakeResolverContext.id]
+   * to derive stable values in the resolveXyz() methods above. This way, you're guaranteed that a fake object will have
+   * the same field values no matter its path in the query.
+   * @param obj the representation of the object. It contains all user defined values. If you do not provide a value, this
+   * method is not called.
+   * @return a cache key for the given field
+   */
+  fun stableIdForObject(obj: Map<String, Any?>, mergedField: CompiledField): String?
 }
 
 private fun collect(selections: List<CompiledSelection>, typename: String): List<CompiledField> {
@@ -92,11 +106,12 @@ private fun buildFakeObject(
     typename: String,
     base: Map<String, Any?>,
     resolver: FakeResolver,
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: CustomScalarAdapters,
 ): Map<String, Any?> {
   @Suppress("UNCHECKED_CAST")
   return buildFieldOfType(
       emptyList(),
+      "",
       CompiledField.Builder("data", CompiledNotNullType(ObjectType.Builder(typename).build()))
           .selections(selections)
           .build(),
@@ -107,16 +122,6 @@ private fun buildFakeObject(
   ) as Map<String, Any?>
 }
 
-private fun buildField(
-    path: List<Any>,
-    mergedField: CompiledField,
-    resolver: FakeResolver,
-    parent: Map<String, Any?>,
-    customScalarAdapters: CustomScalarAdapters
-): Any? {
-  return buildFieldOfType(path, mergedField, resolver, parent.getOrAbsent(mergedField.responseName), mergedField.type, customScalarAdapters)
-}
-
 private fun Map<String, Any?>.getOrAbsent(key: String) = if (containsKey(key)) {
   Optional.Present(get(key))
 } else {
@@ -125,6 +130,7 @@ private fun Map<String, Any?>.getOrAbsent(key: String) = if (containsKey(key)) {
 
 private fun buildFieldOfType(
     path: List<Any>,
+    id: String,
     mergedField: CompiledField,
     resolver: FakeResolver,
     value: Optional<Any?>,
@@ -136,38 +142,39 @@ private fun buildFieldOfType(
       if (value.value == null) {
         null
       } else {
-        buildFieldOfType(path, mergedField, resolver, value, CompiledNotNullType(type), customScalarAdapters)
+        buildFieldOfType(path, id, mergedField, resolver, value, CompiledNotNullType(type), customScalarAdapters)
       }
     } else {
-      if (resolver.resolveMaybeNull(FakeResolverContext(path, mergedField))) {
+      if (resolver.resolveMaybeNull(FakeResolverContext(path, id, mergedField))) {
         null
       } else {
-        buildFieldOfType(path, mergedField, resolver, value, CompiledNotNullType(type), customScalarAdapters)
+        buildFieldOfType(path, id, mergedField, resolver, value, CompiledNotNullType(type), customScalarAdapters)
       }
     }
   }
 
-  return buildFieldOfNonNullType(path, mergedField, resolver, value, type.ofType, customScalarAdapters)
+  return buildFieldOfNonNullType(path, id, mergedField, resolver, value, type.ofType, customScalarAdapters)
 }
 
 private fun buildFieldOfNonNullType(
     path: List<Any>,
+    id: String,
     mergedField: CompiledField,
     resolver: FakeResolver,
     value: Optional<Any?>,
     type: CompiledType,
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: CustomScalarAdapters,
 ): Any? {
   return when (type) {
     is CompiledListType -> {
       if (value is Optional.Present) {
         val list = (value.value as? List<Any?>) ?: error("")
         list.mapIndexed { index, item ->
-          buildFieldOfType(path + index, mergedField, resolver, Optional.Present(item), type.ofType, customScalarAdapters)
+          buildFieldOfType(path + index, id, mergedField, resolver, Optional.Present(item), type.ofType, customScalarAdapters)
         }
       } else {
-        0.until(resolver.resolveListSize(FakeResolverContext(path, mergedField))).map {
-          buildFieldOfType(path + it, mergedField, resolver, Optional.Absent, type.ofType, customScalarAdapters)
+        0.until(resolver.resolveListSize(FakeResolverContext(path, id, mergedField))).map {
+          buildFieldOfType(path + it, id + it, mergedField, resolver, Optional.Absent, type.ofType, customScalarAdapters)
         }
       }
     }
@@ -177,24 +184,32 @@ private fun buildFieldOfNonNullType(
         if (mergedField.selections.isNotEmpty()) {
           @Suppress("UNCHECKED_CAST")
           val map = (value.value as? Map<String, Any?>) ?: error("")
+
+          /**
+           * If the map was created through one of the builders, we are guaranteed that __typename
+           * is present because it was created as a concrete type
+           */
           val typename = (map["__typename"] as? String) ?: error("")
 
+          val stableId = resolver.stableIdForObject(map, mergedField) ?: id
+
           collectAndMerge(mergedField.selections, typename).associate {
-            it.responseName to buildField(path + it.responseName, it, resolver, map, customScalarAdapters)
+            it.responseName to buildFieldOfType(path + it.responseName, stableId + it.responseName, it, resolver, map.getOrAbsent(it.responseName), it.type, customScalarAdapters)
           }
         } else {
           value.value
         }
       } else {
         if (mergedField.selections.isNotEmpty()) {
-          val typename = resolver.resolveTypename(FakeResolverContext(path, mergedField))
+          val typename = resolver.resolveTypename(FakeResolverContext(path, id, mergedField))
           val map = mapOf("__typename" to typename)
 
           collectAndMerge(mergedField.selections, typename).associate {
-            it.responseName to buildField(path + it.responseName, it, resolver, map, customScalarAdapters)
+            val fieldPath = path + it.responseName
+            it.responseName to buildFieldOfType(fieldPath, fieldPath.joinToString(), it, resolver, map.getOrAbsent(it.responseName), it.type, customScalarAdapters)
           }
         } else {
-          val leafValue = resolver.resolveLeaf(FakeResolverContext(path, mergedField))
+          val leafValue = resolver.resolveLeaf(FakeResolverContext(path, id, mergedField))
           if (type is CustomScalarType) {
             /**
              * This might be a scalar with a build time registered adapter.
@@ -222,31 +237,38 @@ private fun buildFieldOfNonNullType(
   }
 }
 
-class DefaultFakeResolver(val types: List<CompiledNamedType>) : FakeResolver {
-  private var currentInt = 0
-  private var currentFloat = 0.0
-  private var currentBoolean = false
-
-  private var impl = mutableMapOf<String, Int>()
+/**
+ * A [FakeResolver] that generates:
+ * - values based on the object id hashcode for Int/Float/Boolean/ID
+ * - values based on the field name for strings
+ *
+ * For object id, [DefaultFakeResolver] uses `@typePolicy` if present. Or you can also override it by setting the
+ * "__stableId" property:
+ *
+ * ```kotlin
+ * val cat = buildCat {
+ *   this["stableId"] = "foo"
+ * }
+ * ```
+ */
+open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
+  private val enumTypes = types.filterIsInstance<EnumType>()
+  private val allTypes = types
 
   override fun resolveLeaf(context: FakeResolverContext): Any {
     return when (val name = context.mergedField.type.rawType().name) {
-      "Int" -> currentInt++
-      "Float" -> currentFloat++
-      "Boolean" -> (!currentBoolean).also { currentBoolean = it }
+      "Int" -> context.id.hashCode() % 100
+      "Float" -> (context.id.hashCode() % 100000).toFloat() / 100.0
+      "Boolean" -> context.id.hashCode() % 2 == 0
       "String" -> {
         val index = context.path.indexOfLast { it is String }
-        context.path.subList(index, context.path.size).joinToString { it.toPathComponent() }
+        context.path.subList(index, context.path.size).joinToString(separator = "") { it.toPathComponent() }
       }
-
-      "ID" -> context.path.joinToString { it.toString() }
+      "ID" -> context.id.hashCode().absoluteValue.toString()
       else -> {
-        val type = (types.find { it.name == name } as? EnumType) ?: error("Don't know how to instantiate leaf $name")
-        val index = impl.getOrElse(name) { 0 }
+        val type = enumTypes.find { it.name == name } ?: error("Don't know how to instantiate leaf $name")
 
-        impl[name] = index + 1
-
-        type.values[index % type.values.size]
+        type.values[context.id.hashCode().mod(type.values.size)]
       }
     }
   }
@@ -266,14 +288,30 @@ class DefaultFakeResolver(val types: List<CompiledNamedType>) : FakeResolver {
 
   override fun resolveTypename(context: FakeResolverContext): String {
     val rawType = context.mergedField.type.rawType()
-    val name = rawType.name
-    val index = impl.getOrElse(name) { 0 }
-
-    impl[name] = index + 1
 
     // XXX: Cache this computation
-    val possibleTypes = possibleTypes(types, rawType)
-    return possibleTypes[index % possibleTypes.size].name
+    val possibleTypes = possibleTypes(allTypes, rawType)
+    val index = context.id.hashCode().mod(possibleTypes.size)
+    return possibleTypes[index].name
+  }
+
+  override fun stableIdForObject(obj: Map<String, Any?>, mergedField: CompiledField): String? {
+    val keyFields = mergedField.type.rawType().keyFields()
+
+    if (obj.containsKey("__stableId")) {
+      return obj.get("__stableId").toString()
+    }
+
+    if (keyFields.isNotEmpty()) {
+      return buildString {
+        append(obj["__typename"].toString())
+        keyFields.forEach {
+          append(obj[it].toString())
+        }
+      }
+    }
+
+    return null
   }
 }
 
@@ -283,7 +321,7 @@ fun <T> buildData(
     typename: String,
     map: Map<String, Any?>,
     resolver: FakeResolver,
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: CustomScalarAdapters,
 ): T {
   return adapter.obj(false).fromJson(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, customScalarAdapters)),
@@ -298,13 +336,14 @@ fun <T> buildFragmentData(
     block: Any? = null,
     resolver: FakeResolver,
     type: CompiledType,
-    customScalarAdapters: CustomScalarAdapters
+    customScalarAdapters: CustomScalarAdapters,
 ): T {
   val map = if (block == null) {
     mapOf(
         "__typename" to resolver.resolveTypename(
             FakeResolverContext(
                 emptyList(),
+                "fragmentRoot",
                 CompiledField.Builder("__fragmentRoot", type).build()
             )
         )

@@ -18,6 +18,17 @@ type Query {
   listOfListOfAnimal: [[Animal]!]
   unusedType: UnusedType
   node: Node
+  product: Product
+  promo: Promo
+}
+
+type Promo {
+  product: Product!
+}
+
+type Product {
+  name: String!
+  price: Float!Ò
 }
 
 type UnusedType {
@@ -34,21 +45,25 @@ type MutationRoot {
 }
 
 interface Node {
-  id: String!
+  id: ID!
+  species: String!
 }
 
-interface Animal {
+interface Animal @typePolicy(keyFields: "id") {
+  id: ID!
   species: String!
 }
 
 type Cat implements Animal & Animal2 & Node {
-  id: String!
+  id: ID!
   species: String!
   mustaches: Int!
   unusedField: String!
+  bestFriend: Animal!
 }
 
 type Lion implements Animal {
+  id: ID!
   species: String!
   roar: String!
 }

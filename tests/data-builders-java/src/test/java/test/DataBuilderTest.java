@@ -1,5 +1,6 @@
 package test;
 
+import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.FakeResolver;
 import com.apollographql.apollo3.api.FakeResolverContext;
 import data.builders.GetAliasesQuery;
@@ -15,10 +16,12 @@ import data.builders.type.Direction;
 import data.builders.type.builder.BuilderFactory;
 import data.builders.MyLong;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -150,17 +153,17 @@ public class DataBuilderTest {
   public void fakeValues() {
     GetEverythingQuery.Data data = GetEverythingQuery.buildData(factory.buildQuery().build());
 
-    assertEquals(Direction.SOUTH, data.direction);
-    assertEquals(Integer.valueOf(0), data.nullableInt);
-    assertEquals(Integer.valueOf(1), data.nonNullableInt);
+    assertEquals(Direction.NORTH, data.direction);
+    assertEquals(Integer.valueOf(-34), data.nullableInt);
+    assertEquals(Integer.valueOf(-99), data.nonNullableInt);
     assertEquals(Arrays.asList(
-        Arrays.asList(2, 3, 4),
-        Arrays.asList(5, 6, 7),
-        Arrays.asList(8, 9, 10)
+        Arrays.asList(73, 74, 75),
+        Arrays.asList(4, 5, 6),
+        Arrays.asList(35, 36, 37)
     ), data.listOfListOfInt);
-    assertEquals(Integer.valueOf(11), data.cat.mustaches);
-    assertEquals("Lion", data.animal.__typename);
-    assertEquals("Cat", data.feline.__typename);
+    assertEquals(Integer.valueOf(53), data.cat.mustaches);
+    assertEquals("Cat", data.animal.__typename);
+    assertEquals("Lion", data.feline.__typename);
   }
 
   @Test
@@ -180,20 +183,18 @@ public class DataBuilderTest {
       );
 
 
-    assertEquals(
-        new GetPartialQuery.Data(
-            Collections.singletonList(
-                Collections.singletonList (
-                    new GetPartialQuery.ListOfListOfAnimal(
-                        "Lion",
-                        "FooSpecies",
-                        new GetPartialQuery.OnLion("roar")
-                    )
+    GetPartialQuery.Data data2 = new GetPartialQuery.Data(
+        Collections.singletonList(
+            Collections.singletonList (
+                new GetPartialQuery.ListOfListOfAnimal(
+                    "Lion",
+                    "FooSpecies",
+                    new GetPartialQuery.OnLion("roar")
                 )
             )
-        ),
-        data
+        )
     );
+    assertEquals(data2, data);
   }
 
   static class MyFakeResolver implements FakeResolver {
@@ -228,6 +229,10 @@ public class DataBuilderTest {
 
     @NotNull @Override public String resolveTypename(@NotNull FakeResolverContext context) {
       throw new IllegalStateException();
+    }
+
+    @Nullable @Override public String stableIdForObject(@NotNull Map<String, ?> obj, @NotNull CompiledField mergedField) {
+      return null;
     }
   }
 

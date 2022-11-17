@@ -1,23 +1,30 @@
 package test
 
-import com.apollographql.apollo3.api.FakeResolver
+import com.apollographql.apollo3.api.Builder
+import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolverContext
 import com.example.MyLong
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
+import data.builders.GetCatAnimalQuery
 import data.builders.GetCustomScalarQuery
 import data.builders.GetDirectionQuery
+import data.builders.GetEgotisticalCatQuery
 import data.builders.GetEverythingQuery
 import data.builders.GetFelineQuery
 import data.builders.GetIntQuery
 import data.builders.GetNodeQuery
 import data.builders.GetPartialQuery
+import data.builders.GetProductQuery
 import data.builders.PutIntMutation
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
-import data.builders.type.LionBuilder
+import data.builders.type.__CustomScalarAdapters
+import data.builders.type.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
+import data.builders.type.buildProduct
+import data.builders.type.buildPromo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -155,19 +162,17 @@ class DataBuilderTest {
   fun fakeValues() {
     val data = GetEverythingQuery.Data()
 
-    assertEquals(Direction.SOUTH, data.direction)
-    assertEquals(0, data.nullableInt)
-    assertEquals(1, data.nonNullableInt)
+    assertEquals(Direction.NORTH, data.direction)
+    assertEquals(-34, data.nullableInt)
+    assertEquals(-99, data.nonNullableInt)
     assertEquals(listOf(
-        listOf(2, 3, 4),
-        listOf(5, 6, 7),
-        listOf(8, 9, 10)
+        listOf(73, 74, 75),
+        listOf(4, 5, 6),
+        listOf(35, 36, 37)
     ), data.listOfListOfInt)
-    assertEquals(11, data.cat.mustaches)
-    assertEquals("Lion", data.animal.__typename)
-    assertEquals("Cat", data.feline.__typename)
-
-    println(data)
+    assertEquals(53, data.cat.mustaches)
+    assertEquals("Cat", data.animal.__typename)
+    assertEquals("Lion", data.feline.__typename)
   }
 
   @Test
@@ -188,6 +193,7 @@ class DataBuilderTest {
                 listOf(
                     GetPartialQuery.ListOfListOfAnimal(
                         __typename = "Lion",
+                        id = "574122978",
                         species = "FooSpecies",
                         onLion = GetPartialQuery.OnLion("roar")
                     )
@@ -198,26 +204,14 @@ class DataBuilderTest {
     )
   }
 
-  class MyFakeResolver : FakeResolver {
+  class MyFakeResolver : DefaultFakeResolver(__Schema.all) {
     override fun resolveLeaf(context: FakeResolverContext): Any {
-      return when (context.mergedField.type.rawType().name) {
+      return when (val name = context.mergedField.type.rawType().name) {
         "Long1" -> MyLong(45) // build-time
         "Long2" -> MyLong(46) // run-time
         "Long3" -> 47L // mapped to Any
-        else -> error("")
+        else -> super.resolveLeaf(context)
       }
-    }
-
-    override fun resolveListSize(context: FakeResolverContext): Int {
-      return 1
-    }
-
-    override fun resolveMaybeNull(context: FakeResolverContext): Boolean {
-      return false
-    }
-
-    override fun resolveTypename(context: FakeResolverContext): String {
-      TODO("Not yet implemented")
     }
   }
 
@@ -228,5 +222,49 @@ class DataBuilderTest {
     assertEquals(45L, data.long1?.value)
     assertEquals(46L, data.long2?.value)
     assertEquals(47, data.long3) // AnyAdapter will try to fit the smallest possible number
+  }
+
+  @Test
+  fun fakeValuesCanBeReused() {
+    val cat = Builder(__CustomScalarAdapters).buildCat {
+      id = "42"
+      bestFriend = buildCat {
+        id = "42"
+      }
+    }
+    val resolver = MyFakeResolver()
+
+    val data = GetEgotisticalCatQuery.Data(resolver) {
+      this.cat = cat
+    }
+    val data2 = GetCatAnimalQuery.Data(resolver) {
+      this.animal = cat
+    }
+
+    val cat1 = data.cat
+    val cat2 = data.cat.bestFriend
+    val cat3 = data2.animal
+
+    assertEquals(cat1.species, cat2.species)
+    assertEquals(cat1.mustaches, cat2.onCat?.mustaches)
+    assertEquals(cat1.species, cat3.onCat?.species)
+    assertEquals(cat1.mustaches, cat3.onCat?.mustaches)
+  }
+
+  @Test
+  fun using__stableId() {
+    val productData = Builder(__CustomScalarAdapters).buildProduct {
+      this["__stableId"] = "42"
+    }
+
+    val data = GetProductQuery.Data {
+      product = productData
+      promo = buildPromo {
+        product = productData
+      }
+    }
+
+    assertEquals(data.product?.name, data.promo?.product?.name)
+    assertEquals(data.product?.price, data.promo?.product?.price)
   }
 }
