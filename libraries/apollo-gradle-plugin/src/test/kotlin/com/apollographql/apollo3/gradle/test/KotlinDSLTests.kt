@@ -45,7 +45,7 @@ class KotlinDSLTests {
   @Test
   fun `parameters do not throw`() {
     val apolloConfiguration = """
-      configure<ApolloExtension> { 
+      apollo { 
         service("starwars") {
           useSemanticNaming.set(false)
           customScalarsMapping.set(mapOf("DateTime" to "java.util.Date"))

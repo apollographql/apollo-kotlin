@@ -15,14 +15,6 @@ configure<BaseExtension> {
   }
 }
 
-repositories {
-  maven {
-    url = uri("../../../../build/localMaven")
-  }
-  google()
-  mavenCentral()
-}
-
 dependencies {
   add("implementation", libs.apollo.api)
 }

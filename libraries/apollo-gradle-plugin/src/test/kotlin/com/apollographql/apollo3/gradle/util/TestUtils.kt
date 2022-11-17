@@ -13,11 +13,11 @@ import java.io.File
 object TestUtils {
   class Plugin(val artifact: String?, val id: String)
 
-  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "android.plugin")
-  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "android.plugin")
-  val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "kotlin.plugin")
-  val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "kotlin.plugin")
-  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "apollo.plugin")
+  val androidApplicationPlugin = Plugin(id = "com.android.application", artifact = "libs.plugins.android.application")
+  val androidLibraryPlugin = Plugin(id = "com.android.library", artifact = "libs.plugins.android.library")
+  val kotlinJvmPlugin = Plugin(id = "org.jetbrains.kotlin.jvm", artifact = "libs.plugins.kotlin.jvm")
+  val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "libs.plugins.kotlin.android")
+  val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "libs.plugins.apollo")
 
   fun withDirectory(testDir: String = "testProject", block: (File) -> Unit) {
     val dest = File(File(System.getProperty("user.dir")), "build/$testDir")
@@ -37,12 +37,14 @@ object TestUtils {
     // dest.deleteRecursively()
   }
 
-  fun withProject(usesKotlinDsl: Boolean,
-                  plugins: List<Plugin>,
-                  apolloConfiguration: String,
-                  isFlavored: Boolean = false,
-                  graphqlPath: String = "starwars",
-                  block: (File) -> Unit) = withDirectory {
+  fun withProject(
+      usesKotlinDsl: Boolean,
+      plugins: List<Plugin>,
+      apolloConfiguration: String,
+      isFlavored: Boolean = false,
+      graphqlPath: String = "starwars",
+      block: (File) -> Unit,
+  ) = withDirectory {
     val source = fixturesDirectory()
     val dest = it
 
@@ -51,73 +53,58 @@ object TestUtils {
 
     val isAndroid = plugins.firstOrNull { it.id.startsWith("com.android") } != null
 
-    if (usesKotlinDsl) {
-      val applyLines = plugins.map { "apply(plugin = \"${it.id}\")" }.joinToString("\n")
-      val classPathLines = plugins.filter { it.artifact != null }
-          .map { "classpath(libs.${it.artifact!!})" }
-          .joinToString("\n")
-
-      var buildscript = File(source, "gradle/build.gradle.kts.template")
-          .readText()
-          .replace("// ADD BUILDSCRIPT DEPENDENCIES HERE", classPathLines)
-          .replace("// ADD PLUGINS HERE", applyLines)
-          .replace("// ADD APOLLO CONFIGURATION HERE", apolloConfiguration)
-
-      if (isAndroid) {
-        val androidConfiguration = """
-        android {
-          setCompileSdkVersion((extra["androidConfig"] as Map<String,*>).get("compileSdkVersion") as Int)
-        }
-      """.trimIndent()
-        if (isFlavored) {
-          throw IllegalArgumentException("flavored build using build.gradle.kts are not supported")
-        }
-        buildscript = buildscript.replace("// ADD ANDROID CONFIGURATION HERE", androidConfiguration)
+    val buildscript = buildString {
+      appendLine("plugins {")
+      plugins.forEach {
+        appendLine("  alias(${it.artifact})")
       }
+      appendLine("}")
+      appendLine()
 
-      File(dest, "build.gradle.kts").writeText(buildscript)
-    } else {
-      val applyLines = plugins.map { "apply plugin: \"${it.id}\"" }.joinToString("\n")
-      val classPathLines = plugins.filter { it.artifact != null }.map { "classpath(libs.${it.artifact})" }.joinToString("\n")
+      append("""
+        dependencies {
+          add("implementation", libs.apollo.api)
+        }
+      """.trimIndent())
 
-      var buildscript = File(source, "gradle/build.gradle.template")
-          .readText()
-          .replace("// ADD BUILDSCRIPT DEPENDENCIES HERE", classPathLines)
-          .replace("// ADD PLUGINS HERE", applyLines)
-          .replace("// ADD APOLLO CONFIGURATION HERE", apolloConfiguration)
+      appendLine()
+
+      append(apolloConfiguration)
+
+      appendLine()
 
       if (isAndroid) {
-        var androidConfiguration = """
-        |android {
-        |  compileSdkVersion libs.versions.android.sdkversion.compile.get().toInteger()
-        |
-      """.trimMargin()
-
-        if (isFlavored) {
-          androidConfiguration += """
-          |  flavorDimensions "price"
-          |  productFlavors {
-          |    free {
-          |      dimension 'price'
-          |    }
-          |
-          |    paid {
-          |      dimension 'price'
-          |    }
-          |  }
-          |
+        append("""
+            |android {
+            |  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInteger())
+            |
           """.trimMargin()
+        )
+
+        if (isFlavored) {
+          append("""
+            |  flavorDimensions "price"
+            |  productFlavors {
+            |    free {
+            |      dimension 'price'
+            |    }
+            |
+            |    paid {
+            |      dimension 'price'
+            |    }
+            |  }
+            |
+            """.trimMargin())
         }
 
-        androidConfiguration += """
-        |}
-      """.trimMargin()
-
-        buildscript = buildscript.replace("// ADD ANDROID CONFIGURATION HERE", androidConfiguration)
+        append("""
+            |}
+          """.trimMargin())
       }
-
-      File(dest, "build.gradle").writeText(buildscript)
     }
+
+    val filename = if (usesKotlinDsl) "build.gradle.kts" else "build.gradle"
+    File(dest, filename).writeText(buildscript)
 
     if (isAndroid) {
       File(source, "manifest/AndroidManifest.xml").copyTo(File(dest, "src/main/AndroidManifest.xml"))
@@ -127,14 +114,12 @@ object TestUtils {
     block(dest)
   }
 
-  fun withGeneratedAccessorsProject(apolloConfiguration: String, block: (File) -> Unit) = withDirectory { dir ->
-    File(fixturesDirectory(), "gradle/settings.gradle.kts").copyTo(File(dir, "settings.gradle.kts"))
-    File(fixturesDirectory(), "gradle/build.gradle.kts").copyTo(File(dir, "build.gradle.kts"))
-
-    File(dir, "build.gradle.kts").appendText(apolloConfiguration)
-
-    block(dir)
-  }
+  fun withGeneratedAccessorsProject(apolloConfiguration: String, block: (File) -> Unit) = withProject(
+      usesKotlinDsl = true,
+      plugins = listOf(kotlinJvmPlugin, apolloPlugin),
+      apolloConfiguration = apolloConfiguration,
+      block = block
+  )
 
   fun withTestProject(name: String, testDir: String = "testProject", block: (File) -> Unit) = withDirectory(testDir) { dir ->
     File(System.getProperty("user.dir"), "testProjects/$name").copyRecursively(dir, overwrite = true)
@@ -144,11 +129,14 @@ object TestUtils {
   /**
    * creates a simple java non-android non-kotlin-gradle project
    */
-  fun withSimpleProject(apolloConfiguration: String = """
+  fun withSimpleProject(
+      apolloConfiguration: String = """
     apollo {
       packageNamesFromFilePaths()
     }
-  """.trimIndent(), block: (File) -> Unit) = withProject(
+  """.trimIndent(),
+      block: (File) -> Unit,
+  ) = withProject(
       usesKotlinDsl = false,
       plugins = listOf(kotlinJvmPlugin, apolloPlugin),
       apolloConfiguration = apolloConfiguration
