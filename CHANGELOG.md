@@ -1,6 +1,19 @@
 Change Log
 ==========
 
+# Version 3.7.1
+
+_2022-11-18_
+
+A patch release with a few fixes:   
+
+* 👷Data Builders: make DefaultFakeResolver open and stateless (#4468)
+* Kotlin 1.7.21 (#4511)
+* Introduce HttpFetchPolicyContext (#4509)
+* Fix usedCoordinates on interfaces (#4506)
+
+Many thanks to @Holoceo, @juliagarrigos, @davidshepherd7 and @eduardb for the feedbacks 💙 
+
 # Version 3.7.0
 
 _2022-11-08_
