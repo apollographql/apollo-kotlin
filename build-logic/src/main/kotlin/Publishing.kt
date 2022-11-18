@@ -87,7 +87,7 @@ private fun Project.getOssStagingUrl(): String {
   val repositoryId = runBlocking {
     client.createRepository(
         profileId = System.getenv("COM_APOLLOGRAPHQL_PROFILE_ID"),
-        description = "com.apollo.apollo3 $version"
+        description = "apollo-kotlin $version"
     )
   }
   return "${baseUrl}staging/deployByRepositoryId/${repositoryId}/".also {

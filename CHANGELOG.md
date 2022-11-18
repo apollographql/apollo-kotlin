@@ -1,6 +1,31 @@
 Change Log
 ==========
 
+# Version 3.7.1
+
+_2022-11-18_
+
+A patch release with a few fixes.
+
+## 👷‍ All changes
+
+* 👷Data Builders: make DefaultFakeResolver open and stateless (#4468)
+* Kotlin 1.7.21 (#4511)
+* Introduce HttpFetchPolicyContext (#4509)
+* Fix usedCoordinates on interfaces (#4506)
+
+Many thanks to @Holoceo, @juliagarrigos, @davidshepherd7 and @eduardb for the feedbacks 💙 
+
+# Version 2.5.14
+
+_2022-11-18_
+
+A patch release to fix an issue where the ApolloCall could end up in a bad state. Many thanks to @WilliamsDHI for diving into this 💙!
+
+## 👷‍ All changes
+
+* update terminate and responseCallback methods to return Optional.absent() in IDLE/TERMINATED state (#4383)
+
 # Version 3.7.0
 
 _2022-11-08_
