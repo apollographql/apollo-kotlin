@@ -1,13 +1,9 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 
-buildscript {
-  rootProject.extra.set("apolloDepth", "../../../../..")
-  apply(from = "../../../testProjects/buildscript.gradle.kts")
+plugins {
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.apollo)
+  id("maven-publish")
 }
-
-apply(plugin = "org.jetbrains.kotlin.jvm")
-apply(plugin = "com.apollographql.apollo3")
-apply(plugin = "maven-publish")
 
 group = "com.jvm"
 version = "1.0.0"
@@ -16,7 +12,7 @@ dependencies {
   add("implementation", libs.apollo.api)
 }
 
-configure<ApolloExtension> {
+apollo {
   service("jvm") {
     packageName.set("com.jvm")
     generateApolloMetadata.set(true)

@@ -259,7 +259,7 @@ class ServiceTests {
   @Test
   fun `dependencies are using the plugin version by default`() {
     withTestProject("defaultVersion") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":module:generateApolloSources", dir)
+      TestUtils.executeTaskAndAssertSuccess(":generateApolloSources", dir)
     }
   }
 

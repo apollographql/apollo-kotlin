@@ -70,7 +70,7 @@ class LanguageVersionTests {
       """.trimIndent()
 
     val apolloConfiguration = """
-      configure<ApolloExtension> {
+      apollo {
         packageNamesFromFilePaths()
         codegenModels.set(com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED)
         languageVersion.set("$apolloLanguageVersion")

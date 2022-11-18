@@ -97,14 +97,16 @@ class MultiModulesTests {
 
   @Test
   fun `metadata is published`() {
-    TestUtils.withTestProject("multi-modules-publishing") { dir ->
+    TestUtils.withTestProject("multi-modules-publishing-producer") { dir ->
       TestUtils.executeTaskAndAssertSuccess(
           ":publishAllPublicationsToPluginTestRepository",
-          dir.resolve("jvm-producer")
+          dir
       )
+    }
+    TestUtils.withTestProject("multi-modules-publishing-consumer") { dir ->
       TestUtils.executeTaskAndAssertSuccess(
           ":build",
-          dir.resolve("consumer")
+          dir
       )
     }
   }

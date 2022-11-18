@@ -11,7 +11,7 @@ class LazyTests {
   fun `properties are not called during configuration`() {
 
     val apolloConfiguration = """
-configure<ApolloExtension> {
+apollo {
   packageNamesFromFilePaths()
   useSemanticNaming.set(project.provider {
       throw IllegalArgumentException("this should not be called during configuration")
@@ -44,7 +44,7 @@ abstract class InstallGraphQLFilesTask: DefaultTask() {
 val installTask = tasks.register("installTask", InstallGraphQLFilesTask::class.java) {
   outputDir.set(project.file("build/toto"))
 }
-configure<ApolloExtension> {
+apollo {
   packageNamesFromFilePaths()
   srcDir(installTask.flatMap { it.outputDir })
 }

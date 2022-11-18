@@ -1,11 +1,4 @@
-rootProject.name = "multi-modules"
+apply(from = "../../../../gradle/test.settings.gradle.kts")
 
 include(":root", ":node1", ":node2")
 
-dependencyResolutionManagement {
-  versionCatalogs {
-    create("libs") {
-      from(files("../../../../gradle/libraries.toml"))
-    }
-  }
-}

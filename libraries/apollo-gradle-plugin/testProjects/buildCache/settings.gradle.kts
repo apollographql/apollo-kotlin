@@ -1,16 +1,10 @@
 rootProject.name = "buildCache"
 
-include(":module:build.gradle.kts")
+apply(from = "../../../../gradle/test.settings.gradle.kts")
+
 buildCache {
   local {
-    directory = "../buildCache"
+    directory = "../testProjectBuildCache"
   }
 }
 
-dependencyResolutionManagement {
-  versionCatalogs {
-    create("libs") {
-      from(files("../../../../../gradle/libraries.toml"))
-    }
-  }
-}

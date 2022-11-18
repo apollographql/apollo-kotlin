@@ -1,9 +1,3 @@
 rootProject.name = "testProject"
 
-dependencyResolutionManagement {
-  versionCatalogs {
-    libs {
-      from(files("../../../../gradle/libraries.toml"))
-    }
-  }
-}
+apply(from: "../../../../gradle/test.settings.gradle.kts")

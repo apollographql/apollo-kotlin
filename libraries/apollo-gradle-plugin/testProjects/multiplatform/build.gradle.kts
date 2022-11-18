@@ -1,12 +1,9 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-buildscript {
-    apply(from = "../../testProjects/buildscript.gradle.kts")
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.apollo)
 }
-
-apply(plugin = "org.jetbrains.kotlin.multiplatform")
-apply(plugin = "com.apollographql.apollo3")
 
 repositories {
     maven {
@@ -31,6 +28,6 @@ configure<KotlinMultiplatformExtension> {
     }
 }
 
-configure<ApolloExtension> {
+apollo {
     packageNamesFromFilePaths()
 }

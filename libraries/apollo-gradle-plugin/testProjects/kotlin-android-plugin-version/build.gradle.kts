@@ -1,24 +1,10 @@
 import com.android.build.gradle.BaseExtension
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 
-buildscript {
-  repositories {
-    maven {
-      url = uri("../../../../build/localMaven")
-    }
-    google()
-    mavenCentral()
-  }
-  dependencies {
-    classpath(libs.apollo.plugin)
-    classpath(libs.android.plugin)
-    classpath(libs.kotlin.plugin.min)
-  }
+plugins {
+  alias(libs.plugins.android.application)
+  alias(libs.plugins.kotlin.android.min)
+  alias(libs.plugins.apollo)
 }
-
-apply(plugin = "com.android.application")
-apply(plugin = "org.jetbrains.kotlin.android")
-apply(plugin = "com.apollographql.apollo3")
 
 configure<BaseExtension> {
   compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
@@ -29,19 +15,11 @@ configure<BaseExtension> {
   }
 }
 
-repositories {
-  maven {
-    url = uri("../../../../build/localMaven")
-  }
-  google()
-  mavenCentral()
-}
-
 dependencies {
   add("implementation", libs.apollo.api)
 }
 
-configure<ApolloExtension> {
+apollo {
   packageName.set("com.example")
 }
 

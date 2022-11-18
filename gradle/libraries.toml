@@ -14,7 +14,9 @@ guava = "31.1-jre"
 javaPoet = "1.13.0"
 jetbrains-annotations = "23.0.0"
 junit = "4.13.2"
+kotlin-plugin-min = "1.5.0"
 kotlin-plugin = "1.7.21"
+kotlin-plugin-max = "1.7.21"
 kotlin-plugin-duringideasync = "1.6.10"
 kotlin-stdlib = "1.6.21"
 kotlinx-coroutines = "1.6.4"
@@ -93,8 +95,8 @@ kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin",
 # See https://youtrack.jetbrains.com/issue/KTIJ-21583/HMPP:-1.6.20-breaks-autocomplete-in-multiplatform-composite-buil#focus=Comments-27-6022244.0-0
 kotlin-plugin-duringideasync = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-duringideasync" }
 # For Gradle integration tests to make sure we stay compatible with 1.5.0
-kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = "1.5.0" }
-kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = "1.7.20" }
+kotlin-plugin-min = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-min" }
+kotlin-plugin-max = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin-plugin-max" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" } # the Kotlin plugin resolves the version
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin-stdlib" }
 kotlin-stdlib-js = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-js", version.ref = "kotlin-stdlib" }
@@ -139,3 +141,10 @@ vespene = { group = "net.mbonnin.vespene", name = "vespene-lib", version = "0.5"
 [plugins]
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin" }
+kotlin-android-min = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-min" }
+kotlin-android-max = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-plugin-max" }
+kotlin-jvm-min = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-plugin-min" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-plugin" }
+android-application = { id = "com.android.application", version.ref = "android-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-plugin" }

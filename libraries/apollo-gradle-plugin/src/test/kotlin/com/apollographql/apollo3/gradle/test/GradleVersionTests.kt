@@ -12,6 +12,9 @@ import org.junit.Test
 import java.io.File
 
 class GradleVersionTests {
+  /**
+   * Because older Gradle versions do not support version catalogs, we're setting the apollo version manually
+   */
   private fun File.setApolloPluginVersion() {
     val gradleScript = resolve("build.gradle.kts")
     gradleScript.writeText(gradleScript.readText().replace("APOLLO_VERSION", APOLLO_VERSION))

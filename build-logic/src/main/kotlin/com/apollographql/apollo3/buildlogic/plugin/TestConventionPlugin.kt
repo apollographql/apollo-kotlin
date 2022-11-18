@@ -2,7 +2,6 @@ package com.apollographql.apollo3.buildlogic.plugin
 
 import configureJavaAndKotlinCompilers
 import configureMppTestsDefaults
-import configureRepositories
 import configureTesting
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -15,8 +14,6 @@ import workaroundForIssueKT51970
 class TestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
-      configureRepositories()
-
       extensions.create("apolloTest", Extension::class.java)
 
       configureJavaAndKotlinCompilers()

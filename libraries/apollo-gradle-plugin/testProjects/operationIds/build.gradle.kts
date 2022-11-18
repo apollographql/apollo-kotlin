@@ -1,16 +1,13 @@
-import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
 
-buildscript {
-  apply(from = "../../testProjects/buildscript.gradle.kts")
+plugins {
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.apollo)
 }
 
-apply(plugin = "org.jetbrains.kotlin.jvm")
-apply(plugin = "com.apollographql.apollo3")
-
-configure<ApolloExtension> {
+apollo {
   val customOperationOutputGenerator = object: OperationOutputGenerator {
     override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
       return operationDescriptorList.map {

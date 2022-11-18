@@ -1,4 +1,4 @@
-buildscript {
-  apply(from = "../../testProjects/buildscript.gradle.kts")
+plugins {
+  alias(libs.plugins.kotlin.jvm).apply(false)
+  alias(libs.plugins.apollo).apply(false)
 }
-

@@ -11,26 +11,16 @@ class GradleBuildCacheTests {
 
   @Test
   fun `generate and check apollo classes task are cached`() {
-    TestUtils.withDirectory { dir ->
-      val project1 = File(dir, "project1")
-      val project2 = File(dir, "directory/project2")
-      project2.mkdirs()
-
-      File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project1)
-      File(System.getProperty("user.dir"), "testProjects/buildCache").copyRecursively(project2)
-
-      File(project2, "build.gradle.kts").replaceInText("../../..", "../../../..")
-      File(project2, "settings.gradle.kts").apply {
-        replaceInText("../buildCache", "../../buildCache")
-        replaceInText("../../..", "../../../..")
-      }
-
-      var result = TestUtils.executeTask("generateServiceApolloSources", project1, "--build-cache")
-      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":module:generateServiceApolloSources")!!.outcome)
+    val buildCacheDir = File(File(System.getProperty("user.dir")), "build/testProjectBuildCache")
+    buildCacheDir.deleteRecursively()
+    TestUtils.withTestProject("buildCache", "testProject1") { dir ->
+      val result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache")
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":checkServiceApolloDuplicates")!!.outcome)
-
-      result = TestUtils.executeTask("generateServiceApolloSources", project2, "--build-cache")
-      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":module:generateServiceApolloSources")!!.outcome)
+    }
+    TestUtils.withTestProject("buildCache", "testProject2") { dir ->
+      val result = TestUtils.executeTask("generateServiceApolloSources", dir, "--build-cache")
+      Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":generateServiceApolloSources")!!.outcome)
       Assert.assertEquals(TaskOutcome.FROM_CACHE, result.task(":checkServiceApolloDuplicates")!!.outcome)
     }
   }
