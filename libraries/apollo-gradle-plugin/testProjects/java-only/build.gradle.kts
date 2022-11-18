@@ -1,4 +1,3 @@
-apollo
 
 plugins {
   id("java")
