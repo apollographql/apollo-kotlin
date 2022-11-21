@@ -28,7 +28,7 @@ type Promo {
 
 type Product {
   name: String!
-  price: Float!Ò
+  price: Float!
 }
 
 type UnusedType {
