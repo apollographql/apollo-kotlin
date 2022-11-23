@@ -19,12 +19,31 @@
     public static **[] values();
 }
 
-# Moshi uses reflection in StandardJsonAdapters
--keepclassmembers class com.apollographql.apollo3.ast.introspection.IntrospectionSchema$Schema$Kind extends java.lang.Enum {
-    <fields>;
+# Begin kotlinx-serialization rules - Introspection classes in apollo-ast use it for Json
+# Keep `Companion` object fields of serializable classes.
+# This avoids serializer lookup through `getDeclaredClasses` as done for named companion objects.
+-if @kotlinx.serialization.Serializable class **
+-keepclassmembers class <1> {
+    static <1>$Companion Companion;
 }
-# Keep all the introspection stuff as it uses moshi for Json
--keep class com.apollographql.apollo3.ast.introspection.** { *; }
+# Keep `serializer()` on companion objects (both default and named) of serializable classes.
+-if @kotlinx.serialization.Serializable class ** {
+    static **$* *;
+}
+-keepclassmembers class <2>$<3> {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# Keep `INSTANCE.serializer()` of serializable objects.
+-if @kotlinx.serialization.Serializable class ** {
+    public static ** INSTANCE;
+}
+-keepclassmembers class <1> {
+    public static <1> INSTANCE;
+    kotlinx.serialization.KSerializer serializer(...);
+}
+# @Serializable and @Polymorphic are used at runtime for polymorphic serialization.
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+# End kotlinx-serialization rules
 
 # Keep apollo-api for ApolloExperimental
 -keep class com.apollographql.apollo3.api.** { *; }
@@ -54,11 +73,10 @@
 -dontusemixedcaseclassnames
 # Keep class names to make debugging easier
 -dontobfuscate
--repackageclasses com.apollographql.relocated
+-repackageclasses com.apollographql.apollo3.relocated
 
 # Allow to repackage com.moshi.JsonAdapter.lenient
 -allowaccessmodification
 
 # The Gradle API jar and other compileOnly dependencies aren't added to the classpath, ignore the missing symbols
 -dontwarn **
-
