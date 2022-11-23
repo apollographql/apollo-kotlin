@@ -1,50 +1,60 @@
 package com.apollographql.apollo3.ast.introspection
 
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.JsonReader
-import com.squareup.moshi.Moshi
-import dev.zacsweers.moshix.sealed.annotations.TypeLabel
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.okio.decodeFromBufferedSource
+import kotlinx.serialization.json.okio.encodeToBufferedSink
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.decodeHex
 import okio.buffer
+import okio.sink
 import okio.source
 import java.io.File
 
-@JsonClass(generateAdapter = true)
+@Serializable
+private data class IntrospectionSchemaEnvelope(
+    val data: IntrospectionSchema?,
+    val __schema: IntrospectionSchema.Schema?,
+)
+
+@Serializable
 data class IntrospectionSchema(
     val __schema: Schema,
 ) {
-  @JsonClass(generateAdapter = true)
+  @Serializable
   data class Schema(
       val queryType: QueryType,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
       val types: List<Type>,
   ) {
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class QueryType(val name: String)
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class MutationType(val name: String)
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class SubscriptionType(val name: String)
 
-    @JsonClass(generateAdapter = true, generator = "sealed:kind")
+    @Serializable
     sealed class Type {
       abstract val name: String
       abstract val description: String?
 
-      @TypeLabel("SCALAR")
-      @JsonClass(generateAdapter = true)
+      @SerialName("SCALAR")
+      @Serializable
       data class Scalar(
           override val name: String,
           override val description: String?,
       ) : Type()
 
-      @TypeLabel("OBJECT")
-      @JsonClass(generateAdapter = true)
+      @SerialName("OBJECT")
+      @Serializable
       data class Object(
           override val name: String,
           override val description: String?,
@@ -52,19 +62,18 @@ data class IntrospectionSchema(
           val interfaces: List<Interface>?,
       ) : Type()
 
-      @TypeLabel("INTERFACE")
-      @JsonClass(generateAdapter = true)
+      @SerialName("INTERFACE")
+      @Serializable
       data class Interface(
           override val name: String,
           override val description: String?,
-          val kind: String,
           val fields: List<Field>?,
           val interfaces: List<TypeRef>?,
           val possibleTypes: List<TypeRef>?,
       ) : Type()
 
-      @TypeLabel("UNION")
-      @JsonClass(generateAdapter = true)
+      @SerialName("UNION")
+      @Serializable
       data class Union(
           override val name: String,
           override val description: String?,
@@ -72,16 +81,14 @@ data class IntrospectionSchema(
           val possibleTypes: List<TypeRef>?,
       ) : Type()
 
-      @TypeLabel("ENUM")
-      @JsonClass(generateAdapter = true)
+      @SerialName("ENUM")
+      @Serializable
       data class Enum(
           override val name: String,
           override val description: String?,
           val enumValues: List<Value>,
       ) : Type() {
-
-
-        @JsonClass(generateAdapter = true)
+        @Serializable
         data class Value(
             val name: String,
             val description: String?,
@@ -90,8 +97,8 @@ data class IntrospectionSchema(
         )
       }
 
-      @TypeLabel("INPUT_OBJECT")
-      @JsonClass(generateAdapter = true)
+      @SerialName("INPUT_OBJECT")
+      @Serializable
       data class InputObject(
           override val name: String,
           override val description: String?,
@@ -99,8 +106,7 @@ data class IntrospectionSchema(
       ) : Type()
     }
 
-
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class InputField(
         val name: String,
         val description: String?,
@@ -110,7 +116,7 @@ data class IntrospectionSchema(
         val defaultValue: String?,
     )
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class Field(
         val name: String,
         val description: String?,
@@ -120,7 +126,7 @@ data class IntrospectionSchema(
         val args: List<Argument> = emptyList(),
     ) {
 
-      @JsonClass(generateAdapter = true)
+      @Serializable
       data class Argument(
           val name: String,
           val description: String?,
@@ -134,7 +140,7 @@ data class IntrospectionSchema(
     /**
      * An introspection TypeRef
      */
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class TypeRef(
         val kind: Kind,
         val name: String? = "",
@@ -147,9 +153,16 @@ data class IntrospectionSchema(
   }
 }
 
-/**
- *
- */
+@OptIn(ExperimentalSerializationApi::class)
+private val json: Json by lazy {
+  Json {
+    ignoreUnknownKeys = true
+    classDiscriminator = "kind"
+    explicitNulls = false
+  }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
 fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSchema {
   val bom = "EFBBBF".decodeHex()
 
@@ -157,40 +170,18 @@ fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSche
     skip(bom.size.toLong())
   }
 
-  return JsonReader.of(this).use {
-    try {
-      val schema = Moshi.Builder().build()
-          .adapter(IntrospectionSchema.Schema::class.java)
-          .fromJson(it.locateSchemaRootNode())!!
-      IntrospectionSchema(__schema = schema)
-    } catch (e: Exception) {
-      throw RuntimeException("Cannot decode introspection $origin", e)
-    }
+  return try {
+    val introspectionSchemaEnvelope = json.decodeFromBufferedSource<IntrospectionSchemaEnvelope>(this)
+    introspectionSchemaEnvelope.data ?: introspectionSchemaEnvelope.__schema?.let { IntrospectionSchema(it) }
+    ?: throw IllegalArgumentException("Invalid introspection schema: $origin")
+  } catch (e: Exception) {
+    throw RuntimeException("Cannot decode introspection $origin", e)
   }
 }
 
 fun File.toIntrospectionSchema() = inputStream().source().buffer().toIntrospectionSchema("from `$this`")
 
 fun String.toIntrospectionSchema() = Buffer().writeUtf8(this).toIntrospectionSchema()
-
-private fun JsonReader.locateSchemaRootNode(): JsonReader {
-  beginObject()
-
-  var schemaJsonReader: JsonReader? = null
-  try {
-    while (schemaJsonReader == null && hasNext()) {
-      when (nextName()) {
-        "data" -> beginObject()
-        "__schema" -> schemaJsonReader = peekJson()
-        else -> skipValue()
-      }
-    }
-  } catch (e: Exception) {
-    throw IllegalArgumentException("Failed to locate schema root node `__schema`", e)
-  }
-
-  return schemaJsonReader ?: throw IllegalArgumentException("Failed to locate schema root node `__schema`")
-}
 
 fun IntrospectionSchema.normalize(): IntrospectionSchema {
   return copy(
@@ -204,3 +195,13 @@ fun IntrospectionSchema.Schema.normalize(): IntrospectionSchema.Schema {
   )
 }
 
+fun IntrospectionSchema.toJson(): String {
+  return json.encodeToString(this)
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+fun IntrospectionSchema.toJson(file: File) {
+  file.outputStream().sink().buffer().use {
+    return json.encodeToBufferedSink(this, it)
+  }
+}

@@ -6,7 +6,6 @@ import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.squareup.moshi.Moshi
 import okio.Buffer
 import org.junit.Test
 import java.io.File

@@ -4,7 +4,7 @@ plugins {
   antlr
   id("org.jetbrains.kotlin.jvm")
   id("apollo.library")
-  id("com.google.devtools.ksp")
+  kotlin("plugin.serialization")
 }
 
 apolloLibrary {
@@ -17,11 +17,8 @@ dependencies {
   api(okio())
   api(project(":libraries:apollo-annotations"))
 
-  implementation(golatac.lib("moshi"))
-  implementation(golatac.lib("moshix.sealed.runtime"))
-
-  ksp(golatac.lib("moshix.sealed.codegen"))
-  ksp(golatac.lib("moshix.ksp"))
+  implementation(golatac.lib("kotlinx.serialization.json"))
+  implementation(golatac.lib("kotlinx.serialization.json.okio"))
 
   testImplementation(golatac.lib("kotlin.test.junit"))
 }

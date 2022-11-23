@@ -21,6 +21,7 @@ kotlin-plugin-duringideasync = "1.6.10"
 kotlin-stdlib = "1.6.21"
 kotlinx-coroutines = "1.6.4"
 kotlinx-datetime = "0.4.0"
+kotlinx-serialization-json = "1.4.1"
 ksp = "1.7.21-1.0.8"
 ksp-duringideasync = "1.6.10-1.0.2"
 ktor = "2.0.2"
@@ -112,7 +113,10 @@ kotlinx-coroutines-rx3 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coro
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-nodejs = { group = "org.jetbrains.kotlinx", name = "kotlinx-nodejs", version = "0.0.7" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.3.2" }
+kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
+kotlinx-serialization-plugin-duringideasync = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin-duringideasync" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlinx-serialization-json-okio = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json-okio", version.ref = "kotlinx-serialization-json" }
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.10.1" }
 ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 ksp-duringideasync = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp.duringideasync" }

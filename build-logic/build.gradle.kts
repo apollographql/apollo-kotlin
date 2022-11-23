@@ -40,10 +40,12 @@ dependencies {
     // XXX: This is only needed for tests. We could have different build logic for different
     // builds but this seems just overkill for now
     runtimeOnly(golatac.lib("kotlin.allopen"))
+    runtimeOnly(golatac.lib("kotlinx.serialization.plugin"))
   } else {
     implementation(golatac.lib("kotlin.plugin.duringideasync"))
     runtimeOnly(golatac.lib("ksp.duringideasync"))
     runtimeOnly(golatac.lib("kotlin.allopen.duringideasync"))
+    runtimeOnly(golatac.lib("kotlinx.serialization.plugin.duringideasync"))
   }
 
   runtimeOnly(golatac.lib("sqldelight.plugin"))
