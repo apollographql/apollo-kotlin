@@ -14,6 +14,7 @@ pluginManagement {
           includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
           includeModule("com.gradle.publish", "plugin-publish-plugin")
           includeModule("com.github.ben-manes", "gradle-versions-plugin")
+          includeModule("org.jetbrains.kotlin.plugin.serialization", "org.jetbrains.kotlin.plugin.serialization.gradle.plugin")
         }
       }
       @Suppress("DEPRECATION")

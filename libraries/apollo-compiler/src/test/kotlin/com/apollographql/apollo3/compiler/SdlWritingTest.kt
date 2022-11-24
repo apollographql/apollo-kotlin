@@ -1,10 +1,11 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo3.ast.introspection.toJson
 import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.ast.toSchema
+import com.apollographql.apollo3.ast.toUtf8
 import org.junit.Assert
 import org.junit.Test
 import java.io.File
