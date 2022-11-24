@@ -4,7 +4,7 @@ plugins {
   antlr
   id("org.jetbrains.kotlin.jvm")
   id("apollo.library")
-  kotlin("plugin.serialization")
+  id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 apolloLibrary {
