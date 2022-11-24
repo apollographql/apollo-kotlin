@@ -3,10 +3,7 @@ package com.apollographql.apollo3.ast.introspection
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.okio.decodeFromBufferedSource
-import kotlinx.serialization.json.okio.encodeToBufferedSink
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.decodeHex
@@ -153,16 +150,15 @@ data class IntrospectionSchema(
   }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 private val json: Json by lazy {
   Json {
     ignoreUnknownKeys = true
     classDiscriminator = "kind"
+    @OptIn(ExperimentalSerializationApi::class)
     explicitNulls = false
   }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSchema {
   val bom = "EFBBBF".decodeHex()
 
@@ -171,7 +167,7 @@ fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSche
   }
 
   return try {
-    val introspectionSchemaEnvelope = json.decodeFromBufferedSource<IntrospectionSchemaEnvelope>(this)
+    val introspectionSchemaEnvelope = json.decodeFromString(IntrospectionSchemaEnvelope.serializer(), this.readUtf8())
     introspectionSchemaEnvelope.data ?: introspectionSchemaEnvelope.__schema?.let { IntrospectionSchema(it) }
     ?: throw IllegalArgumentException("Invalid introspection schema: $origin")
   } catch (e: Exception) {
@@ -196,12 +192,11 @@ fun IntrospectionSchema.Schema.normalize(): IntrospectionSchema.Schema {
 }
 
 fun IntrospectionSchema.toJson(): String {
-  return json.encodeToString(this)
+  return json.encodeToString(IntrospectionSchema.serializer(), this)
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 fun IntrospectionSchema.toJson(file: File) {
   file.outputStream().sink().buffer().use {
-    return json.encodeToBufferedSink(this, it)
+    it.writeUtf8(json.encodeToString(IntrospectionSchema.serializer(), this))
   }
 }

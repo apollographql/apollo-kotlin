@@ -18,7 +18,6 @@ dependencies {
   api(project(":libraries:apollo-annotations"))
 
   implementation(golatac.lib("kotlinx.serialization.json"))
-  implementation(golatac.lib("kotlinx.serialization.json.okio"))
 
   testImplementation(golatac.lib("kotlin.test.junit"))
 }

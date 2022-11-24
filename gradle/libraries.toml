@@ -116,7 +116,6 @@ kotlinx-nodejs = { group = "org.jetbrains.kotlinx", name = "kotlinx-nodejs", ver
 kotlinx-serialization-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin" }
 kotlinx-serialization-plugin-duringideasync = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin-plugin-duringideasync" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-kotlinx-serialization-json-okio = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json-okio", version.ref = "kotlinx-serialization-json" }
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.10.1" }
 ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 ksp-duringideasync = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp.duringideasync" }
