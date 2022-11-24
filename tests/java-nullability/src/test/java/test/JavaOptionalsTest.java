@@ -133,7 +133,9 @@ public class JavaOptionalsTest {
         "            \"nonNullableInt\": 2\n" +
         "          },\n" +
         "          \"nullableListOfNullableString\":  null,\n" +
-        "          \"nullableListOfNonNullableString\": null\n" +
+        "          \"nullableListOfNonNullableString\": null,\n" +
+        "          \"myUnion\": null,\n" +
+        "          \"myInterface\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
     MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -148,7 +150,9 @@ public class JavaOptionalsTest {
                 /* nonNullableInt = */ 2
             ),
             /* nullableListOfNullableString = */ Optional.empty(),
-            /* nullableListOfNonNullableString = */ Optional.empty()
+            /* nullableListOfNonNullableString = */ Optional.empty(),
+            /* myUnion = */ Optional.empty(),
+            /* myEnum = */ Optional.empty()
         ),
         actualData
     );
@@ -166,7 +170,9 @@ public class JavaOptionalsTest {
         "            \"nonNullableInt\": 4\n" +
         "          },\n" +
         "          \"nullableListOfNullableString\":  null,\n" +
-        "          \"nullableListOfNonNullableString\": null\n" +
+        "          \"nullableListOfNonNullableString\": null,\n" +
+        "          \"myUnion\": null,\n" +
+        "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
     actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -185,7 +191,48 @@ public class JavaOptionalsTest {
                 /* nonNullableInt = */ 4
             ),
             /* nullableListOfNullableString = */ Optional.empty(),
-            /* nullableListOfNonNullableString = */ Optional.empty()
+            /* nullableListOfNonNullableString = */ Optional.empty(),
+            /* myUnion = */ Optional.empty(),
+            /* myEnum = */ Optional.empty()
+        ),
+        actualData
+    );
+
+    buffer.writeUtf8("{\n" +
+        "          \"nullableInt\": null,\n" +
+        "          \"nonNullableInt\": 1,\n" +
+        "          \"nullableMyType\": null,\n" +
+        "          \"nonNullableMyType\": {\n" +
+        "            \"nullableInt\": null,\n" +
+        "            \"nonNullableInt\": 2\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null,\n" +
+        "          \"myUnion\": {\n" +
+        "            \"__typename\": \"A\",\n" +
+        "            \"a\": \"a\"\n" +
+        "          },\n" +
+        "          \"myInterface\": {\n" +
+        "            \"__typename\": \"C\",\n" +
+        "            \"x\": 3\n" +
+        "          }\n" +
+        "      }");
+    jsonReader = new BufferedSourceJsonReader(buffer);
+    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
+    Assert.assertEquals(
+        new MyQuery.Data(
+            /* nullableInt = */ Optional.empty(),
+            /* nonNullableInt = */ 1,
+            /* nullableMyType = */ Optional.empty(),
+            /* nonNullableMyType = */
+            new MyQuery.NonNullableMyType(
+                /* nullableInt = */ Optional.empty(),
+                /* nonNullableInt = */ 2
+            ),
+            /* nullableListOfNullableString = */ Optional.empty(),
+            /* nullableListOfNonNullableString = */ Optional.empty(),
+            /* myUnion = */ Optional.of(new MyQuery.MyUnion("A", Optional.of(new MyQuery.OnA(Optional.of("a"))), Optional.empty())),
+            /* myInterface = */ Optional.of(new MyQuery.MyInterface("C", Optional.of(new MyQuery.OnC(Optional.of(3)))))
         ),
         actualData
     );

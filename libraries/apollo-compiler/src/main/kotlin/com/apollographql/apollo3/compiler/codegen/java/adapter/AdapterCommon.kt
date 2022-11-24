@@ -21,8 +21,12 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.codegen.java.helpers.absentOptionalInitializer
 import com.apollographql.apollo3.compiler.codegen.java.helpers.codeBlock
+import com.apollographql.apollo3.compiler.codegen.java.helpers.testOptionalValuePresence
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
+import com.apollographql.apollo3.compiler.codegen.java.helpers.unwrapOptionalValue
+import com.apollographql.apollo3.compiler.codegen.java.helpers.wrapValueInOptional
 import com.apollographql.apollo3.compiler.codegen.java.isNotEmpty
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
 import com.apollographql.apollo3.compiler.ir.IrModel
@@ -141,13 +145,19 @@ internal fun readFromResponseCodeBlock(
   }
 
   val syntheticLoop = syntheticProperties.map { property ->
+    val fromJsonCall = CodeBlock.of(
+        "$L.INSTANCE.$fromJson($reader, $customScalarAdapters)",
+        context.resolver.resolveModelAdapter(property.info.type.modelPath())
+    )
+    val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
     CodeBlock.builder()
         .apply {
           if (property.condition != BooleanExpression.True) {
             add(
-                "$T $L = null;\n",
-                context.resolver.resolveIrType(property.info.type).withoutAnnotations(),
+                "$T $L = $L;\n",
+                resolvedType,
                 context.layout.variableName(property.info.responseName),
+                context.absentOptionalInitializer(resolvedType)
             )
             val pathLiteral = if (path.isNotEmpty()) {
               __path
@@ -163,14 +173,14 @@ internal fun readFromResponseCodeBlock(
           } else {
             checkedProperties.add(property.info.responseName)
             add("$reader.rewind();\n")
-            add("$T ", context.resolver.resolveIrType(property.info.type).withoutAnnotations())
+            add("$T ", resolvedType)
           }
         }
         .add(
             CodeBlock.of(
-                "$L = $L.INSTANCE.$fromJson($reader, $customScalarAdapters);\n",
+                "$L = $L;\n",
                 context.layout.variableName(property.info.responseName),
-                context.resolver.resolveModelAdapter(property.info.type.modelPath())
+                context.wrapValueInOptional(fromJsonCall, resolvedType)
             )
         )
         .applyIf(property.condition != BooleanExpression.True) {
@@ -255,12 +265,17 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
     /**
      * Output types do not distinguish between null and absent
      */
+    val resolvedType = context.resolver.resolveIrType(info.type).withoutAnnotations()
     if (this.info.type !is IrNonNullType) {
-      builder.beginControlFlow("if ($value.$propertyName != null)")
+      val property = CodeBlock.of("$value.$propertyName")
+      val propertyTest = context.testOptionalValuePresence(property, resolvedType)
+      builder.beginControlFlow("if ($L)", propertyTest)
     }
+    val fieldValue = CodeBlock.of("$value.$propertyName")
     builder.addStatement(
-        "$L.INSTANCE.$toJson($writer, $customScalarAdapters, $value.$propertyName)",
-        adapterInitializer
+        "$L.INSTANCE.$toJson($writer, $customScalarAdapters, $L)",
+        adapterInitializer,
+        context.unwrapOptionalValue(fieldValue, resolvedType)
     )
     if (this.info.type !is IrNonNullType) {
       builder.endControlFlow()

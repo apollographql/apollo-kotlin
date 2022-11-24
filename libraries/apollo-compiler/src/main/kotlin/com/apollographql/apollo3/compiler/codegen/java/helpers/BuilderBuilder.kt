@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
@@ -11,7 +10,6 @@ import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterSpec
-import com.squareup.javapoet.TypeName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
@@ -34,17 +32,9 @@ internal class BuilderBuilder(
     return fields.map {
       FieldSpec.builder(it.type, it.name, Modifier.PRIVATE)
           .applyIf(context.resolver.isOptional(it.type)) {
-            initializer(absentOptionalInitializer())
+            initializer(context.absentOptionalInitializer())
           }
           .build()
-    }
-  }
-
-  private fun absentOptionalInitializer(): CodeBlock {
-    return when (context.nullableFieldStyle) {
-      JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("$T.empty()", JavaClassNames.JavaOptional)
-      JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("$T.absent()", JavaClassNames.GuavaOptional)
-      else -> CodeBlock.of("$T.absent()", JavaClassNames.Optional)
     }
   }
 
@@ -71,21 +61,9 @@ internal class BuilderBuilder(
         )
         .addJavadoc(field.javadoc)
         .returns(JavaClassNames.Builder)
-        .addStatement("this.$L = $L", field.name, wrapValueInOptional(field.name, field.type, context.nullableFieldStyle))
+        .addStatement("this.$L = $L", field.name, context.wrapValueInOptional(value = CodeBlock.of(L, field.name), fieldType = field.type))
         .addStatement("return this")
         .build()
-  }
-
-  private fun wrapValueInOptional(value: String, fieldType: TypeName, nullableFieldStyle: JavaNullable): CodeBlock {
-    return if (!context.resolver.isOptional(fieldType)) {
-      CodeBlock.of(L, value)
-    } else {
-      when (nullableFieldStyle) {
-        JavaNullable.JAVA_OPTIONAL -> CodeBlock.of("$T.of($L)", JavaClassNames.JavaOptional, value)
-        JavaNullable.GUAVA_OPTIONAL -> CodeBlock.of("$T.of($L)", JavaClassNames.GuavaOptional, value)
-        else -> CodeBlock.of("$T.present($L)", JavaClassNames.Optional, value)
-      }
-    }
   }
 
   private fun buildMethod(): MethodSpec {
