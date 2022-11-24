@@ -9,6 +9,8 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
         includeModule("com.gradle.publish", "plugin-publish-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
+        // Because we use 1.6.10 during sync and this version is not on mavenCentral
+        includeModule("org.jetbrains.kotlin.plugin.serialization", "org.jetbrains.kotlin.plugin.serialization.gradle.plugin")
       }
     }
     @Suppress("DEPRECATION")
