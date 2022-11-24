@@ -19,13 +19,6 @@
     public static **[] values();
 }
 
-# Moshi uses reflection in StandardJsonAdapters
--keepclassmembers class com.apollographql.apollo3.ast.introspection.IntrospectionSchema$Schema$Kind extends java.lang.Enum {
-    <fields>;
-}
-# Keep all the introspection stuff as it uses moshi for Json
--keep class com.apollographql.apollo3.ast.introspection.** { *; }
-
 # Keep apollo-api for ApolloExperimental
 -keep class com.apollographql.apollo3.api.** { *; }
 # Keep the plugin API as it's used from build scripts
@@ -54,11 +47,10 @@
 -dontusemixedcaseclassnames
 # Keep class names to make debugging easier
 -dontobfuscate
--repackageclasses com.apollographql.relocated
+-repackageclasses com.apollographql.apollo3.relocated
 
 # Allow to repackage com.moshi.JsonAdapter.lenient
 -allowaccessmodification
 
 # The Gradle API jar and other compileOnly dependencies aren't added to the classpath, ignore the missing symbols
 -dontwarn **
-
