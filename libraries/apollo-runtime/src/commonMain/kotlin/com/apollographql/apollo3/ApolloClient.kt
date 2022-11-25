@@ -170,7 +170,7 @@ private constructor(
           if (apolloRequest.canBeBatched != null) {
             // Because batching is handled at the HTTP level, move the information to HTTP headers
             // canBeBatched(apolloRequest.canBeBatched)
-            addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, "true")
+            addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
         }
         .build()

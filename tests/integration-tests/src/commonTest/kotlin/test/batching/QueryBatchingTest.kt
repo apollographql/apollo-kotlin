@@ -128,7 +128,11 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(GetLaunchQuery()).canBeBatched(false).execute()
+      apolloClient.query(GetLaunchQuery())
+          .canBeBatched(false)
+          // Override headers, make sure this doesn't change canBeBatched
+          .httpHeaders(listOf(HttpHeader("client0", "0")))
+          .execute()
     }
     val result2 = async {
       // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise
