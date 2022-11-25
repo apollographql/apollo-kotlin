@@ -133,7 +133,9 @@ public class GuavaOptionalsTest {
         "            \"nonNullableInt\": 2\n" +
         "          },\n" +
         "          \"nullableListOfNullableString\":  null,\n" +
-        "          \"nullableListOfNonNullableString\": null\n" +
+        "          \"nullableListOfNonNullableString\": null,\n" +
+        "          \"myUnion\": null,\n" +
+        "          \"myInterface\": null\n" +
         "      }");
     ;
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
@@ -149,7 +151,9 @@ public class GuavaOptionalsTest {
                 /* nonNullableInt = */ 2
             ),
             /* nullableListOfNullableString = */ Optional.absent(),
-            /* nullableListOfNonNullableString = */ Optional.absent()
+            /* nullableListOfNonNullableString = */ Optional.absent(),
+            /* myUnion = */ Optional.absent(),
+            /* myInterface = */ Optional.absent()
         ),
         actualData
     );
@@ -167,7 +171,9 @@ public class GuavaOptionalsTest {
         "            \"nonNullableInt\": 4\n" +
         "          },\n" +
         "          \"nullableListOfNullableString\":  null,\n" +
-        "          \"nullableListOfNonNullableString\": null\n" +
+        "          \"nullableListOfNonNullableString\": null,\n" +
+        "          \"myUnion\": null,\n" +
+        "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
     actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
@@ -186,7 +192,48 @@ public class GuavaOptionalsTest {
                 /* nonNullableInt = */ 4
             ),
             /* nullableListOfNullableString = */ Optional.absent(),
-            /* nullableListOfNonNullableString = */ Optional.absent()
+            /* nullableListOfNonNullableString = */ Optional.absent(),
+            /* myUnion = */ Optional.absent(),
+            /* myInterface = */ Optional.absent()
+        ),
+        actualData
+    );
+
+    buffer.writeUtf8("{\n" +
+        "          \"nullableInt\": null,\n" +
+        "          \"nonNullableInt\": 1,\n" +
+        "          \"nullableMyType\": null,\n" +
+        "          \"nonNullableMyType\": {\n" +
+        "            \"nullableInt\": null,\n" +
+        "            \"nonNullableInt\": 2\n" +
+        "          },\n" +
+        "          \"nullableListOfNullableString\":  null,\n" +
+        "          \"nullableListOfNonNullableString\": null,\n" +
+        "          \"myUnion\": {\n" +
+        "            \"__typename\": \"A\",\n" +
+        "            \"a\": \"a\"\n" +
+        "          },\n" +
+        "          \"myInterface\": {\n" +
+        "            \"__typename\": \"C\",\n" +
+        "            \"x\": 3\n" +
+        "          }\n" +
+        "      }");
+    jsonReader = new BufferedSourceJsonReader(buffer);
+    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
+    Assert.assertEquals(
+        new MyQuery.Data(
+            /* nullableInt = */ Optional.absent(),
+            /* nonNullableInt = */ 1,
+            /* nullableMyType = */ Optional.absent(),
+            /* nonNullableMyType = */
+            new MyQuery.NonNullableMyType(
+                /* nullableInt = */ Optional.absent(),
+                /* nonNullableInt = */ 2
+            ),
+            /* nullableListOfNullableString = */ Optional.absent(),
+            /* nullableListOfNonNullableString = */ Optional.absent(),
+            /* myUnion = */ Optional.of(new MyQuery.MyUnion("A", Optional.of(new MyQuery.OnA(Optional.of("a"))), Optional.absent())),
+            /* myInterface = */ Optional.of(new MyQuery.MyInterface("C", Optional.of(new MyQuery.OnC(Optional.of(3)))))
         ),
         actualData
     );

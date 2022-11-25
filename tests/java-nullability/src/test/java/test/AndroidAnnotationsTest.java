@@ -142,7 +142,9 @@ public class AndroidAnnotationsTest {
                 /* nonNullableInt = */ 2
             ),
             /* nullableListOfNullableString = */ null,
-            /* nullableListOfNonNullableString = */ null
+            /* nullableListOfNonNullableString = */ null,
+            /* myUnion = */ null,
+            /* myEnum = */ null
         ),
         actualData
     );
@@ -177,7 +179,9 @@ public class AndroidAnnotationsTest {
                 /* nonNullableInt = */ 4
             ),
             /* nullableListOfNullableString = */ null,
-            /* nullableListOfNonNullableString = */ null
+            /* nullableListOfNonNullableString = */ null,
+            /* myUnion = */ null,
+            /* myEnum = */ null
         ),
         actualData
     );

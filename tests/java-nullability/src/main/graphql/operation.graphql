@@ -18,5 +18,18 @@ query MyQuery(
   }
   nullableListOfNullableString
   nullableListOfNonNullableString
+  myUnion {
+    ... on A {
+      a
+    }
+    ... on B {
+      b
+    }
+  }
+  myInterface {
+    ... on C {
+      x
+    }
+  }
 }
 

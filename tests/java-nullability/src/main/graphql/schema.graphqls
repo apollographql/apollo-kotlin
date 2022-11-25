@@ -5,6 +5,8 @@ type Query {
   nonNullableMyType: MyType!
   nullableListOfNullableString: [String]
   nullableListOfNonNullableString: [String!]
+  myUnion: MyUnion
+  myInterface: MyInterface
 }
 
 input MyInput {
@@ -16,4 +18,26 @@ input MyInput {
 type MyType {
   nullableInt: Int
   nonNullableInt: Int!
+}
+
+union MyUnion = A|B
+
+type A {
+  a: String
+}
+
+type B {
+  b: String
+}
+
+interface MyInterface {
+  x: Int
+}
+
+type C implements MyInterface {
+  x: Int
+}
+
+type D implements MyInterface {
+  x: Int
 }
