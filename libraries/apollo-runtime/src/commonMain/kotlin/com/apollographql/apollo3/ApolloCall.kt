@@ -57,7 +57,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
     this.canBeBatched = canBeBatched
-    if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
   }
 
   fun copy(): ApolloCall<D> {
