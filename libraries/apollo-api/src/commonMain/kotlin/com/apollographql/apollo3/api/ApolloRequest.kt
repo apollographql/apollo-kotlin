@@ -82,7 +82,6 @@ private constructor(
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder<D> = apply {
       this.canBeBatched = canBeBatched
-      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
     }
 
     fun requestUuid(requestUuid: Uuid) = apply {

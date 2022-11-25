@@ -68,6 +68,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .canBeBatched(canBeBatched)
   }
 
   /**
@@ -92,6 +93,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .canBeBatched(canBeBatched)
         .build()
     return apolloClient.executeAsFlow(request)
   }

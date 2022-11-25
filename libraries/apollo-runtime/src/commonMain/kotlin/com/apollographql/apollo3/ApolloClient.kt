@@ -22,6 +22,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
+import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
@@ -166,6 +167,11 @@ private constructor(
           if (apolloRequest.enableAutoPersistedQueries != null) {
             enableAutoPersistedQueries(apolloRequest.enableAutoPersistedQueries)
           }
+          if (apolloRequest.canBeBatched != null) {
+            // Because batching is handled at the HTTP level, move the information to HTTP headers
+            // canBeBatched(apolloRequest.canBeBatched)
+            addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, "true")
+          }
         }
         .build()
 
@@ -235,7 +241,6 @@ private constructor(
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
-      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString())
     }
 
     /**
