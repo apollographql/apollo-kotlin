@@ -81,7 +81,12 @@ fun ApolloClient.Builder.httpCache(
       synchronized(apolloRequestToCacheKey) {
         apolloRequestToCacheKey[requestUuid] = cacheKey
       }
-      return chain.proceed(request.newBuilder().addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey).build())
+      return chain.proceed(
+          request.newBuilder()
+              .headers(request.headers.filterNot { it.name == CachingHttpInterceptor.REQUEST_UUID_HEADER })
+              .addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey)
+              .build()
+      )
     }
   }).addHttpInterceptor(
       cachingHttpInterceptor
