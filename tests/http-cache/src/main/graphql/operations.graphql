@@ -9,3 +9,7 @@ query GetRandom2 {
 mutation SetRandom {
   setRandom
 }
+
+subscription RandomSubscription {
+  random
+}

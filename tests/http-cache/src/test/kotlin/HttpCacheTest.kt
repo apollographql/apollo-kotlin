@@ -13,6 +13,7 @@ import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.internal.runTest
 import httpcache.GetRandom2Query
 import httpcache.GetRandomQuery
+import httpcache.RandomSubscription
 import httpcache.SetRandomMutation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -251,4 +252,25 @@ class HttpCacheTest {
 
     }
   }
+
+  @Test
+  fun errorInSubscriptionDoesntRemoveCachedResult() = runTest(before = { before() }, after = { tearDown() }) {
+    runBlocking {
+      mockServer.enqueueData(data)
+      var response = apolloClient.query(GetRandomQuery()).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(false, response.isFromHttpCache)
+
+      mockServer.enqueueData(data)
+      try {
+        apolloClient.subscription(RandomSubscription()).execute()
+      } catch (ignored: Exception) {
+      }
+
+      response = apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
+      assertEquals(42, response.data?.random)
+      assertEquals(true, response.isFromHttpCache)
+    }
+  }
+
 }

@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -83,8 +82,7 @@ fun ApolloClient.Builder.httpCache(
       cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-
-      val policy =  request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
+      val policy = request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
       val policyStr = when (policy) {
         HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
         HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
@@ -105,16 +103,23 @@ fun ApolloClient.Builder.httpCache(
               )
               .addHttpHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr)
               .build()
-      ).catch { throwable ->
-        // Revert caching of responses with errors
-        cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
-        throw throwable
-      }.onEach { response ->
-        // Revert caching of responses with errors
-        if (response.hasErrors()) {
-          cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
-        }
-      }
+      )
+          .run {
+            if (request.operation is Query<*> || request.operation is Mutation<*>) {
+              catch { throwable ->
+                // Revert caching of responses with errors
+                cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                throw throwable
+              }.onEach { response ->
+                // Revert caching of responses with errors
+                if (response.hasErrors()) {
+                  cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                }
+              }
+            } else {
+              this
+            }
+          }
     }
   })
 }
