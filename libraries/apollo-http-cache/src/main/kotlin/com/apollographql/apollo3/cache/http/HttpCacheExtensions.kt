@@ -13,13 +13,13 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
-import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
@@ -74,18 +74,19 @@ fun ApolloClient.Builder.httpCache(
       maxSize = maxSize,
   )
   val apolloRequestToCacheKey = mutableMapOf<String, String>()
-  var apolloRequestUuid: Uuid? = null
   return addHttpInterceptor(object : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
       val cacheKey = CachingHttpInterceptor.cacheKey(request)
-      apolloRequestToCacheKey[apolloRequestUuid!!.toString()] = cacheKey
+      val requestUuid = request.headers.valueOf(CachingHttpInterceptor.REQUEST_UUID_HEADER)!!
+      synchronized(apolloRequestToCacheKey) {
+        apolloRequestToCacheKey[requestUuid] = cacheKey
+      }
       return chain.proceed(request.newBuilder().addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey).build())
     }
   }).addHttpInterceptor(
       cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      apolloRequestUuid = request.requestUuid
       val policy = request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
       val policyStr = when (policy) {
         HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
@@ -106,11 +107,12 @@ fun ApolloClient.Builder.httpCache(
                   }
               )
               .addHttpHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr)
+              .addHttpHeader(CachingHttpInterceptor.REQUEST_UUID_HEADER, request.requestUuid.toString())
               .build()
       )
           .run {
             if (request.operation is Query<*> || request.operation is Mutation<*>) {
-              val cacheKey = apolloRequestToCacheKey.remove(request.requestUuid.toString())
+              val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey.remove(request.requestUuid.toString()) }
               catch { throwable ->
                 // Revert caching of responses with errors
                 cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }

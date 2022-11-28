@@ -191,6 +191,8 @@ class CachingHttpInterceptor(
      */
     const val CACHE_KEY_HEADER = "X-APOLLO-CACHE-KEY"
 
+    internal const val REQUEST_UUID_HEADER = "X-APOLLO-REQUEST-UUID"
+
     /**
      * Cache fetch strategy http header
      */
