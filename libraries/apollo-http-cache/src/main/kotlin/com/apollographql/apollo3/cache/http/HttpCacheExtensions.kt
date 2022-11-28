@@ -19,6 +19,7 @@ import com.apollographql.apollo3.network.http.HttpInfo
 import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
+import com.benasher44.uuid.Uuid
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
@@ -72,16 +73,19 @@ fun ApolloClient.Builder.httpCache(
       directory = directory,
       maxSize = maxSize,
   )
-  var cacheKey: String? = null
+  val apolloRequestToCacheKey = mutableMapOf<String, String>()
+  var apolloRequestUuid: Uuid? = null
   return addHttpInterceptor(object : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
-      cacheKey = CachingHttpInterceptor.cacheKey(request)
-      return chain.proceed(request.newBuilder().addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey!!).build())
+      val cacheKey = CachingHttpInterceptor.cacheKey(request)
+      apolloRequestToCacheKey[apolloRequestUuid!!.toString()] = cacheKey
+      return chain.proceed(request.newBuilder().addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey).build())
     }
   }).addHttpInterceptor(
       cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      apolloRequestUuid = request.requestUuid
       val policy = request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
       val policyStr = when (policy) {
         HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
@@ -106,6 +110,7 @@ fun ApolloClient.Builder.httpCache(
       )
           .run {
             if (request.operation is Query<*> || request.operation is Mutation<*>) {
+              val cacheKey = apolloRequestToCacheKey.remove(request.requestUuid.toString())
               catch { throwable ->
                 // Revert caching of responses with errors
                 cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
