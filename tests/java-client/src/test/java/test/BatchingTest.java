@@ -4,6 +4,7 @@ import batching.GetLaunch2Query;
 import batching.GetLaunchQuery;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
@@ -20,7 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -177,6 +181,7 @@ public class BatchingTest {
     CountDownLatch latch = new CountDownLatch(2);
     apolloClient.query(new GetLaunchQuery())
         .canBeBatched(false)
+        .httpHeaders(Collections.singletonList(new HttpHeader("client0", "0")))
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
             synchronized (items) {

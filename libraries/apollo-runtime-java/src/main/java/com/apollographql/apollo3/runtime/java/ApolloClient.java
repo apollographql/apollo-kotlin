@@ -121,6 +121,9 @@ public class ApolloClient implements Closeable {
     if (apolloRequest.getEnableAutoPersistedQueries() != null) {
       requestBuilder.enableAutoPersistedQueries(apolloRequest.getEnableAutoPersistedQueries());
     }
+    if (apolloRequest.getCanBeBatched() != null) {
+      requestBuilder.addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.getCanBeBatched().toString());
+    }
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
     interceptors.add(networkInterceptor);
@@ -557,7 +560,6 @@ public class ApolloClient implements Closeable {
 
     @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
       this.canBeBatched = canBeBatched;
-      if (canBeBatched != null) addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, canBeBatched.toString());
       return this;
     }
   }

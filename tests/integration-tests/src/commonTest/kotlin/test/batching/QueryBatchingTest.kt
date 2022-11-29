@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyAdapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ExecutionOptions.Companion.CAN_BE_BATCHED
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
@@ -127,7 +128,11 @@ class QueryBatchingTest {
         .build()
 
     val result1 = async {
-      apolloClient.query(GetLaunchQuery()).canBeBatched(false).execute()
+      apolloClient.query(GetLaunchQuery())
+          .canBeBatched(false)
+          // Override headers, make sure this doesn't change canBeBatched
+          .httpHeaders(listOf(HttpHeader("client0", "0")))
+          .execute()
     }
     val result2 = async {
       // Make sure GetLaunch2Query gets executed after GetLaunchQuery as there is no guarantee otherwise
@@ -199,8 +204,12 @@ class QueryBatchingTest {
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .httpBatching(batchIntervalMillis = 300)
-        .addHttpHeader("client0", "0")
-        .addHttpHeader("client1", "1")
+        .httpHeaders(
+            listOf(
+                HttpHeader("client0", "0"),
+                HttpHeader("client1", "1")
+            )
+        )
         .build()
 
     val result1 = async {
@@ -213,6 +222,10 @@ class QueryBatchingTest {
     result1.await()
     result2.await()
     val request = mockServer.takeRequest()
+    // Only one request must have been sent
+    assertFails {
+      mockServer.takeRequest()
+    }
     assertTrue(request.headers["client0"] == "0")
     assertTrue(request.headers["client1"] == "1")
     assertFalse(request.headers.keys.contains(CAN_BE_BATCHED))
