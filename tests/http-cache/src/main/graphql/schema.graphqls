@@ -6,3 +6,7 @@ type Query {
 type Mutation {
   setRandom: String
 }
+
+type Subscription {
+  random: Int!
+}

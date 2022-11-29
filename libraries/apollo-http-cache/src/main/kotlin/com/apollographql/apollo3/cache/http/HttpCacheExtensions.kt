@@ -11,9 +11,9 @@ import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
-import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.network.http.HttpInfo
@@ -22,6 +22,7 @@ import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import java.io.File
 
@@ -73,18 +74,26 @@ fun ApolloClient.Builder.httpCache(
       directory = directory,
       maxSize = maxSize,
   )
-  var cacheKey: String? = null
+  val apolloRequestToCacheKey = mutableMapOf<String, String>()
   return addHttpInterceptor(object : HttpInterceptor {
     override suspend fun intercept(request: HttpRequest, chain: HttpInterceptorChain): HttpResponse {
-      cacheKey = CachingHttpInterceptor.cacheKey(request)
-      return chain.proceed(request.newBuilder().addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey!!).build())
+      val cacheKey = CachingHttpInterceptor.cacheKey(request)
+      val requestUuid = request.headers.valueOf(CachingHttpInterceptor.REQUEST_UUID_HEADER)!!
+      synchronized(apolloRequestToCacheKey) {
+        apolloRequestToCacheKey[requestUuid] = cacheKey
+      }
+      return chain.proceed(
+          request.newBuilder()
+              .headers(request.headers.filterNot { it.name == CachingHttpInterceptor.REQUEST_UUID_HEADER })
+              .addHeader(CachingHttpInterceptor.CACHE_KEY_HEADER, cacheKey)
+              .build()
+      )
     }
   }).addHttpInterceptor(
       cachingHttpInterceptor
   ).addInterceptor(object : ApolloInterceptor {
     override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-
-      val policy =  request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
+      val policy = request.executionContext[HttpFetchPolicyContext]?.httpFetchPolicy ?: defaultPolicy(request.operation)
       val policyStr = when (policy) {
         HttpFetchPolicy.CacheFirst -> CachingHttpInterceptor.CACHE_FIRST
         HttpFetchPolicy.CacheOnly -> CachingHttpInterceptor.CACHE_ONLY
@@ -104,17 +113,29 @@ fun ApolloClient.Builder.httpCache(
                   }
               )
               .addHttpHeader(CachingHttpInterceptor.CACHE_FETCH_POLICY_HEADER, policyStr)
+              .addHttpHeader(CachingHttpInterceptor.REQUEST_UUID_HEADER, request.requestUuid.toString())
               .build()
-      ).catch { throwable ->
-        // Revert caching of responses with errors
-        cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
-        throw throwable
-      }.onEach { response ->
-        // Revert caching of responses with errors
-        if (response.hasErrors()) {
-          cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
-        }
-      }
+      )
+          .run {
+            if (request.operation is Query<*> || request.operation is Mutation<*>) {
+              catch { throwable ->
+                // Revert caching of responses with errors
+                val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
+                cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                throw throwable
+              }.onEach { response ->
+                // Revert caching of responses with errors
+                val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
+                if (response.hasErrors()) {
+                  cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
+                }
+              }.onCompletion {
+                synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey.remove(request.requestUuid.toString()) }
+              }
+            } else {
+              this
+            }
+          }
     }
   })
 }
