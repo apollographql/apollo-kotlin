@@ -2,6 +2,11 @@ query Hello {
     hello
 }
 
+query Hello2 {
+    # This field doesn't exist on the backend
+    hello2
+}
+
 mutation SetHello {
     hello
 }
