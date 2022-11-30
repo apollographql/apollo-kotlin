@@ -11,5 +11,7 @@ dependencies {
 }
 
 apollo {
-  packageName.set("outofbounds")
+  service("service") {
+    packageName.set("outofbounds")
+  }
 }

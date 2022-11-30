@@ -11,7 +11,9 @@ dependencies {
 }
 
 apollo {
-  packageName.set("optional.variables")
-  generateOptionalOperationVariables.set(false)
-  generateFragmentImplementations.set(true)
+  service("service") {
+    packageName.set("optional.variables")
+    generateOptionalOperationVariables.set(false)
+    generateFragmentImplementations.set(true)
+  }
 }

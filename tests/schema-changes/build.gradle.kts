@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("schema.changes")
-  codegenModels.set("responseBased")
+  service("service") {
+    packageName.set("schema.changes")
+    codegenModels.set("responseBased")
+  }
 }

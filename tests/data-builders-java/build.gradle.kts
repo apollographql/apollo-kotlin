@@ -10,12 +10,14 @@ dependencies {
 }
 
 apollo {
-  packageName.set("data.builders")
-  generateDataBuilders.set(true)
-  generateKotlinModels.set(false)
-  addTypename.set("always")
-  mapScalar("Long1", "data.builders.MyLong", "data.builders.MyLong.MyLongAdapter.INSTANCE")
-  mapScalar("Long2", "data.builders.MyLong")
+  service("service") {
+    packageName.set("data.builders")
+    generateDataBuilders.set(true)
+    generateKotlinModels.set(false)
+    addTypename.set("always")
+    mapScalar("Long1", "data.builders.MyLong", "data.builders.MyLong.MyLongAdapter.INSTANCE")
+    mapScalar("Long2", "data.builders.MyLong")
+  }
 }
 
 java {

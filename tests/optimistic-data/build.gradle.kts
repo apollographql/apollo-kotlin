@@ -13,5 +13,7 @@ dependencies {
 }
 
 apollo {
-  packageName.set("optimistic")
+  service("service") {
+    packageName.set("optimistic")
+  }
 }

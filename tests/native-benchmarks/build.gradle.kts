@@ -31,6 +31,8 @@ kotlin {
 }
 
 apollo {
-  packageName.set("benchmarks")
-  generateDataBuilders.set(true)
+  service("service") {
+    packageName.set("benchmarks")
+    generateDataBuilders.set(true)
+  }
 }

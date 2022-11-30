@@ -14,6 +14,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("testnetworktransport")
-  generateTestBuilders.set(true)
+  service("service") {
+    packageName.set("testnetworktransport")
+    generateTestBuilders.set(true)
+  }
 }

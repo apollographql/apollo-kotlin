@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("reserved")
-  generateQueryDocument.set(false)
+  service("service") {
+    packageName.set("reserved")
+    generateQueryDocument.set(false)
+  }
 }

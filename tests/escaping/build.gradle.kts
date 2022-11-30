@@ -11,5 +11,7 @@ dependencies {
 }
 
 apollo {
-  packageName.set("reserved")
+  service("service") {
+    packageName.set("reserved")
+  }
 }

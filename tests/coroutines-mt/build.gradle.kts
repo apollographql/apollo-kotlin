@@ -35,6 +35,8 @@ configurations {
 }
 
 apollo {
-  packageName.set("macos.app")
-  generateDataBuilders.set(true)
+  service("myService") {
+    packageName.set("macos.app")
+    generateDataBuilders.set(true)
+  }
 }

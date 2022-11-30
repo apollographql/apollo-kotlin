@@ -12,7 +12,9 @@ dependencies {
 }
 
 apollo {
-  packageName.set("termination")
+  service("service") {
+    packageName.set("termination")
+  }
 }
 
 application {
