@@ -117,7 +117,13 @@ class GraphQLWsProtocol(
     @Suppress("UNCHECKED_CAST")
     when (messageMap["type"]) {
       "next" -> listener.operationResponse(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
-      "error" -> listener.operationError(messageMap["id"] as String, messageMap["payload"] as Map<String, Any?>)
+      "error" -> {
+        // GraphQL WS errors payloads are actually List<GraphQLError>. Pass them as usual responses
+        // See https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md#error
+        // See https://github.com/apollographql/apollo-kotlin/issues/4538
+        listener.operationResponse(messageMap["id"] as String, mapOf("errors" to messageMap["payload"]))
+        listener.operationComplete(messageMap["id"] as String)
+      }
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       "ping" -> {
         val map = mutableMapOf<String, Any?>(

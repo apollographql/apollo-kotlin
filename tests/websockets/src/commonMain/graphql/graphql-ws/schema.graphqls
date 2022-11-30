@@ -1,5 +1,8 @@
 type Query {
     hello: String
+    # We trick the codegen here into thinking there is a field hello2
+    # In reality there is none and it will trigger a validation error
+    hello2: String
 }
 type Mutation {
     hello: String
