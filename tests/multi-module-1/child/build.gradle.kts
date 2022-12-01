@@ -12,6 +12,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("multimodule1.child")
-  flattenModels.set(false)
+  service("service") {
+    packageName.set("multimodule1.child")
+    flattenModels.set(false)
+  }
 }

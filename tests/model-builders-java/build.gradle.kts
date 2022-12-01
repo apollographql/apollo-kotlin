@@ -10,9 +10,11 @@ dependencies {
 }
 
 apollo {
-  packageName.set("model.builders")
-  generateKotlinModels.set(false)
-  generateModelBuilders.set(true)
+  service("service") {
+    packageName.set("model.builders")
+    generateKotlinModels.set(false)
+    generateModelBuilders.set(true)
+  }
 }
 
 java {

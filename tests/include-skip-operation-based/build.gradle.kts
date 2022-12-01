@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.example")
-  generateDataBuilders.set(true)
+  service("service") {
+    packageName.set("com.example")
+    generateDataBuilders.set(true)
+  }
 }

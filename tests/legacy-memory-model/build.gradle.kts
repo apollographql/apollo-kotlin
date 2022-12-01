@@ -23,5 +23,7 @@ kotlin {
 }
 
 apollo {
-  packageName.set("test")
+  service("service") {
+    packageName.set("test")
+  }
 }

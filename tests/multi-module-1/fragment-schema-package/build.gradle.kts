@@ -12,6 +12,8 @@ dependencies {
 }
 
 apollo {
-  packageNamesFromFilePaths()
-  useSchemaPackageNameForFragments.set(true)
+  service("service") {
+    packageNamesFromFilePaths()
+    useSchemaPackageNameForFragments.set(true)
+  }
 }

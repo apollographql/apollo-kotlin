@@ -29,5 +29,7 @@ kotlin {
 }
 
 apollo {
-  packageName.set("sqlite")
+  service("service") {
+    packageName.set("sqlite")
+  }
 }

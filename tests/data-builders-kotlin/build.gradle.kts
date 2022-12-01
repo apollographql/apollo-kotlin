@@ -11,9 +11,11 @@ dependencies {
 }
 
 apollo {
-  packageName.set("data.builders")
-  generateDataBuilders.set(true)
-  addTypename.set("always")
-  mapScalar("Long1", "com.example.MyLong", "com.example.MyLongAdapter")
-  mapScalar("Long2", "com.example.MyLong")
+  service("service") {
+    packageName.set("data.builders")
+    generateDataBuilders.set(true)
+    addTypename.set("always")
+    mapScalar("Long1", "com.example.MyLong", "com.example.MyLongAdapter")
+    mapScalar("Long2", "com.example.MyLong")
+  }
 }

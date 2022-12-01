@@ -13,5 +13,7 @@ dependencies {
 }
 
 apollo {
-  packageName.set("rxjava")
+  service("service") {
+    packageName.set("rxjava")
+  }
 }

@@ -30,6 +30,8 @@ kotlin {
 }
 
 apollo {
-  packageName.set("ios.test")
-  generateDataBuilders.set(true)
+  service("service") {
+    packageName.set("ios.test")
+    generateDataBuilders.set(true)
+  }
 }

@@ -11,6 +11,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("jvmoverloads")
-  addJvmOverloads.set(true)
+  service("service") {
+    packageName.set("jvmoverloads")
+    addJvmOverloads.set(true)
+  }
 }

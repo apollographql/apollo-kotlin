@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("httpcache")
-  generateDataBuilders.set(true)
+  service("service") {
+    packageName.set("httpcache")
+    generateDataBuilders.set(true)
+  }
 }

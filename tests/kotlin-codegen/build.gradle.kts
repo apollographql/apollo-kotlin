@@ -10,5 +10,7 @@ dependencies {
 }
 
 apollo {
-  packageName.set("variables")
+  service("service") {
+    packageName.set("variables")
+  }
 }

@@ -23,7 +23,9 @@ android {
 }
 
 apollo {
-  packageName.set("idling.resource")
+  service("service") {
+    packageName.set("idling.resource")
+  }
 }
 
 tasks.configureEach {
