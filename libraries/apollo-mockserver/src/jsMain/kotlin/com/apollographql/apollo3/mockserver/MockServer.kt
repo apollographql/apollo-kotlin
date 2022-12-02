@@ -13,6 +13,7 @@ import okio.Timeout
 import okio.buffer
 import org.khronos.webgl.Int8Array
 import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.set
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -76,9 +77,19 @@ actual class MockServer actual constructor(override val mockServerHandler: MockS
 
   private class SocketSink(private val socket: Socket) : Sink {
     override fun write(source: okio.Buffer, byteCount: Long) {
-      socket.write(source.readUtf8(byteCount))
+      socket.write(source.toUint8Array(byteCount))
     }
 
+    private fun okio.Buffer.toUint8Array(count: Long): Uint8Array {
+      val array = Uint8Array(count.toInt())
+
+      for (i in 0.until(count.toInt())) {
+        array.set(i.toInt(), get(i.toLong()))
+      }
+
+      skip(count)
+      return array
+    }
     override fun close() {}
     override fun flush() {}
     override fun timeout() = Timeout.NONE
