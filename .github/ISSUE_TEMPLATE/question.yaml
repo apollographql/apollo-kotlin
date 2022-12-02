@@ -1,0 +1,21 @@
+name: ❓ Question
+description: Ask a general question about the project
+labels: [ ":question: Type: Question" ]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please search the existing resources before asking your question:
+        - [GitHub issues](https://github.com/apollographql/apollo-kotlin/issues)
+        - [Community](https://community.apollographql.com/tag/mobile)
+        - [StackOverflow](https://stackoverflow.com/questions/tagged/apollo-kotlin)
+
+        Questions are welcome but avoid duplicating issues and discussions. If you'd like a GitHub issue to be reopened, please leave a message on the issue.
+
+        For an informal chat about the project, you can also say hi in the KotlinLang Slack, channel `#apollo-kotlin`. You can get your invite at https://slack.kotl.in/.
+  - type: textarea
+    attributes:
+      label: Question
+      description: Enter your question here.
+    validations:
+      required: true
