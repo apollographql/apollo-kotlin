@@ -68,6 +68,7 @@ class GraphQLWsProtocol(
       val map = receiveMessageMap()
       when (val type = map["type"]) {
         "connection_ack" -> return@withTimeout
+        "ping" -> sendPong()
         else -> println("unknown graphql-ws message while waiting for connection_ack: '$type")
       }
     }
@@ -126,17 +127,21 @@ class GraphQLWsProtocol(
       }
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       "ping" -> {
-        val map = mutableMapOf<String, Any?>(
-            "type" to "pong",
-        )
-        if (pongPayload != null) {
-          map["payload"] = pongPayload
-        }
-        sendMessageMap(map, frameType)
+        sendPong()
       }
       "pong" -> Unit // Nothing to do, the server acknowledged one of our pings
       else -> Unit // Unknown message
     }
+  }
+
+  private fun sendPong() {
+    val map = mutableMapOf<String, Any?>(
+        "type" to "pong",
+    )
+    if (pongPayload != null) {
+      map["payload"] = pongPayload
+    }
+    sendMessageMap(map, frameType)
   }
 
   /**
