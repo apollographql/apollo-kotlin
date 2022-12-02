@@ -41,6 +41,7 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
   @Suppress("UnstableApiUsage")
   project.extensions.getByType(JavaPluginExtension::class.java).apply {
     // Compile and run tests with Java11
+    // Keep in sync with build-logic/build.gradle.kts
     toolchain.languageVersion.set(JavaLanguageVersion.of(11))
   }
   @Suppress("UnstableApiUsage")
