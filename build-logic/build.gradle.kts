@@ -17,7 +17,7 @@ group = "com.apollographql.apollo3.build"
 golatac.init(file("../gradle/libraries.toml"))
 
 dependencies {
-  compileOnly(golatac.lib("gradle.api"))
+  compileOnly(gradleApi())
 
   implementation(golatac.lib("okhttp"))
 
