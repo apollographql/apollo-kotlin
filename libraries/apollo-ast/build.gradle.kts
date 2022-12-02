@@ -28,8 +28,10 @@ configurations[JavaPlugin.API_CONFIGURATION_NAME].let { apiConfiguration ->
   apiConfiguration.setExtendsFrom(apiConfiguration.extendsFrom.filter { it.name != "antlr" })
 }
 
-tasks.withType(KotlinCompile::class.java) {
-  // This used to work and fails now. Strangely enough, it fails on both `dev-3.x` and `main` as of writing while both these branches have
-  // compiled successfully before...
+// See https://github.com/gradle/gradle/issues/19555
+tasks.named("compileKotlin") {
   dependsOn("generateGrammarSource")
+}
+tasks.named("compileTestKotlin") {
+  dependsOn("generateTestGrammarSource")
 }
