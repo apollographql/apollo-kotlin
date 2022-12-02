@@ -7,7 +7,7 @@ plugins {
 }
 
 apolloLibrary {
-  treatWarningsAsErrors(false)
+  treatWarningsAsErrors(true)
 }
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated
