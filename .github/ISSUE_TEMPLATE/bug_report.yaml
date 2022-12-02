@@ -11,14 +11,13 @@ body:
   - type: input
     attributes:
       label: Version
-      description: Make sure the bug is still happening on the latest version. Enter this version here.
+      description: Make sure the bug is still happening on the latest version.
     validations:
       required: true
   - type: textarea
     attributes:
       label: Steps to reproduce the behavior
-      description: Steps to reproduce the behavior.
-      placeholder: |
+      description: |
         Add context about the problem here. How it happened and how to reproduce it:
         - If your project is open source, a link to the project is greatly appreciated.
         - If not, please share as much information as possible to help to understand the problem: schema, queries, sample code, etc...
@@ -30,9 +29,8 @@ body:
       label: Logs
       description: |
         Paste logs and full stacktrace here.
-        
         You can also attach files by dragging them into the area.
-      placeholder: |
+      value: |
         ```
         (Your logs here)
         ```
