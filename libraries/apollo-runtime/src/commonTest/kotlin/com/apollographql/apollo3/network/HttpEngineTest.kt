@@ -43,7 +43,6 @@ class HttpEngineTest {
           .execute()
 
       val result = response.body?.readUtf8()
-      println(result)
       assertEquals("Hello World", result)
 
     } catch (e: Exception) {
