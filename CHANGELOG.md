@@ -1,6 +1,42 @@
 Change Log
 ==========
 
+# Version 3.7.2
+
+_2022-12-05_
+
+This patch release brings a few fixes.
+
+Many thanks to @davidshepherd7, @chao2zhang, @agrosner, @MyDogTom, @doucheng, @sam43 and @vincentjames501, for helping improve the library! 🙏
+
+## 🔎‍ Explicit service declaration
+
+Apollo Kotlin can be configured to work with [multiple services](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/#using-multiple-graphql-apis) and have the package name, schema files location, and other options specified for each of them. When using a single service however it is possible to omit the `service` block and set the options directly in the `apollo` block - in that case, a default service named `service` is automatically defined.
+
+While this saves a few lines, it is not the clearest as some of the options really are specific to a service, and in the future we want to make the options more organized. That's why using the implicit service is now discouraged and a warning is printed when doing so.
+
+To remove the warning, embed the options into a `service` block:
+
+```diff
+apollo {
++ service("service") {
+    packageName.set("com.example")
+    // ...
++ }
+}
+```
+
+## 👷‍ All changes
+
+* Improve "duplicate type" message by using the full path of the module (#4527)
+* Improve relocation in gradle plugin (#4528)
+* Add a warning when using the default service (#4532)
+* Fix Java codegen in synthetic fields when using optionals (#4533)
+* Make `canBeBatched` and `httpHeaders` orthogonal (#4534)
+* Fix item wrongly removed from http cache when error in subscriptions (#4537)
+* Fix graphql-ws errors (#4540)
+* graphql-ws: send pong while waiting for connection_ack (#4555)
+
 # Version 3.7.1
 
 _2022-11-18_
