@@ -13,7 +13,9 @@ Many thanks to @davidshepherd7, @chao2zhang, @agrosner, @MyDogTom, @doucheng, @s
 
 Apollo Kotlin can be configured to work with [multiple services](https://www.apollographql.com/docs/kotlin/advanced/plugin-configuration/#using-multiple-graphql-apis) and have the package name, schema files location, and other options specified for each of them. When using a single service however it is possible to omit the `service` block and set the options directly in the `apollo` block - in that case, a default service named `service` is automatically defined.
 
-While this saves a few lines, it is not the clearest as some of the options really are specific to a service, and in the future we want to make the options more organized. That's why using the implicit service is now discouraged and a warning is printed when doing so.
+While this saves a few lines, it relies on Gradle `afterEvaluate {}` block that makes the execution of the plugin less predictable and more subject to race conditions with other plugins (see [here](https://github.com/apollographql/apollo-kotlin/issues/4523#issuecomment-1324715590) for an example).
+
+What's more, as we move more logic to build time, the name of the service is going to be used more and more in generated code. Since [explicit is better than implicit](https://peps.python.org/pep-0020/), mandating that service name sounds a good thing to do and a warning is now printed if you do not define your service name.
 
 To remove the warning, embed the options into a `service` block:
 
@@ -29,12 +31,12 @@ apollo {
 ## 👷‍ All changes
 
 * Improve "duplicate type" message by using the full path of the module (#4527)
-* Improve relocation in gradle plugin (#4528)
+* Fix using apollo2 and apollo3 Gradle plugins at the same time  (#4528)
 * Add a warning when using the default service (#4532)
 * Fix Java codegen in synthetic fields when using optionals (#4533)
 * Make `canBeBatched` and `httpHeaders` orthogonal (#4534)
 * Fix item wrongly removed from http cache when error in subscriptions (#4537)
-* Fix graphql-ws errors (#4540)
+* Do not throw on graphql-ws errors and instead return the errors in ApolloResponse (#4540)
 * graphql-ws: send pong while waiting for connection_ack (#4555)
 
 # Version 3.7.1
