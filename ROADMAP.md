@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: Nov 2022**
+**Last updated: Dec 2022**
 
 For up to date release notes, refer to the project [Change Log](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -33,7 +33,7 @@ Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to
 
 ### Release 4.0
 
-The next major release of Apollo Kotlin 4.0 which will include breaking changes is currently in a state of pre planning.
+The next major release of Apollo Kotlin 4.0 which will include breaking changes is currently in a state of pre planning. You can review this [umbrella issue](https://github.com/apollographql/apollo-kotlin/issues/4171) which identifies some of the potential changes in 4.0.
 
 ### `release-2.x` branch
 
