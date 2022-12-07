@@ -17,6 +17,7 @@ class EnumsTest {
     assertEquals(Direction.name_, Direction.safeValueOf("name"))
     assertEquals(Direction.ordinal_, Direction.safeValueOf("ordinal"))
     assertEquals(Direction.type__, Direction.safeValueOf("type"))
+    assertEquals(Direction.Companion_, Direction.safeValueOf("Companion"))
   }
 
   @Test
@@ -27,6 +28,7 @@ class EnumsTest {
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
     assertEquals(Gravity.ordinal, Gravity.safeValueOf("ordinal"))
     assertEquals(Gravity.type__, Gravity.safeValueOf("type"))
+    assertEquals(Gravity.Companion_, Gravity.safeValueOf("Companion"))
   }
 
   @Test
@@ -37,6 +39,7 @@ class EnumsTest {
     assertEquals(enums.java.type.Direction.name, enums.java.type.Direction.safeValueOf("name"))
     assertEquals(enums.java.type.Direction.ordinal, enums.java.type.Direction.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Direction.type__, enums.java.type.Direction.safeValueOf("type"))
+    assertEquals(enums.java.type.Direction.Companion, enums.java.type.Direction.safeValueOf("Companion"))
   }
 
   @Test
@@ -47,6 +50,7 @@ class EnumsTest {
     assertEquals(enums.java.type.Gravity.name, enums.java.type.Gravity.safeValueOf("name"))
     assertEquals(enums.java.type.Gravity.ordinal, enums.java.type.Gravity.safeValueOf("ordinal"))
     assertEquals(enums.java.type.Gravity.type__, enums.java.type.Gravity.safeValueOf("type"))
+    assertEquals(enums.java.type.Gravity.Companion, enums.java.type.Gravity.safeValueOf("Companion"))
   }
 
 
@@ -76,6 +80,7 @@ class EnumsTest {
             Gravity.BOTTOM,
             Gravity.LEFT,
             Gravity.RIGHT,
+            Gravity.Companion_,
             Gravity.name,
             Gravity.ordinal,
             Gravity.type__,
