@@ -136,7 +136,7 @@ abstract class DefaultApolloExtension(
         } else {
           "packageNamesFromFilePaths()"
         }
-        println("""
+        logger.warn("""
             Apollo: using the default service is deprecated and will be removed in a future version. Please define your service explicitly:
             
             apollo {
