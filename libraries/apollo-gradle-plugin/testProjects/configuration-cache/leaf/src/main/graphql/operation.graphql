@@ -1,0 +1,3 @@
+query GetRandom2 {
+  random2
+}

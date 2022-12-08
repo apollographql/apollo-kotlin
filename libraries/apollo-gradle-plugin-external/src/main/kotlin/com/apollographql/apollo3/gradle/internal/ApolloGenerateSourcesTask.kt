@@ -214,6 +214,9 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val projectName: Property<String>
 
   @get:Input
+  abstract val projectPath: Property<String>
+
+  @get:Input
   @get:Optional
   abstract val addJvmOverloads: Property<Boolean>
 
@@ -377,7 +380,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       ApolloMetadata(
           commonMetadata = if (rememberCommonMetadata) commonMetadata else null,
           compilerMetadata = outputCompilerMetadata,
-          moduleName = project.path,
+          moduleName = projectPath.get(),
           generateDataBuilders = generateDataBuilders,
       ).writeTo(metadataOutputFile)
     }
