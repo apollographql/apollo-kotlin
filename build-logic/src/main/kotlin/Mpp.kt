@@ -33,8 +33,8 @@ val enabledJs = true
 fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroid: Boolean) {
   configureMpp(
       withJvm = true,
-      withJs = withJs && enabledJs,
-      withLinux = withLinux && enabledLinux,
+      withJs = withJs,
+      withLinux = withLinux,
       appleTargets = enabledAppleTargets,
       withAndroid = withAndroid,
       kotlinJsCompilerType = KotlinJsCompilerType.BOTH,
@@ -58,7 +58,7 @@ fun Project.configureMppTestsDefaults(
       withJs = withJs,
       withLinux = false,
       withAndroid = false,
-      appleTargets = appleTargets.toSet().intersect(enabledAppleTargets),
+      appleTargets = appleTargets,
       kotlinJsCompilerType = KotlinJsCompilerType.IR,
       newMemoryManager = newMemoryManager
   )
@@ -105,7 +105,7 @@ fun Project.configureMpp(
       }
     }
 
-    createAndConfigureAppleTargets(appleTargets)
+    createAndConfigureAppleTargets(appleTargets.toSet().intersect(enabledAppleTargets))
 
     addTestDependencies()
 
@@ -132,6 +132,10 @@ fun Project.okioNodeJs(): String {
 }
 
 private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNames: Collection<String>) {
+  if (presetNames.isEmpty()) {
+    return
+  }
+  
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
     targetFromPreset(presets.getByName(hostTarget), "apple")
