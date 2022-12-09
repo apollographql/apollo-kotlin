@@ -757,7 +757,6 @@ abstract class DefaultApolloExtension(
               acc + new
             }
       })
-      task.projectName.set(project.name)
       task.projectPath.set(project.path)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateQueryDocument.set(service.generateQueryDocument)

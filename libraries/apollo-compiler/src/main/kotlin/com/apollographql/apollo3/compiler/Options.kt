@@ -220,7 +220,6 @@ class Options(
      */
     val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
-    val moduleName: String = defaultModuleName,
 
     /**
      * Whether to generate builders for java models
@@ -388,7 +387,6 @@ class Options(
       generateQueryDocument: Boolean = this.generateQueryDocument,
       generateSchema: Boolean = this.generateSchema,
       generatedSchemaName: String = this.generatedSchemaName,
-      moduleName: String = this.moduleName,
       targetLanguage: TargetLanguage = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
       generateDataBuilders: Boolean = this.generateDataBuilders,
@@ -431,7 +429,6 @@ class Options(
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
       generatedSchemaName = generatedSchemaName,
-      moduleName = moduleName,
       generateTestBuilders = generateTestBuilders,
       generateDataBuilders = generateDataBuilders,
       testDir = testDir,
