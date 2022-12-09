@@ -13,7 +13,7 @@ apolloTest {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.testingsupport"))
         implementation(golatac.lib("apollo.mockserver"))

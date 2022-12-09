@@ -17,21 +17,21 @@ kotlin {
   }
 
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
         implementation(golatac.lib("apollo.normalizedcache"))
       }
     }
 
-    val commonTest by getting {
+    findByName("commonTest")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.mockserver"))
         implementation(golatac.lib("apollo.testingsupport"))
       }
     }
 
-    val jsTest by getting {
+    findByName("jsTest")?.apply {
       dependencies {
         implementation(npm("graphql-helix", "1.13.0"))
         implementation(npm("express", "4.17.3"))
@@ -43,7 +43,7 @@ kotlin {
       }
     }
 
-    val jvmTest by getting {
+    findByName("jvmTest")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.httpCache"))
       }

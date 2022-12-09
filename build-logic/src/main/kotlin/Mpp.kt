@@ -27,16 +27,14 @@ val hostTarget: String
   }
 
 val enabledAppleTargets = allAppleTargets
-
 val enabledLinux = true
-
 val enabledJs = true
 
 fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroid: Boolean) {
   configureMpp(
       withJvm = true,
-      withJs = withJs,
-      withLinux = withLinux,
+      withJs = withJs && enabledJs,
+      withLinux = withLinux && enabledLinux,
       appleTargets = enabledAppleTargets,
       withAndroid = withAndroid,
       kotlinJsCompilerType = KotlinJsCompilerType.BOTH,
@@ -60,7 +58,7 @@ fun Project.configureMppTestsDefaults(
       withJs = withJs,
       withLinux = false,
       withAndroid = false,
-      appleTargets = appleTargets.toSet().intersect(enabledAppleTargets),,
+      appleTargets = appleTargets.toSet().intersect(enabledAppleTargets),
       kotlinJsCompilerType = KotlinJsCompilerType.IR,
       newMemoryManager = newMemoryManager
   )

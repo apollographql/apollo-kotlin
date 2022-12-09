@@ -8,20 +8,20 @@ apolloTest {
   mpp {
     withJs.set(false)
     withJvm.set(false)
-    enabledAppleTargets.set(setOf("iosArm64", "iosX64"))
+    appleTargets.set(setOf("iosArm64", "iosX64"))
   }
 }
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
         implementation(golatac.lib("apollo.mockserver"))
       }
     }
 
-    val commonTest by getting {
+    findByName("commonTest")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.testingsupport"))
       }

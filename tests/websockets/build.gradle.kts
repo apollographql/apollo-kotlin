@@ -10,13 +10,13 @@ apolloTest {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
       }
     }
 
-    val commonTest by getting {
+    findByName("commonTest")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.testingsupport"))
         implementation(golatac.lib("apollo.normalizedcache"))
@@ -24,7 +24,7 @@ kotlin {
       }
     }
 
-    val jvmTest by getting {
+    findByName("jvmTest")?.apply {
       dependencies {
         implementation(project(":sample-server"))
       }
