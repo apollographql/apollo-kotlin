@@ -3,7 +3,7 @@ package com.apollographql.apollo3.api.http.internal
 import kotlin.native.concurrent.SharedImmutable
 
 @SharedImmutable
-private val RESERVED_CHARS = "!#\$&'\"()*+,/:;=?@[]{}"
+private val RESERVED_CHARS = "!#\$&'\"()*+,/:;=?@[]{} "
 
 /**
  * A very simple urlEncode
@@ -12,7 +12,6 @@ internal fun String.urlEncode(): String = buildString {
   this@urlEncode.forEach { char ->
     when (char) {
       in RESERVED_CHARS -> append(char.percentEncode())
-      ' ' -> append('+')
       else -> append(char)
     }
   }
