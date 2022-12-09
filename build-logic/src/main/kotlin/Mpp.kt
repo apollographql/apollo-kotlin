@@ -26,12 +26,7 @@ val hostTarget: String
     "macosX64"
   }
 
-val enabledAppleTargets: Set<String>
-  get() = if (System.getenv("APOLLO_SKIP_EXTRA_APPLE_TARGETS") == "true") {
-    setOf(hostTarget)
-  } else {
-    allAppleTargets
-  }
+val enabledAppleTargets = allAppleTargets
 
 val enabledLinux = true
 
@@ -65,7 +60,7 @@ fun Project.configureMppTestsDefaults(
       withJs = withJs,
       withLinux = false,
       withAndroid = false,
-      appleTargets = appleTargets,
+      appleTargets = appleTargets.toSet().intersect(enabledAppleTargets),,
       kotlinJsCompilerType = KotlinJsCompilerType.IR,
       newMemoryManager = newMemoryManager
   )
@@ -141,7 +136,6 @@ fun Project.okioNodeJs(): String {
 private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNames: Collection<String>) {
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
-    macosX64("apple")
     targetFromPreset(presets.getByName(hostTarget), "apple")
     return
   }
