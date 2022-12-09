@@ -460,7 +460,6 @@ class Options(
     const val defaultGenerateFragmentImplementations = false
     const val defaultGenerateResponseFields = true
     const val defaultGenerateQueryDocument = true
-    const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
     const val defaultRequiresOptInAnnotation = "none"

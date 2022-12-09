@@ -2,8 +2,8 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.compiler.Options.Companion.defaultScalarMapping
 import com.apollographql.apollo3.ast.introspection.toSchema
+import com.apollographql.apollo3.compiler.Options.Companion.defaultScalarMapping
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
 import org.junit.Before
@@ -69,7 +69,6 @@ class MetadataTest {
             scalarMapping = defaultScalarMapping,
             codegenModels = codegenModels,
             flattenModels = true,
-            moduleName = "test",
         )
     )
     ApolloMetadata(

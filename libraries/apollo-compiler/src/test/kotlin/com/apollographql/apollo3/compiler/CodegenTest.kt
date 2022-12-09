@@ -398,7 +398,6 @@ class CodegenTest {
           generateFragmentImplementations = generateFragmentImplementations,
           generateModelBuilders = generateModelBuilders,
           generateSchema = generateSchema,
-          moduleName = folder.name,
           targetLanguage = targetLanguage,
           sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
           classesForEnumsMatching = classesForEnumsMatching,
