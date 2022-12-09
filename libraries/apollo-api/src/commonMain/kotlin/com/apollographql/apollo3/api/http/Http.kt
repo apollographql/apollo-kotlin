@@ -64,6 +64,11 @@ private constructor(
 
   class Builder(
       private val method: HttpMethod,
+
+      /**
+       * The URL to send the request to.
+       * Must be conform to [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986#section-2).
+       */
       private val url: String,
   ) {
     private var body: HttpBody? = null
