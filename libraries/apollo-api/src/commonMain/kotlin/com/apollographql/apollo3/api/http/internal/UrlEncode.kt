@@ -8,14 +8,12 @@ private val RESERVED_CHARS = "!#\$&'\"()*+,/:;=?@[]{}"
 /**
  * A very simple urlEncode
  */
-internal fun String.urlEncode(
-    spaceToPlus: Boolean = false
-): String = buildString {
-  this@urlEncode.forEach {
-    when {
-      it in RESERVED_CHARS -> append(it.percentEncode())
-      spaceToPlus && it == ' ' -> append('+')
-      else -> append(it)
+internal fun String.urlEncode(): String = buildString {
+  this@urlEncode.forEach { char ->
+    when (char) {
+      in RESERVED_CHARS -> append(char.percentEncode())
+      ' ' -> append('+')
+      else -> append(char)
     }
   }
 }

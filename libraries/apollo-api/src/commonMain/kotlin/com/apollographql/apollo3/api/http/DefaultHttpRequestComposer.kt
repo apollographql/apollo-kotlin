@@ -199,7 +199,7 @@ class DefaultHttpRequestComposer(
         }
         append(it.key.urlEncode())
         append('=')
-        append(it.value.urlEncode(true))
+        append(it.value.urlEncode())
       }
     }
 
