@@ -23,7 +23,7 @@ class ConfigurationCacheTests {
         }
       """.trimIndent()
 
-    dir.resolve("build.gradle.kts").replaceInText("ENDPOINT", server.url("/").toString())
+    dir.resolve("root/build.gradle.kts").replaceInText("ENDPOINT", server.url("/").toString())
 
     server.enqueue(MockResponse().setBody(minimalValidSchema))
     TestUtils.executeGradle(

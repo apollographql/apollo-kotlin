@@ -220,7 +220,6 @@ class Options(
      */
     val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
-    val moduleName: String = defaultModuleName,
 
     /**
      * Whether to generate builders for java models
@@ -388,7 +387,6 @@ class Options(
       generateQueryDocument: Boolean = this.generateQueryDocument,
       generateSchema: Boolean = this.generateSchema,
       generatedSchemaName: String = this.generatedSchemaName,
-      moduleName: String = this.moduleName,
       targetLanguage: TargetLanguage = this.targetLanguage,
       generateTestBuilders: Boolean = this.generateTestBuilders,
       generateDataBuilders: Boolean = this.generateDataBuilders,
@@ -431,7 +429,6 @@ class Options(
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
       generatedSchemaName = generatedSchemaName,
-      moduleName = moduleName,
       generateTestBuilders = generateTestBuilders,
       generateDataBuilders = generateDataBuilders,
       testDir = testDir,
@@ -463,7 +460,6 @@ class Options(
     const val defaultGenerateFragmentImplementations = false
     const val defaultGenerateResponseFields = true
     const val defaultGenerateQueryDocument = true
-    const val defaultModuleName = "apollographql"
     const val defaultCodegenModels = MODELS_OPERATION_BASED
     const val defaultAddTypename = ADD_TYPENAME_IF_FRAGMENTS
     const val defaultRequiresOptInAnnotation = "none"

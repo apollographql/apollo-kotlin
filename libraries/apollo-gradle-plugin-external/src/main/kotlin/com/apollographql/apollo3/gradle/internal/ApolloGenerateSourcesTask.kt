@@ -211,7 +211,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val objectFactory: ObjectFactory
 
   @get:Input
-  abstract val projectName: Property<String>
+  abstract val projectPath: Property<String>
 
   @get:Input
   @get:Optional
@@ -262,7 +262,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     var commonMetadata = commonMetadatas.singleOrNull()
     var rememberCommonMetadata = false
     val generateDataBuilders = generateDataBuilders.getOrElse(defaultGenerateDataBuilders)
-    val moduleName = projectName.get()
+    val moduleName = projectPath.get()
 
     if (commonMetadata != null) {
       check(schemaFiles.files.isEmpty()) {
@@ -344,7 +344,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
-        moduleName = moduleName,
         // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
         flattenModels = flattenModels,
         incomingCompilerMetadata = metadata.map { it.compilerMetadata },
@@ -377,7 +376,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       ApolloMetadata(
           commonMetadata = if (rememberCommonMetadata) commonMetadata else null,
           compilerMetadata = outputCompilerMetadata,
-          moduleName = project.path,
+          moduleName = projectPath.get(),
           generateDataBuilders = generateDataBuilders,
       ).writeTo(metadataOutputFile)
     }
