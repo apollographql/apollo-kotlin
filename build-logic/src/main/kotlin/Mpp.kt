@@ -1,21 +1,72 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean) {
+  configureMpp(
+      withJvm = true,
+      withJs = withJs,
+      withLinux = withLinux,
+      appleTargets = setOf(
+          "macosX64",
+          "macosArm64",
+          "iosArm64",
+          "iosX64",
+          "iosSimulatorArm64",
+          "watchosArm32",
+          "watchosArm64",
+          "watchosSimulatorArm64",
+          "tvosArm64",
+          "tvosX64",
+          "tvosSimulatorArm64",
+      ),
+      kotlinJsCompilerType = KotlinJsCompilerType.BOTH,
+      newMemoryManager = null
+  )
+}
+
+
+/**
+ * Same as [configureMppDefaults] but without Linux targets. Apple targets can be configured.
+ * Tests only run on the JVM, JS and macOS
+ */
+fun Project.configureMppTestsDefaults(
+    withJs: Boolean,
+    withJvm: Boolean,
+    newMemoryManager: Boolean,
+    appleTargets: Collection<String>,
+) {
+  configureMpp(
+      withJvm = withJvm,
+      withJs = withJs,
+      withLinux = false,
+      appleTargets = appleTargets,
+      kotlinJsCompilerType = KotlinJsCompilerType.IR,
+      newMemoryManager = newMemoryManager
+  )
+}
+
+fun Project.configureMpp(
+    withJvm: Boolean,
+    withJs: Boolean,
+    withLinux: Boolean,
+    appleTargets: Collection<String>,
+    kotlinJsCompilerType: KotlinJsCompilerType,
+    newMemoryManager: Boolean?,
+) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
     "No multiplatform extension found"
   }
   kotlinExtension.apply {
-    /**
-     * configure targets
-     */
-    jvm()
+    if (withJvm) {
+      jvm()
+    }
 
     if (withJs) {
-      js(BOTH) {
+      js(kotlinJsCompilerType) {
         nodejs {
           testTask {
             useMocha {
@@ -31,21 +82,11 @@ fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean) {
       linuxX64("linux")
     }
 
-    configureAppleTargets(setOf(
-        "macosX64",
-        "macosArm64",
-        "iosArm64",
-        "iosX64",
-        "iosSimulatorArm64",
-        "watchosArm32",
-        "watchosArm64",
-        "watchosSimulatorArm64",
-        "tvosArm64",
-        "tvosX64",
-        "tvosSimulatorArm64",
-    ))
+    configureAppleTargets(appleTargets)
 
     addTestDependencies()
+
+    if (newMemoryManager == false) setStrictMemoryModel()
   }
 }
 
@@ -67,7 +108,7 @@ fun Project.okioNodeJs(): String {
   return "com.squareup.okio:okio-nodefilesystem:$okioVersion"
 }
 
-private fun KotlinMultiplatformExtension.configureAppleTargets(presetNames: Set<String>) {
+private fun KotlinMultiplatformExtension.configureAppleTargets(presetNames: Collection<String>) {
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
     // Try to guess the dev machine to make sure the tests are running smoothly
@@ -93,47 +134,6 @@ private fun KotlinMultiplatformExtension.configureAppleTargets(presetNames: Set<
 
     sourceSets.getByName("${presetName}Main").dependsOn(appleMain)
     sourceSets.getByName("${presetName}Test").dependsOn(appleTest)
-  }
-}
-
-/**
- * Same as [configureMppDefaults] but without Linux targets. Apple targets can be configured.
- * Tests only run on the JVM, JS and MacOS
- */
-fun Project.configureMppTestsDefaults(
-    withJs: Boolean,
-    withJvm: Boolean,
-    newMemoryManager: Boolean,
-    appleTargets: Set<String>,
-) {
-  val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
-  check(kotlinExtension != null) {
-    "No multiplatform extension found"
-  }
-  kotlinExtension.apply {
-    /**
-     * configure targets
-     */
-    if (withJvm) jvm()
-
-    if (withJs) {
-      js(IR) {
-        nodejs {
-          testTask {
-            useMocha {
-              // Override default 2s timeout
-              timeout = "120s"
-            }
-          }
-        }
-      }
-    }
-
-    configureAppleTargets(appleTargets)
-
-    addTestDependencies()
-
-    if (!newMemoryManager) setStrictMemoryModel()
   }
 }
 
