@@ -11,7 +11,7 @@ apolloLibrary {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(project(":libraries:apollo-api"))
         api(project(":libraries:apollo-runtime"))
@@ -24,20 +24,20 @@ kotlin {
       }
     }
 
-    val jvmTest by getting {
+    findByName("jvmTest")?.apply {
       dependencies {
         implementation(golatac.lib("truth"))
       }
     }
 
-    val jsMain by getting {
+    findByName("jsMain")?.apply {
       dependencies {
         implementation(golatac.lib("kotlinx.nodejs"))
         implementation(golatac.lib("kotlin.test.js"))
         api(okioNodeJs())
       }
     }
-    val jsTest by getting {
+    findByName("jsTest")?.apply {
       dependencies {
         implementation(golatac.lib("kotlin.test.js"))
       }

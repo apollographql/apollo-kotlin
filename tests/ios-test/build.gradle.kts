@@ -8,7 +8,7 @@ apolloTest {
   mpp {
     withJs.set(false)
     withJvm.set(false)
-    appleTargets.set(setOf("iosArm64", "iosX64"))
+    enabledAppleTargets.set(setOf("iosArm64", "iosX64"))
   }
 }
 

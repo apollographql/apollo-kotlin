@@ -12,7 +12,7 @@ apolloLibrary {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(project(":libraries:apollo-api"))
         api(project(":libraries:apollo-mpp-utils"))
@@ -22,31 +22,31 @@ kotlin {
       }
     }
 
-    val commonTest by getting {
+    findByName("commonTest")?.apply {
       dependencies {
         implementation(project(":libraries:apollo-mockserver"))
         implementation(project(":libraries:apollo-testing-support"))
       }
     }
 
-    val jvmMain by getting {
+    findByName("jvmMain")?.apply {
       dependencies {
         api(golatac.lib("okhttp"))
       }
     }
 
-    val jsMain by getting {
+    findByName("jsMain")?.apply {
       dependencies {
         api(golatac.lib("ktor.client.js"))
       }
     }
 
-    val appleMain by getting {
+    findByName("appleMain")?.apply {
       dependencies {
       }
     }
 
-    val jvmTest by getting {
+    findByName("jvmTest")?.apply {
       dependencies {
         implementation(golatac.lib("kotlin.test.junit"))
         implementation(golatac.lib("truth"))

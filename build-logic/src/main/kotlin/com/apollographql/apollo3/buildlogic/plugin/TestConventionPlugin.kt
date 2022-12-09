@@ -39,7 +39,7 @@ class TestConventionPlugin : Plugin<Project> {
           withJs = mppConfiguration.withJs.getOrElse(true),
           withJvm = mppConfiguration.withJvm.getOrElse(true),
           newMemoryManager = mppConfiguration.newMemoryManager.getOrElse(true),
-          appleTargets = mppConfiguration.appleTargets.get().ifEmpty { setOf("macosX64", "macosArm64") },
+          appleTargets = mppConfiguration.appleTargets.get().ifEmpty { setOf("macosArm64", "macosX64") }
       )
 
       project.workaroundForIssueKT51970()

@@ -4,24 +4,46 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
-fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean) {
+private val allAppleTargets = setOf(
+    "macosX64",
+    "macosArm64",
+    "iosArm64",
+    "iosX64",
+    "iosSimulatorArm64",
+    "watchosArm32",
+    "watchosArm64",
+    "watchosSimulatorArm64",
+    "tvosArm64",
+    "tvosX64",
+    "tvosSimulatorArm64",
+)
+
+// Try to guess the dev machine to make sure the tests are running smoothly
+val hostTarget: String
+  get() = if (System.getProperty("os.arch") == "aarch64") {
+    "macosArm64"
+  } else {
+    "macosX64"
+  }
+
+val enabledAppleTargets: Set<String>
+  get() = if (System.getenv("APOLLO_SKIP_EXTRA_APPLE_TARGETS") == "true") {
+    setOf(hostTarget)
+  } else {
+    allAppleTargets
+  }
+
+val enabledLinux = true
+
+val enabledJs = true
+
+fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroid: Boolean) {
   configureMpp(
       withJvm = true,
       withJs = withJs,
       withLinux = withLinux,
-      appleTargets = setOf(
-          "macosX64",
-          "macosArm64",
-          "iosArm64",
-          "iosX64",
-          "iosSimulatorArm64",
-          "watchosArm32",
-          "watchosArm64",
-          "watchosSimulatorArm64",
-          "tvosArm64",
-          "tvosX64",
-          "tvosSimulatorArm64",
-      ),
+      appleTargets = enabledAppleTargets,
+      withAndroid = withAndroid,
       kotlinJsCompilerType = KotlinJsCompilerType.BOTH,
       newMemoryManager = null
   )
@@ -42,6 +64,7 @@ fun Project.configureMppTestsDefaults(
       withJvm = withJvm,
       withJs = withJs,
       withLinux = false,
+      withAndroid = false,
       appleTargets = appleTargets,
       kotlinJsCompilerType = KotlinJsCompilerType.IR,
       newMemoryManager = newMemoryManager
@@ -52,6 +75,7 @@ fun Project.configureMpp(
     withJvm: Boolean,
     withJs: Boolean,
     withLinux: Boolean,
+    withAndroid: Boolean,
     appleTargets: Collection<String>,
     kotlinJsCompilerType: KotlinJsCompilerType,
     newMemoryManager: Boolean?,
@@ -65,7 +89,7 @@ fun Project.configureMpp(
       jvm()
     }
 
-    if (withJs) {
+    if (enabledJs && withJs) {
       js(kotlinJsCompilerType) {
         nodejs {
           testTask {
@@ -78,11 +102,17 @@ fun Project.configureMpp(
       }
     }
 
-    if (withLinux) {
+    if (enabledLinux && withLinux) {
       linuxX64("linux")
     }
 
-    configureAppleTargets(appleTargets)
+    if (withAndroid) {
+      android {
+        publishAllLibraryVariants()
+      }
+    }
+
+    createAndConfigureAppleTargets(appleTargets)
 
     addTestDependencies()
 
@@ -108,18 +138,14 @@ fun Project.okioNodeJs(): String {
   return "com.squareup.okio:okio-nodefilesystem:$okioVersion"
 }
 
-private fun KotlinMultiplatformExtension.configureAppleTargets(presetNames: Collection<String>) {
+private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNames: Collection<String>) {
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
-    // Try to guess the dev machine to make sure the tests are running smoothly
-    if (System.getProperty("os.arch") == "aarch64") {
-      macosArm64("apple")
-    } else {
-      macosX64("apple")
-    }
-
+    macosX64("apple")
+    targetFromPreset(presets.getByName(hostTarget), "apple")
     return
   }
+
   val appleMain = sourceSets.create("appleMain")
   val appleTest = sourceSets.create("appleTest")
 
