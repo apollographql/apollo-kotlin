@@ -10,7 +10,9 @@ Apollo Kotlin generates Kotlin code by default, but you can configure it to use 
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
-  generateKotlinModels.set(false)
+  service("service") {
+    generateKotlinModels.set(false)
+  }
 }
 ```
 

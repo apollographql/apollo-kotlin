@@ -12,7 +12,9 @@ dependencies {
 }
 
 apollo {
-  packageNamesFromFilePaths()
-  generateApolloMetadata.set(true)
-  customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+  service("service") {
+    packageNamesFromFilePaths()
+    generateApolloMetadata.set(true)
+    customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+  }
 }

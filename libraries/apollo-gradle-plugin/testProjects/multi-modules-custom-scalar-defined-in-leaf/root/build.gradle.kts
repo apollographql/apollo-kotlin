@@ -11,7 +11,9 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.library")
-  generateApolloMetadata.set(true)
-  mapScalar("Date", "java.util.Date")
+  service("service") {
+    packageName.set("com.library")
+    generateApolloMetadata.set(true)
+    mapScalar("Date", "java.util.Date")
+  }
 }

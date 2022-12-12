@@ -18,5 +18,7 @@ application {
 }
 
 apollo {
-  packageName.set("com.library")
+  service("service") {
+    packageName.set("com.library")
+  }
 }

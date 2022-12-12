@@ -11,18 +11,6 @@ import org.junit.Test
 
 class KotlinDSLTests {
   @Test
-  fun `generated accessors work as expected`() {
-    val apolloConfiguration = """
-      apollo {
-      }
-    """.trimIndent()
-
-    TestUtils.withGeneratedAccessorsProject(apolloConfiguration) {dir ->
-      TestUtils.executeGradle(dir)
-    }
-  }
-
-  @Test
   fun `generated accessors do not expose DefaultApolloExtension`() {
     val apolloConfiguration = """
       apollo {

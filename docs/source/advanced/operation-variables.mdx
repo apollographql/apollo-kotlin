@@ -42,8 +42,10 @@ To disable optional variables globally, update your Gradle config like so:
 
 ```kotlin
 apollo {
-  // ...
-  generateOptionalOperationVariables.set(false)
+  service("service") {
+    // ...
+    generateOptionalOperationVariables.set(false)
+  }
 }
 ```
 

@@ -4,5 +4,7 @@ plugins {
 }
 
 apollo {
-  packageName.set("com.example")
+  service("service") {
+    packageName.set("com.example")
+  }
 }

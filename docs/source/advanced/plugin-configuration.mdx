@@ -29,7 +29,9 @@ Specify the location of your schema file using the `schemaFile` property:
 
 ```kotlin
 apollo {
-  schemaFile.set(file("shared/graphql/schema.graphqls"))
+  service("service") {
+    schemaFile.set(file("shared/graphql/schema.graphqls"))
+  }
 }
 ```
 
@@ -43,7 +45,9 @@ If you expand your schema in a separate file, you can instruct Apollo Kotlin to 
 
 ```kotlin
 apollo {
-  schemaFiles.set(setOf(file("shared/graphql/schema.graphqls"), file("shared/graphql/extra.graphqls")))
+  service("service") {
+    schemaFiles.set(setOf(file("shared/graphql/schema.graphqls"), file("shared/graphql/extra.graphqls")))
+  }
 }
 ```
 
@@ -62,8 +66,10 @@ JVM project:
 
 ```kotlin
 apollo {
-  outputDirConnection {
-    connectToKotlinSourceSet("test")
+  service("service") {
+    outputDirConnection {
+      connectToKotlinSourceSet("test")
+    }
   }
 }
 ```

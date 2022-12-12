@@ -4,9 +4,11 @@ plugins {
 }
 
 apollo {
-  packageName.set("com.example")
-  introspection {
-    this.endpointUrl.set("ENDPOINT")
-    this.schemaFile.set(file("schema.json"))
+  service("service") {
+    packageName.set("com.example")
+    introspection {
+      this.endpointUrl.set("ENDPOINT")
+      this.schemaFile.set(file("schema.json"))
+    }
   }
 }

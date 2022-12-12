@@ -10,10 +10,12 @@ To interact with custom scalars in your Apollo Kotlin app, you need to define a 
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
-  mapScalar("GeoPoint", "com.example.GeoPoint")
+  service("service") {
+    mapScalar("GeoPoint", "com.example.GeoPoint")
 
-  // Shortcuts exist for standard types - equivalent to mapScalar("Long", "kotlin.Long")
-  mapScalarToKotlinLong("Long")
+    // Shortcuts exist for standard types - equivalent to mapScalar("Long", "kotlin.Long")
+    mapScalarToKotlinLong("Long")
+  }
 }
 ```
 
@@ -89,7 +91,9 @@ A third argument can be passed to `mapScalar` to specify the adapter to use:
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
-  mapScalar("GeoPoint", "com.example.GeoPoint", "com.example.Adapters.geoPointAdapter")
+  service("service") {
+    mapScalar("GeoPoint", "com.example.GeoPoint", "com.example.Adapters.geoPointAdapter")
+  }
 }
 ```
 
@@ -148,6 +152,8 @@ dependencies {
 }
 
 apollo {
-  mapScalar("Date", "java.util.Date", "com.apollographql.apollo3.adapter.DateAdapter")
+  service("service") {
+    mapScalar("Date", "java.util.Date", "com.apollographql.apollo3.adapter.DateAdapter")
+  }
 }
 ```

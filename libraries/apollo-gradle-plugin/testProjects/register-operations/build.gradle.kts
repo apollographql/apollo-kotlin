@@ -9,10 +9,12 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.example")
-  registerOperations {
-    key.set("unused")
-    graph.set("unused")
-    graphVariant.set("current")
+  service("service") {
+    packageName.set("com.example")
+    registerOperations {
+      key.set("unused")
+      graph.set("unused")
+      graphVariant.set("current")
+    }
   }
 }

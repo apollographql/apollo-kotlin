@@ -78,7 +78,9 @@ sourceSets {
 // With:
 // highlight-start
 apollo {
-  srcDir("/path/to/your/graphql/queries/dir")
+  service("service") {
+    srcDir("/path/to/your/graphql/queries/dir")
+  }
 }
 // highlight-end
 ```
@@ -86,18 +88,22 @@ apollo {
 ```groovy title="build.gradle"
 // Replace
 apollo {
-  sourceSet {
-    schemaFilePath = "/path/to/your/schema.json"
-    exclude = "**/*.gql"
+  service("service") {
+    sourceSet {
+      schemaFilePath = "/path/to/your/schema.json"
+      exclude = "**/*.gql"
+    }
+    outputPackageName = "com.example"
   }
-  outputPackageName = "com.example"
 }
 
 // With:
 apollo {
-  schemaFile.set(file("/path/to/your/schema.json"))
-  graphqlSourceDirectorySet.exclude("**/*.gql")
-  packageName.set("com.example")
+  service("service") {
+    schemaFile.set(file("/path/to/your/schema.json"))
+    graphqlSourceDirectorySet.exclude("**/*.gql")
+    packageName.set("com.example")
+  }
 }
 ```
 
@@ -111,11 +117,13 @@ you to use the [Property.set](https://docs.gradle.org/current/javadoc/org/gradle
 
 ```kotlin title="build.gradle"
 apollo {
-  // Replace:
-  setGenerateKotlinModels(true)
+  service("service") {
+    // Replace:
+    setGenerateKotlinModels(true)
 
-  // With:
-  generateKotlinModels.set(true) // highlight-line
+    // With:
+    generateKotlinModels.set(true) // highlight-line
+  }
 }
 ```
 

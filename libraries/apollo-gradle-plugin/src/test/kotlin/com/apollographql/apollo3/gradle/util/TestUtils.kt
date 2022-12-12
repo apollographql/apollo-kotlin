@@ -132,7 +132,9 @@ object TestUtils {
   fun withSimpleProject(
       apolloConfiguration: String = """
     apollo {
-      packageNamesFromFilePaths()
+      service("service") {
+        packageNamesFromFilePaths()
+      }
     }
   """.trimIndent(),
       block: (File) -> Unit,

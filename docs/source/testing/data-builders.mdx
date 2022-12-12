@@ -14,10 +14,12 @@ To enable data, set the `generateDataBuilders` option to `true`:
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
-  // ...
+  service("service") {
+    // ...
 
-  // Enable data builder generation
-  generateDataBuilders.set(true)
+    // Enable data builder generation
+    generateDataBuilders.set(true)
+  }
 }
 ```
 

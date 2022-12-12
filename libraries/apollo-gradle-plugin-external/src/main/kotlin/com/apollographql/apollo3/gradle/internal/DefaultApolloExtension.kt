@@ -678,7 +678,7 @@ abstract class DefaultApolloExtension(
       }
 
       val targetLanguage = if (generateKotlinModels) {
-        getKotlinTargetLanguage(project, languageVersion.orNull)
+        getKotlinTargetLanguage(service.languageVersion.orNull)
       } else {
         TargetLanguage.JAVA
       }

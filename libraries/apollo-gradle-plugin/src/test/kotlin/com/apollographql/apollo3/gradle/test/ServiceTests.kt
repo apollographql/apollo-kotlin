@@ -23,8 +23,10 @@ class ServiceTests {
   fun `customScalarsMapping is working`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        customScalarsMapping = ["DateTime": "java.util.Date"]
+        service("service") {
+          packageNamesFromFilePaths()
+          customScalarsMapping = ["DateTime": "java.util.Date"]
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -36,9 +38,11 @@ class ServiceTests {
   fun `customScalarsMapping and mapScalar trigger an error`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        customScalarsMapping = ["DateTime": "java.util.Date"]
-        mapScalar("DateTime", "java.util.Date")
+        service("service") {
+          packageNamesFromFilePaths()
+          customScalarsMapping = ["DateTime": "java.util.Date"]
+          mapScalar("DateTime", "java.util.Date")
+        }
       }
     """.trimIndent()) { dir ->
       try {
@@ -54,8 +58,10 @@ class ServiceTests {
   fun `registering an unknown custom scalar fails`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        customScalarsMapping = ["UnknownScalar": "java.util.Date"]
+        service("service") {
+          packageNamesFromFilePaths()
+          customScalarsMapping = ["UnknownScalar": "java.util.Date"]
+        }
       }
     """.trimIndent()) { dir ->
       try {
@@ -72,8 +78,10 @@ class ServiceTests {
   fun canConfigureOutputDir() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        outputDir.set(file("build/apollo"))
+        service("service") {
+          packageNamesFromFilePaths()
+          outputDir.set(file("build/apollo"))
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -85,8 +93,10 @@ class ServiceTests {
   fun `customScalarsMapping put is working`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        customScalarsMapping.put("DateTime", "java.util.Date")
+        service("service") {
+          packageNamesFromFilePaths()
+          customScalarsMapping.put("DateTime", "java.util.Date")
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -116,7 +126,9 @@ class ServiceTests {
   fun `useSemanticNaming defaults to true`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
+        service("service") {
+          packageNamesFromFilePaths()
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -128,8 +140,10 @@ class ServiceTests {
   fun `useSemanticNaming can be turned off correctly`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        useSemanticNaming = false
+        service("service") {
+          packageNamesFromFilePaths()
+          useSemanticNaming = false
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -141,7 +155,9 @@ class ServiceTests {
   fun `packageName works as expected`() {
     withSimpleProject("""
       apollo {
-        packageName = "com.starwars"
+        service("service") {
+          packageName = "com.starwars"
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
@@ -171,8 +187,10 @@ class ServiceTests {
   fun `schemaFile can point to a schema file outside the module`() {
     withSimpleProject("""
       apollo {
-        schemaFile = file("../schema.json")
-        packageName.set("com.example")
+        service("service") {
+          schemaFile = file("../schema.json")
+          packageName.set("com.example")
+        }
       }
     """.trimIndent()) { dir ->
       val dest = File(dir, "../schema.json")
@@ -268,8 +286,10 @@ class ServiceTests {
   fun `operationOutput uses same id as the query`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        generateOperationOutput.set(true)
+        service("service") {
+          packageNamesFromFilePaths()
+          generateOperationOutput.set(true)
+        }
       }
     """.trimIndent()) { dir ->
       val result = TestUtils.executeTask("generateApolloSources", dir)
@@ -288,11 +308,13 @@ class ServiceTests {
   fun `operationOutputFile carries task dependencies`() {
     withSimpleProject("""
       apollo { 
-        generateOperationOutput.set(true)
-        packageNamesFromFilePaths()
-        operationOutputConnection {
-          tasks.register("customTaskService") {
-            inputs.file(operationOutputFile)
+        service("service") {
+          generateOperationOutput.set(true)
+          packageNamesFromFilePaths()
+          operationOutputConnection {
+            tasks.register("customTaskService") {
+              inputs.file(operationOutputFile)
+            }
           }
         }
       }
@@ -351,8 +373,10 @@ class ServiceTests {
   fun `when generateAsInternal set to true - generated models are internal`() {
     val apolloConfiguration = """
       apollo {
-        packageNamesFromFilePaths()
-        generateAsInternal = true
+        service("service") {
+          packageNamesFromFilePaths()
+          generateAsInternal = true
+        }
       }
     """.trimIndent()
 
@@ -390,8 +414,10 @@ class ServiceTests {
   fun `when generateFragmentImplementations set to true, it generates default fragment implementation`() {
     withSimpleProject("""
       apollo {
-        packageNamesFromFilePaths()
-        generateFragmentImplementations = true
+        service("service") {
+          packageNamesFromFilePaths()
+          generateFragmentImplementations = true
+        }
       }
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)

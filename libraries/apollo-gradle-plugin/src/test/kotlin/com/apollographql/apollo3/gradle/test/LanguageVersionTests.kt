@@ -71,9 +71,11 @@ class LanguageVersionTests {
 
     val apolloConfiguration = """
       apollo {
-        packageNamesFromFilePaths()
-        codegenModels.set(com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED)
-        languageVersion.set("$apolloLanguageVersion")
+        service("service") {
+          packageNamesFromFilePaths()
+          codegenModels.set(com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED)
+          languageVersion.set("$apolloLanguageVersion")
+        }
       }
       """.trimIndent()
     return kotlinConfiguration + "\n" + apolloConfiguration

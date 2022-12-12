@@ -10,8 +10,10 @@ For an example, you can add them to the "test" source set:
 
 ```kotlin
 apollo {
-  outputDirConnection {
-    connectToKotlinSourceSet("test")
+  service("service") {
+    outputDirConnection {
+      connectToKotlinSourceSet("test")
+    }
   }
 }
 ```
@@ -20,8 +22,10 @@ On Android, because the generated files are added to the `main` source set, they
 
 ```kotlin
 apollo {
-  outputDirConnection {
-    connectToAndroidSourceSet("demoDebug")
+  service("service") {
+    outputDirConnection {
+      connectToAndroidSourceSet("demoDebug")
+    }
   }
 }
 ```

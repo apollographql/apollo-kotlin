@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
-  packageNamesFromFilePaths()
-  generateApolloMetadata.set(true)
+  service("service") {
+    packageNamesFromFilePaths()
+    generateApolloMetadata.set(true)
+  }
 }
