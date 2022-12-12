@@ -12,8 +12,10 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.library")
-  generateApolloMetadata.set(true)
-  mapScalar("Date", "java.util.Date")
-  mapScalar("ID", "com.library.MyID", "com.library.MyIDAdapter()")
+  service("service") {
+    packageName.set("com.library")
+    generateApolloMetadata.set(true)
+    mapScalar("Date", "java.util.Date")
+    mapScalar("ID", "com.library.MyID", "com.library.MyIDAdapter()")
+  }
 }

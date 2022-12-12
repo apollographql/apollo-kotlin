@@ -7,5 +7,7 @@ dependencies {
 }
 
 apollo {
-    packageNamesFromFilePaths()
+    service("service") {
+        packageNamesFromFilePaths()
+    }
 }

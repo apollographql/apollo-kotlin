@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * For a non-Kotlin project, this class will never be loaded so that no runtime
  * exception is thrown
  */
-fun getKotlinTargetLanguage(project: Project, userSpecified: String?): TargetLanguage {
+fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
   return when (userSpecified) {
     "1.4" -> TargetLanguage.KOTLIN_1_4
     "1.5" -> TargetLanguage.KOTLIN_1_5

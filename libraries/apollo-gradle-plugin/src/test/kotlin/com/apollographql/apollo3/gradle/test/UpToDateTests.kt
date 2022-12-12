@@ -45,14 +45,10 @@ class UpToDateTests {
   }
 
   private fun `adding a custom scalar to the build script re-generates the CustomScalars`(dir: File) {
-    val apolloBlock = """
-      
-      apollo {
-        customScalarsMapping = ["DateTime": "java.util.Date"]
-      }
-    """.trimIndent()
-
-    File(dir, "build.gradle").appendText(apolloBlock)
+    File(dir, "build.gradle").replaceInText("packageNamesFromFilePaths()", """
+      packageNamesFromFilePaths()
+      customScalarsMapping = ["DateTime": "java.util.Date"]
+    """.trimIndent())
 
     val result = TestUtils.executeTask("generateApolloSources", dir)
 
@@ -62,8 +58,7 @@ class UpToDateTests {
 
     TestUtils.assertFileContains(dir, "service/com/example/type/DateTime.kt", "\"java.util.Date\"")
 
-    val text = File(dir, "build.gradle").readText()
-    File(dir, "build.gradle").writeText(text.replace(apolloBlock, ""))
+    File(dir, "build.gradle").replaceInText("customScalarsMapping = [\"DateTime\": \"java.util.Date\"]", "")
   }
 
   @Test

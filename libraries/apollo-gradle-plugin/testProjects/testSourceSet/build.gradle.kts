@@ -9,8 +9,10 @@ dependencies {
 }
 
 apollo {
-  packageNamesFromFilePaths()
-  outputDirConnection {
-    connectToKotlinSourceSet("test")
+  service("service") {
+    packageNamesFromFilePaths()
+    outputDirConnection {
+      connectToKotlinSourceSet("test")
+    }
   }
 }

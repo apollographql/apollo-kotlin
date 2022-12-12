@@ -8,16 +8,18 @@ plugins {
 }
 
 apollo {
-  val customOperationOutputGenerator = object: OperationOutputGenerator {
-    override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
-      return operationDescriptorList.map {
-        "${it.name}CustomId" to it
-      }.toMap()
+  service("service") {
+    val customOperationOutputGenerator = object : OperationOutputGenerator {
+      override fun generate(operationDescriptorList: Collection<OperationDescriptor>): OperationOutput {
+        return operationDescriptorList.map {
+          "${it.name}CustomId" to it
+        }.toMap()
+      }
+
+      override val version = "OperationOutputGenerator-v1"
     }
 
-    override val version = "OperationOutputGenerator-v1"
+    packageNamesFromFilePaths()
+    operationOutputGenerator.set(customOperationOutputGenerator)
   }
-
-  packageNamesFromFilePaths()
-  operationOutputGenerator.set(customOperationOutputGenerator)
 }

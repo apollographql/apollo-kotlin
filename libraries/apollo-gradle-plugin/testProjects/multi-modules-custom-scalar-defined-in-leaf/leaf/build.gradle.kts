@@ -13,6 +13,8 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.library")
-  mapScalar("Long", "java.lang.Long")
+  service("service") {
+    packageName.set("com.library")
+    mapScalar("Long", "java.lang.Long")
+  }
 }

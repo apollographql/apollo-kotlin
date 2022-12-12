@@ -12,10 +12,12 @@ Test builders are _not_ enabled by default, because they aren't useful for every
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
-  // ...
+  service("service") {
+    // ...
 
-  // Enable test builder generation
-  generateTestBuilders.set(true)
+    // Enable test builder generation
+    generateTestBuilders.set(true)
+  }
 }
 ```
 

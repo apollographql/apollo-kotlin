@@ -42,9 +42,11 @@ apolloClient.query(myQuery).enableAutoPersistedQueries(false).toFlow()
 
 If your backend uses custom persisted queries, Apollo Kotlin can generate an OperationOutput json from your .graphql queries. They will match what the client is sending exactly so you can persist them on your server.
 
-```
+```kotlin
 apollo {
-  generateOperationOutput.set(true)
+  service("service") {
+    generateOperationOutput.set(true)
+  }
 }
 ```
 
@@ -58,13 +60,15 @@ Example Md5 hash generator:
 
 ```kotlin
 apollo {
-    operationIdGenerator.set(object: com.apollographql.apollo3.compiler.OperationIdGenerator {
-        override val version = "my-md5-version1"
+  service("service") {
+    operationIdGenerator.set(object : com.apollographql.apollo3.compiler.OperationIdGenerator {
+      override val version = "my-md5-version1"
 
-        override fun apply(operationDocument: String, operationName: String): String {
-            return operationDocument.md5()
-        }
+      override fun apply(operationDocument: String, operationName: String): String {
+        return operationDocument.md5()
+      }
     })
+  }
 }
 ```
 
@@ -72,16 +76,18 @@ apollo {
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 
 apollo {
-  operationIdGenerator = new OperationIdGenerator() {
-    String apply(String operationDocument, String operationName) {
-      return operationDocument.md5()
-    }
+  service("service") {
+    operationIdGenerator = new OperationIdGenerator() {
+      String apply(String operationDocument, String operationName) {
+        return operationDocument.md5()
+      }
 
-    /**
-     * Use this version override to indicate an update to the implementation.
-     * This forces gradle to recompile models.
-     */
-    String version = "my-md5-v1"
+      /**
+       * Use this version override to indicate an update to the implementation.
+       * This forces gradle to recompile models.
+       */
+      String version = "my-md5-v1"
+    }
   }
 }
 ```

@@ -8,7 +8,9 @@ First, add the following custom scalar mapping to the Apollo Gradle plugin confi
 
 ```kotlin title="build.gradle[.kts]"
 apollo {
-  mapScalarToUpload("Upload")
+  service("service") {
+    mapScalarToUpload("Upload")
+  }
 }
 ```
 

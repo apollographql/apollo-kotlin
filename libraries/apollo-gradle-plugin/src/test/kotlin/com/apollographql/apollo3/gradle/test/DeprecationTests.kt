@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.gradle.util.TestUtils
+import com.apollographql.apollo3.gradle.util.replaceInText
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.UnexpectedBuildFailure
@@ -22,11 +23,11 @@ class DeprecationTests {
   @Test
   fun `deprecation warnings can be silenced`() {
     TestUtils.withTestProject("deprecationWarnings") { dir ->
-      File(dir, "build.gradle.kts").appendText("""
-        apollo {
-          warnOnDeprecatedUsages.set(false)
-        }
-      """.trimIndent())
+      File(dir, "build.gradle.kts").replaceInText("packageName.set(\"com.example\")", """
+      packageName.set("com.example")
+      warnOnDeprecatedUsages.set(false)
+    """.trimIndent())
+
       val result = TestUtils.executeTask("generateServiceApolloSources", dir)
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":generateServiceApolloSources")!!.outcome)
       Truth.assertThat(result.output).doesNotContain("Apollo: Use of deprecated field")
@@ -36,11 +37,10 @@ class DeprecationTests {
   @Test
   fun `failOnWarnings works as expected`() {
     TestUtils.withTestProject("deprecationWarnings") { dir ->
-      File(dir, "build.gradle.kts").appendText("""
-        apollo {
-          failOnWarnings.set(true)
-        }
-      """.trimIndent())
+      File(dir, "build.gradle.kts").replaceInText("packageName.set(\"com.example\")", """
+      packageName.set("com.example")
+      failOnWarnings.set(true)
+    """.trimIndent())
       try {
         TestUtils.executeTask("generateServiceApolloSources", dir)
         Assert.fail("generateServiceApolloSources was expected to fail")

@@ -16,7 +16,9 @@ Configure your schema module to generate Apollo metadata:
 ```kotlin
 // schema/build.gradle.kts
 apollo {
+  service("service") {
     generateApolloMetadata.set(true)
+  }
 }
 ```
 
@@ -58,14 +60,18 @@ dependencies {
     apolloMetadata(project(":schema"))
 }
 apollo {
+  service("service") {
     generateApolloMetadata.set(true)
+  }
 }
 
 // schema/build.gradle.kts
 // This module is the schema module
 // Place the schema in this module
 apollo {
+  service("service") {
     generateApolloMetadata.set(true)
+  }
 }
 ```
 
@@ -119,20 +125,24 @@ If that happens, you will need to resolve the type clash manually by forcing gen
 ```kotlin
 // shared/build.gradle.kts
 apollo {
+  service("service") {
     // For an example if ReviewInput clashes
     alwaysGenerateTypesMatching.set(listOf("ReviewInput"))
     // You can also pass Regex patterns
     alwaysGenerateTypesMatching.set(listOf(".*Input"))
+  }
 }
 ```
 
 ```groovy
 // shared/build.gradle
 apollo {
+  service("service") {
     // For an example if ReviewInput clashes
     alwaysGenerateTypesMatching.set(["ReviewInput"])
     // You can also pass Regex patterns
     alwaysGenerateTypesMatching.set([".*Input"])
+  }
 }
 ```
 

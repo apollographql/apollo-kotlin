@@ -58,7 +58,9 @@ Configure the Apollo plugin to specify the package in which the Kotlin files wil
 
 ```kotlin title="app/build.gradle.kts"
 apollo {
+  service("service") {
     packageName.set("com.example.rocketreserver")
+  }
 }
 ```
 

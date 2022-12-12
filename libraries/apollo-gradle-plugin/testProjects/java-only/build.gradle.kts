@@ -5,7 +5,9 @@ plugins {
 }
 
 apollo {
-  packageName.set("com.example")
-  mapScalarToJavaLong("Long")
-  mapScalar("ID", "java.lang.Long", "com.example.Adapters.ID_ADAPTER")
+  service("service") {
+    packageName.set("com.example")
+    mapScalarToJavaLong("Long")
+    mapScalar("ID", "java.lang.Long", "com.example.Adapters.ID_ADAPTER")
+  }
 }

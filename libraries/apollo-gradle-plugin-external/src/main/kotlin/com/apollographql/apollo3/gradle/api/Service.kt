@@ -227,16 +227,18 @@ interface Service {
    * import com.apollographql.apollo3.compiler.OperationIdGenerator
    *
    * apollo {
-   *   operationIdGenerator = new OperationIdGenerator() {
-   *     String apply(String operationDocument, String operationFilepath) {
-   *       return operationDocument.md5()
-   *     }
+   *   service("service") {
+   *     operationIdGenerator = new OperationIdGenerator() {
+   *       String apply(String operationDocument, String operationFilepath) {
+   *         return operationDocument.md5()
+   *       }
    *
-   *     /**
-   *      * Use this version override to indicate an update to the implementation.
-   *      * This invalidates the current cache.
-   *      */
-   *     String version = "v1"
+   *       /**
+   *        * Use this version override to indicate an update to the implementation.
+   *        * This invalidates the current cache.
+   *        */
+   *       String version = "v1"
+   *     }
    *   }
    * }
    * ```
@@ -255,16 +257,18 @@ interface Service {
    * import com.apollographql.apollo3.compiler.OperationIdGenerator
    *
    * apollo {
-   *   operationOutputGenerator = new OperationIdGenerator() {
-   *     String apply(List<operation operationDocument, String operationFilepath) {
-   *       return operationDocument.md5()
-   *     }
+   *   service("service") {
+   *     operationOutputGenerator = new OperationIdGenerator() {
+   *       String apply(List<operation operationDocument, String operationFilepath) {
+   *         return operationDocument.md5()
+   *       }
    *
-   *     /**
-   *      * Use this version override to indicate an update to the implementation.
-   *      * This invalidates the current cache.
-   *      */
-   *     String version = "v1"
+   *       /**
+   *        * Use this version override to indicate an update to the implementation.
+   *        * This invalidates the current cache.
+   *        */
+   *       String version = "v1"
+   *     }
    *   }
    * }
    * ```

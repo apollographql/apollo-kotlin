@@ -4,5 +4,7 @@ plugins {
 }
 
 apollo {
-  packageNamesFromFilePaths()
+  service("service") {
+    packageNamesFromFilePaths()
+  }
 }

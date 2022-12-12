@@ -29,5 +29,7 @@ configure<KotlinMultiplatformExtension> {
 }
 
 apollo {
-    packageNamesFromFilePaths()
+    service("service") {
+        packageNamesFromFilePaths()
+    }
 }

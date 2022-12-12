@@ -12,5 +12,7 @@ dependencies {
 }
 
 apollo {
-  packageName.set("com.example.leaf")
+  service("service") {
+    packageName.set("com.example.leaf")
+  }
 }

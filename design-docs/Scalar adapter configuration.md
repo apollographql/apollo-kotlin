@@ -83,12 +83,14 @@ requests (in the `executionContext`), and then to the adapters in `HttpNetworkTr
 Plugin configuration:
 
 ```kotlin
-apollo {
-  mapScalar("MyDate", "com.example.MyDate", "com.example.MyDateAdapter()")
+apollo { 
+  service("service") {
+    mapScalar("MyDate", "com.example.MyDate", "com.example.MyDateAdapter()")
 
-  mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
-  
-  mapScalar("MyLong", "kotlin.Long")
+    mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
+
+    mapScalar("MyLong", "kotlin.Long")
+  }
 }
 ```
 
@@ -117,16 +119,19 @@ Let's also have convenience shortcuts for the types for which we have built-in a
 
 ```kotlin
 apollo {
-  // equivalent to mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
-  mapScalarToKotlinLong("ID")
+  service("service") {
+    // equivalent to mapScalar("ID", "kotlin.Long", "com.apollographql.apollo3.api.LongAdapter")
+    mapScalarToKotlinLong("ID")
 
-  // equivalent to mapScalar("ID", "java.lang.Long", "com.apollographql.apollo3.api.LongAdapter")
-  mapScalarToJavaLong("ID")
+    // equivalent to mapScalar("ID", "java.lang.Long", "com.apollographql.apollo3.api.LongAdapter")
+    mapScalarToJavaLong("ID")
 
-  // equivalent to mapScalar("Json", "kotlin.Any", "com.apollographql.apollo3.api.AnyAdapter")
-  mapScalarToKotlinAny("Json")
+    // equivalent to mapScalar("Json", "kotlin.Any", "com.apollographql.apollo3.api.AnyAdapter")
+    mapScalarToKotlinAny("Json")
 
-  // etc.
+    // etc.
+  }
+}
 ```
 
 With this, it is no longer necessary (but still possible) to register the adapters at runtime with `addCustomScalarAdapter`.

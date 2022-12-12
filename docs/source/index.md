@@ -84,7 +84,9 @@ Set the package name to use for the generated models:
 
 ```kotlin
 apollo {
-  packageName.set("com.example")
+  service("service") {
+    packageName.set("com.example")
+  }
 }
 ```
 

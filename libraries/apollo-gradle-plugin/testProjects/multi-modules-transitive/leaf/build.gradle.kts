@@ -19,5 +19,7 @@ application {
 }
 
 apollo {
-  packageNamesFromFilePaths()
+  service("service") {
+    packageNamesFromFilePaths()
+  }
 }

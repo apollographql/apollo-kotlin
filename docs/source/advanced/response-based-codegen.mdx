@@ -18,8 +18,10 @@ To use a particular codegen, configure `codegenModels` in your Gradle scripts:
 
 ```kotlin title="build.gradle.kts"
 apollo {
+  service("service") {
     // ...
     codegenModels.set("responseBased")
+  }
 }
 ```
 
