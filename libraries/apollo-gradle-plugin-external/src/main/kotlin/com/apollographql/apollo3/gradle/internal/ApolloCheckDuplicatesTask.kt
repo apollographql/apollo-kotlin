@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloMetadata
+import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
@@ -26,16 +27,21 @@ abstract class ApolloCheckDuplicatesTask : DefaultTask() {
       ApolloMetadata.readFrom(it)
     }
 
-    metadataList.flatMap { metadata ->
+    val duplicates = metadataList.flatMap { metadata ->
       metadata.compilerMetadata.resolverInfo.entries.map { it.key to metadata.moduleName }
     }
         .groupBy { it.first }
         .values
-        .find { it.size > 1 }
-        ?.run {
-          throw IllegalStateException("duplicate Type '${get(0).first}' generated in modules: ${map { it.second }.joinToString(",")}" +
-              "\nUse 'alwaysGenerateTypesMatching' in a parent module to generate the type only once")
-        }
+        .filter { it.size > 1 }
+
+    if (duplicates.isNotEmpty()) {
+      val duplicateMessage = duplicates.joinToString(separator = "\n") { list: List<Pair<ResolverKey, String>> ->
+        "duplicate Type '${list.first().first}' generated in modules: ${list.joinToString(",") { it.second }}"
+      }
+      val recommendationMessage = "Use 'alwaysGenerateTypesMatching' in a parent module to generate the type only once"
+      error("$duplicateMessage\n$recommendationMessage")
+    }
+
 
     outputFile.asFile.get().run {
       parentFile.mkdirs()
