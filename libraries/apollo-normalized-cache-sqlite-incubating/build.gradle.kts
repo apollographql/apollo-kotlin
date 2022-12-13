@@ -39,7 +39,7 @@ kotlin {
   }
 
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(project(":libraries:apollo-api"))
         api(project(":libraries:apollo-normalized-cache-api-incubating"))
@@ -47,27 +47,25 @@ kotlin {
       }
     }
 
-    val jvmMain by getting {
-      dependsOn(commonMain)
+    findByName("jvmMain")?.apply {
       dependencies {
         implementation(golatac.lib("sqldelight.jvm"))
       }
     }
 
-    val appleMain by getting {
+    findByName("appleMain")?.apply {
       dependencies {
         implementation(golatac.lib("sqldelight.native"))
       }
     }
 
-    val jvmTest by getting {
+    findByName("jvmTest")?.apply {
       dependencies {
         implementation(golatac.lib("truth"))
       }
     }
 
-    val androidMain by getting {
-      dependsOn(commonMain)
+    findByName("androidMain")?.apply {
       dependencies {
         api(golatac.lib("androidx.sqlite"))
         implementation(golatac.lib("sqldelight.android"))
@@ -75,12 +73,12 @@ kotlin {
         implementation(golatac.lib("androidx.startup.runtime"))
       }
     }
-    val androidTest by getting {
+    findByName("androidTest")?.apply {
       dependencies {
         implementation(golatac.lib("kotlin.test.junit"))
       }
     }
-    val commonTest by getting {
+    findByName("commonTest")?.apply {
       dependencies {
         implementation(project(":libraries:apollo-testing-support"))
       }

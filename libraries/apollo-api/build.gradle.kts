@@ -10,7 +10,7 @@ apolloLibrary {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(okio())
         api(golatac.lib("uuid"))

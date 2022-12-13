@@ -12,13 +12,13 @@ apolloLibrary {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(project(":libraries:apollo-api"))
         api(golatac.lib("kotlinx.datetime"))
       }
     }
-    val jsMain by getting {
+    findByName("jsMain")?.apply {
       dependencies {
         implementation(npm("big.js", "5.2.2"))
       }

@@ -19,7 +19,7 @@ kotlin {
   }
 
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
         implementation(golatac.lib("apollo.normalizedcache"))
@@ -27,13 +27,13 @@ kotlin {
       }
     }
 
-    val commonTest by getting {
+    findByName("commonTest")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.testingsupport"))
       }
     }
 
-    val javaCodegenTest by getting {
+    findByName("javaCodegenTest")?.apply {
       dependencies {
         // Add test-junit manually because configureMppTestsDefaults did not do it for us
         implementation(golatac.lib("kotlin.test.junit"))

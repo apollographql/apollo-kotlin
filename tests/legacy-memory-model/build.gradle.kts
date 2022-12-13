@@ -14,7 +14,7 @@ apolloTest {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         implementation(golatac.lib("apollo.runtime"))
       }

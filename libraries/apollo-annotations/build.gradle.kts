@@ -10,14 +10,14 @@ apolloLibrary {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(golatac.lib("kotlin.stdlib"))
         api(golatac.lib("jetbrains.annotations"))
       }
     }
 
-    val jsMain by getting {
+    findByName("jsMain")?.apply {
       dependencies {
         // See https://youtrack.jetbrains.com/issue/KT-53471
         api(golatac.lib("kotlin.stdlib.js"))

@@ -12,7 +12,7 @@ apolloLibrary {
 
 kotlin {
   sourceSets {
-    val commonMain by getting {
+    findByName("commonMain")?.apply {
       dependencies {
         api(project(":libraries:apollo-api"))
         api(project(":libraries:apollo-mpp-utils"))
