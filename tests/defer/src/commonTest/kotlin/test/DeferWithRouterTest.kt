@@ -199,7 +199,7 @@ class DeferWithRouterTest {
 
   @Test
   @Ignore
-  // TODO Ignored for now, currently the Router doesn't return the __typename on initial payload which breaks parsing - see https://github.com/apollographql/router/issues/1800#issuecomment-1263678302
+  // TODO Ignored for now, currently the Router doesn't return the __typename on initial payload which breaks parsing - see https://github.com/apollographql/router/issues/1922
   fun canDeferFragmentsOnTheTopLevelQueryField() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
     // {"data":{"__typename":"Query"},"hasNext":true}
@@ -365,7 +365,7 @@ class DeferWithRouterTest {
   fun handlesNonNullableErrorsThrownOutsideDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
     // {"data":{"computer":null},"errors":[{"message":"Subgraph errors redacted"}],"hasNext":true}
-    // {"hasNext":false,"incremental":[{"data":null,"path":["computer"]}]}
+    // {"hasNext":false}
     val query = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery()
     val uuid = uuid4()
 
@@ -388,16 +388,7 @@ class DeferWithRouterTest {
                     )
                 )
             )
-            .build(),
-
-        ApolloResponse.Builder(
-            query,
-            uuid,
-            data = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery.Data(
-                null
-            )
-        )
-            .build(),
+            .build()
     )
     val actualResponseList = apolloClient.query(query).toFlow().toList()
     assertResponseListEquals(expectedDataList, actualResponseList)
