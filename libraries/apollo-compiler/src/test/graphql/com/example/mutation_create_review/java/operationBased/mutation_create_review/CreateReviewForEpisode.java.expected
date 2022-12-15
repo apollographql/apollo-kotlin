@@ -8,6 +8,9 @@ package com.example.mutation_create_review;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.DefaultFakeResolver;
+import com.apollographql.apollo3.api.FakeResolver;
+import com.apollographql.apollo3.api.FakeResolverKt;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -16,6 +19,8 @@ import com.example.mutation_create_review.adapter.CreateReviewForEpisode_Variabl
 import com.example.mutation_create_review.selections.CreateReviewForEpisodeSelections;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.ReviewInput;
+import com.example.mutation_create_review.type.__Schema;
+import com.example.mutation_create_review.type.builder.MutationMap;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -139,6 +144,21 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     )
     .selections(CreateReviewForEpisodeSelections.__root)
     .build();
+  }
+
+  public static Data buildData(MutationMap map, FakeResolver resolver) {
+    return FakeResolverKt.buildData(
+      com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter.Data.INSTANCE,
+      CreateReviewForEpisodeSelections.__root,
+      "Mutation",
+      map,
+      resolver,
+      __Schema.customScalarAdapters
+    );
+  }
+
+  public static Data buildData(MutationMap map) {
+    return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
   public static final class Builder {

@@ -3,7 +3,9 @@ package com.apollographql.apollo3.compiler.hooks.internal
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.DefaultApolloCompilerKotlinHooks
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /**
@@ -31,21 +33,39 @@ class AddInternalCompilerHooks(namePatterns: Set<String>) : DefaultApolloCompile
           fileSpec.toBuilder()
               .apply {
                 members.replaceAll { member ->
-                  if (member is TypeSpec) {
-                    if (nameRegexes.any {
-                          it.matches(fileSpec.packageName + "." + member.name!!) ||
-                              // Also match response adapters and selections, so callers can pass operation names directly
-                              it.matches(fileSpec.packageName + "." + (member.name!!.removeSuffix("_ResponseAdapter"))) ||
-                              it.matches(fileSpec.packageName + "." + (member.name!!.removeSuffix("Selections")))
-                        }) {
+
+                  val memberName = when (member) {
+                    is TypeSpec -> member.name!!
+                    is FunSpec -> member.name
+                    is PropertySpec -> member.name
+                    else -> error("Unsupported member: $member")
+                  }
+                  val match = nameRegexes.any {
+                    it.matches(fileSpec.packageName + "." + memberName) ||
+                        // Also match response adapters and selections, so callers can pass operation names directly
+                        it.matches(fileSpec.packageName + "." + (memberName.removeSuffix("_ResponseAdapter"))) ||
+                        it.matches(fileSpec.packageName + "." + (memberName.removeSuffix("Selections")))
+                  }
+                  if(!match) {
+                    return@replaceAll member
+                  }
+                  when(member) {
+                    is TypeSpec -> {
                       member.toBuilder()
                           .addModifiers(KModifier.INTERNAL)
                           .build()
-                    } else {
-                      member
                     }
-                  } else {
-                    member
+                    is FunSpec -> {
+                      member.toBuilder()
+                          .addModifiers(KModifier.INTERNAL)
+                          .build()
+                    }
+                    is PropertySpec -> {
+                      member.toBuilder()
+                          .addModifiers(KModifier.INTERNAL)
+                          .build()
+                    }
+                    else -> error("Top Level $member is not supported")
                   }
                 }
               }

@@ -9,7 +9,11 @@ import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DefaultFakeResolver
+import com.apollographql.apollo3.api.FakeResolver
+import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.adapter.TestQuery_ResponseAdapter
@@ -17,6 +21,10 @@ import com.example.simple_fragment.fragment.HeroDetails
 import com.example.simple_fragment.fragment.HumanDetails
 import com.example.simple_fragment.fragment.HumanHeroDetails
 import com.example.simple_fragment.selections.TestQuerySelections
+import com.example.simple_fragment.type.QueryBuilder
+import com.example.simple_fragment.type.__CustomScalarAdapters
+import com.example.simple_fragment.type.__Schema
+import com.example.simple_fragment.type.buildQuery
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -112,5 +120,15 @@ internal class TestQuery() : Query<TestQuery.Data> {
           "query TestQuery { hero { __typename ...HeroDetails ...HumanDetails } }  fragment HumanDetails on Human { __typename name }  fragment HeroDetails on Character { __typename ...HumanDetails }"
 
     public const val OPERATION_NAME: String = "TestQuery"
+
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
+        block: QueryBuilder.() -> Unit = {}): Data = buildData(
+      TestQuery_ResponseAdapter.Data,
+      TestQuerySelections.__root,
+      "Query",
+      GlobalBuilder.buildQuery(block),
+      resolver,
+      __CustomScalarAdapters,
+    )
   }
 }

@@ -397,6 +397,7 @@ class CodegenTest {
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
           generateModelBuilders = generateModelBuilders,
+          generateDataBuilders = generateAsInternal,
           generateSchema = generateSchema,
           targetLanguage = targetLanguage,
           sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,

@@ -15,3 +15,5 @@ internal class Character {
     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
   }
 }
+
+internal interface CharacterMap

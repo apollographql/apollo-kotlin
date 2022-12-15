@@ -6,13 +6,20 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DefaultFakeResolver
+import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.buildFragmentData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.fragment.selections.HeroDetailsSelections
 import com.example.simple_fragment.type.Character
+import com.example.simple_fragment.type.CharacterMap
+import com.example.simple_fragment.type.__CustomScalarAdapters
+import com.example.simple_fragment.type.__Schema
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -41,4 +48,17 @@ internal class HeroDetailsImpl() : Fragment<HeroDetails> {
   )
   .selections(selections = HeroDetailsSelections.__root)
   .build()
+
+  public companion object {
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
+        block: (BuilderScope.() -> CharacterMap)? = null): HeroDetails = buildFragmentData(
+      HeroDetailsImpl_ResponseAdapter.HeroDetails,
+      HeroDetailsSelections.__root,
+      "Character",
+      block,
+      resolver,
+      Character.type,
+      __CustomScalarAdapters,
+    )
+  }
 }

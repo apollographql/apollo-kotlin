@@ -5,7 +5,20 @@
 //
 package com.example.mutation_create_review.type
 
+import com.apollographql.apollo3.api.BuilderProperty
+import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.api.list
+import com.apollographql.apollo3.api.nullable
+import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
+import kotlin.Any
+import kotlin.Int
+import kotlin.String
+import kotlin.Unit
+import kotlin.collections.List
+import kotlin.collections.Map
 
 /**
  * Represents a review for a movie
@@ -14,4 +27,36 @@ internal class Review {
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Review").build()
   }
+}
+
+internal class ReviewBuilder(
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder(customScalarAdapters) {
+  public var commentary: String? by BuilderProperty(com.example.MyStringAdapter().nullable())
+
+  public var listOfListOfCustom: List<List<java.util.Date>>? by
+      BuilderProperty(customScalarAdapters.responseAdapterFor<java.util.Date>(Date.type).list().list().nullable())
+
+  public var listOfListOfEnum: List<List<Episode>>? by
+      BuilderProperty(Episode_ResponseAdapter.list().list().nullable())
+
+  public var listOfListOfObject: List<List<CharacterMap>>? by __fields
+
+  public var listOfListOfString: List<List<String>>? by
+      BuilderProperty(com.example.MyStringAdapter().list().list().nullable())
+
+  public var stars: Int by __fields
+
+  public fun build(): ReviewMap = ReviewMap(__fields)
+}
+
+internal class ReviewMap(
+  __fields: Map<String, Any?>,
+) : Map<String, Any?> by __fields
+
+internal fun BuilderScope.buildReview(block: ReviewBuilder.() -> Unit): ReviewMap {
+  val builder = ReviewBuilder(customScalarAdapters)
+  builder.__typename = "Review"
+  builder.block()
+  return builder.build()
 }
