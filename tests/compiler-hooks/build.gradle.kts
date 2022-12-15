@@ -251,7 +251,7 @@ class PrefixNamesJavaHooks(private val prefix: String) : DefaultApolloCompilerJa
     return when (kind) {
       com.squareup.javapoet.TypeSpec.Kind.CLASS -> {
         com.squareup.javapoet.TypeSpec.classBuilder(name)
-            .addJavadoc(javadoc)
+            .addJavadoc("\$L", javadoc)
             .addAnnotations(annotations)
             .addModifiers(*modifiers.toTypedArray())
             .addTypeVariables(typeVariables)
@@ -267,7 +267,7 @@ class PrefixNamesJavaHooks(private val prefix: String) : DefaultApolloCompilerJa
 
       com.squareup.javapoet.TypeSpec.Kind.ENUM -> {
         com.squareup.javapoet.TypeSpec.enumBuilder(name)
-            .addJavadoc(javadoc)
+            .addJavadoc("\$L", javadoc)
             .addAnnotations(annotations)
             .addModifiers(*modifiers.toTypedArray())
             .addTypeVariables(typeVariables)
@@ -284,7 +284,7 @@ class PrefixNamesJavaHooks(private val prefix: String) : DefaultApolloCompilerJa
 
       com.squareup.javapoet.TypeSpec.Kind.INTERFACE -> {
         com.squareup.javapoet.TypeSpec.interfaceBuilder(name)
-            .addJavadoc(javadoc)
+            .addJavadoc("\$L", javadoc)
             .addAnnotations(annotations)
             .addModifiers(*modifiers.toTypedArray())
             .addTypeVariables(typeVariables)

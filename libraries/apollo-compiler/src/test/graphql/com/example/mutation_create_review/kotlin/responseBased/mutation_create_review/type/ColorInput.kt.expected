@@ -14,7 +14,7 @@ import kotlin.Int
  */
 internal data class ColorInput(
   /**
-   * Red color
+   * A description with a dollar sign: $10
    */
   public val red: Optional<Int> = Optional.Absent,
   /**

@@ -60,7 +60,9 @@ interface Character {
 
 """The input object sent when passing in a color"""
 input colorInput {
-  """Red color"""
+  """
+  A description with a dollar sign: $10
+  """
   red: Int! = 1
 
   """Green color"""

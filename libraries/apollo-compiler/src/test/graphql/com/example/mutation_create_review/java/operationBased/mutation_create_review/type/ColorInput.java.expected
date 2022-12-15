@@ -110,7 +110,7 @@ public class ColorInput {
     }
 
     /**
-     * Red color
+     * A description with a dollar sign: $10
      */
     public Builder red(Integer red) {
       this.red = Optional.present(red);
