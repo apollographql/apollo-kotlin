@@ -746,17 +746,11 @@ abstract class DefaultApolloExtension(
       }
       task.packageNameGenerator = packageNameGenerator
       task.generateFilterNotNull.set(project.isKotlinMultiplatform)
-      task.alwaysGenerateTypesMatching.set(project.provider {
-        val jsonFiles = if (service.usedCoordinates != null) {
-          listOf(service.usedCoordinates!!)
-        } else {
-          usedCoordinatesConsumerConfiguration.files
-        }
-        jsonFiles.map { it.toUsedCoordinates() }
-            .fold(service.alwaysGenerateTypesMatching.getOrElse(emptySet())) { acc, new ->
-              acc + new
-            }
-      })
+      task.usedCoordinates.from(usedCoordinatesConsumerConfiguration)
+      if (service.usedCoordinates != null) {
+        task.usedCoordinates.from(service.usedCoordinates)
+      }
+      task.alwaysGenerateTypesMatching.set(service.alwaysGenerateTypesMatching)
       task.projectPath.set(project.path)
       task.generateFragmentImplementations.set(service.generateFragmentImplementations)
       task.generateQueryDocument.set(service.generateQueryDocument)
