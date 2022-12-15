@@ -42,6 +42,7 @@ import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.toUsedCoordinates
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -72,6 +73,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
   @get:Optional
   abstract val metadataOutputFile: RegularFileProperty
+
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val usedCoordinates: ConfigurableFileCollection
 
   @get:InputFiles
   @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -323,12 +328,17 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
       else -> commonMetadata.codegenModels
     }
 
+    val alwaysGenerateTypesMatching = usedCoordinates.files.map { it.toUsedCoordinates() }
+        .fold(alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching)) { acc, new ->
+          acc + new
+        }
+
     val options = Options(
         executableFiles = graphqlFiles.files,
         outputDir = outputDir.asFile.get(),
         testDir = testDir.asFile.get(),
         debugDir = debugDir.asFile.orNull,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching),
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         operationOutputFile = operationOutputFile.asFile.orNull,
         operationOutputGenerator = operationOutputGenerator,
         useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
