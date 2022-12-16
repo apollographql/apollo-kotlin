@@ -2,16 +2,16 @@ name: 🐛 Bug report
 description: Create a bug report
 labels: [ ":bug: Type: Bug" ]
 body:
-  - type: textarea
-    attributes:
-      label: Summary
-      description: A clear and concise description of what the bug is.
-    validations:
-      required: true
   - type: input
     attributes:
       label: Version
       description: Make sure the bug is still happening on the latest version.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Summary
+      description: A clear and concise description of what the bug is.
     validations:
       required: true
   - type: textarea
@@ -34,11 +34,5 @@ body:
         ```
         (Your logs here)
         ```
-    validations:
-      required: false
-  - type: textarea
-    attributes:
-      label: Anything else?
-      description: Links, references, more context, or anything that will give us more information about the issue you are encountering!
     validations:
       required: false
