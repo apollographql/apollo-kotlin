@@ -102,6 +102,8 @@ identifiers and methods are camelCased.
 
 Builders/Constructors
 
+We usually favor Builders for reasons outlined in [this issue](https://github.com/apollographql/apollo-kotlin/issues/3301) unless there is only one optional parameter.
+
 * Use primary constructors with `@JvmOverloads` when there is at most one optional parameter.
 * For classes, nest the builder directly under the class
 * For interfaces that are meant to be extended by the user but that also have a builtin implementation, you can use
