@@ -8,6 +8,9 @@ package com.example.simple_fragment;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.DefaultFakeResolver;
+import com.apollographql.apollo3.api.FakeResolver;
+import com.apollographql.apollo3.api.FakeResolverKt;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -15,6 +18,8 @@ import com.example.simple_fragment.adapter.TestQuery_ResponseAdapter;
 import com.example.simple_fragment.fragment.HeroDetails;
 import com.example.simple_fragment.fragment.HumanDetails;
 import com.example.simple_fragment.selections.TestQuerySelections;
+import com.example.simple_fragment.type.__Schema;
+import com.example.simple_fragment.type.builder.QueryMap;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -131,6 +136,21 @@ public class TestQuery implements Query<TestQuery.Data> {
     )
     .selections(TestQuerySelections.__root)
     .build();
+  }
+
+  public static Data buildData(QueryMap map, FakeResolver resolver) {
+    return FakeResolverKt.buildData(
+      com.example.simple_fragment.adapter.TestQuery_ResponseAdapter.Data.INSTANCE,
+      TestQuerySelections.__root,
+      "Query",
+      map,
+      resolver,
+      __Schema.customScalarAdapters
+    );
+  }
+
+  public static Data buildData(QueryMap map) {
+    return buildData(map, new DefaultFakeResolver(__Schema.types));
   }
 
   public static final class Builder {

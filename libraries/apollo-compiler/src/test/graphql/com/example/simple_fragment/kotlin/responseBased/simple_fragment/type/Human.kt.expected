@@ -5,7 +5,14 @@
 //
 package com.example.simple_fragment.type
 
+import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
+import kotlin.Any
+import kotlin.String
+import kotlin.Unit
+import kotlin.collections.Map
 
 /**
  * A humanoid creature from the Star Wars universe
@@ -15,4 +22,23 @@ internal class Human {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
   }
+}
+
+internal class HumanBuilder(
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder(customScalarAdapters) {
+  public var name: String by __fields
+
+  public fun build(): HumanMap = HumanMap(__fields)
+}
+
+internal class HumanMap(
+  __fields: Map<String, Any?>,
+) : CharacterMap, SearchResultMap, Map<String, Any?> by __fields
+
+internal fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap {
+  val builder = HumanBuilder(customScalarAdapters)
+  builder.__typename = "Human"
+  builder.block()
+  return builder.build()
 }

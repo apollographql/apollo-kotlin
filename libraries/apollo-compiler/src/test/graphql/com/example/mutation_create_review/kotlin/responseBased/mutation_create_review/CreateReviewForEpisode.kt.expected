@@ -9,14 +9,22 @@ import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DefaultFakeResolver
+import com.apollographql.apollo3.api.FakeResolver
+import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_VariablesAdapter
 import com.example.mutation_create_review.selections.CreateReviewForEpisodeSelections
 import com.example.mutation_create_review.type.Episode
+import com.example.mutation_create_review.type.MutationBuilder
 import com.example.mutation_create_review.type.ReviewInput
+import com.example.mutation_create_review.type.__CustomScalarAdapters
+import com.example.mutation_create_review.type.__Schema
+import com.example.mutation_create_review.type.buildMutation
 import java.util.Date
 import kotlin.Int
 import kotlin.String
@@ -112,5 +120,15 @@ internal data class CreateReviewForEpisode(
           "mutation CreateReviewForEpisode(${'$'}ep: Episode!, ${'$'}review: ReviewInput!) { createReview(episode: ${'$'}ep, review: ${'$'}review) { stars commentary listOfListOfString listOfListOfEnum listOfListOfCustom listOfListOfObject { name } } }"
 
     public const val OPERATION_NAME: String = "CreateReviewForEpisode"
+
+    public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
+        block: MutationBuilder.() -> Unit = {}): Data = buildData(
+      CreateReviewForEpisode_ResponseAdapter.Data,
+      CreateReviewForEpisodeSelections.__root,
+      "Mutation",
+      GlobalBuilder.buildMutation(block),
+      resolver,
+      __CustomScalarAdapters,
+    )
   }
 }

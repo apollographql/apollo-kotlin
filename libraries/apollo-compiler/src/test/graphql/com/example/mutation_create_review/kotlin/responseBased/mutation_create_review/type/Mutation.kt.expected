@@ -5,7 +5,14 @@
 //
 package com.example.mutation_create_review.type
 
+import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
+import kotlin.Any
+import kotlin.String
+import kotlin.Unit
+import kotlin.collections.Map
 
 /**
  * The mutation type, represents all updates we can make to our data
@@ -14,4 +21,23 @@ internal class Mutation {
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Mutation").build()
   }
+}
+
+internal class MutationBuilder(
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder(customScalarAdapters) {
+  public var createReview: ReviewMap? by __fields
+
+  public fun build(): MutationMap = MutationMap(__fields)
+}
+
+internal class MutationMap(
+  __fields: Map<String, Any?>,
+) : Map<String, Any?> by __fields
+
+internal fun BuilderScope.buildMutation(block: MutationBuilder.() -> Unit): MutationMap {
+  val builder = MutationBuilder(customScalarAdapters)
+  builder.__typename = "Mutation"
+  builder.block()
+  return builder.build()
 }
