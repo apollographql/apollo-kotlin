@@ -5,7 +5,6 @@ import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.*
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.DefaultWebSocketPayloadComposer
 import com.apollographql.apollo3.api.http.WebSocketPayloadComposer
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +48,7 @@ class GraphQLWsProtocol internal constructor(
 
   @Deprecated("Use GraphQLWsProtocol.Factory instead")
   @ApolloDeprecatedSince(v3_2_3)
+  @Suppress("DEPRECATION")
   constructor(
       connectionPayload: Map<String, Any?>? = null,
       pingPayload: Map<String, Any?>? = null,
