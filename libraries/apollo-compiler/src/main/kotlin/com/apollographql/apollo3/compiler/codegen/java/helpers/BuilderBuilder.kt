@@ -59,7 +59,9 @@ internal class BuilderBuilder(
                 }
                 .build()
         )
-        .addJavadoc(field.javadoc)
+        .applyIf(!field.javadoc.isEmpty) {
+          addJavadoc(L, field.javadoc)
+        }
         .returns(JavaClassNames.Builder)
         .addStatement("this.$L = $L", field.name, context.wrapValueInOptional(value = CodeBlock.of(L, field.name), fieldType = field.type))
         .addStatement("return this")

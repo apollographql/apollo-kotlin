@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.helpers.BuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.helpers.makeDataClassFromParameters
+import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toParameterSpec
 import com.apollographql.apollo3.compiler.ir.IrInputObject
@@ -40,7 +41,7 @@ internal class InputObjectBuilder(
       TypeSpec
           .classBuilder(simpleName)
           .addModifiers(Modifier.PUBLIC)
-          .applyIf(description?.isNotBlank() == true) { addJavadoc("$L\n", description!!) }
+          .maybeAddDescription(description)
           .makeDataClassFromParameters(fields.map {
             it.toNamedType().toParameterSpec(context)
           })
@@ -54,9 +55,7 @@ internal class InputObjectBuilder(
     } else {
       val builderFields = inputObject.fields.map {
         FieldSpec.builder(context.resolver.resolveIrType(it.type).withoutAnnotations(), context.layout.propertyName(it.name))
-            .applyIf(!it.description.isNullOrBlank()) {
-              addJavadoc(it.description)
-            }
+            .maybeAddDescription(it.description)
             .build()
       }
       return addMethod(BuilderBuilder.builderFactoryMethod())

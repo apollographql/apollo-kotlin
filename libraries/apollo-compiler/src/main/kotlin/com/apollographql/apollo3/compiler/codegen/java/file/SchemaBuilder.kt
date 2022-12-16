@@ -66,7 +66,7 @@ internal class SchemaBuilder(
 
   private fun typeSpec(): TypeSpec {
     return TypeSpec.classBuilder(generatedSchemaName)
-        .addJavadoc("A Schema object containing all the composite types and a possibleTypes helper function")
+        .addJavadoc(L, "A Schema object containing all the composite types and a possibleTypes helper function")
         .addModifiers(Modifier.PUBLIC)
         .addField(customScalarAdaptersFieldSpec())
         .addField(typesFieldSpec())
