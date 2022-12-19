@@ -269,7 +269,7 @@ abstract class DefaultApolloExtension(
           val hasLegacyJsTargetTypes = it.inputs.properties["hasLegacyJsTargetTypes"] as Boolean
 
           check(!hasLegacyJsTargetTypes) {
-            "Apollo: LEGACY js target is not supported by Apollo, please use IR or BOTH."
+            "Apollo: LEGACY js target is not supported by Apollo, please use IR."
           }
 
           outputFile.get().asFile.parentFile.mkdirs()
