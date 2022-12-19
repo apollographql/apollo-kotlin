@@ -52,7 +52,6 @@ abstract class DefaultApolloExtension(
 
   private val services = mutableListOf<DefaultService>()
   private val checkVersionsTask: TaskProvider<Task>
-  private val checkLegacyJsTargetTask: TaskProvider<Task>
   private val metadataConfiguration: Configuration
   private val schemaConfiguration: Configuration
   private val usedCoordinatesConfiguration: Configuration
@@ -97,7 +96,6 @@ abstract class DefaultApolloExtension(
     }
 
     checkVersionsTask = registerCheckVersionsTask()
-    checkLegacyJsTargetTask = registerCheckLegacyJsTargetTask()
 
     /**
      * An aggregate task to easily generate all models
@@ -133,7 +131,7 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       if (registerDefaultService) {
-        val packageNameLine = if (defaultService.packageName.isPresent)  {
+        val packageNameLine = if (defaultService.packageName.isPresent) {
           "packageName.set(\"${defaultService.packageName.get()}\")"
         } else {
           "packageNamesFromFilePaths()"
@@ -186,6 +184,16 @@ abstract class DefaultApolloExtension(
       }
 
       maybeLinkSqlite()
+
+      checkForLegacyJsTarget()
+    }
+  }
+
+  private fun checkForLegacyJsTarget() {
+    val kotlin = project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
+    val hasLegacyJsTarget = kotlin?.targets?.any { target -> target is KotlinJsTarget && target.irTarget == null } == true
+    check(!hasLegacyJsTarget) {
+      "Apollo: LEGACY js target is not supported by Apollo, please use IR."
     }
   }
 
@@ -249,31 +257,6 @@ abstract class DefaultApolloExtension(
           val version = allVersions.firstOrNull()
           outputFile.get().asFile.parentFile.mkdirs()
           outputFile.get().asFile.writeText("All versions are consistent: $version")
-        }
-      })
-    }
-  }
-
-  @Suppress("ObjectLiteralToLambda")
-  private fun registerCheckLegacyJsTargetTask(): TaskProvider<Task> {
-    return project.tasks.register(ModelNames.checkLegacyJsTarget()) {
-      val outputFile = BuildDirLayout.legacyJsTargetCheck(project)
-      it.inputs.property("hasLegacyJsTargetTypes", Callable {
-        val kotlin = project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
-        kotlin?.targets?.any { target -> target is KotlinJsTarget && target.irTarget == null } == true
-      })
-      it.outputs.file(outputFile)
-
-      it.doLast(object : Action<Task> {
-        override fun execute(t: Task) {
-          val hasLegacyJsTargetTypes = it.inputs.properties["hasLegacyJsTargetTypes"] as Boolean
-
-          check(!hasLegacyJsTargetTypes) {
-            "Apollo: LEGACY js target is not supported by Apollo, please use IR."
-          }
-
-          outputFile.get().asFile.parentFile.mkdirs()
-          outputFile.get().asFile.writeText("No legacy js target found")
         }
       })
     }
@@ -384,7 +367,6 @@ abstract class DefaultApolloExtension(
 
     codegenTaskProvider.configure {
       it.dependsOn(checkVersionsTask)
-      it.dependsOn(checkLegacyJsTargetTask)
       it.dependsOn(metadataConsumerConfiguration)
       if (service.usedCoordinates == null) {
         it.dependsOn(usedCoordinatesConsumerConfiguration)

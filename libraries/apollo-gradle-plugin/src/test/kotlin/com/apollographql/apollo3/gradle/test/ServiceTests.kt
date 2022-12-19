@@ -289,7 +289,7 @@ class ServiceTests {
         TestUtils.executeTask("generateApolloSources", dir)
       } catch (e: UnexpectedBuildFailure) {
         exception = e
-        Truth.assertThat(e.message).contains("Apollo: LEGACY js target is not supported by Apollo, please use js(IR) or js(BOTH).")
+        Truth.assertThat(e.message).contains("Apollo: LEGACY js target is not supported by Apollo, please use IR.")
       }
       assertNotNull(exception)
     }

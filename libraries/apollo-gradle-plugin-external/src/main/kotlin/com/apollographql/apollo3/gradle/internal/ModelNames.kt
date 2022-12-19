@@ -26,7 +26,6 @@ object ModelNames {
   fun registerApolloOperations(service: DefaultService) = camelCase("register", service.name, "ApolloOperations")
   fun pushApolloSchema() = camelCase("pushApolloSchema")
   fun checkApolloVersions() = "checkApolloVersions"
-  fun checkLegacyJsTarget() = "checkLegacyJsTarget"
   fun checkApolloDuplicates(service: Service) = camelCase("check", service.name, "ApolloDuplicates")
   fun convertApolloSchema() = "convertApolloSchema"
 
