@@ -1,10 +1,12 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_3
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.*
+import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.DefaultWebSocketPayloadComposer
+import com.apollographql.apollo3.api.http.WebSocketPayloadComposer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,7 +17,7 @@ import kotlinx.coroutines.withTimeout
  * An [WsProtocol] that uses https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md
  * It can carry queries in addition to subscriptions over the websocket
  */
-class GraphQLWsProtocol(
+class GraphQLWsProtocol internal constructor(
     private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
     private val pingPayload: Map<String, Any?>? = null,
     private val pongPayload: Map<String, Any?>? = null,
@@ -25,11 +27,28 @@ class GraphQLWsProtocol(
     webSocketConnection: WebSocketConnection,
     listener: Listener,
     private val scope: CoroutineScope,
+    private val webSocketPayloadComposer: WebSocketPayloadComposer,
 ) : WsProtocol(webSocketConnection, listener) {
 
-  @Deprecated("Use the constructor with connectionPayload as a lambda instead",
-      ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"))
+  @Deprecated("Use GraphQLWsProtocol.Factory instead")
+  @ApolloDeprecatedSince(v3_7_2)
+  constructor(
+      connectionPayload: suspend () -> Map<String, Any?>? = { null },
+      pingPayload: Map<String, Any?>? = null,
+      pongPayload: Map<String, Any?>? = null,
+      connectionAcknowledgeTimeoutMs: Long,
+      pingIntervalMillis: Long,
+      frameType: WsFrameType,
+      webSocketConnection: WebSocketConnection,
+      listener: Listener,
+      scope: CoroutineScope,
+  ) : this(
+      connectionPayload, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs, pingIntervalMillis, frameType, webSocketConnection, listener, scope, DefaultWebSocketPayloadComposer()
+  )
+
+  @Deprecated("Use GraphQLWsProtocol.Factory instead")
   @ApolloDeprecatedSince(v3_2_3)
+  @Suppress("DEPRECATION")
   constructor(
       connectionPayload: Map<String, Any?>? = null,
       pingPayload: Map<String, Any?>? = null,
@@ -79,7 +98,7 @@ class GraphQLWsProtocol(
         mapOf(
             "type" to "subscribe",
             "id" to request.requestUuid.toString(),
-            "payload" to DefaultHttpRequestComposer.composePayload(request)
+            "payload" to webSocketPayloadComposer.compose(request)
         ),
         frameType
     )
@@ -125,10 +144,12 @@ class GraphQLWsProtocol(
         listener.operationResponse(messageMap["id"] as String, mapOf("errors" to messageMap["payload"]))
         listener.operationComplete(messageMap["id"] as String)
       }
+
       "complete" -> listener.operationComplete(messageMap["id"] as String)
       "ping" -> {
         sendPong()
       }
+
       "pong" -> Unit // Nothing to do, the server acknowledged one of our pings
       else -> Unit // Unknown message
     }
@@ -147,22 +168,75 @@ class GraphQLWsProtocol(
   /**
    * A factory for [GraphQLWsProtocol].
    *
-   * @param connectionPayload a map of additional parameters to send in the "connection_init" message
-   * @param pingIntervalMillis the interval between two client-initiated pings or -1 to not send any ping.
-   * Default value: -1
-   * @param pingPayload the ping payload to send in "ping" messages or null to not send a payload
-   * @param pongPayload the pong payload to send in "pong" messages or null to not send a payload
-   * @param connectionAcknowledgeTimeoutMs the timeout for receiving the "connection_ack" message, in milliseconds
-   * @param frameType the type of the websocket frames to use. Default value: [WsFrameType.Text]
    */
-  class Factory(
-      private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
-      private val pingIntervalMillis: Long = -1,
-      private val pingPayload: Map<String, Any?>? = null,
-      private val pongPayload: Map<String, Any?>? = null,
-      private val connectionAcknowledgeTimeoutMs: Long = 10_000,
-      private val frameType: WsFrameType = WsFrameType.Text,
-  ) : WsProtocol.Factory {
+  class Factory constructor() : WsProtocol.Factory {
+    private var connectionPayload: (suspend () -> Map<String, Any?>?)? = null
+    private var pingIntervalMillis: Long? = null
+    private var pingPayload: Map<String, Any?>? = null
+    private var pongPayload: Map<String, Any?>? = null
+    private var connectionAcknowledgeTimeoutMs: Long? = null
+    private var frameType: WsFrameType? = null
+    private var webSocketPayloadComposer: WebSocketPayloadComposer? = null
+
+    /**
+     * @param connectionPayload a map of additional parameters to send in the "connection_init" message
+     * @param pingIntervalMillis the interval between two client-initiated pings or -1 to not send any ping.
+     * Default value: -1
+     * @param pingPayload the ping payload to send in "ping" messages or null to not send a payload
+     * @param pongPayload the pong payload to send in "pong" messages or null to not send a payload
+     * @param connectionAcknowledgeTimeoutMs the timeout for receiving the "connection_ack" message, in milliseconds
+     * @param frameType the type of the websocket frames to use. Default value: [WsFrameType.Text]
+     */
+    constructor(
+        connectionPayload: suspend () -> Map<String, Any?>? = { null },
+        pingIntervalMillis: Long = -1,
+        pingPayload: Map<String, Any?>? = null,
+        pongPayload: Map<String, Any?>? = null,
+        connectionAcknowledgeTimeoutMs: Long = 10_000,
+        frameType: WsFrameType = WsFrameType.Text,
+    ) : this() {
+      this.connectionPayload = connectionPayload
+      this.pingIntervalMillis = pingIntervalMillis
+      this.pingPayload = pingPayload
+      this.pongPayload = pongPayload
+      this.connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs
+      this.frameType = frameType
+    }
+
+    @ApolloExperimental
+    fun connectionPayload(connectionPayload: suspend () -> Map<String, Any?>) {
+      this.connectionPayload = connectionPayload
+    }
+
+    @ApolloExperimental
+    fun pingIntervalMillis(pingIntervalMillis: Long) {
+      this.pingIntervalMillis = pingIntervalMillis
+    }
+
+    @ApolloExperimental
+    fun pingPayload(pingPayload: Map<String, Any?>?) {
+      this.pingPayload = pingPayload
+    }
+
+    @ApolloExperimental
+    fun pongPayload(pongPayload: Map<String, Any?>?) {
+      this.pongPayload = pongPayload
+    }
+
+    @ApolloExperimental
+    fun connectionAcknowledgeTimeoutMillis(connectionAcknowledgeTimeoutMillis: Long) {
+      this.connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMillis
+    }
+
+    @ApolloExperimental
+    fun frameType(frameType: WsFrameType) {
+      this.frameType = frameType
+    }
+
+    @ApolloExperimental
+    fun webSocketPayloadComposer(webSocketPayloadComposer: WebSocketPayloadComposer) {
+      this.webSocketPayloadComposer = webSocketPayloadComposer
+    }
 
     @Deprecated("Use the constructor with connectionPayload as a lambda instead",
         ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"))
@@ -187,6 +261,12 @@ class GraphQLWsProtocol(
       get() = "graphql-transport-ws"
 
     override fun create(webSocketConnection: WebSocketConnection, listener: Listener, scope: CoroutineScope): WsProtocol {
+      val connectionPayload = connectionPayload ?: { null }
+      val connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs ?: 10_000
+      val pingIntervalMillis = pingIntervalMillis ?: -1
+      val frameType = frameType ?: WsFrameType.Text
+
+      @Suppress("DEPRECATION")
       return GraphQLWsProtocol(
           connectionPayload = connectionPayload,
           pingPayload = pingPayload,
@@ -196,7 +276,8 @@ class GraphQLWsProtocol(
           frameType = frameType,
           webSocketConnection = webSocketConnection,
           listener = listener,
-          scope = scope
+          scope = scope,
+          webSocketPayloadComposer = webSocketPayloadComposer ?: DefaultWebSocketPayloadComposer()
       )
     }
   }
