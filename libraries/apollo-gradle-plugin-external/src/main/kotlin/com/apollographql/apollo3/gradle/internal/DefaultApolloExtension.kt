@@ -15,7 +15,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
-import com.apollographql.apollo3.compiler.toUsedCoordinates
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
@@ -41,6 +40,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
@@ -52,6 +52,7 @@ abstract class DefaultApolloExtension(
 
   private val services = mutableListOf<DefaultService>()
   private val checkVersionsTask: TaskProvider<Task>
+  private val checkLegacyJsTargetTask: TaskProvider<Task>
   private val metadataConfiguration: Configuration
   private val schemaConfiguration: Configuration
   private val usedCoordinatesConfiguration: Configuration
@@ -96,6 +97,7 @@ abstract class DefaultApolloExtension(
     }
 
     checkVersionsTask = registerCheckVersionsTask()
+    checkLegacyJsTargetTask = registerCheckLegacyJsTargetTask()
 
     /**
      * An aggregate task to easily generate all models
@@ -252,6 +254,31 @@ abstract class DefaultApolloExtension(
     }
   }
 
+  @Suppress("ObjectLiteralToLambda")
+  private fun registerCheckLegacyJsTargetTask(): TaskProvider<Task> {
+    return project.tasks.register(ModelNames.checkLegacyJsTarget()) {
+      val outputFile = BuildDirLayout.legacyJsTargetCheck(project)
+      it.inputs.property("hasLegacyJsTargetTypes", Callable {
+        val kotlin = project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
+        kotlin?.targets?.any { target -> target is KotlinJsTarget && target.irTarget == null } == true
+      })
+      it.outputs.file(outputFile)
+
+      it.doLast(object : Action<Task> {
+        override fun execute(t: Task) {
+          val hasLegacyJsTargetTypes = it.inputs.properties["hasLegacyJsTargetTypes"] as Boolean
+
+          check(!hasLegacyJsTargetTypes) {
+            "Apollo: LEGACY js target is not supported by Apollo, please use IR or BOTH."
+          }
+
+          outputFile.get().asFile.parentFile.mkdirs()
+          outputFile.get().asFile.writeText("No legacy js target found")
+        }
+      })
+    }
+  }
+
   private fun createConfiguration(
       name: String,
       isCanBeConsumed: Boolean,
@@ -357,6 +384,7 @@ abstract class DefaultApolloExtension(
 
     codegenTaskProvider.configure {
       it.dependsOn(checkVersionsTask)
+      it.dependsOn(checkLegacyJsTargetTask)
       it.dependsOn(metadataConsumerConfiguration)
       if (service.usedCoordinates == null) {
         it.dependsOn(usedCoordinatesConsumerConfiguration)

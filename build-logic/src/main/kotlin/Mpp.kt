@@ -1,6 +1,5 @@
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
@@ -37,7 +36,6 @@ fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroi
       withLinux = withLinux,
       appleTargets = enabledAppleTargets,
       withAndroid = withAndroid,
-      kotlinJsCompilerType = KotlinJsCompilerType.BOTH,
       newMemoryManager = null
   )
 }
@@ -59,7 +57,6 @@ fun Project.configureMppTestsDefaults(
       withLinux = false,
       withAndroid = false,
       appleTargets = appleTargets,
-      kotlinJsCompilerType = KotlinJsCompilerType.IR,
       newMemoryManager = newMemoryManager
   )
 }
@@ -70,7 +67,6 @@ fun Project.configureMpp(
     withLinux: Boolean,
     withAndroid: Boolean,
     appleTargets: Collection<String>,
-    kotlinJsCompilerType: KotlinJsCompilerType,
     newMemoryManager: Boolean?,
 ) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
@@ -83,7 +79,7 @@ fun Project.configureMpp(
     }
 
     if (enabledJs && withJs) {
-      js(kotlinJsCompilerType) {
+      js(IR) {
         nodejs {
           testTask {
             useMocha {
@@ -135,7 +131,7 @@ private fun KotlinMultiplatformExtension.createAndConfigureAppleTargets(presetNa
   if (presetNames.isEmpty()) {
     return
   }
-  
+
   if (System.getProperty("idea.sync.active") != null) {
     // Early return. Inside intelliJ, only configure one target
     targetFromPreset(presets.getByName(hostTarget), "apple")
