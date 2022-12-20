@@ -66,7 +66,6 @@ Here's the current matrix of supported features per platform:
 * [martinbonnin](https://github.com/martinbonnin)
 * [BoD](https://github.com/BoD)
 * [@bignimbus](https://github.com/bignimbus)
-* [@jpvajda](https://github.com/jpvajda)
 
 ## Documentation
 
