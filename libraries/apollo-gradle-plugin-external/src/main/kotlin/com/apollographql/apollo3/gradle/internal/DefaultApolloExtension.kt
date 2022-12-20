@@ -15,7 +15,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerJavaHooksChain
 import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHooksChain
-import com.apollographql.apollo3.compiler.toUsedCoordinates
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
@@ -41,6 +40,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
 import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
@@ -131,7 +131,7 @@ abstract class DefaultApolloExtension(
 
     project.afterEvaluate {
       if (registerDefaultService) {
-        val packageNameLine = if (defaultService.packageName.isPresent)  {
+        val packageNameLine = if (defaultService.packageName.isPresent) {
           "packageName.set(\"${defaultService.packageName.get()}\")"
         } else {
           "packageNamesFromFilePaths()"
@@ -184,6 +184,16 @@ abstract class DefaultApolloExtension(
       }
 
       maybeLinkSqlite()
+
+      checkForLegacyJsTarget()
+    }
+  }
+
+  private fun checkForLegacyJsTarget() {
+    val kotlin = project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
+    val hasLegacyJsTarget = kotlin?.targets?.any { target -> target is KotlinJsTarget && target.irTarget == null } == true
+    check(!hasLegacyJsTarget) {
+      "Apollo: LEGACY js target is not supported by Apollo, please use IR."
     }
   }
 

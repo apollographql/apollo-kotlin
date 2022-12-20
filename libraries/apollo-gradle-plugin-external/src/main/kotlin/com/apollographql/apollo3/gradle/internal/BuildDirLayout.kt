@@ -49,6 +49,12 @@ object BuildDirLayout {
     )
   }
 
+  internal fun legacyJsTargetCheck(project: Project): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/checks/apollo/legacyJsTargetCheck"
+    )
+  }
+
   internal fun duplicatesCheck(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/checks/apollo/${service.name}/duplicatesCheck"
