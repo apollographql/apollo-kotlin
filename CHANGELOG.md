@@ -11,7 +11,7 @@ Many thanks to @StefanChmielewski and @chao2zhang for contributing to the projec
 
 ## ⚙️ JS legacy artifacts (#4591)
 
-Historically, Kotlin Multiplatform has had 2 formats of JS artifacts: [Legacy and IR](https://kotlinlang.org/docs/js-ir-compiler.html), and Apollo Kotlin has been publishing both. However, the Legacy format is about to [be deprecated with Kotlin 1.8](https://kotlinlang.org/docs/whatsnew-eap.html#kotlin-js) and moreover using the Legacy artifact causes some [hanging](https://github.com/apollographql/apollo-kotlin/issues/4590) in the browser. That is why starting with this release, only the IR artifacts will be published. Please reach out if this causes any issue in your project.
+Historically, Kotlin Multiplatform has had 2 formats of JS artifacts: [Legacy and IR](https://kotlinlang.org/docs/js-ir-compiler.html), and Apollo Kotlin has been publishing both. However, the Legacy format is about to [be deprecated with Kotlin 1.8](https://kotlinlang.org/docs/whatsnew-eap.html#kotlin-js) and moreover we've seen [issues](https://github.com/apollographql/apollo-kotlin/issues/4590) when using the Legacy artifact in the browser. That is why starting with this release, only the IR artifacts will be published. Please reach out if this causes any issue in your project.
 
 ## 👷‍ All changes
 
