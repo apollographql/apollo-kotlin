@@ -1,6 +1,32 @@
 Change Log
 ==========
 
+# Version 3.7.3
+
+_2022-12-20_
+
+This release contains a handful of bug fixes and improvements, and also discontinues the legacy JS artifacts. 
+
+Many thanks to @StefanChmielewski and @chao2zhang for contributing to the project! 🧡
+
+## ⚙️ Removed JS legacy artifacts (#4591)
+
+Historically, Kotlin Multiplatform has had 2 formats of JS artifacts: [Legacy and IR](https://kotlinlang.org/docs/js-ir-compiler.html), and Apollo Kotlin has been publishing both. However, the Legacy format is about to [be deprecated with Kotlin 1.8](https://kotlinlang.org/docs/whatsnew-eap.html#kotlin-js) and moreover we've seen [issues](https://github.com/apollographql/apollo-kotlin/issues/4590) when using the Legacy artifact in the browser. That is why starting with this release, only the IR artifacts will be published. Please reach out if this causes any issue in your project.
+
+## 👷‍ All changes
+
+- Add `GraphQLWsProtocol.Factory.webSocketPayloadComposer` (#4589)
+- Escape "Companion" in enum value names (#4558)
+- Un-break Gradle configuration cache in multi module cases (#4564)
+- Move computing the `alwaysGenerateTypesMatching` to execution time (#4578)
+- Log deprecation warning instead of printing (#4561)
+- Escape spaces when url encoding, for Apple (#4567)
+- Fix providing linker flags to the Kotlin compiler with KGP 1.8 (#4573)
+- Use `service {}` in all messages/docs (#4572)
+- Print all duplicate types at once (#4571)
+- Fix JavaPoet formatting (#4584)
+- Don't publish legacy js artifacts (#4591)
+
 # Version 3.7.2
 
 _2022-12-05_
