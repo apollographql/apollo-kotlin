@@ -14,8 +14,8 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":libraries:apollo-api"))
-        api(project(":libraries:apollo-mpp-utils"))
+        api(project(":apollo-api"))
+        api(project(":apollo-mpp-utils"))
         api(okio())
         api(golatac.lib("uuid"))
         api(golatac.lib("kotlinx.coroutines"))
@@ -24,8 +24,8 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(project(":libraries:apollo-mockserver"))
-        implementation(project(":libraries:apollo-testing-support"))
+        implementation(project(":apollo-mockserver"))
+        implementation(project(":apollo-testing-support"))
       }
     }
 

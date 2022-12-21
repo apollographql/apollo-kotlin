@@ -14,8 +14,8 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":libraries:apollo-api"))
-        api(project(":libraries:apollo-mpp-utils"))
+        api(project(":apollo-api"))
+        api(project(":apollo-mpp-utils"))
         implementation(okio())
         api(golatac.lib("uuid"))
       }

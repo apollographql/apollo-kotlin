@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
   implementation(golatac.lib("androidx.espresso.idlingresource"))
-  api(project(":libraries:apollo-runtime"))
+  api(project(":apollo-runtime"))
 }
 
 android {

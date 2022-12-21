@@ -8,5 +8,5 @@ apolloLibrary {
 }
 
 dependencies {
-  api(project(":libraries:apollo-api-java"))
+  api(project(":apollo-api-java"))
 }

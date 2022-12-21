@@ -27,9 +27,9 @@ dependencies {
    */
   add("gr8Classpath", "org.conscrypt:conscrypt-openjdk-uber:2.5.2")
 
-  add("shade", project(":libraries:apollo-gradle-plugin-external"))
+  add("shade", project(":apollo-gradle-plugin-external"))
 
-  testImplementation(project(":libraries:apollo-ast"))
+  testImplementation(project(":apollo-ast"))
   testImplementation(golatac.lib("junit"))
   testImplementation(golatac.lib("truth"))
   testImplementation(golatac.lib("assertj"))
@@ -116,14 +116,14 @@ configure<PublishingExtension> {
 }
 
 tasks.withType<Test> {
-  dependsOn(":libraries:apollo-annotations:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-ast:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-compiler:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
-  dependsOn(":libraries:apollo-tooling:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-annotations:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-ast:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-normalized-cache-api:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-mpp-utils:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-compiler:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-gradle-plugin-external:publishAllPublicationsToPluginTestRepository")
+  dependsOn(":apollo-tooling:publishAllPublicationsToPluginTestRepository")
   dependsOn("publishAllPublicationsToPluginTestRepository")
 
   inputs.dir("src/test/files")

@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":libraries:apollo-annotations"))
+        api(project(":apollo-annotations"))
         api(okio())
         implementation(golatac.lib("atomicfu")) {
           because("We need locks for native (we don't use the gradle plugin rewrite)")
@@ -31,10 +31,10 @@ kotlin {
 
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(project(":libraries:apollo-testing-support")) {
+        implementation(project(":apollo-testing-support")) {
           because("runTest")
         }
-        implementation(project(":libraries:apollo-runtime")) {
+        implementation(project(":apollo-runtime")) {
           because("We need HttpEngine for SocketTest")
         }
       }

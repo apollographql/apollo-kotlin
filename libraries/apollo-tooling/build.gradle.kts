@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":libraries:apollo-annotations"))
-  implementation(project(":libraries:apollo-ast"))
-  api(project(":libraries:apollo-compiler"))
+  implementation(project(":apollo-annotations"))
+  implementation(project(":apollo-ast"))
+  api(project(":apollo-compiler"))
   implementation(golatac.lib("moshi"))
   implementation(golatac.lib("moshix.sealed.runtime"))
   implementation(golatac.lib("okhttp"))

@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":libraries:apollo-annotations"))
+        api(project(":apollo-annotations"))
       }
     }
   }

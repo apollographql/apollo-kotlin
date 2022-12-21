@@ -14,9 +14,9 @@ dependencies {
   compileOnly(golatac.lib("kotlin.plugin.min"))
   compileOnly(golatac.lib("android.plugin.min"))
 
-  api(project(":libraries:apollo-compiler"))
-  implementation(project(":libraries:apollo-tooling"))
-  implementation(project(":libraries:apollo-ast"))
+  api(project(":apollo-compiler"))
+  implementation(project(":apollo-tooling"))
+  implementation(project(":apollo-ast"))
 }
 
 
