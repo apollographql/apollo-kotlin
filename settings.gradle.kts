@@ -7,7 +7,8 @@ rootProject.projectDir
     .filter { it.name.startsWith("apollo-") }
     .filter { File(it, "build.gradle.kts").exists() }
     .forEach {
-      include(":libraries:${it.name}")
+      include(it.name)
+      project(":${it.name}").projectDir = it
     }
 
 pluginManagement {

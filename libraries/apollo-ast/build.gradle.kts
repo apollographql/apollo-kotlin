@@ -15,7 +15,7 @@ dependencies {
   antlr(golatac.lib("antlr"))
   implementation(golatac.lib("antlr.runtime"))
   api(okio())
-  api(project(":libraries:apollo-annotations"))
+  api(project(":apollo-annotations"))
 
   implementation(golatac.lib("kotlinx.serialization.json"))
 

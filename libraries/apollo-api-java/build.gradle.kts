@@ -8,7 +8,7 @@ apolloLibrary {
 }
 
 dependencies {
-  api(project(":libraries:apollo-api"))
+  api(project(":apollo-api"))
   api(golatac.lib("okhttp"))
   compileOnly(golatac.lib("guava.jre"))
 }

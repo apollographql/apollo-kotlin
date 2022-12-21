@@ -9,5 +9,5 @@ apolloLibrary {
 
 dependencies {
   api(golatac.lib("rx.java2"))
-  api(project(":libraries:apollo-runtime-java"))
+  api(project(":apollo-runtime-java"))
 }

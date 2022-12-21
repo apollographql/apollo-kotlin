@@ -41,9 +41,9 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":libraries:apollo-api"))
-        api(project(":libraries:apollo-normalized-cache-api-incubating"))
-        api(project(":libraries:apollo-normalized-cache-incubating"))
+        api(project(":apollo-api"))
+        api(project(":apollo-normalized-cache-api-incubating"))
+        api(project(":apollo-normalized-cache-incubating"))
       }
     }
 
@@ -80,7 +80,7 @@ kotlin {
     }
     findByName("commonTest")?.apply {
       dependencies {
-        implementation(project(":libraries:apollo-testing-support"))
+        implementation(project(":apollo-testing-support"))
       }
     }
   }

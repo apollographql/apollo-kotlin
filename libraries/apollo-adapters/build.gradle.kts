@@ -14,7 +14,7 @@ kotlin {
   sourceSets {
     findByName("commonMain")?.apply {
       dependencies {
-        api(project(":libraries:apollo-api"))
+        api(project(":apollo-api"))
         api(golatac.lib("kotlinx.datetime"))
       }
     }

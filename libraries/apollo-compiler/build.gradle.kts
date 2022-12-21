@@ -11,8 +11,8 @@ apolloLibrary {
 }
 
 dependencies {
-  implementation(project(":libraries:apollo-ast"))
-  implementation(project(":libraries:apollo-api")) {
+  implementation(project(":apollo-ast"))
+  implementation(project(":apollo-api")) {
     because("For BooleanExpression")
   }
   api(golatac.lib("poet.kotlin")) {
@@ -32,7 +32,7 @@ dependencies {
   testImplementation(golatac.lib("truth"))
   testImplementation(golatac.lib("kotlin.test.junit"))
   testImplementation(golatac.lib("google.testparameterinjector"))
-  testImplementation(project(":libraries:apollo-api-java")) {
+  testImplementation(project(":apollo-api-java")) {
     because("Generated Java code references Java and Guava Optionals")
   }
   testImplementation(golatac.lib("androidx.annotation")) {

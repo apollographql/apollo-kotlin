@@ -14,7 +14,7 @@ kotlin {
       dependencies {
         api(okio())
         api(golatac.lib("uuid"))
-        api(project(":libraries:apollo-annotations"))
+        api(project(":apollo-annotations"))
       }
     }
   }
