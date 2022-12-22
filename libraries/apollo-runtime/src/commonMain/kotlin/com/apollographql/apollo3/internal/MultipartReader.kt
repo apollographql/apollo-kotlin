@@ -110,6 +110,14 @@ class MultipartReader constructor(
       when (source.select(afterBoundaryOptions)) {
         0 -> {
           // "\r\n": We've found a new part.
+          if (source.select(Options.of("--$boundary--".encodeUtf8())) == 0) {
+            // Closing delimiter: this is a final empty part.
+            // Not sure this is compliant, but it's been reported in the wild. See https://github.com/apollographql/apollo-kotlin/issues/4596
+            if (partCount == 0) throw ApolloException("expected at least 1 part")
+            noMoreParts = true
+            return null
+          }
+
           partCount++
           break@afterBoundaryLoop
         }
