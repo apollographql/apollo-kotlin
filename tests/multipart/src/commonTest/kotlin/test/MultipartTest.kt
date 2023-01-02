@@ -7,7 +7,7 @@ import kotlin.test.Test
 
 class MultipartTest {
   @Test
-  fun queryMockServer() = mockServerTest {
+  fun emptyLastPartIsIgnored() = mockServerTest {
     mockServer.enqueue(
         MockResponse.Builder()
             .addHeader("Content-Type", "multipart/mixed; boundary=\"-\"")

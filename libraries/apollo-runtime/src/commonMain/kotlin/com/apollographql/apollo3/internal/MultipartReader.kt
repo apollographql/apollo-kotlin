@@ -109,20 +109,19 @@ class MultipartReader constructor(
     afterBoundaryLoop@ while (true) {
       when (source.select(afterBoundaryOptions)) {
         0 -> {
-          // "\r\n": We've found a new part.
-          if (source.select(Options.of("--$boundary--".encodeUtf8())) == 0) {
-            // Closing delimiter: this is a final empty part.
-            // Not sure this is compliant, but it's been reported in the wild. See https://github.com/apollographql/apollo-kotlin/issues/4596
-            if (partCount == 0) throw ApolloException("expected at least 1 part")
-            noMoreParts = true
-            return null
-          }
+          // "\r\n--<boundary>--": More parts, immediately followed by the closing delimiter.
+          if (partCount == 0) throw ApolloException("expected at least 1 part")
+          noMoreParts = true
+          return null
+        }
 
+        1 -> {
+          // "\r\n": We've found a new part.
           partCount++
           break@afterBoundaryLoop
         }
 
-        1 -> {
+        2 -> {
           // "--": No more parts.
           if (whitespace) throw ApolloException("unexpected characters after boundary")
           if (partCount == 0) throw ApolloException("expected at least 1 part")
@@ -130,7 +129,7 @@ class MultipartReader constructor(
           return null
         }
 
-        2, 3 -> {
+        3, 4 -> {
           // " " or "\t" Ignore whitespace and keep looking.
           whitespace = true
           continue@afterBoundaryLoop
@@ -181,6 +180,25 @@ class MultipartReader constructor(
     }
   }
 
+  /** These options follow the boundary. */
+  private val afterBoundaryOptions = Options.of(
+      // 0. More parts, immediately followed by the closing delimiter.
+      // Not sure this is compliant, but it's been reported in the wild. See https://github.com/apollographql/apollo-kotlin/issues/4596
+      "\r\n--$boundary--".encodeUtf8(),
+
+      // 1. More parts.
+      "\r\n".encodeUtf8(),
+
+      // 2. No more parts.
+      "--".encodeUtf8(),
+
+      // 3. Optional whitespace. Only used if there are more parts.
+      " ".encodeUtf8(),
+
+      // 4. Optional whitespace. Only used if there are more parts.
+      "\t".encodeUtf8(),
+  )
+
   override fun close() {
     if (closed) return
     closed = true
@@ -196,14 +214,6 @@ class MultipartReader constructor(
   ) : Closeable by body
 
   private companion object {
-    /** These options follow the boundary. */
-    val afterBoundaryOptions = Options.of(
-        "\r\n".encodeUtf8(), // 0.  "\r\n"  More parts.
-        "--".encodeUtf8(), //   1.  "--"    No more parts.
-        " ".encodeUtf8(), //    2.  " "     Optional whitespace. Only used if there are more parts.
-        "\t".encodeUtf8() //    3.  "\t"    Optional whitespace. Only used if there are more parts.
-    )
-
     private fun readHeaders(source: BufferedSource): List<HttpHeader> {
       val headers = mutableListOf<HttpHeader>()
       while (true) {
