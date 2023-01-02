@@ -198,8 +198,6 @@ class DeferWithRouterTest {
   }
 
   @Test
-  @Ignore
-  // TODO Ignored for now, currently the Router doesn't return the __typename on initial payload which breaks parsing - see https://github.com/apollographql/router/issues/1922
   fun canDeferFragmentsOnTheTopLevelQueryField() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
     // {"data":{"__typename":"Query"},"hasNext":true}
@@ -266,12 +264,10 @@ class DeferWithRouterTest {
   }
 
   @Test
-  @Ignore
-  // TODO Ignored for now, Router returns error on first chunk instead - see https://github.com/apollographql/router/issues/1818
   fun handlesErrorsThrownInDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
-    // {"data":{"computer":{"id":"Computer1"}},"hasNext":true}
-    // {"hasNext":false,"incremental":[{"data":{"errorField":null},"errors":[{"message":"Subgraph errors redacted"}],"path":["computer"]}]}
+    // {"data":{"computer":{"__typename":"Computer","id":"Computer1"}},"hasNext":true}
+    // {"hasNext":false,"incremental":[{"data":{"errorField":null},"path":["computer"],"errors":[{"message":"Subgraph errors redacted","locations":[{"line":1,"column":104}],"path":["computer","errorField"]}]}]}
     val query = HandlesErrorsThrownInDeferredFragmentsQuery()
     val uuid = uuid4()
 
@@ -300,8 +296,8 @@ class DeferWithRouterTest {
                 listOf(
                     Error(
                         message = "Subgraph errors redacted",
-                        locations = null,
-                        path = null,
+                        locations = listOf(Error.Location(1, 104)),
+                        path = listOf("computer", "errorField"),
                         extensions = null,
                         nonStandardFields = null,
                     )
@@ -315,7 +311,7 @@ class DeferWithRouterTest {
 
   @Test
   @Ignore
-  // TODO Ignored for now, Router returns error on first chunk instead - see https://github.com/apollographql/router/issues/1818
+  // TODO Ignored for now, Router doesn't return the error - see https://github.com/apollographql/router/issues/2329
   fun handlesNonNullableErrorsThrownInDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
     // {"data":{"computer":{"id":"Computer1"}},"hasNext":true}
@@ -364,7 +360,7 @@ class DeferWithRouterTest {
   @Test
   fun handlesNonNullableErrorsThrownOutsideDeferredFragments() = runTest(before = { setUp() }, after = { tearDown() }) {
     // Expected payloads:
-    // {"data":{"computer":null},"errors":[{"message":"Subgraph errors redacted"}],"hasNext":true}
+    // {"data":{"computer":null},"errors":[{"message":"Subgraph errors redacted","locations":[{"line":1,"column":117}],"path":["computer","nonNullErrorField"]}],"hasNext":true}
     // {"hasNext":false}
     val query = HandlesNonNullableErrorsThrownOutsideDeferredFragmentsQuery()
     val uuid = uuid4()
@@ -381,8 +377,8 @@ class DeferWithRouterTest {
                 listOf(
                     Error(
                         message = "Subgraph errors redacted",
-                        locations = null,
-                        path = null,
+                        locations = listOf(Error.Location(1, 117)),
+                        path = listOf("computer", "nonNullErrorField"),
                         extensions = null,
                         nonStandardFields = null,
                     )
