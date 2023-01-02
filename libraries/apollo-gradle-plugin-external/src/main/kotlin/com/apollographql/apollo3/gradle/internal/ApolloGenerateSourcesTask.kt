@@ -315,7 +315,11 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         true
       }
 
-      else -> flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
+      else -> {
+        // Operation-based models have few name clashes. Mostly when there are lists. For these few cases we flatten to avoid the name clash
+        // Response-based models would have way too much name clashes os we never flatten them
+        flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
+      }
     }
     val codegenModels = when {
       targetLanguage == TargetLanguage.JAVA -> {
@@ -354,7 +358,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
-        // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
         flattenModels = flattenModels,
         incomingCompilerMetadata = metadata.map { it.compilerMetadata },
         schema = commonMetadata.schema,
