@@ -473,11 +473,10 @@ interface Service {
   val generateModelBuilders: Property<Boolean>
 
   /**
-   * What codegen to use. One of "operationBased", "responseBased", "compat" or "experimental_operationBasedWithInterfaces"
+   * What codegen to use. One of "operationBased", "responseBased" or "experimental_operationBasedWithInterfaces"
    *
    * - "operationBased" generates models that map 1:1 with the GraphQL operation
    * - "responseBased" generates models that map 1:1 with the Json response
-   * - "compat" is for compatibility with 2.x and will be removed in a future version
    * - "experimental_operationBasedWithInterfaces" is like "operationBased" except it will generate an interface for selection
    * sets that contain fragments to make it easier to use `when` statements
    *
@@ -664,27 +663,6 @@ interface Service {
    */
   @ApolloExperimental
   val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
-
-  /**
-   * A shorthand method that configures defaults that match Apollo Android 2.x codegen
-   *
-   * In practice, it does the following:
-   *
-   * ```
-   * packageNamesFromFilePaths(rootPackageName)
-   * useSchemaPackageNameForFragments.set(true)
-   * codegenModels.set(MODELS_COMPAT)
-   * ```
-   *
-   * See the individual options for a more complete description.
-   *
-   * This method is deprecated and provided for migration purposes only. It will be removed
-   * in a future version
-   */
-  @Deprecated("useVersion2Compat() is a helper function to help migrating to 3.x " +
-      "and will be removed in a future version")
-  @ApolloDeprecatedSince(v3_0_0)
-  fun useVersion2Compat(rootPackageName: String? = null)
 
   /**
    * By default, the used coordinates are computed automatically from all modules sharing a schema. This means that

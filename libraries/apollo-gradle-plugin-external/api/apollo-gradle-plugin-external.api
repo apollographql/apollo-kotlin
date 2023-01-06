@@ -87,7 +87,6 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getGeneratePrimitiveTypes ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateQueryDocument ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGenerateSchema ()Lorg/gradle/api/provider/Property;
-	public abstract fun getGenerateTestBuilders ()Lorg/gradle/api/provider/Property;
 	public abstract fun getGeneratedSchemaName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getIncludes ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getLanguageVersion ()Lorg/gradle/api/provider/Property;
@@ -132,15 +131,12 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
 	public abstract fun srcDir (Ljava/lang/Object;)V
-	public abstract fun testDirConnection (Lorg/gradle/api/Action;)V
-	public abstract fun useVersion2Compat (Ljava/lang/String;)V
 	public abstract fun usedCoordinates (Ljava/io/File;)V
 	public abstract fun usedCoordinates (Ljava/lang/String;)V
 }
 
 public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {
 	public static synthetic fun packageNamesFromFilePaths$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
-	public static synthetic fun useVersion2Compat$default (Lcom/apollographql/apollo3/gradle/api/Service;Ljava/lang/String;ILjava/lang/Object;)V
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Service$DirectoryConnection {

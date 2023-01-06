@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
 import com.apollographql.apollo3.gradle.api.Introspection
@@ -114,12 +113,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
     this.outputDirAction = action
-  }
-
-  override fun useVersion2Compat(rootPackageName: String?) {
-    packageNamesFromFilePaths(rootPackageName)
-    codegenModels.set(MODELS_COMPAT)
-    useSchemaPackageNameForFragments.set(true)
   }
 
   override fun usedCoordinates(file: File) {

@@ -58,7 +58,6 @@ import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
-import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
@@ -90,20 +89,10 @@ internal class IrBuilder(
   )
 
   private val builder = when (codegenModels) {
-    @Suppress("DEPRECATION")
-    MODELS_COMPAT,
-    -> OperationBasedModelGroupBuilder(
-        schema = schema,
-        allFragmentDefinitions = allFragmentDefinitions,
-        fieldMerger = this,
-        compat = true,
-    )
-
     MODELS_OPERATION_BASED -> OperationBasedModelGroupBuilder(
         schema = schema,
         allFragmentDefinitions = allFragmentDefinitions,
         fieldMerger = this,
-        compat = false,
     )
 
     MODELS_OPERATION_BASED_WITH_INTERFACES -> OperationBasedWithInterfacesModelGroupBuilder(
@@ -252,8 +241,7 @@ internal class IrBuilder(
       is GQLNonNullType -> IrNonNullType2(type.toIrType2())
       is GQLListType -> IrListType2(type.toIrType2())
       is GQLNamedType -> {
-        val typeDefinition = schema.typeDefinition(name)
-        when (typeDefinition) {
+        when (schema.typeDefinition(name)) {
           is GQLScalarTypeDefinition -> return IrScalarType2(name)
           is GQLEnumTypeDefinition -> return IrEnumType2(name)
           is GQLInputObjectTypeDefinition -> error("Input objects are not supported in data builders")
@@ -572,7 +560,7 @@ internal class IrBuilder(
    */
   private class CollectedField(
       /**
-       * All fields with the same response name should have the same infos here
+       * All fields with the same response name should have the same info here
        */
       val name: String,
       val alias: String?,
@@ -701,11 +689,11 @@ internal class IrBuilder(
           "Deprecated in: '${parents.joinToString(", ")}'"
         }
       }
-      val optInFeature = fieldsWithSameResponseName.associateBy { it.optInFeature }.values.let { experimentalCanditates ->
-        if (experimentalCanditates.size == 1) {
-          experimentalCanditates.single().optInFeature
+      val optInFeature = fieldsWithSameResponseName.associateBy { it.optInFeature }.values.let { experimentalCandidates ->
+        if (experimentalCandidates.size == 1) {
+          experimentalCandidates.single().optInFeature
         } else {
-          val parents = experimentalCanditates.filter { it.optInFeature != null }.map { it.parentType }
+          val parents = experimentalCandidates.filter { it.optInFeature != null }.map { it.parentType }
           "Experimental in: '${parents.joinToString(", ")}'"
         }
       }
@@ -765,7 +753,7 @@ internal fun List<GQLDirective>.toIncludeBooleanExpression(): BooleanExpression<
       "Apollo: duplicate @skip/@include directives are not allowed"
     }
     // Having both @skip and @include is allowed
-    // In that case, it's equivalent to a "And"
+    // In that case, it's equivalent to an "And"
     // See https://spec.graphql.org/draft/#sec--include
     BooleanExpression.And(conditions.toSet()).simplify()
   }
@@ -853,15 +841,6 @@ internal fun IrType.replacePlaceholder(newPath: String): IrType {
     is IrNonNullType -> IrNonNullType(ofType = ofType.replacePlaceholder(newPath))
     is IrListType -> IrListType(ofType = ofType.replacePlaceholder(newPath))
     is IrModelType -> copy(path = newPath)
-    else -> error("Not a compound type?")
-  }
-}
-
-internal fun IrType.replacePath(transform: (String) -> String): IrType {
-  return when (this) {
-    is IrNonNullType -> IrNonNullType(ofType = ofType.replacePath(transform))
-    is IrListType -> IrListType(ofType = ofType.replacePath(transform))
-    is IrModelType -> copy(path = transform(path))
     else -> error("Not a compound type?")
   }
 }

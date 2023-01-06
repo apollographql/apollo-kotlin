@@ -19,13 +19,6 @@ const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
 const val MODELS_OPERATION_BASED_WITH_INTERFACES = "experimental_operationBasedWithInterfaces"
 
-@Deprecated(
-    "MODELS_COMPAT is provided for 2.x compatibility and will be removed in a future version.",
-    replaceWith = ReplaceWith("MODELS_OPERATION_BASED")
-)
-@ApolloDeprecatedSince(v3_0_0)
-const val MODELS_COMPAT = "compat"
-
 const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
 const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
 const val ADD_TYPENAME_IF_ABSTRACT = "ifAbstract"
