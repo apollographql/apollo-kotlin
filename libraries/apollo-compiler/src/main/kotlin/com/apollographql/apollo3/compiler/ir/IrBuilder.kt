@@ -67,8 +67,8 @@ import com.apollographql.apollo3.compiler.ScalarInfo
 internal class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
-    private val alwaysGenerateResponseBasedDataModelGroup: Boolean,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
+    private val alwaysGenerateResponseBasedDataModelGroup: Boolean,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val scalarMapping: Map<String, ScalarInfo>,

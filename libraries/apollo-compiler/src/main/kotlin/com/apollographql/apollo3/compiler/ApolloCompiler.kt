@@ -154,8 +154,8 @@ object ApolloCompiler {
     val ir = IrBuilder(
         schema = options.schema,
         operationDefinitions = operations,
-        alwaysGenerateResponseBasedDataModelGroup = options.generateTestBuilders,
         fragmentDefinitions = fragments,
+        alwaysGenerateResponseBasedDataModelGroup = options.generateTestBuilders,
         allFragmentDefinitions = allFragmentDefinitions,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
         scalarMapping = options.scalarMapping,
