@@ -12,14 +12,12 @@ internal class KotlinCodegenLayout(
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,
-    useSchemaPackageNameForFragments: Boolean,
     decapitalizeFields: Boolean,
 ) : CodegenLayout(
     ir,
     packageNameGenerator,
     schemaPackageName,
     useSemanticNaming,
-    useSchemaPackageNameForFragments,
     decapitalizeFields,
 ) {
   override fun escapeReservedWord(word: String): String = word.escapeKotlinReservedWord()

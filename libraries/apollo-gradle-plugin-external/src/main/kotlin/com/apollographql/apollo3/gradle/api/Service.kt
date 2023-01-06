@@ -330,13 +330,6 @@ interface Service {
   fun packageNamesFromFilePaths(rootPackageName: String? = null)
 
   /**
-   * Whether to use the schema package name for fragments. This is used for backward compat with 2.x
-   *
-   * Default value: false
-   */
-  val useSchemaPackageNameForFragments: Property<Boolean>
-
-  /**
    * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
    * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
    *

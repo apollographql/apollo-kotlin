@@ -734,7 +734,6 @@ abstract class DefaultApolloExtension(
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)
       task.generateDataBuilders.set(service.generateDataBuilders)
-      task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
       task.addJvmOverloads.set(service.addJvmOverloads)
       task.sealedClassesForEnumsMatching.set(service.sealedClassesForEnumsMatching)
       task.classesForEnumsMatching.set(service.classesForEnumsMatching)

@@ -32,7 +32,6 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSche
 import com.apollographql.apollo3.compiler.Options.Companion.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -203,11 +202,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   abstract val generateDataBuilders: Property<Boolean>
 
   @get:Input
-  @get:Optional
-  abstract val useSchemaPackageNameForFragments: Property<Boolean>
-
-
-  @get:Input
   abstract val projectPath: Property<String>
 
   @get:Input
@@ -354,7 +348,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         addTypename = addTypename.getOrElse(defaultAddTypename),
         schemaPackageName = commonMetadata.schemaPackageName,
-        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
         generateDataBuilders = generateDataBuilders,

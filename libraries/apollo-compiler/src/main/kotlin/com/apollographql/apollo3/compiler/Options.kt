@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
@@ -127,10 +126,6 @@ class Options(
      * The package name used as a base for input objects, fragments, enums and types
      */
     val schemaPackageName: String,
-    /**
-     * Whether to use the schemaPackageName for fragments
-     */
-    val useSchemaPackageNameForFragments: Boolean = defaultUseSchemaPackageNameForFragments,
     /**
      * The package name used for operations
      */
@@ -360,7 +355,6 @@ class Options(
       operationOutputFile: File? = this.operationOutputFile,
       executableFiles: Set<File> = this.executableFiles,
       schemaPackageName: String = this.schemaPackageName,
-      useSchemaPackageNameForFragments: Boolean = this.useSchemaPackageNameForFragments,
       packageNameGenerator: PackageNameGenerator = this.packageNameGenerator,
       alwaysGenerateTypesMatching: Set<String> = this.alwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = this.operationOutputGenerator,
@@ -400,7 +394,6 @@ class Options(
       debugDir = debugDir,
       operationOutputFile = operationOutputFile,
       schemaPackageName = schemaPackageName,
-      useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
       packageNameGenerator = packageNameGenerator,
       alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
       operationOutputGenerator = operationOutputGenerator,
@@ -462,7 +455,6 @@ class Options(
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     val defaultClassesForEnumsMatching = listOf(".*")
     const val defaultGenerateOptionalOperationVariables = true
-    const val defaultUseSchemaPackageNameForFragments = false
     const val defaultAddJvmOverloads = false
     const val defaultFieldsOnDisjointTypesMustMerge = true
     const val defaultGeneratePrimitiveTypes = false

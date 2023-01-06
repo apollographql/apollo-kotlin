@@ -24,7 +24,6 @@ internal abstract class CodegenLayout(
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
-    private val useSchemaPackageNameForFragments: Boolean,
     private val decapitalizeFields: Boolean,
 ) {
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
@@ -73,11 +72,7 @@ internal abstract class CodegenLayout(
   fun operationTestBuildersPackageName(filePath: String) = "${operationPackageName(filePath)}.test".stripDots()
   fun operationResponseFieldsPackageName(filePath: String) = "${operationPackageName(filePath)}.selections".stripDots()
 
-  fun fragmentPackageName(filePath: String) = if (useSchemaPackageNameForFragments) {
-    "$schemaPackageName.fragment"
-  } else {
-    "${packageNameGenerator.packageName(filePath)}.fragment"
-  }
+  fun fragmentPackageName(filePath: String) = "${packageNameGenerator.packageName(filePath)}.fragment"
 
   fun fragmentAdapterPackageName(filePath: String) = "${fragmentPackageName(filePath)}.adapter".stripDots()
   fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()

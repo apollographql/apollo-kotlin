@@ -47,7 +47,6 @@ internal class KotlinCodeGen(
     private val useSemanticNaming: Boolean,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
-    private val useSchemaPackageNameForFragments: Boolean,
     /**
      * The operation id cannot be set in [IrOperation] because it needs access to [IrOperation.sourceWithFragments]
      * So we do this in the codegen step
@@ -87,7 +86,6 @@ internal class KotlinCodeGen(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
-        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
         decapitalizeFields = decapitalizeFields,
     )
 
