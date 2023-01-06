@@ -52,7 +52,6 @@ fun configureApollo(generateKotlinModels: Boolean) {
       generateFragmentImplementations.set(true)
 
       codegenModels.set("operationBased")
-      this.generateTestBuilders.set(generateKotlinModels)
       this.generateKotlinModels.set(generateKotlinModels)
       configureConnection(generateKotlinModels)
     }
@@ -73,12 +72,6 @@ fun com.apollographql.apollo3.gradle.api.Service.configureConnection(generateKot
     } else {
       // For autocomplete to work
       connectToKotlinSourceSet("commonTest")
-    }
-  }
-  testDirConnection {
-    if (generateKotlinModels) {
-      // Only connect to jvmTest, not commonTest
-      connectToKotlinSourceSet("jvmTest")
     }
   }
 }

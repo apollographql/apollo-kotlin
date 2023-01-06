@@ -406,20 +406,6 @@ abstract class DefaultApolloExtension(
         )
     )
 
-    @Suppress("DEPRECATION")
-    if (service.generateTestBuilders.getOrElse(false)) {
-      if (service.testDirAction == null) {
-        service.testDirAction = defaultTestDirAction
-      }
-      service.testDirAction!!.execute(
-          DefaultDirectoryConnection(
-              project = project,
-              task = codegenTaskProvider,
-              outputDir = codegenTaskProvider.flatMap { it.testDir }
-          )
-      )
-    }
-
     rootProvider.configure {
       it.dependsOn(codegenTaskProvider)
     }
@@ -567,29 +553,6 @@ abstract class DefaultApolloExtension(
 
       project.javaConvention != null -> {
         connection.connectToJavaSourceSet("main")
-      }
-
-      else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
-    }
-  }
-
-  private val defaultTestDirAction = Action<Service.DirectoryConnection> { connection ->
-    when {
-      project.kotlinMultiplatformExtension != null -> {
-        connection.connectToKotlinSourceSet("commonTest")
-      }
-
-      project.androidExtension != null -> {
-        connection.connectToAndroidSourceSet("test")
-        connection.connectToAndroidSourceSet("androidTest")
-      }
-
-      project.kotlinProjectExtension != null -> {
-        connection.connectToKotlinSourceSet("test")
-      }
-
-      project.javaConvention != null -> {
-        connection.connectToJavaSourceSet("test")
       }
 
       else -> throw IllegalStateException("Cannot find a Java/Kotlin extension, please apply the kotlin or java plugin")
@@ -770,8 +733,6 @@ abstract class DefaultApolloExtension(
       task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)
-      @Suppress("DEPRECATION")
-      task.generateTestBuilders.set(service.generateTestBuilders)
       task.generateDataBuilders.set(service.generateDataBuilders)
       task.useSchemaPackageNameForFragments.set(service.useSchemaPackageNameForFragments)
       task.addJvmOverloads.set(service.addJvmOverloads)

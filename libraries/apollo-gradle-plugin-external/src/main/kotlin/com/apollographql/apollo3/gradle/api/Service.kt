@@ -450,16 +450,6 @@ interface Service {
   /**
    * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
    * cases too.
-   *
-   * Only valid when [generateKotlinModels] is true
-   */
-  @ApolloExperimental
-  @Deprecated("Test builders are operation based and generate a lot of code. Use data builders instead", ReplaceWith("generateDataBuilders"))
-  val generateTestBuilders: Property<Boolean>
-
-  /**
-   * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
-   * cases too.
    */
   @ApolloExperimental
   val generateDataBuilders: Property<Boolean>
@@ -760,17 +750,6 @@ interface Service {
    * - main sourceSet for Android projects
    */
   fun outputDirConnection(action: Action<in DirectoryConnection>)
-
-  /**
-   * Overrides the way the generated test builders are connected.
-   * Use this if you want to connect the generated test builders to another task than the default destination.
-   *
-   * By default, the generated sources are connected to:
-   * - test sourceSet for Kotlin projects
-   * - commonTest sourceSet for Kotlin multiplatform projects
-   * - test *and* androidTest variants for Android projects
-   */
-  fun testDirConnection(action: Action<in DirectoryConnection>)
 
   /**
    * A [DirectoryConnection] defines how the generated sources are connected to the rest of the

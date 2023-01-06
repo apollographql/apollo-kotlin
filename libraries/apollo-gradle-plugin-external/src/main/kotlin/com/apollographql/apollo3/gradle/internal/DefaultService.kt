@@ -111,7 +111,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   var outputDirAction: Action<in Service.DirectoryConnection>? = null
-  var testDirAction: Action<in Service.DirectoryConnection>? = null
 
   override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
     this.outputDirAction = action
@@ -129,10 +128,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun usedCoordinates(file: String) {
     usedCoordinates(project.file(file))
-  }
-
-  override fun testDirConnection(action: Action<in Service.DirectoryConnection>) {
-    this.testDirAction = action
   }
 
   override fun packageNamesFromFilePaths(rootPackageName: String?) {

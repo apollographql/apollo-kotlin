@@ -28,7 +28,6 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratePrimi
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.Options.Companion.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
@@ -201,10 +200,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateTestBuilders: Property<Boolean>
-
-  @get:Input
-  @get:Optional
   abstract val generateDataBuilders: Property<Boolean>
 
   @get:Input
@@ -362,7 +357,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
-        generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         generateDataBuilders = generateDataBuilders,
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),

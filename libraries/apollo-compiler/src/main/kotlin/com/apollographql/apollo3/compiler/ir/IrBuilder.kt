@@ -68,7 +68,6 @@ internal class IrBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
-    private val alwaysGenerateResponseBasedDataModelGroup: Boolean,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
     private val alwaysGenerateTypesMatching: Set<String>,
     private val scalarMapping: Map<String, ScalarInfo>,
@@ -427,14 +426,8 @@ internal class IrBuilder(
         operationName = name!!
     )
 
-    val responseBasedModelGroup = when {
-      codegenModels == MODELS_RESPONSE_BASED -> dataModelGroup
-      alwaysGenerateResponseBasedDataModelGroup -> responseBasedBuilder.buildOperationData(
-          selections = selectionSet.selections,
-          rawTypeName = typeDefinition.name,
-          operationName = name!!
-      ).second
-
+    val responseBasedModelGroup = when (codegenModels) {
+      MODELS_RESPONSE_BASED -> dataModelGroup
       else -> null
     }
 

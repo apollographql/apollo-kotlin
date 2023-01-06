@@ -218,7 +218,6 @@ class Options(
      *
      * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_4] or [TargetLanguage.KOTLIN_1_5]
      */
-    val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
 
     /**
@@ -388,7 +387,6 @@ class Options(
       generateSchema: Boolean = this.generateSchema,
       generatedSchemaName: String = this.generatedSchemaName,
       targetLanguage: TargetLanguage = this.targetLanguage,
-      generateTestBuilders: Boolean = this.generateTestBuilders,
       generateDataBuilders: Boolean = this.generateDataBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       classesForEnumsMatching: List<String> = this.classesForEnumsMatching,
@@ -429,7 +427,6 @@ class Options(
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
       generatedSchemaName = generatedSchemaName,
-      generateTestBuilders = generateTestBuilders,
       generateDataBuilders = generateDataBuilders,
       testDir = testDir,
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
@@ -467,7 +464,6 @@ class Options(
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
     const val defaultGeneratedSchemaName = "__Schema"
-    const val defaultGenerateTestBuilders = false
     const val defaultGenerateDataBuilders = false
     const val defaultGenerateModelBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
