@@ -47,7 +47,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
@@ -62,8 +61,8 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import javax.inject.Inject
 
+@Suppress("UnstableApiUsage") // Because the gradle-api we link against has a lot of symbols still experimental
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
@@ -212,8 +211,6 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:Optional
   abstract val useSchemaPackageNameForFragments: Property<Boolean>
 
-  @get:Inject
-  abstract val objectFactory: ObjectFactory
 
   @get:Input
   abstract val projectPath: Property<String>
@@ -307,28 +304,26 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
 
     val targetLanguage = targetLanguage.get()
-    val flattenModels = when {
-      targetLanguage == TargetLanguage.JAVA -> {
+    val flattenModels = when (targetLanguage) {
+      TargetLanguage.JAVA -> {
         check(flattenModels.isPresent.not()) {
           "Java codegen does not support flattenModels"
         }
         true
       }
-
       else -> {
         // Operation-based models have few name clashes. Mostly when there are lists. For these few cases we flatten to avoid the name clash
         // Response-based models would have way too much name clashes os we never flatten them
         flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
       }
     }
-    val codegenModels = when {
-      targetLanguage == TargetLanguage.JAVA -> {
+    val codegenModels = when (targetLanguage) {
+      TargetLanguage.JAVA -> {
         check(commonMetadata.codegenModels == MODELS_OPERATION_BASED) {
           "Java codegen does not support codegenModels=${commonMetadata.codegenModels}"
         }
         MODELS_OPERATION_BASED
       }
-
       else -> commonMetadata.codegenModels
     }
 
