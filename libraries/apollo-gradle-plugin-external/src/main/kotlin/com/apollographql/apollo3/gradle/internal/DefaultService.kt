@@ -118,6 +118,16 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   }
 
   override fun useVersion2Compat(rootPackageName: String?) {
+    project.logger.warn("""
+      Apollo: useVersion2Compat() is deprecated.
+      
+      Use packageNamesFromFilePaths(rootPackageName) instead and update your code to work with the operationBased generated models:
+      - remove `.fragments` synthetic fields
+      - replace inline fragments usage: `as${'$'}Fragment}` is now `on${'$'}Fragment}`
+      - if your fragments are not defined in the same directory as your schema, their package name has changed, update usages to the new package name that matches the location of the fragment. 
+      
+      You can read more details at https://www.apollographql.com/docs/kotlin/migration/3.0/
+      """.trimIndent())
     packageNamesFromFilePaths(rootPackageName)
     codegenModels.set(MODELS_COMPAT)
     useSchemaPackageNameForFragments.set(true)
