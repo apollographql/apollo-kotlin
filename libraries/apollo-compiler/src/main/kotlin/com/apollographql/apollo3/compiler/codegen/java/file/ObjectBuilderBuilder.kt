@@ -26,7 +26,7 @@ internal class ObjectBuilderBuilder(
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
   private val simpleName = layout.objectBuilderName(obj.name)
-  private val mapClassName = ClassName.get(packageName, layout.mapName(obj.name))
+  private val mapClassName = ClassName.get(packageName, layout.objectMapName(obj.name))
 
   override fun prepare() {
   }
@@ -84,6 +84,7 @@ internal class ObjectBuilderBuilder(
         .addStatement("return this")
         .build()
   }
+
   private fun IrMapProperty.toMethodSpec(): MethodSpec {
     return MethodSpec.methodBuilder(context.layout.propertyName(name))
         .addModifiers(Modifier.PUBLIC)

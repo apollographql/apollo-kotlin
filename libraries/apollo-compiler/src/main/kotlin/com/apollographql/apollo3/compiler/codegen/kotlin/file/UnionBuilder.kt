@@ -12,7 +12,7 @@ import com.squareup.kotlinpoet.TypeSpec
 internal class UnionBuilder(
     private val context: KotlinContext,
     private val union: IrUnion,
-    private val generateDataBuilders: Boolean
+    private val generateDataBuilders: Boolean,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
@@ -20,7 +20,7 @@ internal class UnionBuilder(
 
   override fun prepare() {
     context.resolver.registerSchemaType(union.name, ClassName(packageName, simpleName))
-    context.resolver.registerMapType(union.name, ClassName(packageName, layout.mapName(union.name)))
+    context.resolver.registerMapType(union.name, ClassName(packageName, layout.objectMapName(union.name)))
   }
 
   override fun build(): CgFile {
@@ -38,7 +38,7 @@ internal class UnionBuilder(
 
   private fun IrUnion.mapTypeSpec(): TypeSpec {
     return TypeSpec
-        .interfaceBuilder(layout.mapName(name))
+        .interfaceBuilder(layout.objectMapName(name))
         .build()
   }
 

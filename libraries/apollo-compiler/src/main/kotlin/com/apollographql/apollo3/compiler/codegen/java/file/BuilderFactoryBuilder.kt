@@ -63,7 +63,7 @@ internal class BuilderFactoryBuilder(
 
   private fun IrObject.toMethodSpec(): MethodSpec {
     val builderClassName = ClassName.get(packageName, layout.objectBuilderName(name))
-    return MethodSpec.methodBuilder(layout.builderFunName(name))
+    return MethodSpec.methodBuilder(layout.objectBuilderFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
         .addStatement("return new $T($customScalarAdapters)", builderClassName)

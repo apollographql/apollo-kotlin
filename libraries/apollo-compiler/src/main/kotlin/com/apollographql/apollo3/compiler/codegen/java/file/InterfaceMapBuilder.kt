@@ -14,7 +14,7 @@ internal class InterfaceMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.mapName(iface.name)
+  private val simpleName = layout.objectMapName(iface.name)
 
   override fun prepare() {
     context.resolver.registerMapType(iface.name, ClassName.get(packageName, simpleName))
@@ -33,7 +33,7 @@ internal class InterfaceMapBuilder(
         .addModifiers(Modifier.PUBLIC)
         .addSuperinterfaces(
             implements.map {
-              ClassName.get(packageName, context.layout.mapName(it))
+              ClassName.get(packageName, context.layout.objectMapName(it))
             }
         )
         .build()

@@ -5,7 +5,14 @@
 //
 package com.example.simple_fragment.type
 
+import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.InterfaceType
+import com.apollographql.apollo3.api.ObjectBuilder
+import kotlin.Any
+import kotlin.String
+import kotlin.Unit
+import kotlin.collections.Map
 
 /**
  * A character from the Star Wars universe
@@ -16,4 +23,22 @@ internal class Character {
   }
 }
 
+internal class OtherCharacterBuilder(
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder(customScalarAdapters) {
+  public fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
+}
+
+internal class OtherCharacterMap(
+  __fields: Map<String, Any?>,
+) : CharacterMap, Map<String, Any?> by __fields
+
 internal interface CharacterMap
+
+internal fun BuilderScope.buildOtherCharacter(__typename: String,
+    block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap {
+  val builder = OtherCharacterBuilder(customScalarAdapters)
+  builder.__typename = __typename
+  builder.block()
+  return builder.build()
+}
