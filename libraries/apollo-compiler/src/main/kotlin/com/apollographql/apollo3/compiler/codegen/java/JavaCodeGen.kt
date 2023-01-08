@@ -20,7 +20,9 @@ import com.apollographql.apollo3.compiler.codegen.java.file.FragmentVariablesAda
 import com.apollographql.apollo3.compiler.codegen.java.file.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InputObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceMapBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceUnknownMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectMapBuilder
@@ -127,6 +129,8 @@ internal class JavaCodeGen(
         .forEach { iface ->
           builders.add(InterfaceBuilder(context, iface))
           if (generateDataBuilders) {
+            builders.add(InterfaceBuilderBuilder(context, iface))
+            builders.add(InterfaceUnknownMapBuilder(context, iface))
             builders.add(InterfaceMapBuilder(context, iface))
           }
         }
@@ -200,7 +204,7 @@ internal class JavaCodeGen(
       builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, ir.objects, ir.interfaces, ir.unions, ir.enums))
     }
     if (generateDataBuilders) {
-      builders.add(BuilderFactoryBuilder(context, ir.objects))
+      builders.add(BuilderFactoryBuilder(context, ir.objects, ir.interfaces))
     }
 
     builders.forEach { it.prepare() }

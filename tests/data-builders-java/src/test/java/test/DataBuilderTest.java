@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 public class DataBuilderTest {
   private BuilderFactory factory = BuilderFactory.DEFAULT;
@@ -86,6 +88,23 @@ public class DataBuilderTest {
     assertEquals("Lion", data.animal.__typename);
     assertEquals("LionSpecies", data.animal.species);
     assertEquals("Rooooaaarr", data.animal.onLion.roar);
+  }
+
+  @Test
+  public void unknownInterfaceChildTest() {
+    GetAnimalQuery.Data data = GetAnimalQuery.buildData(
+        factory.buildQuery()
+            .animal(
+                factory.buildOtherAnimal("Gazelle")
+                    .species("GazelleSpecies")
+                    .build()
+            )
+            .build()
+    );
+
+    assertEquals("Gazelle", data.animal.__typename);
+    assertEquals("GazelleSpecies", data.animal.species);
+    assertNull(data.animal.onLion);
   }
 
   @Test

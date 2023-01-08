@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
@@ -7,6 +8,7 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
@@ -18,6 +20,7 @@ import javax.lang.model.element.Modifier
 internal class BuilderFactoryBuilder(
     private val context: JavaContext,
     private val objs: List<IrObject>,
+    private val ifaces: List<IrInterface>,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
@@ -50,6 +53,11 @@ internal class BuilderFactoryBuilder(
               it.toMethodSpec()
             }
         )
+        .addMethods(
+            ifaces.map {
+              it.toMethodSpec()
+            }
+        )
         .addField(
             FieldSpec.builder(ClassName.get(packageName, simpleName), "DEFAULT")
                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
@@ -67,6 +75,16 @@ internal class BuilderFactoryBuilder(
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
         .addStatement("return new $T($customScalarAdapters)", builderClassName)
+        .build()
+  }
+
+  private fun IrInterface.toMethodSpec(): MethodSpec {
+    val builderClassName = ClassName.get(packageName, layout.interfaceBuilderName(name))
+    return MethodSpec.methodBuilder(layout.interfaceBuilderFunName(name))
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(JavaClassNames.String, Identifier.__typename)
+        .returns(builderClassName)
+        .addStatement("return new $T(__typename, $customScalarAdapters)", builderClassName)
         .build()
   }
 }
