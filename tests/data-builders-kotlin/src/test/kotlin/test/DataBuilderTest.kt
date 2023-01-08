@@ -23,10 +23,13 @@ import data.builders.type.__CustomScalarAdapters
 import data.builders.type.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
+import data.builders.type.buildOtherAnimal
 import data.builders.type.buildProduct
 import data.builders.type.buildPromo
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class DataBuilderTest {
   @Test
@@ -78,6 +81,20 @@ class DataBuilderTest {
     assertEquals("Lion", data.animal.__typename)
     assertEquals("LionSpecies", data.animal.species)
     assertEquals("Rooooaaarr", data.animal.onLion?.roar)
+  }
+
+  @Test
+  fun unknownInterfaceChildTest() {
+    val data = GetAnimalQuery.Data {
+      animal = buildOtherAnimal("Gazelle") {
+        species = "GazelleSpecies"
+      }
+    }
+
+    assertEquals("Gazelle", data.animal.__typename)
+    assertEquals("GazelleSpecies", data.animal.species)
+    assertNotNull(data.animal.id)
+    assertNull(data.animal.onLion)
   }
 
   @Test
