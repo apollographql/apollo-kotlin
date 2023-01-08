@@ -16,9 +16,9 @@ public class OtherCharacterBuilder {
 
   Map<String, Object> __fields = new HashMap<>();
 
-  public OtherCharacterBuilder(CustomScalarAdapters customScalarAdapters) {
+  public OtherCharacterBuilder(String __typename, CustomScalarAdapters customScalarAdapters) {
     this.customScalarAdapters = customScalarAdapters;
-    __fields.put("__typename", "Character");
+    __fields.put("__typename", __typename);
   }
 
   public OtherCharacterBuilder alias(String alias, Object value) {

@@ -79,8 +79,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrInterface.toMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.interfaceBuilderName(name))
-    return MethodSpec.methodBuilder(layout.interfaceBuilderFunName(name))
+    val builderClassName = ClassName.get(packageName, layout.unknownBuilderName(name))
+    return MethodSpec.methodBuilder(layout.unknownBuilderFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .addParameter(JavaClassNames.String, Identifier.__typename)
         .returns(builderClassName)

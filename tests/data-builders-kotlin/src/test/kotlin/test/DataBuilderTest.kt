@@ -24,6 +24,7 @@ import data.builders.type.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
 import data.builders.type.buildOtherAnimal
+import data.builders.type.buildOtherFeline
 import data.builders.type.buildProduct
 import data.builders.type.buildPromo
 import kotlin.test.Test
@@ -150,6 +151,18 @@ class DataBuilderTest {
 
     assertEquals("Cat", data.feline.__typename)
     assertEquals(5, data.feline.onCat?.mustaches)
+  }
+
+  @Test
+  fun unknownUnionTest() {
+    val data = GetFelineQuery.Data {
+      feline = buildOtherFeline("Tiger") {
+      }
+    }
+
+    assertEquals("Tiger", data.feline.__typename)
+    assertEquals(null, data.feline.onCat)
+    assertEquals(null, data.feline.onAnimal)
   }
 
   @Test

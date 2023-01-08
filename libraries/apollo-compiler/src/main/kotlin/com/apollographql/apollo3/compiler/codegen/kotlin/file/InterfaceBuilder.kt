@@ -42,8 +42,8 @@ internal class InterfaceBuilder(
           add(iface.typeSpec())
           if (generateDataBuilders) {
             add(iface.builderTypeSpec())
-            add(iface.otherMapTypeSpec())
             add(iface.mapTypeSpec())
+            add(iface.unknownMapTypeSpec())
           }
         },
         funSpecs = mutableListOf<FunSpec>().apply {
@@ -56,7 +56,7 @@ internal class InterfaceBuilder(
 
   private fun IrInterface.builderTypeSpec(): TypeSpec {
     return TypeSpec
-        .classBuilder(layout.interfaceBuilderName(name))
+        .classBuilder(layout.unknownBuilderName(name))
         .superclass(KotlinSymbols.ObjectBuilder)
         .addSuperclassConstructorParameter(CodeBlock.of(Identifier.customScalarAdapters))
         .primaryConstructor(
@@ -66,18 +66,6 @@ internal class InterfaceBuilder(
         )
         .addProperties(mapProperties.map { it.toPropertySpec() })
         .addFunction(buildFunSpec())
-        .build()
-  }
-
-  private fun IrInterface.buildFunSpec(): FunSpec {
-    val mapClassName = ClassName(packageName, layout.interfaceMapName(name))
-    return FunSpec.builder(Identifier.build)
-        .returns(mapClassName)
-        .addCode(
-            CodeBlock.builder()
-                .addStatement("return·%T(${Identifier.__fields})", mapClassName)
-                .build()
-        )
         .build()
   }
 
@@ -96,9 +84,21 @@ internal class InterfaceBuilder(
         .build()
   }
 
-  private fun IrInterface.otherMapTypeSpec(): TypeSpec {
+  private fun IrInterface.buildFunSpec(): FunSpec {
+    val mapClassName = ClassName(packageName, layout.unknownMapName(name))
+    return FunSpec.builder(Identifier.build)
+        .returns(mapClassName)
+        .addCode(
+            CodeBlock.builder()
+                .addStatement("return·%T(${Identifier.__fields})", mapClassName)
+                .build()
+        )
+        .build()
+  }
+
+  private fun IrInterface.unknownMapTypeSpec(): TypeSpec {
     return TypeSpec
-        .classBuilder(layout.interfaceMapName(name))
+        .classBuilder(layout.unknownMapName(name))
         .primaryConstructor(
             FunSpec.constructorBuilder()
                 .addParameter(
@@ -119,9 +119,9 @@ internal class InterfaceBuilder(
   }
 
   private fun IrInterface.builderFunSpec(): FunSpec {
-    val builderClassName = ClassName(packageName, layout.interfaceBuilderName(name))
-    val mapClassName = ClassName(packageName, layout.interfaceMapName(name))
-    return FunSpec.builder(layout.interfaceBuilderFunName(name))
+    val builderClassName = ClassName(packageName, layout.unknownBuilderName(name))
+    val mapClassName = ClassName(packageName, layout.unknownMapName(name))
+    return FunSpec.builder(layout.unknownBuilderFunName(name))
         .returns(mapClassName)
         .addParameter(Identifier.__typename, String::class)
         .addParameter(

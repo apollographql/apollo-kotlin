@@ -29,11 +29,11 @@ internal class OtherCharacterBuilder(
   public fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }
 
+internal interface CharacterMap
+
 internal class OtherCharacterMap(
   __fields: Map<String, Any?>,
 ) : CharacterMap, Map<String, Any?> by __fields
-
-internal interface CharacterMap
 
 internal fun BuilderScope.buildOtherCharacter(__typename: String,
     block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap {
