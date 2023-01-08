@@ -10,6 +10,8 @@ import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
+import com.apollographql.apollo3.compiler.ir.IrSchemaType
+import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -18,9 +20,10 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class BuilderFactoryBuilder(
-    private val context: JavaContext,
+    context: JavaContext,
     private val objs: List<IrObject>,
     private val ifaces: List<IrInterface>,
+    private val unions: List<IrUnion>,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
@@ -50,12 +53,17 @@ internal class BuilderFactoryBuilder(
         )
         .addMethods(
             objs.map {
-              it.toMethodSpec()
+              it.toObjectBuilderMethodSpec()
             }
         )
         .addMethods(
             ifaces.map {
-              it.toMethodSpec()
+              it.toUnknownBuilderMethodSpec()
+            }
+        )
+        .addMethods(
+            unions.map {
+              it.toUnknownBuilderMethodSpec()
             }
         )
         .addField(
@@ -69,7 +77,7 @@ internal class BuilderFactoryBuilder(
         .build()
   }
 
-  private fun IrObject.toMethodSpec(): MethodSpec {
+  private fun IrObject.toObjectBuilderMethodSpec(): MethodSpec {
     val builderClassName = ClassName.get(packageName, layout.objectBuilderName(name))
     return MethodSpec.methodBuilder(layout.objectBuilderFunName(name))
         .addModifiers(Modifier.PUBLIC)
@@ -78,7 +86,7 @@ internal class BuilderFactoryBuilder(
         .build()
   }
 
-  private fun IrInterface.toMethodSpec(): MethodSpec {
+  private fun IrSchemaType.toUnknownBuilderMethodSpec(): MethodSpec {
     val builderClassName = ClassName.get(packageName, layout.unknownBuilderName(name))
     return MethodSpec.methodBuilder(layout.unknownBuilderFunName(name))
         .addModifiers(Modifier.PUBLIC)

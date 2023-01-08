@@ -142,6 +142,21 @@ public class DataBuilderTest {
   }
 
   @Test
+  public void unknownUnionTest() {
+    GetFelineQuery.Data data = GetFelineQuery.buildData(
+        factory.buildQuery()
+            .feline(
+                factory.buildOtherFeline("Tiger")
+                    .build()
+            )
+            .build()
+    );
+
+    assertEquals("Tiger", data.feline.__typename);
+    assertEquals(null, data.feline.onCat);
+  }
+
+  @Test
   public void enumTest() {
     GetDirectionQuery.Data data = GetDirectionQuery.buildData(
         factory.buildQuery()
