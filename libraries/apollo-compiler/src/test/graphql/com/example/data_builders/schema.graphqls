@@ -1,0 +1,37 @@
+type Query {
+  animal: Animal!
+  character: Character!
+  node: Node!
+}
+
+union Animal = Cat | Dog
+
+type Cat implements Node {
+  id: ID!
+  meow: String!
+}
+
+type Dog implements Node {
+  id: ID!
+  woof: String!
+}
+
+interface Node {
+  id: ID!
+}
+
+interface Character implements Node {
+  id: ID!
+  name: String!
+}
+
+type Human implements Character {
+  id: ID!
+  name: String!
+  homePlanet: String!
+}
+
+type Droid implements Character {
+  name: String!
+  primaryFunction: String!
+}
