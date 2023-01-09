@@ -6,7 +6,7 @@ title: Data builders (experimental)
 
 Apollo Kotlin generates models for your operations and parsers that create instances of these models from your network responses. Sometimes though, during tests or in other occasions, it is useful to instantiate models manually with known values. Doing so is not as straightforward as it may seem, especially when fragments are used. Creating `operationBased` models requires instantiating every fragment as well as choosing an appropriate `__typename` for each composite type. Data builders make this easier by providing builders that match the structure of the Json document.
 
-__Note: previous versions of Apollo Kotlin used data builders. Data builders are a simpler version of test builders that also plays nicer with custom scalars. If you're looking for the test builders documentation, it's still available [here](./test-builders).__
+__Note: previous versions of Apollo Kotlin used test builders. Data builders are a simpler version of test builders that also plays nicer with custom scalars. If you're looking for the test builders documentation, it's still available [here](./test-builders).__
 
 ## Enabling data builders
 
