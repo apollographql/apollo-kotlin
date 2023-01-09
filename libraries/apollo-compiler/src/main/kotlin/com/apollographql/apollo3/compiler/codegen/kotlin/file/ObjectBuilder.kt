@@ -8,8 +8,8 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols.MapOfStringToNullableAny
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.apollographql.apollo3.compiler.ir.IrCompositeType2
+import com.apollographql.apollo3.compiler.ir.IrMapProperty
 import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.kotlinpoet.ClassName
@@ -33,9 +33,9 @@ internal class ObjectBuilder(
 
   override fun prepare() {
     context.resolver.registerSchemaType(obj.name, ClassName(packageName, simpleName))
-    context.resolver.registerMapType(obj.name, ClassName(packageName, layout.mapName(obj.name)))
+    context.resolver.registerMapType(obj.name, ClassName(packageName, layout.objectMapName(obj.name)))
     context.resolver.registerBuilderType(obj.name, ClassName(packageName, layout.objectBuilderName(obj.name)))
-    context.resolver.registerBuilderFun(obj.name, MemberName(packageName, layout.builderFunName(obj.name)))
+    context.resolver.registerBuilderFun(obj.name, MemberName(packageName, layout.objectBuilderFunName(obj.name)))
   }
 
   override fun build(): CgFile {
@@ -60,7 +60,7 @@ internal class ObjectBuilder(
 
   private fun IrObject.mapTypeSpec(): TypeSpec {
     return TypeSpec
-        .classBuilder(layout.mapName(name))
+        .classBuilder(layout.objectMapName(name))
         .primaryConstructor(
             FunSpec.constructorBuilder()
                 .addParameter(
@@ -111,8 +111,8 @@ internal class ObjectBuilder(
 
   private fun IrObject.builderFunSpec(): FunSpec {
     val builderClassName = ClassName(packageName, layout.objectBuilderName(name))
-    val mapClassName = ClassName(packageName, layout.mapName(obj.name))
-    return FunSpec.builder(layout.builderFunName(obj.name))
+    val mapClassName = ClassName(packageName, layout.objectMapName(obj.name))
+    return FunSpec.builder(layout.objectBuilderFunName(obj.name))
         .returns(mapClassName)
         .addParameter(
             ParameterSpec.builder(
@@ -137,7 +137,7 @@ internal class ObjectBuilder(
   }
 
   private fun IrObject.buildFunSpec(): FunSpec {
-    val mapClassName = ClassName(packageName, layout.mapName(obj.name))
+    val mapClassName = ClassName(packageName, layout.objectMapName(obj.name))
     return FunSpec.builder(Identifier.build)
         .returns(mapClassName)
         .addCode(

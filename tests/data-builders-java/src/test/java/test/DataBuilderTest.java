@@ -11,10 +11,10 @@ import data.builders.GetEverythingQuery;
 import data.builders.GetFelineQuery;
 import data.builders.GetIntQuery;
 import data.builders.GetPartialQuery;
+import data.builders.MyLong;
 import data.builders.PutIntMutation;
 import data.builders.type.Direction;
 import data.builders.type.builder.BuilderFactory;
-import data.builders.MyLong;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class DataBuilderTest {
   private BuilderFactory factory = BuilderFactory.DEFAULT;
@@ -89,6 +90,23 @@ public class DataBuilderTest {
   }
 
   @Test
+  public void otherInterfaceImplementationTest() {
+    GetAnimalQuery.Data data = GetAnimalQuery.buildData(
+        factory.buildQuery()
+            .animal(
+                factory.buildOtherAnimal("Gazelle")
+                    .species("GazelleSpecies")
+                    .build()
+            )
+            .build()
+    );
+
+    assertEquals("Gazelle", data.animal.__typename);
+    assertEquals("GazelleSpecies", data.animal.species);
+    assertNull(data.animal.onLion);
+  }
+
+  @Test
   public void unionTest1() {
     GetFelineQuery.Data data = GetFelineQuery.buildData(
         factory.buildQuery()
@@ -120,6 +138,21 @@ public class DataBuilderTest {
 
     assertEquals("Cat", data.feline.__typename);
     assertEquals(Integer.valueOf(5), data.feline.onCat.mustaches);
+  }
+
+  @Test
+  public void otherUnionMemberTest() {
+    GetFelineQuery.Data data = GetFelineQuery.buildData(
+        factory.buildQuery()
+            .feline(
+                factory.buildOtherFeline("Tiger")
+                    .build()
+            )
+            .build()
+    );
+
+    assertEquals("Tiger", data.feline.__typename);
+    assertEquals(null, data.feline.onCat);
   }
 
   @Test

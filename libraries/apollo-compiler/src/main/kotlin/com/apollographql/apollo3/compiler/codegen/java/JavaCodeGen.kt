@@ -20,7 +20,9 @@ import com.apollographql.apollo3.compiler.codegen.java.file.FragmentVariablesAda
 import com.apollographql.apollo3.compiler.codegen.java.file.InputObjectAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InputObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceMapBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.InterfaceUnknownMapBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.ObjectMapBuilder
@@ -30,7 +32,9 @@ import com.apollographql.apollo3.compiler.codegen.java.file.OperationSelectionsB
 import com.apollographql.apollo3.compiler.codegen.java.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.UnionBuilderBuilder
 import com.apollographql.apollo3.compiler.codegen.java.file.UnionMapBuilder
+import com.apollographql.apollo3.compiler.codegen.java.file.UnionUnknownMapBuilder
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.ir.Ir
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
@@ -127,6 +131,8 @@ internal class JavaCodeGen(
         .forEach { iface ->
           builders.add(InterfaceBuilder(context, iface))
           if (generateDataBuilders) {
+            builders.add(InterfaceBuilderBuilder(context, iface))
+            builders.add(InterfaceUnknownMapBuilder(context, iface))
             builders.add(InterfaceMapBuilder(context, iface))
           }
         }
@@ -135,6 +141,8 @@ internal class JavaCodeGen(
         .forEach { union ->
           builders.add(UnionBuilder(context, union))
           if (generateDataBuilders) {
+            builders.add(UnionBuilderBuilder(context, union))
+            builders.add(UnionUnknownMapBuilder(context, union))
             builders.add(UnionMapBuilder(context, union))
           }
         }
@@ -200,7 +208,7 @@ internal class JavaCodeGen(
       builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, ir.objects, ir.interfaces, ir.unions, ir.enums))
     }
     if (generateDataBuilders) {
-      builders.add(BuilderFactoryBuilder(context, ir.objects))
+      builders.add(BuilderFactoryBuilder(context, ir.objects, ir.interfaces, ir.unions))
     }
 
     builders.forEach { it.prepare() }

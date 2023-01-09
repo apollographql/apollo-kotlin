@@ -51,9 +51,9 @@ import com.apollographql.apollo3.ast.inferVariables
 import com.apollographql.apollo3.ast.internal.toConnectionFields
 import com.apollographql.apollo3.ast.internal.toEmbeddedFields
 import com.apollographql.apollo3.ast.isFieldNonNull
-import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.optionalValue
 import com.apollographql.apollo3.ast.pretty
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.responseName
 import com.apollographql.apollo3.ast.rootTypeDefinition
 import com.apollographql.apollo3.ast.toUtf8
@@ -271,6 +271,11 @@ internal class IrBuilder(
     // Needed to build the compiled type as well as the data builders
     usedTypes.addAll(implementsInterfaces)
 
+    /**
+     * If generateDataBuilders is false, we do not track usedFields, fallback to an emptySet
+     */
+    val usedFields = usedFields.get(name) ?: emptySet()
+
     return IrInterface(
         name = name,
         targetName = directives.findTargetName(schema),
@@ -282,6 +287,11 @@ internal class IrBuilder(
         embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
             directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
             connectionTypeEmbeddedFields(name, schema),
+        mapProperties = fields.filter {
+          usedFields.contains(it.name) || shouldAlwaysGenerate("${name}.${it.name}")
+        }.map {
+          it.toIrMapProperty()
+        }
     )
   }
 
@@ -591,6 +601,16 @@ internal class IrBuilder(
     val responseName = alias ?: name
   }
 
+  private fun putUsedField(typeName: String, fieldName: String) {
+    usedFields.compute(typeName) { _, v ->
+      if (v == null) {
+        setOf(fieldName)
+      } else {
+        v + fieldName
+      }
+    }
+  }
+
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
     return fields.map { fieldWithParent ->
       val gqlField = fieldWithParent.gqlField
@@ -603,6 +623,10 @@ internal class IrBuilder(
       val forceNonNull = gqlField.directives.findNonnull(schema) || parentTypeDefinition.isFieldNonNull(gqlField.name, schema)
 
       if (generateDataBuilders) {
+        if (parentTypeDefinition is GQLInterfaceTypeDefinition) {
+          putUsedField(parentTypeDefinition.name, fieldDefinition.name)
+        }
+
         schema.possibleTypes(parentTypeDefinition).map {
           schema.typeDefinition(it)
         }
@@ -618,13 +642,7 @@ internal class IrBuilder(
               /**
                * And remember that this field is used
                */
-              usedFields.compute(it.name) { _, v ->
-                if (v == null) {
-                  setOf(fieldDefinition.name)
-                } else {
-                  v + fieldDefinition.name
-                }
-              }
+              putUsedField(it.name, fieldDefinition.name)
             }
       }
 

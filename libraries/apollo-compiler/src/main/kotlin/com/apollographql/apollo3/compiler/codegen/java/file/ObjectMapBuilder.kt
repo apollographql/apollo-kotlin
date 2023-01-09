@@ -1,18 +1,12 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.ir.IrCompositeType2
-import com.apollographql.apollo3.compiler.ir.IrMapProperty
-import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
@@ -23,7 +17,7 @@ internal class ObjectMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.mapName(obj.name)
+  private val simpleName = layout.objectMapName(obj.name)
 
   override fun prepare() {
     context.resolver.registerMapType(obj.name, ClassName.get(packageName, simpleName))
@@ -43,7 +37,7 @@ internal class ObjectMapBuilder(
         .superclass(JavaClassNames.ObjectMap)
         .addSuperinterfaces(
             superTypes.map {
-              ClassName.get(packageName, context.layout.mapName(it))
+              ClassName.get(packageName, context.layout.objectMapName(it))
             }
         )
         .addMethod(
