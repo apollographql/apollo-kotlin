@@ -1,8 +1,8 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: Dec 2022**
+**Last updated: Jan 2023**
 
-For up to date release notes, refer to the project [Change Log](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
+For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
 > **Please note:** This is an approximation of **larger effort** work planned for the next 6 - 12 months. It does not cover all new functionality that will be added, and nothing here is set in stone. Also note that each of these releases, and several patch releases in-between, will include bug fixes (based on issue triaging) and community submitted PR's.
 
@@ -13,9 +13,9 @@ For up to date release notes, refer to the project [Change Log](https://github.c
 
 ---
 
-## Upcoming Releases
+## Version 3 releases
 
-The next few minor releases for the Kotlin Client will focus on smaller iterative improvements. Please so our [GitHub milestones](https://github.com/apollographql/apollo-kotlin/milestones) for what might be in each release.
+`3.7` is the last planned minor release under version 3.  All active feature development is now being done for the `4.0.0` release on the `main` branch.  Version 3 is still actively maintained and we will continue to release `3.7.x` patches on the `release-3.x` branch.
 
 ## Longer Term
 
@@ -31,9 +31,13 @@ Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to
 
 [Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin. We'd like to offer better support for Android developers who wish to use Jetpack Compose with our Kotlin Client.
 
+### Better Java support
+
+See the [Java Support milestone](https://github.com/apollographql/apollo-kotlin/milestone/25) for more information.  We plan to release this with version `4.0`.
+
 ### Release 4.0
 
-The next major release of Apollo Kotlin 4.0 which will include breaking changes is currently in a state of pre planning. You can review this [umbrella issue](https://github.com/apollographql/apollo-kotlin/issues/4171) which identifies some of the potential changes in 4.0.
+Our next major release is currently in active development. You can review this [umbrella issue](https://github.com/apollographql/apollo-kotlin/issues/4171) which identifies the planned changes in `4.0`.
 
 ### `release-2.x` branch
 
