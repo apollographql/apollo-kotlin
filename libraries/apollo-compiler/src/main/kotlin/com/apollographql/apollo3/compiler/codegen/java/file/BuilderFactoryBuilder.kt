@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
@@ -7,7 +8,10 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
+import com.apollographql.apollo3.compiler.ir.IrSchemaType
+import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
@@ -16,8 +20,10 @@ import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class BuilderFactoryBuilder(
-    private val context: JavaContext,
+    context: JavaContext,
     private val objs: List<IrObject>,
+    private val ifaces: List<IrInterface>,
+    private val unions: List<IrUnion>,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
@@ -47,7 +53,17 @@ internal class BuilderFactoryBuilder(
         )
         .addMethods(
             objs.map {
-              it.toMethodSpec()
+              it.toObjectBuilderMethodSpec()
+            }
+        )
+        .addMethods(
+            ifaces.map {
+              it.toUnknownBuilderMethodSpec()
+            }
+        )
+        .addMethods(
+            unions.map {
+              it.toUnknownBuilderMethodSpec()
             }
         )
         .addField(
@@ -61,12 +77,22 @@ internal class BuilderFactoryBuilder(
         .build()
   }
 
-  private fun IrObject.toMethodSpec(): MethodSpec {
+  private fun IrObject.toObjectBuilderMethodSpec(): MethodSpec {
     val builderClassName = ClassName.get(packageName, layout.objectBuilderName(name))
-    return MethodSpec.methodBuilder(layout.builderFunName(name))
+    return MethodSpec.methodBuilder(layout.objectBuilderFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
         .addStatement("return new $T($customScalarAdapters)", builderClassName)
+        .build()
+  }
+
+  private fun IrSchemaType.toUnknownBuilderMethodSpec(): MethodSpec {
+    val builderClassName = ClassName.get(packageName, layout.otherBuilderName(name))
+    return MethodSpec.methodBuilder(layout.otherBuilderFunName(name))
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(JavaClassNames.String, Identifier.__typename)
+        .returns(builderClassName)
+        .addStatement("return new $T(__typename, $customScalarAdapters)", builderClassName)
         .build()
   }
 }

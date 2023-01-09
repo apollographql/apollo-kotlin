@@ -354,6 +354,7 @@ internal data class IrInterface(
     val description: String?,
     val deprecationReason: String?,
     val embeddedFields: List<String>,
+    val mapProperties: List<IrMapProperty>,
 ) : IrSchemaType
 
 internal data class IrUnion(

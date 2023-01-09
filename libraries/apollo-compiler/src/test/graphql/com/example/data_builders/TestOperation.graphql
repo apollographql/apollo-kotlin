@@ -1,0 +1,39 @@
+query AnimalQuery {
+    animal {
+        ...CatFragment
+        ...DogFragment
+    }
+}
+
+fragment CatFragment on Cat {
+    meow
+}
+
+fragment DogFragment on Dog {
+    woof
+}
+
+query CharacterQuery {
+    character {
+        id
+        name
+        ...HumanFragment
+        ...DroidFragment
+    }
+}
+
+fragment HumanFragment on Human {
+    homePlanet
+}
+
+fragment DroidFragment on Droid {
+    primaryFunction
+}
+
+query NodeQuery {
+    node {
+        id
+        ...HumanFragment
+        ...DroidFragment
+    }
+}

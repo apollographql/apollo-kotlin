@@ -147,12 +147,24 @@ internal abstract class CodegenLayout(
     return "${name.capitalizeFirstLetter()}Builder"
   }
 
-  fun mapName(name: String): String {
+  fun otherBuilderName(name: String): String {
+    return "Other${name.capitalizeFirstLetter()}Builder"
+  }
+
+  fun objectMapName(name: String): String {
     return "${name.capitalizeFirstLetter()}Map"
   }
 
-  fun builderFunName(name: String): String {
+  fun otherMapName(name: String): String {
+    return "Other${name.capitalizeFirstLetter()}Map"
+  }
+
+  fun objectBuilderFunName(name: String): String {
     return "build${name.capitalizeFirstLetter()}"
+  }
+
+  fun otherBuilderFunName(name: String): String {
+    return "buildOther${name.capitalizeFirstLetter()}"
   }
 
   companion object {
