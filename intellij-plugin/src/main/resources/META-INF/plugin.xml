@@ -1,0 +1,42 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+  <id>com.apollographql.ijplugin</id>
+  <name>Apollo GraphQL</name>
+  <!-- Use the id that is defined for the Organization in the Marketplace -->
+  <!-- See https://plugins.jetbrains.com/docs/marketplace/organizations.html#4b3f843d -->
+  <vendor url="https://apollographql.com" email="jetbrains-marketplace@apollographql.com">apollographql</vendor>
+
+  <!-- In most cases, this should be the same list as what is listed under gradle.properties/platformPlugins -->
+  <!-- See https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html#declaring-plugin-dependencies -->
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.java</depends>
+  <depends>org.jetbrains.kotlin</depends>
+  <depends>com.intellij.gradle</depends>
+  <depends>com.intellij.lang.jsgraphql</depends>
+  <depends>org.toml.lang</depends>
+
+  <resource-bundle>messages.ApolloBundle</resource-bundle>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="com.apollographql.ijplugin.services.ApolloApplicationService" />
+    <projectService
+        serviceInterface="com.apollographql.ijplugin.services.ApolloProjectService"
+        serviceImplementation="com.apollographql.ijplugin.services.impl.ApolloProjectServiceImpl"
+    />
+
+    <codeInsight.lineMarkerProvider language="UAST"
+                                    implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider" />
+
+  </extensions>
+
+  <applicationListeners>
+    <listener class="com.apollographql.ijplugin.listeners.ApolloProjectManagerListener"
+              topic="com.intellij.openapi.project.ProjectManagerListener" />
+  </applicationListeners>
+
+  <actions>
+    <action id="ApolloV2ToV3MigrationAction" class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction">
+      <add-to-group group-id="RefactoringMenu" />
+    </action>
+  </actions>
+</idea-plugin>

@@ -1,0 +1,14 @@
+[versions]
+# gradlePlugin versions
+androidBuildTools = "7.2.1"
+apollo = "2.5.9"
+
+[libraries]
+accompanist-insets = { module = "com.google.accompanist:accompanist-insets", version.ref = "accompanist" }
+apollo-coroutines-short = "com.apollographql.apollo:apollo-coroutines-support:2.5.9"
+apollo-coroutines-medium-version = { module = "com.apollographql.apollo:apollo-coroutines-support", version = "2.5.9" }
+apollo-coroutines-medium-ref = { module = "com.apollographql.apollo:apollo-coroutines-support", version.ref = "apollo" }
+apollo-coroutines-long-version = { group = "com.apollographql.apollo", name = "apollo-coroutines-support", version = "2.5.9" }
+apollo-coroutines-long-ref = { group = "com.apollographql.apollo", name = "apollo-coroutines-support", version.ref = "apollo" }
+
+apollo-android = { module = "com.apollographql.apollo:apollo-android-support", version.ref = "apollo" }
