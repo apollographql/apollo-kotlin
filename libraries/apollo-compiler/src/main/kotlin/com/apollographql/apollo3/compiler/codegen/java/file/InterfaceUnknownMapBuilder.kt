@@ -17,7 +17,7 @@ internal class InterfaceUnknownMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.unknownMapName(iface.name)
+  private val simpleName = layout.otherMapName(iface.name)
 
   override fun prepare() {
     context.resolver.registerMapType(iface.name, ClassName.get(packageName, simpleName))

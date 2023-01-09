@@ -87,8 +87,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrSchemaType.toUnknownBuilderMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.unknownBuilderName(name))
-    return MethodSpec.methodBuilder(layout.unknownBuilderFunName(name))
+    val builderClassName = ClassName.get(packageName, layout.otherBuilderName(name))
+    return MethodSpec.methodBuilder(layout.otherBuilderFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .addParameter(JavaClassNames.String, Identifier.__typename)
         .returns(builderClassName)

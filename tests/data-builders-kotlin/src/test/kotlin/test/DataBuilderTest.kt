@@ -85,7 +85,7 @@ class DataBuilderTest {
   }
 
   @Test
-  fun unknownInterfaceChildTest() {
+  fun otherInterfaceImplementationTest() {
     val data = GetAnimalQuery.Data {
       animal = buildOtherAnimal("Gazelle") {
         species = "GazelleSpecies"
@@ -154,7 +154,7 @@ class DataBuilderTest {
   }
 
   @Test
-  fun unknownUnionTest() {
+  fun otherUnionMemberTest() {
     val data = GetFelineQuery.Data {
       feline = buildOtherFeline("Tiger") {
       }

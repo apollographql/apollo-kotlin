@@ -147,7 +147,7 @@ internal abstract class CodegenLayout(
     return "${name.capitalizeFirstLetter()}Builder"
   }
 
-  fun unknownBuilderName(name: String): String {
+  fun otherBuilderName(name: String): String {
     return "Other${name.capitalizeFirstLetter()}Builder"
   }
 
@@ -155,7 +155,7 @@ internal abstract class CodegenLayout(
     return "${name.capitalizeFirstLetter()}Map"
   }
 
-  fun unknownMapName(name: String): String {
+  fun otherMapName(name: String): String {
     return "Other${name.capitalizeFirstLetter()}Map"
   }
 
@@ -163,7 +163,7 @@ internal abstract class CodegenLayout(
     return "build${name.capitalizeFirstLetter()}"
   }
 
-  fun unknownBuilderFunName(name: String): String {
+  fun otherBuilderFunName(name: String): String {
     return "buildOther${name.capitalizeFirstLetter()}"
   }
 

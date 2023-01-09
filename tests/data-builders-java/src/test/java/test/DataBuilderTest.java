@@ -11,10 +11,10 @@ import data.builders.GetEverythingQuery;
 import data.builders.GetFelineQuery;
 import data.builders.GetIntQuery;
 import data.builders.GetPartialQuery;
+import data.builders.MyLong;
 import data.builders.PutIntMutation;
 import data.builders.type.Direction;
 import data.builders.type.builder.BuilderFactory;
-import data.builders.MyLong;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
@@ -25,7 +25,6 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 
 public class DataBuilderTest {
   private BuilderFactory factory = BuilderFactory.DEFAULT;
@@ -91,7 +90,7 @@ public class DataBuilderTest {
   }
 
   @Test
-  public void unknownInterfaceChildTest() {
+  public void otherInterfaceImplementationTest() {
     GetAnimalQuery.Data data = GetAnimalQuery.buildData(
         factory.buildQuery()
             .animal(
@@ -142,7 +141,7 @@ public class DataBuilderTest {
   }
 
   @Test
-  public void unknownUnionTest() {
+  public void otherUnionMemberTest() {
     GetFelineQuery.Data data = GetFelineQuery.buildData(
         factory.buildQuery()
             .feline(

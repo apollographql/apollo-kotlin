@@ -23,8 +23,8 @@ internal class UnionBuilderBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.unknownBuilderName(union.name)
-  private val mapClassName = ClassName.get(packageName, layout.unknownMapName(union.name))
+  private val simpleName = layout.otherBuilderName(union.name)
+  private val mapClassName = ClassName.get(packageName, layout.otherMapName(union.name))
 
   override fun prepare() {
   }

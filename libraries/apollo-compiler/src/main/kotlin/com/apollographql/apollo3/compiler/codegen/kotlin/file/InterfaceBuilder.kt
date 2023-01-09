@@ -56,7 +56,7 @@ internal class InterfaceBuilder(
 
   private fun IrInterface.builderTypeSpec(): TypeSpec {
     return TypeSpec
-        .classBuilder(layout.unknownBuilderName(name))
+        .classBuilder(layout.otherBuilderName(name))
         .superclass(KotlinSymbols.ObjectBuilder)
         .addSuperclassConstructorParameter(CodeBlock.of(Identifier.customScalarAdapters))
         .primaryConstructor(
@@ -85,7 +85,7 @@ internal class InterfaceBuilder(
   }
 
   private fun IrInterface.buildFunSpec(): FunSpec {
-    val mapClassName = ClassName(packageName, layout.unknownMapName(name))
+    val mapClassName = ClassName(packageName, layout.otherMapName(name))
     return FunSpec.builder(Identifier.build)
         .returns(mapClassName)
         .addCode(
@@ -98,7 +98,7 @@ internal class InterfaceBuilder(
 
   private fun IrInterface.unknownMapTypeSpec(): TypeSpec {
     return TypeSpec
-        .classBuilder(layout.unknownMapName(name))
+        .classBuilder(layout.objectMapName(name))
         .primaryConstructor(
             FunSpec.constructorBuilder()
                 .addParameter(
@@ -119,9 +119,9 @@ internal class InterfaceBuilder(
   }
 
   private fun IrInterface.builderFunSpec(): FunSpec {
-    val builderClassName = ClassName(packageName, layout.unknownBuilderName(name))
-    val mapClassName = ClassName(packageName, layout.unknownMapName(name))
-    return FunSpec.builder(layout.unknownBuilderFunName(name))
+    val builderClassName = ClassName(packageName, layout.otherBuilderName(name))
+    val mapClassName = ClassName(packageName, layout.otherMapName(name))
+    return FunSpec.builder(layout.otherBuilderFunName(name))
         .returns(mapClassName)
         .addParameter(Identifier.__typename, String::class)
         .addParameter(
