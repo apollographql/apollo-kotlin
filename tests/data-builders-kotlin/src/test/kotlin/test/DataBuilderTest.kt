@@ -23,10 +23,14 @@ import data.builders.type.__CustomScalarAdapters
 import data.builders.type.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
+import data.builders.type.buildOtherAnimal
+import data.builders.type.buildOtherFeline
 import data.builders.type.buildProduct
 import data.builders.type.buildPromo
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class DataBuilderTest {
   @Test
@@ -78,6 +82,20 @@ class DataBuilderTest {
     assertEquals("Lion", data.animal.__typename)
     assertEquals("LionSpecies", data.animal.species)
     assertEquals("Rooooaaarr", data.animal.onLion?.roar)
+  }
+
+  @Test
+  fun otherInterfaceImplementationTest() {
+    val data = GetAnimalQuery.Data {
+      animal = buildOtherAnimal("Gazelle") {
+        species = "GazelleSpecies"
+      }
+    }
+
+    assertEquals("Gazelle", data.animal.__typename)
+    assertEquals("GazelleSpecies", data.animal.species)
+    assertNotNull(data.animal.id)
+    assertNull(data.animal.onLion)
   }
 
   @Test
@@ -133,6 +151,18 @@ class DataBuilderTest {
 
     assertEquals("Cat", data.feline.__typename)
     assertEquals(5, data.feline.onCat?.mustaches)
+  }
+
+  @Test
+  fun otherUnionMemberTest() {
+    val data = GetFelineQuery.Data {
+      feline = buildOtherFeline("Tiger") {
+      }
+    }
+
+    assertEquals("Tiger", data.feline.__typename)
+    assertEquals(null, data.feline.onCat)
+    assertEquals(null, data.feline.onAnimal)
   }
 
   @Test

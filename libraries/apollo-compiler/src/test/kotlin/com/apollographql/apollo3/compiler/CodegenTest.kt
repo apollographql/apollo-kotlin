@@ -268,6 +268,10 @@ class CodegenTest {
         "mutation_create_review", "simple_fragment" -> true
         else -> false
       }
+      val generateDataBuilders = when (folder.name) {
+        "mutation_create_review", "simple_fragment", "data_builders" -> true
+        else -> false
+      }
       val operationIdGenerator = when (folder.name) {
         "operation_id_generator" -> object : OperationIdGenerator {
           override fun apply(operationDocument: String, operationName: String): String {
@@ -397,7 +401,7 @@ class CodegenTest {
           generateFilterNotNull = true,
           generateFragmentImplementations = generateFragmentImplementations,
           generateModelBuilders = generateModelBuilders,
-          generateDataBuilders = generateAsInternal,
+          generateDataBuilders = generateDataBuilders,
           generateSchema = generateSchema,
           targetLanguage = targetLanguage,
           sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
