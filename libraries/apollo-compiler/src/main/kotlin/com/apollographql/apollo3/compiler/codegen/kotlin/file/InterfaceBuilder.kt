@@ -98,7 +98,7 @@ internal class InterfaceBuilder(
 
   private fun IrInterface.unknownMapTypeSpec(): TypeSpec {
     return TypeSpec
-        .classBuilder(layout.objectMapName(name))
+        .classBuilder(layout.otherMapName(name))
         .primaryConstructor(
             FunSpec.constructorBuilder()
                 .addParameter(
