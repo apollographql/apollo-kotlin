@@ -14,14 +14,14 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.Map
 
-internal class Dog {
+public class Dog {
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Dog").interfaces(listOf(Node.type)).build()
   }
 }
 
-internal class DogBuilder(
+public class DogBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder(customScalarAdapters) {
   public var id: String by __fields
@@ -31,11 +31,11 @@ internal class DogBuilder(
   public fun build(): DogMap = DogMap(__fields)
 }
 
-internal class DogMap(
+public class DogMap(
   __fields: Map<String, Any?>,
 ) : NodeMap, AnimalMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap {
+public fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap {
   val builder = DogBuilder(customScalarAdapters)
   builder.__typename = "Dog"
   builder.block()

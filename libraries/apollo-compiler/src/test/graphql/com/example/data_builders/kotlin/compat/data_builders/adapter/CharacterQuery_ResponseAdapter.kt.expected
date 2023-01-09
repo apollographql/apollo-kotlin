@@ -21,7 +21,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object CharacterQuery_ResponseAdapter {
+public object CharacterQuery_ResponseAdapter {
   public object Data : Adapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 

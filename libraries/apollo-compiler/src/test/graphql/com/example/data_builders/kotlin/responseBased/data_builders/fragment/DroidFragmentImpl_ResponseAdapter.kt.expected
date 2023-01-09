@@ -14,7 +14,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object DroidFragmentImpl_ResponseAdapter {
+public object DroidFragmentImpl_ResponseAdapter {
   public object Data : Adapter<DroidFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 

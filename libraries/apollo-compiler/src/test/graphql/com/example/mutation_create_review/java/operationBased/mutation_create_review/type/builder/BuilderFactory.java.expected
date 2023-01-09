@@ -40,4 +40,8 @@ public class BuilderFactory {
   public OtherCharacterBuilder buildOtherCharacter(String __typename) {
     return new OtherCharacterBuilder(__typename, customScalarAdapters);
   }
+
+  public OtherSearchResultBuilder buildOtherSearchResult(String __typename) {
+    return new OtherSearchResultBuilder(__typename, customScalarAdapters);
+  }
 }

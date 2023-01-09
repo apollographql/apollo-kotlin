@@ -14,7 +14,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object HumanFragmentImpl_ResponseAdapter {
+public object HumanFragmentImpl_ResponseAdapter {
   public object Data : Adapter<HumanFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 

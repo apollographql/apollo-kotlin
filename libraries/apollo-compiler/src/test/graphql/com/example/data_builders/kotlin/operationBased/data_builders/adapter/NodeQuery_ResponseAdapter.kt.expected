@@ -20,7 +20,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object NodeQuery_ResponseAdapter {
+public object NodeQuery_ResponseAdapter {
   public object Data : Adapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 

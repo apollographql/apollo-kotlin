@@ -14,7 +14,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object CatFragmentImpl_ResponseAdapter {
+public object CatFragmentImpl_ResponseAdapter {
   public object Data : Adapter<CatFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("meow")
 

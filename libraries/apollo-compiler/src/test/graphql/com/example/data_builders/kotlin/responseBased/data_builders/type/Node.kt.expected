@@ -14,13 +14,13 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.Map
 
-internal class Node {
+public class Node {
   public companion object {
     public val type: InterfaceType = InterfaceType.Builder(name = "Node").build()
   }
 }
 
-internal class OtherNodeBuilder(
+public class OtherNodeBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder(customScalarAdapters) {
   public var id: String by __fields
@@ -28,13 +28,13 @@ internal class OtherNodeBuilder(
   public fun build(): OtherNodeMap = OtherNodeMap(__fields)
 }
 
-internal interface NodeMap
+public interface NodeMap
 
-internal class OtherNodeMap(
+public class OtherNodeMap(
   __fields: Map<String, Any?>,
 ) : NodeMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildOtherNode(__typename: String, block: OtherNodeBuilder.() -> Unit):
+public fun BuilderScope.buildOtherNode(__typename: String, block: OtherNodeBuilder.() -> Unit):
     OtherNodeMap {
   val builder = OtherNodeBuilder(customScalarAdapters)
   builder.__typename = __typename

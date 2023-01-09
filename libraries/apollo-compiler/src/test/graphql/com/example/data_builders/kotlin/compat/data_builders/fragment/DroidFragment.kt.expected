@@ -8,6 +8,6 @@ package com.example.data_builders.fragment
 import com.apollographql.apollo3.api.Fragment
 import kotlin.String
 
-internal data class DroidFragment(
+public data class DroidFragment(
   public val primaryFunction: String,
 ) : Fragment.Data

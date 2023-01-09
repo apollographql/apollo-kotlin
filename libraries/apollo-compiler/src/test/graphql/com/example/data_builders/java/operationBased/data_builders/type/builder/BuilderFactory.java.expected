@@ -44,4 +44,8 @@ public class BuilderFactory {
   public OtherNodeBuilder buildOtherNode(String __typename) {
     return new OtherNodeBuilder(__typename, customScalarAdapters);
   }
+
+  public OtherAnimalBuilder buildOtherAnimal(String __typename) {
+    return new OtherAnimalBuilder(__typename, customScalarAdapters);
+  }
 }

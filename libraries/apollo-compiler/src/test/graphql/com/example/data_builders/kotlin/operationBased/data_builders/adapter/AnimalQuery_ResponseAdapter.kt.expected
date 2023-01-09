@@ -20,7 +20,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object AnimalQuery_ResponseAdapter {
+public object AnimalQuery_ResponseAdapter {
   public object Data : Adapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 

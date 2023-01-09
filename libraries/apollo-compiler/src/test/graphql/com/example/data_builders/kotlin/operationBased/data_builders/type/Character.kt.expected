@@ -14,14 +14,14 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.Map
 
-internal class Character {
+public class Character {
   public companion object {
     public val type: InterfaceType =
         InterfaceType.Builder(name = "Character").interfaces(listOf(Node.type)).build()
   }
 }
 
-internal class OtherCharacterBuilder(
+public class OtherCharacterBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder(customScalarAdapters) {
   public var id: String by __fields
@@ -31,13 +31,13 @@ internal class OtherCharacterBuilder(
   public fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }
 
-internal interface CharacterMap : NodeMap
+public interface CharacterMap : NodeMap
 
-internal class OtherCharacterMap(
+public class OtherCharacterMap(
   __fields: Map<String, Any?>,
 ) : NodeMap, CharacterMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildOtherCharacter(__typename: String,
+public fun BuilderScope.buildOtherCharacter(__typename: String,
     block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap {
   val builder = OtherCharacterBuilder(customScalarAdapters)
   builder.__typename = __typename

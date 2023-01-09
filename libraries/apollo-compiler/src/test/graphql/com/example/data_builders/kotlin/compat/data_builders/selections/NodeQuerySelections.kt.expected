@@ -16,7 +16,7 @@ import com.example.data_builders.type.GraphQLString
 import com.example.data_builders.type.Node
 import kotlin.collections.List
 
-internal object NodeQuerySelections {
+public object NodeQuerySelections {
   private val __node: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "__typename",

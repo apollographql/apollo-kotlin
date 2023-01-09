@@ -30,7 +30,7 @@ import kotlin.Int
 import kotlin.String
 import kotlin.Unit
 
-internal class CharacterQuery() : Query<CharacterQuery.Data> {
+public class CharacterQuery() : Query<CharacterQuery.Data> {
   public override fun equals(other: Any?): Boolean = other != null && other::class == this::class
 
   public override fun hashCode(): Int = this::class.hashCode()

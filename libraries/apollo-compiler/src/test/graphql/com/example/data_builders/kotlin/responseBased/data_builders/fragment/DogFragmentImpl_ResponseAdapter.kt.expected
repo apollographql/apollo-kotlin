@@ -14,7 +14,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
-internal object DogFragmentImpl_ResponseAdapter {
+public object DogFragmentImpl_ResponseAdapter {
   public object Data : Adapter<DogFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("woof")
 

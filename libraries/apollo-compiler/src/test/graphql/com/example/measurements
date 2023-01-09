@@ -2,18 +2,18 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                  228301
+aggregate-all                                                                                  228460
 aggregate-kotlin-responseBased                                                                  59020
 aggregate-kotlin-operationBased                                                                 39450
 aggregate-kotlin-compat                                                                         40956
-aggregate-java-operationBased                                                                   88875
+aggregate-java-operationBased                                                                   89034
 
 java-operationBased-fragments_with_defer_and_include_directives                                  5566
 kotlin-compat-fragments_with_defer_and_include_directives                                        3612
 kotlin-operationBased-fragments_with_defer_and_include_directives                                3419
-java-operationBased-data_builders                                                                2865
+java-operationBased-data_builders                                                                2918
 kotlin-responseBased-fragment_with_inline_fragment                                               2380
-java-operationBased-mutation_create_review                                                       2314
+java-operationBased-mutation_create_review                                                       2367
 java-operationBased-fragment_with_inline_fragment                                                2219
 kotlin-responseBased-data_builders                                                               2215
 kotlin-compat-data_builders                                                                      1977
@@ -28,7 +28,7 @@ java-operationBased-mutation_create_review_semantic_naming                      
 java-operationBased-root_query_fragment_with_nested_fragments                                    1561
 kotlin-compat-fragment_with_inline_fragment                                                      1488
 java-operationBased-named_fragment_delegate                                                      1458
-java-operationBased-simple_fragment                                                              1403
+java-operationBased-simple_fragment                                                              1456
 java-operationBased-named_fragment_with_variables                                                1385
 kotlin-responseBased-mutation_create_review                                                      1362
 kotlin-responseBased-named_fragment_delegate                                                     1339

@@ -14,14 +14,14 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.Map
 
-internal class Human {
+public class Human {
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Human").interfaces(listOf(Character.type)).build()
   }
 }
 
-internal class HumanBuilder(
+public class HumanBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder(customScalarAdapters) {
   public var id: String by __fields
@@ -33,11 +33,11 @@ internal class HumanBuilder(
   public fun build(): HumanMap = HumanMap(__fields)
 }
 
-internal class HumanMap(
+public class HumanMap(
   __fields: Map<String, Any?>,
 ) : CharacterMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap {
+public fun BuilderScope.buildHuman(block: HumanBuilder.() -> Unit): HumanMap {
   val builder = HumanBuilder(customScalarAdapters)
   builder.__typename = "Human"
   builder.block()

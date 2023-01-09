@@ -12,7 +12,7 @@ import kotlin.collections.List
 /**
  * A __Schema object containing all the composite types and a possibleTypes helper function
  */
-internal object __Schema {
+public object __Schema {
   public val all: List<CompiledNamedType> = listOf(
         com.example.data_builders.type.Animal.type, com.example.data_builders.type.Cat.type,
             com.example.data_builders.type.Character.type, com.example.data_builders.type.Dog.type,

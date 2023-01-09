@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.notNull
 import com.example.data_builders.type.GraphQLString
 import kotlin.collections.List
 
-internal object HumanFragmentSelections {
+public object HumanFragmentSelections {
   public val __root: List<CompiledSelection> = listOf(
         CompiledField.Builder(
           name = "homePlanet",

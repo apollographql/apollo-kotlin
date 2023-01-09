@@ -7,6 +7,6 @@ package com.example.data_builders.fragment
 
 import kotlin.String
 
-internal interface CatFragment {
+public interface CatFragment {
   public val meow: String
 }

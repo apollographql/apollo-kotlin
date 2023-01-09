@@ -14,13 +14,13 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.Map
 
-internal class Query {
+public class Query {
   public companion object {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
   }
 }
 
-internal class QueryBuilder(
+public class QueryBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder(customScalarAdapters) {
   public var animal: AnimalMap by __fields
@@ -32,11 +32,11 @@ internal class QueryBuilder(
   public fun build(): QueryMap = QueryMap(__fields)
 }
 
-internal class QueryMap(
+public class QueryMap(
   __fields: Map<String, Any?>,
 ) : Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap {
+public fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap {
   val builder = QueryBuilder(customScalarAdapters)
   builder.__typename = "Query"
   builder.block()

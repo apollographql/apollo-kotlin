@@ -14,14 +14,14 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.Map
 
-internal class Droid {
+public class Droid {
   public companion object {
     public val type: ObjectType =
         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
   }
 }
 
-internal class DroidBuilder(
+public class DroidBuilder(
   customScalarAdapters: CustomScalarAdapters,
 ) : ObjectBuilder(customScalarAdapters) {
   public var name: String by __fields
@@ -31,11 +31,11 @@ internal class DroidBuilder(
   public fun build(): DroidMap = DroidMap(__fields)
 }
 
-internal class DroidMap(
+public class DroidMap(
   __fields: Map<String, Any?>,
 ) : CharacterMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildDroid(block: DroidBuilder.() -> Unit): DroidMap {
+public fun BuilderScope.buildDroid(block: DroidBuilder.() -> Unit): DroidMap {
   val builder = DroidBuilder(customScalarAdapters)
   builder.__typename = "Droid"
   builder.block()
