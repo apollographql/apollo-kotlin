@@ -28,12 +28,10 @@ import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratePrimi
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateTestBuilders
 import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
 import com.apollographql.apollo3.compiler.Options.Companion.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
 import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSchemaPackageNameForFragments
 import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
 import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
@@ -47,7 +45,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
@@ -62,8 +59,8 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
-import javax.inject.Inject
 
+@Suppress("UnstableApiUsage") // Because the gradle-api we link against has a lot of symbols still experimental
 @CacheableTask
 abstract class ApolloGenerateSourcesTask : DefaultTask() {
   @get:OutputFile
@@ -202,18 +199,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
   @get:Input
   @get:Optional
-  abstract val generateTestBuilders: Property<Boolean>
-
-  @get:Input
-  @get:Optional
   abstract val generateDataBuilders: Property<Boolean>
-
-  @get:Input
-  @get:Optional
-  abstract val useSchemaPackageNameForFragments: Property<Boolean>
-
-  @get:Inject
-  abstract val objectFactory: ObjectFactory
 
   @get:Input
   abstract val projectPath: Property<String>
@@ -307,24 +293,26 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
     }
 
     val targetLanguage = targetLanguage.get()
-    val flattenModels = when {
-      targetLanguage == TargetLanguage.JAVA -> {
+    val flattenModels = when (targetLanguage) {
+      TargetLanguage.JAVA -> {
         check(flattenModels.isPresent.not()) {
           "Java codegen does not support flattenModels"
         }
         true
       }
-
-      else -> flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
+      else -> {
+        // Operation-based models have few name clashes. Mostly when there are lists. For these few cases we flatten to avoid the name clash
+        // Response-based models would have way too much name clashes os we never flatten them
+        flattenModels.getOrElse(commonMetadata.codegenModels != MODELS_RESPONSE_BASED)
+      }
     }
-    val codegenModels = when {
-      targetLanguage == TargetLanguage.JAVA -> {
+    val codegenModels = when (targetLanguage) {
+      TargetLanguage.JAVA -> {
         check(commonMetadata.codegenModels == MODELS_OPERATION_BASED) {
           "Java codegen does not support codegenModels=${commonMetadata.codegenModels}"
         }
         MODELS_OPERATION_BASED
       }
-
       else -> commonMetadata.codegenModels
     }
 
@@ -354,17 +342,14 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
         logger = logger,
-        // Response-based models generate a lot of models and therefore a lot of name clashes if flattened
         flattenModels = flattenModels,
         incomingCompilerMetadata = metadata.map { it.compilerMetadata },
         schema = commonMetadata.schema,
         codegenModels = codegenModels,
         addTypename = addTypename.getOrElse(defaultAddTypename),
         schemaPackageName = commonMetadata.schemaPackageName,
-        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
-        generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
         generateDataBuilders = generateDataBuilders,
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),

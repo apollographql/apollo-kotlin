@@ -1,4 +1,0 @@
-type Query {
-  field1: String!
-  field2: String!
-}

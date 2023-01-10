@@ -330,13 +330,6 @@ interface Service {
   fun packageNamesFromFilePaths(rootPackageName: String? = null)
 
   /**
-   * Whether to use the schema package name for fragments. This is used for backward compat with 2.x
-   *
-   * Default value: false
-   */
-  val useSchemaPackageNameForFragments: Property<Boolean>
-
-  /**
    * Whether to generate kotlin constructors with `@JvmOverloads` for more graceful Java interop experience when default values are present.
    * Note: when enabled in a multi-platform setup, the generated code can only be used in the common or JVM sourcesets.
    *
@@ -450,16 +443,6 @@ interface Service {
   /**
    * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
    * cases too.
-   *
-   * Only valid when [generateKotlinModels] is true
-   */
-  @ApolloExperimental
-  @Deprecated("Test builders are operation based and generate a lot of code. Use data builders instead", ReplaceWith("generateDataBuilders"))
-  val generateTestBuilders: Property<Boolean>
-
-  /**
-   * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
-   * cases too.
    */
   @ApolloExperimental
   val generateDataBuilders: Property<Boolean>
@@ -483,11 +466,10 @@ interface Service {
   val generateModelBuilders: Property<Boolean>
 
   /**
-   * What codegen to use. One of "operationBased", "responseBased", "compat" or "experimental_operationBasedWithInterfaces"
+   * What codegen to use. One of "operationBased", "responseBased" or "experimental_operationBasedWithInterfaces"
    *
    * - "operationBased" generates models that map 1:1 with the GraphQL operation
    * - "responseBased" generates models that map 1:1 with the Json response
-   * - "compat" is for compatibility with 2.x and will be removed in a future version
    * - "experimental_operationBasedWithInterfaces" is like "operationBased" except it will generate an interface for selection
    * sets that contain fragments to make it easier to use `when` statements
    *
@@ -676,27 +658,6 @@ interface Service {
   val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
   /**
-   * A shorthand method that configures defaults that match Apollo Android 2.x codegen
-   *
-   * In practice, it does the following:
-   *
-   * ```
-   * packageNamesFromFilePaths(rootPackageName)
-   * useSchemaPackageNameForFragments.set(true)
-   * codegenModels.set(MODELS_COMPAT)
-   * ```
-   *
-   * See the individual options for a more complete description.
-   *
-   * This method is deprecated and provided for migration purposes only. It will be removed
-   * in a future version
-   */
-  @Deprecated("useVersion2Compat() is a helper function to help migrating to 3.x " +
-      "and will be removed in a future version")
-  @ApolloDeprecatedSince(v3_0_0)
-  fun useVersion2Compat(rootPackageName: String? = null)
-
-  /**
    * By default, the used coordinates are computed automatically from all modules sharing a schema. This means that
    * changing a query in a module might trigger task execution in a completely different module. If your used coordinates
    * do not change too often, you can opt-in to save them in a file that is read instead of checking all modules.
@@ -760,17 +721,6 @@ interface Service {
    * - main sourceSet for Android projects
    */
   fun outputDirConnection(action: Action<in DirectoryConnection>)
-
-  /**
-   * Overrides the way the generated test builders are connected.
-   * Use this if you want to connect the generated test builders to another task than the default destination.
-   *
-   * By default, the generated sources are connected to:
-   * - test sourceSet for Kotlin projects
-   * - commonTest sourceSet for Kotlin multiplatform projects
-   * - test *and* androidTest variants for Android projects
-   */
-  fun testDirConnection(action: Action<in DirectoryConnection>)
 
   /**
    * A [DirectoryConnection] defines how the generated sources are connected to the rest of the

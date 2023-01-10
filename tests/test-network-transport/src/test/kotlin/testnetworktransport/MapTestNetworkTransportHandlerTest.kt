@@ -7,7 +7,7 @@ import com.apollographql.apollo3.testing.MapTestNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
-import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
+import testnetworktransport.type.buildDroid
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -23,7 +23,7 @@ class MapTestNetworkTransportHandlerTest {
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test
@@ -94,7 +94,7 @@ class MapTestNetworkTransportHandlerTest {
   fun registerDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
-      hero = droidHero {
+      hero = buildDroid {
         name = "R2D2"
       }
     }

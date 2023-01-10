@@ -193,8 +193,7 @@ internal data class IrFieldInfo(
     val type: IrType,
 
     /**
-     * The GraphQL type of the field needed to build the CompiledField
-     * null for synthetic fields
+     * The GraphQL type of the field needed to build the CompiledField or null for synthetic fields
      *
      * TODO: CompiledField duplicates "operation_document" so we could certainly remove it (and gqlType too)
      */

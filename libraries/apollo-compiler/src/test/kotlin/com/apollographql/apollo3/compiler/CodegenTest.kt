@@ -173,7 +173,6 @@ class CodegenTest {
                 @Suppress("DEPRECATION")
                 val list = listOf(
                     Parameters(file, MODELS_OPERATION_BASED, true),
-                    Parameters(file, MODELS_COMPAT, true)
                 )
 
                 if (file.name in listOf("inline_fragment_with_include_directive", "fragment_spread_with_include_directive", "fragments_with_defer_and_include_directives")) {
@@ -320,10 +319,7 @@ class CodegenTest {
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
       val flattenModels = folder.name == "capitalized_fields" || when (targetLanguage) {
         JAVA -> true
-        else -> {
-          @Suppress("DEPRECATION")
-          codegenModels == MODELS_COMPAT
-        }
+        else -> false
       }
       val customScalarsMapping = if (folder.name in listOf(
               "custom_scalar_type",

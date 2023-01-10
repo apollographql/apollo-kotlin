@@ -27,7 +27,6 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationSelection
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.OperationVariablesAdapterBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.TestBuildersBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.Ir
@@ -48,7 +47,6 @@ internal class KotlinCodeGen(
     private val useSemanticNaming: Boolean,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
-    private val useSchemaPackageNameForFragments: Boolean,
     /**
      * The operation id cannot be set in [IrOperation] because it needs access to [IrOperation.sourceWithFragments]
      * So we do this in the codegen step
@@ -59,7 +57,6 @@ internal class KotlinCodeGen(
     private val generateQueryDocument: Boolean,
     private val generateSchema: Boolean,
     private val generatedSchemaName: String,
-    private val generateTestBuilders: Boolean,
     private val generateDataBuilders: Boolean,
     /**
      * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
@@ -89,7 +86,6 @@ internal class KotlinCodeGen(
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
-        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
         decapitalizeFields = decapitalizeFields,
     )
 
@@ -193,17 +189,6 @@ internal class KotlinCodeGen(
                   generateDataBuilders
               )
           )
-
-          if (generateTestBuilders) {
-            builders.add(
-                TestBuildersBuilder(
-                    context,
-                    operation.responseBasedDataModelGroup ?: error("generateTestBuilders requires generateTestBuilders"),
-                    operation,
-                    flatten
-                )
-            )
-          }
         }
 
     if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {

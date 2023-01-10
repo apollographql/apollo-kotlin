@@ -9,7 +9,7 @@ import com.apollographql.apollo3.testing.enqueueTestNetworkError
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import com.benasher44.uuid.uuid4
-import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
+import testnetworktransport.type.buildDroid
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -107,7 +107,7 @@ class QueueTestNetworkTransportHandlerTest {
   fun enqueueDataTestBuilder() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query = GetHeroQuery("001")
     val testData = GetHeroQuery.Data {
-      hero = droidHero {
+      hero = buildDroid {
         name = "R2D2"
       }
     }

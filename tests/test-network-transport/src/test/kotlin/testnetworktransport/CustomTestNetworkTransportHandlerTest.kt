@@ -11,7 +11,7 @@ import com.apollographql.apollo3.testing.registerTestResponse
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import testnetworktransport.test.GetHeroQuery_TestBuilder.Data
+import testnetworktransport.type.buildDroid
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -41,7 +41,7 @@ class CustomTestNetworkTransportHandlerTest {
               operation = GetHeroQuery("mock"),
               requestUuid = request.requestUuid,
               data = GetHeroQuery.Data {
-                hero = droidHero {
+                hero = buildDroid {
                   name = "Droid ${counter++}"
                 }
               }

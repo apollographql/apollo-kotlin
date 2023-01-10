@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.Schema
@@ -18,13 +17,6 @@ import java.io.File
 const val MODELS_RESPONSE_BASED = "responseBased"
 const val MODELS_OPERATION_BASED = "operationBased"
 const val MODELS_OPERATION_BASED_WITH_INTERFACES = "experimental_operationBasedWithInterfaces"
-
-@Deprecated(
-    "MODELS_COMPAT is provided for 2.x compatibility and will be removed in a future version.",
-    replaceWith = ReplaceWith("MODELS_OPERATION_BASED")
-)
-@ApolloDeprecatedSince(v3_0_0)
-const val MODELS_COMPAT = "compat"
 
 const val ADD_TYPENAME_IF_FRAGMENTS = "ifFragments"
 const val ADD_TYPENAME_IF_POLYMORPHIC = "ifPolymorphic"
@@ -135,10 +127,6 @@ class Options(
      */
     val schemaPackageName: String,
     /**
-     * Whether to use the schemaPackageName for fragments
-     */
-    val useSchemaPackageNameForFragments: Boolean = defaultUseSchemaPackageNameForFragments,
-    /**
      * The package name used for operations
      */
     val packageNameGenerator: PackageNameGenerator,
@@ -218,7 +206,6 @@ class Options(
      *
      * Only valid when [targetLanguage] is [TargetLanguage.KOTLIN_1_4] or [TargetLanguage.KOTLIN_1_5]
      */
-    val generateTestBuilders: Boolean = defaultGenerateTestBuilders,
     val generateDataBuilders: Boolean = defaultGenerateDataBuilders,
 
     /**
@@ -368,7 +355,6 @@ class Options(
       operationOutputFile: File? = this.operationOutputFile,
       executableFiles: Set<File> = this.executableFiles,
       schemaPackageName: String = this.schemaPackageName,
-      useSchemaPackageNameForFragments: Boolean = this.useSchemaPackageNameForFragments,
       packageNameGenerator: PackageNameGenerator = this.packageNameGenerator,
       alwaysGenerateTypesMatching: Set<String> = this.alwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = this.operationOutputGenerator,
@@ -388,7 +374,6 @@ class Options(
       generateSchema: Boolean = this.generateSchema,
       generatedSchemaName: String = this.generatedSchemaName,
       targetLanguage: TargetLanguage = this.targetLanguage,
-      generateTestBuilders: Boolean = this.generateTestBuilders,
       generateDataBuilders: Boolean = this.generateDataBuilders,
       sealedClassesForEnumsMatching: List<String> = this.sealedClassesForEnumsMatching,
       classesForEnumsMatching: List<String> = this.classesForEnumsMatching,
@@ -409,7 +394,6 @@ class Options(
       debugDir = debugDir,
       operationOutputFile = operationOutputFile,
       schemaPackageName = schemaPackageName,
-      useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
       packageNameGenerator = packageNameGenerator,
       alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
       operationOutputGenerator = operationOutputGenerator,
@@ -429,7 +413,6 @@ class Options(
       generateQueryDocument = generateQueryDocument,
       generateSchema = generateSchema,
       generatedSchemaName = generatedSchemaName,
-      generateTestBuilders = generateTestBuilders,
       generateDataBuilders = generateDataBuilders,
       testDir = testDir,
       sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
@@ -467,13 +450,11 @@ class Options(
     val defaultTargetLanguage = TargetLanguage.KOTLIN_1_5
     const val defaultGenerateSchema = false
     const val defaultGeneratedSchemaName = "__Schema"
-    const val defaultGenerateTestBuilders = false
     const val defaultGenerateDataBuilders = false
     const val defaultGenerateModelBuilders = false
     val defaultSealedClassesForEnumsMatching = emptyList<String>()
     val defaultClassesForEnumsMatching = listOf(".*")
     const val defaultGenerateOptionalOperationVariables = true
-    const val defaultUseSchemaPackageNameForFragments = false
     const val defaultAddJvmOverloads = false
     const val defaultFieldsOnDisjointTypesMustMerge = true
     const val defaultGeneratePrimitiveTypes = false
