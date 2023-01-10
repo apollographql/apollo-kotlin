@@ -13,7 +13,9 @@ plugins {
 }
 
 group = properties("pluginGroup")
-version = properties("pluginVersion")
+
+// Use the global version defined in the root project
+version = project.findProperty("VERSION_NAME").toString()
 
 repositories {
   mavenCentral()
@@ -38,7 +40,7 @@ intellij {
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-  version.set(properties("pluginVersion"))
+  version.set(properties("VERSION_NAME"))
   groups.set(emptyList())
 }
 
@@ -50,7 +52,7 @@ tasks {
   }
 
   patchPluginXml {
-    version.set(properties("pluginVersion"))
+    version.set(properties("VERSION_NAME"))
     sinceBuild.set(properties("pluginSinceBuild"))
     untilBuild.set(properties("pluginUntilBuild"))
 
@@ -70,7 +72,7 @@ tasks {
     // Get the latest available change notes from the changelog file
     changeNotes.set(provider {
       changelog.run {
-        getOrNull(properties("pluginVersion")) ?: getUnreleased()
+        getOrNull(properties("VERSION_NAME")) ?: getUnreleased()
       }.toHTML()
     })
   }
@@ -108,10 +110,10 @@ tasks {
   publishPlugin {
     dependsOn("patchChangelog")
     token.set(System.getenv("PUBLISH_TOKEN"))
-    // pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
-    // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
-    // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-    channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
+    // Currently we release to a specific "preview" release channel so the plugin is not listed on the Marketplace
+    // Change to "default" to release to the main channel.
+    // Read more: https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
+    channels.set(listOf("preview"))
   }
 
   // Log tests
