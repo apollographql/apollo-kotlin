@@ -11,17 +11,12 @@ import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
-import com.apollographql.apollo3.ast.GQLEnumValueDefinition
-import com.apollographql.apollo3.ast.GQLFieldDefinition
 import com.apollographql.apollo3.ast.GQLFloatValue
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
-import com.apollographql.apollo3.ast.GQLInputValueDefinition
 import com.apollographql.apollo3.ast.GQLIntValue
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
-import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLNullValue
@@ -38,18 +33,13 @@ import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.GQLVariableValue
 import com.apollographql.apollo3.ast.InferredVariable
 import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.Schema.Companion.TYPE_POLICY
 import com.apollographql.apollo3.ast.TransformResult
-import com.apollographql.apollo3.ast.coerceInExecutableContextOrThrow
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findOptInFeature
-import com.apollographql.apollo3.ast.findTargetName
 import com.apollographql.apollo3.ast.inferVariables
-import com.apollographql.apollo3.ast.internal.toConnectionFields
-import com.apollographql.apollo3.ast.internal.toEmbeddedFields
 import com.apollographql.apollo3.ast.isFieldNonNull
 import com.apollographql.apollo3.ast.optionalValue
 import com.apollographql.apollo3.ast.pretty
@@ -61,26 +51,22 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED_WITH_INTERFACES
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
-import com.apollographql.apollo3.compiler.ScalarInfo
 
-internal class IrBuilder(
+internal class IrOperationsBuilder(
     private val schema: Schema,
     private val operationDefinitions: List<GQLOperationDefinition>,
     private val fragmentDefinitions: List<GQLFragmentDefinition>,
     private val allFragmentDefinitions: Map<String, GQLFragmentDefinition>,
-    private val alwaysGenerateTypesMatching: Set<String>,
-    private val scalarMapping: Map<String, ScalarInfo>,
     private val codegenModels: String,
     private val generateOptionalOperationVariables: Boolean,
-    private val generateDataBuilders: Boolean,
     private val fieldsOnDisjointTypesMustMerge: Boolean,
+    private val flattenModels: Boolean,
+    private val decapitalizeFields: Boolean,
+    private val alwaysGenerateTypesMatching: Set<String>,
+    private val generateDataBuilders: Boolean,
 ) : FieldMerger {
-  private val usedTypes = mutableListOf<String>()
-
-  /**
-   * a map of named type -> used field names
-   */
-  private val usedFields = mutableMapOf<String, Set<String>>()
+  private val usedTypes = mutableSetOf<String>()
+  private val usedFields = mutableMapOf<String, MutableSet<String>>()
 
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
       schema,
@@ -107,270 +93,209 @@ internal class IrBuilder(
 
   private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
 
-  fun build(): Ir {
+  fun build(): IrOperations {
     val operations = operationDefinitions.map { it.toIr() }
     val fragments = fragmentDefinitions.map { it.toIr() }
 
-    val visitedTypes = mutableSetOf<String>()
-    val enums = mutableListOf<IrEnum>()
-    val inputObjects = mutableListOf<IrInputObject>()
-    val objects = mutableListOf<IrObject>()
-    val interfaces = mutableListOf<IrInterface>()
-    val unions = mutableListOf<IrUnion>()
-    val customScalars = mutableListOf<IrCustomScalar>()
+    /**
+     * Add schema types that are requested by the user
+     */
+    schema.typeDefinitions.values.forEach {gqlTypeDefinition ->
+      if (shouldAlwaysGenerate(gqlTypeDefinition.name)) {
+        usedTypes.add(gqlTypeDefinition.name)
+      }
 
-    // Inject extra types
-    usedTypes.addAll(schema.typeDefinitions.keys.filter { shouldAlwaysGenerate(it) })
+      val fields = when(gqlTypeDefinition) {
+        is GQLObjectTypeDefinition -> gqlTypeDefinition.fields
+        is GQLInterfaceTypeDefinition -> gqlTypeDefinition.fields
+        else -> null
+      }
 
-    // Inject all built-in scalars
-    usedTypes.add("String")
-    usedTypes.add("Boolean")
-    usedTypes.add("Int")
-    usedTypes.add("Float")
-    usedTypes.add("ID")
-
-    // Inject custom scalars specified in the Gradle configuration
-    usedTypes.addAll(scalarMapping.keys)
-
-    // Generate the root types
-    operationDefinitions.forEach {
-      when (it.operationType) {
-        "query" -> usedTypes.add(schema.queryTypeDefinition.name)
-        "mutation" -> usedTypes.add(schema.mutationTypeDefinition?.name ?: error("No mutation type"))
-        "subscription" -> usedTypes.add(schema.subscriptionTypeDefinition?.name ?: error("No subscription type"))
+      if (fields != null) {
+        fields.forEach {
+          if (shouldAlwaysGenerate("${gqlTypeDefinition.name}.${it.name}")) {
+            usedFields.putField(gqlTypeDefinition.name, it.name)
+          }
+        }
       }
     }
-    // Generate the fragment types
-    fragmentDefinitions.forEach {
-      usedTypes.add(it.typeCondition.name)
+
+    /**
+     * Add the types that are needed by data builders
+     * Hydrate the output types.
+     * No need to add recursively here, this was done while scanning the operations already.
+     * visitedOutputTypes contains a map of type -> set of used fields
+     */
+    val hydratedUsedFields = mutableMapOf<String, MutableSet<String>>()
+    if (generateDataBuilders) {
+      usedFields.entries.forEach { entry ->
+        when (val typeDefinition = schema.typeDefinition(entry.key)) {
+          is GQLObjectTypeDefinition -> {
+            typeDefinition.implementsInterfaces.forEach {
+              /**
+               * Make sure data builders generate the map interface
+               */
+              hydratedUsedFields.putType(it)
+            }
+            hydratedUsedFields.putAllFields(typeDefinition.name, entry.value)
+          }
+
+          is GQLInterfaceTypeDefinition -> {
+            /**
+             * Add all possible types because the user might want to use any of them
+             * GetHeroQuery.Data {
+             *   hero = buildHuman {}  // or buildDroid {}
+             * }
+             */
+            schema.typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>()
+                .filter {
+                  it.implementsInterfaces.contains(typeDefinition.name)
+                }
+                .forEach {
+                  hydratedUsedFields.putAllFields(it.name, entry.value)
+                }
+
+            /**
+             * And also add the fields on the interface itself for building the "Other" builder.
+             * Note that this over-generates a bit in cases where fragments conditions are always true:
+             *
+             * ```graphql
+             * {
+             *   cat {
+             *     ... on Animal {
+             *       species
+             *     }
+             *   }
+             * }
+             * ```
+             *
+             * In the above case, there's no reason a data builder would need to create a fallback animal
+             * yet `buildOtherAnimal` will be generated
+             */
+            hydratedUsedFields.putAllFields(typeDefinition.name, entry.value)
+          }
+
+          is GQLUnionTypeDefinition -> {
+            /**
+             * Same logic as for interface above
+             */
+            typeDefinition.memberTypes.forEach {
+              hydratedUsedFields.putAllFields(it.name, entry.value)
+            }
+            hydratedUsedFields.putAllFields(typeDefinition.name, entry.value)
+          }
+
+          else -> Unit // Nothing to do
+        }
+      }
+
+      usedTypes += hydratedUsedFields.keys
     }
 
-    // Input objects and Interfaces contain (possible reentrant) references, so we need to loop here
-    // This is also needed because objects pull their interfaces for databuilders/compiledtype needs
-    while (usedTypes.isNotEmpty()) {
-      val name = usedTypes.removeAt(0)
-      if (visitedTypes.contains(name)) {
+    /**
+     * Add schema types that are referenced indirectly
+     */
+    val visitedNames = mutableSetOf<String>()
+    val namesStack = usedTypes.toMutableList()
+    while (namesStack.isNotEmpty()) {
+      val name = namesStack.removeFirst()
+      if (visitedNames.contains(name)) {
         continue
       }
-      visitedTypes.add(name)
-      val typeDefinition = schema.typeDefinition(name)
-      if (typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition) {
-        // We don't generate builtin types, except scalars
-        continue
-      }
+      visitedNames.add(name)
 
-      when (typeDefinition) {
-        is GQLEnumTypeDefinition -> enums.add(typeDefinition.toIr())
-        is GQLObjectTypeDefinition -> {
-          objects.add(typeDefinition.toIr())
+      when(val typeDefinition = schema.typeDefinition(name)) {
+        is GQLInputObjectTypeDefinition -> {
+          /**
+           * Loop on the input types.
+           * Recursively add all their input fields types.
+           * Note that input types may contain cycles, so we have to keep track of visited types to
+           * avoid looping endlessly (in addition to not computing them multiple times)
+           */
+          typeDefinition.inputFields.forEach {
+            when (val fieldType = schema.typeDefinition(it.type.rawType().name)) {
+              is GQLScalarTypeDefinition -> namesStack.add(fieldType.name)
+              is GQLEnumTypeDefinition -> namesStack.add(fieldType.name)
+              is GQLInputObjectTypeDefinition -> namesStack.add(fieldType.name)
+              else -> error("output type '${fieldType.name}' used in input position")
+            }
+          }
         }
 
         is GQLUnionTypeDefinition -> {
-          unions.add(typeDefinition.toIr())
+          /**
+           * Unions reference their members, generate them:
+           *
+           * public class SearchResult {
+           *   public companion object {
+           *     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
+           *   }
+           * }
+           */
+          typeDefinition.memberTypes.forEach {
+            namesStack.add(it.name)
+          }
         }
-
         is GQLInterfaceTypeDefinition -> {
-          interfaces.add(typeDefinition.toIr())
+          /**
+           * Interfaces classes reference their super interfaces, generate them:
+           *
+           * public class Character {
+           *   public companion object {
+           *     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
+           *   }
+           * }
+           */
+          typeDefinition.implementsInterfaces.forEach {
+            namesStack.add(it)
+          }
         }
+        is GQLObjectTypeDefinition -> {
+          /**
+           * Object classes reference their super interfaces, generate them:
+           *
+           * public class Droid {
+           *   public companion object {
+           *     public val type: ObjectType =
+           *         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
+           *   }
+           * }
+           */
+          typeDefinition.implementsInterfaces.forEach {
+            namesStack.add(it)
+          }
 
-        is GQLScalarTypeDefinition -> customScalars.add(typeDefinition.toIr())
-        is GQLInputObjectTypeDefinition -> inputObjects.add(typeDefinition.toIr())
+          if (generateDataBuilders) {
+            /**
+             * DataBuilder maps reference all their super types, including unions
+             *
+             * internal class DroidMap(
+             *   __fields: Map<String, Any?>,
+             * ) : CharacterMap, SearchResultMap, Map<String, Any?> by __fields
+             */
+            schema.typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().filter {
+              it.memberTypes.any {
+                it.name == typeDefinition.name
+              }
+            }.forEach {
+              namesStack.add(it.name)
+            }
+          }
+        }
       }
     }
 
-    return Ir(
+
+    return DefaultIrOperations(
         operations = operations,
         fragments = fragments,
-        inputObjects = inputObjects,
-        enums = enums,
-        customScalars = customScalars,
-        objects = objects,
-        interfaces = interfaces,
-        unions = unions,
-        connectionTypes = schema.connectionTypes.toList()
-    )
-  }
-
-  private fun GQLObjectTypeDefinition.toIr(): IrObject {
-    // Needed to build the compiled type and data builders
-    // class HumanMap(map: Map<String, Any?>): CharacterMap, Map<String, Any?> by map
-    usedTypes.addAll(implementsInterfaces)
-    if (generateDataBuilders) {
-      // Data builders also requires union to inherit from the marker interface
-      schema.typeDefinitions.values.filterIsInstance<GQLUnionTypeDefinition>().forEach {
-        if (it.memberTypes.map { it.name }.contains(name)) {
-          usedTypes.add(it.name)
-        }
-      }
-    }
-
-    /**
-     * If generateDataBuilders is false, we do not track usedFields, fallback to an emptySet
-     */
-    val usedFields = usedFields.get(name) ?: emptySet()
-
-    return IrObject(
-        name = name,
-        targetName = directives.findTargetName(schema),
-        implements = implementsInterfaces,
-        keyFields = schema.keyFields(name).toList(),
-        description = description,
-        // XXX: this is not spec-compliant. Directive cannot be on object definitions
-        deprecationReason = directives.findDeprecationReason(),
-        embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
-            directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
-            connectionTypeEmbeddedFields(name, schema),
-        mapProperties = fields.filter {
-          usedFields.contains(it.name) || shouldAlwaysGenerate("${name}.${it.name}")
-        }.map {
-          it.toIrMapProperty()
-        },
-        superTypes = schema.superTypes(this).toList()
-    )
-  }
-
-  private fun GQLFieldDefinition.toIrMapProperty(): IrMapProperty {
-    return IrMapProperty(
-        name,
-        type.toIrType2()
-    )
-  }
-
-  private fun GQLType.toIrType2(): IrType2 {
-    return when (this) {
-      is GQLNonNullType -> IrNonNullType2(type.toIrType2())
-      is GQLListType -> IrListType2(type.toIrType2())
-      is GQLNamedType -> {
-        when (schema.typeDefinition(name)) {
-          is GQLScalarTypeDefinition -> return IrScalarType2(name)
-          is GQLEnumTypeDefinition -> return IrEnumType2(name)
-          is GQLInputObjectTypeDefinition -> error("Input objects are not supported in data builders")
-          is GQLInterfaceTypeDefinition,
-          is GQLObjectTypeDefinition,
-          is GQLUnionTypeDefinition,
-          -> IrCompositeType2(name)
-        }
-      }
-    }
-  }
-
-  private fun GQLInterfaceTypeDefinition.toIr(): IrInterface {
-    // Needed to build the compiled type as well as the data builders
-    usedTypes.addAll(implementsInterfaces)
-
-    /**
-     * If generateDataBuilders is false, we do not track usedFields, fallback to an emptySet
-     */
-    val usedFields = usedFields.get(name) ?: emptySet()
-
-    return IrInterface(
-        name = name,
-        targetName = directives.findTargetName(schema),
-        implements = implementsInterfaces,
-        keyFields = schema.keyFields(name).toList(),
-        description = description,
-        // XXX: this is not spec-compliant. Directive cannot be on interfaces
-        deprecationReason = directives.findDeprecationReason(),
-        embeddedFields = directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toEmbeddedFields() +
-            directives.filter { schema.originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields() +
-            connectionTypeEmbeddedFields(name, schema),
-        mapProperties = fields.filter {
-          usedFields.contains(it.name) || shouldAlwaysGenerate("${name}.${it.name}")
-        }.map {
-          it.toIrMapProperty()
-        }
-    )
-  }
-
-  /**
-   * If [typeName] is declared as a Relay Connection type (via the `@typePolicy` directive), return the standard arguments
-   * to be embedded.
-   * Otherwise, return an empty set.
-   */
-  private fun connectionTypeEmbeddedFields(typeName: String, schema: Schema): Set<String> {
-    return if (typeName in schema.connectionTypes) {
-      setOf("edges")
-    } else {
-      emptySet()
-    }
-  }
-
-  private fun GQLUnionTypeDefinition.toIr(): IrUnion {
-    // Needed to build the compiled type
-    usedTypes.addAll(memberTypes.map { it.name })
-
-    return IrUnion(
-        name = name,
-        targetName = directives.findTargetName(schema),
-        members = memberTypes.map { it.name },
-        description = description,
-        // XXX: this is not spec-compliant. Directive cannot be on union definitions
-        deprecationReason = directives.findDeprecationReason()
-    )
-  }
-
-  private fun GQLScalarTypeDefinition.toIr(): IrCustomScalar {
-    return IrCustomScalar(
-        name = name,
-        targetName = directives.findTargetName(schema),
-        kotlinName = scalarMapping[name]?.targetName,
-        description = description,
-        // XXX: this is not spec-compliant. Directive cannot be on scalar definitions
-        deprecationReason = directives.findDeprecationReason()
-    )
-  }
-
-  private fun GQLInputObjectTypeDefinition.toIr(): IrInputObject {
-    return IrInputObject(
-        name = name,
-        targetName = directives.findTargetName(schema),
-        description = description,
-        // XXX: this is not spec-compliant. Directive cannot be on input objects definitions
-        deprecationReason = directives.findDeprecationReason(),
-        fields = inputFields.map { it.toIrInputField() }
-    )
-  }
-
-  /**
-   * This is not named `toIr` as [GQLInputValueDefinition] also maps to variables and arguments
-   */
-  private fun GQLInputValueDefinition.toIrInputField(): IrInputField {
-    val coercedDefaultValue = defaultValue?.coerceInExecutableContextOrThrow(type, schema)
-
-    var irType = type.toIr()
-    if (type !is GQLNonNullType || coercedDefaultValue != null) {
-      /**
-       * Contrary to [IrVariable], we default to making input fields optional as they are out of control of the user, and
-       * we don't want to force users to fill all values to define an input object
-       */
-      irType = irType.makeOptional()
-    }
-    return IrInputField(
-        name = name,
-        description = description,
-        deprecationReason = directives.findDeprecationReason(),
-        optInFeature = directives.findOptInFeature(schema),
-        type = irType,
-        defaultValue = coercedDefaultValue?.toIrValue(),
-    )
-  }
-
-  private fun GQLEnumTypeDefinition.toIr(): IrEnum {
-    return IrEnum(
-        name = name,
-        targetName = directives.findTargetName(schema),
-        description = description,
-        values = enumValues.map { it.toIr() }
-    )
-  }
-
-  private fun GQLEnumValueDefinition.toIr(): IrEnum.Value {
-    return IrEnum.Value(
-        name = name,
-        targetName = directives.findTargetName(schema) ?: name,
-        description = description,
-        deprecationReason = directives.findDeprecationReason(),
-        optInFeature = directives.findOptInFeature(schema),
+        usedTypes = visitedNames,
+        usedFields = hydratedUsedFields,
+        codegenModels = codegenModels,
+        flattenModels = flattenModels,
+        decapitalizeFields = decapitalizeFields,
+        fragmentDefinitions = fragmentDefinitions,
+        generateDataBuilders = generateDataBuilders,
     )
   }
 
@@ -418,7 +343,8 @@ internal class IrBuilder(
       MODELS_RESPONSE_BASED -> dataModelGroup
       else -> null
     }
-
+    // Add the root type to use from the selections
+    usedTypes.add(typeDefinition.name)
     return IrOperation(
         name = name!!,
         description = description,
@@ -454,6 +380,8 @@ internal class IrBuilder(
         fragmentName = name
     )
 
+    // Add the root type to use from the fragment selections
+    usedTypes.add(typeCondition.name)
     return IrFragmentDefinition(
         name = name,
         description = description,
@@ -464,6 +392,7 @@ internal class IrBuilder(
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
+        source = formatToString()
     )
   }
 
@@ -495,7 +424,7 @@ internal class IrBuilder(
         irType = irType.makeOptional()
       }
 
-      irType !is IrNonNullType -> {
+      else -> {
         // The variable is nullable. By the GraphQL spec, it means it's also optional
         // In practice though, we often want it non-optional, because if the user added tha variable in
         // the first place, there is a high change they're going to use it.
@@ -521,38 +450,11 @@ internal class IrBuilder(
   }
 
   /**
-   * Maps to [IrType] and also keep tracks of what types are actually used, so we only generate those
+   * Maps to [IrType]
    */
   private fun GQLType.toIr(): IrType {
-    return when (this) {
-      is GQLNonNullType -> IrNonNullType(ofType = type.toIr())
-      is GQLListType -> IrListType(ofType = type.toIr())
-      is GQLNamedType -> {
-        usedTypes.add(name)
-        when (schema.typeDefinition(name)) {
-          is GQLScalarTypeDefinition -> IrScalarType(name)
-          is GQLEnumTypeDefinition -> {
-            IrEnumType(name = name)
-          }
-
-          is GQLInputObjectTypeDefinition -> {
-            IrInputObjectType(name)
-          }
-
-          is GQLObjectTypeDefinition -> {
-            IrModelType(MODEL_UNKNOWN)
-          }
-
-          is GQLInterfaceTypeDefinition -> {
-            IrModelType(MODEL_UNKNOWN)
-          }
-
-          is GQLUnionTypeDefinition -> {
-            IrModelType(MODEL_UNKNOWN)
-          }
-        }
-      }
-    }
+    usedTypes.add(rawType().name)
+    return toIr(schema)
   }
 
   /**
@@ -582,13 +484,28 @@ internal class IrBuilder(
     val responseName = alias ?: name
   }
 
-  private fun putUsedField(typeName: String, fieldName: String) {
-    usedFields.compute(typeName) { _, v ->
+  private fun MutableMap<String, MutableSet<String>>.putField(typeName: String, fieldName: String) {
+    compute(typeName) { _, v ->
       if (v == null) {
-        setOf(fieldName)
+        mutableSetOf(fieldName)
       } else {
-        v + fieldName
+        v.add(fieldName)
+        v
       }
+    }
+  }
+
+  private fun MutableMap<String, MutableSet<String>>.putAllFields(typeName: String, fields: MutableSet<String>) {
+    compute(typeName) { _, v ->
+      (v ?: mutableSetOf()).apply {
+        this.addAll(fields)
+      }
+    }
+  }
+
+  private fun MutableMap<String, MutableSet<String>>.putType(typeName: String) {
+    compute(typeName) { _, v ->
+      v ?: mutableSetOf()
     }
   }
 
@@ -602,30 +519,6 @@ internal class IrBuilder(
         "cannot find field definition for field '${gqlField.responseName()}' of type '${parentTypeDefinition.name}'"
       }
       val forceNonNull = gqlField.directives.findNonnull(schema) || parentTypeDefinition.isFieldNonNull(gqlField.name, schema)
-
-      if (generateDataBuilders) {
-        if (parentTypeDefinition is GQLInterfaceTypeDefinition) {
-          putUsedField(parentTypeDefinition.name, fieldDefinition.name)
-        }
-
-        schema.possibleTypes(parentTypeDefinition).map {
-          schema.typeDefinition(it)
-        }
-            .filterIsInstance<GQLObjectTypeDefinition>()
-            .forEach {
-              /**
-               * Add all possible types because the user might want to use any of them
-               * GetHeroQuery.Data {
-               *   hero = buildHuman {}  // or buildDroid {}
-               * }
-               */
-              usedTypes.add(it.name)
-              /**
-               * And remember that this field is used
-               */
-              putUsedField(it.name, fieldDefinition.name)
-            }
-      }
 
       CollectedField(
           name = gqlField.name,
@@ -662,6 +555,19 @@ internal class IrBuilder(
       val forceOptional = fieldsWithSameResponseName.any {
         it.forceOptional
       }
+
+      usedFields.putField(first.parentType, first.name)
+      /**
+       * We track field usages, but we also need to track the type itself because it might be that there is only fragments
+       * node {
+       *   # no field here but Node is still used
+       *   ... on Product {
+       *     price
+       *   }
+       * }
+       */
+      usedFields.putType(first.type.rawType().name)
+
       var irType = first.type.toIr()
       if (forceNonNull) {
         irType = irType.makeNonNull()
@@ -834,13 +740,4 @@ internal fun IrFieldInfo.maybeNullable(makeNullable: Boolean): IrFieldInfo {
   return copy(
       type = type.makeNullable()
   )
-}
-
-internal fun IrType.replacePlaceholder(newPath: String): IrType {
-  return when (this) {
-    is IrNonNullType -> IrNonNullType(ofType = ofType.replacePlaceholder(newPath))
-    is IrListType -> IrListType(ofType = ofType.replacePlaceholder(newPath))
-    is IrModelType -> copy(path = newPath)
-    else -> error("Not a compound type?")
-  }
 }

@@ -3,43 +3,49 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.ApolloMetadata
+import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.CommonMetadata
+import com.apollographql.apollo3.compiler.CompilerMetadata
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
+import com.apollographql.apollo3.compiler.IrOptions
+import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
+import com.apollographql.apollo3.compiler.KotlinCodegenOptions
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.Options
-import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
-import com.apollographql.apollo3.compiler.Options.Companion.defaultAddTypename
-import com.apollographql.apollo3.compiler.Options.Companion.defaultAlwaysGenerateTypesMatching
-import com.apollographql.apollo3.compiler.Options.Companion.defaultClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.Options.Companion.defaultCodegenModels
-import com.apollographql.apollo3.compiler.Options.Companion.defaultDecapitalizeFields
-import com.apollographql.apollo3.compiler.Options.Companion.defaultFailOnWarnings
-import com.apollographql.apollo3.compiler.Options.Companion.defaultFieldsOnDisjointTypesMustMerge
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateDataBuilders
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFilterNotNull
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateFragmentImplementations
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateModelBuilders
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateOptionalOperationVariables
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratePrimitiveTypes
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateQueryDocument
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateResponseFields
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateSchema
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGeneratedSchemaName
-import com.apollographql.apollo3.compiler.Options.Companion.defaultNullableFieldStyle
-import com.apollographql.apollo3.compiler.Options.Companion.defaultRequiresOptInAnnotation
-import com.apollographql.apollo3.compiler.Options.Companion.defaultSealedClassesForEnumsMatching
-import com.apollographql.apollo3.compiler.Options.Companion.defaultUseSemanticNaming
-import com.apollographql.apollo3.compiler.Options.Companion.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
+import com.apollographql.apollo3.compiler.defaultAddTypename
+import com.apollographql.apollo3.compiler.defaultAlwaysGenerateTypesMatching
+import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.defaultCodegenModels
+import com.apollographql.apollo3.compiler.defaultDecapitalizeFields
+import com.apollographql.apollo3.compiler.defaultFailOnWarnings
+import com.apollographql.apollo3.compiler.defaultFieldsOnDisjointTypesMustMerge
+import com.apollographql.apollo3.compiler.defaultGenerateDataBuilders
+import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
+import com.apollographql.apollo3.compiler.defaultGenerateFragmentImplementations
+import com.apollographql.apollo3.compiler.defaultGenerateModelBuilders
+import com.apollographql.apollo3.compiler.defaultGenerateOptionalOperationVariables
+import com.apollographql.apollo3.compiler.defaultGeneratePrimitiveTypes
+import com.apollographql.apollo3.compiler.defaultGenerateQueryDocument
+import com.apollographql.apollo3.compiler.defaultGenerateResponseFields
+import com.apollographql.apollo3.compiler.defaultGenerateSchema
+import com.apollographql.apollo3.compiler.defaultGeneratedSchemaName
+import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
+import com.apollographql.apollo3.compiler.defaultRequiresOptInAnnotation
+import com.apollographql.apollo3.compiler.defaultSealedClassesForEnumsMatching
+import com.apollographql.apollo3.compiler.defaultUseSemanticNaming
+import com.apollographql.apollo3.compiler.defaultWarnOnDeprecatedUsages
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo3.compiler.toUsedCoordinates
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
@@ -300,6 +306,7 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         }
         true
       }
+
       else -> {
         // Operation-based models have few name clashes. Mostly when there are lists. For these few cases we flatten to avoid the name clash
         // Response-based models would have way too much name clashes os we never flatten them
@@ -313,58 +320,101 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         }
         MODELS_OPERATION_BASED
       }
+
       else -> commonMetadata.codegenModels
     }
 
     val alwaysGenerateTypesMatching = usedCoordinates.files.map { it.toUsedCoordinates() }
         .fold(alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching)) { acc, new ->
           acc + new
-        }
+        } + commonMetadata.scalarMapping.keys + setOf("String", "Boolean", "Int", "Float", "ID")
 
-    val options = Options(
+    val irOptions = IrOptions(
+        schema = commonMetadata.schema,
         executableFiles = graphqlFiles.files,
-        outputDir = outputDir.asFile.get(),
-        testDir = testDir.asFile.get(),
-        debugDir = debugDir.asFile.orNull,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        operationOutputFile = operationOutputFile.asFile.orNull,
-        operationOutputGenerator = operationOutputGenerator,
-        useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
         warnOnDeprecatedUsages = warnOnDeprecatedUsages.getOrElse(defaultWarnOnDeprecatedUsages),
         failOnWarnings = failOnWarnings.getOrElse(defaultFailOnWarnings),
+        logger = logger,
+        flattenModels = flattenModels,
+        incomingFragments = metadata.flatMap { it.compilerMetadata.fragments },
+        codegenModels = codegenModels,
+        addTypename = addTypename.getOrElse(defaultAddTypename),
+        decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
+        fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge),
+        generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        generateDataBuilders = generateDataBuilders,
+        )
+
+    val irOperations = ApolloCompiler.buildIrOperations(irOptions)
+
+    val operationOutput = ApolloCompiler.buildOperationOutput(
+        ir = irOperations,
+        operationOutputFile = operationOutputFile.asFile.orNull,
+        operationOutputGenerator = operationOutputGenerator,
+    )
+
+    val irSchema = IrSchemaBuilder.build(
+        schema = commonMetadata.schema,
+        irOperations = irOperations,
+        incomingTypes = metadata.flatMap { it.compilerMetadata.resolverInfo.entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id } }.toSet(),
+    )
+
+    val commonCodegenOptions = CommonCodegenOptions(
+        schema = commonMetadata.schema,
+        ir = irOperations,
+        irSchema = irSchema,
+        operationOutput= operationOutput,
+        outputDir = outputDir.asFile.get(),
+        useSemanticNaming = useSemanticNaming.getOrElse(defaultUseSemanticNaming),
         packageNameGenerator = packageNameGenerator,
-        generateAsInternal = false,
-        generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
         generateFragmentImplementations = generateFragmentImplementations.getOrElse(defaultGenerateFragmentImplementations),
-        generateModelBuilders = generateModelBuilders.getOrElse(defaultGenerateModelBuilders),
         generateQueryDocument = generateQueryDocument.getOrElse(defaultGenerateQueryDocument),
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
-        logger = logger,
-        flattenModels = flattenModels,
-        incomingCompilerMetadata = metadata.map { it.compilerMetadata },
-        schema = commonMetadata.schema,
-        codegenModels = codegenModels,
-        addTypename = addTypename.getOrElse(defaultAddTypename),
         schemaPackageName = commonMetadata.schemaPackageName,
         scalarMapping = commonMetadata.scalarMapping,
-        targetLanguage = targetLanguage,
-        generateDataBuilders = generateDataBuilders,
-        sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
-        classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),
-        generateOptionalOperationVariables = generateOptionalOperationVariables.getOrElse(defaultGenerateOptionalOperationVariables),
-        addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
-        requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
-        fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge.getOrElse(defaultFieldsOnDisjointTypesMustMerge),
-        generatePrimitiveTypes = fieldsOnDisjointTypesMustMerge.getOrElse(defaultGeneratePrimitiveTypes),
-        nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle),
-        decapitalizeFields = decapitalizeFields.getOrElse(defaultDecapitalizeFields),
-        compilerKotlinHooks = compilerKotlinHooks,
-        compilerJavaHooks = compilerJavaHooks,
+        incomingResolverInfos = metadata.map { it.compilerMetadata.resolverInfo },
     )
 
-    val outputCompilerMetadata = ApolloCompiler.write(options)
+    val resolverInfo = when (targetLanguage) {
+      TargetLanguage.JAVA -> {
+        val javaCodegenOptions = JavaCodegenOptions(
+            nullableFieldStyle = nullableFieldStyle.getOrElse(defaultNullableFieldStyle),
+            compilerJavaHooks = compilerJavaHooks,
+            generateModelBuilders = generateModelBuilders.getOrElse(defaultGenerateModelBuilders),
+            classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),
+            generatePrimitiveTypes = fieldsOnDisjointTypesMustMerge.getOrElse(defaultGeneratePrimitiveTypes),
+
+            )
+        ApolloCompiler.writeJava(
+            commonCodegenOptions = commonCodegenOptions,
+            javaCodegenOptions = javaCodegenOptions
+        )
+      }
+
+      else -> {
+        val kotlinCodegenOptions = KotlinCodegenOptions(
+            generateAsInternal = false,
+            generateFilterNotNull = generateFilterNotNull.getOrElse(defaultGenerateFilterNotNull),
+            sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
+            addJvmOverloads = addJvmOverloads.getOrElse(defaultAddJvmOverloads),
+            requiresOptInAnnotation = requiresOptInAnnotation.getOrElse(defaultRequiresOptInAnnotation),
+            compilerKotlinHooks = compilerKotlinHooks,
+            languageVersion = targetLanguage
+        )
+        ApolloCompiler.writeKotlin(
+            commonCodegenOptions = commonCodegenOptions,
+            kotlinCodegenOptions = kotlinCodegenOptions
+        )
+      }
+    }
+
+    val outputCompilerMetadata = CompilerMetadata(
+        fragments = irOperations.fragmentDefinitions,
+        resolverInfo = resolverInfo,
+    )
 
     val metadataOutputFile = metadataOutputFile.asFile.orNull
     if (metadataOutputFile != null) {

@@ -3,13 +3,11 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
-import com.apollographql.apollo3.compiler.Options
-import com.apollographql.apollo3.compiler.Options.Companion.defaultGenerateAsInternal
 import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
-import com.apollographql.apollo3.compiler.ScalarInfo
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
+import com.apollographql.apollo3.compiler.defaultGenerateAsInternal
+import com.apollographql.apollo3.compiler.defaultNullableFieldStyle
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
@@ -45,6 +43,7 @@ import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
 
+@Suppress("UnstableApiUsage")
 abstract class DefaultApolloExtension(
     private val project: Project,
     private val defaultService: DefaultService,
@@ -521,7 +520,7 @@ abstract class DefaultApolloExtension(
   /**
    * Generate metadata
    * - if the user opted in
-   * - or if this project belongs to a multi-module build
+   * - or if this project belongs to a multimodule build
    * The last case is needed to check for potential duplicate types
    */
   private fun shouldGenerateMetadata(service: DefaultService): Boolean {
@@ -541,6 +540,7 @@ abstract class DefaultApolloExtension(
       project.androidExtension != null -> {
         if (registerDefaultService) {
           // The default service is created from `afterEvaluate` and it looks like it's too late to register new sources
+          @Suppress("DEPRECATION")
           connection.connectToAndroidSourceSet("main")
         } else {
           connection.connectToAllAndroidVariants()
@@ -661,6 +661,7 @@ abstract class DefaultApolloExtension(
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
 
+      @Suppress("DEPRECATION")
       val scalarTypeMappingFallbackOldSyntax = service.customScalarsMapping.orElse(
           service.customTypeMapping
       ).getOrElse(emptyMap())
@@ -668,7 +669,6 @@ abstract class DefaultApolloExtension(
       check(service.scalarTypeMapping.isEmpty() || scalarTypeMappingFallbackOldSyntax.isEmpty()) {
         "Apollo: either mapScalar() or customScalarsMapping can be used, but not both"
       }
-      @Suppress("DEPRECATION")
       task.scalarTypeMapping.set(
           service.scalarTypeMapping.ifEmpty { scalarTypeMappingFallbackOldSyntax }
       )
@@ -729,6 +729,7 @@ abstract class DefaultApolloExtension(
       task.generateQueryDocument.set(service.generateQueryDocument)
       task.generateSchema.set(service.generateSchema)
       task.generatedSchemaName.set(service.generatedSchemaName)
+      @Suppress("DEPRECATION")
       task.generateModelBuilders.set(service.generateModelBuilders.orElse(service.generateModelBuilder))
       task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
@@ -743,7 +744,7 @@ abstract class DefaultApolloExtension(
       task.fieldsOnDisjointTypesMustMerge.set(service.fieldsOnDisjointTypesMustMerge)
       task.generatePrimitiveTypes.set(service.generatePrimitiveTypes)
       val nullableFieldStyle: String? = service.nullableFieldStyle.orNull
-      task.nullableFieldStyle.set(if (nullableFieldStyle == null) Options.defaultNullableFieldStyle else JavaNullable.fromName(nullableFieldStyle)
+      task.nullableFieldStyle.set(if (nullableFieldStyle == null) defaultNullableFieldStyle else JavaNullable.fromName(nullableFieldStyle)
           ?: error("Apollo: unknown value '$nullableFieldStyle' for nullableFieldStyle"))
       task.decapitalizeFields.set(service.decapitalizeFields)
       val compilerKotlinHooks = service.compilerKotlinHooks.orNull ?: emptyList()
@@ -892,9 +893,9 @@ abstract class DefaultApolloExtension(
               // the "_" check is for refreshVersions,
               // see https://github.com/jmfayard/refreshVersions/issues/507
               it.group == "com.apollographql.apollo3" && it.version != "_"
-            }.map { dependency ->
+            }.mapNotNull { dependency ->
               dependency.version
-            }.filterNotNull()
+            }
       }
     }
 
@@ -903,9 +904,7 @@ abstract class DefaultApolloExtension(
       get() = sourceDirectories.isEmpty
 
     private fun mainSourceSet(project: Project): String {
-      val kotlinExtension = project.extensions.findByName("kotlin")
-
-      return when (kotlinExtension) {
+      return when (project.extensions.findByName("kotlin")) {
         is KotlinMultiplatformExtension -> "commonMain"
         else -> "main"
       }
@@ -933,7 +932,4 @@ abstract class DefaultApolloExtension(
       }.toSet()
     }
   }
-
-  private fun Map<String, String>.asScalarInfoMapping(): Map<String, ScalarInfo> =
-      mapValues { (_, value) -> ScalarInfo(value, RuntimeAdapterInitializer) }
 }

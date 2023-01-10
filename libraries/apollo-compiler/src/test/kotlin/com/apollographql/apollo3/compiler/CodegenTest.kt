@@ -7,7 +7,6 @@ import com.apollographql.apollo3.ast.GQLNode
 import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.apollo3.compiler.Options.Companion.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.TargetLanguage.JAVA
 import com.apollographql.apollo3.compiler.TargetLanguage.KOTLIN_1_5
 import com.apollographql.apollo3.compiler.TestUtils.checkTestFixture
@@ -49,21 +48,19 @@ class CodegenTest {
     val folder = parameters.folder
     val codegenModels = parameters.codegenModels
 
-    val options = options(
-        folder = folder,
-        codegenModels = codegenModels,
-        parameters.generateKotlinModels,
-    )
-    options.outputDir.deleteRecursively()
-
+    var outputDir: File
     val codegenDuration = measureTime {
-      ApolloCompiler.write(options)
+      outputDir = runCodegen(
+          folder = folder,
+          codegenModels = codegenModels,
+          parameters.generateKotlinModels,
+      )
     }
-    val targetLanguagePath = if (options.targetLanguage == JAVA) "java" else "kotlin"
+    val targetLanguagePath = if (parameters.generateKotlinModels) "kotlin" else "java"
 
     val expectedRoot = folder.resolve("$targetLanguagePath/$codegenModels")
     // Because codegen will put files under a given packageName, we skip the first 2 folders
-    val actualRoot = options.outputDir.resolve("com/example")
+    val actualRoot = outputDir.resolve("com/example")
 
     val actualFiles = actualRoot.walk().filter {
       it.isFile
@@ -116,22 +113,21 @@ class CodegenTest {
      * Check that generated sources compile
      */
     val compileDuration = measureTime {
-      when (options.targetLanguage) {
-        JAVA -> JavaCompiler.assertCompiles(actualFiles.toSet())
-        else -> {
-          /**
-           * Some tests generate warnings because they are using deprecated fields
-           *
-           * We want to keep this for the user to easily locate them but can't tell the compiler to ignore
-           * them specifically. See also https://youtrack.jetbrains.com/issue/KT-24746
-           */
-          val expectedWarnings = folder.name in listOf<String>(
-              "deprecated_merged_field",
-              "deprecation",
-          )
+      if (parameters.generateKotlinModels) {
+        /**
+         * Some tests generate warnings because they are using deprecated fields
+         *
+         * We want to keep this for the user to easily locate them but can't tell the compiler to ignore
+         * them specifically. See also https://youtrack.jetbrains.com/issue/KT-24746
+         */
+        val expectedWarnings = folder.name in listOf(
+            "deprecated_merged_field",
+            "deprecation",
+        )
 
-          KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
-        }
+        KotlinCompiler.assertCompiles(actualFiles.toSet(), !expectedWarnings)
+      } else {
+        JavaCompiler.assertCompiles(actualFiles.toSet())
       }
     }
 
@@ -258,7 +254,7 @@ class CodegenTest {
       }
     }
 
-    private fun options(folder: File, codegenModels: String, generateKotlinModels: Boolean): Options {
+    private fun runCodegen(folder: File, codegenModels: String, generateKotlinModels: Boolean): File {
       val useSemanticNaming = when (folder.name) {
         "hero_details_semantic_naming" -> true
         "mutation_create_review_semantic_naming" -> true
@@ -318,12 +314,12 @@ class CodegenTest {
 
       val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
-      val flattenModels =  when  {
+      val flattenModels = when {
         folder.name in listOf("capitalized_fields", "companion") -> true
         targetLanguage == JAVA -> true
         else -> false
       }
-      val customScalarsMapping = if (folder.name in listOf(
+      val scalarMapping = if (folder.name in listOf(
               "custom_scalar_type",
               "input_object_type",
               "mutation_create_review")) {
@@ -384,33 +380,36 @@ class CodegenTest {
         else -> "none"
       }
 
-      return Options(
-          executableFiles = graphqlFiles,
+      val compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity
+      val packageNameGenerator = PackageNameGenerator.Flat(packageName)
+
+      ApolloCompiler.writeSimple(
           schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors(),
+          executableFiles = graphqlFiles,
           outputDir = outputDir,
-          testDir = outputDir,
-          schemaPackageName = packageName,
-          packageNameGenerator = PackageNameGenerator.Flat(packageName),
-          operationOutputGenerator = operationOutputGenerator,
-          scalarMapping = customScalarsMapping,
-          codegenModels = codegenModels,
           flattenModels = flattenModels,
-          useSemanticNaming = useSemanticNaming,
-          generateFilterNotNull = true,
-          generateFragmentImplementations = generateFragmentImplementations,
-          generateModelBuilders = generateModelBuilders,
-          generateDataBuilders = generateDataBuilders,
-          generateSchema = generateSchema,
-          targetLanguage = targetLanguage,
-          sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
-          classesForEnumsMatching = classesForEnumsMatching,
-          addJvmOverloads = addJvmOverloads,
-          generatePrimitiveTypes = generatePrimitiveTypes,
-          nullableFieldStyle = nullableFieldStyle,
+          codegenModels = codegenModels,
           decapitalizeFields = decapitalizeFields,
-          compilerKotlinHooks = if (generateAsInternal) AddInternalCompilerHooks(setOf(".*")) else ApolloCompilerKotlinHooks.Identity,
-          requiresOptInAnnotation = requiresOptInAnnotation
+          operationOutputGenerator = operationOutputGenerator,
+          useSemanticNaming = useSemanticNaming,
+          packageNameGenerator = packageNameGenerator,
+          generateFragmentImplementations = generateFragmentImplementations,
+          generateSchema = generateSchema,
+          schemaPackageName = packageName,
+          scalarMapping = scalarMapping,
+          generateDataBuilders = generateDataBuilders,
+          targetLanguage = targetLanguage,
+          nullableFieldStyle = nullableFieldStyle,
+          generateModelBuilders = generateModelBuilders,
+          classesForEnumsMatching = classesForEnumsMatching,
+          sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
+          addJvmOverloads = addJvmOverloads,
+          requiresOptInAnnotation = requiresOptInAnnotation,
+          compilerKotlinHooks = compilerKotlinHooks,
+          generatePrimitiveTypes = generatePrimitiveTypes,
+          generateFilterNotNull = true
       )
+      return outputDir
     }
 
     private fun GQLNode.hasFragments(): Boolean {

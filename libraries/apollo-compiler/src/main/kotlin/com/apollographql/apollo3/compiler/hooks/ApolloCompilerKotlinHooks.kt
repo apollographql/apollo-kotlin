@@ -50,11 +50,6 @@ interface ApolloCompilerKotlinHooks {
        * The KotlinPoet representation of the file.
        */
       val fileSpec: FileSpec,
-
-      /**
-       * If `true` the file will be written to the test source set, otherwise it will be written to the main source set.
-       */
-      val targetTestDir: Boolean,
   )
 }
 

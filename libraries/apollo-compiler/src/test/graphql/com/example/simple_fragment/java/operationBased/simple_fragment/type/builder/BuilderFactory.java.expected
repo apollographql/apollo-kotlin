@@ -21,12 +21,12 @@ public class BuilderFactory {
     return new QueryBuilder(customScalarAdapters);
   }
 
-  public DroidBuilder buildDroid() {
-    return new DroidBuilder(customScalarAdapters);
-  }
-
   public HumanBuilder buildHuman() {
     return new HumanBuilder(customScalarAdapters);
+  }
+
+  public DroidBuilder buildDroid() {
+    return new DroidBuilder(customScalarAdapters);
   }
 
   public StarshipBuilder buildStarship() {

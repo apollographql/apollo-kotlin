@@ -39,7 +39,6 @@ enum class ResolverKeyKind {
   Fragment,
   FragmentVariablesAdapter,
   FragmentSelections,
-  TestBuilder,
   MapType,
   BuilderType,
   BuilderFun,

@@ -65,8 +65,6 @@ class KotlinResolver(
     return MemberName(className.packageName, className.simpleName)
   }
 
-  fun canResolveSchemaType(name: String) = resolve(ResolverKey(ResolverKeyKind.SchemaType, name)) != null
-
   internal fun register(kind: ResolverKeyKind, id: String, className: ClassName) = classNames.put(ResolverKey(kind, id), className)
 
   private fun register(kind: ResolverKeyKind, id: String, memberName: MemberName): Unit {
@@ -319,9 +317,6 @@ class KotlinResolver(
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
-
-  fun registerTestBuilder(path: String, className: ClassName) = register(ResolverKeyKind.TestBuilder, path, className)
-  fun resolveTestBuilder(path: String) = resolveAndAssert(ResolverKeyKind.TestBuilder, path)
 
   fun registerBuilderType(name: String, className: ClassName) = register(ResolverKeyKind.BuilderType, name, className)
   fun resolveBuilderType(name: String) = resolveAndAssert(ResolverKeyKind.BuilderType, name)

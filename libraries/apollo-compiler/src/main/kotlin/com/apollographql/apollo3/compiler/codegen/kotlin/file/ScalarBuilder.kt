@@ -5,13 +5,14 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.ir.IrCustomScalar
+import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 
-internal class CustomScalarBuilder(
+internal class ScalarBuilder(
     private val context: KotlinContext,
-    private val customScalar: IrCustomScalar,
+    private val customScalar: IrScalar,
+    private val targetTypeName: String?,
 ) : CgFileBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
@@ -38,7 +39,7 @@ internal class CustomScalarBuilder(
     )
   }
 
-  private fun IrCustomScalar.typeSpec(): TypeSpec {
+  private fun IrScalar.typeSpec(): TypeSpec {
     return TypeSpec
         .classBuilder(simpleName)
         .maybeAddDescription(description)
@@ -47,9 +48,9 @@ internal class CustomScalarBuilder(
         .build()
   }
 
-  private fun IrCustomScalar.companionTypeSpec(): TypeSpec {
+  private fun IrScalar.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
-        .addProperty(typePropertySpec())
+        .addProperty(typePropertySpec(targetTypeName))
         .build()
   }
 }

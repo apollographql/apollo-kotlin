@@ -1,9 +1,10 @@
 package com.apollographql.apollo3.compiler.conditionalFragments
 
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
-import com.apollographql.apollo3.compiler.Options
+import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.google.testing.junit.testparameterinjector.TestParameter
 import com.google.testing.junit.testparameterinjector.TestParameterInjector
 import org.junit.Test
@@ -22,17 +23,14 @@ class ConditionalFragmentsTest {
   @Test
   fun `responseBased codegen fails with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
     val throwable = assertFails {
-      ApolloCompiler.write(
-          Options(
-              executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
-              schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
-              outputDir = File("build/test/conditionalFragmentsTest"),
-              packageName = ""
-          ).copy(
-              scalarMapping = emptyMap(),
-              codegenModels = MODELS_RESPONSE_BASED,
-              flattenModels = false
-          )
+      ApolloCompiler.writeSimple(
+          executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
+          schema = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls").toSchema(),
+          outputDir = File("build/test/conditionalFragmentsTest"),
+          schemaPackageName = "",
+          packageNameGenerator = PackageNameGenerator.Flat(""),
+          codegenModels = MODELS_RESPONSE_BASED,
+          flattenModels = false,
       )
     }
 
@@ -41,17 +39,14 @@ class ConditionalFragmentsTest {
 
   @Test
   fun `operationBased codegen succeeds with conditional fragments`(@TestParameter(valuesProvider = ParametersProvider::class) fileName: String) {
-    ApolloCompiler.write(
-        Options(
-            executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
-            schemaFile = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls"),
-            outputDir = File("build/test/conditionalFragmentsTest"),
-            packageName = ""
-        ).copy(
-            scalarMapping = emptyMap(),
-            codegenModels = MODELS_OPERATION_BASED,
-            flattenModels = false
-        )
+    ApolloCompiler.writeSimple(
+        executableFiles = setOf(File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/$fileName")),
+        schema = File("src/test/kotlin/com/apollographql/apollo3/compiler/conditionalFragments/schema.graphqls").toSchema(),
+        outputDir = File("build/test/conditionalFragmentsTest"),
+        schemaPackageName = "",
+        packageNameGenerator = PackageNameGenerator.Flat(""),
+        codegenModels = MODELS_OPERATION_BASED,
+        flattenModels = false,
     )
   }
 }
