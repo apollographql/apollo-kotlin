@@ -137,7 +137,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: ./gradlew :intellij-plugin:check -x apiCheck
+        run: ./gradlew :intellij-plugin:check
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result
