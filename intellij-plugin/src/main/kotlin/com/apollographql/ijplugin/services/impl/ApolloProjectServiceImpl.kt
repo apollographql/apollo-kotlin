@@ -1,7 +1,6 @@
 package com.apollographql.ijplugin.services.impl
 
 import com.apollographql.ijplugin.services.ApolloProjectService
-import com.apollographql.ijplugin.util.getGradleName
 import com.apollographql.ijplugin.util.isApolloAndroid2Project
 import com.apollographql.ijplugin.util.isApolloKotlin3Project
 import com.apollographql.ijplugin.util.logd
@@ -110,7 +109,6 @@ class ApolloProjectServiceImpl(
           }
 
           private fun handleEvents(events: List<VFileEvent>) {
-            val modules = mutableSetOf<Module>()
             for (event in events) {
               val vFile = event.file!!
               logd("vFile=${vFile.path}")
@@ -119,10 +117,8 @@ class ApolloProjectServiceImpl(
                 // Not a GraphQL file or not from this project: ignore
                 continue
               }
-              modules += module
-            }
-            if (modules.isNotEmpty()) {
-              triggerCodegen(modules)
+              triggerCodegen(module)
+              break
             }
           }
         },
@@ -142,22 +138,16 @@ class ApolloProjectServiceImpl(
     return moduleForFile
   }
 
-  private fun triggerCodegen(modules: Set<Module>) {
-    logd("modules=$modules")
-
+  private fun triggerCodegen(module: Module) {
+    logd()
     // Cancel any already running codegen task
     codegenGradleCancellationTokenSource?.cancel()
 
-    val rootProjectPath = ExternalSystemApiUtil.getExternalRootProjectPath(modules.first())
+    val rootProjectPath = ExternalSystemApiUtil.getExternalRootProjectPath(module)
     if (rootProjectPath == null) {
-      logw("Could not get root project path for module ${modules.first().name}")
+      logw("Could not get root project path for module ${module.name}")
       return
     }
-    val taskNames = modules.map {
-      val gradleModuleName = it.getGradleName()
-      if (gradleModuleName == "") CODEGEN_GRADLE_TASK_NAME else ":$gradleModuleName:$CODEGEN_GRADLE_TASK_NAME"
-    }
-    logd("taskNames=$taskNames")
     val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(
         project,
         rootProjectPath,
@@ -176,15 +166,14 @@ class ApolloProjectServiceImpl(
             executionSettings,
             ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT
         )
-            .forTasks(*taskNames.toTypedArray())
+            .forTasks(CODEGEN_GRADLE_TASK_NAME)
             .withCancellationToken(codegenGradleCancellationTokenSource!!.token())
             .run()
         logd("Codegen task finished successfully")
 
         // Sync impacted modules so the generated files are visible to the IDE
-        for (module in modules) {
-          VfsUtil.markDirtyAndRefresh(true, true, true, module.guessModuleDir())
-        }
+        // TODO Only sync the output folder
+        VfsUtil.markDirtyAndRefresh(true, true, true, module.guessModuleDir())
       } catch (t: Throwable) {
         logd(t, "Failed to run codegen")
       }
