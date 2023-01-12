@@ -66,6 +66,7 @@ internal class OperationBuilder(
         path = listOf(packageName, simpleName),
         hasSubclassesInSamePackage = true,
         adaptableWith = if (it.id == operation.dataModelGroup.baseModelId) it.id else null,
+        reservedNames = setOf("Companion")
     )
   }
 
