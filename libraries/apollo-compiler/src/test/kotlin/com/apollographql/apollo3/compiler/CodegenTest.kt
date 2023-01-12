@@ -169,6 +169,7 @@ class CodegenTest {
             val hasFragments = queryFile.source().buffer().parseAsGQLDocument().valueAssertNoErrors().hasFragments()
 
             when {
+              file.name == "companion" -> listOf(Parameters(file, MODELS_OPERATION_BASED, true))
               hasFragments -> {
                 @Suppress("DEPRECATION")
                 val list = listOf(
@@ -317,8 +318,9 @@ class CodegenTest {
 
       val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
-      val flattenModels = folder.name == "capitalized_fields" || when (targetLanguage) {
-        JAVA -> true
+      val flattenModels =  when  {
+        folder.name in listOf("capitalized_fields", "companion") -> true
+        targetLanguage == JAVA -> true
         else -> false
       }
       val customScalarsMapping = if (folder.name in listOf(
@@ -377,8 +379,8 @@ class CodegenTest {
         else -> false
       }
 
-      val requiresOptInAnnotation = when(folder.name) {
-        "suppressed_warnings"-> "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
+      val requiresOptInAnnotation = when (folder.name) {
+        "suppressed_warnings" -> "com.apollographql.apollo3.annotations.ApolloRequiresOptIn"
         else -> "none"
       }
 
