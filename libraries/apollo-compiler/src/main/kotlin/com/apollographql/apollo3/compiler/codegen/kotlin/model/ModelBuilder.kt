@@ -29,7 +29,8 @@ internal class ModelBuilder(
     private val superClassName: ClassName?,
     private val path: List<String>,
     private val hasSubclassesInSamePackage: Boolean,
-    private val adaptableWith: String?
+    private val adaptableWith: String?,
+    private val reservedNames: Set<String> = emptySet()
 ) {
   private val nestedBuilders = model.modelGroups.flatMap {
     it.models.map {
@@ -43,11 +44,12 @@ internal class ModelBuilder(
       )
     }
   }
+  private val simpleName = if (reservedNames.contains(model.modelName)) "${model.modelName}_" else model.modelName
 
   fun prepare() {
     context.resolver.registerModel(
         model.id,
-        ClassName.from(path + model.modelName)
+        ClassName.from(path + simpleName)
     )
     nestedBuilders.forEach { it.prepare() }
   }
@@ -74,14 +76,14 @@ internal class ModelBuilder(
     } + listOfNotNull(superClassName)
 
     val typeSpecBuilder = if (isInterface) {
-      TypeSpec.interfaceBuilder(modelName)
+      TypeSpec.interfaceBuilder(simpleName)
           // All interfaces can be sealed except if implementations exist in different packages (not allowed in Kotlin)
           .applyIf(context.isTargetLanguageVersionAtLeast(KOTLIN_1_5) && hasSubclassesInSamePackage) {
             addModifiers(KModifier.SEALED)
           }
           .addProperties(properties)
     } else {
-      TypeSpec.classBuilder(modelName)
+      TypeSpec.classBuilder(simpleName)
           .makeDataClassFromProperties(properties)
     }
 
