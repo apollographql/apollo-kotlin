@@ -1,0 +1,17 @@
+[versions]
+# gradlePlugin versions
+androidBuildTools = "7.2.1"
+apollo = "3.7.1"
+
+[libraries]
+accompanist-insets = { module = "com.google.accompanist:accompanist-insets", version.ref = "accompanist" }
+apollo-runtime-short = "com.apollographql.apollo3:apollo-runtime:3.7.1"
+apollo-runtime-medium-version = { module = "com.apollographql.apollo3:apollo-runtime", version = "3.7.1" }
+apollo-runtime-medium-ref = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
+apollo-runtime-long-version = { group = "com.apollographql.apollo3", name = "apollo-runtime", version = "3.7.1" }
+apollo-runtime-long-ref = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+
+[plugins]
+apollo-shortNotation = "com.apollographql.apollo3:3.7.1"
+apollo-longNotation = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+apollo-referenceNotation = { id = "com.apollographql.apollo3", version = "3.7.1" }

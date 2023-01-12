@@ -11,6 +11,8 @@ rootProject.projectDir
       project(":${it.name}").projectDir = it
     }
 
+include(":intellij-plugin")
+
 pluginManagement {
   includeBuild("build-logic")
 }

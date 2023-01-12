@@ -136,6 +136,7 @@ configure<kotlinx.validation.ApiValidationExtension> {
           "apollo-normalized-cache-api-incubating",
           "apollo-normalized-cache-incubating",
           "apollo-normalized-cache-sqlite-incubating",
+          "intellij-plugin",
       )
   )
   nonPublicMarkers.addAll(

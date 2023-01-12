@@ -168,7 +168,7 @@ Please note that we will not accept pull requests for style changes.
 Apollo Kotlin observes [semantic versioning](https://semver.org/). Between major releases, breaking changes are not
 allowed and any public API change will fail the build.
 
-If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before commiting these
+If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before committing these
 files.
 
 ## Deprecation
@@ -251,6 +251,8 @@ following events:
     - All apiCheck
 - `tests-integration`
     - All integration tests (except Java 9+ ones)
+- `intellij-plugin`
+    - IntelliJ plugin build and tests
 
 ### On pushes to `main` branch
 
@@ -271,5 +273,7 @@ following events:
 
 **Job:**
 
-- `publish`
-    - Publish to Maven Central
+- `publish-libraries`
+    - Publish libraries to Maven Central
+- `publish-intellij-plugin`
+    - Publish IntelliJ plugin to Jetbrains Marketplace

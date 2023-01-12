@@ -21,6 +21,15 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
         // Because we use 1.6.10 during sync and this version is not on mavenCentral
         includeVersion("org.jetbrains.kotlin.plugin.serialization", "org.jetbrains.kotlin.plugin.serialization.gradle.plugin", "1.6.10")
+
+        // For org.jetbrains.intellij
+        includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
+        includeModule("org.jetbrains.intellij.plugins", "gradle-intellij-plugin")
+        includeModule("gradle.plugin.org.jetbrains.gradle.plugin.idea-ext", "gradle-idea-ext")
+
+        // For org.jetbrains.changelog
+        includeModule("org.jetbrains.changelog", "org.jetbrains.changelog.gradle.plugin")
+        includeModule("org.jetbrains.intellij.plugins", "gradle-changelog-plugin")
       }
     }
 
