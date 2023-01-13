@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.services.impl
 
 import com.apollographql.ijplugin.services.ApolloProjectService
+import com.apollographql.ijplugin.util.apolloGeneratedSourcesRoot
 import com.apollographql.ijplugin.util.isApolloAndroid2Project
 import com.apollographql.ijplugin.util.isApolloKotlin3Project
 import com.apollographql.ijplugin.util.logd
@@ -21,7 +22,6 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessModuleDir
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -32,10 +32,15 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
+import org.gradle.tooling.events.FailureResult
+import org.gradle.tooling.events.FinishEvent
+import org.gradle.tooling.events.ProgressListener
+import org.gradle.tooling.events.SuccessResult
 import org.jetbrains.kotlin.idea.framework.GRADLE_SYSTEM_ID
 import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
+import java.util.concurrent.Executors
 
 private const val CODEGEN_GRADLE_TASK_NAME = "generateApolloSources"
 
@@ -52,16 +57,19 @@ class ApolloProjectServiceImpl(
 
   private var codegenGradleCancellationTokenSource: CancellationTokenSource? = null
 
+  private val gradleExecutorService = Executors.newSingleThreadExecutor()
+
   init {
     logd("project=${project.name} isApolloKotlin3Project=$isApolloKotlin3Project")
     if (isApolloKotlin3Project) {
-      // Trigger the codegen whenever a GraphQL file is saved.
+      // Trigger gradle continuous build when GraphQL files change.
       observeVfsChanges()
 
-      // To make this more reactive, any touched GraphQL document will automatically be saved (thus triggering the codegen)
+      // To make this more reactive, any touched GraphQL document will automatically be saved (thus triggering gradle)
       // as soon as the current editor is changed.
       observeDocumentChanges()
       observeFileEditorChanges()
+
     }
   }
 
@@ -117,7 +125,7 @@ class ApolloProjectServiceImpl(
                 // Not a GraphQL file or not from this project: ignore
                 continue
               }
-              triggerCodegen(module)
+              triggerContinuousGradleBuild(module)
               break
             }
           }
@@ -138,10 +146,13 @@ class ApolloProjectServiceImpl(
     return moduleForFile
   }
 
-  private fun triggerCodegen(module: Module) {
+  private fun triggerContinuousGradleBuild(module: Module) {
     logd()
-    // Cancel any already running codegen task
-    codegenGradleCancellationTokenSource?.cancel()
+
+    if (codegenGradleCancellationTokenSource != null) {
+      logd("Already running")
+      return
+    }
 
     val rootProjectPath = ExternalSystemApiUtil.getExternalRootProjectPath(module)
     if (rootProjectPath == null) {
@@ -154,28 +165,44 @@ class ApolloProjectServiceImpl(
         GradleConstants.SYSTEM_ID
     )
 
-    val gradleExecutionHelper = GradleExecutionHelper()
-    gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
-      codegenGradleCancellationTokenSource = GradleConnector.newCancellationTokenSource()
+    gradleExecutorService.submit {
+      val gradleExecutionHelper = GradleExecutionHelper()
+      gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
+        codegenGradleCancellationTokenSource = GradleConnector.newCancellationTokenSource()
+        try {
+          val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.REFRESH_TASKS_LIST, project)
+          gradleExecutionHelper.getBuildLauncher(
+              id,
+              connection,
+              executionSettings,
+              ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT
+          )
+              .forTasks(CODEGEN_GRADLE_TASK_NAME)
+              .withCancellationToken(codegenGradleCancellationTokenSource!!.token())
+              .addArguments("--continuous")
+              .addProgressListener(ProgressListener { event ->
+                if (event is FinishEvent && event.descriptor.name == "Run build") {
+                  when (val result = event.result) {
+                    is FailureResult -> {
+                      logd("Gradle build failed: ${result.failures.map { it.message }}")
+                    }
 
-      try {
-        val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.REFRESH_TASKS_LIST, project)
-        gradleExecutionHelper.getBuildLauncher(
-            id,
-            connection,
-            executionSettings,
-            ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT
-        )
-            .forTasks(CODEGEN_GRADLE_TASK_NAME)
-            .withCancellationToken(codegenGradleCancellationTokenSource!!.token())
-            .run()
-        logd("Codegen task finished successfully")
-
-        // Sync impacted modules so the generated files are visible to the IDE
-        // TODO Only sync the output folder
-        VfsUtil.markDirtyAndRefresh(true, true, true, module.guessModuleDir())
-      } catch (t: Throwable) {
-        logd(t, "Failed to run codegen")
+                    is SuccessResult -> {
+                      logd("Gradle build success, syncing generated sources root")
+                      // Sync the generated sources so the files are visible to the IDE
+                      logd(module.apolloGeneratedSourcesRoot())
+                      VfsUtil.markDirtyAndRefresh(true, true, true, module.apolloGeneratedSourcesRoot())
+                    }
+                  }
+                }
+              })
+              .run()
+          logd("Gradle execution finished")
+        } catch (t: Throwable) {
+          logd(t, "Gradle execution failed")
+        } finally {
+          codegenGradleCancellationTokenSource = null
+        }
       }
     }
   }
