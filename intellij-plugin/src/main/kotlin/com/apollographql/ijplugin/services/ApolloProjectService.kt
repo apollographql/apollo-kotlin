@@ -7,7 +7,7 @@ interface ApolloProjectService {
   val isApolloAndroid2Project: Boolean
   val isApolloKotlin3Project: Boolean
 
-  fun restartContinuousGradleCodegen()
+  fun notifyGradleHasSynced()
 }
 
 fun Project.apolloProjectService() = service<ApolloProjectService>()

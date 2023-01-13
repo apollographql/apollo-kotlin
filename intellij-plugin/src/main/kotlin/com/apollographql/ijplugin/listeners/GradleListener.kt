@@ -11,8 +11,8 @@ class GradleListener : ExternalSystemTaskNotificationListenerAdapter() {
   override fun onSuccess(id: ExternalSystemTaskId) {
     logd()
     if (id.projectSystemId == GRADLE_SYSTEM_ID && id.type == ExternalSystemTaskType.RESOLVE_PROJECT) {
-      // Gradle sync finished, restart Gradle continuous codegen.
-      id.findProject()?.apolloProjectService()?.restartContinuousGradleCodegen()
+      // Gradle sync finished, notify project service
+      id.findProject()?.apolloProjectService()?.notifyGradleHasSynced()
     }
   }
 }
