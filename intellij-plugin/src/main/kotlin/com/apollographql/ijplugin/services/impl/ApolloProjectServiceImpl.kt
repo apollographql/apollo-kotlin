@@ -21,6 +21,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtil
@@ -55,7 +56,7 @@ class ApolloProjectServiceImpl(
 
   private var dirtyGqlDocument: Document? = null
 
-  private var codegenGradleCancellationTokenSource: CancellationTokenSource? = null
+  private var gradleCodegenCancellation: CancellationTokenSource? = null
 
   private val gradleExecutorService = Executors.newSingleThreadExecutor()
 
@@ -69,7 +70,6 @@ class ApolloProjectServiceImpl(
       // as soon as the current editor is changed.
       observeDocumentChanges()
       observeFileEditorChanges()
-
     }
   }
 
@@ -125,7 +125,7 @@ class ApolloProjectServiceImpl(
                 // Not a GraphQL file or not from this project: ignore
                 continue
               }
-              triggerContinuousGradleBuild(module)
+              startContinuousGradleCodegen(module)
               break
             }
           }
@@ -146,10 +146,20 @@ class ApolloProjectServiceImpl(
     return moduleForFile
   }
 
-  private fun triggerContinuousGradleBuild(module: Module) {
+  override fun restartContinuousGradleCodegen() {
+    logd()
+    if (!isApolloKotlin3Project) return
+    if (gradleCodegenCancellation != null) {
+      gradleCodegenCancellation!!.cancel()
+      gradleCodegenCancellation = null
+    }
+    startContinuousGradleCodegen(ModuleManager.getInstance(project).modules.first())
+  }
+
+  private fun startContinuousGradleCodegen(module: Module) {
     logd()
 
-    if (codegenGradleCancellationTokenSource != null) {
+    if (gradleCodegenCancellation != null) {
       logd("Already running")
       return
     }
@@ -168,7 +178,8 @@ class ApolloProjectServiceImpl(
     gradleExecutorService.submit {
       val gradleExecutionHelper = GradleExecutionHelper()
       gradleExecutionHelper.execute(rootProjectPath, executionSettings) { connection ->
-        codegenGradleCancellationTokenSource = GradleConnector.newCancellationTokenSource()
+        gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
+        logd("Start Gradle")
         try {
           val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.REFRESH_TASKS_LIST, project)
           gradleExecutionHelper.getBuildLauncher(
@@ -178,7 +189,7 @@ class ApolloProjectServiceImpl(
               ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT
           )
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
-              .withCancellationToken(codegenGradleCancellationTokenSource!!.token())
+              .withCancellationToken(gradleCodegenCancellation!!.token())
               .addArguments("--continuous")
               .addProgressListener(ProgressListener { event ->
                 if (event is FinishEvent && event.descriptor.name == "Run build") {
@@ -201,7 +212,7 @@ class ApolloProjectServiceImpl(
         } catch (t: Throwable) {
           logd(t, "Gradle execution failed")
         } finally {
-          codegenGradleCancellationTokenSource = null
+          gradleCodegenCancellation = null
         }
       }
     }
