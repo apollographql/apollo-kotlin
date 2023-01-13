@@ -1,6 +1,21 @@
 Change Log
 ==========
 
+# Version 3.7.4
+
+_2022-01-13_
+
+This release contains a handful of bug fixes and improvements.
+
+## 👷‍ All changes
+
+- Kotlin codegen: automatically escape 'companion' fields (#4630)
+- Runtime: fix a case where APQ + cache could be misconfigured and throw an exception (#4628)
+- Update KTOR to 2.2.2 (#4627)
+- Allow having an empty last part in multipart (#4598)
+- Add data builders for unknown interface and union types (v3) (#4613)
+- Http cache: don't access the disk from the main thread in error case (#4606)
+
 # Version 3.7.3
 
 _2022-12-20_
