@@ -10,6 +10,7 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij").version("1.8.0")
   id("org.jetbrains.changelog").version("1.3.1")
+  id("maven-publish")
 }
 
 group = properties("pluginGroup")
@@ -147,4 +148,48 @@ tasks.register("downloadMockJdk") {
 
 tasks.named("test").configure {
   dependsOn("downloadMockJdk")
+}
+
+tasks.register("generateUpdatePluginsXml") {
+  val filePath = "build/publications/updatePlugins.xml"
+  val pluginName = properties("pluginName")
+  val version = properties("VERSION_NAME")
+  outputs.file(filePath)
+  doLast {
+    // See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
+    file(filePath).writeText(
+        """
+        <plugins>
+          <plugin
+              id="$pluginName"
+              url="https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
+              version="$version">
+            <idea-version since-build="${properties("pluginSinceBuild")}" until-build="${properties("pluginUntilBuild")}"/>
+            <name>Apollo GraphQL (Snapshot)</name>
+          </plugin>
+        </plugins>
+        """.trimIndent()
+    )
+  }
+}
+
+publishing {
+  repositories {
+    maven {
+      name = "ossSnapshots"
+      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+      credentials {
+        username = System.getenv("SONATYPE_NEXUS_USERNAME")
+        password = System.getenv("SONATYPE_NEXUS_PASSWORD")
+      }
+    }
+  }
+
+  publications {
+    create<MavenPublication>("default") {
+      artifactId = properties("pluginName")
+      artifact(tasks.named("signPlugin"))
+      artifact(tasks.named("generateUpdatePluginsXml"))
+    }
+  }
 }
