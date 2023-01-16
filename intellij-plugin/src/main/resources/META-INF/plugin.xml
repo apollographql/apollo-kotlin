@@ -27,6 +27,8 @@
     <codeInsight.lineMarkerProvider language="UAST"
                                     implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider" />
 
+    <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.listeners.GradleListener" />
+
   </extensions>
 
   <applicationListeners>
