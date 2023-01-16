@@ -150,13 +150,20 @@ tasks.named("test").configure {
   dependsOn("downloadMockJdk")
 }
 
+// See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
 tasks.register("generateUpdatePluginsXml") {
   val filePath = "build/publications/updatePlugins.xml"
   val pluginName = properties("pluginName")
   val version = properties("VERSION_NAME")
+  val pluginSinceBuild = properties("pluginSinceBuild")
+  val pluginUntilBuild = properties("pluginUntilBuild")
+  inputs.property("pluginName", pluginName)
+  inputs.property("version", version)
+  inputs.property("pluginSinceBuild", pluginSinceBuild)
+  inputs.property("pluginUntilBuild", pluginUntilBuild)
   outputs.file(filePath)
+  outputs.cacheIf { true }
   doLast {
-    // See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
     file(filePath).writeText(
         """
         <plugins>
@@ -164,7 +171,7 @@ tasks.register("generateUpdatePluginsXml") {
               id="$pluginName"
               url="https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
               version="$version">
-            <idea-version since-build="${properties("pluginSinceBuild")}" until-build="${properties("pluginUntilBuild")}"/>
+            <idea-version since-build="$pluginSinceBuild" until-build="$pluginUntilBuild"/>
             <name>Apollo GraphQL (Snapshot)</name>
           </plugin>
         </plugins>
