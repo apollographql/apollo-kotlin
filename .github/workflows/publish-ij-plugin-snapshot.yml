@@ -1,10 +1,10 @@
 name: Publish IntelliJ plugin snapshot
 
 on:
-  pull_request:
-    branches: [ '*' ]
-#  schedule:
-#    - cron: '0 0 * * 0'
+#  pull_request:
+  #    branches: [ '*' ]
+  schedule:
+    - cron: '0 0 * * 0'
 
 jobs:
   publish-intellij-plugin:
