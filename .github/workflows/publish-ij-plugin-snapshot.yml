@@ -19,7 +19,10 @@ jobs:
           java-version: 11
 
       - name: Increment snapshot version
-        run: ./scripts/increment-ij-plugin-snapshot.main.kts
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          ./scripts/increment-ij-plugin-snapshot.main.kts
         env:
           COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT: true
 
