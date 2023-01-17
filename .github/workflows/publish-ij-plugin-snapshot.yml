@@ -30,3 +30,5 @@ jobs:
         run: ./gradlew --no-build-cache :intellij-plugin:publishAllPublicationsToRepsyIjPluginSnapshots
         env:
           COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT: true
+          IJ_PLUGIN_REPSY_USERNAME: ${{ secrets.IJ_PLUGIN_REPSY_USERNAME }}
+          IJ_PLUGIN_REPSY_PASSWORD: ${{ secrets.IJ_PLUGIN_REPSY_PASSWORD }}
