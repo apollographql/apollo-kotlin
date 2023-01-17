@@ -15,8 +15,8 @@ plugins {
 
 group = properties("pluginGroup")
 
-// Use the global version defined in the root project
-version = project.findProperty("VERSION_NAME").toString()
+// Use the global version defined in the root project + snapshot suffix if from the CI
+version = properties("VERSION_NAME") + if (System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()) ".${properties("snapshotVersion")}" else ""
 
 repositories {
   mavenCentral()
@@ -41,7 +41,7 @@ intellij {
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-  version.set(properties("VERSION_NAME"))
+  version.set(project.version.toString())
   groups.set(emptyList())
 }
 
@@ -53,7 +53,8 @@ tasks {
   }
 
   patchPluginXml {
-    version.set(properties("VERSION_NAME"))
+    pluginId.set(properties("pluginId"))
+    version.set(project.version.toString())
     sinceBuild.set(properties("pluginSinceBuild"))
     untilBuild.set(properties("pluginUntilBuild"))
 
@@ -73,7 +74,7 @@ tasks {
     // Get the latest available change notes from the changelog file
     changeNotes.set(provider {
       changelog.run {
-        getOrNull(properties("VERSION_NAME")) ?: getUnreleased()
+        getOrNull(project.version.toString()) ?: getUnreleased()
       }.toHTML()
     })
   }
@@ -151,12 +152,14 @@ tasks.named("test").configure {
 }
 
 // See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
-tasks.register("generateUpdatePluginsXml") {
-  val filePath = "build/publications/updatePlugins.xml"
+tasks.register("updatePluginsXml") {
+  val filePath = "snapshots/plugins.xml"
+  val pluginId = properties("pluginId")
   val pluginName = properties("pluginName")
-  val version = properties("VERSION_NAME")
+  val version = project.version.toString()
   val pluginSinceBuild = properties("pluginSinceBuild")
   val pluginUntilBuild = properties("pluginUntilBuild")
+  inputs.property("pluginId", pluginId)
   inputs.property("pluginName", pluginName)
   inputs.property("version", version)
   inputs.property("pluginSinceBuild", pluginSinceBuild)
@@ -168,8 +171,8 @@ tasks.register("generateUpdatePluginsXml") {
         """
         <plugins>
           <plugin
-              id="$pluginName"
-              url="https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
+              id="$pluginId"
+              url="https://repsy.io/mvn/bod/apollo-intellij-plugin/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
               version="$version">
             <idea-version since-build="$pluginSinceBuild" until-build="$pluginUntilBuild"/>
             <name>Apollo GraphQL (Snapshot)</name>
@@ -183,11 +186,11 @@ tasks.register("generateUpdatePluginsXml") {
 publishing {
   repositories {
     maven {
-      name = "ossSnapshots"
-      url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+      name = "repsyIjPluginSnapshots"
+      url = uri("https://repo.repsy.io/mvn/bod/apollo-intellij-plugin/")
       credentials {
-        username = System.getenv("SONATYPE_NEXUS_USERNAME")
-        password = System.getenv("SONATYPE_NEXUS_PASSWORD")
+        username = System.getenv("IJ_PLUGIN_REPSY_USERNAME")
+        password = System.getenv("IJ_PLUGIN_REPSY_PASSWORD")
       }
     }
   }
@@ -195,8 +198,7 @@ publishing {
   publications {
     create<MavenPublication>("default") {
       artifactId = properties("pluginName")
-      artifact(tasks.named("signPlugin"))
-      artifact(tasks.named("generateUpdatePluginsXml"))
+      artifact(tasks.named("buildPlugin"))
     }
   }
 }
