@@ -60,19 +60,3 @@ private fun Project.treatWarningsAsErrors() {
     }
   }
 }
-
-// Workaround for https://youtrack.jetbrains.com/issue/KT-51970
-fun Project.workaroundForIssueKT51970() {
-  afterEvaluate {
-    afterEvaluate {
-      tasks.configureEach {
-        if (
-            name.startsWith("compile")
-            && name.endsWith("KotlinMetadata")
-        ) {
-          enabled = false
-        }
-      }
-    }
-  }
-}

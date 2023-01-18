@@ -9,7 +9,6 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Nested
-import workaroundForIssueKT51970
 
 class TestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
@@ -41,8 +40,6 @@ class TestConventionPlugin : Plugin<Project> {
           newMemoryManager = mppConfiguration.newMemoryManager.getOrElse(true),
           appleTargets = mppConfiguration.appleTargets.get().ifEmpty { setOf("macosArm64", "macosX64") }
       )
-
-      project.workaroundForIssueKT51970()
     }
   }
 }
