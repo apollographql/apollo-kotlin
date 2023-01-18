@@ -34,10 +34,12 @@ object TestUtils {
       |
     """.trimMargin())
 
-    block(dest)
-
-    // Comment this line if you want to keep the directory around during development
-    dest.deleteRecursively()
+    try {
+      block(dest)
+    } finally {
+      // Comment this line if you want to keep the directory around during development
+      dest.deleteRecursively()
+    }
   }
 
   fun withProject(
