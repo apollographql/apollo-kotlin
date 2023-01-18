@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(plugin = "com.android.library")
-apply(plugin = "com.squareup.sqldelight")
+apply(plugin = "net.mbonnin.sqldelight")
 
 apolloLibrary {
   javaModuleName("com.apollographql.apollo3.cache.normalized.sql")
@@ -109,4 +109,3 @@ tasks.configureEach {
     enabled = false
   }
 }
-
