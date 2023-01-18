@@ -1,6 +1,9 @@
 package com.apollographql.ijplugin.services.impl
 
 import com.apollographql.ijplugin.services.ApolloProjectService
+import com.apollographql.ijplugin.settings.SettingsListener
+import com.apollographql.ijplugin.settings.SettingsState
+import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.util.apolloGeneratedSourcesRoot
 import com.apollographql.ijplugin.util.isApolloAndroid2Project
 import com.apollographql.ijplugin.util.isApolloKotlin3Project
@@ -52,6 +55,8 @@ class ApolloProjectServiceImpl(
   override var isApolloAndroid2Project: Boolean = false
   override var isApolloKotlin3Project: Boolean = false
 
+  private var isAutomaticCodegenTriggeringEnabledInSettings: Boolean = false
+
   private var documentChangesDisposable: Disposable? = null
   private var fileEditorChangesDisposable: Disposable? = null
 
@@ -64,13 +69,14 @@ class ApolloProjectServiceImpl(
   init {
     logd("project=${project.name}")
     onLibrariesChanged()
+    onSettingsChanged()
     startObserveLibraries()
+    startObservingSettings()
   }
 
   private fun startObserveLibraries() {
     logd()
-    val messageBusConnection = project.messageBus.connect(this)
-    messageBusConnection.subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootListener {
+    project.messageBus.connect(this).subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootListener {
       override fun rootsChanged(event: ModuleRootEvent) {
         logd("event=$event")
         onLibrariesChanged()
@@ -84,18 +90,43 @@ class ApolloProjectServiceImpl(
       isApolloAndroid2Project = project.isApolloAndroid2Project()
       isApolloKotlin3Project = project.isApolloKotlin3Project()
       logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
-      if (isApolloKotlin3Project) {
-        // To make the codegen more reactive, any touched GraphQL document will automatically be saved (thus triggering Gradle)
-        // as soon as the current editor is changed.
-        startObserveDocumentChanges()
-        startObserveFileEditorChanges()
+      startOrStopCodegenObservers()
+    }
+  }
 
-        startContinuousGradleCodegen()
-      } else {
-        stopObserveDocumentChanges()
-        stopObserveFileEditorChanges()
-        stopContinuousGradleCodegen()
+  private fun startObservingSettings() {
+    logd()
+    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      override fun settingsChanged(settingsState: SettingsState) {
+        logd()
+        onSettingsChanged()
       }
+    })
+  }
+
+  private fun onSettingsChanged() {
+    logd()
+    synchronized(this) {
+      isAutomaticCodegenTriggeringEnabledInSettings = project.settingsState.automaticCodegenTriggering
+      startOrStopCodegenObservers()
+    }
+  }
+
+  private fun shouldTriggerCodegenAutomatically() = isApolloKotlin3Project && isAutomaticCodegenTriggeringEnabledInSettings
+
+  private fun startOrStopCodegenObservers() {
+    logd("isApolloKotlin3Project=$isApolloKotlin3Project isAutomaticCodegenTriggeringEnabledInSettings=$isAutomaticCodegenTriggeringEnabledInSettings")
+    if (shouldTriggerCodegenAutomatically()) {
+      // To make the codegen more reactive, any touched GraphQL document will automatically be saved (thus triggering Gradle)
+      // as soon as the current editor is changed.
+      startObserveDocumentChanges()
+      startObserveFileEditorChanges()
+
+      startContinuousGradleCodegen()
+    } else {
+      stopObserveDocumentChanges()
+      stopObserveFileEditorChanges()
+      stopContinuousGradleCodegen()
     }
   }
 
@@ -166,7 +197,7 @@ class ApolloProjectServiceImpl(
 
   override fun notifyGradleHasSynced() {
     logd()
-    if (isApolloKotlin3Project) {
+    if (shouldTriggerCodegenAutomatically()) {
       stopContinuousGradleCodegen()
       startContinuousGradleCodegen()
     }

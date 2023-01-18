@@ -1,5 +1,6 @@
 package com.apollographql.ijplugin.settings;
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
@@ -13,6 +14,10 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 )
 class SettingsState : PersistentStateComponent<SettingsState> {
   var automaticCodegenTriggering: Boolean = true
+    set(value) {
+      field = value
+      ApplicationManager.getApplication().messageBus.syncPublisher(SettingsListener.TOPIC).settingsChanged(this)
+    }
 
   override fun getState(): SettingsState {
     return this
