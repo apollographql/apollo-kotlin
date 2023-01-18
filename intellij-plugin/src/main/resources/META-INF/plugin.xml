@@ -1,6 +1,5 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-  <id>com.apollographql.ijplugin</id>
   <name>Apollo GraphQL</name>
   <!-- Use the id that is defined for the Organization in the Marketplace -->
   <!-- See https://plugins.jetbrains.com/docs/marketplace/organizations.html#4b3f843d -->

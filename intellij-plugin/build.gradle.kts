@@ -10,12 +10,13 @@ plugins {
   id("org.jetbrains.kotlin.jvm")
   id("org.jetbrains.intellij").version("1.8.0")
   id("org.jetbrains.changelog").version("1.3.1")
+  id("maven-publish")
 }
 
 group = properties("pluginGroup")
 
-// Use the global version defined in the root project
-version = project.findProperty("VERSION_NAME").toString()
+// Use the global version defined in the root project + snapshot suffix if from the CI
+version = properties("VERSION_NAME") + if (System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()) ".${properties("snapshotVersion")}" else ""
 
 repositories {
   mavenCentral()
@@ -40,7 +41,7 @@ intellij {
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-  version.set(properties("VERSION_NAME"))
+  version.set(project.version.toString())
   groups.set(emptyList())
 }
 
@@ -52,7 +53,8 @@ tasks {
   }
 
   patchPluginXml {
-    version.set(properties("VERSION_NAME"))
+    pluginId.set(properties("pluginId"))
+    version.set(project.version.toString())
     sinceBuild.set(properties("pluginSinceBuild"))
     untilBuild.set(properties("pluginUntilBuild"))
 
@@ -72,7 +74,7 @@ tasks {
     // Get the latest available change notes from the changelog file
     changeNotes.set(provider {
       changelog.run {
-        getOrNull(properties("VERSION_NAME")) ?: getUnreleased()
+        getOrNull(project.version.toString()) ?: getUnreleased()
       }.toHTML()
     })
   }
@@ -147,4 +149,56 @@ tasks.register("downloadMockJdk") {
 
 tasks.named("test").configure {
   dependsOn("downloadMockJdk")
+}
+
+// See https://plugins.jetbrains.com/docs/intellij/custom-plugin-repository.html
+tasks.register("updatePluginsXml") {
+  val filePath = "snapshots/plugins.xml"
+  val pluginId = properties("pluginId")
+  val pluginName = properties("pluginName")
+  val version = project.version.toString()
+  val pluginSinceBuild = properties("pluginSinceBuild")
+  val pluginUntilBuild = properties("pluginUntilBuild")
+  inputs.property("pluginId", pluginId)
+  inputs.property("pluginName", pluginName)
+  inputs.property("version", version)
+  inputs.property("pluginSinceBuild", pluginSinceBuild)
+  inputs.property("pluginUntilBuild", pluginUntilBuild)
+  outputs.file(filePath)
+  outputs.cacheIf { true }
+  doLast {
+    file(filePath).writeText(
+        """
+        <plugins>
+          <plugin
+              id="$pluginId"
+              url="https://repsy.io/mvn/bod/apollo-intellij-plugin/com/apollographql/$pluginName/$version/$pluginName-$version.zip"
+              version="$version">
+            <idea-version since-build="$pluginSinceBuild" until-build="$pluginUntilBuild"/>
+            <name>Apollo GraphQL (Snapshot)</name>
+          </plugin>
+        </plugins>
+        """.trimIndent()
+    )
+  }
+}
+
+publishing {
+  repositories {
+    maven {
+      name = "repsyIjPluginSnapshots"
+      url = uri("https://repo.repsy.io/mvn/bod/apollo-intellij-plugin/")
+      credentials {
+        username = System.getenv("IJ_PLUGIN_REPSY_USERNAME")
+        password = System.getenv("IJ_PLUGIN_REPSY_PASSWORD")
+      }
+    }
+  }
+
+  publications {
+    create<MavenPublication>("default") {
+      artifactId = properties("pluginName")
+      artifact(tasks.named("buildPlugin"))
+    }
+  }
 }
