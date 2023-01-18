@@ -18,21 +18,36 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <applicationService serviceImplementation="com.apollographql.ijplugin.services.ApolloApplicationService" />
+
+    <!-- Settings -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.settings.SettingsState" />
+    <projectConfigurable
+        id="com.apollographql.ijplugin.settings.SettingsConfigurable"
+        parentId="tools"
+        instance="com.apollographql.ijplugin.settings.SettingsConfigurable"
+        displayName="Apollo GraphQL"
+        nonDefaultProject="true"
+    />
+
     <projectService
         serviceInterface="com.apollographql.ijplugin.services.ApolloProjectService"
         serviceImplementation="com.apollographql.ijplugin.services.impl.ApolloProjectServiceImpl"
     />
 
-    <codeInsight.lineMarkerProvider language="UAST"
-                                    implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider" />
+    <codeInsight.lineMarkerProvider
+        language="UAST"
+        implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider"
+    />
 
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.listeners.GradleListener" />
 
   </extensions>
 
   <applicationListeners>
-    <listener class="com.apollographql.ijplugin.listeners.ApolloProjectManagerListener"
-              topic="com.intellij.openapi.project.ProjectManagerListener" />
+    <listener
+        class="com.apollographql.ijplugin.listeners.ApolloProjectManagerListener"
+        topic="com.intellij.openapi.project.ProjectManagerListener"
+    />
   </applicationListeners>
 
   <actions>
