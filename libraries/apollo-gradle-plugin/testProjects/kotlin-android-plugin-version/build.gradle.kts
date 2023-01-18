@@ -6,12 +6,16 @@ plugins {
   alias(libs.plugins.apollo)
 }
 
-configure<BaseExtension> {
+android {
   compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
 
   defaultConfig {
     minSdkVersion(libs.versions.android.sdkversion.min.get())
     targetSdkVersion(libs.versions.android.sdkversion.target.get())
+  }
+
+  kotlinOptions {
+    jvmTarget = "1.8"
   }
 }
 

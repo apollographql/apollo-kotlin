@@ -28,7 +28,7 @@ configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   }
   database("Blob2Database") {
     packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.blob2"
-    schemaOutputDirectory = file("src/commonMain/sqldelight/blob2/schema")
+    schemaOutputDirectory = file("sqldelight/blob2/schema")
     sourceFolders = listOf("sqldelight/blob2/")
   }
 }
@@ -88,6 +88,7 @@ kotlin {
 
 configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  namespace ="com.apollographql.apollo3.cache.normalized.sql"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()

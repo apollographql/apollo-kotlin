@@ -19,7 +19,7 @@ apolloLibrary {
 configure<com.squareup.sqldelight.gradle.SqlDelightExtension> {
   database("JsonDatabase") {
     packageName = "com.apollographql.apollo3.cache.normalized.sql.internal.json"
-    schemaOutputDirectory = file("src/commonMain/sqldelight/json/schema")
+    schemaOutputDirectory = file("sqldelight/json/schema")
     sourceFolders = listOf("sqldelight/json/")
   }
 }
@@ -77,6 +77,7 @@ kotlin {
 
 configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
+  namespace = "com.apollographql.apollo3.cache.normalized.sql"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()

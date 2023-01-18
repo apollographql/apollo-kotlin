@@ -130,7 +130,7 @@ private val lazyRegisterJavaGeneratingTask: Method? = BaseVariant::class.java.de
 
 fun connectToAndroidVariant(project: Project, variant: Any, outputDir: Provider<Directory>, taskProvider: TaskProvider<out Task>) {
   check(variant is BaseVariant) {
-    "Apollo: 'variant' must be an instance of an Android [BaseVariant]"
+    "Apollo: variant must be an instance of an Android BaseVariant (found $variant)"
   }
 
   if (lazyRegisterJavaGeneratingTask != null) {

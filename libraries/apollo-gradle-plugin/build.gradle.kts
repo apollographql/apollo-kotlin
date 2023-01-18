@@ -129,5 +129,16 @@ tasks.withType<Test> {
   inputs.dir("testProjects")
 
   maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
+
+  doFirst {
+    /**
+     * Remove stale testProject directories
+     */
+    buildDir.listFiles().forEach {
+      if (it.isDirectory && it.name.startsWith("testProject")) {
+        it.deleteRecursively()
+      }
+    }
+  }
 }
 

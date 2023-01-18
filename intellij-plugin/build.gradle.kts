@@ -8,19 +8,20 @@ fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("org.jetbrains.intellij").version("1.8.0")
-  id("org.jetbrains.changelog").version("1.3.1")
+  id("org.jetbrains.intellij")
+  id("org.jetbrains.changelog")
   id("maven-publish")
+}
+
+// XXX: this should use the settings repositories instead
+repositories {
+  mavenCentral()
 }
 
 group = properties("pluginGroup")
 
 // Use the global version defined in the root project + snapshot suffix if from the CI
 version = properties("VERSION_NAME") + if (System.getenv("COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT").toBoolean()) ".${properties("snapshotVersion")}" else ""
-
-repositories {
-  mavenCentral()
-}
 
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
