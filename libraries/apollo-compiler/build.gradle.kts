@@ -41,19 +41,19 @@ dependencies {
 }
 
 abstract class GeneratePluginVersion : DefaultTask() {
-  @get:org.gradle.api.tasks.Input
+  @get:Input
   abstract val version: Property<String>
 
-  @get:org.gradle.api.tasks.OutputDirectory
+  @get:OutputDirectory
   abstract val outputDir: DirectoryProperty
 
-  @org.gradle.api.tasks.TaskAction
+  @TaskAction
   fun taskAction() {
     val versionFile = File(outputDir.asFile.get(), "com/apollographql/apollo3/compiler/Version.kt")
     versionFile.parentFile.mkdirs()
     versionFile.writeText("""// Generated file. Do not edit!
 package com.apollographql.apollo3.compiler
-const val APOLLO_VERSION = "${project.version}"
+const val APOLLO_VERSION = "$version"
 """)
   }
 }
