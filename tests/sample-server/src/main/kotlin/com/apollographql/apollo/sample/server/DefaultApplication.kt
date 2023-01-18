@@ -12,7 +12,7 @@ import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
 
 @SpringBootApplication
-class DefaultApplication {
+internal class DefaultApplication {
 
 }
 

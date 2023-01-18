@@ -378,7 +378,7 @@ class ServiceTests {
       TestUtils.executeTask("build", dir)
 
       assertTrue(dir.generatedChild("service/com/example/GreetingQuery.kt").isFile)
-      assertTrue(File(dir, "build/libs/testProject.jar").isFile)
+      assertTrue(File(dir, "build/libs/testSourceSet.jar").isFile)
     }
   }
 

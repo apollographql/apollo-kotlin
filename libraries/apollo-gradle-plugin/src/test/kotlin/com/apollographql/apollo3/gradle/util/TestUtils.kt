@@ -19,8 +19,12 @@ object TestUtils {
   val kotlinAndroidPlugin = Plugin(id = "org.jetbrains.kotlin.android", artifact = "libs.plugins.kotlin.android")
   val apolloPlugin = Plugin(id = "com.apollographql.apollo3", artifact = "libs.plugins.apollo")
 
-  fun withDirectory(testDir: String = "testProject", block: (File) -> Unit) {
-    val dest = File(File(System.getProperty("user.dir")), "build/$testDir")
+  fun withDirectory(testDir: String? = null, block: (File) -> Unit) {
+    val dest = if (testDir == null) {
+      File.createTempFile("testProject", "", File(System.getProperty("user.dir")).resolve("build"))
+    } else {
+      File(System.getProperty("user.dir")).resolve("build/$testDir")
+    }
     dest.deleteRecursively()
 
     // See https://github.com/apollographql/apollo-android/issues/2184
@@ -32,9 +36,8 @@ object TestUtils {
 
     block(dest)
 
-    // It's ok to not delete the directory as it will be deleted before next test
-    // During development, it's easy to keep the testProject around to investigate if something goes wrong
-    // dest.deleteRecursively()
+    // Comment this line if you want to keep the directory around during development
+    dest.deleteRecursively()
   }
 
   fun withProject(
@@ -121,8 +124,9 @@ object TestUtils {
       block = block
   )
 
-  fun withTestProject(name: String, testDir: String = "testProject", block: (File) -> Unit) = withDirectory(testDir) { dir ->
+  fun withTestProject(name: String, testDir: String? = null, block: (File) -> Unit) = withDirectory(testDir) { dir ->
     File(System.getProperty("user.dir"), "testProjects/$name").copyRecursively(dir, overwrite = true)
+
     block(dir)
   }
 
