@@ -1,0 +1,3 @@
+mutation CreateCustomer($name: String!, $id: Int!) {
+  createCustomer(input: {customer: {storeId: $id, name: $name}})
+}
