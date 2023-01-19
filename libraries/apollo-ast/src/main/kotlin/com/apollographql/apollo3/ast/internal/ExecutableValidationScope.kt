@@ -628,7 +628,7 @@ internal class ExecutableValidationScope(
     val parentTypeDefinitionB = fieldWithParentB.parentTypeDefinition
 
     val setA = fieldWithParentA.field.selectionSet?.collectFields(parentTypeDefinitionA.name) ?: emptyList()
-    val setB = fieldWithParentA.field.selectionSet?.collectFields(parentTypeDefinitionB.name) ?: emptyList()
+    val setB = fieldWithParentB.field.selectionSet?.collectFields(parentTypeDefinitionB.name) ?: emptyList()
 
     (setA + setB).groupBy { it.field.responseName() }.values.forEach { fieldsForName ->
       if (fieldsForName.pairs().firstOrNull { sameResponseShapeRecursive(it.first, it.second) } != null) {
