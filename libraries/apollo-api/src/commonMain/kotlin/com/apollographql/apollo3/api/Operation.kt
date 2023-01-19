@@ -19,6 +19,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   /**
    * The GraphQL operation name as in the `*.graphql` file.
    */
+  @JsName("operationName")
   fun name(): String
 
   /**

@@ -1,0 +1,16 @@
+type Query {
+  a: String
+}
+
+type Mutation {
+  createCustomer(input: CreateCustomerInput!): Boolean
+}
+
+input CreateCustomerInput {
+  customer: CustomerInput!
+}
+
+input CustomerInput {
+  storeId: Int!
+  name: String!
+}

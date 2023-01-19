@@ -43,6 +43,7 @@ if (System.getProperty("idea.sync.active") == null) {
       ":native-benchmarks:compileCommonMainKotlinMetadata",
       ":pagination:compileCommonMainKotlinMetadata",
       ":sqlite:compileCommonMainKotlinMetadata",
-      ":websockets:compileCommonMainKotlinMetadata"
+      ":websockets:compileCommonMainKotlinMetadata",
+      ":js:compileCommonMainKotlinMetadata",
   ))
 }
