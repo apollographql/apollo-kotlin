@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.api.Builder
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolverContext
+import com.apollographql.apollo3.api.Optional
 import com.example.MyLong
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
@@ -17,6 +18,7 @@ import data.builders.GetNodeQuery
 import data.builders.GetPartialQuery
 import data.builders.GetProductQuery
 import data.builders.PutIntMutation
+import data.builders.SkipQuery
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
 import data.builders.type.__CustomScalarAdapters
@@ -47,11 +49,11 @@ class DataBuilderTest {
   @Test
   fun aliasTest() {
     val data = GetAliasesQuery.Data {
-      this["aliasedNullableInt"] = 50
+      "aliasedNullableInt" to 50
       cat = buildCat {
         species = "Cat"
       }
-      this["aliasedCat"] = buildCat {
+      "aliasedCat" to buildCat {
         species = "AliasedCat"
       }
     }
@@ -284,7 +286,7 @@ class DataBuilderTest {
   @Test
   fun using__stableId() {
     val productData = Builder(__CustomScalarAdapters).buildProduct {
-      this["__stableId"] = "42"
+      "__stableId" to "42"
     }
 
     val data = GetProductQuery.Data {
@@ -296,5 +298,14 @@ class DataBuilderTest {
 
     assertEquals(data.product?.name, data.promo?.product?.name)
     assertEquals(data.product?.price, data.promo?.product?.price)
+  }
+
+  @Test
+  fun skip() {
+    val data = SkipQuery.Data {
+      "nonNullableInt" to Optional.Absent
+    }
+
+    assertNull(data.nonNullableInt)
   }
 }

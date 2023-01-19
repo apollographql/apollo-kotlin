@@ -137,6 +137,10 @@ private fun buildFieldOfType(
     type: CompiledType,
     customScalarAdapters: CustomScalarAdapters,
 ): Any? {
+  if (value is Optional.Present && value.value is Optional.Absent) {
+    // Shortcut to allow omitting a value for `@skip` directives
+    return Optional.Absent
+  }
   if (type !is CompiledNotNullType) {
     return if (value is Optional.Present) {
       if (value.value == null) {
@@ -193,9 +197,13 @@ private fun buildFieldOfNonNullType(
 
           val stableId = resolver.stableIdForObject(map, mergedField) ?: id
 
-          collectAndMerge(mergedField.selections, typename).associate {
-            it.responseName to buildFieldOfType(path + it.responseName, stableId + it.responseName, it, resolver, map.getOrAbsent(it.responseName), it.type, customScalarAdapters)
-          }
+          collectAndMerge(mergedField.selections, typename).mapNotNull {
+            val v = buildFieldOfType(path + it.responseName, stableId + it.responseName, it, resolver, map.getOrAbsent(it.responseName), it.type, customScalarAdapters)
+            if (v is Optional.Absent) {
+              return@mapNotNull null
+            }
+            it.responseName to v
+          }.toMap()
         } else {
           value.value
         }
