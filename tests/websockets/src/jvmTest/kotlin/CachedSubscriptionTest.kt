@@ -1,12 +1,11 @@
 
-import com.apollographql.apollo.sample.server.DefaultApplication
+import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
@@ -17,26 +16,24 @@ import kotlinx.coroutines.withTimeout
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import org.springframework.boot.runApplication
-import org.springframework.context.ConfigurableApplicationContext
 import sample.server.TimeQuery
 import sample.server.TimeSubscription
 import kotlin.test.assertEquals
 
 class CachedSubscriptionTest {
   companion object {
-    private lateinit var context: ConfigurableApplicationContext
+    private lateinit var sampleServer: SampleServer
 
     @BeforeClass
     @JvmStatic
     fun beforeClass() {
-      context = runApplication<DefaultApplication>()
+      sampleServer = SampleServer()
     }
 
     @AfterClass
     @JvmStatic
     fun afterClass() {
-      context.close()
+      sampleServer.close()
     }
   }
 
@@ -47,8 +44,8 @@ class CachedSubscriptionTest {
     )
 
     val apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .httpServerUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .store(store)
         .build()
 

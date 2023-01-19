@@ -1,5 +1,6 @@
+
 import app.cash.turbine.test
-import com.apollographql.apollo.sample.server.DefaultApplication
+import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
@@ -14,8 +15,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import org.springframework.boot.runApplication
-import org.springframework.context.ConfigurableApplicationContext
 import sample.server.CloseSocketQuery
 import sample.server.CountSubscription
 import sample.server.TimeSubscription
@@ -25,25 +24,25 @@ import kotlin.test.assertTrue
 
 class WebSocketErrorsTest {
   companion object {
-    private lateinit var context: ConfigurableApplicationContext
+    private lateinit var sampleServer: SampleServer
 
     @BeforeClass
     @JvmStatic
     fun beforeClass() {
-      context = runApplication<DefaultApplication>()
+      sampleServer = SampleServer()
     }
 
     @AfterClass
     @JvmStatic
     fun afterClass() {
-      context.close()
+      sampleServer.close()
     }
   }
 
   @Test
   fun connectionErrorThrows() = runBlocking {
     val apolloClient = ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
+        .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
             SubscriptionWsProtocol.Factory(
                 connectionPayload = { mapOf("return" to "error") }
@@ -65,7 +64,7 @@ class WebSocketErrorsTest {
   @Test
   fun socketClosedThrows() = runBlocking {
     val apolloClient = ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/subscriptions")
+        .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
             SubscriptionWsProtocol.Factory(
                 // Not all codes are valid. See RFC-6455
@@ -92,8 +91,8 @@ class WebSocketErrorsTest {
     var exception: Throwable? = null
 
     val apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .httpServerUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
             SubscriptionWsProtocol.Factory(
                 connectionPayload = {
@@ -155,8 +154,8 @@ class WebSocketErrorsTest {
   @Test
   fun disposingTheClientClosesTheWebSocket() = runBlocking {
     var apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .httpServerUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .build()
 
 
@@ -172,8 +171,8 @@ class WebSocketErrorsTest {
     apolloClient.dispose()
 
     apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .httpServerUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .build()
 
     delay(1000)
@@ -185,8 +184,8 @@ class WebSocketErrorsTest {
   @Test
   fun flowThrowsIfNoReconnect() = runBlocking {
     val apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .httpServerUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
             SubscriptionWsProtocol.Factory(
                 connectionPayload = {
@@ -224,8 +223,8 @@ class WebSocketErrorsTest {
 
     var connectionInitCount = 0
     val apolloClient = ApolloClient.Builder()
-        .httpServerUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .httpServerUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
             SubscriptionWsProtocol.Factory(
                 connectionPayload = {

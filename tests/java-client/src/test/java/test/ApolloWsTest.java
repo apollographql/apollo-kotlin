@@ -1,8 +1,7 @@
 package test;
 
-import com.apollographql.apollo.sample.server.DefaultApplication;
+import com.apollographql.apollo.sample.server.SampleServer;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.api.ImmutableMapBuilder;
 import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.SubscriptionOperationException;
@@ -20,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,20 +31,20 @@ import java.util.concurrent.atomic.AtomicLong;
 import static test.Utils.sleep;
 
 public class ApolloWsTest {
-  private static ConfigurableApplicationContext context;
+  private static SampleServer sampleServer;
 
   @BeforeClass
   public static void beforeClass() {
-    context = SpringApplication.run(DefaultApplication.class);
+    sampleServer = new SampleServer();
   }
 
   @AfterClass
   public static void afterClass() {
-    context.close();
+    sampleServer.close();
   }
 
   private ApolloClient apolloClient = new ApolloClient.Builder()
-      .serverUrl("http://localhost:8080/subscriptions")
+      .serverUrl(sampleServer.subscriptionsUrl())
       .wsProtocolFactory(new ApolloWsProtocol.Factory())
       .build();
 
@@ -220,8 +217,8 @@ public class ApolloWsTest {
   @Test
   public void networkError() throws Exception {
     ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .serverUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .wsProtocolFactory(new ApolloWsProtocol.Factory())
         .build();
 
@@ -266,8 +263,8 @@ public class ApolloWsTest {
   public void reopenWhenCloseWebSocket() throws Exception {
     AtomicBoolean hasReopenOccurred = new AtomicBoolean(false);
     ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8080/graphql")
-        .webSocketServerUrl("http://localhost:8080/subscriptions")
+        .serverUrl(sampleServer.graphqlUrl())
+        .webSocketServerUrl(sampleServer.subscriptionsUrl())
         .wsProtocolFactory(new ApolloWsProtocol.Factory())
         .wsReopenWhen((throwable, attempt) -> {
           boolean shouldReopen = !hasReopenOccurred.get();
@@ -327,14 +324,12 @@ public class ApolloWsTest {
   @Test
   public void reopenWhenKillServer() throws Exception {
     // Create a specific server for this test, because we want to kill it
-    SpringApplication app = new SpringApplication(DefaultApplication.class);
-    app.setDefaultProperties(new ImmutableMapBuilder<String, Object>().put("server.port", "8081").build());
-    context = app.run();
+    SampleServer sampleServer2 = new SampleServer();
 
     AtomicBoolean hasReopenOccurred = new AtomicBoolean(false);
     AtomicLong reopenAttempt = new AtomicLong(0);
     ApolloClient apolloClient = new ApolloClient.Builder()
-        .serverUrl("http://localhost:8081/subscriptions")
+        .serverUrl(sampleServer2.subscriptionsUrl())
         .wsProtocolFactory(new ApolloWsProtocol.Factory())
         .wsReopenWhen((throwable, attempt) -> {
           reopenAttempt.set(attempt);
@@ -353,7 +348,7 @@ public class ApolloWsTest {
         itemsBeforeReopen.add(response.dataAssertNoErrors().count);
         if (response.dataAssertNoErrors().count == 5) {
           // Provoke a network error by stopping the whole server
-          context.close();
+          sampleServer2.close();
         }
       }
 

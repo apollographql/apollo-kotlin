@@ -128,4 +128,7 @@ tasks.withType<Test> {
 
   inputs.dir("src/test/files")
   inputs.dir("testProjects")
+
+  maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
 }
+

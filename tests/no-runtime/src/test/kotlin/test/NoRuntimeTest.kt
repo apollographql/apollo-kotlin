@@ -1,6 +1,6 @@
 package test
 
-import com.apollographql.apollo.sample.server.DefaultApplication
+import com.apollographql.apollo.sample.server.SampleServer
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.composeJsonRequest
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
@@ -15,26 +15,24 @@ import okio.BufferedSink
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import org.springframework.boot.runApplication
-import org.springframework.context.ConfigurableApplicationContext
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @ApolloInternal
 class NoRuntimeTest {
   companion object {
-    private lateinit var context: ConfigurableApplicationContext
+    private lateinit var sampleServer: SampleServer
 
     @BeforeClass
     @JvmStatic
     fun beforeClass() {
-      context = runApplication<DefaultApplication>()
+      sampleServer = SampleServer()
     }
 
     @AfterClass
     @JvmStatic
     fun afterClass() {
-      context.close()
+      sampleServer.close()
     }
   }
 
@@ -44,7 +42,7 @@ class NoRuntimeTest {
 
     val okHttpClient = OkHttpClient()
 
-    val request = Request.Builder().url("http://localhost:8080/graphql")
+    val request = Request.Builder().url(sampleServer.graphqlUrl())
         .post(object: RequestBody() {
           override fun contentType() = "application/json".toMediaType()
 

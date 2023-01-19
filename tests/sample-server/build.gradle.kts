@@ -6,8 +6,8 @@ plugins {
 }
 
 dependencies {
-  api(golatac.lib("graphqlkotlin"))
-  api(golatac.lib("kotlin.reflect").toString()) {
+  implementation(golatac.lib("graphqlkotlin"))
+  implementation(golatac.lib("kotlin.reflect").toString()) {
     because("graphqlKotlin pull kotlin-reflect and that triggers a warning like" +
         "Runtime JAR files in the classpath should have the same version.")
   }
