@@ -9,10 +9,6 @@ abstract class ObjectBuilder(override val customScalarAdapters: CustomScalarAdap
 
   var __typename: String by __fields
 
-  infix fun String.to(value:Any?) {
-    __fields[this] = value
-  }
-
   operator fun set(key: String, value: Any?) {
     __fields[key] = value
   }

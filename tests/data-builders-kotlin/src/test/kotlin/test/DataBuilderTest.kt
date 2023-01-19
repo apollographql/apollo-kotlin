@@ -49,11 +49,11 @@ class DataBuilderTest {
   @Test
   fun aliasTest() {
     val data = GetAliasesQuery.Data {
-      "aliasedNullableInt" to 50
+      this["aliasedNullableInt"] = 50
       cat = buildCat {
         species = "Cat"
       }
-      "aliasedCat" to buildCat {
+      this["aliasedCat"] = buildCat {
         species = "AliasedCat"
       }
     }
@@ -286,7 +286,7 @@ class DataBuilderTest {
   @Test
   fun using__stableId() {
     val productData = Builder(__CustomScalarAdapters).buildProduct {
-      "__stableId" to "42"
+      this["__stableId"] = "42"
     }
 
     val data = GetProductQuery.Data {
@@ -303,7 +303,7 @@ class DataBuilderTest {
   @Test
   fun skip() {
     val data = SkipQuery.Data {
-      "nonNullableInt" to Optional.Absent
+      this["nonNullableInt"] = Optional.Absent
     }
 
     assertNull(data.nonNullableInt)
