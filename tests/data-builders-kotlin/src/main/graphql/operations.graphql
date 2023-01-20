@@ -124,3 +124,7 @@ query GetProduct {
     }
   }
 }
+
+query Skip($skip: Boolean!) {
+  nonNullableInt @skip(if: $skip)
+}
