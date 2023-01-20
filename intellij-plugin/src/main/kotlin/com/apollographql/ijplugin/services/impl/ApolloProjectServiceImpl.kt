@@ -32,7 +32,6 @@ import com.intellij.openapi.roots.ModuleRootListener
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.psi.PsiDocumentManager
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.events.FailureResult
@@ -142,7 +141,7 @@ class ApolloProjectServiceImpl(
     documentChangesDisposable = disposable
     EditorFactory.getInstance().eventMulticaster.addDocumentListener(object : DocumentListener {
       override fun documentChanged(event: DocumentEvent) {
-        val vFile = PsiDocumentManager.getInstance(project).getPsiFile(event.document)?.virtualFile ?: return
+        val vFile = FileDocumentManager.getInstance().getFile(event.document) ?: return
         val isGqlFileInProject = vFile.fileType is GraphQLFileType && ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vFile) != null
         if (!isGqlFileInProject) {
           // Not a GraphQL file or not from this project: ignore
