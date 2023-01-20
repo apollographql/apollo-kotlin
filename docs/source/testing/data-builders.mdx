@@ -91,7 +91,7 @@ Similarly, values for the ship's speed, the 1st friend's last name and 2nd frien
 
 > You can replace `buildHuman` above with `buildDroid` to create a `Droid` object instead.
 
-## Aliases
+## Aliases 
 
 Because data builders are schema-based and aliases are defined in your queries, there is no way for the codegen to generate builder fields for them. Instead, you'll need to specify them explicitly.
 
@@ -121,6 +121,25 @@ val data = GetHeroes.Data {
 }
 ```
 
+## `@skip` and `@include` directives
+
+By default, the data builders match the types in your schema. If a field is non-null you will either have to provide a value or let the default resolver provide one. This is an issue for `@skip` and `@include` directives where a field might be absent even if it is non-nullable. To account for this case, use the same syntax as for aliases. 
+
+```graphql
+query Skip($skip: Boolean!) {
+  nonNullableInt @skip(if: $skip)
+}
+```
+
+You can generate a fake data model like so:
+
+```kotlin
+val data = SkipQuery.Data {
+  this["nonNullableInt"] = Optional.Absent
+}
+
+assertNull(data.nonNullableInt) 
+```
 
 ## Configuring default field values
 

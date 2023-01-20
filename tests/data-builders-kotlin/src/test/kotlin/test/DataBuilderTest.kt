@@ -3,6 +3,7 @@ package test
 import com.apollographql.apollo3.api.Builder
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolverContext
+import com.apollographql.apollo3.api.Optional
 import com.example.MyLong
 import data.builders.GetAliasesQuery
 import data.builders.GetAnimalQuery
@@ -17,6 +18,7 @@ import data.builders.GetNodeQuery
 import data.builders.GetPartialQuery
 import data.builders.GetProductQuery
 import data.builders.PutIntMutation
+import data.builders.SkipQuery
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
 import data.builders.type.__CustomScalarAdapters
@@ -296,5 +298,14 @@ class DataBuilderTest {
 
     assertEquals(data.product?.name, data.promo?.product?.name)
     assertEquals(data.product?.price, data.promo?.product?.price)
+  }
+
+  @Test
+  fun skip() {
+    val data = SkipQuery.Data {
+      this["nonNullableInt"] = Optional.Absent
+    }
+
+    assertNull(data.nonNullableInt)
   }
 }
