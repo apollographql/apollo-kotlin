@@ -17,7 +17,18 @@
   <resource-bundle>messages.ApolloBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="com.apollographql.ijplugin.services.ApolloApplicationService" />
+
+    <!-- Application -->
+    <applicationService serviceImplementation="com.apollographql.ijplugin.apollo.ApolloApplicationService" />
+
+    <!-- Apollo project -->
+    <projectService
+        serviceInterface="com.apollographql.ijplugin.apollo.ApolloProjectService"
+        serviceImplementation="com.apollographql.ijplugin.apollo.ApolloProjectServiceImpl"
+    />
+
+    <!-- Codegen -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.codegen.ApolloCodegenService" />
 
     <!-- Settings -->
     <projectService serviceImplementation="com.apollographql.ijplugin.settings.SettingsState" />
@@ -29,21 +40,19 @@
         nonDefaultProject="true"
     />
 
-    <projectService
-        serviceInterface="com.apollographql.ijplugin.services.ApolloProjectService"
-        serviceImplementation="com.apollographql.ijplugin.services.impl.ApolloProjectServiceImpl"
-    />
+    <!-- Marker provider (unused for now) -->
+    <!--    <codeInsight.lineMarkerProvider-->
+    <!--        language="UAST"-->
+    <!--        implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider"-->
+    <!--    />-->
 
-    <codeInsight.lineMarkerProvider
-        language="UAST"
-        implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider"
-    />
-
+    <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.listeners.GradleListener" />
 
   </extensions>
 
   <applicationListeners>
+    <!-- Listen to project open/close -->
     <listener
         class="com.apollographql.ijplugin.listeners.ApolloProjectManagerListener"
         topic="com.intellij.openapi.project.ProjectManagerListener"
@@ -51,7 +60,11 @@
   </applicationListeners>
 
   <actions>
-    <action id="ApolloV2ToV3MigrationAction" class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction">
+    <!-- Refactor / Migrate to Apollo Kotlin 3 -->
+    <action
+        id="ApolloV2ToV3MigrationAction"
+        class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction"
+    >
       <add-to-group group-id="RefactoringMenu" />
     </action>
   </actions>

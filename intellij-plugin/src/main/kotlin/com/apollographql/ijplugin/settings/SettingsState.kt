@@ -26,7 +26,6 @@ class SettingsState : PersistentStateComponent<SettingsState> {
   override fun loadState(state: SettingsState) {
     XmlSerializerUtil.copyBean(state, this)
   }
-
 }
 
 val Project.settingsState get() = service<SettingsState>()

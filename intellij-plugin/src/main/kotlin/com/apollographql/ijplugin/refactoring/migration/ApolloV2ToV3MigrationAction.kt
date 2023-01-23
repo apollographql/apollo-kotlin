@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.refactoring.migration
 
 import com.apollographql.ijplugin.ApolloBundle
+import com.apollographql.ijplugin.apollo.apolloProjectService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
@@ -27,7 +28,7 @@ class ApolloV2ToV3MigrationAction : AnAction() {
   override fun update(event: AnActionEvent) {
     val presentation = event.presentation
     val project = event.project
-    presentation.isEnabled = project != null
+    presentation.isEnabled = project?.apolloProjectService?.isApolloAndroid2Project == true
     presentation.isVisible = !ActionPlaces.isPopupPlace(event.place)
   }
 }
