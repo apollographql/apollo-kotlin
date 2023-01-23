@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.apollo
+package com.apollographql.ijplugin.project
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

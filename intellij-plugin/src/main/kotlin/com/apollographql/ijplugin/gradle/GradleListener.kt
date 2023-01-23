@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.listeners
+package com.apollographql.ijplugin.gradle
 
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId

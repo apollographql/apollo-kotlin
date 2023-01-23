@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.refactoring.migration
 
 import com.apollographql.ijplugin.ApolloBundle
-import com.apollographql.ijplugin.apollo.apolloProjectService
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction

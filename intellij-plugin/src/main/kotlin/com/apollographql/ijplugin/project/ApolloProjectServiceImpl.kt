@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.apollo
+package com.apollographql.ijplugin.project
 
 import com.apollographql.ijplugin.util.isApolloAndroid2Project
 import com.apollographql.ijplugin.util.isApolloKotlin3Project

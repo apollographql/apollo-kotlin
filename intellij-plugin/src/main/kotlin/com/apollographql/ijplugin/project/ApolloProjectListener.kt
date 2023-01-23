@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.apollo
+package com.apollographql.ijplugin.project
 
 import com.intellij.util.messages.Topic
 

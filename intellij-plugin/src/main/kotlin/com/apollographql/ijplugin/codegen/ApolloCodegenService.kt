@@ -1,8 +1,8 @@
 package com.apollographql.ijplugin.codegen
 
-import com.apollographql.ijplugin.apollo.ApolloProjectListener
-import com.apollographql.ijplugin.apollo.apolloProjectService
-import com.apollographql.ijplugin.listeners.GradleHasSyncedListener
+import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
+import com.apollographql.ijplugin.project.ApolloProjectListener
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
 import com.apollographql.ijplugin.settings.SettingsState
 import com.apollographql.ijplugin.settings.settingsState

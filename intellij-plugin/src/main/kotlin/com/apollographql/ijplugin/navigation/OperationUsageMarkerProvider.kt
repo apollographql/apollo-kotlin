@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.ApolloBundle
-import com.apollographql.ijplugin.apollo.apolloProjectService
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder

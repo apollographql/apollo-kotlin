@@ -19,12 +19,12 @@
   <extensions defaultExtensionNs="com.intellij">
 
     <!-- Application -->
-    <applicationService serviceImplementation="com.apollographql.ijplugin.apollo.ApolloApplicationService" />
+    <applicationService serviceImplementation="com.apollographql.ijplugin.application.ApolloApplicationService" />
 
     <!-- Apollo project -->
     <projectService
-        serviceInterface="com.apollographql.ijplugin.apollo.ApolloProjectService"
-        serviceImplementation="com.apollographql.ijplugin.apollo.ApolloProjectServiceImpl"
+        serviceInterface="com.apollographql.ijplugin.project.ApolloProjectService"
+        serviceImplementation="com.apollographql.ijplugin.project.ApolloProjectServiceImpl"
     />
 
     <!-- Codegen -->
@@ -47,14 +47,14 @@
     <!--    />-->
 
     <!-- Listen to Gradle sync -->
-    <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.listeners.GradleListener" />
+    <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
 
   </extensions>
 
   <applicationListeners>
     <!-- Listen to project open/close -->
     <listener
-        class="com.apollographql.ijplugin.listeners.ApolloProjectManagerListener"
+        class="com.apollographql.ijplugin.project.ApolloProjectManagerListener"
         topic="com.intellij.openapi.project.ProjectManagerListener"
     />
   </applicationListeners>
