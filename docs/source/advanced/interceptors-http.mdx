@@ -1,6 +1,10 @@
 ---
-title: HTTP interceptors
+title: Interceptors
 ---
+
+## HTTP interceptors
+
+### Apollo HTTP interceptors
 
 Apollo Kotlin supports multi platform `HttpInterceptor` very similar to `OkHttp` `Interceptors`. Use them to add authentication headers, log the network calls or anything else.
 
@@ -23,11 +27,11 @@ val apolloClient = ApolloClient.Builder()
     .build()
 ```
 
-By default, Apollo Kotlin comes with `ClientAwarenessInterceptor` and `LoggingInterceptor`.
+Apollo Kotlin comes bundled with [`ClientAwarenessInterceptor`](./client-awareness) and `LoggingInterceptor` that you can set on your ApolloClient.
 
-## Reusing OkHttp interceptors on JVM only projects
+### OkHttp interceptors
 
-If your project is a JVM only project and you already have an `OkHttp` `Interceptor`, you can also reuse it:
+If your project is an Android or JVM only project and you already have an [`OkHttp` `Interceptor`](https://square.github.io/okhttp/features/interceptors/), you can also reuse it:
 
 ```kotlin
 val okHttpClient = OkHttpClient.Builder()
@@ -37,5 +41,32 @@ val okHttpClient = OkHttpClient.Builder()
 val apolloClient = ApolloClient.Builder()
     .serverUrl("https://example.com/graphql")
     .okHttpClient(okHttpClient)
+    .build()
+```
+
+## GraphQL interceptors
+
+Apollo also supports interceptors at the GraphQL level: `ApolloInterceptor`. They are useful to customize operations before they are sent, or to react to the response, in a centralized way. For example, you could use them to keep track of certain errors, or to implement authentication if the server handles it at the GraphQL level rather than HTTP. Under the hood, Apollo implements the [normalized cache](../caching/normalized-cache), and [APQ](../advanced/persisted-queries) features with `ApolloInterceptor`.
+
+Like `HttpInterceptor`, `ApolloInterceptor` also has a single method, but the API is `Flow` based. Remember that the `Flow` can emit several times, for instance in the case of Subscriptions.
+
+Here's an example of a logging interceptor:
+
+```kotlin 
+class LoggingApolloInterceptor: ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).onEach { response ->
+      println("Received response for ${request.operation.name()}: ${response.data}")
+    }
+  }
+}
+```
+
+Then add the interceptor to your `ApolloClient`:
+
+```kotlin
+val apolloClient = ApolloClient.Builder()
+    .serverUrl("https://example.com/graphql")
+    .addInterceptor(LoggingApolloInterceptor())
     .build()
 ```
