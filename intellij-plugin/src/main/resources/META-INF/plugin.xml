@@ -31,7 +31,7 @@
     <projectService serviceImplementation="com.apollographql.ijplugin.codegen.ApolloCodegenService" />
 
     <!-- Settings -->
-    <projectService serviceImplementation="com.apollographql.ijplugin.settings.SettingsState" />
+    <projectService serviceImplementation="com.apollographql.ijplugin.settings.SettingsService" />
     <projectConfigurable
         id="com.apollographql.ijplugin.settings.SettingsConfigurable"
         parentId="tools"
