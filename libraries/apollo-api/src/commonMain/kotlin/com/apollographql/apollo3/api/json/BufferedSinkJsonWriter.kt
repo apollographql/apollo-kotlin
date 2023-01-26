@@ -16,8 +16,8 @@
 package com.apollographql.apollo3.api.json
 
 import com.apollographql.apollo3.api.Upload
-import com.apollographql.apollo3.api.json.internal.JsonScope
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader.Companion.MAX_STACK_SIZE
+import com.apollographql.apollo3.api.json.internal.JsonScope
 import com.apollographql.apollo3.exception.JsonDataException
 import okio.BufferedSink
 import okio.IOException
@@ -45,13 +45,6 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
   private val scopes = IntArray(MAX_STACK_SIZE)
   private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
   private val pathIndices = IntArray(MAX_STACK_SIZE)
-
-  /**
-   * Configure this writer to relax its syntax rules.
-   *
-   * By default, this writer only emits well-formed JSON as specified by [RFC 7159](http://www.ietf.org/rfc/rfc7159.txt).
-   */
-  private var isLenient = false
 
   /** The name/value separator; either ":" or ": ".  */
   private val separator: String
@@ -150,7 +143,7 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
   override fun value(value: Boolean) = jsonValue(if (value) "true" else "false")
 
   override fun value(value: Double): JsonWriter {
-    require(!(!isLenient && (value.isNaN() || value.isInfinite()))) {
+    require(!value.isNaN() && !value.isInfinite()) {
       "Numeric values must be finite, but was $value"
     }
     return jsonValue(value.toString())
@@ -235,10 +228,7 @@ class BufferedSinkJsonWriter @JvmOverloads constructor(
    */
   private fun beforeValue() {
     when (peekScope()) {
-      JsonScope.NONEMPTY_DOCUMENT -> {
-        check(isLenient) { "JSON must have only one top-level value." }
-        replaceTop(JsonScope.NONEMPTY_DOCUMENT)
-      }
+      JsonScope.NONEMPTY_DOCUMENT -> throw IllegalStateException("JSON must have only one top-level value.")
       JsonScope.EMPTY_DOCUMENT -> replaceTop(JsonScope.NONEMPTY_DOCUMENT)
       JsonScope.EMPTY_ARRAY -> {
         replaceTop(JsonScope.NONEMPTY_ARRAY)
