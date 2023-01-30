@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: Jan 2023**
+**Last updated: 2023-01-30**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -17,27 +17,29 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 `3.7` is the last planned minor release under version 3.  All active feature development is now being done for the `4.0.0` release on the `main` branch.  Version 3 is still actively maintained and we will continue to release `3.7.x` patches on the `release-3.x` branch.
 
-## Longer Term
+## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-### Cache improvements
+_Approximate Dates: 2023-04-27 (Alpha), 2023-07-31 (Beta), 2023-09-26 (GA)_
+
+Our next major release is currently in active development. You can review this [umbrella issue](https://github.com/apollographql/apollo-kotlin/issues/4171) which identifies the planned changes in `4.0`.  Here's a high-level overview of what to expect:
+
+- [IntelliJ / Android Studio plugin](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aissue+is%3Aopen+plugin+label%3A%22%F0%9F%90%99+IJ%2FAS+plugin%22)
+- [Better Java support](https://github.com/apollographql/apollo-kotlin/milestone/25)
+- Annotation processing for custom scalars
+- Client-controlled nullability
+- New tutorial with Jetpack Compose
+
+## Better support for Jetpack Compose
+
+_Approximate Date: TBD_
+
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We plan to offer better integrations with Compose in a 4.x minor release.
+
+## Cache improvements
+
+_Approximate Date: TBD_
 
 The declarative cache makes working with the cache and defining unique object ids easier. We also want to include helpers to handle with common cases like pagination, garbage collection and eviction. Follow [#2331](https://github.com/apollographql/apollo-kotlin/issues/2331) for a high level overview. The current focus is on cache control and expiration. You can read more in [the cache control design document](https://github.com/apollographql/apollo-kotlin/pull/4009).
-
-### Rel 1.0 Android Studio Plugin
-
-Currently there is no plugin for Android Studio for Apollo GraphQL. We'd like to offer better support for Android developers who wish to use our Kotlin Client.
-
-### Better support for Jetpack Compose
-
-[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin. We'd like to offer better support for Android developers who wish to use Jetpack Compose with our Kotlin Client.
-
-### Better Java support
-
-See the [Java Support milestone](https://github.com/apollographql/apollo-kotlin/milestone/25) for more information.  We plan to release this with version `4.0`.
-
-### Release 4.0
-
-Our next major release is currently in active development. You can review this [umbrella issue](https://github.com/apollographql/apollo-kotlin/issues/4171) which identifies the planned changes in `4.0`.
 
 ### `release-2.x` branch
 
