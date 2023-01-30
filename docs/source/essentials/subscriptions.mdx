@@ -57,6 +57,8 @@ Like queries, subscriptions support partial responses with GraphQL errors, which
 
 Network errors terminate the `Flow`, and you need to retry to get new updates. Depending on the situation, retrying might open a new WebSocket or restart the subscription.
 
+See also [this section](../advanced/websocket-errors) about WebSocket errors handling.
+
 ## Customizing your WebSocket protocol
 
 The GraphQL spec does not specify a particular protocol to use for subscription operations. By default, Apollo Kotlin uses [subscriptions-transport-ws](https://github.com/apollographql/subscriptions-transport-ws/blob/master/PROTOCOL.md) for backward compatibility purposes, but it supports all of the following:
@@ -79,3 +81,7 @@ val apolloClient = ApolloClient.Builder()
     .wsProtocol(GraphQLWsProtocol.Factory())
     .build()
 ```
+
+## Authentication
+
+Please refer to [this section](../advanced/authentication#authenticating-your-websockets) about authentication with WebSocket.
