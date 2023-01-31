@@ -64,8 +64,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private val pathNames = arrayOfNulls<String>(MAX_STACK_SIZE)
   private val pathIndices = IntArray(MAX_STACK_SIZE)
 
-  private var lenient = false
-
   private val indexStack = IntArray(MAX_STACK_SIZE).apply {
     this[0] = 0
   }
@@ -156,9 +154,8 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         buffer.readByte() // consume ']' or ','.
         when (c.toChar()) {
           ']' -> return PEEKED_END_ARRAY.also { peeked = it }
-          ';' -> checkLenient() // fall-through
           ',' -> Unit
-          else -> throw syntaxError("Unterminated array")
+          else -> throwSyntaxError("Unterminated array")
         }
       }
 
@@ -170,9 +167,8 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
           buffer.readByte() // Consume '}' or ','.
           when (c.toChar()) {
             '}' -> return PEEKED_END_OBJECT.also { peeked = it }
-            ';' -> checkLenient() // fall-through
             ',' -> Unit
-            else -> throw syntaxError("Unterminated object")
+            else -> throwSyntaxError("Unterminated object")
           }
         }
 
@@ -182,25 +178,15 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
             buffer.readByte() // consume the '\"'.
             PEEKED_DOUBLE_QUOTED_NAME.also { peeked = it }
           }
-          '\'' -> {
-            buffer.readByte() // consume the '\''.
-            checkLenient()
-            PEEKED_SINGLE_QUOTED_NAME.also { peeked = it }
-          }
+
           '}' -> if (peekStack != JsonScope.NONEMPTY_OBJECT) {
             buffer.readByte() // consume the '}'.
             PEEKED_END_OBJECT.also { peeked = it }
           } else {
-            throw syntaxError("Expected name")
+            throwSyntaxError("Expected name")
           }
-          else -> {
-            checkLenient()
-            if (isLiteral(c.toChar())) {
-              PEEKED_UNQUOTED_NAME.also { peeked = it }
-            } else {
-              throw syntaxError("Expected name")
-            }
-          }
+
+          else -> throwSyntaxError("Unexpected character: ${c.toChar()}")
         }
       }
 
@@ -209,17 +195,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         // Look for a colon before the value.
         val c = nextNonWhitespace(true)
         buffer.readByte() // Consume ':'.
-        when (c.toChar()) {
-          ':' -> {
-          }
-          '=' -> {
-            checkLenient()
-            if (source.request(1) && buffer[0] == '>'.code.toByte()) {
-              buffer.readByte() // Consume '>'.
-            }
-          }
-          else -> throw syntaxError("Expected ':'")
-        }
+        if (c.toChar() != ':') throwSyntaxError("Expected ':'")
       }
 
       JsonScope.EMPTY_DOCUMENT -> {
@@ -231,7 +207,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         if (c == -1) {
           return PEEKED_EOF.also { peeked = it }
         } else {
-          checkLenient()
+          throwSyntaxError("Malformed JSON")
         }
       }
 
@@ -244,26 +220,12 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         if (peekStack == JsonScope.EMPTY_ARRAY) {
           buffer.readByte() // Consume ']'.
           return PEEKED_END_ARRAY.also { peeked = it }
-        }
-        // In lenient mode, a 0-length literal in an array means 'null'.
-        return if (peekStack == JsonScope.EMPTY_ARRAY || peekStack == JsonScope.NONEMPTY_ARRAY) {
-          checkLenient()
-          PEEKED_NULL.also { peeked = it }
         } else {
-          throw syntaxError("Unexpected value")
+          throwSyntaxError("Unexpected value")
         }
       }
-      ';', ',' -> return if (peekStack == JsonScope.EMPTY_ARRAY || peekStack == JsonScope.NONEMPTY_ARRAY) {
-        checkLenient()
-        PEEKED_NULL.also { peeked = it }
-      } else {
-        throw syntaxError("Unexpected value")
-      }
-      '\'' -> {
-        checkLenient()
-        buffer.readByte() // Consume '\''.
-        return PEEKED_SINGLE_QUOTED.also { peeked = it }
-      }
+
+      ';', ',', '\'' -> throwSyntaxError("Unexpected value")
       '"' -> {
         buffer.readByte() // Consume '\"'.
         return PEEKED_DOUBLE_QUOTED.also { peeked = it }
@@ -289,11 +251,10 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     }
 
     if (!isLiteral(buffer[0].toInt().toChar())) {
-      throw syntaxError("Expected value")
+      throwSyntaxError("Expected value")
     }
 
-    checkLenient()
-    return PEEKED_UNQUOTED.also { peeked = it }
+    throwSyntaxError("Malformed JSON")
   }
 
   private fun peekKeyword(): Int { // Figure out which keyword we're matching against by its first character.
@@ -437,10 +398,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
 
   private fun isLiteral(c: Char): Boolean {
     return when (c) {
-      '/', '\\', ';', '#', '=' -> {
-        checkLenient() // fall-through
-        false
-      }
+      '/', '\\', ';', '#', '=' -> throwSyntaxError("Unexpected character: $c")
       '{', '}', '[', ']', ':', ',', ' ', '\t', '\r', '\n' -> false
       else -> true
     }
@@ -534,7 +492,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       throw JsonDataException("Expected a double but was $peekedString at path ${getPathAsString()}")
     }
 
-    if (!lenient && (result.isNaN() || result.isInfinite())) {
+    if (result.isNaN() || result.isInfinite()) {
       throw JsonEncodingException("JSON forbids NaN and infinities: $result at path ${getPathAsString()}")
     }
 
@@ -601,7 +559,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     var builder: StringBuilder? = null
     while (true) {
       val index = source.indexOfElement(runTerminator)
-      if (index == -1L) throw syntaxError("Unterminated string")
+      if (index == -1L) throwSyntaxError("Unterminated string")
       // If we've got an escape character, we're going to need a string builder.
       if (buffer[index] == '\\'.code.toByte()) {
         if (builder == null) builder = StringBuilder()
@@ -632,7 +590,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   private fun skipQuotedValue(runTerminator: ByteString) {
     while (true) {
       val index = source.indexOfElement(runTerminator)
-      if (index == -1L) throw syntaxError("Unterminated string")
+      if (index == -1L) throwSyntaxError("Unterminated string")
       if (buffer[index] == '\\'.code.toByte()) {
         buffer.skip(index + 1)
         readEscapeCharacter()
@@ -811,42 +769,21 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
         continue
       }
       buffer.skip(p - 1.toLong())
-      if (c == '/'.code) {
-        if (!source.request(2)) {
+      when (c) {
+        '/'.code -> {
+          if (!source.request(2)) {
+            return c
+          }
+          throwSyntaxError("Malformed JSON")
+        }
+
+        '#'.code -> {
+          throwSyntaxError("Malformed JSON")
+        }
+
+        else -> {
           return c
         }
-        checkLenient()
-        val peek = buffer[1]
-        return when (peek.toInt().toChar()) {
-          '*' -> {
-            // skip a /* c-style comment */
-            buffer.readByte() // '/'
-            buffer.readByte() // '*'
-            if (!skipTo("*/")) {
-              throw syntaxError("Unterminated comment")
-            }
-            buffer.readByte() // '*'
-            buffer.readByte() // '/'
-            p = 0
-            continue@loop
-          }
-          '/' -> {
-            // skip a // end-of-line comment
-            buffer.readByte() // '/'
-            buffer.readByte() // '/'
-            skipToEndOfLine()
-            p = 0
-            continue@loop
-          }
-          else -> c
-        }
-      } else if (c == '#'.code) { // Skip a # hash end-of-line comment. The JSON RFC doesn't specify this behaviour, but it's
-        // required to parse existing documents.
-        checkLenient()
-        skipToEndOfLine()
-        p = 0
-      } else {
-        return c
       }
     }
     return if (throwOnEof) {
@@ -854,36 +791,6 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
     } else {
       -1
     }
-  }
-
-  private fun checkLenient() {
-    if (!lenient) throw syntaxError("Use JsonReader.setLenient(true) to accept malformed JSON")
-  }
-
-  /**
-   * Advances the position until after the next newline character. If the line
-   * is terminated by "\r\n", the '\n' must be consumed as whitespace by the
-   * caller.
-   */
-  private fun skipToEndOfLine() {
-    val index = source.indexOfElement(LINEFEED_OR_CARRIAGE_RETURN)
-    buffer.skip(if (index != -1L) index + 1 else buffer.size)
-  }
-
-  /**
-   * @param toFind a string to search for. Must not contain a newline.
-   */
-  private fun skipTo(toFind: String): Boolean {
-    outer@ while (source.request(toFind.length.toLong())) {
-      for (c in toFind.indices) {
-        if (buffer[c.toLong()] != toFind[c].code.toByte()) {
-          buffer.readByte()
-          continue@outer
-        }
-      }
-      return true
-    }
-    return false
   }
 
   override fun getPath(): List<Any> = JsonScope.getPath(stackSize, stack, pathNames, pathIndices)
@@ -897,7 +804,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
    * @throws okio.IOException if any unicode escape sequences are malformed.
    */
   private fun readEscapeCharacter(): Char {
-    if (!source.request(1)) throw syntaxError("Unterminated escape sequence")
+    if (!source.request(1)) throwSyntaxError("Unterminated escape sequence")
 
     return when (val escaped = buffer.readByte().toInt().toChar()) {
       'u' -> {
@@ -915,7 +822,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
             c >= '0'.code.toByte() && c <= '9'.code.toByte() -> (c - '0'.code.toByte())
             c >= 'a'.code.toByte() && c <= 'f'.code.toByte() -> (c - 'a'.code.toByte() + 10)
             c >= 'A'.code.toByte() && c <= 'F'.code.toByte() -> (c - 'A'.code.toByte() + 10)
-            else -> throw syntaxError("\\u" + buffer.readUtf8(4))
+            else -> throwSyntaxError("\\u" + buffer.readUtf8(4))
           }
           i++
         }
@@ -929,8 +836,7 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
       'f' -> '\u000C'
       '\n', '\'', '"', '\\', '/' -> escaped
       else -> {
-        if (!lenient) throw syntaxError("Invalid escape sequence: \\$escaped")
-        escaped
+        throwSyntaxError("Invalid escape sequence: \\$escaped")
       }
     }
   }
@@ -940,17 +846,15 @@ class BufferedSourceJsonReader(private val source: BufferedSource) : JsonReader 
   }
 
   /**
-   * Returns a new exception with the given message and a context snippet with this reader's content.
+   * Throw an exception with the given message and a context snippet with this reader's content.
    */
-  private fun syntaxError(message: String): JsonEncodingException =
-      JsonEncodingException(message + " at path " + getPath())
+  private fun throwSyntaxError(message: String): Nothing = throw JsonEncodingException(message + " at path " + getPath())
 
   companion object {
     private const val MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10
     private val SINGLE_QUOTE_OR_SLASH = "'\\".encodeUtf8()
     private val DOUBLE_QUOTE_OR_SLASH = "\"\\".encodeUtf8()
     private val UNQUOTED_STRING_TERMINALS = "{}[]:, \n\t\r/\\;#=".encodeUtf8()
-    private val LINEFEED_OR_CARRIAGE_RETURN = "\n\r".encodeUtf8()
     private const val PEEKED_NONE = 0
     private const val PEEKED_BEGIN_OBJECT = 1
     private const val PEEKED_END_OBJECT = 2
