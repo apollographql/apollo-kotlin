@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.services
+package com.apollographql.ijplugin.application
 
 import com.apollographql.ijplugin.util.logd
 

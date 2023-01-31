@@ -1,14 +1,18 @@
-package com.apollographql.ijplugin.services.impl
+package com.apollographql.ijplugin.codegen
 
-import com.apollographql.ijplugin.services.ApolloProjectService
+import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
+import com.apollographql.ijplugin.project.ApolloProjectListener
+import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.settings.SettingsListener
+import com.apollographql.ijplugin.settings.SettingsState
+import com.apollographql.ijplugin.settings.settingsState
 import com.apollographql.ijplugin.util.apolloGeneratedSourcesRoot
-import com.apollographql.ijplugin.util.isApolloAndroid2Project
-import com.apollographql.ijplugin.util.isApolloKotlin3Project
-import com.apollographql.ijplugin.util.isNullOrDisposed
+import com.apollographql.ijplugin.util.dispose
+import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
+import com.apollographql.ijplugin.util.newDisposable
 import com.apollographql.ijplugin.util.runWriteActionInEdt
-import com.intellij.ProjectTopics
 import com.intellij.lang.jsgraphql.GraphQLFileType
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Document
@@ -24,12 +28,8 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootEvent
-import com.intellij.openapi.roots.ModuleRootListener
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VfsUtil
-import com.intellij.psi.PsiDocumentManager
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.events.FailureResult
@@ -45,15 +45,12 @@ import java.util.concurrent.Executors
 
 private const val CODEGEN_GRADLE_TASK_NAME = "generateApolloSources"
 
-class ApolloProjectServiceImpl(
+class ApolloCodegenService(
     private val project: Project,
-) : ApolloProjectService, Disposable {
-
-  override var isApolloAndroid2Project: Boolean = false
-  override var isApolloKotlin3Project: Boolean = false
-
+) : Disposable {
   private var documentChangesDisposable: Disposable? = null
   private var fileEditorChangesDisposable: Disposable? = null
+  private var gradleHasSyncedDisposable: Disposable? = null
 
   private var dirtyGqlDocument: Document? = null
 
@@ -63,55 +60,66 @@ class ApolloProjectServiceImpl(
 
   init {
     logd("project=${project.name}")
-    onLibrariesChanged()
-    startObserveLibraries()
+    startOrStopCodegenObservers()
+    startObserveApolloProject()
+    startObservingSettings()
   }
 
-  private fun startObserveLibraries() {
+  private fun startObserveApolloProject() {
     logd()
-    val messageBusConnection = project.messageBus.connect(this)
-    messageBusConnection.subscribe(ProjectTopics.PROJECT_ROOTS, object : ModuleRootListener {
-      override fun rootsChanged(event: ModuleRootEvent) {
-        logd("event=$event")
-        onLibrariesChanged()
+    project.messageBus.connect(this).subscribe(ApolloProjectListener.TOPIC, object : ApolloProjectListener {
+      override fun apolloProjectChanged(isApolloAndroid2Project: Boolean, isApolloKotlin3Project: Boolean) {
+        logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
+        startOrStopCodegenObservers()
       }
     })
   }
 
-  private fun onLibrariesChanged() {
+  private fun startObservingSettings() {
     logd()
-    synchronized(this) {
-      isApolloAndroid2Project = project.isApolloAndroid2Project()
-      isApolloKotlin3Project = project.isApolloKotlin3Project()
-      logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
-      if (isApolloKotlin3Project) {
-        // To make the codegen more reactive, any touched GraphQL document will automatically be saved (thus triggering Gradle)
-        // as soon as the current editor is changed.
-        startObserveDocumentChanges()
-        startObserveFileEditorChanges()
-
-        startContinuousGradleCodegen()
-      } else {
-        stopObserveDocumentChanges()
-        stopObserveFileEditorChanges()
-        stopContinuousGradleCodegen()
+    project.messageBus.connect(this).subscribe(SettingsListener.TOPIC, object : SettingsListener {
+      override fun settingsChanged(settingsState: SettingsState) {
+        logd()
+        startOrStopCodegenObservers()
       }
+    })
+  }
+
+  private fun shouldTriggerCodegenAutomatically() = project.apolloProjectService.isApolloKotlin3Project && project.settingsState.automaticCodegenTriggering
+
+  private fun startOrStopCodegenObservers() {
+    if (shouldTriggerCodegenAutomatically()) {
+      // To make the codegen more reactive, any touched GraphQL document will automatically be saved (thus triggering Gradle)
+      // as soon as the current editor is changed.
+      startObserveDocumentChanges()
+      startObserveFileEditorChanges()
+
+      startContinuousGradleCodegen()
+
+      // Since we rely on Gradle's continuous build, which is not re-triggered when Gradle build files change, observe that
+      // ourselves and restart the build when it happens.
+      startObserveGradleHasSynced()
+    } else {
+      stopObserveDocumentChanges()
+      stopObserveFileEditorChanges()
+      stopContinuousGradleCodegen()
+      stopObserveGradleHasSynced()
     }
   }
 
   private fun startObserveDocumentChanges() {
     logd()
 
-    if (!documentChangesDisposable.isNullOrDisposed()) {
+    if (documentChangesDisposable.isNotDisposed()) {
       logd("Already observing")
       return
     }
 
-    val disposable = Disposer.newDisposable(this, "documentChanges")
+    val disposable = newDisposable("documentChanges")
     documentChangesDisposable = disposable
     EditorFactory.getInstance().eventMulticaster.addDocumentListener(object : DocumentListener {
       override fun documentChanged(event: DocumentEvent) {
-        val vFile = PsiDocumentManager.getInstance(project).getPsiFile(event.document)?.virtualFile ?: return
+        val vFile = FileDocumentManager.getInstance().getFile(event.document) ?: return
         val isGqlFileInProject = vFile.fileType is GraphQLFileType && ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(vFile) != null
         if (!isGqlFileInProject) {
           // Not a GraphQL file or not from this project: ignore
@@ -125,19 +133,19 @@ class ApolloProjectServiceImpl(
 
   private fun stopObserveDocumentChanges() {
     logd()
-    documentChangesDisposable?.dispose()
+    dispose(documentChangesDisposable)
     documentChangesDisposable = null
   }
 
   private fun startObserveFileEditorChanges() {
     logd()
 
-    if (!fileEditorChangesDisposable.isNullOrDisposed()) {
+    if (fileEditorChangesDisposable.isNotDisposed()) {
       logd("Already observing")
       return
     }
 
-    val disposable = Disposer.newDisposable(this, "fileEditorChanges")
+    val disposable = newDisposable("fileEditorChanges")
     fileEditorChangesDisposable = disposable
     project.messageBus.connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, object : FileEditorManagerListener {
       override fun selectionChanged(event: FileEditorManagerEvent) {
@@ -160,16 +168,8 @@ class ApolloProjectServiceImpl(
 
   private fun stopObserveFileEditorChanges() {
     logd()
-    fileEditorChangesDisposable?.dispose()
+    dispose(fileEditorChangesDisposable)
     fileEditorChangesDisposable = null
-  }
-
-  override fun notifyGradleHasSynced() {
-    logd()
-    if (isApolloKotlin3Project) {
-      stopContinuousGradleCodegen()
-      startContinuousGradleCodegen()
-    }
   }
 
   private fun startContinuousGradleCodegen() {
@@ -238,6 +238,31 @@ class ApolloProjectServiceImpl(
     logd()
     gradleCodegenCancellation?.cancel()
     gradleCodegenCancellation = null
+  }
+
+  private fun startObserveGradleHasSynced() {
+    logd()
+
+    if (gradleHasSyncedDisposable.isNotDisposed()) {
+      logd("Already observing")
+      return
+    }
+
+    val disposable = newDisposable("gradleHasSynced")
+    gradleHasSyncedDisposable = disposable
+    project.messageBus.connect(disposable).subscribe(GradleHasSyncedListener.TOPIC, object : GradleHasSyncedListener {
+      override fun gradleHasSynced() {
+        logd()
+        stopContinuousGradleCodegen()
+        if (shouldTriggerCodegenAutomatically()) startContinuousGradleCodegen()
+      }
+    })
+  }
+
+  private fun stopObserveGradleHasSynced() {
+    logd()
+    dispose(gradleHasSyncedDisposable)
+    gradleHasSyncedDisposable = null
   }
 
   override fun dispose() {

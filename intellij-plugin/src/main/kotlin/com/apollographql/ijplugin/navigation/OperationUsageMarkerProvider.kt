@@ -1,7 +1,7 @@
 package com.apollographql.ijplugin.navigation
 
 import com.apollographql.ijplugin.ApolloBundle
-import com.apollographql.ijplugin.services.apolloProjectService
+import com.apollographql.ijplugin.project.apolloProjectService
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -31,7 +31,7 @@ class OperationUsageMarkerProvider : RelatedItemLineMarkerProvider() {
       element: PsiElement,
       result: MutableCollection<in RelatedItemLineMarkerInfo<*>>,
   ) {
-    val apolloProjectService = element.project.apolloProjectService()
+    val apolloProjectService = element.project.apolloProjectService
     if (!apolloProjectService.isApolloKotlin3Project) return
 
     val uElement = element.toUElement()

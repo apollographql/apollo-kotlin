@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.services
+package com.apollographql.ijplugin.project
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
@@ -6,8 +6,6 @@ import com.intellij.openapi.project.Project
 interface ApolloProjectService {
   val isApolloAndroid2Project: Boolean
   val isApolloKotlin3Project: Boolean
-
-  fun notifyGradleHasSynced()
 }
 
-fun Project.apolloProjectService() = service<ApolloProjectService>()
+val Project.apolloProjectService get() = service<ApolloProjectService>()

@@ -17,26 +17,56 @@
   <resource-bundle>messages.ApolloBundle</resource-bundle>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="com.apollographql.ijplugin.services.ApolloApplicationService" />
+
+    <!-- Application -->
+    <applicationService serviceImplementation="com.apollographql.ijplugin.application.ApolloApplicationService" />
+
+    <!-- Apollo project -->
     <projectService
-        serviceInterface="com.apollographql.ijplugin.services.ApolloProjectService"
-        serviceImplementation="com.apollographql.ijplugin.services.impl.ApolloProjectServiceImpl"
+        serviceInterface="com.apollographql.ijplugin.project.ApolloProjectService"
+        serviceImplementation="com.apollographql.ijplugin.project.ApolloProjectServiceImpl"
     />
 
-    <codeInsight.lineMarkerProvider language="UAST"
-                                    implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider" />
+    <!-- Codegen -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.codegen.ApolloCodegenService" />
 
-    <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.listeners.GradleListener" />
+    <!-- Settings -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.settings.SettingsService" />
+    <!-- Note: the value of `parentId` corresponds to the settings `id` of the JS GraphQL plugin -->
+    <!-- See https://github.com/JetBrains/js-graphql-intellij-plugin/blob/396770c293a57f4903acdf427ba5136db6a79d0b/resources/META-INF/plugin.xml#L151 -->
+    <projectConfigurable
+        id="com.apollographql.ijplugin.settings.SettingsConfigurable"
+        parentId="settings.jsgraphql"
+        instance="com.apollographql.ijplugin.settings.SettingsConfigurable"
+        displayName="Apollo Kotlin"
+        nonDefaultProject="true"
+    />
+
+    <!-- Marker provider (unused for now) -->
+    <!--    <codeInsight.lineMarkerProvider-->
+    <!--        language="UAST"-->
+    <!--        implementationClass="com.apollographql.ijplugin.navigation.OperationUsageMarkerProvider"-->
+    <!--    />-->
+
+    <!-- Listen to Gradle sync -->
+    <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
 
   </extensions>
 
   <applicationListeners>
-    <listener class="com.apollographql.ijplugin.listeners.ApolloProjectManagerListener"
-              topic="com.intellij.openapi.project.ProjectManagerListener" />
+    <!-- Listen to project open/close -->
+    <listener
+        class="com.apollographql.ijplugin.project.ApolloProjectManagerListener"
+        topic="com.intellij.openapi.project.ProjectManagerListener"
+    />
   </applicationListeners>
 
   <actions>
-    <action id="ApolloV2ToV3MigrationAction" class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction">
+    <!-- Refactor / Migrate to Apollo Kotlin 3 -->
+    <action
+        id="ApolloV2ToV3MigrationAction"
+        class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction"
+    >
       <add-to-group group-id="RefactoringMenu" />
     </action>
   </actions>
