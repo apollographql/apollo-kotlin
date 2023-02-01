@@ -1,8 +1,12 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.CustomTypeAdapter
-import com.apollographql.apollo3.api.CustomTypeValue
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.json.JsonWriter
+import com.apollographql.apollo3.api.json.writeObject
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
@@ -128,29 +132,25 @@ class CustomScalarTest {
       }
     """.trimIndent())
 
-    val customTypeAdapter = object : CustomTypeAdapter<Address> {
-      override fun decode(value: CustomTypeValue<*>): Address {
-        check(value is CustomTypeValue.GraphQLJsonObject)
+    val customTypeAdapter = object : Adapter<Address> {
+      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Address {
+        val map = AnyAdapter.fromJson(reader, customScalarAdapters) as Map<String, Any?>
 
-        /**
-         * XXX: For consistency, a [CustomTypeValue.GraphQLJsonObject] should contain `GraphQLFoo`
-         * but in 2.x it contains primitive instead so keep that behaviour
-         */
-        val street = value.value["street"] as String
-        val number = value.value["number"] as Int
-        return Address(street, number)
+        return Address(map.get("street") as String, map.get("number") as Int)
       }
 
-      override fun encode(value: Address): CustomTypeValue<*> {
-        return CustomTypeValue.GraphQLJsonObject(mapOf(
-            "street" to value.street,
-            "number" to value.number
-        ))
+      override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Address) {
+        writer.writeObject {
+          name("street")
+          value(value.street)
+          name("number")
+          value(value.number)
+        }
       }
     }
     val data = ApolloClient.Builder()
         .serverUrl(serverUrl = server.url())
-        .addCustomTypeAdapter(custom.scalars.type.Address.type, customTypeAdapter)
+        .addCustomScalarAdapter(custom.scalars.type.Address.type, customTypeAdapter)
         .build()
         .query(AddressQuery())
         .execute()

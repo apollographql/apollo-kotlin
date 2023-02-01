@@ -112,7 +112,7 @@ class ThreadTests {
 
     apolloClient.query(query).execute()
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test

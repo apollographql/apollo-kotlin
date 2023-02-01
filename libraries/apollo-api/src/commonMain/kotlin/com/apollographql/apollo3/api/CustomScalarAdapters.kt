@@ -97,7 +97,7 @@ class CustomScalarAdapters private constructor(
       adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION_ERROR")
     @Deprecated("Used for backward compatibility with 2.x", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun <T> add(

@@ -33,7 +33,7 @@ class QueryBatchingTest {
   private suspend fun tearDown() {
     mockServer.stop()
     // This is important. JS will hang if the BatchingHttpInterceptor scope is not cancelled
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test

@@ -33,7 +33,7 @@ class HttpErrorBodyTest {
       assertEquals("Ooops", e.body?.readUtf8())
     }
 
-    apolloClient.dispose()
+    apolloClient.close()
     mockServer.stop()
   }
 }

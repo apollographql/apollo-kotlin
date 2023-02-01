@@ -1,9 +1,8 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION_ERROR")
 package com.apollographql.apollo3.compiler.introspection
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.compiler.fromJson
-import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonReader
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import okio.Buffer
@@ -13,42 +12,34 @@ import okio.buffer
 import okio.source
 import java.io.File
 
-@JsonClass(generateAdapter = true)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
 @Deprecated("Use the apollo-ast version instead", ReplaceWith("IntrospectionSchema", "com.apollographql.apollo3.ast.introspection"), level = DeprecationLevel.ERROR)
 data class IntrospectionSchema(
     val __schema: Schema,
 ) {
-  @JsonClass(generateAdapter = true)
   data class Schema(
       val queryType: QueryType,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
       val types: List<Type>,
   ) {
-    @JsonClass(generateAdapter = true)
     data class QueryType(val name: String)
 
-    @JsonClass(generateAdapter = true)
     data class MutationType(val name: String)
 
-    @JsonClass(generateAdapter = true)
     data class SubscriptionType(val name: String)
 
-    @JsonClass(generateAdapter = true, generator = "sealed:kind")
     sealed class Type {
       abstract val name: String
       abstract val description: String?
 
       @TypeLabel("SCALAR")
-      @JsonClass(generateAdapter = true)
       data class Scalar(
           override val name: String,
           override val description: String?,
       ) : Type()
 
       @TypeLabel("OBJECT")
-      @JsonClass(generateAdapter = true)
       data class Object(
           override val name: String,
           override val description: String?,
@@ -57,7 +48,6 @@ data class IntrospectionSchema(
       ) : Type()
 
       @TypeLabel("INTERFACE")
-      @JsonClass(generateAdapter = true)
       data class Interface(
           override val name: String,
           override val description: String?,
@@ -68,7 +58,6 @@ data class IntrospectionSchema(
       ) : Type()
 
       @TypeLabel("UNION")
-      @JsonClass(generateAdapter = true)
       data class Union(
           override val name: String,
           override val description: String?,
@@ -77,7 +66,6 @@ data class IntrospectionSchema(
       ) : Type()
 
       @TypeLabel("ENUM")
-      @JsonClass(generateAdapter = true)
       data class Enum(
           override val name: String,
           override val description: String?,
@@ -85,7 +73,6 @@ data class IntrospectionSchema(
       ) : Type() {
 
 
-        @JsonClass(generateAdapter = true)
         data class Value(
             val name: String,
             val description: String?,
@@ -95,7 +82,6 @@ data class IntrospectionSchema(
       }
 
       @TypeLabel("INPUT_OBJECT")
-      @JsonClass(generateAdapter = true)
       data class InputObject(
           override val name: String,
           override val description: String?,
@@ -104,7 +90,6 @@ data class IntrospectionSchema(
     }
 
 
-    @JsonClass(generateAdapter = true)
     data class InputField(
         val name: String,
         val description: String?,
@@ -114,7 +99,6 @@ data class IntrospectionSchema(
         val defaultValue: Any?,
     )
 
-    @JsonClass(generateAdapter = true)
     data class Field(
         val name: String,
         val description: String?,
@@ -124,7 +108,6 @@ data class IntrospectionSchema(
         val args: List<Argument> = emptyList(),
     ) {
 
-      @JsonClass(generateAdapter = true)
       data class Argument(
           val name: String,
           val description: String?,
@@ -138,7 +121,6 @@ data class IntrospectionSchema(
     /**
      * An introspection TypeRef
      */
-    @JsonClass(generateAdapter = true)
     data class TypeRef(
         val kind: Kind,
         val name: String? = "",

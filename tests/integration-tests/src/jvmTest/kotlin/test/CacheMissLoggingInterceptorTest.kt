@@ -60,7 +60,7 @@ class CacheMissLoggingInterceptorTest {
         recordedLogs
     )
     mockServer.stop()
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test

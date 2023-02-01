@@ -28,7 +28,7 @@ class CustomTestNetworkTransportHandlerTest {
   }
 
   private fun tearDown() {
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   private class CustomTestNetworkTransport : NetworkTransport {

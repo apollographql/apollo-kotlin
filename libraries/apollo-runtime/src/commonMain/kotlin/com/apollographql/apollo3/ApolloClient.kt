@@ -22,7 +22,6 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
@@ -389,7 +388,7 @@ private constructor(
     @ApolloDeprecatedSince(v3_0_0)
     fun <T> addCustomTypeAdapter(
         customScalarType: CustomScalarType,
-        @Suppress("DEPRECATION") customTypeAdapter: com.apollographql.apollo3.api.CustomTypeAdapter<T>,
+        @Suppress("DEPRECATION_ERROR") customTypeAdapter: com.apollographql.apollo3.api.CustomTypeAdapter<T>,
     ) = addCustomScalarAdapter(customScalarType, Version2CustomTypeAdapterToAdapter(customTypeAdapter))
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {

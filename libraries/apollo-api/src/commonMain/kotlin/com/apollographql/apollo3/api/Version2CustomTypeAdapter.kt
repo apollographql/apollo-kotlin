@@ -17,6 +17,7 @@ import kotlin.jvm.JvmStatic
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
+@Suppress("DEPRECATION_ERROR")
 interface CustomTypeAdapter<T> {
   fun decode(value: CustomTypeValue<*>): T
   fun encode(value: T): CustomTypeValue<*>
@@ -30,6 +31,7 @@ interface CustomTypeAdapter<T> {
  */
 @Deprecated("Used for backward compatibility with 2.x, use Adapter instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
+@Suppress("DEPRECATION_ERROR")
 sealed class CustomTypeValue<T>(@JvmField val value: T) {
   object GraphQLNull : CustomTypeValue<Unit>(Unit)
   class GraphQLString(value: String) : CustomTypeValue<String>(value)
@@ -67,6 +69,7 @@ sealed class CustomTypeValue<T>(@JvmField val value: T) {
     level = DeprecationLevel.ERROR
 )
 @ApolloDeprecatedSince(v3_0_0)
+@Suppress("DEPRECATION_ERROR")
 class ScalarTypeAdapters(val customAdapters: Map<CustomScalarType, CustomTypeAdapter<*>>) {
   init {
     throw NotImplementedError("Use CustomScalarAdapters instead")
