@@ -46,7 +46,7 @@ If you expand your schema in a separate file, you can instruct Apollo Kotlin to 
 ```kotlin
 apollo {
   service("service") {
-    schemaFiles.set(setOf(file("shared/graphql/schema.graphqls"), file("shared/graphql/extra.graphqls")))
+    schemaFiles.setFrom("shared/graphql/schema.graphqls", "shared/graphql/extra.graphqls")
   }
 }
 ```
