@@ -51,7 +51,7 @@ class ApolloIdlingResource(
     @Deprecated(
         message = "Used for backward compatibility with 2.x. You now need to pass your ApolloIdlingResource to your ApolloClient.Builder." +
             " See https://www.apollographql.com/docs/android/migration/3.0/ for more details.",
-        ReplaceWith("ApolloIdlingResource(name)")
+        ReplaceWith("ApolloIdlingResource(name)"), level = DeprecationLevel.ERROR
     )
     @Suppress("UNUSED_PARAMETER")
     @ApolloDeprecatedSince(v3_0_0)

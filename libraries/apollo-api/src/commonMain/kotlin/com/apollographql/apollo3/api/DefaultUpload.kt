@@ -42,7 +42,7 @@ class DefaultUpload internal constructor(
     private var fileName: String? = null
 
     @Deprecated("This API is dangerous because the resulting upload can only be used once and can also lead to resource leaks.",
-        ReplaceWith("content {sink ->\nval source = openSource()\nsource.use {sink.writeAll(it)}\n}"))
+        ReplaceWith("content {sink ->\nval source = openSource()\nsource.use {sink.writeAll(it)}\n}"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_3)
     fun content(content: BufferedSource): Builder = apply {
       check(writeTo == null) { "content() can only be called once" }

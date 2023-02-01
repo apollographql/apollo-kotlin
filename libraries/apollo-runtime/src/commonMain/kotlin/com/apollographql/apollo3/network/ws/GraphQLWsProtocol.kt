@@ -1,7 +1,8 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.*
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_3
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_7_2
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
@@ -46,7 +47,7 @@ class GraphQLWsProtocol internal constructor(
       connectionPayload, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs, pingIntervalMillis, frameType, webSocketConnection, listener, scope, DefaultWebSocketPayloadComposer()
   )
 
-  @Deprecated("Use GraphQLWsProtocol.Factory instead")
+  @Deprecated("Use GraphQLWsProtocol.Factory instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_2_3)
   @Suppress("DEPRECATION")
   constructor(
@@ -239,7 +240,7 @@ class GraphQLWsProtocol internal constructor(
     }
 
     @Deprecated("Use the constructor with connectionPayload as a lambda instead",
-        ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"))
+        ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_2_3)
     constructor(
         connectionPayload: Map<String, Any?>?,

@@ -90,7 +90,7 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
   }
 
   @Throws(IOException::class)
-  @Deprecated("Use clearAll() instead", ReplaceWith("clearAll"))
+  @Deprecated("Use clearAll() instead", ReplaceWith("clearAll"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
   fun delete() {
     clearAll()

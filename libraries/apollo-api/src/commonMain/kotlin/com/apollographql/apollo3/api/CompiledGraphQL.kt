@@ -190,7 +190,7 @@ class ObjectType internal constructor(
   val implements = implements
   val embeddedFields = embeddedFields
 
-  @Deprecated("Use the Builder instead", ReplaceWith("ObjectType.Builder().keyFields(keyFields).implements(implements).build()"))
+  @Deprecated("Use the Builder instead", ReplaceWith("ObjectType.Builder().keyFields(keyFields).implements(implements).build()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
   constructor(
       name: String,
@@ -244,7 +244,7 @@ class InterfaceType internal constructor(
   val implements = implements
   val embeddedFields = embeddedFields
 
-  @Deprecated("Use the Builder instead", ReplaceWith("InterfaceType.Builder().keyFields(keyFields).implements(implements).build()"))
+  @Deprecated("Use the Builder instead", ReplaceWith("InterfaceType.Builder().keyFields(keyFields).implements(implements).build()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
   constructor(
       name: String,
@@ -301,7 +301,7 @@ class EnumType(
     name: String,
     val values: List<String>
 ) : CompiledNamedType(name) {
-  @Deprecated("Use the primary constructor instead")
+  @Deprecated("Use the primary constructor instead", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_5_1)
   constructor(name: String): this(name, emptyList())
 }
@@ -344,7 +344,7 @@ class CompiledArgument private constructor(
     @ApolloExperimental
     val isPagination: Boolean = false,
 ) {
-  @Deprecated("Use the Builder instead", ReplaceWith("CompiledArgument.Builder(name = name, value = value).isKey(isKey).build()"))
+  @Deprecated("Use the Builder instead", ReplaceWith("CompiledArgument.Builder(name = name, value = value).isKey(isKey).build()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_3_3)
   constructor(
       name: String,
@@ -404,31 +404,31 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   }
 }
 
-@Deprecated("Use the generated CustomScalarType instead")
+@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledStringType = ScalarType("String")
 
-@Deprecated("Use the generated CustomScalarType instead")
+@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledIntType = ScalarType("Int")
 
-@Deprecated("Use the generated CustomScalarType instead")
+@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledFloatType = ScalarType("Float")
 
-@Deprecated("Use the generated CustomScalarType instead")
+@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField
 val CompiledBooleanType = ScalarType("Boolean")
 
-@Deprecated("Use the generated CustomScalarType instead")
+@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_1)
 @SharedImmutable
 @JvmField

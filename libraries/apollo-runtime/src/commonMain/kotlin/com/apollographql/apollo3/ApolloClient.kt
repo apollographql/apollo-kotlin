@@ -86,7 +86,7 @@ private constructor(
     return ApolloCall(this, mutation)
   }
 
-  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("mutation(mutation)"))
+  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("mutation(mutation)"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_0_0)
   fun <D : Mutation.Data> mutate(mutation: Mutation<D>): ApolloCall<D> = mutation(mutation)
 
@@ -104,7 +104,7 @@ private constructor(
     throw NotImplementedError()
   }
 
-  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("subscription(subscription)"))
+  @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("subscription(subscription)"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_0_0)
   fun <D : Subscription.Data> subscribe(subscription: Subscription<D>): ApolloCall<D> = subscription(subscription)
 
@@ -116,7 +116,7 @@ private constructor(
 
   @Deprecated(
       "Use close() instead or call okio.use { }",
-      replaceWith = ReplaceWith("close()"),
+      replaceWith = ReplaceWith("close()"), level = DeprecationLevel.ERROR
   )
   @ApolloDeprecatedSince(v3_3_1)
   fun dispose() {
@@ -351,7 +351,7 @@ private constructor(
       this.webSocketReopenWhen = webSocketReopenWhen
     }
 
-    @Deprecated("Use webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean))")
+    @Deprecated("Use webSocketReopenWhen(webSocketReopenWhen: (suspend (Throwable, attempt: Long) -> Boolean))", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_1)
     fun webSocketReconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
       this.webSocketReopenWhen = reconnectWhen?.let {
@@ -385,7 +385,7 @@ private constructor(
       customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
-    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"))
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("addCustomScalarAdapter"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun <T> addCustomTypeAdapter(
         customScalarType: CustomScalarType,
@@ -405,7 +405,7 @@ private constructor(
       this._interceptors += interceptors
     }
 
-    @Deprecated("Use dispatcher instead", ReplaceWith("dispatcher(requestedDispatcher)"))
+    @Deprecated("Use dispatcher instead", ReplaceWith("dispatcher(requestedDispatcher)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_3_3)
     fun requestedDispatcher(requestedDispatcher: CoroutineDispatcher?) = apply {
       dispatcher(requestedDispatcher)
@@ -481,13 +481,13 @@ private constructor(
       canBeBatched(enableByDefault)
     }
 
-    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("httpMethod(HttpMethod.Get)", "com.apollographql.apollo3.api.http.httpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("httpMethod(HttpMethod.Get)", "com.apollographql.apollo3.api.http.httpMethod", "com.apollographql.apollo3.api.http.HttpMethod"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun useHttpGetMethodForQueries(
         useHttpGetMethodForQueries: Boolean,
     ) = httpMethod(if (useHttpGetMethodForQueries) HttpMethod.Get else HttpMethod.Post)
 
-    @Deprecated("Used for backward compatibility with 2.x. This method throws immediately", ReplaceWith("autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get)", "com.apollographql.apollo3.api.http.HttpMethod", "com.apollographql.apollo3.api.http.HttpMethod"))
+    @Deprecated("Used for backward compatibility with 2.x. This method throws immediately", ReplaceWith("autoPersistedQueries(httpMethodForHashedQueries = HttpMethod.Get)", "com.apollographql.apollo3.api.http.HttpMethod", "com.apollographql.apollo3.api.http.HttpMethod"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     @Suppress("UNUSED_PARAMETER")
     fun useHttpGetMethodForPersistedQueries(
@@ -631,7 +631,7 @@ private constructor(
   }
 
   companion object {
-    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"))
+    @Deprecated("Used for backward compatibility with 2.x", ReplaceWith("ApolloClient.Builder()"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     @JvmStatic
     fun builder() = Builder()

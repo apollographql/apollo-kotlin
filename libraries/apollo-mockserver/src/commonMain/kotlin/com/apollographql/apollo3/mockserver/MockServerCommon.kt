@@ -47,7 +47,7 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
 }
 
 class MockResponse
-@Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"))
+@Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_3_1)
 constructor(
     val statusCode: Int = 200,
@@ -55,7 +55,7 @@ constructor(
     val headers: Map<String, String> = mapOf("Content-Length" to "0"),
     val delayMillis: Long = 0,
 ) {
-  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"))
+  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_3_1)
   @Suppress("DEPRECATION")
   @JvmOverloads
@@ -71,7 +71,7 @@ constructor(
       delayMillis = delayMillis,
   )
 
-  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).body(body).headers(headers).delayMillis(delayMillis).build()"))
+  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).body(body).headers(headers).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_3_1)
   @Suppress("DEPRECATION")
   constructor(

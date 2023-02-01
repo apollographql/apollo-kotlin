@@ -386,7 +386,7 @@ private constructor(
     }
 
 
-    @Deprecated("Use reopenWhen(reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean))")
+    @Deprecated("Use reopenWhen(reopenWhen: (suspend (Throwable, attempt: Long) -> Boolean))", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_1)
     fun reconnectWhen(reconnectWhen: ((Throwable) -> Boolean)?) = apply {
       this.reopenWhen = reconnectWhen?.let {

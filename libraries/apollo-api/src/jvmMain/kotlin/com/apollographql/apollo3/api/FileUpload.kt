@@ -9,7 +9,7 @@ import okio.buffer
 import okio.source
 import java.io.File
 
-@Deprecated("Use File.toUpload() instead")
+@Deprecated("Use File.toUpload() instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_3_3)
 fun DefaultUpload.Builder.content(file: File): DefaultUpload.Builder {
   return content { sink ->
@@ -33,7 +33,7 @@ fun File.toUpload(contentType: String): DefaultUpload {
     ReplaceWith(
         "File(filePath).toUpload(mimetype)",
         imports = ["java.io.File"]
-    )
+    ), level = DeprecationLevel.ERROR
 )
 @ApolloDeprecatedSince(v3_0_0)
 fun create(mimetype: String, filePath: String): Upload {

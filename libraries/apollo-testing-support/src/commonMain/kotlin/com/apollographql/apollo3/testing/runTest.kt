@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @ApolloExperimental
-@Deprecated("Use kotlinx.coroutines.test.runTest from org.jetbrains.kotlinx:kotlinx-coroutines-test instead")
+@Deprecated("Use kotlinx.coroutines.test.runTest from org.jetbrains.kotlinx:kotlinx-coroutines-test instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_4_1)
 fun runTest(
     context: CoroutineContext = EmptyCoroutineContext,

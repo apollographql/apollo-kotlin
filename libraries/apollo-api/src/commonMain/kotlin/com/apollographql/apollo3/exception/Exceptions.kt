@@ -9,7 +9,6 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import okio.BufferedSource
-import kotlin.jvm.JvmOverloads
 
 /**
  * The base class for all exceptions
@@ -125,7 +124,7 @@ class CacheMissException @ApolloInternal constructor(
     }
 
     @ApolloDeprecatedSince(v3_3_1)
-    @Deprecated("Use CacheMissException.message instead")
+    @Deprecated("Use CacheMissException.message instead", level = DeprecationLevel.ERROR)
     fun message(key: String?, fieldName: String?): String {
       return message(key, fieldName, false)
     }
@@ -171,7 +170,7 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
 
-  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.first()"))
+  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.first()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_1_1)
   val first: ApolloException
     get() {
@@ -179,7 +178,7 @@ class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloEx
       return (firstException as? ApolloException) ?: throw RuntimeException("unexpected first exception", firstException)
     }
 
-  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.getOrNull(1)"))
+  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.getOrNull(1)"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_1_1)
   val second: ApolloException
     get() {
@@ -200,12 +199,12 @@ class MissingValueException : ApolloException(message = "The optional doesn't ha
 /**
  * Something went wrong but it's not sure exactly what
  */
-@Deprecated("This is only used in the JVM runtime and is scheduled for removal")
+@Deprecated("This is only used in the JVM runtime and is scheduled for removal", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
 class ApolloGenericException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 
 
-@Deprecated("This is only used in the JVM runtime and is scheduled for removal")
+@Deprecated("This is only used in the JVM runtime and is scheduled for removal", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
 class ApolloCanceledException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
 

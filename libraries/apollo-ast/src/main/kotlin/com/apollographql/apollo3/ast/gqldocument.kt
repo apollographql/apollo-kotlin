@@ -13,19 +13,19 @@ fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
 }
 
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version")
+@Deprecated("This method is deprecated and will be removed in a future version", level = DeprecationLevel.ERROR)
 fun GQLDocument.withBuiltinDirectives(): GQLDocument {
   return withDefinitions(builtinDefinitions().filterIsInstance<GQLDirectiveDefinition>())
 }
 
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version")
+@Deprecated("This method is deprecated and will be removed in a future version", level = DeprecationLevel.ERROR)
 fun GQLDocument.withoutBuiltinDirectives(): GQLDocument {
   return withoutDefinitions(builtinDefinitions().filterIsInstance<GQLDirectiveDefinition>())
 }
 
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version")
+@Deprecated("This method is deprecated and will be removed in a future version", level = DeprecationLevel.ERROR)
 fun GQLDocument.withApolloDefinitions(): GQLDocument {
   @Suppress("DEPRECATION")
   return withDefinitions(apolloDefinitions())

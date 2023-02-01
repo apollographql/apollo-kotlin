@@ -60,7 +60,7 @@ class CustomScalarAdapters private constructor(
     } as Adapter<T>
   }
 
-  @Deprecated("Use adapterContext.variables() instead", ReplaceWith("adapterContext.variables()"))
+  @Deprecated("Use adapterContext.variables() instead", ReplaceWith("adapterContext.variables()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_2_1)
   fun variables() = adapterContext.variables()
 
@@ -98,7 +98,7 @@ class CustomScalarAdapters private constructor(
     }
 
     @Suppress("DEPRECATION")
-    @Deprecated("Used for backward compatibility with 2.x")
+    @Deprecated("Used for backward compatibility with 2.x", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun <T> add(
         customScalarType: CustomScalarType,
@@ -127,7 +127,7 @@ class CustomScalarAdapters private constructor(
       this.adapterContext = adapterContext
     }
 
-    @Deprecated("Use AdapterContext.Builder.variables() instead")
+    @Deprecated("Use AdapterContext.Builder.variables() instead", level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_2_1)
     fun variables(variables: Executable.Variables): Builder = apply {
       adapterContext = adapterContext.newBuilder().variables(variables).build()

@@ -15,7 +15,7 @@ import java.io.File
 
 @JsonClass(generateAdapter = true)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("Use the apollo-ast version instead", ReplaceWith("IntrospectionSchema", "com.apollographql.apollo3.ast.introspection"))
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("IntrospectionSchema", "com.apollographql.apollo3.ast.introspection"), level = DeprecationLevel.ERROR)
 data class IntrospectionSchema(
     val __schema: Schema,
 ) {

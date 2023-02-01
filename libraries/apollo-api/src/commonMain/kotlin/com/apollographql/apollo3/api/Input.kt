@@ -6,13 +6,13 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 @Deprecated("Input is a helper class to help migrating to 3.x " +
-    "and will be removed in a future version")
+    "and will be removed in a future version", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
 class Input {
   companion object {
     @JvmStatic
     @Deprecated("optional() is a helper function to help migrating to 3.x " +
-        "and will be removed in a future version", ReplaceWith("Optional.presentIfNotNull(value)"))
+        "and will be removed in a future version", ReplaceWith("Optional.presentIfNotNull(value)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun <V> optional(value: V): Optional<V> {
       return Optional.presentIfNotNull(value)
@@ -20,7 +20,7 @@ class Input {
 
     @JvmStatic
     @Deprecated("fromNullable() is a helper function to help migrating to 3.x " +
-        "and will be removed in a future version", ReplaceWith("Optional.Present(value)"))
+        "and will be removed in a future version", ReplaceWith("Optional.Present(value)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun <V> fromNullable(value: V): Optional<V> {
       return Optional.Present(value)
@@ -28,7 +28,7 @@ class Input {
 
     @JvmStatic
     @Deprecated("absent() is a helper function to help migrating to 3.x " +
-        "and will be removed in a future version", ReplaceWith("Optional.Absent"))
+        "and will be removed in a future version", ReplaceWith("Optional.Absent"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun <V> absent(): Optional.Absent {
       return Optional.Absent
@@ -37,13 +37,13 @@ class Input {
 }
 
 @Deprecated("toInput() is a helper function to help migrating to 3.x " +
-    "and will be removed in a future version", ReplaceWith("Optional.presentIfNotNull(this)"))
+    "and will be removed in a future version", ReplaceWith("Optional.presentIfNotNull(this)"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
 @JvmName("-toInputOrAbsent")
 fun <T> T.toInput(): Optional<T> = Optional.presentIfNotNull(this)
 
 @Deprecated("toInput() is a helper function to help migrating to 3.x " +
-    "and will be removed in a future version", ReplaceWith("Optional.Present(this)"))
+    "and will be removed in a future version", ReplaceWith("Optional.Present(this)"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
 @JvmName("-toInput")
 fun <T : Any> T.toInput(): Optional<T> = Optional.Present(this)

@@ -38,7 +38,7 @@ class Schema internal constructor(
    *
    * See also [validateAsSchema] and [toSchema]
    */
-  @Deprecated("Use validateAsSchema() to get a Schema")
+  @Deprecated("Use validateAsSchema() to get a Schema", level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
   constructor(definitions: List<GQLDefinition>) : this(
       definitions,

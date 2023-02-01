@@ -10,7 +10,7 @@ import kotlinx.coroutines.sync.withLock
 
 @Deprecated("BearerTokenInterceptor was provided as an example but is too simple for most use cases." +
     "Define your own interceptor or take a look at https://www.apollographql.com/docs/kotlin/advanced/interceptors-http" +
-    " for more details.")
+    " for more details.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_2_3)
 class BearerTokenInterceptor(private val tokenProvider: TokenProvider) : HttpInterceptor {
   private val mutex = Mutex()
