@@ -112,7 +112,7 @@ class IrOptions(
     val codegenModels: String,
 
     /**
-     * The fragment from upstream
+     * The fragments from upstream
      */
     val incomingFragments: List<GQLFragmentDefinition>,
 
