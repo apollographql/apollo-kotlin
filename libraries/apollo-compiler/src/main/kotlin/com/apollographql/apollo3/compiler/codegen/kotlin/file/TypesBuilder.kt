@@ -7,7 +7,7 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toListInitializerCodeblock
-import com.apollographql.apollo3.compiler.ir.IrCustomScalar
+import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -16,13 +16,13 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.joinToCode
 
-internal fun IrCustomScalar.typePropertySpec(): PropertySpec {
+internal fun IrScalar.typePropertySpec(targetTypeName: String?): PropertySpec {
   /**
    * Custom Scalars without a mapping will generate code using [AnyResponseAdapter] directly
    * so the fallback isn't really required here. We still write it as a way to hint the user
    * to what's happening behind the scenes
    */
-  val kotlinName = kotlinName ?: builtinScalarKotlinName(name) ?: "kotlin.Any"
+  val kotlinName = targetTypeName ?: builtinScalarKotlinName(name) ?: "kotlin.Any"
   return PropertySpec
       .builder(Identifier.type, KotlinSymbols.CustomScalarType)
       .initializer("%T(%S,·%S)", KotlinSymbols.CustomScalarType, name, kotlinName)

@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.SourceAwareException
 import com.apollographql.apollo3.ast.introspection.toSchema
-import com.apollographql.apollo3.compiler.Options.Companion.defaultScalarMapping
 import com.google.common.truth.Truth
 import org.junit.Assert.fail
 import org.junit.Before
@@ -56,20 +55,17 @@ class MetadataTest {
       incomingCompilerMetadata = metadata.map { it.compilerMetadata }
     }
 
-    val compilerMetadata = ApolloCompiler.write(
-        Options(
-            executableFiles = operationFiles,
-            outputDir = outputDir,
-            testDir = outputDir,
-            schema = schema,
-            schemaPackageName = "",
-            packageNameGenerator = PackageNameGenerator.Flat(""),
-            alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-            incomingCompilerMetadata = incomingCompilerMetadata,
-            scalarMapping = defaultScalarMapping,
-            codegenModels = codegenModels,
-            flattenModels = true,
-        )
+    val compilerMetadata = ApolloCompiler.writeSimple(
+        executableFiles = operationFiles,
+        outputDir = outputDir,
+        schema = schema,
+        schemaPackageName = "",
+        packageNameGenerator = PackageNameGenerator.Flat(""),
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        incomingCompilerMetadata = incomingCompilerMetadata,
+        scalarMapping = defaultScalarMapping,
+        codegenModels = codegenModels,
+        flattenModels = true,
     )
     ApolloMetadata(
         commonMetadata = outputCommonMetadata,

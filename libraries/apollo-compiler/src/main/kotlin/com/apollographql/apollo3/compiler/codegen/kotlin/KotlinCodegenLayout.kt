@@ -5,16 +5,17 @@ import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInEnum
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInSealedClass
-import com.apollographql.apollo3.compiler.ir.Ir
+import com.apollographql.apollo3.compiler.ir.IrOperations
+import com.apollographql.apollo3.compiler.ir.IrSchemaType
 
 internal class KotlinCodegenLayout(
-    ir: Ir,
+    allTypes: List<IrSchemaType>,
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,
     decapitalizeFields: Boolean,
 ) : CodegenLayout(
-    ir,
+    allTypes,
     packageNameGenerator,
     schemaPackageName,
     useSemanticNaming,

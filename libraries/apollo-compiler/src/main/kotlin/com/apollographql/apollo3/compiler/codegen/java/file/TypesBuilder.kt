@@ -11,7 +11,7 @@ import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecati
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toListInitializerCodeblock
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
-import com.apollographql.apollo3.compiler.ir.IrCustomScalar
+import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
@@ -20,16 +20,16 @@ import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.FieldSpec
 import javax.lang.model.element.Modifier
 
-internal fun IrCustomScalar.typeFieldSpec(): FieldSpec {
+internal fun IrScalar.typeFieldSpec(targetTypeName: String?): FieldSpec {
   /**
    * Custom Scalars without a mapping will generate code using [com.apollographql.apollo3.api.AnyAdapter] directly
    * so the fallback isn't really required here. We still write it as a way to hint the user
    * to what's happening behind the scenes
    */
-  val kotlinName = kotlinName ?: builtinScalarJavaName(name) ?: "java.lang.Object"
+  val typeName = targetTypeName ?: builtinScalarJavaName(name) ?: "java.lang.Object"
   return FieldSpec
       .builder(JavaClassNames.CustomScalarType, Identifier.type, Modifier.STATIC, Modifier.PUBLIC)
-      .initializer("new $T($S, $S)", JavaClassNames.CustomScalarType, name, kotlinName)
+      .initializer("new $T($S, $S)", JavaClassNames.CustomScalarType, name, typeName)
       .build()
 }
 

@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.ir.Ir
+import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -20,18 +20,22 @@ import com.apollographql.apollo3.compiler.singularize
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
 internal abstract class CodegenLayout(
-    ir: Ir,
+    allTypes: List<IrSchemaType>, // XXX: this should also take incoming types into account
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
     private val decapitalizeFields: Boolean,
 ) {
   private val schemaTypeToClassName: Map<String, String> = mutableMapOf<String, String>().apply {
-    val allTypes: List<IrSchemaType> = (ir.customScalars + ir.objects + ir.enums + ir.interfaces + ir.inputObjects + ir.unions)
-        // Sort to ensure consistent results.
-        .sortedBy { it.name }
     val usedNames = mutableSetOf<String>()
 
+    /**
+     * Make it possible to support several types with different cases. Example:
+     *
+     * type URL @targetName(newName: "Url1")
+     * type Url
+     * type url
+     */
     // 1. Compute a unique name for types without a targetName
     for (type in allTypes.filter { it.targetName == null }) {
       val uniqueName = uniqueName(type.name, usedNames)

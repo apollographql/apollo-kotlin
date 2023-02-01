@@ -14,7 +14,6 @@ internal class CgFile(
     val propertySpecs: List<PropertySpec> = emptyList(),
     val funSpecs: List<FunSpec> = emptyList(),
     val fileName: String,
-    val isTest: Boolean = false
 )
 
 internal interface CgFileBuilder {

@@ -101,7 +101,7 @@ internal class SelectionSetsBuilder(
   }
 
   /**
-   * This doesn't register the used types like [IrBuilder.toIr] but since it's going through the same AST, that's not a bad thing
+   * This doesn't register the used types like [IrOperationsBuilder.toIr] but since it's going through the same AST, that's not a bad thing
    */
   private fun GQLType.toIrTypeRef(): IrTypeRef = when(this) {
     is GQLNonNullType -> IrNonNullTypeRef(this.type.toIrTypeRef())

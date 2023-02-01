@@ -14,11 +14,18 @@ import com.apollographql.apollo3.ast.checkNoErrors
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
+import com.apollographql.apollo3.compiler.codegen.ResolverInfo
+import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
-import com.apollographql.apollo3.compiler.ir.IrBuilder
-import com.apollographql.apollo3.compiler.ir.dumpTo
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
+import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
+import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
+import com.apollographql.apollo3.compiler.ir.IrOperations
+import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
+import com.apollographql.apollo3.compiler.ir.IrOperationsBuilder
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
+import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import okio.buffer
 import okio.source
 import java.io.File
@@ -52,38 +59,18 @@ object ApolloCompiler {
     return definitions
   }
 
-  fun write(
-      options: Options,
-  ): CompilerMetadata {
+  fun buildIrOperations(
+      options: IrOptions,
+  ): IrOperations {
     val executableFiles = options.executableFiles
-    val outputDir = options.outputDir
-    val testDir = options.testDir
-    val debugDir = options.debugDir
     val schema = options.schema
-
-    if (options.targetLanguage == TargetLanguage.JAVA && options.codegenModels != MODELS_OPERATION_BASED) {
-      error("Java codegen does not support ${options.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
-    }
-    if (options.targetLanguage == TargetLanguage.JAVA && !options.flattenModels) {
-      error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
-          "enclosing one.")
-    }
-
-    checkCustomScalars(schema, options.scalarMapping)
-
-    outputDir.deleteRecursively()
-    outputDir.mkdirs()
-    debugDir?.deleteRecursively()
-    debugDir?.mkdirs()
-    testDir.deleteRecursively()
-    testDir.mkdirs()
 
     /**
      * Step 1: parse the documents
      */
     val definitions = executableFiles.definitions()
 
-    val incomingFragments = options.incomingCompilerMetadata.flatMap { it.fragments }
+    val incomingFragments = options.incomingFragments
 
     /**
      * Step 2, GraphQL validation
@@ -145,28 +132,31 @@ object ApolloCompiler {
       }
     }
 
-    val alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching
-    val generateSchema = options.generateSchema || options.generateDataBuilders
-
     /**
      * Build the IR
      */
-    val ir = IrBuilder(
+    return IrOperationsBuilder(
         schema = options.schema,
         operationDefinitions = operations,
         fragmentDefinitions = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
-        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        scalarMapping = options.scalarMapping,
         codegenModels = options.codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables,
-        generateDataBuilders = options.generateDataBuilders,
-        fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge
+        fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge,
+        flattenModels = options.flattenModels,
+        decapitalizeFields = options.decapitalizeFields,
+        alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
+        generateDataBuilders = options.generateDataBuilders
     ).build()
+  }
 
-    if (debugDir != null) {
-      ir.dumpTo(File(debugDir, "ir.json"))
-    }
+  fun buildOperationOutput(
+      ir: IrOperations,
+      operationOutputGenerator: OperationOutputGenerator,
+      operationOutputFile: File?,
+  ): OperationOutput {
+    check(ir is DefaultIrOperations)
+
 
     val operationOutput = ir.operations.map {
       OperationDescriptor(
@@ -174,78 +164,60 @@ object ApolloCompiler {
           source = QueryDocumentMinifier.minify(it.sourceWithFragments)
       )
     }.let {
-      options.operationOutputGenerator.generate(it)
+      operationOutputGenerator.generate(it)
     }
 
-    check(operationOutput.size == operations.size) {
-      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${operations.size}).
+    check(operationOutput.size == ir.operations.size) {
+      """The number of operation IDs (${operationOutput.size}) should match the number of operations (${ir.operations.size}).
         |Check that all your IDs are unique.
       """.trimMargin()
     }
 
-    if (options.operationOutputFile != null) {
-      options.operationOutputFile.writeText(operationOutput.toJson("  "))
+    operationOutputFile?.writeText(operationOutput.toJson("  "))
+
+    return operationOutput
+  }
+
+  private fun codegenSetup(commonOptions: CommonCodegenOptions) {
+    checkCustomScalars(commonOptions.schema, commonOptions.scalarMapping)
+
+    commonOptions.outputDir.deleteRecursively()
+    commonOptions.outputDir.mkdirs()
+  }
+
+  fun writeJava(
+      commonCodegenOptions: CommonCodegenOptions,
+      javaCodegenOptions: JavaCodegenOptions,
+  ): ResolverInfo {
+    val ir = commonCodegenOptions.ir
+    check(ir is DefaultIrOperations)
+
+    codegenSetup(commonCodegenOptions)
+
+    if (ir.codegenModels != MODELS_OPERATION_BASED) {
+      error("Java codegen does not support ${ir.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
+    }
+    if (!ir.flattenModels) {
+      error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
+          "enclosing one.")
     }
 
-    /**
-     * Write the generated models
-     */
-    val outputResolverInfo = when (options.targetLanguage) {
-      TargetLanguage.JAVA -> {
+    return JavaCodeGen(
+        commonCodegenOptions = commonCodegenOptions,
+        javaCodegenOptions = javaCodegenOptions,
+    ).write(outputDir = commonCodegenOptions.outputDir)
+  }
 
-        JavaCodeGen(
-            ir = ir,
-            resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
-            operationOutput = operationOutput,
-            useSemanticNaming = options.useSemanticNaming,
-            packageNameGenerator = options.packageNameGenerator,
-            schemaPackageName = options.schemaPackageName,
-            generateFragmentImplementations = options.generateFragmentImplementations,
-            generateQueryDocument = options.generateQueryDocument,
-            generateSchema = generateSchema,
-            generatedSchemaName = options.generatedSchemaName,
-            flatten = options.flattenModels,
-            classesForEnumsMatching = options.classesForEnumsMatching,
-            scalarMapping = options.scalarMapping,
-            generateDataBuilders = options.generateDataBuilders,
-            generateModelBuilders = options.generateModelBuilders,
-            generatePrimitiveTypes = options.generatePrimitiveTypes,
-            nullableFieldStyle = options.nullableFieldStyle,
-            decapitalizeFields = options.decapitalizeFields,
-            hooks = options.compilerJavaHooks,
-        ).write(outputDir = outputDir)
-      }
 
-      else -> {
-        KotlinCodeGen(
-            ir = ir,
-            resolverInfos = options.incomingCompilerMetadata.map { it.resolverInfo },
-            generateAsInternal = options.generateAsInternal,
-            operationOutput = operationOutput,
-            useSemanticNaming = options.useSemanticNaming,
-            packageNameGenerator = options.packageNameGenerator,
-            schemaPackageName = options.schemaPackageName,
-            generateFilterNotNull = options.generateFilterNotNull,
-            generateFragmentImplementations = options.generateFragmentImplementations,
-            generateQueryDocument = options.generateQueryDocument,
-            generateSchema = generateSchema,
-            generatedSchemaName = options.generatedSchemaName,
-            generateDataBuilders = options.generateDataBuilders,
-            flatten = options.flattenModels,
-            sealedClassesForEnumsMatching = options.sealedClassesForEnumsMatching,
-            targetLanguageVersion = options.targetLanguage,
-            scalarMapping = options.scalarMapping,
-            addJvmOverloads = options.addJvmOverloads,
-            requiresOptInAnnotation = options.requiresOptInAnnotation,
-            decapitalizeFields = options.decapitalizeFields,
-            hooks = options.compilerKotlinHooks,
-        ).write(outputDir = outputDir, testDir = testDir)
-      }
-    }
+  fun writeKotlin(
+      commonCodegenOptions: CommonCodegenOptions,
+      kotlinCodegenOptions: KotlinCodegenOptions,
+  ): ResolverInfo {
+    codegenSetup(commonCodegenOptions)
 
-    return CompilerMetadata(
-        fragments = fragments,
-        resolverInfo = outputResolverInfo,
+    return KotlinCodeGen.write(
+        commonCodegenOptions = commonCodegenOptions,
+        kotlinCodegenOptions = kotlinCodegenOptions,
     )
   }
 
@@ -274,5 +246,145 @@ object ApolloCompiler {
   val NoOpLogger = object : Logger {
     override fun warning(message: String) {
     }
+  }
+
+  fun writeSimple(
+      schema: Schema,
+      executableFiles: Set<File>,
+      outputDir: File,
+      packageNameGenerator: PackageNameGenerator,
+      schemaPackageName: String,
+      warnOnDeprecatedUsages: Boolean = defaultWarnOnDeprecatedUsages,
+      failOnWarnings: Boolean = defaultFailOnWarnings,
+      logger: Logger = defaultLogger,
+      flattenModels: Boolean = defaultFlattenModels,
+      codegenModels: String = defaultCodegenModels,
+      addTypename: String = defaultAddTypename,
+      decapitalizeFields: Boolean = defaultDecapitalizeFields,
+      fieldsOnDisjointTypesMustMerge: Boolean = defaultFieldsOnDisjointTypesMustMerge,
+      generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables,
+      alwaysGenerateTypesMatching: Set<String> = defaultAlwaysGenerateTypesMatching,
+      operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
+      incomingCompilerMetadata: List<CompilerMetadata> = emptyList(),
+      useSemanticNaming: Boolean = defaultUseSemanticNaming,
+      generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
+      generateQueryDocument: Boolean = defaultGenerateQueryDocument,
+      generateSchema: Boolean = defaultGenerateSchema,
+      generatedSchemaName: String = defaultGeneratedSchemaName,
+      generateResponseFields: Boolean = defaultGenerateResponseFields,
+      scalarMapping: Map<String, ScalarInfo> = defaultScalarMapping,
+      generateDataBuilders: Boolean = defaultGenerateDataBuilders,
+      targetLanguage: TargetLanguage = defaultTargetLanguage,
+      // Java
+      nullableFieldStyle: JavaNullable = defaultNullableFieldStyle,
+      compilerJavaHooks: ApolloCompilerJavaHooks = defaultCompilerJavaHooks,
+      generateModelBuilders: Boolean = defaultGenerateModelBuilders,
+      classesForEnumsMatching: List<String> = defaultClassesForEnumsMatching,
+      generatePrimitiveTypes: Boolean = defaultGeneratePrimitiveTypes,
+      // Kotlin
+      generateAsInternal: Boolean = defaultGenerateAsInternal,
+      generateFilterNotNull: Boolean = defaultGenerateFilterNotNull,
+      sealedClassesForEnumsMatching: List<String> = defaultClassesForEnumsMatching,
+      addJvmOverloads: Boolean = defaultAddJvmOverloads,
+      requiresOptInAnnotation: String = defaultRequiresOptInAnnotation,
+      compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
+  ): CompilerMetadata {
+
+    /**
+     * Inject all built-in scalars
+     * I think these are always needed
+     * And custom scalars specified in the Gradle configuration
+     * These are always needed by the user to register their adapters
+     */
+    @Suppress("NAME_SHADOWING")
+    val alwaysGenerateTypesMatching = alwaysGenerateTypesMatching +
+        scalarMapping.keys +
+        setOf("String", "Boolean", "Int", "Float", "ID")
+
+    val irOptions = IrOptions(
+        schema = schema,
+        executableFiles = executableFiles,
+        warnOnDeprecatedUsages = warnOnDeprecatedUsages,
+        failOnWarnings = failOnWarnings,
+        logger = logger,
+        flattenModels = flattenModels,
+        incomingFragments = incomingCompilerMetadata.flatMap { it.fragments },
+        codegenModels = codegenModels,
+        addTypename = addTypename,
+        decapitalizeFields = decapitalizeFields,
+        fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
+        generateOptionalOperationVariables = generateOptionalOperationVariables,
+        alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
+        generateDataBuilders = generateDataBuilders,
+    )
+
+    val irOperations = buildIrOperations(irOptions)
+
+    val operationOutput = buildOperationOutput(
+        ir = irOperations,
+        operationOutputFile = null,
+        operationOutputGenerator = operationOutputGenerator,
+    )
+
+    val irSchema = IrSchemaBuilder.build(
+        schema = irOptions.schema,
+        irOperations = irOperations,
+        incomingTypes = incomingCompilerMetadata.flatMap { it.resolverInfo.entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id } }.toSet(),
+    )
+
+    val commonCodegenOptions = CommonCodegenOptions(
+        schema = irOptions.schema,
+        ir = irOperations,
+        irSchema = irSchema,
+        operationOutput= operationOutput,
+        outputDir = outputDir,
+        useSemanticNaming = useSemanticNaming,
+        packageNameGenerator = packageNameGenerator,
+        generateFragmentImplementations = generateFragmentImplementations,
+        generateQueryDocument = generateQueryDocument,
+        generateSchema = generateSchema,
+        generatedSchemaName = generatedSchemaName,
+        generateResponseFields = generateResponseFields,
+        schemaPackageName = schemaPackageName,
+        scalarMapping = scalarMapping,
+        incomingResolverInfos = incomingCompilerMetadata.map { it.resolverInfo },
+    )
+
+    val resolverInfo = when (targetLanguage) {
+      TargetLanguage.JAVA -> {
+        val javaCodegenOptions = JavaCodegenOptions(
+            nullableFieldStyle = nullableFieldStyle,
+            compilerJavaHooks = compilerJavaHooks,
+            generateModelBuilders = generateModelBuilders,
+            classesForEnumsMatching = classesForEnumsMatching,
+            generatePrimitiveTypes = generatePrimitiveTypes,
+
+            )
+        writeJava(
+            commonCodegenOptions = commonCodegenOptions,
+            javaCodegenOptions = javaCodegenOptions
+        )
+      }
+
+      else -> {
+        val kotlinCodegenOptions = KotlinCodegenOptions(
+            generateAsInternal = generateAsInternal,
+            generateFilterNotNull = generateFilterNotNull,
+            sealedClassesForEnumsMatching = sealedClassesForEnumsMatching,
+            addJvmOverloads = addJvmOverloads,
+            requiresOptInAnnotation = requiresOptInAnnotation,
+            compilerKotlinHooks = compilerKotlinHooks,
+            languageVersion = targetLanguage
+        )
+        writeKotlin(
+            commonCodegenOptions = commonCodegenOptions,
+            kotlinCodegenOptions = kotlinCodegenOptions
+        )
+      }
+    }
+    return CompilerMetadata(
+        fragments = irOperations.fragmentDefinitions,
+        resolverInfo = resolverInfo,
+    )
   }
 }

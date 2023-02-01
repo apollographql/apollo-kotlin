@@ -130,6 +130,14 @@ public final class com/apollographql/apollo3/compiler/IncomingOptions$Companion 
 	public final fun resolveSchema (Ljava/util/Collection;Ljava/util/List;)Lkotlin/Pair;
 }
 
+public final class com/apollographql/apollo3/compiler/JavaCodegenOptions {
+	public fun <init> (ZLjava/util/List;ZLcom/apollographql/apollo3/compiler/JavaNullable;Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks;)V
+	public final fun getClassesForEnumsMatching ()Ljava/util/List;
+	public final fun getGenerateModelBuilders ()Z
+	public final fun getGeneratePrimitiveTypes ()Z
+	public final fun getNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullable;
+}
+
 public final class com/apollographql/apollo3/compiler/JavaNullable : java/lang/Enum {
 	public static final field ANDROID_ANNOTATIONS Lcom/apollographql/apollo3/compiler/JavaNullable;
 	public static final field APOLLO_OPTIONAL Lcom/apollographql/apollo3/compiler/JavaNullable;
@@ -145,6 +153,17 @@ public final class com/apollographql/apollo3/compiler/JavaNullable : java/lang/E
 
 public final class com/apollographql/apollo3/compiler/JavaNullable$Companion {
 	public final fun fromName (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/JavaNullable;
+}
+
+public final class com/apollographql/apollo3/compiler/KotlinCodegenOptions {
+	public fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/compiler/TargetLanguage;Ljava/util/List;ZZLcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAddJvmOverloads ()Z
+	public final fun getGenerateAsInternal ()Z
+	public final fun getGenerateFilterNotNull ()Z
+	public final fun getLanguageVersion ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public final fun getRequiresOptInAnnotation ()Ljava/lang/String;
+	public final fun getSealedClassesForEnumsMatching ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/compiler/MoshiKt {
@@ -177,19 +196,6 @@ public final class com/apollographql/apollo3/compiler/OperationOutputGenerator$D
 	public fun getVersion ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/compiler/Options$Companion {
-	public final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
-	public final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
-	public final fun getDefaultCompilerJavaHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$Identity;
-	public final fun getDefaultCompilerKotlinHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$Identity;
-	public final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
-	public final fun getDefaultNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullable;
-	public final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
-	public final fun getDefaultScalarMapping ()Ljava/util/Map;
-	public final fun getDefaultSealedClassesForEnumsMatching ()Ljava/util/List;
-	public final fun getDefaultTargetLanguage ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
-}
-
 public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field ADD_TYPENAME_ALWAYS Ljava/lang/String;
 	public static final field ADD_TYPENAME_IF_ABSTRACT Ljava/lang/String;
@@ -198,6 +204,37 @@ public final class com/apollographql/apollo3/compiler/OptionsKt {
 	public static final field MODELS_OPERATION_BASED Ljava/lang/String;
 	public static final field MODELS_OPERATION_BASED_WITH_INTERFACES Ljava/lang/String;
 	public static final field MODELS_RESPONSE_BASED Ljava/lang/String;
+	public static final field defaultAddJvmOverloads Z
+	public static final field defaultAddTypename Ljava/lang/String;
+	public static final field defaultCodegenModels Ljava/lang/String;
+	public static final field defaultDecapitalizeFields Z
+	public static final field defaultFailOnWarnings Z
+	public static final field defaultFieldsOnDisjointTypesMustMerge Z
+	public static final field defaultFlattenModels Z
+	public static final field defaultGenerateAsInternal Z
+	public static final field defaultGenerateDataBuilders Z
+	public static final field defaultGenerateFilterNotNull Z
+	public static final field defaultGenerateFragmentImplementations Z
+	public static final field defaultGenerateModelBuilders Z
+	public static final field defaultGenerateOptionalOperationVariables Z
+	public static final field defaultGeneratePrimitiveTypes Z
+	public static final field defaultGenerateQueryDocument Z
+	public static final field defaultGenerateResponseFields Z
+	public static final field defaultGenerateSchema Z
+	public static final field defaultGeneratedSchemaName Ljava/lang/String;
+	public static final field defaultRequiresOptInAnnotation Ljava/lang/String;
+	public static final field defaultUseSemanticNaming Z
+	public static final field defaultWarnOnDeprecatedUsages Z
+	public static final fun getDefaultAlwaysGenerateTypesMatching ()Ljava/util/Set;
+	public static final fun getDefaultClassesForEnumsMatching ()Ljava/util/List;
+	public static final fun getDefaultCompilerJavaHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerJavaHooks$Identity;
+	public static final fun getDefaultCompilerKotlinHooks ()Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks$Identity;
+	public static final fun getDefaultLogger ()Lcom/apollographql/apollo3/compiler/ApolloCompiler$Logger;
+	public static final fun getDefaultNullableFieldStyle ()Lcom/apollographql/apollo3/compiler/JavaNullable;
+	public static final fun getDefaultOperationOutputGenerator ()Lcom/apollographql/apollo3/compiler/OperationOutputGenerator$Default;
+	public static final fun getDefaultScalarMapping ()Ljava/util/Map;
+	public static final fun getDefaultSealedClassesForEnumsMatching ()Ljava/util/List;
+	public static final fun getDefaultTargetLanguage ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/PackageNameGenerator {
@@ -361,7 +398,6 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : 
 	public static final field Schema Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaTypeAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
-	public static final field TestBuilder Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 }
@@ -418,7 +454,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
 	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;)V
-	public final fun canResolveSchemaType (Ljava/lang/String;)Z
 	public final fun entries ()Ljava/util/List;
 	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
 	public final fun registerBuilderFun (Ljava/lang/String;Lcom/squareup/kotlinpoet/MemberName;)V
@@ -437,7 +472,6 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun registerOperationVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun registerSchema (Lcom/squareup/kotlinpoet/ClassName;)V
 	public final fun registerSchemaType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerTestBuilder (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveBuilderFun (Ljava/lang/String;)Lcom/squareup/kotlinpoet/MemberName;
 	public final fun resolveBuilderType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
@@ -454,7 +488,6 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResol
 	public final fun resolveRequiresOptInAnnotation ()Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveSchema ()Lcom/squareup/kotlinpoet/ClassName;
 	public final fun resolveSchemaType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveTestBuilder (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {
@@ -907,6 +940,18 @@ public final class com/apollographql/apollo3/compiler/introspection/Introspectio
 public final class com/apollographql/apollo3/compiler/introspection/Schema_to_introspectionKt {
 	public static final fun toIntrospectionSchema (Lcom/apollographql/apollo3/ast/Schema;)Lcom/apollographql/apollo3/compiler/introspection/IntrospectionSchema;
 	public static final fun toKotlinValue (Lcom/apollographql/apollo3/ast/GQLValue;Z)Ljava/lang/Object;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/ir/IrOperations {
+	public abstract fun getFragmentDefinitions ()Ljava/util/List;
+}
+
+public abstract interface class com/apollographql/apollo3/compiler/ir/IrSchema {
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrSchemaBuilder {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrSchemaBuilder;
+	public final fun build (Lcom/apollographql/apollo3/ast/Schema;Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/util/Set;)Lcom/apollographql/apollo3/compiler/ir/IrSchema;
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {

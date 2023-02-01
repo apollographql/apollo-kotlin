@@ -5,14 +5,15 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.java.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.ir.IrCustomScalar
+import com.apollographql.apollo3.compiler.ir.IrScalar
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
 internal class CustomScalarBuilder(
     private val context: JavaContext,
-    private val customScalar: IrCustomScalar,
+    private val customScalar: IrScalar,
+    private val targetTypeName: String?
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
@@ -38,13 +39,13 @@ internal class CustomScalarBuilder(
     )
   }
 
-  private fun IrCustomScalar.typeSpec(): TypeSpec {
+  private fun IrScalar.typeSpec(): TypeSpec {
     return TypeSpec
         .classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
         .maybeAddDescription(description)
         .maybeAddDeprecation(deprecationReason)
-        .addField(typeFieldSpec())
+        .addField(typeFieldSpec(targetTypeName))
         .build()
   }
 }

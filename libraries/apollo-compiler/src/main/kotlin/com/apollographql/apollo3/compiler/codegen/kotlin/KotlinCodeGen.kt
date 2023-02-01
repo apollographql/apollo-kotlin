@@ -1,14 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
-import com.apollographql.apollo3.compiler.PackageNameGenerator
-import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.CommonCodegenOptions
+import com.apollographql.apollo3.compiler.KotlinCodegenOptions
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarAdaptersBuilder
-import com.apollographql.apollo3.compiler.codegen.kotlin.file.CustomScalarBuilder
+import com.apollographql.apollo3.compiler.codegen.kotlin.file.ScalarBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsEnumBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumAsSealedBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.EnumResponseAdapterBuilder
@@ -29,60 +28,57 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.file.PaginationBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.SchemaBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.file.UnionBuilder
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
-import com.apollographql.apollo3.compiler.ir.Ir
-import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
+import com.apollographql.apollo3.compiler.ir.DefaultIrSchema
 import com.apollographql.apollo3.compiler.operationoutput.findOperationId
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import java.io.File
 
-
-internal class KotlinCodeGen(
-    private val ir: Ir,
-    private val resolverInfos: List<ResolverInfo>,
-    private val generateAsInternal: Boolean = false,
-    private val useSemanticNaming: Boolean,
-    private val packageNameGenerator: PackageNameGenerator,
-    private val schemaPackageName: String,
-    /**
-     * The operation id cannot be set in [IrOperation] because it needs access to [IrOperation.sourceWithFragments]
-     * So we do this in the codegen step
-     */
-    private val operationOutput: OperationOutput,
-    private val generateFilterNotNull: Boolean,
-    private val generateFragmentImplementations: Boolean,
-    private val generateQueryDocument: Boolean,
-    private val generateSchema: Boolean,
-    private val generatedSchemaName: String,
-    private val generateDataBuilders: Boolean,
-    /**
-     * Whether to flatten the models. This decision is left to the codegen. For fragments for an example, we
-     * want to flatten at depth 1 to avoid name clashes, but it's ok to flatten fragment response adapters at
-     * depth 0
-     */
-    private val flatten: Boolean,
-    private val sealedClassesForEnumsMatching: List<String>,
-    private val targetLanguageVersion: TargetLanguage,
-    private val scalarMapping: Map<String, ScalarInfo>,
-    private val addJvmOverloads: Boolean,
-    private val requiresOptInAnnotation: String?,
-    private val decapitalizeFields: Boolean,
-    private val hooks: ApolloCompilerKotlinHooks,
-) {
+internal object KotlinCodeGen {
   /**
-   * @param outputDir: the directory where to write the Kotlin files
    * @return a ResolverInfo to be used by downstream modules
    */
-  fun write(outputDir: File, testDir: File): ResolverInfo {
+  fun write(
+      commonCodegenOptions: CommonCodegenOptions,
+      kotlinCodegenOptions: KotlinCodegenOptions,
+  ): ResolverInfo {
+    val ir = commonCodegenOptions.ir
+    check(ir is DefaultIrOperations)
+
+    val operationOutput = commonCodegenOptions.operationOutput
+    val resolverInfos = commonCodegenOptions.incomingResolverInfos
+    val generateAsInternal = kotlinCodegenOptions.generateAsInternal
+    val useSemanticNaming = commonCodegenOptions.useSemanticNaming
+    val packageNameGenerator = commonCodegenOptions.packageNameGenerator
+    val schemaPackageName = commonCodegenOptions.schemaPackageName
+    val generateFilterNotNull = kotlinCodegenOptions.generateFilterNotNull
+    val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
+    val generateQueryDocument = commonCodegenOptions.generateQueryDocument
+    val generatedSchemaName = commonCodegenOptions.generatedSchemaName
+    val generateDataBuilders = ir.generateDataBuilders
+    val flatten = ir.flattenModels
+    val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching
+    val targetLanguageVersion = kotlinCodegenOptions.languageVersion
+    val scalarMapping = commonCodegenOptions.scalarMapping
+    val addJvmOverloads = kotlinCodegenOptions.addJvmOverloads
+    val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation
+    val decapitalizeFields = ir.decapitalizeFields
+    val hooks = kotlinCodegenOptions.compilerKotlinHooks
+    val generateSchema = commonCodegenOptions.generateSchema || generateDataBuilders
+    val outputDir = commonCodegenOptions.outputDir
+
     val upstreamResolver = resolverInfos.fold(null as KotlinResolver?) { acc, resolverInfo ->
       KotlinResolver(resolverInfo.entries, acc, scalarMapping, requiresOptInAnnotation, hooks)
     }
 
+    val irSchema = commonCodegenOptions.irSchema
+    check (irSchema is DefaultIrSchema)
+
     val layout = KotlinCodegenLayout(
-        ir = ir,
+        allTypes = irSchema.allTypes,
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
@@ -96,42 +92,30 @@ internal class KotlinCodeGen(
     )
     val builders = mutableListOf<CgFileBuilder>()
 
-    ir.inputObjects
-        .filter { !context.resolver.canResolveSchemaType(it.name) }
-        .forEach {
-          builders.add(InputObjectBuilder(context, it))
-          builders.add(InputObjectAdapterBuilder(context, it))
-        }
-    ir.enums
-        .filter { !context.resolver.canResolveSchemaType(it.name) }
-        .forEach { enum ->
-          if (sealedClassesForEnumsMatching.any { Regex(it).matches(enum.name) }) {
-            builders.add(EnumAsSealedBuilder(context, enum))
-          } else {
-            builders.add(EnumAsEnumBuilder(context, enum))
-          }
-          builders.add(EnumResponseAdapterBuilder(context, enum))
-        }
-    ir.objects
-        .filter { !context.resolver.canResolveSchemaType(it.name) }
-        .forEach { obj ->
-          builders.add(ObjectBuilder(context, obj, generateDataBuilders))
-        }
-    ir.interfaces
-        .filter { !context.resolver.canResolveSchemaType(it.name) }
-        .forEach { iface ->
-          builders.add(InterfaceBuilder(context, iface, generateDataBuilders))
-        }
-    ir.unions
-        .filter { !context.resolver.canResolveSchemaType(it.name) }
-        .forEach { union ->
-          builders.add(UnionBuilder(context, union, generateDataBuilders))
-        }
-    ir.customScalars
-        .filter { !context.resolver.canResolveSchemaType(it.name) }
-        .forEach { customScalar ->
-          builders.add(CustomScalarBuilder(context, customScalar))
-        }
+    irSchema.irScalars.forEach {irScalar ->
+      builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
+    }
+    irSchema.irEnums.forEach {irEnum ->
+      if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
+        builders.add(EnumAsSealedBuilder(context, irEnum))
+      } else {
+        builders.add(EnumAsEnumBuilder(context, irEnum))
+      }
+      builders.add(EnumResponseAdapterBuilder(context, irEnum))
+    }
+    irSchema.irInputObjects.forEach { irInputObject ->
+      builders.add(InputObjectBuilder(context, irInputObject))
+      builders.add(InputObjectAdapterBuilder(context, irInputObject))
+    }
+    irSchema.irUnions.forEach {irUnion ->
+      builders.add(UnionBuilder(context, irUnion, generateDataBuilders))
+    }
+    irSchema.irInterfaces.forEach {irInterface ->
+      builders.add(InterfaceBuilder(context, irInterface, generateDataBuilders))
+    }
+    irSchema.irObjects.forEach { irObject ->
+      builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
+    }
 
     ir.fragments
         .forEach { fragment ->
@@ -192,12 +176,12 @@ internal class KotlinCodeGen(
         }
 
     if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-      builders.add(SchemaBuilder(context, generatedSchemaName, ir.objects, ir.interfaces, ir.unions, ir.enums))
+      builders.add(SchemaBuilder(context, generatedSchemaName, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
       builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
     }
 
-    if (ir.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
-      builders.add(PaginationBuilder(context, ir.connectionTypes))
+    if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
+      builders.add(PaginationBuilder(context, irSchema.connectionTypes))
     }
 
     /**
@@ -233,13 +217,13 @@ internal class KotlinCodeGen(
           cgFile.propertySpecs.map { propertySpec -> propertySpec.internal(generateAsInternal) }.forEach { propertySpec ->
             builder.addProperty(propertySpec)
           }
-          ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build(), cgFile.isTest)
+          ApolloCompilerKotlinHooks.FileInfo(fileSpec = builder.build())
         }
         .let { hooks.postProcessFiles(it) }
 
     // Write the files to disk
     fileInfos.forEach {
-      it.fileSpec.writeTo(if (it.targetTestDir) testDir else outputDir)
+      it.fileSpec.writeTo(outputDir)
     }
 
     return ResolverInfo(
