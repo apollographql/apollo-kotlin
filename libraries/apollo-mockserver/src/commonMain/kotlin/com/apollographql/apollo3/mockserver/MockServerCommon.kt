@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION_ERROR")
 package com.apollographql.apollo3.mockserver
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
@@ -46,30 +47,18 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
   }
 }
 
-class MockResponse internal constructor(
+class MockResponse
+@Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v3_3_1)
+constructor(
     val statusCode: Int = 200,
     val body: Flow<ByteString> = emptyFlow(),
     val headers: Map<String, String> = mapOf("Content-Length" to "0"),
     val delayMillis: Long = 0,
-    @Suppress("UNUSED_PARAMETER") unused: Boolean,
 ) {
   @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_3_1)
-  constructor(
-      statusCode: Int = 200,
-      body: Flow<ByteString> = emptyFlow(),
-      headers: Map<String, String> = mapOf("Content-Length" to "0"),
-      delayMillis: Long = 0,
-  ) : this(
-      statusCode,
-      body,
-      headers,
-      delayMillis,
-      false
-  )
-
-  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_3_1)
+  @Suppress("DEPRECATION")
   @JvmOverloads
   constructor(
       body: String,
@@ -81,7 +70,6 @@ class MockResponse internal constructor(
       body = flowOf(body.encodeUtf8()),
       headers = headers + mapOf("Content-Length" to body.length.toString()),
       delayMillis = delayMillis,
-      false
   )
 
   @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).body(body).headers(headers).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
@@ -96,7 +84,6 @@ class MockResponse internal constructor(
       body = flowOf(body),
       headers = headers + mapOf("Content-Length" to body.size.toString()),
       delayMillis = delayMillis,
-      false
   )
 
   class Builder {
@@ -128,7 +115,8 @@ class MockResponse internal constructor(
 
     fun build(): MockResponse {
       val headersWithContentLength = if (contentLength == null) headers else headers + mapOf("Content-Length" to contentLength.toString())
-      return MockResponse(statusCode = statusCode, body = body, headers = headersWithContentLength, delayMillis = delayMillis, false)
+      @Suppress("DEPRECATION")
+      return MockResponse(statusCode = statusCode, body = body, headers = headersWithContentLength, delayMillis = delayMillis)
     }
   }
 }
@@ -217,7 +205,7 @@ fun parseRequestLine(line: String): Triple<String, String, String> {
 
   val method = match.groupValues[1].uppercase()
   check(method in listOf("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")) {
-    "Unknown method $method"
+    "Unkown method $method"
   }
 
   return Triple(method, match.groupValues[2], match.groupValues[3])

@@ -12,6 +12,7 @@ public final class com/apollographql/apollo3/mockserver/MockRequest {
 }
 
 public final class com/apollographql/apollo3/mockserver/MockResponse {
+	public fun <init> ()V
 	public fun <init> (ILkotlinx/coroutines/flow/Flow;Ljava/util/Map;J)V
 	public synthetic fun <init> (ILkotlinx/coroutines/flow/Flow;Ljava/util/Map;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
