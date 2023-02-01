@@ -64,15 +64,11 @@ fun configureApollo(generateKotlinModels: Boolean) {
             when (it.name) {
               "httpcache" -> {
                 generateOperationOutput.set(true)
-                customScalarsMapping.set(mapOf(
-                    "Date" to "kotlinx.datetime.LocalDate"
-                ))
+                mapScalar("Date", "kotlinx.datetime.LocalDate")
               }
 
               "upload" -> {
-                customScalarsMapping.set(mapOf(
-                    "Upload" to "com.apollographql.apollo3.api.Upload"
-                ))
+                mapScalar("Upload", "com.apollographql.apollo3.api.Upload")
               }
 
               "normalizer" -> {
@@ -87,9 +83,7 @@ fun configureApollo(generateKotlinModels: Boolean) {
               }
 
               "fullstack" -> {
-                customScalarsMapping.set(mapOf(
-                    "Date" to "com.example.MyDate"
-                ))
+                mapScalar("Date", "com.example.MyDate")
               }
             }
 

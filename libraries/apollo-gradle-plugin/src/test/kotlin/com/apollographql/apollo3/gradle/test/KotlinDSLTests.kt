@@ -36,7 +36,7 @@ class KotlinDSLTests {
       apollo { 
         service("starwars") {
           useSemanticNaming.set(false)
-          customScalarsMapping.set(mapOf("DateTime" to "java.util.Date"))
+          mapScalar("DateTime", "java.util.Date")
           srcDir("src/main/graphql/com/example")
           schemaFile.set(file("src/main/graphql/com/example/schema.json"))
           packageName.set("com.starwars")

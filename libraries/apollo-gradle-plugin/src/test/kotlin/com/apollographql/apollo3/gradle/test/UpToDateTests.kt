@@ -47,18 +47,18 @@ class UpToDateTests {
   private fun `adding a custom scalar to the build script re-generates the CustomScalars`(dir: File) {
     File(dir, "build.gradle").replaceInText("packageNamesFromFilePaths()", """
       packageNamesFromFilePaths()
-      customScalarsMapping = ["DateTime": "java.util.Date"]
+      mapScalar("DateTime", "java.util.Date")
     """.trimIndent())
 
     val result = TestUtils.executeTask("generateApolloSources", dir)
 
-    // modifying the customScalarsMapping should cause the task to be out of date
+    // modifying the scalars mapping should cause the task to be out of date
     // and the task should run again
     assertEquals(TaskOutcome.SUCCESS, result.task(":generateApolloSources")!!.outcome)
 
     TestUtils.assertFileContains(dir, "service/com/example/type/DateTime.kt", "\"java.util.Date\"")
 
-    File(dir, "build.gradle").replaceInText("customScalarsMapping = [\"DateTime\": \"java.util.Date\"]", "")
+    File(dir, "build.gradle").replaceInText("mapScalar(\"DateTime\", \"java.util.Date\")", "")
   }
 
   @Test

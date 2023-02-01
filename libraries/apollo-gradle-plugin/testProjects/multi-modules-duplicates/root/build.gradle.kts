@@ -16,6 +16,6 @@ apollo {
     alwaysGenerateTypesMatching.set(listOf("Cat"))
     packageNamesFromFilePaths()
     generateApolloMetadata.set(true)
-    customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+    mapScalar("Date", "java.util.Date")
   }
 }

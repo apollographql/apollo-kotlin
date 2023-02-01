@@ -15,6 +15,6 @@ apollo {
   service("service") {
     packageNamesFromFilePaths()
     generateApolloMetadata.set(true)
-    customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+    mapScalar("Date", "java.util.Date")
   }
 }

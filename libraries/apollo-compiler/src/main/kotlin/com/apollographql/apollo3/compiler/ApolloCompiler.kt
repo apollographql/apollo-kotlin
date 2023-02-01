@@ -22,8 +22,8 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo3.compiler.ir.IrOperationsBuilder
+import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import okio.buffer
@@ -235,7 +235,7 @@ object ApolloCompiler {
         .toSet()
     val unknownScalars = scalarMapping.keys.subtract(schemaScalars)
     check(unknownScalars.isEmpty()) {
-      "Apollo: unknown custom scalar(s) in customScalarsMapping: ${unknownScalars.joinToString(",")}"
+      "Apollo: unknown scalar(s): ${unknownScalars.joinToString(",")}"
     }
   }
 

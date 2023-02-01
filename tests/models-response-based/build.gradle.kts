@@ -31,7 +31,7 @@ apollo {
     srcDir(file("../models-fixtures/graphql"))
     packageName.set("codegen.models")
     generateFragmentImplementations.set(true)
-    customScalarsMapping.put("Date", "kotlin.Long")
+    mapScalar("Date", "kotlin.Long")
     codegenModels.set("responseBased")
     sealedClassesForEnumsMatching.set(setOf("StarshipType"))
   }

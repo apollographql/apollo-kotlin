@@ -647,16 +647,45 @@ abstract class DefaultApolloExtension(
       task.failOnWarnings.set(service.failOnWarnings)
 
       @Suppress("DEPRECATION")
-      val scalarTypeMappingFallbackOldSyntax = service.customScalarsMapping.orElse(
-          service.customTypeMapping
-      ).getOrElse(emptyMap())
-
-      check(service.scalarTypeMapping.isEmpty() || scalarTypeMappingFallbackOldSyntax.isEmpty()) {
-        "Apollo: either mapScalar() or customScalarsMapping can be used, but not both"
+      check(!service.customScalarsMapping.isPresent) {
+        """
+          Apollo: customScalarsMapping is deprecated. Use mapScalar() instead.
+          For an example, replace:
+          
+          customScalarsMapping = ["Date": "java.util.Date"]
+          or
+          customScalarsMapping.put("Date", "java.util.Date")
+          or
+          customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+          
+          With:
+          
+          mapScalar("Date", "java.util.Date")
+                    
+          If you have several scalars, call mapScalar() several times.
+        """.trimIndent()
       }
-      task.scalarTypeMapping.set(
-          service.scalarTypeMapping.ifEmpty { scalarTypeMappingFallbackOldSyntax }
-      )
+      @Suppress("DEPRECATION")
+      check(!service.customTypeMapping.isPresent) {
+        """
+          Apollo: customTypeMapping is deprecated. Use mapScalar() instead.
+          For an example, replace:
+          
+          customTypeMapping = ["Date": "java.util.Date"]
+          or
+          customTypeMapping.put("Date", "java.util.Date")
+          or
+          customTypeMapping.set(mapOf("Date" to "java.util.Date"))
+          
+          With:
+          
+          mapScalar("Date", "java.util.Date")
+
+          If you have several scalars, call mapScalar() several times.
+        """.trimIndent()
+      }
+
+      task.scalarTypeMapping.set(service.scalarTypeMapping)
       task.scalarAdapterMapping.set(service.scalarAdapterMapping)
       task.outputDir.apply {
         set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
