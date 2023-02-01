@@ -238,7 +238,7 @@ internal class IrOperationsBuilder(
         }
         is GQLInterfaceTypeDefinition -> {
           /**
-           * Interfaces classes reference their super interfaces, generate them:
+           * Interface classes reference their super interfaces, generate them:
            *
            * public class Character {
            *   public companion object {
