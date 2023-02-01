@@ -16,7 +16,9 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * exception is thrown
  */
 fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
+  @Suppress("DEPRECATION_ERROR")
   return when (userSpecified) {
+    "1.4" -> TargetLanguage.KOTLIN_1_4
     "1.5" -> TargetLanguage.KOTLIN_1_5
     null -> {
       // User didn't specify a version: defaults to the Kotlin plugin's version
