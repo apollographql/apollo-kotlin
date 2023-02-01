@@ -67,8 +67,6 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun getCodegenModels ()Lorg/gradle/api/provider/Property;
 	public abstract fun getCompilerJavaHooks ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getCompilerKotlinHooks ()Lorg/gradle/api/provider/ListProperty;
-	public abstract fun getCustomScalarsMapping ()Lorg/gradle/api/provider/MapProperty;
-	public abstract fun getCustomTypeMapping ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getDebugDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getDecapitalizeFields ()Lorg/gradle/api/provider/Property;
 	public abstract fun getExcludes ()Lorg/gradle/api/provider/ListProperty;
