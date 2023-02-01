@@ -2,8 +2,6 @@ package com.apollographql.apollo3.gradle.api
 
 import com.android.build.gradle.api.BaseVariant
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -19,7 +17,6 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.provider.SetProperty
@@ -98,20 +95,6 @@ interface Service {
    * Default value: false
    */
   val failOnWarnings: Property<Boolean>
-
-  /**
-   * For custom scalar types like Date, map from the GraphQL type to the Java/Kotlin type.
-   *
-   * Default value: the empty map
-   */
-  @Deprecated("Use mapScalar() instead")
-  @ApolloDeprecatedSince(v3_0_1)
-  val customScalarsMapping: MapProperty<String, String>
-
-  @Deprecated("customTypeMapping is a helper property to help migrating to 3.x " +
-      "and will be removed in a future version. Use mapScalar() instead.")
-  @ApolloDeprecatedSince(v3_0_0)
-  val customTypeMapping: MapProperty<String, String>
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type.

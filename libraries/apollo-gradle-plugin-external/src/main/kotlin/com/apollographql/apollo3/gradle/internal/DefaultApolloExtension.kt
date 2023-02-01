@@ -136,8 +136,6 @@ abstract class DefaultApolloExtension(
           || defaultService.alwaysGenerateTypesMatching.isPresent
           || defaultService.scalarTypeMapping.isNotEmpty()
           || defaultService.scalarAdapterMapping.isNotEmpty()
-          || defaultService.customScalarsMapping.isPresent
-          || defaultService.customTypeMapping.isPresent
           || defaultService.excludes.isPresent
           || defaultService.includes.isPresent
           || defaultService.failOnWarnings.isPresent
@@ -645,45 +643,6 @@ abstract class DefaultApolloExtension(
       task.targetLanguage.set(targetLanguage)
       task.warnOnDeprecatedUsages.set(service.warnOnDeprecatedUsages)
       task.failOnWarnings.set(service.failOnWarnings)
-
-      @Suppress("DEPRECATION")
-      check(!service.customScalarsMapping.isPresent) {
-        """
-          Apollo: customScalarsMapping is deprecated. Use mapScalar() instead.
-          For an example, replace:
-          
-          customScalarsMapping = ["Date": "java.util.Date"]
-          or
-          customScalarsMapping.put("Date", "java.util.Date")
-          or
-          customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
-          
-          With:
-          
-          mapScalar("Date", "java.util.Date")
-                    
-          If you have several scalars, call mapScalar() several times.
-        """.trimIndent()
-      }
-      @Suppress("DEPRECATION")
-      check(!service.customTypeMapping.isPresent) {
-        """
-          Apollo: customTypeMapping is deprecated. Use mapScalar() instead.
-          For an example, replace:
-          
-          customTypeMapping = ["Date": "java.util.Date"]
-          or
-          customTypeMapping.put("Date", "java.util.Date")
-          or
-          customTypeMapping.set(mapOf("Date" to "java.util.Date"))
-          
-          With:
-          
-          mapScalar("Date", "java.util.Date")
-
-          If you have several scalars, call mapScalar() several times.
-        """.trimIndent()
-      }
 
       task.scalarTypeMapping.set(service.scalarTypeMapping)
       task.scalarAdapterMapping.set(service.scalarAdapterMapping)
