@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_2
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloWebSocketClosedException
 import com.apollographql.apollo3.internal.ChannelWrapper

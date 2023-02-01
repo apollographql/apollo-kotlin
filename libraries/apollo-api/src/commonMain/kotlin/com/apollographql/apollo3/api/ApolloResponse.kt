@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.exception.ApolloException
 import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmField

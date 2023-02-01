@@ -2,8 +2,6 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
