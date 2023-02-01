@@ -2,8 +2,6 @@ package com.apollographql.apollo3.android
 
 import androidx.test.espresso.IdlingResource
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
@@ -44,20 +42,6 @@ class ApolloIdlingResource(
 
   override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {
     this.callback = callback
-  }
-
-  companion object {
-    @JvmStatic
-    @Deprecated(
-        message = "Used for backward compatibility with 2.x. You now need to pass your ApolloIdlingResource to your ApolloClient.Builder." +
-            " See https://www.apollographql.com/docs/android/migration/3.0/ for more details.",
-        ReplaceWith("ApolloIdlingResource(name)"), level = DeprecationLevel.ERROR
-    )
-    @Suppress("UNUSED_PARAMETER")
-    @ApolloDeprecatedSince(v3_0_0)
-    fun create(name: String, apolloClient: ApolloClient) {
-      throw NotImplementedError()
-    }
   }
 }
 

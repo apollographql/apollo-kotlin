@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import okio.Buffer
@@ -32,22 +31,6 @@ class Schema internal constructor(
     @ApolloInternal
     val connectionTypes: Set<String>,
 ) {
-  /**
-   * Creates a new Schema from a list of definition.
-   * This doesn't support foreign schemas.
-   *
-   * See also [validateAsSchema] and [toSchema]
-   */
-  @Deprecated("Use validateAsSchema() to get a Schema", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-  constructor(definitions: List<GQLDefinition>) : this(
-      definitions,
-      emptyMap(),
-      emptyMap(),
-      emptyList(),
-      emptySet(),
-  )
-
   val typeDefinitions: Map<String, GQLTypeDefinition> = definitions
       .filterIsInstance<GQLTypeDefinition>()
       .associateBy { it.name }

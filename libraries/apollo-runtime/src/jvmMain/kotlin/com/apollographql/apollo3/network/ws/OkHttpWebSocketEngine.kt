@@ -108,15 +108,4 @@ actual class DefaultWebSocketEngine(
       }
     }
   }
-
-  @Deprecated(
-      "Use open(String, List<HttpHeader>) instead.",
-      ReplaceWith(
-          "open(url, headers.map { HttpHeader(it.key, it.value })",
-          "com.apollographql.apollo3.api.http.HttpHeader"
-      ), level = DeprecationLevel.ERROR
-  )
-  @ApolloDeprecatedSince(v3_2_2)
-  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
-    open(url, headers.map { HttpHeader(it.key, it.value) })
 }

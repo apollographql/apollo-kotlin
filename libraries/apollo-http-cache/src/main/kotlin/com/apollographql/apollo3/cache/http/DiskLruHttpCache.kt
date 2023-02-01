@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.cache.http.internal.DiskLruCache
@@ -87,13 +86,6 @@ class DiskLruHttpCache(private val fileSystem: FileSystem, private val directory
       cache.delete()
       createDiskLruCache()
     }
-  }
-
-  @Throws(IOException::class)
-  @Deprecated("Use clearAll() instead", ReplaceWith("clearAll"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
-  fun delete() {
-    clearAll()
   }
 
   @Throws(IOException::class)

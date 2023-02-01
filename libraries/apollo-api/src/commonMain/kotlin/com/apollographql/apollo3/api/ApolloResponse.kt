@@ -134,11 +134,3 @@ private constructor(
     }
   }
 }
-
-@Deprecated("This is a helper typealias to help migrating to 3.x " +
-    "and will be removed in a future version",
-    ReplaceWith("ApolloResponse"),
-    level = DeprecationLevel.ERROR
-)
-@ApolloDeprecatedSince(v3_0_0)
-typealias Response<D> = ApolloResponse<D>

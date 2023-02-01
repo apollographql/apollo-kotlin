@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.ast.Schema.Companion.NONNULL
 import com.apollographql.apollo3.ast.internal.buffer
@@ -13,10 +12,6 @@ internal fun GQLTypeDefinition.sharesPossibleTypesWith(other: GQLTypeDefinition,
 fun GQLTypeDefinition.possibleTypes(schema: Schema): Set<String> {
   return schema.possibleTypes(this)
 }
-
-@Deprecated("This method is for use in Apollo Kotlin only, please file an issue if you need it", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean = isFieldNonNull(fieldName, null)
 
 @ApolloInternal
 fun GQLTypeDefinition.isFieldNonNull(fieldName: String, schema: Schema? = null): Boolean {

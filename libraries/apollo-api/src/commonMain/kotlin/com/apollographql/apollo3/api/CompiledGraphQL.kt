@@ -2,9 +2,6 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_1
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_3
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
@@ -190,14 +187,6 @@ class ObjectType internal constructor(
   val implements = implements
   val embeddedFields = embeddedFields
 
-  @Deprecated("Use the Builder instead", ReplaceWith("ObjectType.Builder().keyFields(keyFields).implements(implements).build()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
-  constructor(
-      name: String,
-      keyFields: List<String> = emptyList(),
-      implements: List<InterfaceType> = emptyList(),
-  ) : this(name, keyFields, implements, emptyList())
-
   fun newBuilder(): Builder = Builder(this)
 
   class Builder(internal val name: String) {
@@ -243,14 +232,6 @@ class InterfaceType internal constructor(
   val keyFields = keyFields
   val implements = implements
   val embeddedFields = embeddedFields
-
-  @Deprecated("Use the Builder instead", ReplaceWith("InterfaceType.Builder().keyFields(keyFields).implements(implements).build()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
-  constructor(
-      name: String,
-      keyFields: List<String> = emptyList(),
-      implements: List<InterfaceType> = emptyList(),
-  ) : this(name, keyFields, implements, emptyList())
 
   fun newBuilder(): Builder = Builder(this)
 
@@ -300,11 +281,7 @@ class InputObjectType(
 class EnumType(
     name: String,
     val values: List<String>
-) : CompiledNamedType(name) {
-  @Deprecated("Use the primary constructor instead", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_5_1)
-  constructor(name: String): this(name, emptyList())
-}
+) : CompiledNamedType(name)
 
 /**
  * TODO v4: remove (see also [CustomScalarType] above
@@ -344,14 +321,6 @@ class CompiledArgument private constructor(
     @ApolloExperimental
     val isPagination: Boolean = false,
 ) {
-  @Deprecated("Use the Builder instead", ReplaceWith("CompiledArgument.Builder(name = name, value = value).isKey(isKey).build()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_3_3)
-  constructor(
-      name: String,
-      value: Any?,
-      isKey: Boolean = false,
-  ) : this(name, value, isKey, isPagination = false)
-
   class Builder(
       private val name: String,
       private val value: Any?,
@@ -403,36 +372,6 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
     else -> value
   }
 }
-
-@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_1)
-@SharedImmutable
-@JvmField
-val CompiledStringType = ScalarType("String")
-
-@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_1)
-@SharedImmutable
-@JvmField
-val CompiledIntType = ScalarType("Int")
-
-@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_1)
-@SharedImmutable
-@JvmField
-val CompiledFloatType = ScalarType("Float")
-
-@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_1)
-@SharedImmutable
-@JvmField
-val CompiledBooleanType = ScalarType("Boolean")
-
-@Deprecated("Use the generated CustomScalarType instead", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_1)
-@SharedImmutable
-@JvmField
-val CompiledIDType = ScalarType("ID")
 
 @SharedImmutable
 @JvmField

@@ -1,10 +1,6 @@
 // This is in the `exception` package and not `api.exception` to keep some compatibility with 2.x
 package com.apollographql.apollo3.exception
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_1_1
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -122,12 +118,6 @@ class CacheMissException @ApolloInternal constructor(
         }
       }
     }
-
-    @ApolloDeprecatedSince(v3_3_1)
-    @Deprecated("Use CacheMissException.message instead", level = DeprecationLevel.ERROR)
-    fun message(key: String?, fieldName: String?): String {
-      return message(key, fieldName, false)
-    }
   }
 }
 
@@ -169,23 +159,6 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  * ```
  */
 class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
-
-  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.first()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_1_1)
-  val first: ApolloException
-    get() {
-      val firstException = suppressedExceptions.firstOrNull()
-      return (firstException as? ApolloException) ?: throw RuntimeException("unexpected first exception", firstException)
-    }
-
-  @get:Deprecated("Use suppressedExceptions instead", ReplaceWith("suppressedExceptions.getOrNull(1)"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_1_1)
-  val second: ApolloException
-    get() {
-      val secondException = suppressedExceptions.getOrNull(1)
-      return (secondException as? ApolloException) ?: throw RuntimeException("unexpected second exception", secondException)
-    }
-
   init {
     if (first != null) addSuppressed(first)
     if (second != null) addSuppressed(second)
@@ -195,18 +168,3 @@ class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloEx
 
 class AutoPersistedQueriesNotSupported : ApolloException(message = "The server does not support auto persisted queries")
 class MissingValueException : ApolloException(message = "The optional doesn't have a value")
-
-/**
- * Something went wrong but it's not sure exactly what
- */
-@Deprecated("This is only used in the JVM runtime and is scheduled for removal", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_0)
-class ApolloGenericException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
-
-
-@Deprecated("This is only used in the JVM runtime and is scheduled for removal", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_0_0)
-class ApolloCanceledException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
-
-
-

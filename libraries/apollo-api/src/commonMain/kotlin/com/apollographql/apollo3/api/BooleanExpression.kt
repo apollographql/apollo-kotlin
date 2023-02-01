@@ -113,19 +113,6 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   }
 }
 
-@Deprecated("Kept for binary compatibility with generated code from older versions", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_2_1)
-@Suppress("DeprecatedCallableAddReplaceWith")
-fun BooleanExpression<BTerm>.evaluate(variables: Set<String>, typename: String?): Boolean {
-  return evaluate {
-    when (it) {
-      is BVariable -> variables.contains(it.name)
-      is BPossibleTypes -> it.possibleTypes.contains(typename)
-      is BLabel -> error("Unexpected boolean expression term type")
-    }
-  }
-}
-
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>,
     typename: String?,

@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.Schema
@@ -31,11 +29,6 @@ const val ADD_TYPENAME_ALWAYS = "always"
 enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
-
-  @Deprecated("Use KOTLIN_1_5", replaceWith = ReplaceWith("KOTLIN_1_5"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_3_1)
-  KOTLIN_1_4,
-
   KOTLIN_1_5,
 }
 

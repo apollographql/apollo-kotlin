@@ -975,9 +975,6 @@ public final class com/apollographql/apollo3/ast/GqlKt {
 
 public final class com/apollographql/apollo3/ast/GqldirectiveKt {
 	public static final fun findDeprecationReason (Ljava/util/List;)Ljava/lang/String;
-	public static final fun findNonnull (Ljava/util/List;)Z
-	public static final fun isApollo (Lcom/apollographql/apollo3/ast/GQLDirective;)Z
-	public static final fun optionalValue (Ljava/util/List;)Ljava/lang/Boolean;
 }
 
 public final class com/apollographql/apollo3/ast/GqldocumentKt {
@@ -985,11 +982,8 @@ public final class com/apollographql/apollo3/ast/GqldocumentKt {
 	public static final fun apolloDefinitions (Ljava/lang/String;)Ljava/util/List;
 	public static final fun builtinDefinitions ()Ljava/util/List;
 	public static final fun linkDefinitions ()Ljava/util/List;
-	public static final fun withApolloDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static final fun withBuiltinDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
-	public static final fun withBuiltinDirectives (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
 	public static final fun withoutBuiltinDefinitions (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
-	public static final fun withoutBuiltinDirectives (Lcom/apollographql/apollo3/ast/GQLDocument;)Lcom/apollographql/apollo3/ast/GQLDocument;
 }
 
 public final class com/apollographql/apollo3/ast/GqlfieldKt {
@@ -1031,7 +1025,6 @@ public final class com/apollographql/apollo3/ast/GqltypedefinitionKt {
 	public static final fun canHaveKeyFields (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;)Z
 	public static final fun implementsAbstractType (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Lcom/apollographql/apollo3/ast/Schema;)Z
 	public static final fun isAbstract (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;)Z
-	public static final fun isFieldNonNull (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Ljava/lang/String;)Z
 	public static final fun possibleTypes (Lcom/apollographql/apollo3/ast/GQLTypeDefinition;Lcom/apollographql/apollo3/ast/Schema;)Ljava/util/Set;
 }
 
@@ -1130,7 +1123,6 @@ public final class com/apollographql/apollo3/ast/Schema {
 	public static final field OPTIONAL Ljava/lang/String;
 	public static final field REQUIRES_OPT_IN Ljava/lang/String;
 	public static final field TYPE_POLICY Ljava/lang/String;
-	public fun <init> (Ljava/util/List;)V
 	public final fun getDirectiveDefinitions ()Ljava/util/Map;
 	public final fun getForeignNames ()Ljava/util/Map;
 	public final fun getMutationTypeDefinition ()Lcom/apollographql/apollo3/ast/GQLTypeDefinition;

@@ -21,11 +21,9 @@ public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor :
 	public static final field NETWORK_ONLY Ljava/lang/String;
 	public fun <init> (Ljava/io/File;JLokio/FileSystem;)V
 	public synthetic fun <init> (Ljava/io/File;JLokio/FileSystem;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun delete ()V
 	public fun dispose ()V
 	public final fun getCache ()Lcom/apollographql/apollo3/cache/http/ApolloHttpCache;
 	public fun intercept (Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/network/http/HttpInterceptorChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun remove (Ljava/lang/String;)V
 }
 
 public final class com/apollographql/apollo3/cache/http/CachingHttpInterceptor$Companion {
@@ -36,7 +34,6 @@ public final class com/apollographql/apollo3/cache/http/DiskLruHttpCache : com/a
 	public static final field Companion Lcom/apollographql/apollo3/cache/http/DiskLruHttpCache$Companion;
 	public fun <init> (Lokio/FileSystem;Ljava/io/File;J)V
 	public fun clearAll ()V
-	public final fun delete ()V
 	public fun read (Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
 	public fun remove (Ljava/lang/String;)V
 	public fun write (Lcom/apollographql/apollo3/api/http/HttpResponse;Ljava/lang/String;)Lcom/apollographql/apollo3/api/http/HttpResponse;
