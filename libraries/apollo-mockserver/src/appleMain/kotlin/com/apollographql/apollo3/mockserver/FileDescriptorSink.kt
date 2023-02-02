@@ -2,12 +2,10 @@ package com.apollographql.apollo3.mockserver
 
 import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CArrayPointer
-import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.plus
-import kotlinx.cinterop.readBytes
 import okio.Buffer
 import okio.IOException
 import okio.Sink

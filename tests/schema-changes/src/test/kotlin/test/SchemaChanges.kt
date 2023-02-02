@@ -14,6 +14,7 @@ class SchemaChangesTest {
   fun schemaChanges() = runTest {
     val operation = GetFieldQuery()
 
+    @Suppress("UNUSED_VARIABLE")
     val v1Data = """
       {
         "field": {

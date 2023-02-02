@@ -23,7 +23,6 @@ actual class BigDecimal internal constructor(private val raw: NSDecimalNumber) :
   actual fun negate(): BigDecimal = BigDecimal(NSDecimalNumber(int = 0).decimalNumberBySubtracting(raw))
 
   actual fun signum(): Int {
-    @OptIn(kotlinx.cinterop.UnsafeNumber::class)
     val result = raw.compare(NSDecimalNumber(int = 0)).toInt()
     return when {
       result < 0 -> -1

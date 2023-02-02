@@ -8,16 +8,14 @@ class SampleServer : Closeable {
   private var context = runApplication<DefaultApplication>() as AnnotationConfigReactiveWebServerApplicationContext
 
   fun graphqlUrl(): String {
-    check(context != null)
-    return "http://localhost:${context!!.webServer.port}/graphql"
+    return "http://localhost:${context.webServer.port}/graphql"
   }
 
   fun subscriptionsUrl(): String {
-    check(context != null)
-    return "http://localhost:${context!!.webServer.port}/subscriptions"
+    return "http://localhost:${context.webServer.port}/subscriptions"
   }
 
   override fun close() {
-    context?.close()
+    context.close()
   }
 }

@@ -31,6 +31,6 @@ class CircularCacheReadTest {
 
     store.writeOperation(operation, data)
     val result = store.readOperation(operation, customScalarAdapters = CustomScalarAdapters.Empty)
-    assertEquals("42", result!!.user.friend.id)
+    assertEquals("42", result.user.friend.id)
   }
 }

@@ -30,6 +30,7 @@ internal class DefaultDirectoryConnection(
     connectToAndroidVariant(project, variant, outputDir, task)
   }
 
+  @Deprecated("This method doesn't mark the sources as generated. This confuses some tools like lint that might do extra work on the generated files", replaceWith = ReplaceWith("connectToAndroidVariant(variant)"))
   override fun connectToAndroidSourceSet(name: String) {
     connectToAndroidSourceSet(project, name, outputDir, task)
   }

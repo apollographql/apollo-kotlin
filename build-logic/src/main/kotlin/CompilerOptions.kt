@@ -2,17 +2,17 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
-fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = false) {
+fun Project.configureJavaAndKotlinCompilers() {
   // For Kotlin JVM projects
-  tasks.withType(KotlinCompile::class.java) {
+  tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
       freeCompilerArgs = freeCompilerArgs + listOf(
           "-opt-in=kotlin.RequiresOptIn",
-          "-opt-in=com.apollographql.apollo3.annotations.ApolloExperimental",
-          "-opt-in=com.apollographql.apollo3.annotations.ApolloInternal"
       )
       if (getKotlinPluginVersion() == "1.6.10") {
         // This is a workaround for https://youtrack.jetbrains.com/issue/KT-47000 (fixed in Kotlin 1.6.20)
@@ -24,7 +24,13 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
       }
       apiVersion = "1.5"
       languageVersion = "1.5"
-      jvmTarget = "1.8"
+
+      (this as? KotlinJvmOptions)?.jvmTarget = "1.8"
+    }
+  }
+  tasks.withType(KotlinNativeCompile::class.java).configureEach {
+    kotlinOptions {
+      this.freeCompilerArgs += "-opt-in=kotlinx.cinterop.UnsafeNumber"
     }
   }
 
@@ -50,13 +56,32 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
     options.release.set(8)
   }
 
-  if (treatWarningsAsErrors) treatWarningsAsErrors()
+  allWarningsAsErrors(true)
 }
 
-private fun Project.treatWarningsAsErrors() {
-  tasks.withType(KotlinCompile::class.java) {
+internal fun Project.optIn(vararg annotations: String) {
+  tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
-      allWarningsAsErrors = true
+      freeCompilerArgs = freeCompilerArgs + annotations.map { "-opt-in=$it" }
+    }
+  }
+}
+
+fun Project.allWarningsAsErrors(allWarningsAsErrors: Boolean) {
+  tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).configureEach {
+    kotlinOptions {
+      if (this@configureEach.name.endsWith("KotlinMetadata")) {
+        /**
+         * KotlinMetadata compilations trigger warnings such as below:
+         *
+         * w: Could not find "co.touchlab:sqliter-driver-cinterop-sqlite3" in [/Users/mbonnin/git/reproducer-apple-metadata, /Users/mbonnin/.konan/klib, /Users/mbonnin/.konan/kotlin-native-prebuilt-macos-aarch64-1.8.0/klib/common, /Users/mbonnin/.konan/kotlin-native-prebuilt-macos-aarch64-1.8.0/klib/platform/macos_arm64]
+         *
+         * I'm thinking it has to do with HMPP but not 100% yet. Ignore all warnings in these tasks
+         */
+        this.allWarningsAsErrors = false
+      } else {
+        this.allWarningsAsErrors = allWarningsAsErrors
+      }
     }
   }
 }

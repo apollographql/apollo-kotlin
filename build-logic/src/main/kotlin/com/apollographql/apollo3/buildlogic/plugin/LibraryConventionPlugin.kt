@@ -4,13 +4,13 @@ import configureJavaAndKotlinCompilers
 import configureMppDefaults
 import configurePublishing
 import configureTesting
+import optIn
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.bundling.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class LibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
@@ -20,7 +20,11 @@ class LibraryConventionPlugin : Plugin<Project> {
 
       extensions.create("apolloLibrary", Extension::class.java)
 
-      configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
+      configureJavaAndKotlinCompilers()
+      optIn(
+          "com.apollographql.apollo3.annotations.ApolloExperimental",
+          "com.apollographql.apollo3.annotations.ApolloInternal"
+      )
 
       configureTesting()
 
@@ -51,14 +55,6 @@ class LibraryConventionPlugin : Plugin<Project> {
       project.tasks.withType(Jar::class.java).configureEach {
         manifest {
           attributes(mapOf("Automatic-Module-Name" to javaModuleName))
-        }
-      }
-    }
-
-    fun treatWarningsAsErrors(treatWarningsAsErrors: Boolean) {
-      project.tasks.withType(KotlinCompile::class.java).configureEach {
-        kotlinOptions {
-          allWarningsAsErrors = treatWarningsAsErrors
         }
       }
     }

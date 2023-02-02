@@ -1,1 +1,1 @@
-Test for `@deprecated` and `@experimental`
+Test for `@deprecated` and `@requiresOptIn`

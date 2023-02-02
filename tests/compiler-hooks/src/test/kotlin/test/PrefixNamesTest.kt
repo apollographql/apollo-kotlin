@@ -4,6 +4,7 @@ import hooks.prefixnames.kotlin.GQLNodeQuery
 import hooks.prefixnames.kotlin.type.GQLJob
 import org.junit.Test
 
+@Suppress("UNUSED_VARIABLE")
 class PrefixNamesTest {
   @Test
   fun kotlinPrefixNames() {

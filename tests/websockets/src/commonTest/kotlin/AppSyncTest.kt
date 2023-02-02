@@ -39,8 +39,10 @@ import kotlin.test.Test
 @Ignore
 class AppSyncTest {
 
+  @Suppress("UNREACHABLE_CODE")
   @Test
   fun simple() = runTest {
+    @Suppress("UNUSED_VARIABLE")
     val apiKey = TODO("changeMe")
     val host = "6l5lltvi6fgmrpx5abfxrtq6wu.appsync-api.eu-west-3.amazonaws.com"
 
