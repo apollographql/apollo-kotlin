@@ -22,18 +22,14 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   init {
     @Suppress("LeakingThis")
     if (GradleVersion.current() >= GradleVersion.version("6.2")) {
-      // This allows users to call customScalarsMapping.put("Date", "java.util.Date")
+      // This allows users to call includes.put("Date", "java.util.Date")
       // see https://github.com/gradle/gradle/issues/7485
-      customScalarsMapping.convention(null as Map<String, String>?)
-      customTypeMapping.convention(null as Map<String, String>?)
       includes.convention(null as List<String>?)
       excludes.convention(null as List<String>?)
       alwaysGenerateTypesMatching.convention(null as List<String>?)
       sealedClassesForEnumsMatching.convention(null as List<String>?)
       classesForEnumsMatching.convention(null as List<String>?)
     } else {
-      customScalarsMapping.set(null as Map<String, String>?)
-      customTypeMapping.set(null as Map<String, String>?)
       includes.set(null as List<String>?)
       excludes.set(null as List<String>?)
       alwaysGenerateTypesMatching.set(null as List<String>?)

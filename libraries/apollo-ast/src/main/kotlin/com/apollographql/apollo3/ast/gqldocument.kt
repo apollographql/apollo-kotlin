@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import okio.buffer
 import okio.source
 
@@ -10,25 +9,6 @@ fun GQLDocument.withBuiltinDefinitions(): GQLDocument {
 
 fun GQLDocument.withoutBuiltinDefinitions(): GQLDocument {
   return withoutDefinitions(builtinDefinitions())
-}
-
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version", level = DeprecationLevel.ERROR)
-fun GQLDocument.withBuiltinDirectives(): GQLDocument {
-  return withDefinitions(builtinDefinitions().filterIsInstance<GQLDirectiveDefinition>())
-}
-
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version", level = DeprecationLevel.ERROR)
-fun GQLDocument.withoutBuiltinDirectives(): GQLDocument {
-  return withoutDefinitions(builtinDefinitions().filterIsInstance<GQLDirectiveDefinition>())
-}
-
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("This method is deprecated and will be removed in a future version", level = DeprecationLevel.ERROR)
-fun GQLDocument.withApolloDefinitions(): GQLDocument {
-  @Suppress("DEPRECATION")
-  return withDefinitions(apolloDefinitions())
 }
 
 /**

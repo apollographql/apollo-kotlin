@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloInternal
 
 fun List<GQLDirective>.findDeprecationReason() = firstOrNull { it.name == "deprecated" }
@@ -53,14 +52,6 @@ fun List<GQLDirective>.findTargetName(schema: Schema): String? = firstOrNull { s
           }
     }
 
-
-/**
- * @return `true` or `false` based on the `if` argument if the `optional` directive is present, `null` otherwise
- */
-@Deprecated("This method is for use in Apollo Kotlin only, please file an issue if you need it", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-fun List<GQLDirective>.optionalValue(): Boolean? = optionalValue(null)
-
 @ApolloInternal
 fun List<GQLDirective>.optionalValue(schema: Schema?): Boolean? {
   val directive = firstOrNull { (schema?.originalDirectiveName(it.name) ?: it.name) == Schema.OPTIONAL } ?: return null
@@ -69,15 +60,5 @@ fun List<GQLDirective>.optionalValue(schema: Schema?): Boolean? {
   return argument == null || argument.name == "if" && (argument.value as GQLBooleanValue).value
 }
 
-@Deprecated("This function doesn't work with foreign definitions. " +
-    "More generally, it wasn't meant to be used outside Apollo Kotlin." +
-    "Please file an issue if you need something like this.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-fun List<GQLDirective>.findNonnull() = any { it.name == Schema.NONNULL }
-
 @ApolloInternal
 fun List<GQLDirective>.findNonnull(schema: Schema) = any { schema.originalDirectiveName(it.name) == Schema.NONNULL }
-
-@Deprecated("This function is misleading as it only enumerates the stripable directive. Use apolloDefinitions() instead.", level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-fun GQLDirective.isApollo() = name in listOf(Schema.OPTIONAL, Schema.NONNULL)

@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.rx2
 
 import com.apollographql.apollo3.ApolloCall
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import io.reactivex.Flowable
@@ -29,19 +27,6 @@ class Rx2Apollo private constructor() {
     @JvmOverloads
     fun <D : Operation.Data> single(call: ApolloCall<D>, scheduler: Scheduler = Schedulers.io()): Single<ApolloResponse<D>> {
       return call.rxSingle(scheduler)
-    }
-
-    @JvmStatic
-    @CheckReturnValue
-    @JvmOverloads
-    @Deprecated(
-        message = "Used for backward compatibility with 2.x",
-        replaceWith = ReplaceWith("flowable(call)"),
-        level = DeprecationLevel.ERROR
-    )
-    @ApolloDeprecatedSince(v3_0_0)
-    fun <D : Operation.Data> from(call: ApolloCall<D>, scheduler: Scheduler = Schedulers.io()): Flowable<ApolloResponse<D>> {
-      return call.rxFlowable(scheduler)
     }
   }
 }

@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_3
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_7_2
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
@@ -45,31 +44,6 @@ class GraphQLWsProtocol internal constructor(
       scope: CoroutineScope,
   ) : this(
       connectionPayload, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs, pingIntervalMillis, frameType, webSocketConnection, listener, scope, DefaultWebSocketPayloadComposer()
-  )
-
-  @Deprecated("Use GraphQLWsProtocol.Factory instead", level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_2_3)
-  @Suppress("DEPRECATION")
-  constructor(
-      connectionPayload: Map<String, Any?>? = null,
-      pingPayload: Map<String, Any?>? = null,
-      pongPayload: Map<String, Any?>? = null,
-      connectionAcknowledgeTimeoutMs: Long,
-      pingIntervalMillis: Long,
-      frameType: WsFrameType,
-      webSocketConnection: WebSocketConnection,
-      listener: Listener,
-      scope: CoroutineScope,
-  ) : this(
-      connectionPayload = { connectionPayload },
-      pingPayload = pingPayload,
-      pongPayload = pongPayload,
-      connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
-      pingIntervalMillis = pingIntervalMillis,
-      frameType = frameType,
-      webSocketConnection = webSocketConnection,
-      listener = listener,
-      scope = scope,
   )
 
   override suspend fun connectionInit() {
@@ -238,25 +212,6 @@ class GraphQLWsProtocol internal constructor(
     fun webSocketPayloadComposer(webSocketPayloadComposer: WebSocketPayloadComposer) {
       this.webSocketPayloadComposer = webSocketPayloadComposer
     }
-
-    @Deprecated("Use the constructor with connectionPayload as a lambda instead",
-        ReplaceWith("Factory({ connectionPayload }, pingIntervalMillis, pingPayload, pongPayload, connectionAcknowledgeTimeoutMs)"), level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(v3_2_3)
-    constructor(
-        connectionPayload: Map<String, Any?>?,
-        pingIntervalMillis: Long = -1,
-        pingPayload: Map<String, Any?>? = null,
-        pongPayload: Map<String, Any?>? = null,
-        connectionAcknowledgeTimeoutMs: Long = 10_000,
-        frameType: WsFrameType = WsFrameType.Text,
-    ) : this(
-        connectionPayload = { connectionPayload },
-        pingIntervalMillis = pingIntervalMillis,
-        pingPayload = pingPayload,
-        pongPayload = pongPayload,
-        connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
-        frameType = frameType,
-    )
 
     override val name: String
       get() = "graphql-transport-ws"

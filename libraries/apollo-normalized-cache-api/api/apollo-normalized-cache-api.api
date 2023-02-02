@@ -2,7 +2,6 @@ public final class com/apollographql/apollo3/cache/normalized/api/ApolloCacheHea
 	public static final field DO_NOT_STORE Ljava/lang/String;
 	public static final field EVICT_AFTER_READ Ljava/lang/String;
 	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/api/ApolloCacheHeaders;
-	public static final field STORE_PARTIAL_RESPONSES Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/cache/normalized/api/CacheHeaders {
@@ -13,7 +12,6 @@ public final class com/apollographql/apollo3/cache/normalized/api/CacheHeaders {
 	public final fun headerValue (Ljava/lang/String;)Ljava/lang/String;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
 	public final fun plus (Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;)Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders;
-	public final fun toBuilder ()Lcom/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder;
 }
 
 public final class com/apollographql/apollo3/cache/normalized/api/CacheHeaders$Builder {
@@ -45,8 +43,6 @@ public final class com/apollographql/apollo3/cache/normalized/api/CacheKey {
 public final class com/apollographql/apollo3/cache/normalized/api/CacheKey$Companion {
 	public final fun canDeserialize (Ljava/lang/String;)Z
 	public final fun deserialize (Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
-	public final fun from (Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
-	public final fun from (Ljava/lang/String;[Ljava/lang/String;)Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
 	public final fun rootKey ()Lcom/apollographql/apollo3/cache/normalized/api/CacheKey;
 }
 
@@ -193,12 +189,6 @@ public final class com/apollographql/apollo3/cache/normalized/api/Record : java/
 }
 
 public final class com/apollographql/apollo3/cache/normalized/api/Record$Companion {
-}
-
-public final class com/apollographql/apollo3/cache/normalized/api/RecordFieldJsonAdapter {
-	public static final field INSTANCE Lcom/apollographql/apollo3/cache/normalized/api/RecordFieldJsonAdapter;
-	public final fun fromJson (Ljava/lang/String;)Ljava/util/Map;
-	public final fun toJson (Ljava/util/Map;)Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/cache/normalized/api/TypePolicyCacheKeyGenerator : com/apollographql/apollo3/cache/normalized/api/CacheKeyGenerator {

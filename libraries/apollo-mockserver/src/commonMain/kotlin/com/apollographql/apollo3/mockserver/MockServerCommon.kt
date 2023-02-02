@@ -1,8 +1,6 @@
 @file:Suppress("DEPRECATION_ERROR")
 package com.apollographql.apollo3.mockserver
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_3_1
 import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -12,7 +10,6 @@ import okio.BufferedSink
 import okio.BufferedSource
 import okio.ByteString
 import okio.ByteString.Companion.encodeUtf8
-import kotlin.jvm.JvmOverloads
 
 fun parseHeader(line: String): Pair<String, String> {
   val index = line.indexOfFirst { it == ':' }
@@ -47,45 +44,12 @@ suspend fun writeResponse(sink: BufferedSink, mockResponse: MockResponse, versio
   }
 }
 
-class MockResponse
-@Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
-@ApolloDeprecatedSince(v3_3_1)
-constructor(
+class MockResponse internal constructor(
     val statusCode: Int = 200,
     val body: Flow<ByteString> = emptyFlow(),
     val headers: Map<String, String> = mapOf("Content-Length" to "0"),
     val delayMillis: Long = 0,
 ) {
-  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).headers(headers).body(body).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_3_1)
-  @Suppress("DEPRECATION")
-  @JvmOverloads
-  constructor(
-      body: String,
-      statusCode: Int = 200,
-      headers: Map<String, String> = emptyMap(),
-      delayMillis: Long = 0,
-  ) : this(
-      statusCode = statusCode,
-      body = flowOf(body.encodeUtf8()),
-      headers = headers + mapOf("Content-Length" to body.length.toString()),
-      delayMillis = delayMillis,
-  )
-
-  @Deprecated("Use MockResponse.Builder instead", ReplaceWith("MockResponse.Builder().statusCode(statusCode).body(body).headers(headers).delayMillis(delayMillis).build()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_3_1)
-  constructor(
-      body: ByteString,
-      statusCode: Int = 200,
-      headers: Map<String, String> = emptyMap(),
-      delayMillis: Long = 0,
-  ) : this(
-      statusCode = statusCode,
-      body = flowOf(body),
-      headers = headers + mapOf("Content-Length" to body.size.toString()),
-      delayMillis = delayMillis,
-  )
-
   class Builder {
     private var statusCode: Int = 200
     private var body: Flow<ByteString> = emptyFlow()

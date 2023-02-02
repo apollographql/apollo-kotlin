@@ -35,25 +35,6 @@ class ServiceTests {
   }
 
   @Test
-  fun `customScalarsMapping triggers an error`() {
-    withSimpleProject("""
-      apollo {
-        service("service") {
-          packageNamesFromFilePaths()
-          customScalarsMapping = ["DateTime": "java.util.Date"]
-        }
-      }
-    """.trimIndent()) { dir ->
-      try {
-        TestUtils.executeTask("generateApolloSources", dir)
-        fail("an exception was expected")
-      } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("customScalarsMapping is deprecated. Use mapScalar() instead.")
-      }
-    }
-  }
-
-  @Test
   fun `registering an unknown custom scalar fails`() {
     withSimpleProject("""
       apollo {

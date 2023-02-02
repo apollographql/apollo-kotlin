@@ -7,14 +7,10 @@ public final class com/apollographql/apollo3/mpp/Platform : java/lang/Enum {
 }
 
 public final class com/apollographql/apollo3/mpp/UtilsKt {
-	public static final fun assertMainThreadOnNative ()V
 	public static final fun currentThreadId ()Ljava/lang/String;
 	public static final fun currentThreadName ()Ljava/lang/String;
 	public static final fun currentTimeFormatted ()Ljava/lang/String;
 	public static final fun currentTimeMillis ()J
-	public static final fun ensureNeverFrozen (Ljava/lang/Object;)V
-	public static final fun freeze (Ljava/lang/Object;)V
-	public static final fun isFrozen (Ljava/lang/Object;)Z
 	public static final fun platform ()Lcom/apollographql/apollo3/mpp/Platform;
 }
 

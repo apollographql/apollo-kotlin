@@ -21,14 +21,4 @@ actual fun currentThreadName(): String {
   return Thread.currentThread().name
 }
 
-actual fun ensureNeverFrozen(obj: Any) {
-}
-
-actual fun isFrozen(obj: Any) = false
-actual fun freeze(obj: Any) {
-}
-
-actual fun assertMainThreadOnNative() {
-}
-
 actual fun platform() = Platform.Jvm

@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import okio.BufferedSink
-import okio.BufferedSource
 import okio.ByteString
 import okio.FileSystem
 import okio.Path
@@ -40,21 +38,6 @@ class DefaultUpload internal constructor(
     private var contentType: String? = null
     private var contentLength: Long = -1
     private var fileName: String? = null
-
-    @Deprecated("This API is dangerous because the resulting upload can only be used once and can also lead to resource leaks.",
-        ReplaceWith("content {sink ->\nval source = openSource()\nsource.use {sink.writeAll(it)}\n}"), level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_3)
-    fun content(content: BufferedSource): Builder = apply {
-      check(writeTo == null) { "content() can only be called once" }
-      var consumed = false
-      this.writeTo = { sink ->
-        check(!consumed) { "Apollo: DefaultUpload BufferedSource body can only be read once. If you want to read it several times for logging or other purposes, either use a different kind of body or use your own `Upload` implementation." }
-        content.use {
-          sink.writeAll(it)
-        }
-        consumed = true
-      }
-    }
 
     fun content(writeTo: (BufferedSink) -> Unit): Builder = apply {
       check(this.writeTo == null) { "content() can only be called once" }

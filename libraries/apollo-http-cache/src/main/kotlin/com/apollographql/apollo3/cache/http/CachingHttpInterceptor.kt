@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.cache.http
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -160,20 +159,7 @@ class CachingHttpInterceptor(
     return response
   }
 
-  @Deprecated("Use store.clearAll() instead", ReplaceWith("store.clearAll()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
-  fun delete() {
-    lruHttpCache.clearAll()
-  }
-
-  @Deprecated("Use store.remove(key) instead", ReplaceWith("store.remove(key)"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
-  fun remove(key: String) {
-    lruHttpCache.remove(key)
-  }
-
   companion object {
-
     fun cacheKey(httpRequest: HttpRequest): String {
       return when (httpRequest.method) {
         HttpMethod.Get -> ("Get" + httpRequest.url).toByteArray().toByteString().md5().hex()

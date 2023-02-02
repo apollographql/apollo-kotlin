@@ -1,10 +1,6 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_1
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import kotlin.jvm.JvmField
 
 /**
@@ -60,10 +56,6 @@ class CustomScalarAdapters private constructor(
     } as Adapter<T>
   }
 
-  @Deprecated("Use adapterContext.variables() instead", ReplaceWith("adapterContext.variables()"), level = DeprecationLevel.ERROR)
-  @ApolloDeprecatedSince(v3_2_1)
-  fun variables() = adapterContext.variables()
-
   override val key: ExecutionContext.Key<*>
     get() = Key
 
@@ -97,16 +89,6 @@ class CustomScalarAdapters private constructor(
       adaptersMap[customScalarType.name] = customScalarAdapter
     }
 
-    @Suppress("DEPRECATION_ERROR")
-    @Deprecated("Used for backward compatibility with 2.x", level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(v3_0_0)
-    fun <T> add(
-        customScalarType: CustomScalarType,
-        customTypeAdapter: CustomTypeAdapter<T>,
-    ) = apply {
-      adaptersMap[customScalarType.name] = Version2CustomTypeAdapterToAdapter(customTypeAdapter)
-    }
-
     fun addAll(customScalarAdapters: CustomScalarAdapters) = apply {
       this.adaptersMap.putAll(customScalarAdapters.adaptersMap)
     }
@@ -120,17 +102,10 @@ class CustomScalarAdapters private constructor(
       adaptersMap.clear()
     }
 
-    @Suppress("DEPRECATION")
     fun build() = CustomScalarAdapters(adaptersMap, adapterContext, unsafe)
 
     fun adapterContext(adapterContext: AdapterContext): Builder = apply {
       this.adapterContext = adapterContext
-    }
-
-    @Deprecated("Use AdapterContext.Builder.variables() instead", level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(v3_2_1)
-    fun variables(variables: Executable.Variables): Builder = apply {
-      adapterContext = adapterContext.newBuilder().variables(variables).build()
     }
   }
 }

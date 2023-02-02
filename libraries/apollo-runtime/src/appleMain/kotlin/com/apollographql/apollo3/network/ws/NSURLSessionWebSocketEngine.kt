@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_2_2
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.internal.ChannelWrapper
@@ -93,17 +91,6 @@ actual class DefaultWebSocketEngine(
       throw e
     }
   }
-
-  @Deprecated(
-      "Use open(String, List<HttpHeader>) instead.",
-      ReplaceWith(
-          "open(url, headers.map { HttpHeader(it.key, it.value })",
-          "com.apollographql.apollo3.api.http.HttpHeader"
-      ), level = DeprecationLevel.ERROR
-  )
-  @ApolloDeprecatedSince(v3_2_2)
-  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection =
-      open(url, headers.map { HttpHeader(it.key, it.value) })
 }
 
 private class WebSocketConnectionImpl(

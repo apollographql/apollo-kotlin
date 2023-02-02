@@ -9,10 +9,6 @@ class FakeWebSocketEngine(val onReceive: suspend () -> String, val onSend: (Stri
   override suspend fun open(url: String, headers: List<HttpHeader>): WebSocketConnection {
     return FakeWebSocketConnection(onReceive, onSend)
   }
-
-  override suspend fun open(url: String, headers: Map<String, String>): WebSocketConnection {
-    return open(url, headers.entries.map { HttpHeader(it.key, it.value) })
-  }
 }
 
 class FakeWebSocketConnection(val onReceive: suspend () -> String, val onSend: (String) -> Unit) : WebSocketConnection {

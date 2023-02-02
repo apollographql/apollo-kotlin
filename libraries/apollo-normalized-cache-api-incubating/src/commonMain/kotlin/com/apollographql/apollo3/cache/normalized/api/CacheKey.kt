@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
 import kotlin.jvm.JvmStatic
 
 /**
@@ -71,19 +69,5 @@ class CacheKey constructor(val key: String) {
     fun rootKey(): CacheKey {
       return ROOT_CACHE_KEY
     }
-
-    /**
-     * Helper function to build a cache key from a list of strings
-     */
-    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"), level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(v3_0_0)
-    fun from(typename: String, values: List<String>) = CacheKey(typename, values)
-
-    /**
-     * Helper function to build a cache key from a list of strings
-     */
-    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"), level = DeprecationLevel.ERROR)
-    @ApolloDeprecatedSince(v3_0_0)
-    fun from(typename: String, vararg values: String) = CacheKey(typename, values.toList())
   }
 }
