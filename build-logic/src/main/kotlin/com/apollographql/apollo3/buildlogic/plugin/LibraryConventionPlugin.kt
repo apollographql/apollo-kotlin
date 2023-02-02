@@ -10,7 +10,6 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.bundling.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class LibraryConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
@@ -18,9 +17,9 @@ class LibraryConventionPlugin : Plugin<Project> {
       group = property("GROUP")!!
       version = property("VERSION_NAME")!!
 
-      extensions.create("apolloLibrary", Extension::class.java)
+      val extension = extensions.create("apolloLibrary", Extension::class.java)
 
-      configureJavaAndKotlinCompilers(treatWarningsAsErrors = true)
+      configureJavaAndKotlinCompilers(extension.allWarningsAsErrors)
 
       configureTesting()
 
@@ -37,6 +36,7 @@ class LibraryConventionPlugin : Plugin<Project> {
 
     @get:Nested
     abstract val mppConfiguration: MppConfiguration
+    abstract val allWarningsAsErrors: Property<Boolean>
 
     fun mpp(action: Action<MppConfiguration>) {
       action.execute(mppConfiguration)
@@ -51,14 +51,6 @@ class LibraryConventionPlugin : Plugin<Project> {
       project.tasks.withType(Jar::class.java).configureEach {
         manifest {
           attributes(mapOf("Automatic-Module-Name" to javaModuleName))
-        }
-      }
-    }
-
-    fun treatWarningsAsErrors(treatWarningsAsErrors: Boolean) {
-      project.tasks.withType(KotlinCompile::class.java).configureEach {
-        kotlinOptions {
-          allWarningsAsErrors = treatWarningsAsErrors
         }
       }
     }

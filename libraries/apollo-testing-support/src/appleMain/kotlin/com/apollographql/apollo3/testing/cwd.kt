@@ -11,7 +11,6 @@ fun cwd(): String {
   return memScoped {
     val maxSize = 1024
     val buf = allocArray<ByteVar>(maxSize)
-    @OptIn(kotlinx.cinterop.UnsafeNumber::class)
     getcwd(buf, maxSize.convert())?.toKString() ?: "?"
   }
 }

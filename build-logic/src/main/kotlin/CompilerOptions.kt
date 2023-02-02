@@ -1,11 +1,14 @@
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
-fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = false) {
+fun Project.configureJavaAndKotlinCompilers(allWarningsAsErrors: Provider<Boolean>) {
   // For Kotlin JVM projects
   tasks.withType(KotlinCompile::class.java) {
     kotlinOptions {
@@ -24,7 +27,8 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
       }
       apiVersion = "1.5"
       languageVersion = "1.5"
-      jvmTarget = "1.8"
+
+      (this as? KotlinJvmOptions)?.jvmTarget = "1.8"
     }
   }
 
@@ -50,13 +54,15 @@ fun Project.configureJavaAndKotlinCompilers(treatWarningsAsErrors: Boolean = fal
     options.release.set(8)
   }
 
-  if (treatWarningsAsErrors) treatWarningsAsErrors()
-}
-
-private fun Project.treatWarningsAsErrors() {
-  tasks.withType(KotlinCompile::class.java) {
+  tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
-      allWarningsAsErrors = true
+      this.allWarningsAsErrors = allWarningsAsErrors.getOrElse(true)
+    }
+  }
+  tasks.withType(KotlinNativeCompile::class.java).configureEach {
+    kotlinOptions {
+      this.freeCompilerArgs +=  "-opt-in=kotlinx.cinterop.UnsafeNumber"
     }
   }
 }
+

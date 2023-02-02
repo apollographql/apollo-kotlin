@@ -13,9 +13,9 @@ import org.gradle.api.tasks.Nested
 class TestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
-      extensions.create("apolloTest", Extension::class.java)
+      val extension = extensions.create("apolloTest", Extension::class.java)
 
-      configureJavaAndKotlinCompilers()
+      configureJavaAndKotlinCompilers(extension.allWarningsAsErrors)
 
       configureTesting()
     }
@@ -31,6 +31,7 @@ class TestConventionPlugin : Plugin<Project> {
 
     @get:Nested
     abstract val mppConfiguration: MppConfiguration
+    abstract val allWarningsAsErrors: Property<Boolean>
 
     fun mpp(action: Action<MppConfiguration>) {
       action.execute(mppConfiguration)

@@ -6,7 +6,7 @@ plugins {
 }
 
 apolloLibrary {
-  treatWarningsAsErrors(false)
+  javaModuleName("com.apollographql.apollo3.gradle")
 }
 
 dependencies {
@@ -18,7 +18,6 @@ dependencies {
   implementation(project(":apollo-tooling"))
   implementation(project(":apollo-ast"))
 }
-
 
 gradlePlugin {
   plugins {
