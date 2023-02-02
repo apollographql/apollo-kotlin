@@ -12,6 +12,7 @@ class EnumsTest {
   @Test
   fun kotlinEnums() {
     assertEquals(Direction.NORTH, Direction.safeValueOf("NORTH"))
+    @Suppress("DEPRECATION")
     assertEquals(Direction.north, Direction.safeValueOf("north"))
     assertEquals(Direction.UNKNOWN__, Direction.safeValueOf("newDirection"))
     assertEquals(Direction.name_, Direction.safeValueOf("name"))
@@ -23,6 +24,7 @@ class EnumsTest {
   @Test
   fun kotlinSealedClasses() {
     assertEquals(Gravity.TOP, Gravity.safeValueOf("TOP"))
+    @Suppress("DEPRECATION")
     assertEquals(Gravity.top2, Gravity.safeValueOf("top2"))
     assertEquals(Gravity.UNKNOWN__("newGravity"), Gravity.safeValueOf("newGravity"))
     assertEquals(Gravity.name, Gravity.safeValueOf("name"))
@@ -34,6 +36,7 @@ class EnumsTest {
   @Test
   fun javaEnums() {
     assertEquals(enums.java.type.Direction.NORTH, enums.java.type.Direction.safeValueOf("NORTH"))
+    @Suppress("DEPRECATION")
     assertEquals(enums.java.type.Direction.north, enums.java.type.Direction.safeValueOf("north"))
     assertEquals(enums.java.type.Direction.UNKNOWN__, enums.java.type.Direction.safeValueOf("newDirection"))
     assertEquals(enums.java.type.Direction.name, enums.java.type.Direction.safeValueOf("name"))
@@ -73,6 +76,7 @@ class EnumsTest {
     // knownValues() should return the same order that the values are declared in the schema
     // Convert to List because Array.equals uses referential equality, see
     // https://blog.jetbrains.com/kotlin/2015/09/feedback-request-limitations-on-data-classes/
+    @Suppress("DEPRECATION")
     assertEquals(
         arrayOf(
             Gravity.TOP,

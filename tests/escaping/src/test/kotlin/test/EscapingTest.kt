@@ -18,7 +18,10 @@ class EscapingTest {
         ))
         .execute()
     val `while`: WhileQuery.While? = response.dataAssertNoErrors.`while`
+
+    @Suppress("UNUSED_VARIABLE")
     val `if`: String? = `while`?.`if`
+    @Suppress("UNUSED_VARIABLE")
     val `else`: String? = `while`?.`else`
   }
 }

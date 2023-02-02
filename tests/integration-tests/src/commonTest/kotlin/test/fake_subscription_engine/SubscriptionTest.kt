@@ -87,6 +87,7 @@ class SubscriptionTest {
   }
 
   private fun String.toMessageMap(): Map<String, Any?>? = try {
+    @Suppress("UNCHECKED_CAST")
     AnyAdapter.fromJson(
         BufferedSourceJsonReader(Buffer().writeUtf8(this)),
         CustomScalarAdapters.Empty

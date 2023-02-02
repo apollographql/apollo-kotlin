@@ -3,6 +3,7 @@ package com.apollographql.apollo3.buildlogic.plugin
 import configureJavaAndKotlinCompilers
 import configureMppTestsDefaults
 import configureTesting
+import optIn
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,9 +14,13 @@ import org.gradle.api.tasks.Nested
 class TestConventionPlugin : Plugin<Project> {
   override fun apply(project: Project) {
     with(project) {
-      val extension = extensions.create("apolloTest", Extension::class.java)
+      extensions.create("apolloTest", Extension::class.java)
 
-      configureJavaAndKotlinCompilers(extension.allWarningsAsErrors)
+      configureJavaAndKotlinCompilers()
+      optIn(
+          "com.apollographql.apollo3.annotations.ApolloExperimental",
+          "com.apollographql.apollo3.annotations.ApolloInternal", // for runTest
+      )
 
       configureTesting()
     }
@@ -31,7 +36,6 @@ class TestConventionPlugin : Plugin<Project> {
 
     @get:Nested
     abstract val mppConfiguration: MppConfiguration
-    abstract val allWarningsAsErrors: Property<Boolean>
 
     fun mpp(action: Action<MppConfiguration>) {
       action.execute(mppConfiguration)

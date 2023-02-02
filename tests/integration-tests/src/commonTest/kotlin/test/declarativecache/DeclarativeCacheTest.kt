@@ -39,7 +39,7 @@ class DeclarativeCacheTest {
     // Get the "promo" book again, the title must be updated
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
 
-    assertEquals("Other", data?.promoBook?.title)
+    assertEquals("Other", data.promoBook?.title)
   }
 
   @Test
@@ -59,7 +59,7 @@ class DeclarativeCacheTest {
     // Get the "promo" library again, the address must be updated
     val data = store.readOperation(promoOperation, CustomScalarAdapters.Empty)
 
-    assertEquals("OtherAddress", data?.promoLibrary?.address)
+    assertEquals("OtherAddress", data.promoLibrary?.address)
   }
 
   @Test
@@ -119,12 +119,12 @@ class DeclarativeCacheTest {
     var operation = GetBooksQuery(listOf("4", "1"))
     var data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
-    assertEquals("Title4", data?.books?.get(0)?.title)
-    assertEquals("Title1", data?.books?.get(1)?.title)
+    assertEquals("Title4", data.books.get(0).title)
+    assertEquals("Title1", data.books.get(1).title)
 
     operation = GetBooksQuery(listOf("3"))
     data = store.readOperation(operation, CustomScalarAdapters.Empty)
 
-    assertEquals("Title3", data?.books?.get(0)?.title)
+    assertEquals("Title3", data.books.get(0).title)
   }
 }

@@ -6,6 +6,7 @@ import hooks.typenameinterface.UserQuery
 import hooks.typenameinterface.fragment.UserFragment
 import org.junit.Test
 
+@Suppress("UNUSED_VARIABLE")
 class TypeNameInterfaceTest {
   @Test
   fun typeNameInterface() {

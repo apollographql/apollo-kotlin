@@ -2,22 +2,20 @@ package test
 
 import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
 import com.apollographql.apollo3.api.Optional
-import none.GetNewFieldQuery as GetNewFieldQueryNone
-import default.GetNewFieldQuery as GetNewFieldQueryDefault
-import custom.GetNewFieldQuery as GetNewFieldQueryCustom
-
-import none.type.Direction as DirectionNone
-import default.type.Direction as DirectionDefault
-import custom.type.Direction as DirectionCustom
-
-import none.type.SomeInput as SomeInputNone
-import default.type.SomeInput as SomeInputDefault
-import custom.type.SomeInput as SomeInputCustom
-
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import custom.GetNewFieldQuery as GetNewFieldQueryCustom
+import custom.type.Direction as DirectionCustom
+import custom.type.SomeInput as SomeInputCustom
+import default.GetNewFieldQuery as GetNewFieldQueryDefault
+import default.type.Direction as DirectionDefault
+import default.type.SomeInput as SomeInputDefault
+import none.GetNewFieldQuery as GetNewFieldQueryNone
+import none.type.Direction as DirectionNone
+import none.type.SomeInput as SomeInputNone
 
+@Suppress("DEPRECATION")
 class RequiresOptInTest {
   /**
    * Visual test: this allows to see how the annotation is used but doesn't actually test anything

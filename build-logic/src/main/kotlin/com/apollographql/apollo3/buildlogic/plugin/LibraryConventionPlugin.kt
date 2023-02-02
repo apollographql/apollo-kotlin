@@ -4,6 +4,7 @@ import configureJavaAndKotlinCompilers
 import configureMppDefaults
 import configurePublishing
 import configureTesting
+import optIn
 import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -17,9 +18,13 @@ class LibraryConventionPlugin : Plugin<Project> {
       group = property("GROUP")!!
       version = property("VERSION_NAME")!!
 
-      val extension = extensions.create("apolloLibrary", Extension::class.java)
+      extensions.create("apolloLibrary", Extension::class.java)
 
-      configureJavaAndKotlinCompilers(extension.allWarningsAsErrors)
+      configureJavaAndKotlinCompilers()
+      optIn(
+          "com.apollographql.apollo3.annotations.ApolloExperimental",
+          "com.apollographql.apollo3.annotations.ApolloInternal"
+      )
 
       configureTesting()
 
@@ -36,7 +41,6 @@ class LibraryConventionPlugin : Plugin<Project> {
 
     @get:Nested
     abstract val mppConfiguration: MppConfiguration
-    abstract val allWarningsAsErrors: Property<Boolean>
 
     fun mpp(action: Action<MppConfiguration>) {
       action.execute(mppConfiguration)

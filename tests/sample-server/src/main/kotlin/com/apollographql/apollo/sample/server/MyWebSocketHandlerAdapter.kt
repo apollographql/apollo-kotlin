@@ -8,8 +8,8 @@ import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
 class MyWebSocketHandlerAdapter : WebSocketHandlerAdapter(HandshakeWebSocketService()) {
-  override fun handle(exchange: ServerWebExchange?, handler: Any?): Mono<HandlerResult>? {
-    val webSocketHandler = handler as WebSocketHandler?
+  override fun handle(exchange: ServerWebExchange, handler: Any): Mono<HandlerResult> {
+    val webSocketHandler = handler as WebSocketHandler
     return webSocketService.handleRequest(exchange, webSocketHandler).then(Mono.empty())
   }
 }
