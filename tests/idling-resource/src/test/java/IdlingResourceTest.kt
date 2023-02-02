@@ -14,12 +14,7 @@ class IdlingResourceTest {
   @Test
   fun idlingResourceSingleQuery() = runBlocking {
     val mockServer = MockServer()
-    mockServer.enqueue(
-        MockResponse(
-            statusCode = 500,
-            delayMillis = 500,
-        )
-    )
+    mockServer.enqueue(MockResponse.Builder().statusCode(500).delayMillis(500).build())
 
     val idlingResource = ApolloIdlingResource("test")
     val apolloClient = ApolloClient.Builder()

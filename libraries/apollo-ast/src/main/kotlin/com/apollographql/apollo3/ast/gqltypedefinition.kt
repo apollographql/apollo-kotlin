@@ -14,7 +14,7 @@ fun GQLTypeDefinition.possibleTypes(schema: Schema): Set<String> {
   return schema.possibleTypes(this)
 }
 
-@Deprecated("This method is for use in Apollo Kotlin only, please file an issue if you need it")
+@Deprecated("This method is for use in Apollo Kotlin only, please file an issue if you need it", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
 fun GQLTypeDefinition.isFieldNonNull(fieldName: String): Boolean = isFieldNonNull(fieldName, null)
 

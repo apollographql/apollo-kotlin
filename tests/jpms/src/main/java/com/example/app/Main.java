@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello, World! " + Query.class.getName());
 
-        ApolloClient.Builder apolloClientBuilder = ApolloClient.builder()
+        ApolloClient.Builder apolloClientBuilder = new ApolloClient.Builder()
                 .serverUrl("https://example.com");
 
       NormalizedCache.configureApolloClientBuilder(
@@ -34,6 +34,6 @@ public class Main {
             }
         );
 
-        apolloClient.dispose();
+        apolloClient.close();
     }
 }

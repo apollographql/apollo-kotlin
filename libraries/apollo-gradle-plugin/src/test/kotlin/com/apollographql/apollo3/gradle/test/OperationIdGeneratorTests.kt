@@ -57,8 +57,10 @@ class OperationIdGeneratorTests {
       }
       
       apollo {
-        packageNamesFromFilePaths()
-        operationIdGenerator = new MyIdGenerator()
+        service("service") {
+          packageNamesFromFilePaths()
+          operationIdGenerator = new MyIdGenerator()
+        }
       }
     """.trimIndent()
 

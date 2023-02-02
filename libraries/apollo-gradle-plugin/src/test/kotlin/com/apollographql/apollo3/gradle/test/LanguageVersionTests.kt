@@ -9,13 +9,6 @@ import java.io.File
 
 class LanguageVersionTests {
   @Test
-  fun `compiling with 1_4 features with Kotlin 1_4 is working`() {
-    withProject(kotlinLanguageVersion = "1.4", apolloLanguageVersion = "1.4") { dir ->
-      TestUtils.executeTaskAndAssertSuccess(":assemble", dir)
-    }
-  }
-
-  @Test
   fun `compiling with 1_5 features with Kotlin 1_5 is working`() {
     withProject(kotlinLanguageVersion = "1.5", apolloLanguageVersion = "1.5") { dir ->
       TestUtils.executeTaskAndAssertSuccess(":assemble", dir)

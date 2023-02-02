@@ -20,12 +20,12 @@ import java.nio.file.Files
 
 class ServiceTests {
   @Test
-  fun `customScalarsMapping is working`() {
+  fun `mapScalar is working`() {
     withSimpleProject("""
       apollo {
         service("service") {
           packageNamesFromFilePaths()
-          customScalarsMapping = ["DateTime": "java.util.Date"]
+          mapScalar("DateTime", "java.util.Date")
         }
       }
     """.trimIndent()) { dir ->
@@ -35,13 +35,12 @@ class ServiceTests {
   }
 
   @Test
-  fun `customScalarsMapping and mapScalar trigger an error`() {
+  fun `customScalarsMapping triggers an error`() {
     withSimpleProject("""
       apollo {
         service("service") {
           packageNamesFromFilePaths()
           customScalarsMapping = ["DateTime": "java.util.Date"]
-          mapScalar("DateTime", "java.util.Date")
         }
       }
     """.trimIndent()) { dir ->
@@ -49,7 +48,7 @@ class ServiceTests {
         TestUtils.executeTask("generateApolloSources", dir)
         fail("an exception was expected")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("either mapScalar() or customScalarsMapping")
+        Truth.assertThat(e.message).contains("customScalarsMapping is deprecated. Use mapScalar() instead.")
       }
     }
   }
@@ -60,7 +59,7 @@ class ServiceTests {
       apollo {
         service("service") {
           packageNamesFromFilePaths()
-          customScalarsMapping = ["UnknownScalar": "java.util.Date"]
+          mapScalar("UnknownScalar", "java.util.Date")
         }
       }
     """.trimIndent()) { dir ->
@@ -68,7 +67,7 @@ class ServiceTests {
         TestUtils.executeTask("generateApolloSources", dir)
         fail("Registering an unknown scalar should fail")
       } catch (e: UnexpectedBuildFailure) {
-        Truth.assertThat(e.message).contains("unknown custom scalar(s)")
+        Truth.assertThat(e.message).contains("unknown scalar(s)")
       }
     }
   }
@@ -86,39 +85,6 @@ class ServiceTests {
     """.trimIndent()) { dir ->
       TestUtils.executeTask("generateApolloSources", dir)
       assertTrue(File(dir, "build/apollo/com/example/type/DateTime.kt").exists())
-    }
-  }
-
-  @Test
-  fun `customScalarsMapping put is working`() {
-    withSimpleProject("""
-      apollo {
-        service("service") {
-          packageNamesFromFilePaths()
-          customScalarsMapping.put("DateTime", "java.util.Date")
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "service/com/example/type/DateTime.kt", "\"java.util.Date\"")
-    }
-  }
-
-  @Test
-  fun `customScalarsMapping can be applied from a service block`() {
-    withSimpleProject("""
-      apollo {
-        service("other") {
-          packageNamesFromFilePaths()
-        }
-        service("api") {
-          packageNamesFromFilePaths()
-          customScalarsMapping = ["DateTime": "java.util.Date"]
-        }
-      }
-    """.trimIndent()) { dir ->
-      TestUtils.executeTask("generateApolloSources", dir)
-      TestUtils.assertFileContains(dir, "api/com/example/type/DateTime.kt", "\"java.util.Date\"")
     }
   }
 

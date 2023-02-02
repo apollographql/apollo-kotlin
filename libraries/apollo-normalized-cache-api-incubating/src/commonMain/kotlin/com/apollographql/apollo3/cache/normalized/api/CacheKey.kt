@@ -75,14 +75,14 @@ class CacheKey constructor(val key: String) {
     /**
      * Helper function to build a cache key from a list of strings
      */
-    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"))
+    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun from(typename: String, values: List<String>) = CacheKey(typename, values)
 
     /**
      * Helper function to build a cache key from a list of strings
      */
-    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"))
+    @Deprecated("Use the constructor instead", ReplaceWith("CacheKey(typename, values)"), level = DeprecationLevel.ERROR)
     @ApolloDeprecatedSince(v3_0_0)
     fun from(typename: String, vararg values: String) = CacheKey(typename, values.toList())
   }

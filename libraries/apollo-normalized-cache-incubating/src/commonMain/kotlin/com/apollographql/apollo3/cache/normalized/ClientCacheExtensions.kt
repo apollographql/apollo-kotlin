@@ -258,13 +258,13 @@ val ApolloClient.apolloStore: ApolloStore
     } ?: error("no cache configured")
   }
 
-@Deprecated("Used for backward compatibility with 2.x.", ReplaceWith("apolloStore"))
+@Deprecated("Used for backward compatibility with 2.x.", ReplaceWith("apolloStore"), level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v3_0_0)
 fun ApolloClient.apolloStore(): ApolloStore = apolloStore
 
 @Deprecated(
     message = "Use apolloStore directly",
-    replaceWith = ReplaceWith("apolloStore.clearAll()")
+    replaceWith = ReplaceWith("apolloStore.clearAll()"), level = DeprecationLevel.ERROR
 )
 @ApolloDeprecatedSince(v3_0_0)
 fun ApolloClient.clearNormalizedCache() = apolloStore.clearAll()

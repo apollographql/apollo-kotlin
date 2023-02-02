@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION")
+@file:Suppress("DEPRECATION_ERROR")
 package com.apollographql.apollo3.compiler.introspection
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
@@ -287,7 +287,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
  */
 @ApolloExperimental
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("Use the apollo-ast version instead", ReplaceWith("GQLDocumentBuilder", "com.apollographql.apollo3.ast.introspection"))
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("GQLDocumentBuilder", "com.apollographql.apollo3.ast.introspection"), level = DeprecationLevel.ERROR)
 fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
     .toGQLDocument()
     /**
@@ -302,7 +302,7 @@ fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = G
  */
 @ApolloExperimental
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchema", "com.apollographql.apollo3.ast.introspection"))
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchema", "com.apollographql.apollo3.ast.introspection"), level = DeprecationLevel.ERROR)
 fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().validateAsSchema().valueAssertNoErrors()
 
 /**
@@ -310,7 +310,7 @@ fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().validateAsSchema().
  */
 @ApolloExperimental
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchemaGQLDocument", "com.apollographql.apollo3.ast.introspection"))
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchemaGQLDocument", "com.apollographql.apollo3.ast.introspection"), level = DeprecationLevel.ERROR)
 fun File.toSchemaGQLDocument(): GQLDocument {
   return if (extension == "json") {
     toIntrospectionSchema().toGQLDocument(filePath = path)
@@ -321,5 +321,5 @@ fun File.toSchemaGQLDocument(): GQLDocument {
 
 @ApolloExperimental
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_1)
-@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchema", "com.apollographql.apollo3.ast.introspection"))
+@Deprecated("Use the apollo-ast version instead", ReplaceWith("toSchema", "com.apollographql.apollo3.ast.introspection"), level = DeprecationLevel.ERROR)
 fun File.toSchema(): Schema = toSchemaGQLDocument().validateAsSchema().valueAssertNoErrors()

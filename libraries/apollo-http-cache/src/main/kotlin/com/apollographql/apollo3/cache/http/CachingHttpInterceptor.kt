@@ -160,13 +160,13 @@ class CachingHttpInterceptor(
     return response
   }
 
-  @Deprecated("Use store.clearAll() instead", ReplaceWith("store.clearAll()"))
+  @Deprecated("Use store.clearAll() instead", ReplaceWith("store.clearAll()"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
   fun delete() {
     lruHttpCache.clearAll()
   }
 
-  @Deprecated("Use store.remove(key) instead", ReplaceWith("store.remove(key)"))
+  @Deprecated("Use store.remove(key) instead", ReplaceWith("store.remove(key)"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_1_1)
   fun remove(key: String) {
     lruHttpCache.remove(key)

@@ -32,7 +32,7 @@ enum class TargetLanguage {
   // The order is important. See [isTargetLanguageVersionAtLeast]
   JAVA,
 
-  @Deprecated("Use KOTLIN_1_5", replaceWith = ReplaceWith("KOTLIN_1_5"))
+  @Deprecated("Use KOTLIN_1_5", replaceWith = ReplaceWith("KOTLIN_1_5"), level = DeprecationLevel.ERROR)
   @ApolloDeprecatedSince(v3_3_1)
   KOTLIN_1_4,
 

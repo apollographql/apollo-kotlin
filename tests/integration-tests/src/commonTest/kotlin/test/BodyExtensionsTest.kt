@@ -69,7 +69,7 @@ class BodyExtensionsTest {
     val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
     assertEquals(asMap["extensions"], "extension value")
 
-    apolloClient.dispose()
+    apolloClient.close()
     mockServer.stop()
   }
 }

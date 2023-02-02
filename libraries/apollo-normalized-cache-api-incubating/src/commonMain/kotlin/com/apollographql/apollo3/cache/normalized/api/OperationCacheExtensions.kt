@@ -71,6 +71,7 @@ fun <D : Executable.Data> Executable<D>.readDataFromCache(
     cacheHeaders = cacheHeaders,
 )
 
+@Deprecated("Use Executable.readDataFromCache instead", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v3_3_2)
 fun <D : Fragment.Data> Fragment<D>.readDataFromCache(
     cacheKey: CacheKey,

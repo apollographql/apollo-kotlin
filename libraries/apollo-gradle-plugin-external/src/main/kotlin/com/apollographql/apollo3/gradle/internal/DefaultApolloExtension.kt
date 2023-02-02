@@ -55,7 +55,7 @@ abstract class DefaultApolloExtension(
   private val schemaConfiguration: Configuration
   private val usedCoordinatesConfiguration: Configuration
   private val rootProvider: TaskProvider<Task>
-  private var registerDefaultService = true
+  private var hasExplicitService = false
   private var adhocComponentWithVariants: AdhocComponentWithVariants? = null
 
   @get:Inject
@@ -129,14 +129,35 @@ abstract class DefaultApolloExtension(
     }
 
     project.afterEvaluate {
-      if (registerDefaultService) {
+      @Suppress("DEPRECATION")
+      val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
+          || defaultService.schemaFile.isPresent
+          || !defaultService.schemaFiles.isEmpty
+          || defaultService.alwaysGenerateTypesMatching.isPresent
+          || defaultService.scalarTypeMapping.isNotEmpty()
+          || defaultService.scalarAdapterMapping.isNotEmpty()
+          || defaultService.customScalarsMapping.isPresent
+          || defaultService.customTypeMapping.isPresent
+          || defaultService.excludes.isPresent
+          || defaultService.includes.isPresent
+          || defaultService.failOnWarnings.isPresent
+          || defaultService.generateApolloMetadata.isPresent
+          || defaultService.generateAsInternal.isPresent
+          || defaultService.codegenModels.isPresent
+          || defaultService.addTypename.isPresent
+          || defaultService.generateFragmentImplementations.isPresent
+          || defaultService.requiresOptInAnnotation.isPresent
+          || defaultService.packageName.isPresent
+          || defaultService.packageNameGenerator.isPresent
+
+      if (hasApolloBlock) {
         val packageNameLine = if (defaultService.packageName.isPresent) {
           "packageName.set(\"${defaultService.packageName.get()}\")"
         } else {
           "packageNamesFromFilePaths()"
         }
-        it.logger.warn("""
-            Apollo: using the default service is deprecated and will be removed in a future version. Please define your service explicitly:
+        error("""
+            Apollo: using the default service is deprecated. Please define your service explicitly:
             
             apollo {
               service("service") {
@@ -144,42 +165,6 @@ abstract class DefaultApolloExtension(
               }
             }
           """.trimIndent())
-        registerService(defaultService)
-      } else {
-        @Suppress("DEPRECATION")
-        check(defaultService.graphqlSourceDirectorySet.isEmpty
-            && defaultService.schemaFile.isPresent.not()
-            && defaultService.schemaFiles.isEmpty
-            && defaultService.alwaysGenerateTypesMatching.isPresent.not()
-            && defaultService.scalarTypeMapping.isEmpty()
-            && defaultService.scalarAdapterMapping.isEmpty()
-            && defaultService.customScalarsMapping.isPresent.not()
-            && defaultService.customTypeMapping.isPresent.not()
-            && defaultService.excludes.isPresent.not()
-            && defaultService.includes.isPresent.not()
-            && defaultService.failOnWarnings.isPresent.not()
-            && defaultService.generateApolloMetadata.isPresent.not()
-            && defaultService.generateAsInternal.isPresent.not()
-            && defaultService.codegenModels.isPresent.not()
-            && defaultService.addTypename.isPresent.not()
-            && defaultService.generateFragmentImplementations.isPresent.not()
-            && defaultService.requiresOptInAnnotation.isPresent.not()
-        ) {
-          """
-            Configuring the default service is ignored if you specify other services, remove your configuration from the root of the apollo {} block:
-            apollo {
-              // remove everything at the top level
-              
-              // add individual services
-              service("service1") {
-                // ...
-              }
-              service("service2") {
-                // ...
-              }
-            }
-          """.trimIndent()
-        }
       }
 
       maybeLinkSqlite()
@@ -221,7 +206,7 @@ abstract class DefaultApolloExtension(
    * Call from users to explicitly register a service or by the plugin to register the implicit service
    */
   override fun service(name: String, action: Action<Service>) {
-    registerDefaultService = false
+    hasExplicitService = false
 
     val service = project.objects.newInstance(DefaultService::class.java, project, name)
     action.execute(service)
@@ -538,7 +523,7 @@ abstract class DefaultApolloExtension(
       }
 
       project.androidExtension != null -> {
-        if (registerDefaultService) {
+        if (hasExplicitService) {
           // The default service is created from `afterEvaluate` and it looks like it's too late to register new sources
           @Suppress("DEPRECATION")
           connection.connectToAndroidSourceSet("main")
@@ -662,16 +647,45 @@ abstract class DefaultApolloExtension(
       task.failOnWarnings.set(service.failOnWarnings)
 
       @Suppress("DEPRECATION")
-      val scalarTypeMappingFallbackOldSyntax = service.customScalarsMapping.orElse(
-          service.customTypeMapping
-      ).getOrElse(emptyMap())
-
-      check(service.scalarTypeMapping.isEmpty() || scalarTypeMappingFallbackOldSyntax.isEmpty()) {
-        "Apollo: either mapScalar() or customScalarsMapping can be used, but not both"
+      check(!service.customScalarsMapping.isPresent) {
+        """
+          Apollo: customScalarsMapping is deprecated. Use mapScalar() instead.
+          For an example, replace:
+          
+          customScalarsMapping = ["Date": "java.util.Date"]
+          or
+          customScalarsMapping.put("Date", "java.util.Date")
+          or
+          customScalarsMapping.set(mapOf("Date" to "java.util.Date"))
+          
+          With:
+          
+          mapScalar("Date", "java.util.Date")
+                    
+          If you have several scalars, call mapScalar() several times.
+        """.trimIndent()
       }
-      task.scalarTypeMapping.set(
-          service.scalarTypeMapping.ifEmpty { scalarTypeMappingFallbackOldSyntax }
-      )
+      @Suppress("DEPRECATION")
+      check(!service.customTypeMapping.isPresent) {
+        """
+          Apollo: customTypeMapping is deprecated. Use mapScalar() instead.
+          For an example, replace:
+          
+          customTypeMapping = ["Date": "java.util.Date"]
+          or
+          customTypeMapping.put("Date", "java.util.Date")
+          or
+          customTypeMapping.set(mapOf("Date" to "java.util.Date"))
+          
+          With:
+          
+          mapScalar("Date", "java.util.Date")
+
+          If you have several scalars, call mapScalar() several times.
+        """.trimIndent()
+      }
+
+      task.scalarTypeMapping.set(service.scalarTypeMapping)
       task.scalarAdapterMapping.set(service.scalarAdapterMapping)
       task.outputDir.apply {
         set(service.outputDir.orElse(BuildDirLayout.outputDir(project, service)).get())
@@ -729,8 +743,7 @@ abstract class DefaultApolloExtension(
       task.generateQueryDocument.set(service.generateQueryDocument)
       task.generateSchema.set(service.generateSchema)
       task.generatedSchemaName.set(service.generatedSchemaName)
-      @Suppress("DEPRECATION")
-      task.generateModelBuilders.set(service.generateModelBuilders.orElse(service.generateModelBuilder))
+      task.generateModelBuilders.set(service.generateModelBuilders)
       task.codegenModels.set(service.codegenModels)
       task.addTypename.set(service.addTypename)
       task.flattenModels.set(service.flattenModels)
@@ -837,7 +850,7 @@ abstract class DefaultApolloExtension(
      * The android plugin will call us back when the variants are ready but before `afterEvaluate`,
      * disable the default service
      */
-    registerDefaultService = false
+    hasExplicitService = true
 
     check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
       """
@@ -865,7 +878,7 @@ abstract class DefaultApolloExtension(
   }
 
   override fun createAllKotlinSourceSetServices(sourceFolder: String, nameSuffix: String, action: Action<Service>) {
-    registerDefaultService = false
+    hasExplicitService = true
 
     check(!File(sourceFolder).isRooted && !sourceFolder.startsWith("../..")) {
       """Apollo: using 'sourceFolder = "$sourceFolder"' makes no sense with Kotlin source sets as the same generated models will be used in all source sets.

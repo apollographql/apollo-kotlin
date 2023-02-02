@@ -8,7 +8,6 @@ import com.apollographql.apollo3.gradle.api.kotlinProjectExtensionOrThrow
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 /**
@@ -17,6 +16,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  * exception is thrown
  */
 fun getKotlinTargetLanguage(userSpecified: String?): TargetLanguage {
+  @Suppress("DEPRECATION_ERROR")
   return when (userSpecified) {
     "1.4" -> TargetLanguage.KOTLIN_1_4
     "1.5" -> TargetLanguage.KOTLIN_1_5

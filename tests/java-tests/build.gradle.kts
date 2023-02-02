@@ -18,7 +18,7 @@ dependencies {
 apollo {
   service("service") {
     packageName.set("javatest")
-    generateModelBuilder.set(true)
+    generateModelBuilders.set(true)
     generateDataBuilders.set(true)
     mapScalarToJavaString("LanguageCode")
     mapScalarToJavaObject("Json")

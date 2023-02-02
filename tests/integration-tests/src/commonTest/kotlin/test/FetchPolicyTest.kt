@@ -60,7 +60,7 @@ class FetchPolicyTest {
 
   private suspend fun tearDown() {
     mockServer.stop()
-    apolloClient.dispose()
+    apolloClient.close()
   }
 
   @Test

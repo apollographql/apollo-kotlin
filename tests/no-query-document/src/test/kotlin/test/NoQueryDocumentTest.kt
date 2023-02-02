@@ -75,7 +75,7 @@ class NoQueryDocumentTest {
     val asMap = Buffer().write(request.body).jsonReader().readAny() as Map<String, Any>
     assertEquals(asMap["query"], queryDocument)
 
-    apolloClient.dispose()
+    apolloClient.close()
     mockServer.stop()
   }
 }
