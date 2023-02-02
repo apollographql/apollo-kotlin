@@ -157,7 +157,7 @@ abstract class DefaultApolloExtension(
           "packageNamesFromFilePaths()"
         }
         error("""
-            Apollo: using the default service is deprecated and will be removed in a future version. Please define your service explicitly:
+            Apollo: using the default service is deprecated. Please define your service explicitly:
             
             apollo {
               service("service") {
