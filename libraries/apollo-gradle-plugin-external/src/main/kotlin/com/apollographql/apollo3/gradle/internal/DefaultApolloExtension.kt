@@ -16,6 +16,7 @@ import com.apollographql.apollo3.compiler.hooks.internal.ApolloCompilerKotlinHoo
 import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtension
 import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
@@ -57,6 +58,14 @@ abstract class DefaultApolloExtension(
   private val rootProvider: TaskProvider<Task>
   private var hasExplicitService = false
   private var adhocComponentWithVariants: AdhocComponentWithVariants? = null
+
+  internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
+    DefaultServiceInfo(
+        name = service.name,
+        schemaFiles = service.lazySchemaFiles(project),
+        graphqlSrcDirs = service.graphqlSourceDirectorySet.srcDirs,
+    )
+  }
 
   @get:Inject
   protected abstract val softwareComponentFactory: SoftwareComponentFactory
@@ -272,6 +281,15 @@ abstract class DefaultApolloExtension(
     }
     services.add(service)
 
+    if (service.graphqlSourceDirectorySet.isReallyEmpty) {
+      val sourceFolder = service.sourceFolder.getOrElse("")
+      val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql/$sourceFolder")
+
+      service.graphqlSourceDirectorySet.srcDir(dir)
+    }
+    service.graphqlSourceDirectorySet.include(service.includes.getOrElse(listOf("**/*.graphql", "**/*.gql")))
+    service.graphqlSourceDirectorySet.exclude(service.excludes.getOrElse(emptyList()))
+
     val metadataProducerConfiguration = createConfiguration(
         name = ModelNames.metadataProducerConfiguration(service),
         isCanBeConsumed = true,
@@ -404,16 +422,6 @@ abstract class DefaultApolloExtension(
     return project.tasks.register(ModelNames.generateApolloUsedCoordinates(service), ApolloGenerateUsedCoordinatesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo used coordinates for ${service.name} GraphQL queries"
-
-      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        val sourceFolder = service.sourceFolder.getOrElse("")
-        val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql/$sourceFolder")
-
-        service.graphqlSourceDirectorySet.srcDir(dir)
-      }
-      service.graphqlSourceDirectorySet.include(service.includes.getOrElse(listOf("**/*.graphql", "**/*.gql")))
-      service.graphqlSourceDirectorySet.exclude(service.excludes.getOrElse(emptyList()))
-
       task.outputFile.apply {
         set(BuildDirLayout.usedCoordinates(project, service))
         disallowChanges()
@@ -577,17 +585,6 @@ abstract class DefaultApolloExtension(
     return project.tasks.register(ModelNames.generateApolloSources(service), ApolloGenerateSourcesTask::class.java) { task ->
       task.group = TASK_GROUP
       task.description = "Generate Apollo models for ${service.name} GraphQL queries"
-
-
-      if (service.graphqlSourceDirectorySet.isReallyEmpty) {
-        val sourceFolder = service.sourceFolder.getOrElse("")
-        val dir = File(project.projectDir, "src/${mainSourceSet(project)}/graphql/$sourceFolder")
-
-        service.graphqlSourceDirectorySet.srcDir(dir)
-      }
-      service.graphqlSourceDirectorySet.include(service.includes.getOrElse(listOf("**/*.graphql", "**/*.gql")))
-      service.graphqlSourceDirectorySet.exclude(service.excludes.getOrElse(emptyList()))
-
       task.graphqlFiles.setFrom(service.graphqlSourceDirectorySet)
       // Since this is stored as a list of string, the order matter hence the sorting
       task.rootFolders.set(project.provider { service.graphqlSourceDirectorySet.srcDirs.map { it.relativeTo(project.projectDir).path }.sorted() })
