@@ -30,8 +30,6 @@ class GradleToolingModelService(
   private var abortRequested: Boolean = false
   private val gradleExecutorService = Executors.newSingleThreadExecutor()
 
-  private var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
-
   init {
     logd("project=${project.name}")
     startObserveGradleHasSynced()
@@ -138,44 +136,9 @@ class GradleToolingModelService(
         )
       }
     }
-    this.graphQLProjectFiles = graphQLProjectFiles
+
+    // TODO expose this to the GraphQL plugin
     logd("graphQLProjectFiles=$graphQLProjectFiles")
-
-    File(projectDir.path, ".graphqlconfig").writeText(
-        buildString {
-          append("""
-          {
-            "projects": {
-          """.trimIndent())
-
-          for ((fileIndex, graphQLProjectFile) in graphQLProjectFiles.withIndex()) {
-            append("""
-              "${graphQLProjectFile.name}": {
-                "includes": [
-            """.trimIndent())
-            for ((pathIndex, includedPath) in graphQLProjectFile.includedPaths.withIndex()) {
-              append("""
-                  "$includedPath"
-              """.trimIndent())
-              if (pathIndex < graphQLProjectFile.includedPaths.size - 1) {
-                append(",")
-              }
-            }
-            append("""
-                ]
-              }
-            """.trimIndent())
-            if (fileIndex < graphQLProjectFiles.lastIndex) {
-              append(",")
-            }
-          }
-
-          append("""  
-            }
-          }
-          """.trimIndent())
-        }
-    )
   }
 
   private fun abortFetchToolingModels() {
