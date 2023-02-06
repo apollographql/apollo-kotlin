@@ -27,6 +27,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtil
@@ -60,9 +61,11 @@ class ApolloCodegenService(
 
   init {
     logd("project=${project.name}")
-    startOrStopCodegenObservers()
-    startObserveApolloProject()
-    startObservingSettings()
+    DumbService.getInstance(project).runWhenSmart {
+      startOrStopCodegenObservers()
+      startObserveApolloProject()
+      startObservingSettings()
+    }
   }
 
   private fun startObserveApolloProject() {
