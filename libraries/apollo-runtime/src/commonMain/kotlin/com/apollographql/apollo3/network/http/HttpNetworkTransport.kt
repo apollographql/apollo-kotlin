@@ -28,13 +28,15 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import okio.use
 
 class HttpNetworkTransport
 private constructor(
     private val httpRequestComposer: HttpRequestComposer,
-    val engine: HttpEngine,
+    private val engine: HttpEngine,
     val interceptors: List<HttpInterceptor>,
-    val exposeErrorBody: Boolean,
+    private val exposeErrorBody: Boolean,
 ) : NetworkTransport {
   private val engineInterceptor = EngineInterceptor()
 
@@ -151,22 +153,65 @@ private constructor(
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
   ): Flow<ApolloResponse<D>> {
-    val jsonMerger = DeferredJsonMerger()
+    var jsonMerger: DeferredJsonMerger? = null
+
     return multipartBodyFlow(httpResponse)
-        .map { part ->
+        .mapNotNull { part ->
           try {
-            val merged = jsonMerger.merge(part)
-            val deferredFragmentIds = jsonMerger.mergedFragmentIds
-            val isLast = !jsonMerger.hasNext
-            operation.parseJsonResponse(
-                jsonReader = merged.jsonReader(),
-                customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
-            ).newBuilder().isLast(isLast).build()
+            val what = part.peek().jsonReader().use { reader ->
+              // detect what kind of payload we have
+              reader.beginObject()
+              if (!reader.hasNext()) {
+                return@use EMPTY
+              }
+              val name = reader.nextName()
+
+              if (name == "payload") {
+                return@use PAYLOAD
+              } else {
+                return@use OTHER
+              }
+            }
+
+            when (what)  {
+              EMPTY -> {
+                // nothing to do
+                null
+              }
+              PAYLOAD -> {
+                val reader = part.jsonReader()
+                // advance the reader
+                reader.beginObject()
+                reader.nextName()
+                operation.parseJsonResponse(
+                    jsonReader = reader,
+                    customScalarAdapters = customScalarAdapters
+                ).newBuilder().build()
+              }
+              else -> {
+                if (jsonMerger == null) {
+                  jsonMerger = DeferredJsonMerger()
+                }
+                val merged = jsonMerger!!.merge(part)
+                val deferredFragmentIds = jsonMerger!!.mergedFragmentIds
+                val isLast = !jsonMerger!!.hasNext
+
+                if (jsonMerger!!.isEmptyPayload) {
+                  null
+                } else {
+                  operation.parseJsonResponse(
+                      jsonReader = merged.jsonReader(),
+                      customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+                  ).newBuilder().isLast(isLast).build()
+                }
+              }
+            }
+
           } catch (e: Exception) {
             errorResponse(operation, e)
           }
         }
-        .filterNot { jsonMerger.isEmptyPayload }
+
   }
 
   private fun <D : Operation.Data> ApolloResponse<D>.withHttpInfo(
@@ -275,5 +320,11 @@ private constructor(
           exposeErrorBody = exposeErrorBody,
       )
     }
+  }
+
+  private companion object {
+    const val EMPTY = 0
+    const val PAYLOAD = 1
+    const val OTHER = 2
   }
 }

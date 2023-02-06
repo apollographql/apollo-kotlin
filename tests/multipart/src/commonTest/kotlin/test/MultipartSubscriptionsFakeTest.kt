@@ -10,7 +10,7 @@ import multipart.CounterSubscription
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
-class MultipartSubscriptionsTest {
+class MultipartSubscriptionsFakeTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
 

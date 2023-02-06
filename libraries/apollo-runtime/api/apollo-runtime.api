@@ -299,12 +299,13 @@ public abstract interface class com/apollographql/apollo3/network/http/HttpInter
 }
 
 public final class com/apollographql/apollo3/network/http/HttpNetworkTransport : com/apollographql/apollo3/network/NetworkTransport {
+	public static final field EMPTY I
+	public static final field OTHER I
+	public static final field PAYLOAD I
 	public synthetic fun <init> (Lcom/apollographql/apollo3/api/http/HttpRequestComposer;Lcom/apollographql/apollo3/network/http/HttpEngine;Ljava/util/List;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public final fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lkotlinx/coroutines/flow/Flow;
-	public final fun getEngine ()Lcom/apollographql/apollo3/network/http/HttpEngine;
-	public final fun getExposeErrorBody ()Z
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 }
