@@ -5,7 +5,6 @@ import com.apollographql.ijplugin.util.isApolloKotlin3Project
 import com.apollographql.ijplugin.util.logd
 import com.intellij.ProjectTopics
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootEvent
 import com.intellij.openapi.roots.ModuleRootListener
@@ -19,10 +18,8 @@ class ApolloProjectServiceImpl(
 
   init {
     logd("project=${project.name}")
-    DumbService.getInstance(project).runWhenSmart {
-      onLibrariesChanged()
-      startObserveLibraries()
-    }
+    onLibrariesChanged()
+    startObserveLibraries()
   }
 
   private fun startObserveLibraries() {
