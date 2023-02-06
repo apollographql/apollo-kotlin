@@ -2,15 +2,39 @@ package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.gradle.api.ApolloExtension
+import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ExternalDependency
+import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.tooling.provider.model.ToolingModelBuilder
+import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
+import javax.inject.Inject
 
-open class ApolloPlugin : Plugin<Project> {
+open class ApolloPlugin
+@Inject
+constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plugin<Project> {
   override fun apply(project: Project) {
     val defaultService = project.objects.newInstance(DefaultService::class.java, project, "service")
-    project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project, defaultService) as DefaultApolloExtension
+    val apolloExtension: DefaultApolloExtension = project.extensions.create(ApolloExtension::class.java, "apollo", DefaultApolloExtension::class.java, project, defaultService) as DefaultApolloExtension
     project.configureDefaultVersionsResolutionStrategy()
+    toolingModelRegistry.register(
+        object : ToolingModelBuilder {
+          override fun canBuild(modelName: String) = modelName == ApolloGradleToolingModel::class.java.name
+
+          override fun buildAll(modelName: String, project: Project): ApolloGradleToolingModel {
+            val apolloMetadataConfiguration = project.configurations.findByName(ModelNames.metadataConfiguration())
+            return DefaultApolloGradleToolingModel(
+                projectName = project.name,
+                serviceInfos = apolloExtension.getServiceInfos(project),
+                metadataProjectDependencies = apolloMetadataConfiguration?.dependencies
+                    ?.filterIsInstance(ProjectDependency::class.java)
+                    ?.map { it.dependencyProject.name }
+                    ?: emptyList()
+            )
+          }
+        }
+    )
   }
 
   /**

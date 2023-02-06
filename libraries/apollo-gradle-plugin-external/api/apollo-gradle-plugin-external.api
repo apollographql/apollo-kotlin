@@ -28,6 +28,25 @@ public abstract interface class com/apollographql/apollo3/gradle/api/ApolloExten
 	public abstract fun service (Ljava/lang/String;Lorg/gradle/api/Action;)V
 }
 
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel {
+	public static final field Companion Lcom/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$Companion;
+	public static final field VERSION I
+	public abstract fun getMetadataProjectDependencies ()Ljava/util/List;
+	public abstract fun getProjectName ()Ljava/lang/String;
+	public abstract fun getServiceInfos ()Ljava/util/List;
+	public abstract fun getVersion ()I
+}
+
+public final class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$Companion {
+	public static final field VERSION I
+}
+
+public abstract interface class com/apollographql/apollo3/gradle/api/ApolloGradleToolingModel$ServiceInfo {
+	public abstract fun getGraphqlSrcDirs ()Ljava/util/Set;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getSchemaFiles ()Ljava/util/Set;
+}
+
 public abstract interface class com/apollographql/apollo3/gradle/api/Introspection {
 	public abstract fun getEndpointUrl ()Lorg/gradle/api/provider/Property;
 	public abstract fun getHeaders ()Lorg/gradle/api/provider/MapProperty;
