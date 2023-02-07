@@ -1,0 +1,39 @@
+interface Character {
+  appearsIn: [Episode]!
+  id: ID!
+  name: String!
+
+  friendsConnection(first: Int): FriendsConnection!
+}
+
+type Droid implements Character {
+  appearsIn: [Episode]!
+  id: ID!
+  name: String!
+
+  friendsConnection(first: Int): FriendsConnection!
+}
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+
+
+type FriendsConnection {
+  isEmpty: Boolean!
+}
+
+"""A humanoid creature from the Star Wars universe"""
+type Human implements Character {
+  appearsIn: [Episode]!
+  id: ID!
+  name: String!
+
+  friendsConnection(first: Int): FriendsConnection!
+}
+
+type Query {
+  character: Character
+}

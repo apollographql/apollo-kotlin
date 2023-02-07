@@ -14,7 +14,7 @@ import com.example.hero_details.type.FriendsConnection;
 import com.example.hero_details.type.FriendsEdge;
 import com.example.hero_details.type.GraphQLInt;
 import com.example.hero_details.type.GraphQLString;
-import com.example.hero_details.type.hero_type;
+import com.example.hero_details.type.Hero_type;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class HeroDetailsSelections {
   );
 
   private static List<CompiledSelection> __hero = Arrays.asList(
-    new CompiledField.Builder("type", new CompiledNotNullType(hero_type.type)).build(),
+    new CompiledField.Builder("type", new CompiledNotNullType(Hero_type.type)).build(),
     new CompiledField.Builder("name", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("friendsConnection", new CompiledNotNullType(FriendsConnection.type)).selections(__friendsConnection).build()
   );

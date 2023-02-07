@@ -6,6 +6,20 @@ import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.api.containsPossibleTypes
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
+import com.apollographql.apollo3.compiler.BooleanExpressionSerializer
+import com.apollographql.apollo3.compiler.GQLFragmentDefinitionSerializer
+import com.apollographql.apollo3.compiler.GQLTypeSerializer
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.okio.decodeFromBufferedSource
+import kotlinx.serialization.json.okio.encodeToBufferedSink
+import okio.buffer
+import okio.sink
+import okio.source
+import java.io.File
 
 /**
  * Intermediate representation (IR)
@@ -24,24 +38,25 @@ import com.apollographql.apollo3.ast.GQLType
  * - The IR doesn't escape identifiers because different targets might have different escaping rules. The names
  * found in the IR are as found in the GraphQL documents
  */
+@Serializable
 internal data class DefaultIrOperations(
     val operations: List<IrOperation>,
     val fragments: List<IrFragmentDefinition>,
-    val usedTypes: Set<String>,
-    val usedFields: Map<String, Set<String>>,
+    override val usedFields: Map<String, Set<String>>,
 
-    val codegenModels: String,
     val flattenModels: Boolean,
     val decapitalizeFields: Boolean,
     val generateDataBuilders: Boolean,
 
-    override val fragmentDefinitions: List<GQLFragmentDefinition>
-): IrOperations
+    override val fragmentDefinitions: List<@Serializable(with = GQLFragmentDefinitionSerializer::class) GQLFragmentDefinition>,
+) : IrOperations
 
 interface IrOperations {
   val fragmentDefinitions: List<GQLFragmentDefinition>
+  val usedFields: Map<String, Set<String>>
 }
 
+@Serializable
 internal data class IrOperation(
     val name: String,
     val operationType: IrOperationType,
@@ -59,6 +74,7 @@ internal data class IrOperation(
     val dataModelGroup: IrModelGroup,
 )
 
+@Serializable
 internal data class IrSelectionSet(
     /**
      * a name for this [IrSelectionSet]. This name is unique across all [IrSelectionSet] for a given operation/fragment definition
@@ -71,17 +87,22 @@ internal data class IrSelectionSet(
     val selections: List<IrSelection>,
 )
 
+@Serializable
 internal sealed interface IrSelection
 
+@Serializable
+@SerialName("field")
 internal data class IrField(
     val name: String,
     val alias: String?,
     val type: IrTypeRef,
-    val condition: BooleanExpression<BVariable>,
+    @Serializable(with = BooleanExpressionSerializer::class)
+    val condition: BooleanExpression<@Contextual BVariable>,
     val arguments: List<IrArgument>,
     val selectionSetName: String?,
 ) : IrSelection
 
+@Serializable
 internal data class IrArgument(
     val name: String,
     val value: IrValue,
@@ -89,15 +110,25 @@ internal data class IrArgument(
     val isPagination: Boolean = false,
 )
 
+@Serializable
 internal sealed interface IrTypeRef
+@Serializable
+@SerialName("nonnull")
 internal data class IrNonNullTypeRef(val ofType: IrTypeRef) : IrTypeRef
+@Serializable
+@SerialName("list")
 internal data class IrListTypeRef(val ofType: IrTypeRef) : IrTypeRef
+@Serializable
+@SerialName("named")
 internal data class IrNamedTypeRef(val name: String) : IrTypeRef
 
+@Serializable
+@SerialName("fragment")
 internal data class IrFragment(
     val typeCondition: String,
     val possibleTypes: List<String>,
-    val condition: BooleanExpression<BVariable>,
+    @Serializable(with = BooleanExpressionSerializer::class)
+    val condition: BooleanExpression<@Contextual BVariable>,
     /**
      * The name of the [IrSelectionSet] that contains the [IrSelection] for this inline fragment
      * or null for fragments spreads (because the [IrSelectionSet] is defined in the fragment
@@ -109,6 +140,7 @@ internal data class IrFragment(
     val name: String?,
 ) : IrSelection
 
+@Serializable
 internal data class IrFragmentDefinition(
     val name: String,
     val description: String?,
@@ -123,10 +155,13 @@ internal data class IrFragmentDefinition(
     val interfaceModelGroup: IrModelGroup?,
     val dataProperty: IrProperty,
     val dataModelGroup: IrModelGroup,
-    val source: String
+    val source: String,
 )
 
-internal sealed class IrOperationType(val typeName: String) {
+@Serializable
+internal sealed interface IrOperationType {
+  val typeName: String
+
   val name: String
     get() {
       return when (this) {
@@ -136,9 +171,15 @@ internal sealed class IrOperationType(val typeName: String) {
       }
     }
 
-  class Query(name: String) : IrOperationType(name)
-  class Mutation(name: String) : IrOperationType(name)
-  class Subscription(name: String) : IrOperationType(name)
+  @Serializable
+  @SerialName("query")
+  class Query(override val typeName: String) : IrOperationType
+  @Serializable
+  @SerialName("mutation")
+  class Mutation(override val typeName: String) : IrOperationType
+  @Serializable
+  @SerialName("subscription")
+  class Subscription(override val typeName: String) : IrOperationType
 }
 
 /**
@@ -152,6 +193,7 @@ internal sealed class IrOperationType(val typeName: String) {
  *
  * TODO: maybe merge this with [IrProperty]
  */
+@Serializable
 internal data class IrFieldInfo(
     /**
      * The responseName of this field (or synthetic name)
@@ -170,6 +212,7 @@ internal data class IrFieldInfo(
      *
      * TODO: CompiledField duplicates "operation_document" so we could certainly remove it (and gqlType too)
      */
+    @Serializable(with = GQLTypeSerializer::class)
     val gqlType: GQLType?,
 
     /**
@@ -194,15 +237,20 @@ internal data class IrFieldInfo(
     val optInFeature: String?,
 )
 
+@Serializable
 internal sealed class IrAccessor {
   abstract val returnedModelId: String
 }
 
+@Serializable
+@SerialName("fragment")
 internal data class IrFragmentAccessor(
     val fragmentName: String,
     override val returnedModelId: String,
 ) : IrAccessor()
 
+@Serializable
+@SerialName("subtype")
 internal data class IrSubtypeAccessor(
     val typeSet: TypeSet,
     override val returnedModelId: String,
@@ -213,6 +261,7 @@ internal data class IrSubtypeAccessor(
  *
  * Monomorphic fields will always be represented by a class while polymorphic fields will involve interfaces
  */
+@Serializable
 internal data class IrModel(
     val modelName: String,
     /**
@@ -248,10 +297,12 @@ internal data class IrModel(
  * @param condition a condition for reading the property
  * @param requiresBuffering true if this property contains synthetic properties and needs to be buffered
  */
+@Serializable
 internal data class IrProperty(
     val info: IrFieldInfo,
     val override: Boolean,
-    val condition: BooleanExpression<BTerm>,
+    @Serializable(with = BooleanExpressionSerializer::class)
+    val condition: BooleanExpression<@Contextual BTerm>,
     val requiresBuffering: Boolean,
 ) {
   /**
@@ -269,13 +320,31 @@ internal data class IrProperty(
     get() = condition.containsPossibleTypes()
 }
 
+@Serializable
 internal data class IrModelGroup(
     val baseModelId: String,
     val models: List<IrModel>,
 )
 
+@Serializable
 internal data class IrVariable(
     val name: String,
     val defaultValue: IrValue?,
     val type: IrType,
 )
+
+private val json = Json { classDiscriminator = "#class" }
+
+@OptIn(ExperimentalSerializationApi::class)
+fun IrOperations.writeTo(file: File) {
+  file.sink().buffer().use {
+    json.encodeToBufferedSink(this as DefaultIrOperations, it)
+  }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+fun File.toIrOperations(): IrOperations {
+  return source().buffer().use {
+    json.decodeFromBufferedSource<DefaultIrOperations>(it)
+  }
+}

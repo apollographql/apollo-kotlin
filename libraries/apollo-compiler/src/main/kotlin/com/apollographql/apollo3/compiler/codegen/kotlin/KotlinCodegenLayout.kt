@@ -1,15 +1,14 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin
 
+import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWord
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInEnum
 import com.apollographql.apollo3.compiler.escapeKotlinReservedWordInSealedClass
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.IrSchemaType
 
 internal class KotlinCodegenLayout(
-    allTypes: List<IrSchemaType>,
+    allTypes: List<CodegenType>,
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,

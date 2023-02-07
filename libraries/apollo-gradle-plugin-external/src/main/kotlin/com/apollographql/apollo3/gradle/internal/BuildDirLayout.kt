@@ -25,6 +25,11 @@ object BuildDirLayout {
     )
   }
 
+  internal fun ir(project: Project, service: Service): Provider<RegularFile> {
+    return project.layout.buildDirectory.file(
+        "generated/ir/apollo/${service.name}/ir.json"
+    )
+  }
   internal fun schema(project: Project, service: Service): Provider<RegularFile> {
     return project.layout.buildDirectory.file(
         "generated/schema/apollo/${service.name}/schema.graphqls"

@@ -37,15 +37,27 @@ fun GQLField.definitionFromScope(schema: Schema, rawTypename: String): GQLFieldD
   return definitionFromScope(schema, schema.typeDefinition(rawTypename))
 }
 
-fun GQLField.definitionFromScope(schema: Schema, parentTypeDefinition: GQLTypeDefinition): GQLFieldDefinition? {
-  return when {
-    name == "__typename" -> listOf(typenameMetaFieldDefinition)
-    name == "__schema" && parentTypeDefinition.name == schema.queryTypeDefinition.name -> listOf(schemaMetaFieldDefinition)
-    name == "__type" && parentTypeDefinition.name == schema.queryTypeDefinition.name -> listOf(typeMetaFieldDefinition)
-    parentTypeDefinition is GQLObjectTypeDefinition -> parentTypeDefinition.fields
-    parentTypeDefinition is GQLInterfaceTypeDefinition -> parentTypeDefinition.fields
+fun GQLTypeDefinition.fieldDefinitions(schema: Schema): List<GQLFieldDefinition> {
+  return when (this) {
+    is GQLObjectTypeDefinition -> {
+      if (name == schema.queryTypeDefinition.name) {
+        fields + typeMetaFieldDefinition + schemaMetaFieldDefinition + typenameMetaFieldDefinition
+      } else {
+        fields + typenameMetaFieldDefinition
+      }
+    }
+    is GQLInterfaceTypeDefinition -> {
+      fields + typenameMetaFieldDefinition
+    }
+    is GQLUnionTypeDefinition -> {
+      listOf(typenameMetaFieldDefinition)
+    }
     else -> emptyList()
-  }.firstOrNull { it.name == name }
+  }
+}
+
+fun GQLField.definitionFromScope(schema: Schema, parentTypeDefinition: GQLTypeDefinition): GQLFieldDefinition? {
+  return parentTypeDefinition.fieldDefinitions(schema).firstOrNull { it.name == name }
 }
 
 fun GQLField.responseName() = alias ?: name

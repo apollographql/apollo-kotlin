@@ -14,6 +14,10 @@ class ResolverInfo(
     val entries: List<ResolverEntry>
 )
 
+internal fun ResolverInfo.schemaTypes(): Set<String> {
+  return entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id }.toSet()
+}
+
 @JsonClass(generateAdapter = true)
 class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())

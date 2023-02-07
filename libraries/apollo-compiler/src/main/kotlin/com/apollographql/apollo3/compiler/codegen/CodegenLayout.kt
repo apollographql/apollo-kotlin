@@ -1,15 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen
 
+import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOperation
-import com.apollographql.apollo3.compiler.ir.IrSchemaType
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.TypeSet
 import com.apollographql.apollo3.compiler.singularize
@@ -20,7 +18,7 @@ import com.apollographql.apollo3.compiler.singularize
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
 internal abstract class CodegenLayout(
-    allTypes: List<IrSchemaType>, // XXX: this should also take incoming types into account
+    allTypes: List<CodegenType>, // XXX: this should also take incoming types into account
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
@@ -39,14 +37,8 @@ internal abstract class CodegenLayout(
     // 1. Compute a unique name for types without a targetName
     for (type in allTypes.filter { it.targetName == null }) {
       val uniqueName = uniqueName(type.name, usedNames)
-      // Enums are not automatically capitalized for historical reasons, and we keep this behavior for now
-      // as changing it would be breaking. Let's fix it in the next major release.
-      // See: https://github.com/apollographql/apollo-kotlin/issues/4171
-      val className = if (type is IrEnum) {
-        regularIdentifier(uniqueName)
-      } else {
-        capitalizedIdentifier(uniqueName)
-      }
+      val className = capitalizedIdentifier(uniqueName)
+
       usedNames.add(className.lowercase())
       this[type.name] = className
     }

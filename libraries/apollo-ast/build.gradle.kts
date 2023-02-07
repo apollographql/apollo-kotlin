@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
   antlr
   id("org.jetbrains.kotlin.jvm")

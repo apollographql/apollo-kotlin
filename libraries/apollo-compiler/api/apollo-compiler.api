@@ -2,6 +2,11 @@ public final class com/apollographql/apollo3/compiler/-checkCapitalizedFields {
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/AdapterInitializer {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/AdapterInitializer$Companion;
+}
+
+public final class com/apollographql/apollo3/compiler/AdapterInitializer$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/AdapterInitializerJsonAdapter : com/squareup/moshi/JsonAdapter {
@@ -18,20 +23,13 @@ public abstract interface class com/apollographql/apollo3/compiler/ApolloCompile
 
 public final class com/apollographql/apollo3/compiler/ApolloMetadata {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/ApolloMetadata$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)V
-	public fun <init> (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;Z)V
-	public final fun component1 ()Lcom/apollographql/apollo3/compiler/CommonMetadata;
-	public final fun component2 ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun copy (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ApolloMetadata;Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/CompilerMetadata;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/CompilerMetadata;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ApolloMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getCommonMetadata ()Lcom/apollographql/apollo3/compiler/CommonMetadata;
 	public final fun getCompilerMetadata ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
-	public final fun getGenerateDataBuilders ()Z
-	public final fun getModuleName ()Ljava/lang/String;
 	public fun hashCode ()I
-	public final fun setGenerateDataBuilders (Z)V
 	public fun toString ()Ljava/lang/String;
 	public final fun writeTo (Ljava/io/File;)V
 }
@@ -49,47 +47,45 @@ public final class com/apollographql/apollo3/compiler/ApolloMetadataJsonAdapter 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/compiler/ApolloUsedCoordinatesKt {
-	public static final fun toUsedCoordinates (Ljava/io/File;)Ljava/util/Set;
-	public static final fun writeTo (Ljava/util/Set;Ljava/io/File;)V
-}
-
-public final class com/apollographql/apollo3/compiler/CommonMetadata {
-	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
-	public final fun component1 ()Lcom/apollographql/apollo3/ast/Schema;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun component5 ()Ljava/util/Map;
-	public final fun copy (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Lcom/apollographql/apollo3/compiler/CommonMetadata;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CommonMetadata;Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CommonMetadata;
-	public fun equals (Ljava/lang/Object;)Z
+public final class com/apollographql/apollo3/compiler/CodegenSchema {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/CodegenSchema$Companion;
+	public synthetic fun <init> (ILcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo3/compiler/TargetLanguage;ZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo3/compiler/TargetLanguage;Z)V
 	public final fun getCodegenModels ()Ljava/lang/String;
-	public final fun getPluginVersion ()Ljava/lang/String;
+	public final fun getGenerateDataBuilders ()Z
+	public final fun getPackageName ()Ljava/lang/String;
 	public final fun getScalarMapping ()Ljava/util/Map;
 	public final fun getSchema ()Lcom/apollographql/apollo3/ast/Schema;
-	public final fun getSchemaPackageName ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+	public final fun getTargetLanguage ()Lcom/apollographql/apollo3/compiler/TargetLanguage;
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/compiler/CodegenSchema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
-public final class com/apollographql/apollo3/compiler/CommonMetadataJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/CommonMetadata;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/CommonMetadata;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
+public final class com/apollographql/apollo3/compiler/CodegenSchema$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/CodegenSchema$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/CodegenSchema;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/CodegenSchema;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/CodegenSchema$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/CodegenSchemaKt {
+	public static final fun toCodegenSchema (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CodegenSchema;
+	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenSchema;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo3/compiler/CompilerMetadata {
-	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)V
-	public final fun component1 ()Ljava/util/List;
-	public final fun component2 ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
-	public final fun copy (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
+	public final fun copy (Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CompilerMetadata;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFragments ()Ljava/util/List;
 	public final fun getResolverInfo ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -105,8 +101,26 @@ public final class com/apollographql/apollo3/compiler/CompilerMetadataJsonAdapte
 }
 
 public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun getExpression ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializerJsonAdapter : com/squareup/moshi/JsonAdapter {
@@ -127,7 +141,7 @@ public final class com/apollographql/apollo3/compiler/IncomingOptions {
 }
 
 public final class com/apollographql/apollo3/compiler/IncomingOptions$Companion {
-	public final fun resolveSchema (Ljava/util/Collection;Ljava/util/List;)Lkotlin/Pair;
+	public final fun resolveSchema (Ljava/util/Collection;)Lkotlin/Pair;
 }
 
 public final class com/apollographql/apollo3/compiler/JavaCodegenOptions {
@@ -270,9 +284,12 @@ public final class com/apollographql/apollo3/compiler/Roots {
 
 public final class com/apollographql/apollo3/compiler/RuntimeAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/RuntimeAdapterInitializer;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/ScalarInfo {
+	public static final field Companion Lcom/apollographql/apollo3/compiler/ScalarInfo$Companion;
+	public synthetic fun <init> (ILjava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;)V
 	public synthetic fun <init> (Ljava/lang/String;Lcom/apollographql/apollo3/compiler/AdapterInitializer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -284,6 +301,22 @@ public final class com/apollographql/apollo3/compiler/ScalarInfo {
 	public final fun getTargetName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/compiler/ScalarInfo;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class com/apollographql/apollo3/compiler/ScalarInfo$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ScalarInfo$$serializer;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/compiler/ScalarInfo;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lcom/apollographql/apollo3/compiler/ScalarInfo;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class com/apollographql/apollo3/compiler/ScalarInfo$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class com/apollographql/apollo3/compiler/ScalarInfoJsonAdapter : com/squareup/moshi/JsonAdapter {
@@ -305,6 +338,12 @@ public final class com/apollographql/apollo3/compiler/TargetLanguage : java/lang
 	public static final field KOTLIN_1_5 Lcom/apollographql/apollo3/compiler/TargetLanguage;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/compiler/TargetLanguage;
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/TargetLanguage;
+}
+
+public final class com/apollographql/apollo3/compiler/UsedCoordinatesKt {
+	public static final fun mergeWith (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun toUsedCoordinates (Ljava/io/File;)Ljava/util/Map;
+	public static final fun writeTo (Ljava/util/Map;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo3/compiler/VersionKt {
@@ -497,6 +536,12 @@ public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/Dat
 
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrOperations {
 	public abstract fun getFragmentDefinitions ()Ljava/util/List;
+	public abstract fun getUsedFields ()Ljava/util/Map;
+}
+
+public final class com/apollographql/apollo3/compiler/ir/IrOperationsKt {
+	public static final fun toIrOperations (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/ir/IrOperations;
+	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/io/File;)V
 }
 
 public abstract interface class com/apollographql/apollo3/compiler/ir/IrSchema {
@@ -504,7 +549,7 @@ public abstract interface class com/apollographql/apollo3/compiler/ir/IrSchema {
 
 public final class com/apollographql/apollo3/compiler/ir/IrSchemaBuilder {
 	public static final field INSTANCE Lcom/apollographql/apollo3/compiler/ir/IrSchemaBuilder;
-	public final fun build (Lcom/apollographql/apollo3/ast/Schema;Lcom/apollographql/apollo3/compiler/ir/IrOperations;Ljava/util/Set;)Lcom/apollographql/apollo3/compiler/ir/IrSchema;
+	public final fun build (Lcom/apollographql/apollo3/ast/Schema;Ljava/util/Map;Ljava/util/Set;)Lcom/apollographql/apollo3/compiler/ir/IrSchema;
 }
 
 public final class com/apollographql/apollo3/compiler/operationoutput/OperationDescriptor {

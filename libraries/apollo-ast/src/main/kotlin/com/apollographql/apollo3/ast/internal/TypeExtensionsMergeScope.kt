@@ -36,7 +36,6 @@ internal fun ValidationScope.mergeExtensions(definitions: List<GQLDefinition>, e
       is GQLInputObjectTypeExtension -> merge<GQLInputObjectTypeDefinition, GQLInputObjectTypeExtension>(acc, extension, "input") { merge(it, extension) }
       is GQLEnumTypeExtension -> merge<GQLEnumTypeDefinition, GQLEnumTypeExtension>(acc, extension, "enum") { merge(it, extension) }
       is GQLUnionTypeExtension -> merge<GQLUnionTypeDefinition, GQLUnionTypeExtension>(acc, extension, "union") { merge(it, extension) }
-      else -> throw UnrecognizedAntlrRule("Unrecognized type system extension", extension.sourceLocation)
     }
   }
 }

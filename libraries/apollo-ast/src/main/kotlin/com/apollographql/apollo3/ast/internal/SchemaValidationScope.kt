@@ -9,11 +9,9 @@ import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLInputObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLListType
 import com.apollographql.apollo3.ast.GQLListValue
 import com.apollographql.apollo3.ast.GQLNamed
 import com.apollographql.apollo3.ast.GQLNamedType
-import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLObjectValue
 import com.apollographql.apollo3.ast.GQLOperationTypeDefinition
@@ -22,7 +20,6 @@ import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
 import com.apollographql.apollo3.ast.GQLSchemaDefinition
 import com.apollographql.apollo3.ast.GQLSchemaExtension
 import com.apollographql.apollo3.ast.GQLStringValue
-import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.GQLTypeDefinition.Companion.builtInTypes
 import com.apollographql.apollo3.ast.GQLTypeSystemExtension
@@ -38,6 +35,7 @@ import com.apollographql.apollo3.ast.combineDefinitions
 import com.apollographql.apollo3.ast.containsError
 import com.apollographql.apollo3.ast.linkDefinitions
 import com.apollographql.apollo3.ast.parseAsGQLSelections
+import com.apollographql.apollo3.ast.rawType
 import com.apollographql.apollo3.ast.transform2
 
 internal fun validateSchema(definitions: List<GQLDefinition>, requiresApolloDefinitions: Boolean = false): GQLResult<Schema> {
@@ -530,29 +528,15 @@ internal fun ValidationScope.computeConnectionTypes(): Set<String> {
     val connectionFields = typeDefinition.directives.filter { originalDirectiveName(it.name) == TYPE_POLICY }.toConnectionFields()
     for (fieldName in connectionFields) {
       val field = typeDefinition.fields.firstOrNull { it.name == fieldName } ?: continue
-      connectionTypes.add(field.type.name)
+      connectionTypes.add(field.type.rawType().name)
     }
   }
   return connectionTypes
 }
-
-private val GQLTypeDefinition.directives
-  get() = when (this) {
-    is GQLObjectTypeDefinition -> directives
-    is GQLInterfaceTypeDefinition -> directives
-    else -> emptyList()
-  }
 
 private val GQLTypeDefinition.fields
   get() = when (this) {
     is GQLObjectTypeDefinition -> fields
     is GQLInterfaceTypeDefinition -> fields
     else -> emptyList()
-  }
-
-private val GQLType.name: String
-  get() = when (this) {
-    is GQLNonNullType -> type.name
-    is GQLListType -> type.name
-    is GQLNamedType -> name
   }

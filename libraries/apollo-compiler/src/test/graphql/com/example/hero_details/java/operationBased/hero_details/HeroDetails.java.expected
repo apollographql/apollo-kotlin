@@ -13,7 +13,7 @@ import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_details.adapter.HeroDetails_ResponseAdapter;
 import com.example.hero_details.selections.HeroDetailsSelections;
-import com.example.hero_details.type.hero_type;
+import com.example.hero_details.type.Hero_type;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Object;
@@ -188,7 +188,7 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     /**
      * Hero type
      */
-    public hero_type type;
+    public Hero_type type;
 
     /**
      * The name of the character
@@ -206,7 +206,7 @@ public class HeroDetails implements Query<HeroDetails.Data> {
 
     private transient volatile String $toString;
 
-    public Hero(hero_type type, String name, FriendsConnection friendsConnection) {
+    public Hero(Hero_type type, String name, FriendsConnection friendsConnection) {
       this.type = type;
       this.name = name;
       this.friendsConnection = friendsConnection;

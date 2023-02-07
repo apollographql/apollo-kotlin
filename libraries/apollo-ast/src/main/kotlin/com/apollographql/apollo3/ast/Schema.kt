@@ -132,10 +132,10 @@ class Schema internal constructor(
   fun toMap(): Map<String, Any> {
     return mapOf(
         "sdl" to GQLDocument(definitions, null).toUtf8(),
-        "keyFields" to keyFields,
+        "keyFields" to keyFields.mapValues { it.value.toList().sorted() },
         "foreignNames" to foreignNames,
         "directivesToStrip" to directivesToStrip,
-        "connectionTypes" to connectionTypes,
+        "connectionTypes" to connectionTypes.toList().sorted(),
     )
   }
 
@@ -225,5 +225,5 @@ class Schema internal constructor(
       )
     }
   }
-}
 
+}

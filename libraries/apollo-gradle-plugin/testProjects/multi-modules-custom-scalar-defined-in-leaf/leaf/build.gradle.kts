@@ -1,6 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  alias(libs.plugins.apollo)
 }
 
 dependencies {
@@ -9,12 +9,12 @@ dependencies {
   testImplementation(libs.kotlin.test.junit)
 
   implementation(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 apollo {
   service("service") {
     packageName.set("com.library")
     mapScalar("Long", "java.lang.Long")
+    dependsOn(project(":root"))
   }
 }

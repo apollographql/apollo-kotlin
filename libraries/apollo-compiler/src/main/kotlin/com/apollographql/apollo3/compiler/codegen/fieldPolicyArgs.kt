@@ -1,8 +1,6 @@
 package com.apollographql.apollo3.compiler.codegen
 
 import com.apollographql.apollo3.ast.GQLField
-import com.apollographql.apollo3.ast.GQLInterfaceTypeDefinition
-import com.apollographql.apollo3.ast.GQLObjectTypeDefinition
 import com.apollographql.apollo3.ast.GQLStringValue
 import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Schema
@@ -60,10 +58,3 @@ private fun GQLTypeDefinition.typePolicyConnectionArgs(fieldName: String, schema
     setOf("before", "after", "first", "last")
   }
 }
-
-private val GQLTypeDefinition.directives
-  get() = when (this) {
-    is GQLObjectTypeDefinition -> directives
-    is GQLInterfaceTypeDefinition -> directives
-    else -> emptyList()
-  }

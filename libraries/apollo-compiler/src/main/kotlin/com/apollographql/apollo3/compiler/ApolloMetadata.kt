@@ -26,19 +26,8 @@ import java.io.File
 @JsonClass(generateAdapter = true)
 //@ApolloInternal
 data class ApolloMetadata(
-    /**
-     * Only non-null for the root module
-     */
-    val commonMetadata: CommonMetadata?,
     val compilerMetadata: CompilerMetadata,
-    val moduleName: String,
 ) {
-  var generateDataBuilders: Boolean = false
-
-  constructor(commonMetadata: CommonMetadata?, compilerMetadata: CompilerMetadata, moduleName: String, generateDataBuilders: Boolean): this(commonMetadata, compilerMetadata, moduleName) {
-    this.generateDataBuilders = generateDataBuilders
-  }
-
   companion object {
 
     /**
@@ -87,32 +76,10 @@ private class SchemaAdapter {
 }
 
 /**
- * Options that must be common to all modules
- */
-@JsonClass(generateAdapter = true)
-data class CommonMetadata(
-    val schema: Schema,
-    val schemaPackageName: String,
-    val pluginVersion: String,
-    val codegenModels: String,
-    /**
-     * Scalar mapping needed for scalars' target types and Adapter initializers
-     */
-    val scalarMapping: Map<String, ScalarInfo>,
-)
-
-/**
  * Compilation unit specific metadata that is specific to a given invocation of the compiler
  */
 @JsonClass(generateAdapter = true)
 data class CompilerMetadata(
-    /**
-     * The fragments needed:
-     * - to validate the operations
-     * - to embed the fragment source in the query document
-     * - to lookup the super interfaces when generating response-based models
-     */
-    val fragments: List<GQLFragmentDefinition>,
     /**
      * resolver info used by the codegen to lookup already existing ClassNames
      */

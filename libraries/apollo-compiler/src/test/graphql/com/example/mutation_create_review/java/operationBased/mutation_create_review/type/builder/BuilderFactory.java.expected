@@ -17,12 +17,12 @@ public class BuilderFactory {
     this.customScalarAdapters = customScalarAdapters;
   }
 
-  public ReviewBuilder buildReview() {
-    return new ReviewBuilder(customScalarAdapters);
-  }
-
   public MutationBuilder buildMutation() {
     return new MutationBuilder(customScalarAdapters);
+  }
+
+  public ReviewBuilder buildReview() {
+    return new ReviewBuilder(customScalarAdapters);
   }
 
   public DroidBuilder buildDroid() {

@@ -7,12 +7,12 @@ interface ApolloGradleToolingModel {
 
   val projectName: String
   val serviceInfos: List<ServiceInfo>
-  val metadataProjectDependencies: List<String>
 
   interface ServiceInfo {
     val name: String
     val schemaFiles: Set<File>
     val graphqlSrcDirs: Set<File>
+    val upstreamProjects: Set<String>
   }
 
   companion object {

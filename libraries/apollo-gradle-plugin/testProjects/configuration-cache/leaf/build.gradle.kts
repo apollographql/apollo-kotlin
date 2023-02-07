@@ -8,11 +8,11 @@ dependencies {
   implementation(libs.apollo.api)
 
   implementation(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 apollo {
   service("service") {
     packageName.set("com.example.leaf")
+    dependsOn(project(":root"))
   }
 }

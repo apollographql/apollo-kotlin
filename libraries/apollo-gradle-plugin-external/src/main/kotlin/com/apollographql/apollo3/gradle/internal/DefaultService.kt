@@ -1,21 +1,28 @@
 package com.apollographql.apollo3.gradle.internal
 
+import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
+import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.Roots
+import com.apollographql.apollo3.compiler.TargetLanguage
+import com.apollographql.apollo3.compiler.defaultCodegenModels
 import com.apollographql.apollo3.gradle.api.Introspection
 import com.apollographql.apollo3.gradle.api.RegisterOperationsConfig
 import com.apollographql.apollo3.gradle.api.Registry
 import com.apollographql.apollo3.gradle.api.Service
+import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasJavaPlugin
+import com.apollographql.apollo3.gradle.internal.DefaultApolloExtension.Companion.hasKotlinPlugin
 import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
 import org.gradle.util.GradleVersion
-import java.io.File
 import javax.inject.Inject
 
 abstract class DefaultService @Inject constructor(val project: Project, override val name: String)
   : Service {
 
-  internal var usedCoordinates: File? = null
+  internal val upstreamDependencies = mutableListOf<Dependency>()
+  internal val downstreamDependencies = mutableListOf<Dependency>()
 
   val objects = project.objects
 
@@ -112,14 +119,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
     this.outputDirAction = action
   }
 
-  override fun usedCoordinates(file: File) {
-    usedCoordinates = file
-  }
-
-  override fun usedCoordinates(file: String) {
-    usedCoordinates(project.file(file))
-  }
-
   override fun packageNamesFromFilePaths(rootPackageName: String?) {
     packageNameGenerator.set(
         project.provider {
@@ -168,4 +167,98 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun mapScalarToJavaObject(graphQLName: String) = mapScalar(graphQLName, "java.lang.Object", "com.apollographql.apollo3.api.Adapters.AnyAdapter")
 
   override fun mapScalarToUpload(graphQLName: String) = mapScalar(graphQLName, "com.apollographql.apollo3.api.Upload", "com.apollographql.apollo3.api.UploadAdapter")
+
+  override fun dependsOn(dependencyNotation: Any) {
+    upstreamDependencies.add(project.dependencies.create(dependencyNotation))
+  }
+
+  override fun isADependencyOf(dependencyNotation: Any) {
+    downstreamDependencies.add(project.dependencies.create(dependencyNotation))
+  }
+
+  internal fun targetLanguage(): TargetLanguage {
+    val generateKotlinModels: Boolean
+    when {
+      this.generateKotlinModels.isPresent -> {
+        generateKotlinModels = this.generateKotlinModels.get()
+        if (generateKotlinModels) {
+          check(project.hasKotlinPlugin()) {
+            "Apollo: generateKotlinModels.set(true) requires to apply a Kotlin plugin"
+          }
+        } else {
+          check(project.hasJavaPlugin()) {
+            "Apollo: generateKotlinModels.set(false) requires to apply the Java plugin"
+          }
+        }
+      }
+
+      project.hasKotlinPlugin() -> {
+        generateKotlinModels = true
+      }
+
+      project.hasJavaPlugin() -> {
+        generateKotlinModels = false
+      }
+
+      else -> {
+        error("Apollo: No Java or Kotlin plugin found")
+      }
+    }
+
+    return if (generateKotlinModels) {
+      getKotlinTargetLanguage(this.languageVersion.orNull)
+    } else {
+      TargetLanguage.JAVA
+    }
+  }
+
+  internal fun packageNameGenerator(): PackageNameGenerator {
+    check(!(packageName.isPresent && packageNameGenerator.isPresent)) {
+      "Apollo: it is an error to specify both 'packageName' and 'packageNameGenerator' "
+    }
+    var packageNameGenerator = this.packageNameGenerator.orNull
+    if (packageNameGenerator == null) {
+      packageNameGenerator = PackageNameGenerator.Flat(packageName.orNull ?: error("""
+            |Apollo: specify 'packageName':
+            |apollo {
+            |  service("service") {
+            |    packageName.set("com.example")
+            |  }
+            |}
+          """.trimMargin()))
+    }
+    return packageNameGenerator
+  }
+  internal fun codegenModels(): String {
+    return when (targetLanguage()) {
+      TargetLanguage.JAVA -> {
+        check(!codegenModels.isPresent || codegenModels.get() == MODELS_OPERATION_BASED) {
+          "Java codegen does not support codegenModels=${codegenModels.orNull}"
+        }
+        MODELS_OPERATION_BASED
+      }
+      else -> codegenModels.getOrElse(defaultCodegenModels)
+    }
+  }
+
+  internal fun alwaysGenerateTypesMatching(): Set<String> {
+    if (alwaysGenerateTypesMatching.isPresent) {
+      // The user specified something, use this!
+      return alwaysGenerateTypesMatching.get()
+    }
+
+    if (downstreamDependencies.isEmpty()) {
+      // No downstream dependency, generate everything because we don't know what types are going to be used downstream
+      return setOf(".*")
+    } else {
+      // get the used coordinates from the downstream dependencies
+      return emptySet()
+    }
+  }
+  internal fun flattenModels(): Boolean {
+    return flattenModels.getOrElse(when(codegenModels()) {
+      MODELS_RESPONSE_BASED -> false
+      else -> true
+    })
+  }
 }
