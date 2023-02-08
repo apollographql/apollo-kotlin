@@ -34,6 +34,15 @@ private constructor(
     val errors: List<Error>?,
 
     /**
+     * The exception that caused the failure of the execution.
+     * For instance this will be non null in case of network failure or cache miss.
+     * This will be null if the execution was successful.
+     * If this is non null, [data] and [errors] will be null.
+     */
+    @JvmField
+    val exception: ApolloException?,
+
+    /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
      */
     @JvmField
@@ -71,10 +80,10 @@ private constructor(
   @get:JvmName("dataAssertNoErrors")
   val dataAssertNoErrors: D
     get() {
-      return if (hasErrors()) {
-        throw ApolloException("The response has errors: $errors")
-      } else {
-        data ?: throw  ApolloException("The server did not return any data")
+      return when {
+        exception != null -> throw exception
+        hasErrors() -> throw ApolloException("The response has errors: $errors")
+        else -> data ?: throw ApolloException("The server did not return any data")
       }
     }
 
@@ -83,6 +92,7 @@ private constructor(
   fun newBuilder(): Builder<D> {
     return Builder(operation, requestUuid, data)
         .errors(errors)
+        .exception(exception)
         .extensions(extensions)
         .addExecutionContext(executionContext)
         .isLast(isLast)
@@ -95,6 +105,7 @@ private constructor(
   ) {
     private var executionContext: ExecutionContext = ExecutionContext.Empty
     private var errors: List<Error>? = null
+    private var exception: ApolloException? = null
     private var extensions: Map<String, Any?>? = null
     private var isLast = false
 
@@ -104,6 +115,10 @@ private constructor(
 
     fun errors(errors: List<Error>?) = apply {
       this.errors = errors
+    }
+
+    fun exception(exception: ApolloException?) = apply {
+      this.exception = exception
     }
 
     fun extensions(extensions: Map<String, Any?>?) = apply {
@@ -127,6 +142,7 @@ private constructor(
           executionContext = executionContext,
           extensions = extensions ?: emptyMap(),
           errors = errors,
+          exception = exception,
           isLast = isLast,
       )
     }
