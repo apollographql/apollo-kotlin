@@ -14,7 +14,6 @@ fun Project.isApolloKotlin3Project(): Boolean = dependsOn("com.apollographql.apo
 private fun Project.dependsOn(groupId: String): Boolean {
   var found = false
   service<ProjectRootManager>().orderEntries().librariesOnly().forEachLibrary { library ->
-    logd("library=${library.name}")
     if (library.name?.contains("$groupId:") == true) {
       found = true
       false

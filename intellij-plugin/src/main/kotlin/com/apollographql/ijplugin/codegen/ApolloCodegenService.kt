@@ -1,6 +1,8 @@
 package com.apollographql.ijplugin.codegen
 
+import com.apollographql.ijplugin.gradle.CODEGEN_GRADLE_TASK_NAME
 import com.apollographql.ijplugin.gradle.GradleHasSyncedListener
+import com.apollographql.ijplugin.gradle.getGradleRootPath
 import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
@@ -42,8 +44,6 @@ import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.util.concurrent.Executors
-
-private const val CODEGEN_GRADLE_TASK_NAME = "generateApolloSources"
 
 class ApolloCodegenService(
     private val project: Project,
@@ -181,12 +181,7 @@ class ApolloCodegenService(
     }
 
     val modules = ModuleManager.getInstance(project).modules
-    val firstModule = modules.firstOrNull()
-    val rootProjectPath = ExternalSystemApiUtil.getExternalRootProjectPath(firstModule)
-    if (rootProjectPath == null) {
-      logw("Could not get root project path for module ${firstModule?.name}")
-      return
-    }
+    val rootProjectPath = project.getGradleRootPath() ?: return
     val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
 
     gradleExecutorService.submit {
@@ -195,7 +190,7 @@ class ApolloCodegenService(
         gradleCodegenCancellation = GradleConnector.newCancellationTokenSource()
         logd("Start Gradle")
         try {
-          val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.REFRESH_TASKS_LIST, project)
+          val id = ExternalSystemTaskId.create(GRADLE_SYSTEM_ID, ExternalSystemTaskType.EXECUTE_TASK, project)
           gradleExecutionHelper.getBuildLauncher(id, connection, executionSettings, ExternalSystemTaskNotificationListenerAdapter.NULL_OBJECT)
               .forTasks(CODEGEN_GRADLE_TASK_NAME)
               .withCancellationToken(gradleCodegenCancellation!!.token())
@@ -268,5 +263,6 @@ class ApolloCodegenService(
   override fun dispose() {
     logd("project=${project.name}")
     stopContinuousGradleCodegen()
+    gradleExecutorService.shutdown()
   }
 }

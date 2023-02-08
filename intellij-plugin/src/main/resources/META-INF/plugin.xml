@@ -51,6 +51,9 @@
     <!-- Listen to Gradle sync -->
     <externalSystemTaskNotificationListener implementation="com.apollographql.ijplugin.gradle.GradleListener" />
 
+    <!-- Tooling model -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.gradle.GradleToolingModelService" />
+
   </extensions>
 
   <applicationListeners>
