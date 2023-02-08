@@ -5,9 +5,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiUtilCore
 
 fun Project.findPsiFilesByName(fileName: String, searchScope: GlobalSearchScope): List<PsiFile> {
-  return FilenameIndex.getVirtualFilesByName(fileName, searchScope).mapNotNull {
-    PsiManager.getInstance(this).findFile(it)
-  }
+  val virtualFiles = FilenameIndex.getVirtualFilesByName(fileName, searchScope)
+  return PsiUtilCore.toPsiFiles(PsiManager.getInstance(this), virtualFiles)
 }
