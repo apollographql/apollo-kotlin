@@ -21,10 +21,13 @@ import com.apollographql.apollo3.internal.multipartBodyFlow
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
+import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class HttpNetworkTransport
@@ -52,47 +55,86 @@ private constructor(
   ): Flow<ApolloResponse<D>> {
     return flow {
       val millisStart = currentTimeMillis()
-      val httpResponse = DefaultHttpInterceptorChain(
-          interceptors = interceptors + engineInterceptor,
-          index = 0
-      ).proceed(httpRequest)
+      var apolloException: ApolloException? = null
+      val httpResponse: HttpResponse? = try {
+        DefaultHttpInterceptorChain(
+            interceptors = interceptors + engineInterceptor,
+            index = 0
+        ).proceed(httpRequest)
+      } catch (e: ApolloException) {
+        apolloException = e
+        null
+      }
 
-      if (httpResponse.statusCode !in 200..299) {
-        val maybeBody = if (exposeErrorBody) {
-          httpResponse.body
-        } else {
-          httpResponse.body?.close()
-          null
+      emitAll(when {
+        httpResponse == null -> {
+          errorResponse(request.operation, apolloException)
         }
-        throw ApolloHttpException(
-            statusCode = httpResponse.statusCode,
-            headers = httpResponse.headers,
-            body = maybeBody,
-            message = "Http request failed with status code `${httpResponse.statusCode}`"
-        )
-      }
 
-      // When using @defer, the response contains multiple parts, using the multipart content type.
-      // See https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md
-      if (httpResponse.isMultipart) {
-        emitAll(
-            multipleResponses(request.operation, customScalarAdapters, httpResponse)
-                .map { it.withHttpInfo(request.requestUuid, httpResponse, millisStart) }
-        )
-      } else {
-        emit(
-            singleResponse(request.operation, customScalarAdapters, httpResponse)
-                .withHttpInfo(request.requestUuid, httpResponse, millisStart)
-        )
+        httpResponse.statusCode !in 200..299 -> {
+          errorResponse(request.operation, httpResponse)
+        }
+
+        // When using @defer, the response contains multiple parts, using the multipart content type.
+        // See https://github.com/graphql/graphql-over-http/blob/main/rfcs/IncrementalDelivery.md
+        httpResponse.isMultipart -> {
+          multipleResponses(request.operation, customScalarAdapters, httpResponse)
+        }
+
+        else -> {
+          singleResponse(request.operation, customScalarAdapters, httpResponse)
+        }
       }
+          .map {
+            it.withHttpInfo(request.requestUuid, httpResponse, millisStart)
+          }
+      )
     }
+        .catch { e ->
+          if (e is ApolloException) {
+            emitAll(errorResponse(request.operation, e))
+          } else {
+            throw e
+          }
+        }
+  }
+
+  private fun <D : Operation.Data> errorResponse(
+      operation: Operation<D>,
+      apolloException: ApolloException?,
+  ) =
+      flowOf(ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = null)
+          .exception(apolloException)
+          .isLast(true)
+          .build())
+
+  private fun <D : Operation.Data> errorResponse(
+      operation: Operation<D>,
+      httpResponse: HttpResponse,
+  ): Flow<ApolloResponse<D>> {
+    val maybeBody = if (exposeErrorBody) {
+      httpResponse.body
+    } else {
+      httpResponse.body?.close()
+      null
+    }
+    val apolloException = ApolloHttpException(
+        statusCode = httpResponse.statusCode,
+        headers = httpResponse.headers,
+        body = maybeBody,
+        message = "Http request failed with status code `${httpResponse.statusCode}`"
+    )
+    return flowOf(ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = null)
+        .exception(apolloException)
+        .isLast(true)
+        .build())
   }
 
   private fun <D : Operation.Data> singleResponse(
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
       httpResponse: HttpResponse,
-  ): ApolloResponse<D> {
+  ): Flow<ApolloResponse<D>> {
     val response = try {
       operation.parseJsonResponse(
           jsonReader = httpResponse.body!!.jsonReader(),
@@ -102,7 +144,7 @@ private constructor(
       throw wrapThrowableIfNeeded(e)
     }
 
-    return response.newBuilder().isLast(true).build()
+    return flowOf(response.newBuilder().isLast(true).build())
   }
 
   private fun <D : Operation.Data> multipleResponses(
@@ -130,19 +172,23 @@ private constructor(
 
   private fun <D : Operation.Data> ApolloResponse<D>.withHttpInfo(
       requestUuid: Uuid,
-      httpResponse: HttpResponse,
+      httpResponse: HttpResponse?,
       millisStart: Long,
   ) = newBuilder()
       .requestUuid(requestUuid)
-      .addExecutionContext(
-          @Suppress("DEPRECATION")
-          HttpInfo(
-              startMillis = millisStart,
-              endMillis = currentTimeMillis(),
-              statusCode = httpResponse.statusCode,
-              headers = httpResponse.headers
+      .apply {
+        if (httpResponse != null) {
+          addExecutionContext(
+              @Suppress("DEPRECATION")
+              HttpInfo(
+                  startMillis = millisStart,
+                  endMillis = currentTimeMillis(),
+                  statusCode = httpResponse.statusCode,
+                  headers = httpResponse.headers
+              )
           )
-      )
+        }
+      }
       .build()
 
   inner class EngineInterceptor : HttpInterceptor {

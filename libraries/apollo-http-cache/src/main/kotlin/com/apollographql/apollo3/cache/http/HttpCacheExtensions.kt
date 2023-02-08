@@ -22,7 +22,6 @@ import com.apollographql.apollo3.network.http.HttpInterceptor
 import com.apollographql.apollo3.network.http.HttpInterceptorChain
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -120,15 +119,10 @@ fun ApolloClient.Builder.httpCache(
       )
           .run {
             if (request.operation is Query<*> || request.operation is Mutation<*>) {
-              catch { throwable ->
+              onEach { response ->
                 // Revert caching of responses with errors
                 val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
-                cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
-                throw throwable
-              }.onEach { response ->
-                // Revert caching of responses with errors
-                val cacheKey = synchronized(apolloRequestToCacheKey) { apolloRequestToCacheKey[request.requestUuid.toString()] }
-                if (response.hasErrors()) {
+                if (response.hasErrors() || response.exception != null) {
                   cacheKey?.let { cachingHttpInterceptor.cache.remove(it) }
                 }
               }.onCompletion {
