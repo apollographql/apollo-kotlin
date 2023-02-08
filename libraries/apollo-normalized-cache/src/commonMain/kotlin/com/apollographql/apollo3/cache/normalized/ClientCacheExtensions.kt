@@ -280,17 +280,6 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
 )
 
 /**
- * @param emitCacheMisses Whether to emit cache misses instead of throwing.
- * The returned response will have `response.data == null`
- * You can read `response.cacheInfo` to get more information about the cache miss
- *
- * Default: false
- */
-fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = addExecutionContext(
-    EmitCacheMissesContext(emitCacheMisses)
-)
-
-/**
  * @param storePartialResponses Whether to store partial responses.
  *
  * Errors are not stored in the cache and are therefore not replayed on cache reads.
@@ -417,9 +406,6 @@ internal val <D : Operation.Data> ApolloRequest<D>.storePartialResponses
 
 internal val <D : Operation.Data> ApolloRequest<D>.storeReceiveDate
   get() = executionContext[StoreReceiveDateContext]?.value ?: false
-
-internal val <D : Operation.Data> ApolloRequest<D>.emitCacheMisses
-  get() = executionContext[EmitCacheMissesContext]?.value ?: false
 
 internal val <D : Operation.Data> ApolloRequest<D>.writeToCacheAsynchronously
   get() = executionContext[WriteToCacheAsynchronouslyContext]?.value ?: false
@@ -616,13 +602,6 @@ internal class CacheHeadersContext(val value: CacheHeaders) : ExecutionContext.E
     get() = Key
 
   companion object Key : ExecutionContext.Key<CacheHeadersContext>
-}
-
-internal class EmitCacheMissesContext(val value: Boolean) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<EmitCacheMissesContext>
 }
 
 internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : ExecutionContext.Element {
