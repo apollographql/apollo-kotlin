@@ -31,6 +31,7 @@ import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtil
 import org.gradle.tooling.CancellationTokenSource
 import org.gradle.tooling.GradleConnector
@@ -39,7 +40,7 @@ import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.ProgressListener
 import org.gradle.tooling.events.StartEvent
 import org.gradle.tooling.events.SuccessResult
-import org.jetbrains.kotlin.idea.framework.GRADLE_SYSTEM_ID
+import org.jetbrains.kotlin.idea.configuration.GRADLE_SYSTEM_ID
 import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
@@ -48,9 +49,9 @@ import java.util.concurrent.Executors
 class ApolloCodegenService(
     private val project: Project,
 ) : Disposable {
-  private var documentChangesDisposable: Disposable? = null
-  private var fileEditorChangesDisposable: Disposable? = null
-  private var gradleHasSyncedDisposable: Disposable? = null
+  private var documentChangesDisposable: CheckedDisposable? = null
+  private var fileEditorChangesDisposable: CheckedDisposable? = null
+  private var gradleHasSyncedDisposable: CheckedDisposable? = null
 
   private var dirtyGqlDocument: Document? = null
 
@@ -115,7 +116,7 @@ class ApolloCodegenService(
       return
     }
 
-    val disposable = newDisposable("documentChanges")
+    val disposable = newDisposable()
     documentChangesDisposable = disposable
     EditorFactory.getInstance().eventMulticaster.addDocumentListener(object : DocumentListener {
       override fun documentChanged(event: DocumentEvent) {
@@ -145,7 +146,7 @@ class ApolloCodegenService(
       return
     }
 
-    val disposable = newDisposable("fileEditorChanges")
+    val disposable = newDisposable()
     fileEditorChangesDisposable = disposable
     project.messageBus.connect(disposable).subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, object : FileEditorManagerListener {
       override fun selectionChanged(event: FileEditorManagerEvent) {
@@ -243,7 +244,7 @@ class ApolloCodegenService(
       return
     }
 
-    val disposable = newDisposable("gradleHasSynced")
+    val disposable = newDisposable()
     gradleHasSyncedDisposable = disposable
     project.messageBus.connect(disposable).subscribe(GradleHasSyncedListener.TOPIC, object : GradleHasSyncedListener {
       override fun gradleHasSynced() {
