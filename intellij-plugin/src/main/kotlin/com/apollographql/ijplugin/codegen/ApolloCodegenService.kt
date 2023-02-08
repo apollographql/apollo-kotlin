@@ -8,7 +8,7 @@ import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.settings.SettingsListener
 import com.apollographql.ijplugin.settings.SettingsState
 import com.apollographql.ijplugin.settings.settingsState
-import com.apollographql.ijplugin.util.apolloGeneratedSourcesRoot
+import com.apollographql.ijplugin.util.apolloGeneratedSourcesRoots
 import com.apollographql.ijplugin.util.dispose
 import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
@@ -211,7 +211,7 @@ class ApolloCodegenService(
                       is SuccessResult -> {
                         logd("Gradle build success, marking generated source roots as dirty")
                         // Mark the generated sources dirty so the files are visible to the IDE
-                        val generatedSourceRoots = modules.mapNotNull { it.apolloGeneratedSourcesRoot() }
+                        val generatedSourceRoots = modules.flatMap { it.apolloGeneratedSourcesRoots() }
                         logd("Mark dirty $generatedSourceRoots")
                         VfsUtil.markDirtyAndRefresh(true, true, true, *generatedSourceRoots.toTypedArray())
                       }
