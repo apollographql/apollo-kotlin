@@ -10,6 +10,7 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runTest
+import okio.use
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.test.fail
