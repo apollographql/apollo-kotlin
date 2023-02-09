@@ -30,6 +30,7 @@ class TestConventionPlugin : Plugin<Project> {
     interface MppConfiguration {
       val withJs: Property<Boolean>
       val withJvm: Property<Boolean>
+      val browserTest: Property<Boolean>
       val newMemoryManager: Property<Boolean>
       val appleTargets: SetProperty<String>
     }
@@ -42,6 +43,7 @@ class TestConventionPlugin : Plugin<Project> {
       project.configureMppTestsDefaults(
           withJs = mppConfiguration.withJs.getOrElse(true),
           withJvm = mppConfiguration.withJvm.getOrElse(true),
+          browserTest = mppConfiguration.browserTest.getOrElse(false),
           newMemoryManager = mppConfiguration.newMemoryManager.getOrElse(true),
           appleTargets = mppConfiguration.appleTargets.get().ifEmpty { setOf("macosArm64", "macosX64") }
       )
