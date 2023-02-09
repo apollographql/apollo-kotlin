@@ -86,7 +86,6 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
     val (protocolHeaderNames, otherHeaderNames) = headers.names().partition { it.equals("sec-websocket-protocol", true) }
     val protocols = protocolHeaderNames.mapNotNull { headers.getAll(it) }.flatten().toTypedArray()
     return if (PlatformUtils.IS_NODE) {
-      println("using node")
       val ws_capturingHack = js("eval('require')('ws')")
       val headers_capturingHack: dynamic = object {}
       headers.forEach { name, values ->
@@ -94,7 +93,6 @@ actual class DefaultWebSocketEngine : WebSocketEngine {
       }
       js("new ws_capturingHack(urlString_capturingHack, protocols, { headers: headers_capturingHack })")
     } else {
-      println("using browser")
       check(otherHeaderNames.isEmpty()) {
         "Apollo: the WebSocket browser API doesn't allow passing headers. Use connectionPayload or other mechanisms."
       }

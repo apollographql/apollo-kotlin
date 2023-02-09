@@ -84,7 +84,6 @@ fun Project.configureMpp(
     if (enabledJs && withJs) {
       js(IR) {
         if (browserTest) {
-          println("browserTest")
           browser {
             testTask {
               useKarma {
