@@ -199,7 +199,7 @@ object SchemaDownloader {
         isDeprecated
         deprecationReason
       }
-      inputFields {
+      inputFields(includeDeprecated: true {
         ...InputValue
       }
       interfaces {
