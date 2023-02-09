@@ -529,13 +529,8 @@ abstract class DefaultApolloExtension(
       }
 
       project.androidExtension != null -> {
-        if (hasExplicitService) {
-          // The default service is created from `afterEvaluate` and it looks like it's too late to register new sources
-          @Suppress("DEPRECATION")
-          connection.connectToAndroidSourceSet("main")
-        } else {
-          connection.connectToAllAndroidVariants()
-        }
+        // The default service is created from `afterEvaluate` and it looks like it's too late to register new sources
+        connection.connectToAndroidSourceSet("main")
       }
 
       project.kotlinProjectExtension != null -> {
