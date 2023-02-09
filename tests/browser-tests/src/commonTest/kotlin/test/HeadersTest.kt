@@ -28,7 +28,9 @@ class WatcherTest {
         .build()
 
     try {
-      client.subscription(NothingSubscription()).toFlow().collect()
+      client.use {
+        it.subscription(NothingSubscription()).toFlow().collect()
+      }
       fail()
     } catch (e: ApolloNetworkException) {
       assertTrue(e.cause?.message?.contains("Apollo: the WebSocket browser API doesn't allow passing headers") == true)
