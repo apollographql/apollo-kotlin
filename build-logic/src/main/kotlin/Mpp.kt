@@ -48,12 +48,14 @@ fun Project.configureMppDefaults(withJs: Boolean, withLinux: Boolean, withAndroi
 fun Project.configureMppTestsDefaults(
     withJs: Boolean,
     withJvm: Boolean,
+    browserTest: Boolean,
     newMemoryManager: Boolean,
     appleTargets: Collection<String>,
 ) {
   configureMpp(
       withJvm = withJvm,
       withJs = withJs,
+      browserTest = browserTest,
       withLinux = false,
       withAndroid = false,
       appleTargets = appleTargets,
@@ -68,6 +70,7 @@ fun Project.configureMpp(
     withAndroid: Boolean,
     appleTargets: Collection<String>,
     newMemoryManager: Boolean?,
+    browserTest: Boolean = false,
 ) {
   val kotlinExtension = extensions.findByName("kotlin") as? KotlinMultiplatformExtension
   check(kotlinExtension != null) {
@@ -80,11 +83,21 @@ fun Project.configureMpp(
 
     if (enabledJs && withJs) {
       js(IR) {
-        nodejs {
-          testTask {
-            useMocha {
-              // Override default 2s timeout
-              timeout = "120s"
+        if (browserTest) {
+          browser {
+            testTask {
+              useKarma {
+                useChromeHeadless()
+              }
+            }
+          }
+        } else {
+          nodejs {
+            testTask {
+              useMocha {
+                // Override default 2s timeout
+                timeout = "120s"
+              }
             }
           }
         }
