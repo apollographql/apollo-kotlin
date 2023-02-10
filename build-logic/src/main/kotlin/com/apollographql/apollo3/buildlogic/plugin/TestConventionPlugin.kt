@@ -27,11 +27,16 @@ class TestConventionPlugin : Plugin<Project> {
   }
 
   abstract class Extension(private val project: Project) {
-    interface MppConfiguration {
-      val withJs: Property<Boolean>
-      val withJvm: Property<Boolean>
-      val newMemoryManager: Property<Boolean>
-      val appleTargets: SetProperty<String>
+    abstract class MppConfiguration {
+      abstract val withJs: Property<Boolean>
+      abstract val withJvm: Property<Boolean>
+      abstract val browserTest: Property<Boolean>
+      abstract val newMemoryManager: Property<Boolean>
+      abstract val appleTargets: SetProperty<String>
+
+      init {
+        appleTargets.convention(null as List<String>?)
+      }
     }
 
     @get:Nested
@@ -42,8 +47,9 @@ class TestConventionPlugin : Plugin<Project> {
       project.configureMppTestsDefaults(
           withJs = mppConfiguration.withJs.getOrElse(true),
           withJvm = mppConfiguration.withJvm.getOrElse(true),
+          browserTest = mppConfiguration.browserTest.getOrElse(false),
           newMemoryManager = mppConfiguration.newMemoryManager.getOrElse(true),
-          appleTargets = mppConfiguration.appleTargets.get().ifEmpty { setOf("macosArm64", "macosX64") }
+          appleTargets = mppConfiguration.appleTargets.orElse(setOf("macosArm64", "macosX64")).get()
       )
     }
   }
