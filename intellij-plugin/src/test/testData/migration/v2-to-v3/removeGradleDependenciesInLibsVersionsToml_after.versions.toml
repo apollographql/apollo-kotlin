@@ -1,7 +1,7 @@
 [versions]
 # gradlePlugin versions
 androidBuildTools = "7.2.1"
-apollo = "3.7.1"
+apollo = "3.7.4"
 
 [libraries]
 accompanist-insets = { module = "com.google.accompanist:accompanist-insets", version.ref = "accompanist" }

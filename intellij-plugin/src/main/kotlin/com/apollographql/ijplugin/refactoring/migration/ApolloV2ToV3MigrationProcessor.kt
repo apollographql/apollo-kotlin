@@ -64,7 +64,7 @@ class ApolloV2ToV3MigrationProcessor(project: Project) : BaseRefactoringProcesso
   private companion object {
     private const val apollo2 = "com.apollographql.apollo"
     private const val apollo3 = "com.apollographql.apollo3"
-    private const val apollo3LatestVersion = "3.7.1"
+    private const val apollo3LatestVersion = "3.7.4"
 
     private val migrationItems = arrayOf(
         // Apollo API / Runtime

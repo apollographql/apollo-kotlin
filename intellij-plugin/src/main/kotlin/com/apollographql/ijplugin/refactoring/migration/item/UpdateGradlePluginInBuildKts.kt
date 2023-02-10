@@ -1,10 +1,10 @@
 package com.apollographql.ijplugin.refactoring.migration.item
 
+import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.quoted
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiMigration
-import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -22,7 +22,7 @@ class UpdateGradlePluginInBuildKts(
     private val newPluginVersion: String,
 ) : MigrationItem() {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
-    val buildGradleKtsFiles: Array<PsiFile> = FilenameIndex.getFilesByName(project, "build.gradle.kts", searchScope)
+    val buildGradleKtsFiles: List<PsiFile> = project.findPsiFilesByName("build.gradle.kts", searchScope)
     val usages = mutableListOf<MigrationItemUsageInfo>()
     for (file in buildGradleKtsFiles) {
       if (file !is KtFile) continue

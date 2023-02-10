@@ -24,6 +24,6 @@ private fun Project.dependsOn(groupId: String): Boolean {
   return found
 }
 
-fun Module.apolloGeneratedSourcesRoot(): VirtualFile? {
-  return this.rootManager.contentRoots.firstOrNull { it.path.contains("generated/source/apollo") }
+fun Module.apolloGeneratedSourcesRoots(): List<VirtualFile> {
+  return this.rootManager.contentRoots.filter { it.path.contains("generated/source/apollo") }
 }
