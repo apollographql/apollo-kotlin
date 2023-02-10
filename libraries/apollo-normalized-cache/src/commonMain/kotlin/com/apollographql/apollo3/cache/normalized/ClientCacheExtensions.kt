@@ -125,25 +125,15 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 /**
  * Gets the result from the network, then observes the cache for any changes.
  * [fetchPolicy] will control how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
- * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
- * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
- *
- * @param fetchThrows whether to throw if an [ApolloException] happens during the initial fetch. Default: false
- * @param refetchThrows whether to throw if an [ApolloException] happens during a refetch. Default: false
  */
 @JvmOverloads
-fun <D : Query.Data> ApolloCall<D>.watch(
-    fetchThrows: Boolean = false,
-    refetchThrows: Boolean = false,
-): Flow<ApolloResponse<D>> {
+fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {
     var lastResponse: ApolloResponse<D>? = null
     var response: ApolloResponse<D>? = null
 
     toFlow()
-        .catch {
-          if (it !is ApolloException || fetchThrows) throw it
-        }.collect {
+        .collect {
           response = it
 
           if (it.isLast) {
@@ -170,10 +160,8 @@ fun <D : Query.Data> ApolloCall<D>.watch(
         }
 
     copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-        .watch(response?.data) { _, _ ->
-          // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
-          !refetchThrows
-        }.onStart {
+        .watch(response?.data)
+        .onStart {
           if (lastResponse != null) {
             emit(lastResponse!!)
           }
@@ -185,14 +173,10 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 
 /**
  * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
- * Network and cache exceptions are ignored by default, this can be controlled with the [retryWhen] lambda.
  * The fetch policy set by [fetchPolicy] will be used.
  */
-fun <D : Query.Data> ApolloCall<D>.watch(
-    data: D?,
-    retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean = { _, _ -> true },
-): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(data, retryWhen)).toFlow()
+fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
 
 /**
@@ -614,7 +598,6 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
 
 internal class WatchContext(
     val data: Query.Data?,
-    val retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean,
 ) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
