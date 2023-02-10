@@ -22,7 +22,6 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -30,7 +29,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.HttpInfo
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -126,7 +124,6 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
  * Gets the result from the network, then observes the cache for any changes.
  * [fetchPolicy] will control how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
  */
-@JvmOverloads
 fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {
     var lastResponse: ApolloResponse<D>? = null
@@ -177,37 +174,6 @@ fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
  */
 fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
   return copy().addExecutionContext(WatchContext(data)).toFlow()
-}
-
-/**
- * Gets the result from the cache first and always fetch from the network. Use this to get an early
- * cached result while also updating the network values.
- *
- * Any [FetchPolicy] previously set will be ignored
- */
-fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
-  return flow {
-    var cacheException: ApolloException? = null
-    var networkException: ApolloException? = null
-    try {
-      emit(copy().fetchPolicy(FetchPolicy.CacheOnly).execute())
-    } catch (e: ApolloException) {
-      cacheException = e
-    }
-
-    try {
-      emit(copy().fetchPolicy(FetchPolicy.NetworkOnly).execute())
-    } catch (e: ApolloException) {
-      networkException = e
-    }
-
-    if (cacheException != null && networkException != null) {
-      throw ApolloCompositeException(
-          first = cacheException,
-          second = networkException
-      )
-    }
-  }
 }
 
 val ApolloClient.apolloStore: ApolloStore
