@@ -3,13 +3,14 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.exception.ApolloCompositeException
+import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.toList
 
 /**
  * An [ApolloCall] is a thin class that builds a [ApolloRequest] and calls [ApolloClient].execute() with it.
@@ -100,9 +101,23 @@ class ApolloCall<D : Operation.Data> internal constructor(
   /**
    * A shorthand for `toFlow().single()`.
    * Use this for queries and mutation to get a single [ApolloResponse] from the network or the cache.
-   * For subscriptions, you usually want to use [toFlow] instead to listen to all values.
+   * For subscriptions or operations with `@defer`, you usually want to use [toFlow] instead to listen to all values.
    */
   suspend fun execute(): ApolloResponse<D> {
-    return toFlow().single()
+    val responses = toFlow().toList()
+    val (errors, successes) = responses.partition { it.exception != null }
+    if (successes.size > 1) {
+      throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
+    } else if (successes.isEmpty()) {
+      if (errors.size == 1) {
+        throw errors[0].exception!!
+      } else if (errors.size > 1) {
+        throw ApolloCompositeException(errors[0].exception, errors[1].exception)
+      } else {
+        throw ApolloException("The operation did not emit any item, check your interceptor chain")
+      }
+    } else {
+      return successes.first()
+    }
   }
 }
