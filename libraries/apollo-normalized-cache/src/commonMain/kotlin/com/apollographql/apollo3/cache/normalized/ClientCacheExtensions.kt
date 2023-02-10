@@ -41,8 +41,9 @@ enum class FetchPolicy {
   /**
    * Try the cache, if that failed, try the network.
    *
-   * An [ApolloCompositeException] is thrown if the data is not in the cache and the network call failed.
-   * If coming from the cache 1 value is emitted, otherwise 1 or multiple values can be emitted from the network.
+   * 1 value from the cache is emitted first (with a non null [ApolloResponse.exception] if it's a cache miss),
+   * and then, if it's a cache miss, 1 or multiple values from the network are emitted (with a non null [ApolloResponse.exception] if there
+   * was a network error).
    *
    * This is the default behaviour.
    */
@@ -51,31 +52,31 @@ enum class FetchPolicy {
   /**
    * Only try the cache.
    *
-   * A [CacheMissException] is thrown if the data is not in the cache, otherwise 1 value is emitted.
+   * 1 value is emitted, with a non null [ApolloResponse.exception] if it's a cache miss.
    */
   CacheOnly,
 
   /**
    * Try the network, if that failed, try the cache.
    *
-   * An [ApolloCompositeException] is thrown if the network call failed and the data is not in the cache.
-   * If coming from the network 1 or multiple values can be emitted, otherwise 1 value is emitted from the cache.
+   * 1 or multiple values from the network are emitted (with a non null [ApolloResponse.exception] if there was a network error),
+   * and then, if there was a network error, 1 value from the cache is emitted (with a non null [ApolloResponse.exception] if it's a cache
+   * miss).
    */
   NetworkFirst,
 
   /**
    * Only try the network.
    *
-   * An [ApolloException] is thrown if the network call failed, otherwise 1 or multiple values can be emitted.
+   * 1 or multiple values are emitted, with a non null [ApolloResponse.exception] if there was a network error.
    */
   NetworkOnly,
 
   /**
    * Try the cache, then also try the network.
    *
-   * If the data is in the cache, it is emitted, if not, no exception is thrown at that point. Then the network call is made, and if
-   * successful the value(s) are emitted, otherwise either an [ApolloCompositeException] (both cache miss and network failed) or an
-   * [ApolloException] (only network failed) is thrown.
+   * 1 value from the cache is emitted first (with a non null [ApolloResponse.exception] if it's a cache miss),
+   * and then, 1 or multiple values from the network are emitted (with a non null [ApolloResponse.exception] if there was a network error).
    */
   CacheAndNetwork,
 }

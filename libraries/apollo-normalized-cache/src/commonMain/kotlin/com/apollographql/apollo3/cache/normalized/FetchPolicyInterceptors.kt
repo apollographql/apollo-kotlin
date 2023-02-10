@@ -6,21 +6,20 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
 import kotlin.jvm.JvmName
 
 /**
- * An interceptor that goes to the cache only
+ * An interceptor that emits the response from the cache only.
  */
 val CacheOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
@@ -33,6 +32,9 @@ val CacheOnlyInterceptor = object : ApolloInterceptor {
   }
 }
 
+/**
+ * An interceptor that emits the response(s) from the network only.
+ */
 val NetworkOnlyInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return chain.proceed(request)
@@ -40,76 +42,62 @@ val NetworkOnlyInterceptor = object : ApolloInterceptor {
 }
 
 /**
- * An interceptor that goes to cache first and then to the network if it fails
+ * An interceptor that emits the response from the cache first, and if there was a cache miss, emits the response(s) from the network.
  */
 val CacheFirstInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      var cacheException: ApolloException? = null
-      var networkException: ApolloException? = null
-
       val cacheResponse = chain.proceed(
           request = request
               .newBuilder()
               .fetchFromCache(true)
               .build()
-      ).catch { throwable ->
-        if (throwable is ApolloException) {
-          cacheException = throwable
-        } else {
-          throw throwable
-        }
-      }.singleOrNull()
-
-      if (cacheResponse != null) {
-        emit(cacheResponse)
+      ).single()
+      emit(cacheResponse.newBuilder().isLast(cacheResponse.exception == null).build())
+      if (cacheResponse.exception == null) {
         return@flow
       }
 
       val networkResponses = chain.proceed(
           request = request
-      ).catch {
-        if (it is ApolloException) {
-          networkException = it
-        } else {
-          throw it
-        }
-      }.map { response ->
+      ).map { response ->
         response.newBuilder()
             .cacheInfo(
                 response.cacheInfo!!
                     .newBuilder()
-                    .cacheMissException(cacheException as? CacheMissException)
+                    .networkException(response.exception)
+                    .cacheMissException(cacheResponse.exception as? CacheMissException)
                     .build()
             )
             .build()
       }
 
       emitAll(networkResponses)
-
-      if (networkException != null) {
-        throw ApolloCompositeException(
-            first = cacheException,
-            second = networkException
-        )
-      }
     }
   }
 }
 
+/**
+ * An interceptor that emits the response(s) from the network first, and if there was a network error, emits the response from the cache.
+ */
 val NetworkFirstInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      var cacheException: ApolloException? = null
       var networkException: ApolloException? = null
 
       val networkResponses = chain.proceed(
           request = request
-      ).catch {
-        if (it is ApolloException) {
-          networkException = it
+      ).onEach { response ->
+        if (response.exception != null && networkException == null) {
+          networkException = response.exception
+        }
+      }.map { response ->
+        if (networkException != null) {
+          response.newBuilder()
+              .isLast(false)
+              .build()
         } else {
-          throw it
+          response
         }
       }
 
@@ -123,93 +111,50 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
               .newBuilder()
               .fetchFromCache(true)
               .build()
-      ).catch {
-        if (it is ApolloException) {
-          cacheException = it
-        } else {
-          throw it
-        }
-      }.singleOrNull()
-
-      if (cacheResponse != null) {
-        emit(
-            cacheResponse.newBuilder()
-                .cacheInfo(
-                    cacheResponse.cacheInfo!!
-                        .newBuilder()
-                        .networkException(networkException)
-                        .build()
-                )
-                .build()
-        )
-        return@flow
-      }
-
-      throw ApolloCompositeException(
-          first = networkException,
-          second = cacheException,
+      ).single()
+      emit(
+          cacheResponse.newBuilder()
+              .cacheInfo(
+                  cacheResponse.cacheInfo!!
+                      .newBuilder()
+                      .networkException(networkException)
+                      .cacheMissException(cacheResponse.exception as? CacheMissException)
+                      .build()
+              )
+              .build()
       )
     }
   }
 }
 
 /**
- * An interceptor that goes to cache first and then to the network.
- * An exception is not thrown if the cache fails, whereas an exception will be thrown upon network failure.
+ * An interceptor that emits the response from the cache first, and then emits the response(s) from the network.
  */
 val CacheAndNetworkInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
-      var cacheException: ApolloException? = null
-      var networkException: ApolloException? = null
-
       val cacheResponse = chain.proceed(
-          request = request
-              .newBuilder()
+          request = request.newBuilder()
               .fetchFromCache(true)
               .build()
-      ).catch { throwable ->
-        if (throwable is ApolloException) {
-          cacheException = throwable
-        } else {
-          throw throwable
-        }
-      }.singleOrNull()
+      ).single()
 
-      if (cacheResponse != null) {
-        emit(cacheResponse.newBuilder().isLast(false).build())
-      }
+      emit(cacheResponse.newBuilder().isLast(false).build())
 
       val networkResponses = chain.proceed(request)
-          .catch {
-            if (it is ApolloException) {
-              networkException = it
-            } else {
-              throw it
-            }
-          }
           .map { response ->
             response.newBuilder()
                 .cacheInfo(
                     response.cacheInfo!!
                         .newBuilder()
-                        .cacheMissException(cacheException as? CacheMissException)
+                        .cacheMissException(cacheResponse.exception as? CacheMissException)
+                        .networkException(response.exception)
                         .build()
                 )
                 .build()
           }
 
       emitAll(networkResponses)
-
-      if (networkException != null) {
-        if (cacheException != null) {
-          throw ApolloCompositeException(
-              first = cacheException,
-              second = networkException
-          )
-        }
-        throw networkException!!
-      }
     }
   }
 }
