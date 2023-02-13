@@ -99,3 +99,30 @@ tasks.withType(AbstractTestTask::class.java) {
     filter.setExcludePatterns("test.DeferWithRouterTest")
   }
 }
+
+// See https://youtrack.jetbrains.com/issue/KT-56019
+val myAttribute = Attribute.of("com.apollographql.test", String::class.java)
+
+configurations.named("jvmApiElements").configure {
+  attributes {
+    attribute(myAttribute, "jvm")
+  }
+}
+
+configurations.named("javaCodegenApiElements").configure {
+  attributes {
+    attribute(myAttribute, "java")
+  }
+}
+
+configurations.named("jvmRuntimeElements").configure {
+  attributes {
+    attribute(myAttribute, "jvm-runtime")
+  }
+}
+
+configurations.named("javaCodegenRuntimeElements").configure {
+  attributes {
+    attribute(myAttribute, "java-runtime")
+  }
+}

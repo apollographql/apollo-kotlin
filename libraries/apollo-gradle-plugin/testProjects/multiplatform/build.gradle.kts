@@ -33,3 +33,18 @@ apollo {
         packageNamesFromFilePaths()
     }
 }
+
+// See https://youtrack.jetbrains.com/issue/KT-56019
+val myAttribute = Attribute.of("com.apollographql.test", String::class.java)
+
+configurations.named("releaseFrameworkIosFat").configure {
+    attributes {
+        attribute(myAttribute, "release-all")
+    }
+}
+
+configurations.named("debugFrameworkIosFat").configure {
+    attributes {
+        attribute(myAttribute, "debug-all")
+    }
+}

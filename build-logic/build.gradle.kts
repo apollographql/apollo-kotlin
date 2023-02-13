@@ -31,6 +31,8 @@ dependencies {
   implementation(golatac.lib("vespene"))
   implementation(golatac.lib("poet.java"))
   implementation(golatac.lib("poet.kotlin"))
+  implementation(golatac.lib("intellij.plugin"))
+  implementation(golatac.lib("intellij.changelog"))
 
   // We want the KSP plugin to use the version from the classpath and not force a newer version
   // of the Gradle plugin

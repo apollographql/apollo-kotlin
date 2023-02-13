@@ -38,7 +38,7 @@ internal fun linkSqlite(project: Project) {
 }
 
 internal fun checkKotlinPluginVersion(project: Project) {
-  val version = project.getKotlinPluginVersion()!!
+  val version = project.getKotlinPluginVersion()
       .split(".")
       .take(2)
       .map { it.toInt() }

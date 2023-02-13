@@ -10,23 +10,23 @@ dependencies {
   add("implementation", libs.apollo.api)
 }
 
-configure<BaseExtension> {
-  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInt())
+android {
+  compileSdk = libs.versions.android.sdkversion.compile.get().toInt()
+  namespace = "com.example"
 
   defaultConfig {
-    minSdkVersion(libs.versions.android.sdkversion.min.get())
-    targetSdkVersion(libs.versions.android.sdkversion.target.get())
+    minSdk = libs.versions.android.sdkversion.min.get().toInt()
   }
 
   // This doesn't really make sense for a library project, but still allows to compile flavor source sets
-  flavorDimensions("version")
+  flavorDimensions.add("version")
   productFlavors {
-    create("demo") {
-      versionNameSuffix = "-demo"
-    }
-    create("full") {
-      versionNameSuffix = "-full"
-    }
+    create("demo")
+    create("full")
+  }
+
+  kotlinOptions {
+    jvmTarget = "1.8"
   }
 }
 

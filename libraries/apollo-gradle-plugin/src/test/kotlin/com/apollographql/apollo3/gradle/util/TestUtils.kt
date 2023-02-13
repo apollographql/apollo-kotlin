@@ -67,6 +67,15 @@ object TestUtils {
       appendLine()
 
       append("""
+        java {
+          toolchain { 
+            languageVersion.set(JavaLanguageVersion.of(8))
+          }
+        }
+      """.trimIndent())
+
+      appendLine()
+      append("""
         dependencies {
           add("implementation", libs.apollo.api)
         }
@@ -82,6 +91,7 @@ object TestUtils {
         append("""
             |android {
             |  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInteger())
+            |  namespace = "com.example"
             |
           """.trimMargin()
         )
