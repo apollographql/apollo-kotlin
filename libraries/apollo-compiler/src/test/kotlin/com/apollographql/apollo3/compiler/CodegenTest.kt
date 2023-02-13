@@ -319,10 +319,11 @@ class CodegenTest {
 
       val targetLanguage = if (generateKotlinModels) KOTLIN_1_5 else JAVA
       val targetLanguagePath = if (generateKotlinModels) "kotlin" else "java"
+      @Suppress("DEPRECATION")
       val flattenModels =  when  {
         folder.name in listOf("capitalized_fields", "companion") -> true
         targetLanguage == JAVA -> true
-        else -> false
+        else -> codegenModels == MODELS_COMPAT
       }
       val customScalarsMapping = if (folder.name in listOf(
               "custom_scalar_type",
