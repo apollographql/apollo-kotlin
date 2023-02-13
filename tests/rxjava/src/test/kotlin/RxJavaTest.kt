@@ -2,10 +2,11 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.rx2.rxSingle
+import com.apollographql.apollo3.rx2.rxFlowable
 import kotlinx.coroutines.runBlocking
 import rxjava.GetRandomQuery
 import java.util.concurrent.TimeUnit
@@ -36,11 +37,14 @@ class RxJavaTest {
     mockServer.enqueue(response)
 
     apolloClient.query(GetRandomQuery())
-        .rxSingle()
+        .rxFlowable()
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertComplete()
-        .assertValue {
+        .assertValueAt(0) {
+          it.exception is CacheMissException
+        }
+        .assertValueAt(1) {
           it.data?.random == 42
         }
   }
@@ -50,11 +54,15 @@ class RxJavaTest {
     mockServer.enqueue("bad response")
 
     apolloClient.query(GetRandomQuery())
-        .rxSingle()
+        .rxFlowable()
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
-        .assertError {
-          it is ApolloException
+        .assertComplete()
+        .assertValueAt(0) {
+          it.exception is CacheMissException
+        }
+        .assertValueAt(1) {
+          it.exception is JsonEncodingException
         }
   }
 }
