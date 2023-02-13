@@ -1,5 +1,5 @@
 [versions]
-android-plugin = "7.4.0"
+android-plugin = "7.4.0-beta02"
 android-plugin-min = "3.4.2"
 android-sdkversion-compile = "31"
 android-sdkversion-min = "15"
