@@ -32,7 +32,8 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public fun setHttpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)V
 	public fun setSendApqExtensions (Ljava/lang/Boolean;)V
 	public fun setSendDocument (Ljava/lang/Boolean;)V
-	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
+	public final fun toFlow (Z)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun toFlow$default (Lcom/apollographql/apollo3/ApolloCall;ZILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/ExecutionOptions, java/io/Closeable {

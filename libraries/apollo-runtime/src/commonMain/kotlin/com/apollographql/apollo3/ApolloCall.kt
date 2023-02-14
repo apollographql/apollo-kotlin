@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 
 /**
@@ -84,8 +85,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *                    println("order received: ${it.data?.order?.id"})
    *                  }
    * ```
+   * @param throwApolloExceptions whether to throw [ApolloException]s (e.g. network errors, cache misses) encountered in responses,
+   * rather than emitting them in [ApolloResponse.exception]. This was the behavior in 3.x and is kept here as a convenience for migration.
    */
-  fun toFlow(): Flow<ApolloResponse<D>> {
+  fun toFlow(throwApolloExceptions: Boolean = false): Flow<ApolloResponse<D>> {
     val request = ApolloRequest.Builder(operation)
         .executionContext(executionContext)
         .httpMethod(httpMethod)
@@ -95,13 +98,25 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .build()
-    return apolloClient.executeAsFlow(request)
+    return apolloClient.executeAsFlow(request).let {
+      if (throwApolloExceptions) {
+        it.onEach { response ->
+          if (response.exception != null) {
+            throw response.exception!!
+          }
+        }
+      } else {
+        it
+      }
+    }
   }
 
   /**
    * A shorthand for `toFlow().single()`.
    * Use this for queries and mutation to get a single [ApolloResponse] from the network or the cache.
-   * For subscriptions or operations with `@defer`, you usually want to use [toFlow] instead to listen to all values.
+   * For subscriptions or operations using `@defer`, you usually want to use [toFlow] instead to listen to all values.
+   *
+   * Exceptions (e.g. network errors, cache misses) are rethrown by this method.
    */
   suspend fun execute(): ApolloResponse<D> {
     val responses = toFlow().toList()

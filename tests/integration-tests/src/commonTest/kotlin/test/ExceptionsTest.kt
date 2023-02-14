@@ -7,8 +7,11 @@ import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
+import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ExceptionsTest {
@@ -58,5 +61,27 @@ class ExceptionsTest {
 
     val exception = result.exceptionOrNull()
     assertTrue(exception is ApolloNetworkException)
+  }
+
+  @Test
+  fun toFlowThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueue("malformed")
+
+    val result = kotlin.runCatching {
+      apolloClient.query(HeroNameQuery()).toFlow(throwApolloExceptions = true).toList()
+    }
+
+    assertNotNull(result.exceptionOrNull())
+  }
+
+  @Test
+  fun toFlowDoesntThrow() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueue("malformed")
+
+    val result = kotlin.runCatching {
+      apolloClient.query(HeroNameQuery()).toFlow(throwApolloExceptions = false).toList()
+    }
+
+    assertNull(result.exceptionOrNull())
   }
 }

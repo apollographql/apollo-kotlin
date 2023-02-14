@@ -123,3 +123,9 @@ public final class com/apollographql/apollo3/cache/normalized/NormalizedCache {
 	public static final fun writeToCacheAsynchronously (Lcom/apollographql/apollo3/api/MutableExecutionOptions;Z)Ljava/lang/Object;
 }
 
+public final class com/apollographql/apollo3/cache/normalized/ThrowingFetchPolicyInterceptorsKt {
+	public static final fun getThrowingCacheAndNetworkInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
+	public static final fun getThrowingCacheFirstInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
+	public static final fun getThrowingNetworkFirstInterceptor ()Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;
+}
+

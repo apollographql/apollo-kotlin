@@ -110,7 +110,7 @@ class WatcherTest {
   }
 
   @Test
-  fun emitCacheMissesIsWorking() = runTest(before = { setUp() }) {
+  fun cacheMissesAreEmitted() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -151,6 +151,7 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
     assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
@@ -185,6 +186,7 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
     assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
@@ -213,6 +215,7 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
     assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
@@ -245,6 +248,7 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
     assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receive()?.hero?.name, "R2-D2")
 
@@ -399,6 +403,7 @@ class WatcherTest {
           }
     }
 
+    // Cache miss is emitted first (null data)
     assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
@@ -519,7 +524,7 @@ class WatcherTest {
             channel.send(it.data)
           }
     }
-    // 0. Cache miss
+    // 0. Cache miss (null data)
     assertNull(channel.receiveOrTimeout())
     // 1. Value from the network
     assertEquals(channel.receiveOrTimeout(5000)?.hero?.name, "Artoo")
@@ -587,7 +592,7 @@ class WatcherTest {
     // 1. Value from the cache
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
-    // 2. Exception from the network
+    // 2. Exception from the network (null data)
     assertNull(channel.receiveOrTimeout())
     channel.assertEmpty()
 
