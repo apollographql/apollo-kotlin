@@ -23,7 +23,6 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flow
@@ -68,7 +67,7 @@ private constructor(
 
       emitAll(when {
         httpResponse == null -> {
-          errorResponse(request.operation, apolloException)
+          flowOf(errorResponse(request.operation, apolloException!!))
         }
 
         httpResponse.statusCode !in 200..299 -> {
@@ -90,23 +89,26 @@ private constructor(
           }
       )
     }
-        .catch { e ->
-          if (e is ApolloException) {
-            emitAll(errorResponse(request.operation, e))
-          } else {
-            throw e
-          }
-        }
   }
 
   private fun <D : Operation.Data> errorResponse(
       operation: Operation<D>,
-      apolloException: ApolloException?,
-  ) =
-      flowOf(ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = null)
-          .exception(apolloException)
-          .isLast(true)
-          .build())
+      throwable: Throwable,
+  ): ApolloResponse<D> {
+    val apolloException = if (throwable is ApolloException) {
+      throwable
+    } else {
+      // This happens for null pointer exceptions on missing fields
+      ApolloParseException(
+          message = "Failed to parse GraphQL http network response",
+          cause = throwable
+      )
+    }
+    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = null)
+        .exception(apolloException)
+        .isLast(true)
+        .build()
+  }
 
   private fun <D : Operation.Data> errorResponse(
       operation: Operation<D>,
@@ -124,10 +126,7 @@ private constructor(
         body = maybeBody,
         message = "Http request failed with status code `${httpResponse.statusCode}`"
     )
-    return flowOf(ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = null)
-        .exception(apolloException)
-        .isLast(true)
-        .build())
+    return flowOf(errorResponse(operation, apolloException))
   }
 
   private fun <D : Operation.Data> singleResponse(
@@ -141,7 +140,7 @@ private constructor(
           customScalarAdapters = customScalarAdapters
       )
     } catch (e: Exception) {
-      throw wrapThrowableIfNeeded(e)
+      errorResponse(operation, e)
     }
 
     return flowOf(response.newBuilder().isLast(true).build())
@@ -164,7 +163,7 @@ private constructor(
                 customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
             ).newBuilder().isLast(isLast).build()
           } catch (e: Exception) {
-            throw wrapThrowableIfNeeded(e)
+            errorResponse(operation, e)
           }
         }
         .filterNot { jsonMerger.isEmptyPayload }
@@ -275,20 +274,6 @@ private constructor(
           interceptors = interceptors,
           exposeErrorBody = exposeErrorBody,
       )
-    }
-  }
-
-  companion object {
-    private fun wrapThrowableIfNeeded(throwable: Throwable): ApolloException {
-      return if (throwable is ApolloException) {
-        throwable
-      } else {
-        // This happens for null pointer exceptions on missing fields
-        ApolloParseException(
-            message = "Failed to parse GraphQL http network response",
-            cause = throwable
-        )
-      }
     }
   }
 }
