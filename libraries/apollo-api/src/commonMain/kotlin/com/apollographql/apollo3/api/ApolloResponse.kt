@@ -34,10 +34,9 @@ private constructor(
     val errors: List<Error>?,
 
     /**
-     * The exception that caused the failure of the execution.
-     * For instance this will be non null in case of network failure or cache miss.
-     * This will be null if the execution was successful.
-     * If this is non null, [data] and [errors] will be null.
+     * An [ApolloException] if a valid GraphQL response wasn't received or `null` if a valid GraphQL response was received.
+     * For example, `exception` is non null if there is a network failure or cache miss.
+     * If `exception` is non null, [data] and [errors] will be null.
      */
     @JvmField
     val exception: ApolloException?,
