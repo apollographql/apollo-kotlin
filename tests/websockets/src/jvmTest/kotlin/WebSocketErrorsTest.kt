@@ -40,7 +40,7 @@ class WebSocketErrorsTest {
   }
 
   @Test
-  fun connectionErrorThrows() = runBlocking {
+  fun connectionErrorEmitsException() = runBlocking {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
@@ -53,16 +53,17 @@ class WebSocketErrorsTest {
     apolloClient.subscription(TimeSubscription())
         .toFlow()
         .test {
-          val error = awaitError()
+          val error = awaitItem().exception
           assertIs<ApolloNetworkException>(error)
           assertTrue(error.cause?.message?.contains("Connection error") == true)
+          awaitComplete()
         }
 
     apolloClient.close()
   }
 
   @Test
-  fun socketClosedThrows() = runBlocking {
+  fun socketClosedEmitsException() = runBlocking {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(sampleServer.subscriptionsUrl())
         .wsProtocol(
@@ -77,9 +78,10 @@ class WebSocketErrorsTest {
     apolloClient.subscription(TimeSubscription())
         .toFlow()
         .test {
-          val error = awaitError()
+          val error = awaitItem().exception
           assertIs<ApolloNetworkException>(error)
           assertTrue(error.cause?.message?.contains("WebSocket Closed code='3666'") == true)
+          awaitComplete()
         }
 
     apolloClient.close()

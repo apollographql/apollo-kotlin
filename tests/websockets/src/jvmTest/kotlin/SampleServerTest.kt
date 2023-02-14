@@ -8,12 +8,11 @@ import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.network.ws.WsProtocol
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -168,15 +167,11 @@ class SampleServerTest {
         .build()
 
     runBlocking {
-      var caught: Throwable? = null
-      apolloClient.subscription(OperationErrorSubscription())
+      val response = apolloClient.subscription(OperationErrorSubscription())
           .toFlow()
-          .catch {
-            caught = it
-          }
-          .collect()
-      assertIs<SubscriptionOperationException>(caught)
-      val error = caught.cast<SubscriptionOperationException>().payload
+          .single()
+      assertIs<SubscriptionOperationException>(response.exception)
+      val error = response.exception.cast<SubscriptionOperationException>().payload
           .cast<Map<String, *>>()
           .get("errors")
           .cast<List<*>>()
