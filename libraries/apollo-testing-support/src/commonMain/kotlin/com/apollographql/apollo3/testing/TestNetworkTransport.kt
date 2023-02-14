@@ -2,14 +2,10 @@ package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.uuid4
@@ -20,45 +16,49 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.yield
 
+private sealed interface TestResponse {
+  object NetworkError : TestResponse
+  class Response(val response: ApolloResponse<out Operation.Data>) : TestResponse
+}
+
 @ApolloExperimental
 class QueueTestNetworkTransport : NetworkTransport {
   private val lock = reentrantLock()
-  private val queue = ArrayDeque<ApolloResponse<out Operation.Data>>()
+  private val queue = ArrayDeque<TestResponse>()
 
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     return flow {
       // "Emulate" a network call
       yield()
 
-      @Suppress("UNCHECKED_CAST")
-      val apolloResponse = lock.withLock { queue.removeFirstOrNull() } as ApolloResponse<D>? ?: error("No more responses in queue")
+      val response = lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
+
+      val apolloResponse = when (response) {
+        is TestResponse.NetworkError -> {
+          ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, data = null)
+              .exception(ApolloNetworkException("Network error queued in QueueTestNetworkTransport"))
+              .build()
+        }
+
+        is TestResponse.Response -> {
+          @Suppress("UNCHECKED_CAST")
+          response.response as ApolloResponse<D>
+        }
+      }
+
       emit(apolloResponse.newBuilder().isLast(true).build())
     }
   }
 
   fun <D : Operation.Data> enqueue(response: ApolloResponse<D>) {
     lock.withLock {
-      queue.add(response)
+      queue.add(TestResponse.Response(response))
     }
   }
 
   fun enqueueNetworkError() {
     lock.withLock {
-      queue.add(ApolloResponse.Builder(operation = object : Operation<Operation.Data> {
-        override fun document(): String = throw UnsupportedOperationException()
-        override fun name(): String = throw UnsupportedOperationException()
-        override fun id(): String = throw UnsupportedOperationException()
-        override fun adapter(): Adapter<Operation.Data> = throw UnsupportedOperationException()
-        override fun serializeVariables(
-            writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
-        ) = throw UnsupportedOperationException()
-
-        override fun rootField(): CompiledField = throw UnsupportedOperationException()
-      }, requestUuid = uuid4(), data = null)
-          .exception(ApolloNetworkException("Network error queued in QueueTestNetworkTransport"))
-          .build()
-      )
+      queue.add(TestResponse.NetworkError)
     }
   }
 
@@ -68,26 +68,35 @@ class QueueTestNetworkTransport : NetworkTransport {
 @ApolloExperimental
 class MapTestNetworkTransport : NetworkTransport {
   private val lock = reentrantLock()
-  private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, ApolloResponse<out Operation.Data>>()
+  private val operationsToResponses = mutableMapOf<Operation<out Operation.Data>, TestResponse>()
 
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    @Suppress("UNCHECKED_CAST")
-    val apolloResponse = lock.withLock { operationsToResponses[request.operation] } as ApolloResponse<D>?
+    val response = lock.withLock { operationsToResponses[request.operation] }
         ?: error("No response registered for operation ${request.operation}")
+    val apolloResponse = when (response) {
+      is TestResponse.NetworkError -> {
+        ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, data = null)
+            .exception(ApolloNetworkException("Network error registered in MapTestNetworkTransport"))
+            .build()
+      }
+
+      is TestResponse.Response -> {
+        @Suppress("UNCHECKED_CAST")
+        response.response as ApolloResponse<D>
+      }
+    }
     return flowOf(apolloResponse.newBuilder().isLast(true).build())
   }
 
   fun <D : Operation.Data> register(operation: Operation<D>, response: ApolloResponse<D>) {
     lock.withLock {
-      operationsToResponses[operation] = response
+      operationsToResponses[operation] = TestResponse.Response(response)
     }
   }
 
   fun <D : Operation.Data> registerNetworkError(operation: Operation<D>) {
     lock.withLock {
-      operationsToResponses[operation] = ApolloResponse.Builder(operation = operation, requestUuid = uuid4(), data = null)
-          .exception(ApolloNetworkException("Network error registered in MapTestNetworkTransport"))
-          .build()
+      operationsToResponses[operation] = TestResponse.NetworkError
     }
   }
 
