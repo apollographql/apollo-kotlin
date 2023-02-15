@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.toList
 
 /**
@@ -61,7 +60,15 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.canBeBatched = canBeBatched
   }
 
+  override var throwOnException: Boolean? = null
+
+  @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
+  override fun throwOnException(throwOnException: Boolean?) = apply {
+    this.throwOnException = throwOnException
+  }
+
   fun copy(): ApolloCall<D> {
+    @Suppress("DEPRECATION")
     return ApolloCall(apolloClient, operation)
         .addExecutionContext(executionContext)
         .httpMethod(httpMethod)
@@ -70,12 +77,15 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .throwOnException(throwOnException)
   }
 
   /**
-   * Returns a cold Flow that produces [ApolloResponse]s for this [ApolloCall].
+   * Returns a cold Flow that produces [ApolloResponse]s from this [ApolloCall].
    * Note that the execution happens when collecting the Flow.
    * This method can be called several times to execute a call again.
+   *
+   * Any [ApolloException]s will be emitted in [ApolloResponse.exception] and will not be thrown, unless [throwOnException] is set to true.
    *
    * Example:
    * ```
@@ -85,10 +95,9 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *                    println("order received: ${it.data?.order?.id"})
    *                  }
    * ```
-   * @param throwApolloExceptions whether to throw [ApolloException]s (e.g. network errors, cache misses) encountered in responses,
-   * rather than emitting them in [ApolloResponse.exception]. This was the behavior in 3.x and is kept here as a convenience for migration.
    */
-  fun toFlow(throwApolloExceptions: Boolean = false): Flow<ApolloResponse<D>> {
+  fun toFlow(): Flow<ApolloResponse<D>> {
+    @Suppress("DEPRECATION")
     val request = ApolloRequest.Builder(operation)
         .executionContext(executionContext)
         .httpMethod(httpMethod)
@@ -97,26 +106,18 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .throwOnException(throwOnException)
         .build()
-    return apolloClient.executeAsFlow(request).let {
-      if (throwApolloExceptions) {
-        it.onEach { response ->
-          if (response.exception != null) {
-            throw response.exception!!
-          }
-        }
-      } else {
-        it
-      }
-    }
+    return apolloClient.executeAsFlow(request)
   }
 
   /**
-   * A shorthand for `toFlow().single()`.
-   * Use this for queries and mutation to get a single [ApolloResponse] from the network or the cache.
+   * Retrieve a single [ApolloResponse] from this [ApolloCall], ignoring any cache misses or network errors.
+   *
+   * Use this for queries and mutations to get a single value from the network or the cache.
    * For subscriptions or operations using `@defer`, you usually want to use [toFlow] instead to listen to all values.
    *
-   * Exceptions (e.g. network errors, cache misses) are rethrown by this method.
+   * @throws ApolloException if the call returns zero or multiple valid GraphQL responses.
    */
   suspend fun execute(): ApolloResponse<D> {
     val responses = toFlow().toList()

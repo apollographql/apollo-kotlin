@@ -526,6 +526,10 @@ public class ApolloClient implements Closeable {
       return canBeBatched;
     }
 
+    @Nullable @Override public Boolean getThrowOnException() {
+      return null;
+    }
+
     @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {
       this.executionContext = this.executionContext.plus(executionContext);
       return this;
@@ -564,6 +568,14 @@ public class ApolloClient implements Closeable {
 
     @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
       this.canBeBatched = canBeBatched;
+      return this;
+    }
+
+    /**
+     * Has no effect.
+     */
+    @Deprecated
+    @Override public Builder throwOnException(@Nullable Boolean throwOnException) {
       return this;
     }
   }

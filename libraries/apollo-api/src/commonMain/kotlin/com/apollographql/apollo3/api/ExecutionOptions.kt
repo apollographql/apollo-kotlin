@@ -2,6 +2,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.exception.ApolloException
 
 interface ExecutionOptions {
   val executionContext: ExecutionContext
@@ -22,27 +23,35 @@ interface ExecutionOptions {
   val httpHeaders: List<HttpHeader>?
 
   /**
-   *
-   * Whether to send the Auto Persisted Queries extensions
+   * Whether to send the Auto Persisted Queries extensions.
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val sendApqExtensions: Boolean?
 
   /**
-   *
-   * Whether to send the document
+   * Whether to send the document.
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val sendDocument: Boolean?
 
   /**
-   *
-   * Whether to enable Auto Persisted Queries and try to send a hashed query first
+   * Whether to enable Auto Persisted Queries and try to send a hashed query first.
    * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
    */
   val enableAutoPersistedQueries: Boolean?
 
+  /**
+   * Whether the request can be batched.
+   * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
+   */
   val canBeBatched: Boolean?
+
+  /**
+   * Whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
+   * [ApolloResponse.exception].
+   * Used by [com.apollographql.apollo3.ApolloCall].
+   */
+  val throwOnException: Boolean?
 
   companion object {
     /**
@@ -81,4 +90,15 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 
   fun canBeBatched(canBeBatched: Boolean?): T
+
+  /**
+   * Configures whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
+   * [ApolloResponse.exception].
+   *
+   * If true, the call site must catch [ApolloException]. This was the behavior in Apollo Kotlin 3.
+   *
+   * Default: false
+   */
+  @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version")
+  fun throwOnException(throwOnException: Boolean?): T
 }

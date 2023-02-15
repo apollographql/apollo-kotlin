@@ -64,22 +64,31 @@ class ExceptionsTest {
   }
 
   @Test
+  @Suppress("DEPRECATION")
   fun toFlowThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("malformed")
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).toFlow(throwApolloExceptions = true).toList()
+    val throwingClient = apolloClient.newBuilder().throwOnException(true).build()
+    var result = kotlin.runCatching {
+      throwingClient.query(HeroNameQuery()).toFlow().toList()
     }
+    assertNotNull(result.exceptionOrNull())
 
+    mockServer.enqueue("malformed")
+    result = kotlin.runCatching {
+      apolloClient.query(HeroNameQuery()).throwOnException(true).toFlow().toList()
+    }
     assertNotNull(result.exceptionOrNull())
   }
 
   @Test
+  @Suppress("DEPRECATION")
   fun toFlowDoesntThrow() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("malformed")
 
+    val throwingClient = apolloClient.newBuilder().throwOnException(true).build()
     val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).toFlow(throwApolloExceptions = false).toList()
+      throwingClient.query(HeroNameQuery()).throwOnException(false).toFlow().toList()
     }
 
     assertNull(result.exceptionOrNull())

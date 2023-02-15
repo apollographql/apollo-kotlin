@@ -33,6 +33,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
 
@@ -53,6 +54,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    override val throwOnException: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
@@ -109,6 +111,7 @@ private constructor(
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
+    @Suppress("DEPRECATION")
     val request = ApolloRequest.Builder(apolloRequest.operation)
         .addExecutionContext(concurrencyInfo)
         .addExecutionContext(customScalarAdapters)
@@ -119,6 +122,7 @@ private constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .throwOnException(throwOnException)
         .apply {
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
@@ -140,10 +144,25 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
+          if (apolloRequest.throwOnException != null) {
+            throwOnException(apolloRequest.throwOnException)
+          }
         }
         .build()
 
-    return DefaultInterceptorChain(interceptors + networkInterceptor, 0).proceed(request)
+    return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
+        .proceed(request)
+        .let {
+          if (request.throwOnException == true) {
+            it.onEach { response ->
+              if (response.exception != null) {
+                throw response.exception!!
+              }
+            }
+          } else {
+            it
+          }
+        }
   }
 
   /**
@@ -215,6 +234,13 @@ private constructor(
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
+    }
+
+    override var throwOnException: Boolean? = null
+
+    @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
+    override fun throwOnException(throwOnException: Boolean?): Builder = apply {
+      this.throwOnException = throwOnException
     }
 
     /**
@@ -521,6 +547,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+          throwOnException = throwOnException,
 
           // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
           // are important to rebuild `networkTransport` (and potentially others)
@@ -529,6 +556,7 @@ private constructor(
     }
 
     fun copy(): Builder {
+      @Suppress("DEPRECATION")
       val builder = Builder()
           .customScalarAdapters(customScalarAdaptersBuilder.build())
           .interceptors(interceptors)
@@ -540,6 +568,7 @@ private constructor(
           .sendDocument(sendDocument)
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
+          .throwOnException(throwOnException)
       _networkTransport?.let { builder.networkTransport(it) }
       httpServerUrl?.let { builder.httpServerUrl(it) }
       httpEngine?.let { builder.httpEngine(it) }
@@ -561,6 +590,5 @@ private constructor(
     return builder.copy()
   }
 
-  companion object {
-  }
+  companion object
 }

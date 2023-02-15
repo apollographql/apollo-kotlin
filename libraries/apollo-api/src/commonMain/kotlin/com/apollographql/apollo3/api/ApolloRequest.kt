@@ -20,12 +20,14 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    override val throwOnException: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
 
   @ApolloExperimental
   fun <E: Operation.Data> newBuilder(operation: Operation<E>): Builder<E> {
+    @Suppress("DEPRECATION")
     return Builder(operation)
         .requestUuid(requestUuid)
         .executionContext(executionContext)
@@ -35,7 +37,7 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-
+        .throwOnException(throwOnException)
   }
 
   class Builder<D : Operation.Data>(
@@ -84,6 +86,13 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
+    override var throwOnException: Boolean? = null
+
+    @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
+    override fun throwOnException(throwOnException: Boolean?): Builder<D> = apply {
+      this.throwOnException = throwOnException
+    }
+
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
     }
@@ -108,6 +117,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
+          throwOnException = throwOnException,
       )
     }
   }
