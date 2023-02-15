@@ -153,9 +153,7 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
               .fetchFromCache(true)
               .build()
       ).single()
-      if (cacheResponse.exception == null) {
-        emit(cacheResponse)
-      } else if (!request.foldFetchExceptions) {
+      if (cacheResponse.exception == null || !request.foldFetchExceptions) {
         emit(cacheResponse.newBuilder().isLast(false).build())
       }
 

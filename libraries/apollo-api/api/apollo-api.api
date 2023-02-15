@@ -60,7 +60,7 @@ public final class com/apollographql/apollo3/api/ApolloOptionalAdapter : com/apo
 }
 
 public final class com/apollographql/apollo3/api/ApolloRequest : com/apollographql/apollo3/api/ExecutionOptions {
-	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/ExecutionContext;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
 	public fun getEnableAutoPersistedQueries ()Ljava/lang/Boolean;
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
@@ -70,6 +70,7 @@ public final class com/apollographql/apollo3/api/ApolloRequest : com/apollograph
 	public final fun getRequestUuid ()Ljava/util/UUID;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun getThrowOnException ()Ljava/lang/Boolean;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 }
 
@@ -92,6 +93,7 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
+	public fun getThrowOnException ()Ljava/lang/Boolean;
 	public fun httpHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
@@ -108,6 +110,9 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public fun setHttpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)V
 	public fun setSendApqExtensions (Ljava/lang/Boolean;)V
 	public fun setSendDocument (Ljava/lang/Boolean;)V
+	public fun setThrowOnException (Ljava/lang/Boolean;)V
+	public fun throwOnException (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
+	public synthetic fun throwOnException (Ljava/lang/Boolean;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/ApolloResponse {
@@ -553,6 +558,7 @@ public abstract interface class com/apollographql/apollo3/api/ExecutionOptions {
 	public abstract fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public abstract fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public abstract fun getSendDocument ()Ljava/lang/Boolean;
+	public abstract fun getThrowOnException ()Ljava/lang/Boolean;
 }
 
 public final class com/apollographql/apollo3/api/ExecutionOptions$Companion {
@@ -635,6 +641,7 @@ public abstract interface class com/apollographql/apollo3/api/MutableExecutionOp
 	public abstract fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
 	public abstract fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public abstract fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+	public abstract fun throwOnException (Ljava/lang/Boolean;)Ljava/lang/Object;
 }
 
 public abstract interface class com/apollographql/apollo3/api/Mutation : com/apollographql/apollo3/api/Operation {
