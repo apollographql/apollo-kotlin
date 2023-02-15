@@ -6,12 +6,14 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -53,9 +55,11 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
               .fetchFromCache(true)
               .build()
       ).single()
-      emit(cacheResponse.newBuilder().isLast(cacheResponse.exception == null).build())
       if (cacheResponse.exception == null) {
+        emit(cacheResponse)
         return@flow
+      } else if (!request.foldFetchExceptions) {
+        emit(cacheResponse.newBuilder().isLast(false).build())
       }
 
       val networkResponses = chain.proceed(
@@ -69,6 +73,11 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
                     .cacheMissException(cacheResponse.exception as? CacheMissException)
                     .build()
             )
+            .apply {
+              if (request.foldFetchExceptions && response.exception != null && cacheResponse.exception != null) {
+                exception(ApolloCompositeException(cacheResponse.exception, response.exception))
+              }
+            }
             .build()
       }
 
@@ -99,7 +108,7 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
         } else {
           response
         }
-      }
+      }.filter { !request.foldFetchExceptions || it.exception == null }
 
       emitAll(networkResponses)
       if (networkException == null) {
@@ -121,6 +130,11 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
                       .cacheMissException(cacheResponse.exception as? CacheMissException)
                       .build()
               )
+              .apply {
+                if (request.foldFetchExceptions && cacheResponse.exception != null && networkException != null) {
+                  exception(ApolloCompositeException(networkException, cacheResponse.exception))
+                }
+              }
               .build()
       )
     }
@@ -134,12 +148,16 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
     return flow {
       val cacheResponse = chain.proceed(
-          request = request.newBuilder()
+          request = request
+              .newBuilder()
               .fetchFromCache(true)
               .build()
       ).single()
-
-      emit(cacheResponse.newBuilder().isLast(false).build())
+      if (cacheResponse.exception == null) {
+        emit(cacheResponse)
+      } else if (!request.foldFetchExceptions) {
+        emit(cacheResponse.newBuilder().isLast(false).build())
+      }
 
       val networkResponses = chain.proceed(request)
           .map { response ->
@@ -151,6 +169,11 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
                         .networkException(response.exception)
                         .build()
                 )
+                .apply {
+                  if (request.foldFetchExceptions && response.exception != null && cacheResponse.exception != null) {
+                    exception(ApolloCompositeException(cacheResponse.exception, response.exception))
+                  }
+                }
                 .build()
           }
 
