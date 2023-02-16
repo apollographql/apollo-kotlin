@@ -1,9 +1,10 @@
-rootProject.name = "apollo-tests"
+// TODO: See https://youtrack.jetbrains.com/issue/KT-56536
+//rootProject.name = "apollo-tests"
 
 // Include all tests
 rootProject.projectDir
     .listFiles()!!
-    .filter { it.isDirectory}
+    .filter { it.isDirectory }
     .flatMap {
       it.walk()
     }

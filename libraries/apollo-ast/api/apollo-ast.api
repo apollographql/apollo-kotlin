@@ -1228,7 +1228,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun get__schema ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1263,7 +1263,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getTypes ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1303,7 +1303,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun hashCode ()I
 	public final fun isDeprecated ()Z
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1339,7 +1339,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun hashCode ()I
 	public final fun isDeprecated ()Z
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field$Argument;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field$Argument;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field$Argument$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1383,7 +1383,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun hashCode ()I
 	public final fun isDeprecated ()Z
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1425,7 +1425,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1454,7 +1454,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1483,7 +1483,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1506,7 +1506,7 @@ public abstract class com/apollographql/apollo3/ast/introspection/IntrospectionS
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public abstract fun getDescription ()Ljava/lang/String;
 	public abstract fun getName ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Companion {
@@ -1528,7 +1528,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1564,7 +1564,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun hashCode ()I
 	public final fun isDeprecated ()Z
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1597,7 +1597,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1634,7 +1634,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1669,7 +1669,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1700,7 +1700,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1735,7 +1735,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getPossibleTypes ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
@@ -1769,7 +1769,7 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public final fun getOfType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public static final fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
