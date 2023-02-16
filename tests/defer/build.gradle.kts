@@ -126,3 +126,15 @@ configurations.named("javaCodegenRuntimeElements").configure {
     attribute(myAttribute, "java-runtime")
   }
 }
+
+configurations.named("jvmSourcesElements").configure {
+  attributes {
+    attribute(myAttribute, "jvm")
+  }
+}
+
+configurations.named("javaCodegenSourcesElements").configure {
+  attributes {
+    attribute(myAttribute, "java")
+  }
+}
