@@ -3,7 +3,6 @@ public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCal
 }
 
 public abstract interface class com/apollographql/apollo3/runtime/java/ApolloCallback {
-	public abstract fun onFailure (Lcom/apollographql/apollo3/exception/ApolloException;)V
 	public abstract fun onResponse (Lcom/apollographql/apollo3/api/ApolloResponse;)V
 }
 
