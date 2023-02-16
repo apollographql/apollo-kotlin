@@ -3,7 +3,6 @@ package test;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
@@ -163,10 +162,6 @@ public class ClientTest {
     ApolloDisposable disposable = apolloClient.query(GetRandomQuery.builder().build()).enqueue(new ApolloCallback<GetRandomQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetRandomQuery.Data> response) {
         received[0] = response;
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        received[0] = e;
       }
     });
 

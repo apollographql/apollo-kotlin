@@ -3,7 +3,6 @@ package test;
 
 import appsync.CommentsSubscription;
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.network.ws.protocol.AppSyncWsProtocol;
@@ -42,10 +41,6 @@ public class AppSyncTest {
     apolloClient.subscription(new CommentsSubscription()).enqueue(new ApolloCallback<CommentsSubscription.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<CommentsSubscription.Data> response) {
         System.out.println(response.data);
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        e.printStackTrace();
       }
     });
 

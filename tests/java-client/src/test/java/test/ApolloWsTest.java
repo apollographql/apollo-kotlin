@@ -62,11 +62,6 @@ public class ApolloWsTest {
         actual.add(response.dataAssertNoErrors().count);
         latch.countDown();
       }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-      }
     });
     disposable.addListener(() -> {
       latch.countDown();
@@ -98,10 +93,6 @@ public class ApolloWsTest {
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
         items.add(response.dataAssertNoErrors().count * 2);
       }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
-      }
     }).addListener(latch::countDown);
 
     sleep(500);
@@ -110,10 +101,6 @@ public class ApolloWsTest {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
         items.add(response.dataAssertNoErrors().count * 2 + 1);
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     }).addListener(latch::countDown);
 
@@ -129,12 +116,7 @@ public class ApolloWsTest {
     apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<OperationErrorSubscription.Data> response) {
-        throw new AssertionError("Should not be called");
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
+        failure[0] = response.exception;
         latch.countDown();
       }
     });
@@ -151,12 +133,11 @@ public class ApolloWsTest {
   @SuppressWarnings("unchecked")
   public void operationErrorWithRx() throws Exception {
     Rx3Apollo.flowable(apolloClient.subscription(new OperationErrorSubscription()), BackpressureStrategy.BUFFER)
-        .map(response -> response)
         .toList()
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
-        .assertError(e -> {
-          Map<String, Object> payload = (Map<String, Object>) ((SubscriptionOperationException) e).getPayload();
+        .assertValue(responses -> {
+          Map<String, Object> payload = (Map<String, Object>) ((SubscriptionOperationException) responses.get(0).exception).getPayload();
           List<Map<String, String>> errors = (List<Map<String, String>>) payload.get("errors");
           return errors.get(0).get("message").equals("Woops");
         });
@@ -173,12 +154,7 @@ public class ApolloWsTest {
     apolloClient.subscription(new OperationErrorSubscription()).enqueue(new ApolloCallback<OperationErrorSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<OperationErrorSubscription.Data> response) {
-        throw new AssertionError("Should not be called");
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
+        failure[0] = response.exception;
         latch.countDown();
       }
     });
@@ -200,11 +176,6 @@ public class ApolloWsTest {
           disposable[0].dispose();
           latch.countDown();
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        throw new AssertionError("Should not be called");
       }
     });
 
@@ -228,25 +199,20 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.dataAssertNoErrors().count);
-        if (response.dataAssertNoErrors().count == 5) {
-          // Provoke a network error by closing the websocket
-          apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-            }
-          });
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+        } else {
+          items.add(response.dataAssertNoErrors().count);
+          if (response.dataAssertNoErrors().count == 5) {
+            // Provoke a network error by closing the websocket
+            apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+              @Override
+              public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+              }
+            });
+          }
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 
@@ -280,29 +246,24 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        if (hasReopenOccurred.get()) {
-          itemsAfterReopen.add(response.dataAssertNoErrors().count);
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
         } else {
-          itemsBeforeReopen.add(response.dataAssertNoErrors().count);
+          if (hasReopenOccurred.get()) {
+            itemsAfterReopen.add(response.dataAssertNoErrors().count);
+          } else {
+            itemsBeforeReopen.add(response.dataAssertNoErrors().count);
+          }
+          if (response.dataAssertNoErrors().count == 5) {
+            // Provoke a network error by closing the websocket
+            apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
+              @Override
+              public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
+              }
+            });
+          }
         }
-        if (response.dataAssertNoErrors().count == 5) {
-          // Provoke a network error by closing the websocket
-          apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
-            @Override
-            public void onResponse(@NotNull ApolloResponse<CloseSocketQuery.Data> response) {
-            }
-
-            @Override
-            public void onFailure(@NotNull ApolloException e) {
-            }
-          });
-        }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 
@@ -345,17 +306,16 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(50, 200)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        itemsBeforeReopen.add(response.dataAssertNoErrors().count);
-        if (response.dataAssertNoErrors().count == 5) {
-          // Provoke a network error by stopping the whole server
-          sampleServer2.close();
+        if (response.exception != null) {
+          failure[0] = response.exception;
+          latch.countDown();
+        } else {
+          itemsBeforeReopen.add(response.dataAssertNoErrors().count);
+          if (response.dataAssertNoErrors().count == 5) {
+            // Provoke a network error by stopping the whole server
+            sampleServer2.close();
+          }
         }
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
-        latch.countDown();
       }
     });
 

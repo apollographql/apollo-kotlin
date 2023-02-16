@@ -2,7 +2,6 @@ package com.apollographql.apollo3.rx2.java;
 
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.Operation;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.runtime.java.ApolloCall;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
@@ -27,12 +26,6 @@ public class Rx2Apollo {
         @Override public void onResponse(@NotNull ApolloResponse<T> response) {
           if (!emitter.isCancelled()) {
             emitter.onNext(response);
-          }
-        }
-
-        @Override public void onFailure(@NotNull ApolloException e) {
-          if (!emitter.isCancelled()) {
-            emitter.onError(e);
           }
         }
       });

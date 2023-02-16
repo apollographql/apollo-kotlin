@@ -140,6 +140,7 @@ public class WebSocketNetworkTransport implements NetworkTransport {
       ApolloRequest<?> request = subscriptionInfo.request;
       CustomScalarAdapters customScalarAdapters = request.getExecutionContext().get(CustomScalarAdapters.Key);
       JsonReader jsonReader = new MapJsonReader(payload);
+      //noinspection rawtypes
       ApolloResponse apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters).newBuilder().requestUuid(request.getRequestUuid()).build();
       //noinspection unchecked
       subscriptionInfo.callback.onResponse(apolloResponse);
@@ -148,7 +149,11 @@ public class WebSocketNetworkTransport implements NetworkTransport {
     @Override public void operationError(String id, Map<String, Object> payload) {
       SubscriptionInfo subscriptionInfo = activeSubscriptions.get(id);
       if (subscriptionInfo == null) return;
-      subscriptionInfo.callback.onFailure(new SubscriptionOperationException(subscriptionInfo.request.getOperation().name(), payload));
+      ApolloRequest<?> request = subscriptionInfo.request;
+      //noinspection unchecked,rawtypes
+      subscriptionInfo.callback.onResponse(new ApolloResponse.Builder(request.getOperation(), request.getRequestUuid(), null)
+          .exception(new SubscriptionOperationException(request.getOperation().name(), payload))
+          .build());
       disposeSubscription(id);
     }
 
@@ -185,7 +190,10 @@ public class WebSocketNetworkTransport implements NetworkTransport {
         List<SubscriptionInfo> activeSubscriptionList = new ArrayList<>(activeSubscriptions.values());
         activeSubscriptions.clear();
         for (SubscriptionInfo subscriptionInfo : activeSubscriptionList) {
-          subscriptionInfo.callback.onFailure(networkException);
+          //noinspection unchecked,rawtypes
+          subscriptionInfo.callback.onResponse(new ApolloResponse.Builder(subscriptionInfo.request.getOperation(), subscriptionInfo.request.getRequestUuid(), null)
+              .exception(networkException)
+              .build());
           subscriptionInfo.disposable.dispose();
         }
         stopWsProtocolIfNoMoreSubscriptions();

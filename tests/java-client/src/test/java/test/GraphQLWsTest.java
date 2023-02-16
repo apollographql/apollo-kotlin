@@ -1,7 +1,6 @@
 package test;
 
 import com.apollographql.apollo3.api.ApolloResponse;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
@@ -73,7 +72,6 @@ public class GraphQLWsTest {
     CountDownLatch latch = new CountDownLatch(6);
 
     List<String> actual = new ArrayList<>();
-    final ApolloException[] failure = {null};
     AtomicBoolean disposed = new AtomicBoolean(false);
 
     ApolloDisposable disposable = apolloClient.subscription(new GreetingsSubscription()).enqueue(new ApolloCallback<GreetingsSubscription.Data>() {
@@ -81,11 +79,6 @@ public class GraphQLWsTest {
       public void onResponse(@NotNull ApolloResponse<GreetingsSubscription.Data> response) {
         actual.add(response.dataAssertNoErrors().greetings);
         latch.countDown();
-      }
-
-      @Override
-      public void onFailure(@NotNull ApolloException e) {
-        failure[0] = e;
       }
     });
     disposable.addListener(() -> {
@@ -96,7 +89,6 @@ public class GraphQLWsTest {
     // Long timeout because the server sends a message every 15 seconds
     latch.await(2, TimeUnit.MINUTES);
     Truth.assertThat(actual).containsExactly("Hi", "Bonjour", "Hola", "Ciao", "Zdravo").inOrder();
-    Truth.assertThat(failure[0]).isNull();
     Truth.assertThat(disposed.get()).isTrue();
   }
 }
