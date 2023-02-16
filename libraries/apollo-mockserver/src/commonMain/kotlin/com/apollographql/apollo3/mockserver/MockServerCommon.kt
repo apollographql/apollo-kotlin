@@ -67,7 +67,7 @@ constructor(
   ) : this(
       statusCode = statusCode,
       body = flowOf(body.encodeUtf8()),
-      headers = headers + mapOf("Content-Length" to body.length.toString()),
+      headers = headers + mapOf("Content-Length" to body.encodeUtf8().size.toString()),
       delayMillis = delayMillis,
   )
 
