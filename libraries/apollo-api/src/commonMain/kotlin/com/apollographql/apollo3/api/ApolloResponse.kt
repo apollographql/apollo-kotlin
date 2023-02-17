@@ -28,7 +28,9 @@ private constructor(
 
     /**
      * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
-     * This can either be null or empty depending on what your server sends back
+     * This can either be null or empty depending on what your server sends back.
+     *
+     * See also [exception] for exceptions happening before a valid GraphQL response could be received.
      */
     @JvmField
     val errors: List<Error>?,
@@ -37,6 +39,8 @@ private constructor(
      * An [ApolloException] if a valid GraphQL response wasn't received or `null` if a valid GraphQL response was received.
      * For example, `exception` is non null if there is a network failure or cache miss.
      * If `exception` is non null, [data] and [errors] will be null.
+     *
+     * See also [errors] for GraphQL errors returned by the server.
      */
     @JvmField
     val exception: ApolloException?,
