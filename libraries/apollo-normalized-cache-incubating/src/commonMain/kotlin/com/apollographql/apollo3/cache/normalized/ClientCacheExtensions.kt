@@ -74,8 +74,8 @@ enum class FetchPolicy {
   /**
    * Try the cache, then also try the network.
    *
-   * 1 value from the cache is emitted first (with a non null [ApolloResponse.exception] if it's a cache miss),
-   * and then, 1 or multiple values from the network are emitted (with a non null [ApolloResponse.exception] if there was a network error).
+   * This [FetchPolicy] emits two or more [ApolloResponse]s. 
+   * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   CacheAndNetwork,
 }
