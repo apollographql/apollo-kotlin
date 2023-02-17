@@ -240,7 +240,7 @@ fun <T> MutableExecutionOptions<T>.refetchPolicyInterceptor(interceptor: ApolloI
  *
  * Policies such as [FetchPolicy.CacheFirst] or [FetchPolicy.NetworkFirst] are often used to retrieve a single response. In such cases,
  * set [foldFetchExceptions] to true to avoid emitting the first exception (if any) and read it from
- * [ApolloResponse.cacheInfo]?.cacheMissException and [ApolloResponse.cacheInfo]?.networkException.
+ * [ApolloResponse.cacheInfo]?.cacheMissException and [ApolloResponse.cacheInfo]?.networkException instead.
  *
  * This was the behavior in Apollo Kotlin 3.
  *
