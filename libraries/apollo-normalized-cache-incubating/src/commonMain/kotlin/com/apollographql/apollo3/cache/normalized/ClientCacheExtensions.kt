@@ -42,7 +42,7 @@ enum class FetchPolicy {
   /**
    * Try the cache, if that failed, try the network.
    *
-   * This [FetchPolicy] emits one or more [ApolloResponse]s. 
+   * This [FetchPolicy] emits one or more [ApolloResponse]s.
    * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    *
    * This is the default behaviour.
@@ -59,7 +59,7 @@ enum class FetchPolicy {
   /**
    * Try the network, if that failed, try the cache.
    *
-   * This [FetchPolicy] emits one or more [ApolloResponse]s. 
+   * This [FetchPolicy] emits one or more [ApolloResponse]s.
    * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   NetworkFirst,
@@ -74,7 +74,7 @@ enum class FetchPolicy {
   /**
    * Try the cache, then also try the network.
    *
-   * This [FetchPolicy] emits two or more [ApolloResponse]s. 
+   * This [FetchPolicy] emits two or more [ApolloResponse]s.
    * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   CacheAndNetwork,
