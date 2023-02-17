@@ -52,7 +52,8 @@ enum class FetchPolicy {
   /**
    * Only try the cache.
    *
-   * 1 value is emitted, with a non null [ApolloResponse.exception] if it's a cache miss.
+   * This [FetchPolicy] emits one [ApolloResponse].
+   * Cache misses have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   CacheOnly,
 
@@ -67,7 +68,9 @@ enum class FetchPolicy {
   /**
    * Only try the network.
    *
-   * 1 or multiple values are emitted, with a non null [ApolloResponse.exception] if there was a network error.
+   * This [FetchPolicy] emits one or more [ApolloResponse]s. Several [ApolloResponse]s
+   * may be emitted if your [NetworkTransport] supports it, for example with `@defer`.
+   * Network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   NetworkOnly,
 
