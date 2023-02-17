@@ -121,7 +121,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
       it.typeSet.size
     }.sortedByDescending {
       // make sure the fallback type is always last so that the else is the last branch
-     if (it.isFallback) 1 else 0
+     if (it.isFallback) 0 else 1
     }.forEach { model ->
       if (!model.isFallback) {
         model.possibleTypes.forEach { possibleType ->
