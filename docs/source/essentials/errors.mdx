@@ -10,13 +10,27 @@ Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQ
 
 ## Network errors
 
-Network errors throw an `ApolloException`. To handle them, wrap your query in a `try/catch` block:
+When calling `execute()`, network errors throw an `ApolloException`. To handle them, wrap your query in a `try/catch` block:
 
 ```kotlin
 try {
   val response = apolloClient.query(query).execute()
 } catch(exception: ApolloException) {
   // handle exception here
+}
+```
+
+When using `toFlow()` (e.g. with [subscriptions](../essentials/subscription)) and `watch()` (with the [normalized cache](../caching/query-watchers)), network errors are emitted in `ApolloResponse.exception`.
+
+```kotlin
+apolloClient.query(query).toFlow().collect { response ->
+  if (response.exception != null) {
+    // handle network errors
+  } else if (response.hasErrors()) {
+    // handle GraphQL errors
+  } else {
+    // no errors, handle data
+  }
 }
 ```
 

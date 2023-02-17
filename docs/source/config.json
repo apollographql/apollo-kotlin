@@ -1,12 +1,12 @@
 {
   "title": "Client (Kotlin)",
-  "version": "v3",
+  "version": "v4",
   "algoliaFilters": [
     "docset:apollo-kotlin"
   ],
   "sidebar": {
     "Get Started": "/",
-    "Migrating to v3": "/migration/3.0",
+    "Migrating to v4": "/migration/4.0",
     "Kdoc": "https://www.apollographql.com/docs/kotlin/kdoc/",
     "Changelog": "https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md",
     "Tutorial": {
