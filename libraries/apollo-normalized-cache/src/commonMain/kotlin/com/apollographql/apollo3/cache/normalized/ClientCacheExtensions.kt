@@ -6,6 +6,7 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_7_5
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -202,6 +203,8 @@ fun <D : Query.Data> ApolloCall<D>.watch(
  *
  * Any [FetchPolicy] previously set will be ignored
  */
+@Deprecated("Use fetchPolicy(FetchPolicy.CacheAndNetwork) instead", ReplaceWith("fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow()"))
+@ApolloDeprecatedSince(v3_7_5)
 fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
   return flow {
     var cacheException: ApolloException? = null
@@ -299,6 +302,8 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
  *
  * Default: false
  */
+@Deprecated("Will be removed in v4, where this is the default behavior", ReplaceWith(""))
+@ApolloDeprecatedSince(v3_7_5)
 fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = addExecutionContext(
     EmitCacheMissesContext(emitCacheMisses)
 )
