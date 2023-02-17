@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 
 class CacheFlagsTest {
@@ -47,9 +47,9 @@ class CacheFlagsTest {
     apolloClient.query(query).doNotStore(true).execute()
 
     // Since the previous request was not stored, this should fail
-    assertFailsWith(CacheMissException::class) {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute().exception
+    )
   }
 
   @Test
@@ -70,9 +70,9 @@ class CacheFlagsTest {
     assertEquals("R2-D2", response.data?.hero?.name)
 
     // Second time should fail
-    assertFailsWith(CacheMissException::class) {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute().exception
+    )
   }
 
   private val partialResponseData = HeroNameQuery.Data(null)
@@ -90,9 +90,9 @@ class CacheFlagsTest {
     // this should not store the response
     apolloClient.query(query).execute()
 
-    assertFailsWith(CacheMissException::class) {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute().exception
+    )
   }
 
   @Test
@@ -123,8 +123,8 @@ class CacheFlagsTest {
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst).execute()
 
     // Since the previous request was not stored, this should fail
-    assertFailsWith(CacheMissException::class) {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute().exception
+    )
   }
 }

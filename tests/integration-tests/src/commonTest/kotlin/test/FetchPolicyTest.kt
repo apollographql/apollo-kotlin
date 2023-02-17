@@ -89,6 +89,36 @@ class FetchPolicyTest {
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
     mockServer.enqueue("malformed")
+    assertIs<ApolloCompositeException>(
+        apolloClient.query(query).execute().exception
+    )
+  }
+
+  @Test
+  fun cacheFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    mockServer.enqueue(query, data)
+
+    // First query should hit the network and save in cache
+    var response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Second query should only hit the cache
+    response = apolloClient.query(query).execute()
+
+    assertNotNull(response.data)
+    assertTrue(response.isFromCache)
+
+    // Clear the store and offer a malformed response, we should get a composite error
+    store.clearAll()
+    mockServer.enqueue("malformed")
     try {
       apolloClient.query(query).execute()
       fail("we expected the query to fail")
@@ -97,8 +127,9 @@ class FetchPolicyTest {
     }
   }
 
+
   @Test
-  fun cacheFirstThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun cacheFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
     apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
 
@@ -171,6 +202,44 @@ class FetchPolicyTest {
     // Network error and no cache -> we should get an error
     mockServer.enqueue("malformed")
     store.clearAll()
+    assertIs<ApolloCompositeException>(
+        call.execute().exception
+    )
+  }
+
+  @Test
+  fun networkFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
+
+    // First query should hit the network and save in cache
+    mockServer.enqueue(query, data)
+    var response = call.execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Now data is cached but it shouldn't be used since network will go through
+    mockServer.enqueue(query, data)
+    response = call.execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Network error -> we should hit now the cache
+    mockServer.enqueue("malformed")
+    response = call.execute()
+
+    assertNotNull(response.data)
+    assertTrue(response.isFromCache)
+
+    // Network error and no cache -> we should get an error
+    mockServer.enqueue("malformed")
+    store.clearAll()
     try {
       call.execute()
       fail("NETWORK_FIRST should throw the network exception if nothing is in the cache")
@@ -180,7 +249,7 @@ class FetchPolicyTest {
   }
 
   @Test
-  fun networkFirstThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun networkFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
     apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
 
@@ -233,7 +302,6 @@ class FetchPolicyTest {
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
-
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
     var response = apolloClient.query(query).execute()
@@ -265,6 +333,27 @@ class FetchPolicyTest {
 
     // Offer a malformed response, it should fail
     mockServer.enqueue("malformed")
+    assertNotNull(call.execute().exception)
+  }
+
+  @Test
+  fun networkOnlyThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().throwOnException(true).build()
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
+
+    // First query should hit the network and save in cache
+    mockServer.enqueue(query, data)
+    val response = call.execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Offer a malformed response, it should fail
+    mockServer.enqueue("malformed")
     try {
       call.execute()
       fail("we expected a failure")
@@ -282,9 +371,9 @@ class FetchPolicyTest {
     // Initial state: everything fails
     // Cache Error + Network Error => Error
     mockServer.enqueue(statusCode = 500)
-    assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute()
-    }
+    assertIs<ApolloCompositeException>(
+        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception
+    )
 
     // Make the network return something
     // Cache Error + Network Success => 2 responses

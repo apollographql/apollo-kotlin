@@ -20,7 +20,7 @@ import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.test.assertIs
 
 /**
  * Tests that write into the store programmatically.
@@ -159,24 +159,20 @@ class StoreTest {
   }
 
   private suspend fun assertFriendIsNotCached(id: String) {
-    try {
-      apolloClient.query(CharacterNameByIdQuery(id))
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .execute()
-
-      fail("A CacheMissException was expected")
-    } catch (e: CacheMissException) {
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(CharacterNameByIdQuery(id))
+            .fetchPolicy(FetchPolicy.CacheOnly)
+            .execute()
+            .exception
+    )
   }
 
   private suspend fun assertRootNotCached() {
-    try {
-      apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
-          .fetchPolicy(FetchPolicy.CacheOnly)
-          .execute()
-
-      fail("A CacheMissException was expected")
-    } catch (e: CacheMissException) {
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(HeroAndFriendsNamesWithIDsQuery(Episode.NEWHOPE))
+            .fetchPolicy(FetchPolicy.CacheOnly)
+            .execute()
+            .exception
+    )
   }
 }

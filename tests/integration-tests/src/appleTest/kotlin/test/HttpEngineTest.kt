@@ -28,11 +28,8 @@ class HttpEngineTest {
   fun canReadNSError() = runTest {
     val apolloClient = ApolloClient.Builder().serverUrl("https://inexistent.host/graphql").build()
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val apolloNetworkException = result.exceptionOrNull()
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    val apolloNetworkException = response.exception
     assertNotNull(apolloNetworkException)
     assertIs<ApolloNetworkException>(apolloNetworkException)
 

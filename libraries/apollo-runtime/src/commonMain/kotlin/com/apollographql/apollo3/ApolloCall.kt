@@ -125,10 +125,12 @@ class ApolloCall<D : Operation.Data> internal constructor(
     if (successes.size > 1) {
       throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
     } else if (successes.isEmpty()) {
-      if (errors.size == 1) {
-        throw errors[0].exception!!
+      return if (errors.size == 1) {
+        errors[0]
       } else if (errors.size > 1) {
-        throw ApolloCompositeException(errors[0].exception, errors[1].exception)
+        errors[1].newBuilder()
+            .exception(ApolloCompositeException(errors[0].exception, errors[1].exception))
+            .build()
       } else {
         throw ApolloException("The operation did not emit any item, check your interceptor chain")
       }

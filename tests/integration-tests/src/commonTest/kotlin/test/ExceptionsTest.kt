@@ -31,22 +31,16 @@ class ExceptionsTest {
   fun whenQueryAndMalformedNetworkResponseAssertException() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("malformed")
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    assertTrue(result.exceptionOrNull() != null)
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    assertTrue(response.exception != null)
   }
 
   @Test
   fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(statusCode = 404)
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val exception = result.exceptionOrNull()
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    val exception = response.exception
     assertTrue(exception is ApolloHttpException)
     assertEquals(404, exception.statusCode)
   }
@@ -55,12 +49,8 @@ class ExceptionsTest {
   fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
     mockServer.stop()
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val exception = result.exceptionOrNull()
-    assertTrue(exception is ApolloNetworkException)
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    assertTrue(response.exception is ApolloNetworkException)
   }
 
   @Test

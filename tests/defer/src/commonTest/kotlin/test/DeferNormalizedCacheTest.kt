@@ -59,9 +59,9 @@ class DeferNormalizedCacheTest {
     apolloClient = apolloClient.newBuilder().fetchPolicy(FetchPolicy.CacheOnly).build()
 
     // Cache is empty
-    assertFailsWith<CacheMissException> {
-      apolloClient.query(WithFragmentSpreadsQuery()).execute()
-    }
+    assertIs<CacheMissException>(
+        apolloClient.query(WithFragmentSpreadsQuery()).execute().exception
+    )
 
     // Fill the cache by doing a network only request
     val jsonList = listOf(
