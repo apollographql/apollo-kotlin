@@ -199,7 +199,7 @@ object SchemaDownloader {
         isDeprecated
         deprecationReason
       }
-      inputFields(includeDeprecated: true {
+      inputFields(includeDeprecated: true) {
         ...InputValue
       }
       interfaces {
@@ -221,6 +221,8 @@ object SchemaDownloader {
       description
       type { ...TypeRef }
       defaultValue
+      isDeprecated
+      deprecationReason
     }
 
     fragment TypeRef on __Type {

@@ -86,6 +86,29 @@ class DownloadSchemaTests {
               "ofType": null
             }
           ]
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "DeprecatedInput",
+          "description": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "deprecatedField",
+              "description": "deprecatedField",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null,
+              "isDeprecated": true,
+              "deprecationReason": "DeprecatedForTesting"
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
         }
       ]
     }
