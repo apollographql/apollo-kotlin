@@ -1,6 +1,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.benasher44.uuid.Uuid
@@ -20,7 +21,9 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
-    override val throwOnException: Boolean?,
+
+    @ApolloInternal
+    val useV3ExceptionHandling: Boolean?,
 ) : ExecutionOptions {
 
   fun newBuilder(): Builder<D> = newBuilder(operation)
@@ -37,7 +40,7 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .throwOnException(throwOnException)
+        .useV3ExceptionHandling(useV3ExceptionHandling)
   }
 
   class Builder<D : Operation.Data>(
@@ -86,11 +89,11 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
-    override var throwOnException: Boolean? = null
+    private var useV3ExceptionHandling: Boolean? = null
 
-    @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
-    override fun throwOnException(throwOnException: Boolean?): Builder<D> = apply {
-      this.throwOnException = throwOnException
+    @ApolloInternal
+    fun useV3ExceptionHandling(useV3ExceptionHandling: Boolean?): Builder<D> = apply {
+      this.useV3ExceptionHandling = useV3ExceptionHandling
     }
 
     fun requestUuid(requestUuid: Uuid) = apply {
@@ -117,7 +120,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          throwOnException = throwOnException,
+          useV3ExceptionHandling = useV3ExceptionHandling,
       )
     }
   }

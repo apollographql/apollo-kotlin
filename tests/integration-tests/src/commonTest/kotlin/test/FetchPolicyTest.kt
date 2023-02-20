@@ -14,7 +14,6 @@ import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
-import com.apollographql.apollo3.cache.normalized.foldFetchExceptions
 import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.store
@@ -97,7 +96,7 @@ class FetchPolicyTest {
   @Test
   fun cacheFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     mockServer.enqueue(query, data)
@@ -131,7 +130,7 @@ class FetchPolicyTest {
   @Test
   fun cacheFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
@@ -210,7 +209,7 @@ class FetchPolicyTest {
   @Test
   fun networkFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
@@ -251,7 +250,7 @@ class FetchPolicyTest {
   @Test
   fun networkFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
@@ -339,7 +338,7 @@ class FetchPolicyTest {
   @Test
   fun networkOnlyThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().throwOnException(true).build()
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
@@ -434,7 +433,7 @@ class FetchPolicyTest {
   @Test
   fun cacheAndNetworkThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
     @Suppress("DEPRECATION")
-    apolloClient = apolloClient.newBuilder().foldFetchExceptions(true).throwOnException(true).build()
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
 
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))

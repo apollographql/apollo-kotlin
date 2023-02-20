@@ -47,7 +47,6 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
-	public fun getThrowOnException ()Ljava/lang/Boolean;
 	public fun httpBatching (JIZ)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpEngine (Lcom/apollographql/apollo3/runtime/java/network/http/HttpEngine;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun httpExposeErrorBody (Z)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
@@ -66,8 +65,6 @@ public class com/apollographql/apollo3/runtime/java/ApolloClient$Builder : com/a
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/runtime/java/network/NetworkTransport;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public fun throwOnException (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
-	public synthetic fun throwOnException (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun webSocketFactory (Lokhttp3/WebSocket$Factory;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun webSocketServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;
 	public fun wsHeaders (Ljava/util/List;)Lcom/apollographql/apollo3/runtime/java/ApolloClient$Builder;

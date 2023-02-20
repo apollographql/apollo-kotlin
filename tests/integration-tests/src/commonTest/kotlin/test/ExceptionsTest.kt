@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ExceptionsTest {
@@ -58,29 +57,10 @@ class ExceptionsTest {
   fun toFlowThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("malformed")
 
-    val throwingClient = apolloClient.newBuilder().throwOnException(true).build()
+    val throwingClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
     var result = kotlin.runCatching {
       throwingClient.query(HeroNameQuery()).toFlow().toList()
     }
     assertNotNull(result.exceptionOrNull())
-
-    mockServer.enqueue("malformed")
-    result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).throwOnException(true).toFlow().toList()
-    }
-    assertNotNull(result.exceptionOrNull())
-  }
-
-  @Test
-  @Suppress("DEPRECATION")
-  fun toFlowDoesntThrow() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("malformed")
-
-    val throwingClient = apolloClient.newBuilder().throwOnException(true).build()
-    val result = kotlin.runCatching {
-      throwingClient.query(HeroNameQuery()).throwOnException(false).toFlow().toList()
-    }
-
-    assertNull(result.exceptionOrNull())
   }
 }

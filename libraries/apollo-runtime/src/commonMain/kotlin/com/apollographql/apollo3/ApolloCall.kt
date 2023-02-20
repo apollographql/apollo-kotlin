@@ -60,13 +60,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.canBeBatched = canBeBatched
   }
 
-  override var throwOnException: Boolean? = null
-
-  @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
-  override fun throwOnException(throwOnException: Boolean?) = apply {
-    this.throwOnException = throwOnException
-  }
-
   fun copy(): ApolloCall<D> {
     @Suppress("DEPRECATION")
     return ApolloCall(apolloClient, operation)
@@ -77,7 +70,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .throwOnException(throwOnException)
   }
 
   /**
@@ -85,7 +77,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * Note that the execution happens when collecting the Flow.
    * This method can be called several times to execute a call again.
    *
-   * Any [ApolloException]s will be emitted in [ApolloResponse.exception] and will not be thrown, unless [throwOnException] is set to true.
+   * The returned [Flow] does not throw unless [ApolloClient.useV3ExceptionHandling] is set to true.
    *
    * Example:
    * ```
@@ -106,7 +98,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .throwOnException(throwOnException)
         .build()
     return apolloClient.executeAsFlow(request)
   }

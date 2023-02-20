@@ -2,7 +2,6 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.ApolloException
 
 interface ExecutionOptions {
   val executionContext: ExecutionContext
@@ -46,13 +45,6 @@ interface ExecutionOptions {
    */
   val canBeBatched: Boolean?
 
-  /**
-   * Whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
-   * [ApolloResponse.exception].
-   * Used by [com.apollographql.apollo3.ApolloCall].
-   */
-  val throwOnException: Boolean?
-
   companion object {
     /**
      * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
@@ -90,15 +82,4 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 
   fun canBeBatched(canBeBatched: Boolean?): T
-
-  /**
-   * Configures whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
-   * [ApolloResponse.exception].
-   *
-   * If true, the call site must catch [ApolloException]. This was the behavior in Apollo Kotlin 3.
-   *
-   * Default: false
-   */
-  @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version")
-  fun throwOnException(throwOnException: Boolean?): T
 }

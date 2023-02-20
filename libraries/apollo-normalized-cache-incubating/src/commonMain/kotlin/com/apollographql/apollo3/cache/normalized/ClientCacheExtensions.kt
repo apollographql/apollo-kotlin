@@ -256,22 +256,6 @@ fun <T> MutableExecutionOptions<T>.refetchPolicyInterceptor(interceptor: ApolloI
     RefetchPolicyContext(interceptor)
 )
 
-/**
- * Configures whether to fold the fetch exception in [CacheInfo].
- *
- * Policies such as [FetchPolicy.CacheFirst] or [FetchPolicy.NetworkFirst] are often used to retrieve a single response. In such cases,
- * set [foldFetchExceptions] to true to avoid emitting the first exception (if any) and read it from
- * [ApolloResponse.cacheInfo]?.cacheMissException and [ApolloResponse.cacheInfo]?.networkException instead.
- *
- * This was the behavior in Apollo Kotlin 3.
- *
- * Default: false
- */
-@Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
-fun <T> MutableExecutionOptions<T>.foldFetchExceptions(foldFetchExceptions: Boolean) = addExecutionContext(
-    FoldFetchExceptionsContext(foldFetchExceptions)
-)
-
 private fun interceptorFor(fetchPolicy: FetchPolicy) = when (fetchPolicy) {
   FetchPolicy.CacheOnly -> CacheOnlyInterceptor
   FetchPolicy.NetworkOnly -> NetworkOnlyInterceptor
@@ -419,9 +403,6 @@ internal val <D : Operation.Data> ApolloCall<D>.fetchPolicyInterceptor
 
 private val <T> MutableExecutionOptions<T>.refetchPolicyInterceptor
   get() = executionContext[RefetchPolicyContext]?.interceptor ?: CacheOnlyInterceptor
-
-internal val <D : Operation.Data> ApolloRequest<D>.foldFetchExceptions
-  get() = executionContext[FoldFetchExceptionsContext]?.value ?: false
 
 internal val <D : Operation.Data> ApolloRequest<D>.doNotStore
   get() = executionContext[DoNotStoreContext]?.value ?: false
@@ -584,13 +565,6 @@ internal class RefetchPolicyContext(val interceptor: ApolloInterceptor) : Execut
     get() = Key
 
   companion object Key : ExecutionContext.Key<RefetchPolicyContext>
-}
-
-internal class FoldFetchExceptionsContext(val value: Boolean) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<FoldFetchExceptionsContext>
 }
 
 internal class DoNotStoreContext(val value: Boolean) : ExecutionContext.Element {

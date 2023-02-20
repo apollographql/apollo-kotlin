@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
@@ -54,7 +55,7 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
-    override val throwOnException: Boolean?,
+    private val useV3ExceptionHandling: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
@@ -122,7 +123,7 @@ private constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .throwOnException(throwOnException)
+        .useV3ExceptionHandling(useV3ExceptionHandling)
         .apply {
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
@@ -144,16 +145,13 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
-          if (apolloRequest.throwOnException != null) {
-            throwOnException(apolloRequest.throwOnException)
-          }
         }
         .build()
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
         .proceed(request)
         .let {
-          if (request.throwOnException == true) {
+          if (request.useV3ExceptionHandling == true) {
             it.onEach { response ->
               if (response.exception != null) {
                 throw response.exception!!
@@ -236,11 +234,19 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
-    override var throwOnException: Boolean? = null
+    private var useV3ExceptionHandling: Boolean? = null
 
+    /**
+     * Configures whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
+     * [ApolloResponse.exception].
+     *
+     * If true, the call site must catch [ApolloException]. This was the behavior in Apollo Kotlin 3.
+     *
+     * Default: false
+     */
     @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
-    override fun throwOnException(throwOnException: Boolean?): Builder = apply {
-      this.throwOnException = throwOnException
+    fun useV3ExceptionHandling(useV3ExceptionHandling: Boolean?): Builder = apply {
+      this.useV3ExceptionHandling = useV3ExceptionHandling
     }
 
     /**
@@ -547,7 +553,7 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          throwOnException = throwOnException,
+          useV3ExceptionHandling = useV3ExceptionHandling,
 
           // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
           // are important to rebuild `networkTransport` (and potentially others)
@@ -568,7 +574,7 @@ private constructor(
           .sendDocument(sendDocument)
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
-          .throwOnException(throwOnException)
+          .useV3ExceptionHandling(useV3ExceptionHandling)
       _networkTransport?.let { builder.networkTransport(it) }
       httpServerUrl?.let { builder.httpServerUrl(it) }
       httpEngine?.let { builder.httpEngine(it) }

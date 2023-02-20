@@ -133,7 +133,7 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
       return chain.proceed(request)
     }
 
-    if (!request.foldFetchExceptions) {
+    if (request.useV3ExceptionHandling != true) {
       // Fast path
       return request.fetchPolicyInterceptor.intercept(request, chain)
     }

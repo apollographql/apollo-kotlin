@@ -73,10 +73,6 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
     return canBeBatched;
   }
 
-  @Nullable @Override public Boolean getThrowOnException() {
-    return null;
-  }
-
   @Override public ApolloCall<D> addExecutionContext(@NotNull ExecutionContext executionContext) {
     this.executionContext = this.executionContext.plus(executionContext);
     return this;
@@ -117,14 +113,6 @@ public class DefaultApolloCall<D extends Operation.Data> implements ApolloCall<D
 
   @Override public ApolloCall<D> canBeBatched(@Nullable Boolean canBeBatched) {
     this.canBeBatched = canBeBatched;
-    return this;
-  }
-
-  /**
-   * Has no effect.
-   */
-  @Deprecated
-  @Override public ApolloCall<D> throwOnException(@Nullable Boolean throwOnException) {
     return this;
   }
 }
