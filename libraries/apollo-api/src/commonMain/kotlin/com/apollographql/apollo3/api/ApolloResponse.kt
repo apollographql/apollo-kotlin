@@ -27,8 +27,12 @@ private constructor(
     val data: D?,
 
     /**
-     * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
-     * This can either be null or empty depending on what your server sends back.
+     * [GraphQL errors](https://spec.graphql.org/October2021/#sec-Errors) returned by the server to let the client know that something
+     * has gone wrong.
+     *
+     * If no GraphQL error was raised, [errors] is null. Else it's a non-empty list of errors indicating where the error(s) happened.
+     *
+     * Note that because GraphQL allows partial data, it is possible to have both [data] non null and [errors] non null.
      *
      * See also [exception] for exceptions happening before a valid GraphQL response could be received.
      */
