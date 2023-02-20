@@ -59,20 +59,7 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
         return@flow
       }
 
-      val networkResponses = chain.proceed(
-          request = request
-      ).map { response ->
-        response.newBuilder()
-            .cacheInfo(
-                response.cacheInfo!!
-                    .newBuilder()
-                    .networkException(response.exception)
-                    .cacheMissException(cacheResponse.exception as? CacheMissException)
-                    .build()
-            )
-            .build()
-      }
-
+      val networkResponses = chain.proceed(request = request)
       emitAll(networkResponses)
     }
   }
@@ -113,17 +100,7 @@ val NetworkFirstInterceptor = object : ApolloInterceptor {
               .fetchFromCache(true)
               .build()
       ).single()
-      emit(
-          cacheResponse.newBuilder()
-              .cacheInfo(
-                  cacheResponse.cacheInfo!!
-                      .newBuilder()
-                      .networkException(networkException)
-                      .cacheMissException(cacheResponse.exception as? CacheMissException)
-                      .build()
-              )
-              .build()
-      )
+      emit(cacheResponse)
     }
   }
 }
@@ -144,18 +121,6 @@ val CacheAndNetworkInterceptor = object : ApolloInterceptor {
       emit(cacheResponse.newBuilder().isLast(false).build())
 
       val networkResponses = chain.proceed(request)
-          .map { response ->
-            response.newBuilder()
-                .cacheInfo(
-                    response.cacheInfo!!
-                        .newBuilder()
-                        .cacheMissException(cacheResponse.exception as? CacheMissException)
-                        .networkException(response.exception)
-                        .build()
-                )
-                .build()
-          }
-
       emitAll(networkResponses)
     }
   }
