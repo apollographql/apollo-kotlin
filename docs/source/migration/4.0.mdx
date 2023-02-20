@@ -16,7 +16,7 @@ In v3, non-GraphQL errors like network errors, cache misses, and WebSocket proto
 
 In v4, a field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non null `exception` instead of throwing it. This allows consumers to handle different kinds of errors at the same place, and it avoids Flows from being terminated. 
 
-To ease the migration to v4, the v3 behavior can be restored by setting `ApolloClient.Builder.throwOnException()` to `true`.
+To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.throwOnException(true)`.
 
 ```kotlin
 // Replace
