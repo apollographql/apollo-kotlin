@@ -74,7 +74,7 @@ class DeferNormalizedCacheTest {
     mockServer.takeRequest()
 
     // Cache is not empty, so this doesn't go to the server
-    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
+    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().data!!
     assertFails { mockServer.takeRequest() }
 
     // We get the last/fully formed data
@@ -102,7 +102,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is not empty, but NetworkOnly still goes to the server
     mockServer.enqueueMultipart(jsonList)
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.data!! }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -136,7 +136,7 @@ class DeferNormalizedCacheTest {
     // Cache is empty, so this goes to the server
     val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
     assertTrue(responses[0].exception is CacheMissException)
-    val networkActual = responses.drop(1).map { it.dataAssertNoErrors }
+    val networkActual = responses.drop(1).map { it.data!! }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -156,7 +156,7 @@ class DeferNormalizedCacheTest {
     assertEquals(networkExpected, networkActual)
 
     // Cache is not empty, so this doesn't go to the server
-    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
+    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().data!!
     assertFails { mockServer.takeRequest() }
 
     // We get the last/fully formed data
@@ -176,7 +176,7 @@ class DeferNormalizedCacheTest {
     mockServer.enqueueMultipart(jsonList)
 
     // Cache is empty, so this goes to the server
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.data!! }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -197,7 +197,7 @@ class DeferNormalizedCacheTest {
 
     mockServer.enqueue(statusCode = 500)
     // Network will fail, so we get the cached version
-    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
+    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).execute().data!!
 
     // We get the last/fully formed data
     val cacheExpected = networkExpected.last()
@@ -218,7 +218,7 @@ class DeferNormalizedCacheTest {
     // Cache is empty
     val responses = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList()
     assertTrue(responses[0].exception is CacheMissException)
-    val networkActual = responses.drop(1).map { it.dataAssertNoErrors }
+    val networkActual = responses.drop(1).map { it.data!! }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -245,7 +245,7 @@ class DeferNormalizedCacheTest {
     mockServer.enqueueMultipart(jsonList2)
 
     // Cache is not empty
-    val cacheAndNetworkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val cacheAndNetworkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.data!! }
     mockServer.takeRequest()
 
     // We get a combination of the last/fully formed data from the cache + the new network data
@@ -329,9 +329,7 @@ class DeferNormalizedCacheTest {
 
     mockServer.enqueue(statusCode = 500)
     // Because of the error the cache is missing some fields, so we get a cache miss, and fallback to the network (which also fails)
-    val exception = assertFailsWith<ApolloCompositeException> {
-      apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
-    }
+    val exception = apolloClient.query(WithFragmentSpreadsQuery()).execute().exception as ApolloCompositeException
     assertIs<CacheMissException>(exception.suppressedExceptions.first())
     assertIs<ApolloHttpException>(exception.suppressedExceptions.getOrNull(1))
     assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.suppressedExceptions.first().message)
@@ -408,7 +406,7 @@ class DeferNormalizedCacheTest {
         """{"incremental": [{"data":{"isColor":false},"path":["computers",0,"screen"],"label":"a"}],"hasNext":false}""",
     )
     mockServer.enqueueMultipart(jsonList)
-    val networkActual = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataAssertNoErrors }
+    val networkActual = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.data!! }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -428,7 +426,7 @@ class DeferNormalizedCacheTest {
     assertEquals(networkExpected, networkActual)
 
     // Now cache is not empty
-    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().dataAssertNoErrors
+    val cacheActual = apolloClient.query(WithFragmentSpreadsQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().data!!
 
     // We get the last/fully formed data
     val cacheExpected = WithFragmentSpreadsQuery.Data(

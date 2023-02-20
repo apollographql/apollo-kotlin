@@ -1,8 +1,8 @@
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.GlobalBuilder
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery
@@ -34,7 +34,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("meeoooowwwww", response.dataAssertNoErrors.animal!!.onCat!!.meow)
+    assertEquals("meeoooowwwww", response.data!!.animal!!.onCat!!.meow)
   }
 
   @Test
@@ -49,7 +49,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.onCat)
+    assertEquals(null, response.data!!.animal!!.onCat)
   }
 
   @Test
@@ -64,7 +64,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("meeoooowwwww", response.dataAssertNoErrors.animal!!.onCat!!.meow)
+    assertEquals("meeoooowwwww", response.data!!.animal!!.onCat!!.meow)
   }
 
   @Test
@@ -79,7 +79,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.onCat)
+    assertEquals(null, response.data!!.animal!!.onCat)
   }
 
   @Test
@@ -94,7 +94,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.dogFragment)
+    assertEquals(null, response.data!!.animal!!.dogFragment)
   }
 
   @Test
@@ -109,7 +109,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("ouaf", response.dataAssertNoErrors.animal!!.dogFragment!!.barf)
+    assertEquals("ouaf", response.data!!.animal!!.dogFragment!!.barf)
   }
 
   @Test
@@ -124,7 +124,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.dogFragment)
+    assertEquals(null, response.data!!.animal!!.dogFragment)
   }
 
   @Test
@@ -139,7 +139,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("ouaf", response.dataAssertNoErrors.animal!!.dogFragment!!.barf)
+    assertEquals("ouaf", response.data!!.animal!!.dogFragment!!.barf)
   }
 }
 

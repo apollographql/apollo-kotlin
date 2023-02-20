@@ -11,6 +11,6 @@ import java.io.File
 class OutOfBoundsTest {
   @Test
   fun checkOutOfBounds() {
-    GetAnimalQuery().parseJsonResponse(File("src/main/json/response.json").source().buffer().jsonReader()).dataAssertNoErrors
+    GetAnimalQuery().parseJsonResponse(File("src/main/json/response.json").source().buffer().jsonReader()).data!!
   }
 }

@@ -45,7 +45,7 @@ class MultipartSubscriptionsTest {
         CounterSubscription.Data(CounterSubscription.Counter(3)),
     )
 
-    val actualDataList = apolloClient.subscription(CounterSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.subscription(CounterSubscription()).toFlow().toList().map { it.data!! }
 
     assertContentEquals(expectedDataList, actualDataList)
   }

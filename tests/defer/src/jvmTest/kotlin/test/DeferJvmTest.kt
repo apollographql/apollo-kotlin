@@ -15,7 +15,6 @@ import defer.fragment.ScreenFields
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
@@ -82,7 +81,7 @@ class DeferJvmTest {
     job.cancel()
 
     // Also check that caching worked
-    val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().dataAssertNoErrors
+    val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().data!!
     val expected = WithFragmentSpreadsQuery.Data(
         listOf(
             WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,

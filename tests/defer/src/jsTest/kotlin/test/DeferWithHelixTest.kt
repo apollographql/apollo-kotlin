@@ -189,7 +189,7 @@ class DeferWithHelixTest {
         ),
     )
 
-    val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.data!! }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -237,7 +237,7 @@ class DeferWithHelixTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.data!! }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -258,7 +258,7 @@ class DeferWithHelixTest {
         WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 3, WithInlineFragmentsSubscription.OnCounter(6))),
     )
 
-    val actualDataList = apolloClient.subscription(WithInlineFragmentsSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.subscription(WithInlineFragmentsSubscription()).toFlow().toList().map { it.data!! }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -279,7 +279,7 @@ class DeferWithHelixTest {
         WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 3, CounterFields(6))),
     )
 
-    val actualDataList = apolloClient.subscription(WithFragmentSpreadsSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.subscription(WithFragmentSpreadsSubscription()).toFlow().toList().map { it.data!! }
     assertEquals(expectedDataList, actualDataList)
   }
 }
