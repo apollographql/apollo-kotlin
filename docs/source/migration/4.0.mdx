@@ -16,7 +16,7 @@ In v3, non-GraphQL errors like network errors, cache misses, and WebSocket proto
 
 In v4, a field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non null `exception` instead of throwing it. This allows consumers to handle different kinds of errors at the same place, and it avoids Flows from being terminated. 
 
-To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.throwOnException(true)`.
+To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
 
 ```kotlin
 // Replace
@@ -63,7 +63,7 @@ In v3, when using the normalized cache, you could set `emitCacheMisses` to `true
 In v4, this is now the default behavior and `emitCacheMisses` has been removed. 
 With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
 
-To ease the migration to v4, the v3 behavior can be restored by setting both `ApolloClient.Builder.throwOnException()` and `ApolloClient.Builder.foldFetchExceptions()` to `true`.
+To ease the migration to v4, the v3 behavior can be restored by by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
 
 ### Exceptions in `watch`
 
@@ -78,4 +78,3 @@ client.query(MyQuery()).watch().filter { it.exception == null }.collect { respon
   // Handle responses
 }
 ```
-
