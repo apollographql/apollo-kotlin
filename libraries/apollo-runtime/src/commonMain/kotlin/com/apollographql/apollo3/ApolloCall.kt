@@ -122,20 +122,21 @@ class ApolloCall<D : Operation.Data> internal constructor(
   suspend fun execute(): ApolloResponse<D> {
     val responses = toFlow().toList()
     val (errors, successes) = responses.partition { it.exception != null }
-    if (successes.size > 1) {
-      throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
-    } else if (successes.isEmpty()) {
-      return if (errors.size == 1) {
-        errors[0]
-      } else if (errors.size > 1) {
-        errors[1].newBuilder()
-            .exception(ApolloCompositeException(errors[0].exception, errors[1].exception))
-            .build()
-      } else {
-        throw ApolloException("The operation did not emit any item, check your interceptor chain")
+    return when (successes.size) {
+      0 -> {
+        when (errors.size) {
+          0 -> throw ApolloException("The operation did not emit any item, check your interceptor chain")
+          1 -> errors.first()
+          else -> {
+            errors[1].newBuilder()
+                .exception(ApolloCompositeException(errors.map { it.exception!! }))
+                .build()
+          }
+        }
       }
-    } else {
-      return successes.first()
+
+      1 -> successes.first()
+      else -> throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
     }
   }
 }

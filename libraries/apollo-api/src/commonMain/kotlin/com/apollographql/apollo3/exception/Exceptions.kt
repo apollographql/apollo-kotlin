@@ -104,7 +104,7 @@ class CacheMissException @ApolloInternal constructor(
   @ApolloExperimental
   val stale: Boolean = stale
 
-  constructor(key: String, fieldName: String?): this(key, fieldName, false)
+  constructor(key: String, fieldName: String?) : this(key, fieldName, false)
 
   companion object {
     internal fun message(key: String?, fieldName: String?, stale: Boolean): String {
@@ -158,12 +158,15 @@ class HttpCacheMissException(message: String, cause: Exception? = null) : Apollo
  *   }
  * ```
  */
-class ApolloCompositeException(first: Throwable?, second: Throwable?) : ApolloException(message = "multiple exceptions happened", second) {
-  init {
+class ApolloCompositeException : ApolloException {
+  constructor(first: Throwable?, second: Throwable?) : super(message = "Multiple exceptions happened", second) {
     if (first != null) addSuppressed(first)
     if (second != null) addSuppressed(second)
   }
 
+  constructor(exceptions: List<Throwable>) : super(message = "Multiple exceptions happened", exceptions.lastOrNull()) {
+    exceptions.forEach { addSuppressed(it) }
+  }
 }
 
 class AutoPersistedQueriesNotSupported : ApolloException(message = "The server does not support auto persisted queries")
