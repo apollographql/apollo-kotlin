@@ -2,6 +2,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_0_0
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_7_5
 import com.apollographql.apollo3.exception.ApolloException
 import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmField
@@ -70,13 +71,15 @@ private constructor(
    * Note: A future version could use [Definitely non nullable types](https://github.com/Kotlin/KEEP/pull/269)
    * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
    */
+  @Deprecated(message = "Check data, errors, and exception instead", replaceWith = ReplaceWith("data"))
+  @ApolloDeprecatedSince(v3_7_5)
   @get:JvmName("dataAssertNoErrors")
   val dataAssertNoErrors: D
     get() {
       return if (hasErrors()) {
         throw ApolloException("The response has errors: $errors")
       } else {
-        data ?: throw  ApolloException("The server did not return any data")
+        data ?: throw ApolloException("The server did not return any data")
       }
     }
 
