@@ -326,8 +326,6 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
  *
  * Default: false
  */
-@Deprecated("Will be removed in v4, where this is the default behavior", ReplaceWith(""))
-@ApolloDeprecatedSince(v3_7_5)
 fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = addExecutionContext(
     EmitCacheMissesContext(emitCacheMisses)
 )
