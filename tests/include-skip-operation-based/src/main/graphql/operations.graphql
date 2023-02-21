@@ -44,3 +44,10 @@ query GetDogSkipFalse {
 fragment dogFragment on Dog {
   barf
 }
+
+
+query GetCatIncludeVariableWithDefault($skipIf: Boolean = true) {
+  animal {
+    species @skip(if: $skipIf)
+  }
+}
