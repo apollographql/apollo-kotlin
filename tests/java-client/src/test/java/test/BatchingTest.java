@@ -73,7 +73,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -84,7 +84,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -123,7 +123,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -134,7 +134,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -166,7 +166,7 @@ public class BatchingTest {
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
             synchronized (items) {
-              items.add(response.dataAssertNoErrors().launch.id);
+              items.add(response.data.launch.id);
             }
             latch.countDown();
           }
@@ -177,7 +177,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -210,7 +210,7 @@ public class BatchingTest {
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
             synchronized (items) {
-              items.add(response.dataAssertNoErrors().launch.id);
+              items.add(response.data.launch.id);
             }
             latch.countDown();
           }
@@ -224,7 +224,7 @@ public class BatchingTest {
         .enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
             synchronized (items) {
-              items.add(response.dataAssertNoErrors().launch.id);
+              items.add(response.data.launch.id);
             }
             latch.countDown();
           }
@@ -266,7 +266,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunchQuery()).enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -277,7 +277,7 @@ public class BatchingTest {
     apolloClient.query(new GetLaunch2Query()).enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
       @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
         synchronized (items) {
-          items.add(response.dataAssertNoErrors().launch.id);
+          items.add(response.data.launch.id);
         }
         latch.countDown();
       }
@@ -312,7 +312,7 @@ public class BatchingTest {
         .enqueue(new ApolloCallback<GetLaunchQuery.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunchQuery.Data> response) {
             synchronized (items) {
-              items.add(response.dataAssertNoErrors().launch.id);
+              items.add(response.data.launch.id);
             }
             latch.countDown();
           }
@@ -328,7 +328,7 @@ public class BatchingTest {
         .enqueue(new ApolloCallback<GetLaunch2Query.Data>() {
           @Override public void onResponse(@NotNull ApolloResponse<GetLaunch2Query.Data> response) {
             synchronized (items) {
-              items.add(response.dataAssertNoErrors().launch.id);
+              items.add(response.data.launch.id);
             }
             latch.countDown();
           }
