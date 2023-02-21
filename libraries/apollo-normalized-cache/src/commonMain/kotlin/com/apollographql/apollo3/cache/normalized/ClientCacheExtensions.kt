@@ -129,14 +129,14 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean,
     refetchThrows: Boolean,
-): Nothing = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
+): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 @Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
 @ApolloDeprecatedSince(v4_0_0)
 @Suppress("UNUSED_PARAMETER")
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean,
-): Nothing = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
+): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 /**
  * Gets the result from the network, then observes the cache for any changes.
