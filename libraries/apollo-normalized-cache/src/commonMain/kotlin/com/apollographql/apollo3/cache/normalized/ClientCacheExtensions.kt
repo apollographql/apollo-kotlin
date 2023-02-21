@@ -5,7 +5,6 @@ package com.apollographql.apollo3.cache.normalized
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
-import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v3_7_5
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
@@ -130,14 +129,14 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean,
     refetchThrows: Boolean,
-) = watch()
+): Nothing = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 @Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
 @ApolloDeprecatedSince(v4_0_0)
 @Suppress("UNUSED_PARAMETER")
 fun <D : Query.Data> ApolloCall<D>.watch(
     fetchThrows: Boolean,
-) = watch()
+): Nothing = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
 
 /**
  * Gets the result from the network, then observes the cache for any changes.
@@ -249,15 +248,8 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
     DoNotStoreContext(doNotStore)
 )
 
-/**
- * @param emitCacheMisses Whether to emit cache misses instead of throwing.
- * The returned response will have `response.data == null`
- * You can read `response.cacheInfo` to get more information about the cache miss
- *
- * Default: false
- */
-@Deprecated(level = DeprecationLevel.ERROR, message = "Emitting cache misses is now the default behavior, this method is a no-op", replaceWith = ReplaceWith(""))
-@ApolloDeprecatedSince(v3_7_5)
+@Deprecated("Emitting cache misses is now the default behavior, this method is a no-op", replaceWith = ReplaceWith(""))
+@ApolloDeprecatedSince(v4_0_0)
 @Suppress("UNUSED_PARAMETER")
 fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = this
 
