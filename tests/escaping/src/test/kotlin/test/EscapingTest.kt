@@ -17,7 +17,7 @@ class EscapingTest {
             ),
         ))
         .execute()
-    val `while`: WhileQuery.While? = response.data!!.`while`
+    val `while`: WhileQuery.While? = response.dataAssertNoErrors.`while`
 
     @Suppress("UNUSED_VARIABLE")
     val `if`: String? = `while`?.`if`

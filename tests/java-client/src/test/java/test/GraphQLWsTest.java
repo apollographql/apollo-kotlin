@@ -58,13 +58,13 @@ public class GraphQLWsTest {
   @Test
   public void queryOverWebSocket() {
     ApolloResponse<HelloQuery.Data> response = blockingQuery(apolloClient, HelloQuery.builder().build());
-    Truth.assertThat(response.data.hello).isEqualTo("Hello World!");
+    Truth.assertThat(response.dataAssertNoErrors().hello).isEqualTo("Hello World!");
   }
 
   @Test
   public void mutationOverWebSocket() {
     ApolloResponse<SetHelloMutation.Data> response = blockingMutation(apolloClient, SetHelloMutation.builder().build());
-    Truth.assertThat(response.data.hello).isEqualTo("Hello Mutation!");
+    Truth.assertThat(response.dataAssertNoErrors().hello).isEqualTo("Hello Mutation!");
   }
 
   @Test
@@ -77,7 +77,7 @@ public class GraphQLWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new GreetingsSubscription()).enqueue(new ApolloCallback<GreetingsSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<GreetingsSubscription.Data> response) {
-        actual.add(response.data.greetings);
+        actual.add(response.dataAssertNoErrors().greetings);
         latch.countDown();
       }
     });

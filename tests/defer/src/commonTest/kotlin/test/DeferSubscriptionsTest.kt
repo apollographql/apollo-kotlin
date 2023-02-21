@@ -49,7 +49,7 @@ class DeferSubscriptionsTest {
         WithInlineFragmentsSubscription.Data(WithInlineFragmentsSubscription.Count("Counter", 3, WithInlineFragmentsSubscription.OnCounter(6))),
     )
 
-    val actualDataList = apolloClient.subscription(WithInlineFragmentsSubscription()).toFlow().toList().map { it.data!! }
+    val actualDataList = apolloClient.subscription(WithInlineFragmentsSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -70,7 +70,7 @@ class DeferSubscriptionsTest {
         WithFragmentSpreadsSubscription.Data(WithFragmentSpreadsSubscription.Count("Counter", 3, CounterFields(6))),
     )
 
-    val actualDataList = apolloClient.subscription(WithFragmentSpreadsSubscription()).toFlow().toList().map { it.data!! }
+    val actualDataList = apolloClient.subscription(WithFragmentSpreadsSubscription()).toFlow().toList().map { it.dataAssertNoErrors }
     assertEquals(expectedDataList, actualDataList)
   }
 

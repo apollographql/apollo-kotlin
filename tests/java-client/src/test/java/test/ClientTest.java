@@ -59,11 +59,11 @@ public class ClientTest {
   public void simple() {
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}}").build());
     @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
-    Truth.assertThat(queryResponse.data.random).isEqualTo(42);
+    Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
     @NonNull ApolloResponse<CreateCatMutation.Data> mutationResponse = blockingMutation(apolloClient, CreateCatMutation.builder().build());
-    Truth.assertThat(mutationResponse.data.createAnimal.catFragment.species).isEqualTo("cat");
+    Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
   }
 
   @Test
@@ -144,8 +144,8 @@ public class ClientTest {
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"location\": {\"latitude\": 10.5, \"longitude\": 20.5}}}").build());
     ApolloResponse<LocationQuery.Data> queryResponse = blockingQuery(apolloClient, LocationQuery.builder().build());
-    Truth.assertThat(queryResponse.data.location.latitude).isEqualTo(10.5);
-    Truth.assertThat(queryResponse.data.location.longitude).isEqualTo(20.5);
+    Truth.assertThat(queryResponse.dataAssertNoErrors().location.latitude).isEqualTo(10.5);
+    Truth.assertThat(queryResponse.dataAssertNoErrors().location.longitude).isEqualTo(20.5);
   }
 
   @Test

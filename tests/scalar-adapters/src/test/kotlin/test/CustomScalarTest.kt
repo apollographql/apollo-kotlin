@@ -49,7 +49,7 @@ class CustomScalarTest {
     val data = ApolloClient.Builder().serverUrl(serverUrl = server.url()).build()
         .query(BuiltInAdaptersQuery())
         .execute()
-        .data!!
+        .dataAssertNoErrors
     assertEquals(1L, data.id)
     assertNull(data.nullableId)
     assertEquals(10_000_000_000L, data.long)
@@ -85,7 +85,7 @@ class CustomScalarTest {
     val data = ApolloClient.Builder().serverUrl(serverUrl = server.url()).build()
         .query(CompileTimeAdaptersQuery())
         .execute()
-        .data!!
+        .dataAssertNoErrors
 
     assertEquals("string", data.string.value)
     assertNull(data.nullableString)
@@ -110,7 +110,7 @@ class CustomScalarTest {
         .build()
         .query(DecimalQuery())
         .execute()
-        .data!!
+        .dataAssertNoErrors
 
     assertEquals("1000000000000000000000000000000000000000000", data.decimal?.toString())
   }
@@ -155,7 +155,7 @@ class CustomScalarTest {
         .build()
         .query(AddressQuery())
         .execute()
-        .data!!
+        .dataAssertNoErrors
 
     assertEquals(Address("Downing Street", 10), data.address)
   }

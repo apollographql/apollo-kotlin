@@ -81,7 +81,7 @@ class DeferJvmTest {
     job.cancel()
 
     // Also check that caching worked
-    val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().data!!
+    val actual = apolloClient.query(WithFragmentSpreadsQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).toFlow().last().dataAssertNoErrors
     val expected = WithFragmentSpreadsQuery.Data(
         listOf(
             WithFragmentSpreadsQuery.Computer("Computer", "Computer1", ComputerFields("386", 1993,
