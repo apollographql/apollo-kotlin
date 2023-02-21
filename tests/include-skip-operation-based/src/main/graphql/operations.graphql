@@ -51,3 +51,13 @@ query GetCatIncludeVariableWithDefault($skipIf: Boolean = true) {
     species @skip(if: $skipIf)
   }
 }
+
+fragment animalFragment on Animal {
+  species @skip(if: $skipIf)
+}
+
+query SkipInFragment($skipIf: Boolean = true) {
+  animal {
+    ...animalFragment
+  }
+}

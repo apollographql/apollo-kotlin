@@ -21,6 +21,7 @@ import com.example.type.buildQuery
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class IncludeTest {
 
@@ -159,6 +160,20 @@ class IncludeTest {
     }
 
     operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+  }
+
+  @Test
+  fun getCatIncludeVariableWithDefaultQuery2() = runBlocking {
+    val operation = GetCatIncludeVariableWithDefaultQuery()
+
+    val data = GlobalBuilder.buildQuery {
+      animal = buildCat {
+      }
+    }
+
+    val response = operation.parseData(data)
+
+    assertNull(response.dataAssertNoErrors.animal!!.species)
   }
 }
 
