@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.CompiledField
 
 internal fun CompiledField.shouldSkip(variableValues: Map<String, Any?>): Boolean {
   condition.forEach {
-    var value = (variableValues.get(it.name) as? Boolean) ?: false
+    var value = (variableValues.get(it.name) as? Boolean) ?: it.defaultValue
     if (it.inverted) {
       value = !value
     }
