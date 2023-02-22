@@ -43,7 +43,7 @@ You can get the current object's typename from the `context` object and include 
 ```kotlin
 val cacheKeyGenerator = object : CacheKeyGenerator {
   override fun cacheKeyForObject(obj: Map<String, Any?>, context: CacheKeyGeneratorContext): CacheKey? {
-    val typename = context.field.type.leafType().name
+    val typename = obj["__typename"] as String
     val id = obj["id"] as String
 
     return CacheKey(typename, id)
