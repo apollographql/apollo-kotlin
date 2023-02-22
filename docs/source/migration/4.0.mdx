@@ -3,5 +3,78 @@ title: Migrating to Apollo Kotlin 4.0
 description: From 3.x
 ---
 
+> Note: this page is a work in progress.
+
 * Requires Kotlin Gradle Plugin 1.6 (from 1.5)
 * Dropped `enableCompatibilityMetadataVariant`
+
+## Error handling
+
+### Exception surfacing
+
+In v3, non-GraphQL errors like network errors, cache misses, and WebSocket protocol errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was not ideal because it was a difference in how to handle GraphQL errors vs other errors. Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
+
+In v4, a field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non null `exception` instead of throwing it. This allows consumers to handle different kinds of errors at the same place, and it avoids Flows from being terminated. 
+
+To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
+
+```kotlin
+// Replace
+try {
+  val response = client.query(MyQuery()).execute()
+  if (response.hasErrors()) {
+    // Handle GraphQL errors
+  }
+} catch (e: ApolloException) {
+  // Handle network error
+}
+
+// With
+val response = client.query(MyQuery()).execute()
+if (response.exception != null) {
+  // Handle network error
+} else if (response.hasErrors()) {
+  // Handle GraphQL errors
+}
+
+// Replace
+client.subscription(MySubscription()).toFlow().collect { response ->
+  if (response.hasErrors()) {
+    // Handle GraphQL errors
+  }
+}.catch { e ->
+  // Handle network error
+}
+
+// With
+client.subscription(MySubscription()).toFlow().collect { response ->
+  if (response.exception != null) {
+    // Handle network error
+  } else if (response.hasErrors()) {
+    // Handle GraphQL errors
+  }
+}
+```
+
+### Exception folding when using the cache
+
+In v3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
+
+In v4, this is now the default behavior and `emitCacheMisses` has been removed. 
+With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
+
+To ease the migration to v4, the v3 behavior can be restored by by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
+
+### Exceptions in `watch`
+
+In v3, `ApolloCall.watch()` would accept a `fetchThrows` and `refetchThrows` parameters to control whether to throw cache or network exceptions happening during the initial fetch or subsequent refetches, the default value being `false`.
+
+In v4, these exceptions are now emitted in `ApolloResponse.exception`.
+
+If they are undesirable, ignore them by filtering them out:
+
+```kotlin   
+client.query(MyQuery()).watch().filter { it.exception == null }.collect { response ->
+  // Handle responses
+}
+```

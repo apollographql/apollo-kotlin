@@ -10,26 +10,21 @@ Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQ
 
 ## Network errors
 
-When calling `execute()`, network errors throw an `ApolloException`. To handle them, wrap your query in a `try/catch` block:
+Network errors are surfaced in the `ApolloResponse.exception` field.
 
 ```kotlin
-try {
-  val response = apolloClient.query(query).execute()
-} catch(exception: ApolloException) {
+val response = apolloClient.query(query).execute()
+if (response.exception != null) {
   // handle exception here
 }
 ```
 
-When using `toFlow()` (e.g. with [subscriptions](../essentials/subscription)) and `watch()` (with the [normalized cache](../caching/query-watchers)), network errors are emitted in `ApolloResponse.exception`.
+This is also true when calling `toFlow()` (e.g. with [subscriptions](../essentials/subscription)) and `watch()` (with the [normalized cache](../caching/query-watchers)).
 
 ```kotlin
-apolloClient.query(query).toFlow().collect { response ->
+apolloClient.subscription(subscription).toFlow().collect { response ->
   if (response.exception != null) {
     // handle network errors
-  } else if (response.hasErrors()) {
-    // handle GraphQL errors
-  } else {
-    // no errors, handle data
   }
 }
 ```
@@ -98,11 +93,10 @@ Note that while there are errors, the query successfully returned the title of t
 Apollo Kotlin gives you access to both the data and the errors in the `Response` class:
 
 ```kotlin
-val response = try {
-  apolloClient.query(query).execute()
-} catch(exception: ApolloException) {
+val response = apolloClient.query(query).execute()
+if (response.exception != null) {
   // Network error, not much to do
-  throw exception
+  throw response.exception
 }
 
 // It's possible to display the film title
@@ -122,10 +116,10 @@ if (person != null) {
 
 If you don't want to handle partial responses, you can simplify your error handling logic. `ApolloResponse.dataAssertNoErrors` returns a non-nullable `data` and throws if there are any errors. This way, you can handle all errors in a single `catch {}` block:
 
-```
+```kotlin
 val data = try {
   apolloClient.query(query).execute().dataAssertNoErrors
-} catch(exception: ApolloException) {
+} catch (exception: ApolloException) {
   // All network or GraphQL errors are handled here
   throw exception
 }

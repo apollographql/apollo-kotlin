@@ -63,11 +63,7 @@ to `ApolloClient#mutation(mutation)` to send the mutation to the server, execute
 ```kotlin
 val upvotePostMutation = UpvotePostMutation(postId = 3)
 
-val response = try {
-  apolloClient.mutation(upvotePostMutation).execute()
-} catch(e: ApolloException) {
-  // handle error
-}
+val response = apolloClient.mutation(upvotePostMutation).execute()
 ```
 
 ## Using fragments in mutation results
@@ -98,9 +94,5 @@ mutation CreateReviewForEpisode($episode: Episode!, $review: ReviewInput!) {
 ```kotlin
 val reviewInput = ReviewInput(stars = 5, commentary = "This is a great movie!")
 
-try {
-  val response = apolloClient.mutation(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput)).execute()
-} catch (e: ApolloException) {
-  // handle exception
-}
+val response = apolloClient.mutation(CreateReviewForEpisodeMutation(episode = Episode.NEWHOPE, review = reviewInput)).execute()
 ```
