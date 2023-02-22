@@ -137,3 +137,5 @@ directive @defer(
   label: String
   if: Boolean! = true
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+directive @specifiedBy(url: String!) on SCALAR

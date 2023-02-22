@@ -28,6 +28,7 @@ data class IntrospectionSchema(
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
       val types: List<Type>,
+      val directives: List<Directive>,
   ) {
     @Serializable
     data class QueryType(val name: String)
@@ -121,18 +122,17 @@ data class IntrospectionSchema(
         val deprecationReason: String?,
         val type: TypeRef,
         val args: List<Argument> = emptyList(),
-    ) {
+    )
 
-      @Serializable
-      data class Argument(
-          val name: String,
-          val description: String?,
-          val isDeprecated: Boolean = false,
-          val deprecationReason: String?,
-          val type: TypeRef,
-          val defaultValue: String?,
-      )
-    }
+    @Serializable
+    data class Argument(
+        val name: String,
+        val description: String?,
+        val isDeprecated: Boolean = false,
+        val deprecationReason: String?,
+        val type: TypeRef,
+        val defaultValue: String?,
+    )
 
     /**
      * An introspection TypeRef
@@ -143,6 +143,40 @@ data class IntrospectionSchema(
         val name: String? = "",
         val ofType: TypeRef? = null,
     )
+
+    /**
+     * An introspection directive
+     */
+    @Serializable
+    data class Directive(
+        val name: String,
+        val description: String?,
+        val locations: List<DirectiveLocation>,
+        val args: List<Argument>,
+        val isRepeatable: Boolean,
+    ) {
+      enum class DirectiveLocation {
+        QUERY,
+        MUTATION,
+        SUBSCRIPTION,
+        FIELD,
+        FRAGMENT_DEFINITION,
+        FRAGMENT_SPREAD,
+        INLINE_FRAGMENT,
+        VARIABLE_DEFINITION,
+        SCHEMA,
+        SCALAR,
+        OBJECT,
+        FIELD_DEFINITION,
+        ARGUMENT_DEFINITION,
+        INTERFACE,
+        UNION,
+        ENUM,
+        ENUM_VALUE,
+        INPUT_OBJECT,
+        INPUT_FIELD_DEFINITION,
+      }
+    }
 
     enum class Kind {
       ENUM, INTERFACE, OBJECT, INPUT_OBJECT, SCALAR, NON_NULL, LIST, UNION

@@ -176,9 +176,10 @@ object SchemaDownloader {
           name
           description
           locations
-          args {
+          args(includeDeprecated: true) {
             ...InputValue
           }
+          isRepeatable
         }
       }
     }

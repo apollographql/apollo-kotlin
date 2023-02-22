@@ -17,3 +17,5 @@ input MyInput {
   a: Int
   b: String @deprecated(reason: "This input field is deprecated")
 }
+
+directive @MyDirective1(a: Int, b: String @deprecated(reason: "This argument is deprecated")) on FIELD_DEFINITION | SCALAR
