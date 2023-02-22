@@ -2,12 +2,12 @@ package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.compiler.toJson
 import okio.Buffer
@@ -190,7 +190,7 @@ object SchemaDownloader {
       fields(includeDeprecated: true) {
         name
         description
-        args {
+        args(includeDeprecated: true) {
           ...InputValue
         }
         type {
