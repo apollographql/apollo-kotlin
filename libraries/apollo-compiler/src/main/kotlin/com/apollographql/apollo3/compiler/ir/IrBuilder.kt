@@ -444,7 +444,7 @@ internal class IrBuilder(
         operationType = operationType.toIrOperationType(schema.rootTypeNameFor(operationType)),
         typeCondition = typeDefinition.name,
         variables = variableDefinitions.map { it.toIr() },
-        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeDefinition.name),
+        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeDefinition.name, variableDefinitions),
         sourceWithFragments = sourceWithFragments,
         filePath = sourceLocation.filePath!!,
         dataProperty = dataProperty,
@@ -479,7 +479,7 @@ internal class IrBuilder(
         filePath = sourceLocation.filePath!!,
         typeCondition = typeDefinition.name,
         variables = inferredVariables.map { it.toIr() },
-        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeCondition.name),
+        selectionSets = SelectionSetsBuilder(schema, allFragmentDefinitions).build(selectionSet.selections, typeCondition.name, emptyList()),
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
@@ -646,10 +646,17 @@ internal class IrBuilder(
             }
       }
 
+      /**
+       * It's ok to always pass the empty list for variableDefinitions because the parsers do not care about @include and @skip
+       * All they care about is that the model types match what is sent by the server
+       */
+      val variableDefinitions: List<GQLVariableDefinition> = emptyList()
+      val condition = gqlField.directives.toIncludeBooleanExpression(variableDefinitions)
+
       CollectedField(
           name = gqlField.name,
           alias = gqlField.alias,
-          condition = gqlField.directives.toIncludeBooleanExpression(),
+          condition = condition,
           selections = gqlField.selectionSet?.selections ?: emptyList(),
           type = fieldDefinition.type,
           description = fieldDefinition.description,
@@ -761,9 +768,9 @@ internal fun GQLValue.toIrValue(): IrValue {
  * - (!)Variable
  * - (!)Variable & (!)Variable
  */
-internal fun List<GQLDirective>.toIncludeBooleanExpression(): BooleanExpression<BVariable> {
+internal fun List<GQLDirective>.toIncludeBooleanExpression(variableDefinitions: List<GQLVariableDefinition>): BooleanExpression<BVariable> {
   val conditions = mapNotNull {
-    it.toIncludeBooleanExpression()
+    it.toIncludeBooleanExpression(variableDefinitions)
   }
   return if (conditions.isEmpty()) {
     BooleanExpression.True
@@ -778,7 +785,7 @@ internal fun List<GQLDirective>.toIncludeBooleanExpression(): BooleanExpression<
   }
 }
 
-internal fun GQLDirective.toIncludeBooleanExpression(): BooleanExpression<BVariable>? {
+internal fun GQLDirective.toIncludeBooleanExpression(variableDefinitions: List<GQLVariableDefinition>): BooleanExpression<BVariable>? {
   if (setOf("skip", "include").contains(name).not()) {
     // not a condition directive
     return null
@@ -794,7 +801,10 @@ internal fun GQLDirective.toIncludeBooleanExpression(): BooleanExpression<BVaria
       if (value.value) BooleanExpression.True else BooleanExpression.False
     }
 
-    is GQLVariableValue -> BooleanExpression.Element(BVariable(name = value.name))
+    is GQLVariableValue -> {
+      val defaultValue = (variableDefinitions.firstOrNull { it.name == value.name }?.defaultValue as? GQLBooleanValue?)?.value
+      BooleanExpression.Element(BVariable(name = value.name, defaultValue = defaultValue))
+    }
     else -> throw IllegalStateException("Apollo: cannot pass ${value.toUtf8()} to '$name' directive")
   }.let {
     if (name == "skip") not(it) else it
@@ -816,7 +826,7 @@ internal fun List<GQLDirective>.toBooleanExpression(): BooleanExpression<BTerm> 
     }
     deferBooleanConditions.first()
   }
-  return toIncludeBooleanExpression().and(deferBooleanExpression).simplify()
+  return toIncludeBooleanExpression(emptyList()).and(deferBooleanExpression).simplify()
 }
 
 internal fun GQLDirective.toDeferBooleanExpression(): BooleanExpression<BTerm>? {
