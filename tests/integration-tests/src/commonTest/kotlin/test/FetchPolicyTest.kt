@@ -1,5 +1,6 @@
 package test
 
+import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -12,7 +13,6 @@ import com.apollographql.apollo3.cache.normalized.CacheOnlyInterceptor
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheKey
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.executeCacheAndNetwork
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
@@ -20,6 +20,8 @@ import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -86,6 +88,36 @@ class FetchPolicyTest {
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
     mockServer.enqueue("malformed")
+    assertIs<ApolloCompositeException>(
+        apolloClient.query(query).execute().exception
+    )
+  }
+
+  @Test
+  fun cacheFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    mockServer.enqueue(query, data)
+
+    // First query should hit the network and save in cache
+    var response = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Second query should only hit the cache
+    response = apolloClient.query(query).execute()
+
+    assertNotNull(response.data)
+    assertTrue(response.isFromCache)
+
+    // Clear the store and offer a malformed response, we should get a composite error
+    store.clearAll()
+    mockServer.enqueue("malformed")
     try {
       apolloClient.query(query).execute()
       fail("we expected the query to fail")
@@ -94,8 +126,90 @@ class FetchPolicyTest {
     }
   }
 
+
+  @Test
+  fun cacheFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    mockServer.enqueue(query, data)
+
+    // First query should hit the network and save in cache
+    var responses = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.NetworkFirst)
+        .toFlow()
+
+    responses.test {
+      val response1 = awaitItem()
+      assertEquals(data, response1.data)
+      assertFalse(response1.isFromCache)
+      awaitComplete()
+    }
+
+    // Second query should only hit the cache
+    responses = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .toFlow()
+    responses.test {
+      val response1 = awaitItem()
+      assertEquals(data, response1.data)
+      assertTrue(response1.isFromCache)
+      awaitComplete()
+    }
+
+    // Clear the store and offer a malformed response, we should get a composite error
+    store.clearAll()
+    mockServer.enqueue("malformed")
+    responses = apolloClient.query(query)
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .toFlow()
+    responses.test {
+      assertTrue(awaitError() is ApolloCompositeException)
+    }
+  }
+
   @Test
   fun networkFirst() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
+
+    // First query should hit the network and save in cache
+    mockServer.enqueue(query, data)
+    var response = call.execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Now data is cached but it shouldn't be used since network will go through
+    mockServer.enqueue(query, data)
+    response = call.execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Network error -> we should hit now the cache
+    mockServer.enqueue("malformed")
+    response = call.execute()
+
+    assertNotNull(response.data)
+    assertTrue(response.isFromCache)
+
+    // Network error and no cache -> we should get an error
+    mockServer.enqueue("malformed")
+    store.clearAll()
+    assertIs<ApolloCompositeException>(
+        call.execute().exception
+    )
+  }
+
+  @Test
+  fun networkFirstExecuteThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
@@ -134,10 +248,58 @@ class FetchPolicyTest {
   }
 
   @Test
-  fun cacheOnly() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun networkFirstToFlowThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+
     val query = HeroNameQuery()
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkFirst)
+
+    // First query should hit the network and save in cache
+    mockServer.enqueue(query, data)
+    var responses = call.toFlow()
+    responses.test {
+      val response1 = awaitItem()
+      assertEquals(data, response1.data)
+      assertFalse(response1.isFromCache)
+      awaitComplete()
+    }
+
+    // Now data is cached but it shouldn't be used since network will go through
+    mockServer.enqueue(query, data)
+    responses = call.toFlow()
+    responses.test {
+      val response1 = awaitItem()
+      assertEquals(data, response1.data)
+      assertFalse(response1.isFromCache)
+      awaitComplete()
+    }
+
+    // Network error -> we should hit now the cache
+    mockServer.enqueue("malformed")
+    responses = call.toFlow()
+    responses.test {
+      val response1 = awaitItem()
+      assertEquals(data, response1.data)
+      assertTrue(response1.isFromCache)
+      awaitComplete()
+    }
+
+    // Network error and no cache -> we should get an error
+    mockServer.enqueue("malformed")
+    store.clearAll()
+    responses = call.toFlow()
+    responses.test {
+      assertTrue(awaitError() is ApolloCompositeException)
+    }
+  }
+
+  @Test
+  fun cacheOnly() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
 
     // First query should hit the network and save in cache
     mockServer.enqueue(query, data)
@@ -170,6 +332,27 @@ class FetchPolicyTest {
 
     // Offer a malformed response, it should fail
     mockServer.enqueue("malformed")
+    assertNotNull(call.execute().exception)
+  }
+
+  @Test
+  fun networkOnlyThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+
+    val call = apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly)
+
+    // First query should hit the network and save in cache
+    mockServer.enqueue(query, data)
+    val response = call.execute()
+
+    assertNotNull(response.data)
+    assertFalse(response.isFromCache)
+
+    // Offer a malformed response, it should fail
+    mockServer.enqueue("malformed")
     try {
       call.execute()
       fail("we expected a failure")
@@ -184,6 +367,77 @@ class FetchPolicyTest {
     val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
     var caught: Throwable? = null
 
+    // Initial state: everything fails
+    // Cache Error + Network Error => Error
+    mockServer.enqueue(statusCode = 500)
+    assertIs<ApolloCompositeException>(
+        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception
+    )
+
+    // Make the network return something
+    // Cache Error + Network Success => 2 responses
+    mockServer.enqueue(query, data)
+    var responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
+
+    assertNull(caught)
+    assertEquals(2, responses.size)
+    assertNull(responses[0].data)
+    assertIs<CacheMissException>(responses[0].exception)
+    assertNotNull(responses[1].data)
+    assertFalse(responses[1].isFromCache)
+    assertEquals("R2-D2", responses[1].data?.hero?.name)
+
+    // Now cache is populated but make the network fail again
+    // Cache Success + Network Error => 1 response with cache value + 1 response with network exception
+    caught = null
+    mockServer.enqueue(statusCode = 500)
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().catch { caught = it }.toList()
+
+    assertNull(caught)
+    assertEquals(2, responses.size)
+    assertNotNull(responses[0].data)
+    assertTrue(responses[0].isFromCache)
+    assertEquals("R2-D2", responses[0].data?.hero?.name)
+    assertNull(responses[1].data)
+    assertIs<ApolloHttpException>(responses[1].exception)
+
+    // Cache Success + Network Success => 2 responses
+    mockServer.enqueue(query, data)
+    responses = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
+
+    assertEquals(2, responses.size)
+    assertNotNull(responses[0].data)
+    assertTrue(responses[0].isFromCache)
+    assertNotNull(responses[1].data)
+    assertFalse(responses[1].isFromCache)
+  }
+
+
+  private val refetchPolicyInterceptor = object : ApolloInterceptor {
+    var hasSeenValidResponse: Boolean = false
+    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+      return if (!hasSeenValidResponse) {
+        CacheOnlyInterceptor.intercept(request, chain).onEach {
+          if (it.data != null) {
+            // We have valid data, we can now use the network
+            hasSeenValidResponse = true
+          }
+        }
+      } else {
+        // If for some reason we have a cache miss, get fresh data from the network
+        CacheFirstInterceptor.intercept(request, chain)
+      }
+    }
+  }
+
+  @Test
+  fun cacheAndNetworkThrowing() = runTest(before = { setUp() }, after = { tearDown() }) {
+    @Suppress("DEPRECATION")
+    apolloClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+
+    val query = HeroNameQuery()
+    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
+    var caught: Throwable? = null
     // Initial state: everything fails
     // Cache Error + Network Error => Error
     mockServer.enqueue(statusCode = 500)
@@ -225,66 +479,6 @@ class FetchPolicyTest {
     assertFalse(responses[1].isFromCache)
   }
 
-  @Test
-  fun queryCacheAndNetwork() = runTest(before = { setUp() }, after = { tearDown() }) {
-    val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-
-    // Initial state: everything fails
-    // Cache Error + Network Error => Error
-    mockServer.enqueue(statusCode = 500)
-    assertFailsWith(ApolloCompositeException::class) {
-      apolloClient.query(query).executeCacheAndNetwork().toList()
-    }
-
-    // Make the network return something
-    // Cache Error + Nework Success => 1 response
-    mockServer.enqueue(query, data)
-    var responses = apolloClient.query(query).executeCacheAndNetwork().toList()
-
-    assertEquals(1, responses.size)
-    assertNotNull(responses[0].data)
-    assertFalse(responses[0].isFromCache)
-    assertEquals("R2-D2", responses[0].data?.hero?.name)
-
-    // Now cache is populated but make the network fail again
-    // Cache Success + Network Error => 1 response
-    mockServer.enqueue(statusCode = 500)
-    responses = apolloClient.query(query).executeCacheAndNetwork().toList()
-
-    assertEquals(1, responses.size)
-    assertNotNull(responses[0].data)
-    assertTrue(responses[0].isFromCache)
-    assertEquals("R2-D2", responses[0].data?.hero?.name)
-
-    // Cache Success + Network Success => 1 response
-    mockServer.enqueue(query, data)
-    responses = apolloClient.query(query).executeCacheAndNetwork().toList()
-
-    assertEquals(2, responses.size)
-    assertNotNull(responses[0].data)
-    assertTrue(responses[0].isFromCache)
-    assertNotNull(responses[1].data)
-    assertFalse(responses[1].isFromCache)
-  }
-
-  private val refetchPolicyInterceptor = object : ApolloInterceptor {
-    var hasSeenValidResponse: Boolean = false
-    override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
-      return if (!hasSeenValidResponse) {
-        CacheOnlyInterceptor.intercept(request, chain).onEach {
-          if (it.data != null) {
-            // We have valid data, we can now use the network
-            hasSeenValidResponse = true
-          }
-        }
-      } else {
-        // If for some reason we have a cache miss, get fresh data from the network
-        CacheFirstInterceptor.intercept(request, chain)
-      }
-    }
-  }
-
   /**
    * Uses a refetchPolicy that will not go to the network until it has seen a valid response
    */
@@ -302,8 +496,8 @@ class FetchPolicyTest {
           .refetchPolicyInterceptor(refetchPolicyInterceptor)
           .watch()
           .collect {
-            println(it.data)
-            channel.send(it)
+            // Don't send the first response, it's a cache miss
+            if (it.exception == null) channel.send(it)
           }
     }
 

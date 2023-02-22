@@ -13,9 +13,10 @@ import kotlinx.coroutines.test.runTest
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertTrue
+import kotlinx.coroutines.flow.single
 import kotlin.test.fail
 
-class WatcherTest {
+class HeadersTest {
   @Test
   fun headersCannotBeUsedOnWebSockets() = runTest {
     val client = ApolloClient.Builder()
@@ -28,18 +29,14 @@ class WatcherTest {
         )
         .build()
 
-    try {
-      client.use {
-        it.subscription(NothingSubscription()).toFlow().collect()
-      }
-      fail()
-    } catch (e: ApolloNetworkException) {
-      assertTrue(e.cause?.message?.contains("Apollo: the WebSocket browser API doesn't allow passing headers") == true)
+    client.use {
+      val response = it.subscription(NothingSubscription()).toFlow().single()
+      assertTrue(response.exception?.cause?.message?.contains("Apollo: the WebSocket browser API doesn't allow passing headers") == true)
     }
   }
 }
 
-class NothingSubscription: Subscription<Nothing> {
+class NothingSubscription : Subscription<Nothing> {
   override fun document(): String {
     return ""
   }

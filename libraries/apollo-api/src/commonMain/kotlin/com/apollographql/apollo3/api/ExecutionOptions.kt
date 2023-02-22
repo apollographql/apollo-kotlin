@@ -22,26 +22,27 @@ interface ExecutionOptions {
   val httpHeaders: List<HttpHeader>?
 
   /**
-   *
-   * Whether to send the Auto Persisted Queries extensions
+   * Whether to send the Auto Persisted Queries extensions.
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val sendApqExtensions: Boolean?
 
   /**
-   *
-   * Whether to send the document
+   * Whether to send the document.
    * Used by [com.apollographql.apollo3.api.http.DefaultHttpRequestComposer]
    */
   val sendDocument: Boolean?
 
   /**
-   *
-   * Whether to enable Auto Persisted Queries and try to send a hashed query first
+   * Whether to enable Auto Persisted Queries and try to send a hashed query first.
    * Used by [com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor]
    */
   val enableAutoPersistedQueries: Boolean?
 
+  /**
+   * Whether the request can be batched.
+   * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
+   */
   val canBeBatched: Boolean?
 
   companion object {

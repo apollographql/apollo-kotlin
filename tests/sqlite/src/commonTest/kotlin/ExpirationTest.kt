@@ -27,7 +27,6 @@ import com.apollographql.apollo3.testing.internal.runTest
 import sqlite.GetUserQuery
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlin.test.fail
 
 @Suppress("JoinDeclarationAndAssignment")
 class ExpirationTest {
@@ -55,12 +54,8 @@ class ExpirationTest {
       it.merge(records, cacheHeaders(currentTimeMillis() / 1000 - 15))
     }
 
-    try {
-      client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
-      fail("An exception was expected")
-    } catch (e: CacheMissException) {
+    val e = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().exception as CacheMissException
       assertTrue(e.stale)
-    }
 
     // with max stale, should succeed
     val response1 = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly)
@@ -124,12 +119,8 @@ class ExpirationTest {
     )
     client.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
     // read from cache -> it should fail
-    try {
-      client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute()
-      fail("An exception was expected")
-    } catch (e: CacheMissException) {
+    val e = client.query(GetUserQuery()).fetchPolicy(FetchPolicy.CacheOnly).execute().exception as CacheMissException
       assertTrue(e.stale)
-    }
   }
 
 

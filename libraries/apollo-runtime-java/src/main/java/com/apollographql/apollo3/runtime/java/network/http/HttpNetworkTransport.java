@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.http.HttpRequest;
 import com.apollographql.apollo3.api.http.HttpRequestComposer;
 import com.apollographql.apollo3.api.http.HttpResponse;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
+import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.exception.ApolloHttpException;
 import com.apollographql.apollo3.exception.ApolloNetworkException;
 import com.apollographql.apollo3.exception.ApolloParseException;
@@ -51,13 +52,13 @@ public class HttpNetworkTransport implements NetworkTransport {
         if (response.getStatusCode() < 200 || response.getStatusCode() > 299) {
           String message = "Http request failed with status code `" + response.getStatusCode() + "`";
           if (exposeErrorBody) {
-            callback.onFailure(new ApolloHttpException(response.getStatusCode(), response.getHeaders(), response.getBody(), message, null));
+            callback.onResponse(getExceptionResponse(request, new ApolloHttpException(response.getStatusCode(), response.getHeaders(), response.getBody(), message, null)));
           } else {
             try {
               response.getBody().close();
             } catch (IOException ignored) {
             }
-            callback.onFailure(new ApolloHttpException(response.getStatusCode(), response.getHeaders(), null, message, null));
+            callback.onResponse(getExceptionResponse(request, new ApolloHttpException(response.getStatusCode(), response.getHeaders(), null, message, null)));
           }
         } else {
           BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(response.getBody());
@@ -66,15 +67,21 @@ public class HttpNetworkTransport implements NetworkTransport {
             ApolloResponse<D> apolloResponse = Operations.parseJsonResponse(request.getOperation(), jsonReader, customScalarAdapters);
             callback.onResponse(apolloResponse);
           } catch (Exception e) {
-            callback.onFailure(new ApolloParseException("Cannot parse response", e));
+            callback.onResponse(getExceptionResponse(request, new ApolloParseException("Cannot parse response", e)));
           }
         }
       }
 
       @Override public void onFailure(@NotNull ApolloNetworkException exception) {
-        callback.onFailure(exception);
+        callback.onResponse(getExceptionResponse(request, new ApolloParseException("Cannot parse response", exception)));
       }
     });
+  }
+
+  @NotNull private static <D extends Operation.Data> ApolloResponse<D> getExceptionResponse(@NotNull ApolloRequest<D> request, @NotNull ApolloException exception) {
+    return new ApolloResponse.Builder<>(request.getOperation(), request.getRequestUuid(), null)
+        .exception(exception)
+        .build();
   }
 
   @Override public void dispose() {

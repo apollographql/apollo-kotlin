@@ -9,7 +9,6 @@ import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
 @ApolloExperimental
 class HttpErrorBodyTest {
@@ -26,12 +25,8 @@ class HttpErrorBodyTest {
         string = "Ooops"
     )
 
-    try {
-      apolloClient.query(HeroNameQuery()).execute()
-      fail("An exception was expected")
-    } catch (e: ApolloHttpException) {
+      val e = apolloClient.query(HeroNameQuery()).execute().exception as ApolloHttpException
       assertEquals("Ooops", e.body?.readUtf8())
-    }
 
     apolloClient.close()
     mockServer.stop()

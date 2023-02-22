@@ -1,8 +1,8 @@
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.GlobalBuilder
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery

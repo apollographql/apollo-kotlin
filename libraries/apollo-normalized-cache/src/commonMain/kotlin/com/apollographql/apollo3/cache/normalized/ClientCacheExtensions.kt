@@ -4,6 +4,8 @@ package com.apollographql.apollo3.cache.normalized
 
 import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -22,7 +24,6 @@ import com.apollographql.apollo3.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.internal.ApolloCacheInterceptor
 import com.apollographql.apollo3.cache.normalized.internal.WatcherInterceptor
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -30,7 +31,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.HttpInfo
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -41,8 +41,8 @@ enum class FetchPolicy {
   /**
    * Try the cache, if that failed, try the network.
    *
-   * An [ApolloCompositeException] is thrown if the data is not in the cache and the network call failed.
-   * If coming from the cache 1 value is emitted, otherwise 1 or multiple values can be emitted from the network.
+   * This [FetchPolicy] emits one or more [ApolloResponse]s.
+   * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    *
    * This is the default behaviour.
    */
@@ -51,31 +51,33 @@ enum class FetchPolicy {
   /**
    * Only try the cache.
    *
-   * A [CacheMissException] is thrown if the data is not in the cache, otherwise 1 value is emitted.
+   * This [FetchPolicy] emits one [ApolloResponse].
+   * Cache misses have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   CacheOnly,
 
   /**
    * Try the network, if that failed, try the cache.
    *
-   * An [ApolloCompositeException] is thrown if the network call failed and the data is not in the cache.
-   * If coming from the network 1 or multiple values can be emitted, otherwise 1 value is emitted from the cache.
+   * This [FetchPolicy] emits one or more [ApolloResponse]s.
+   * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   NetworkFirst,
 
   /**
    * Only try the network.
    *
-   * An [ApolloException] is thrown if the network call failed, otherwise 1 or multiple values can be emitted.
+   * This [FetchPolicy] emits one or more [ApolloResponse]s. Several [ApolloResponse]s
+   * may be emitted if your [NetworkTransport] supports it, for example with `@defer`.
+   * Network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   NetworkOnly,
 
   /**
    * Try the cache, then also try the network.
    *
-   * If the data is in the cache, it is emitted, if not, no exception is thrown at that point. Then the network call is made, and if
-   * successful the value(s) are emitted, otherwise either an [ApolloCompositeException] (both cache miss and network failed) or an
-   * [ApolloException] (only network failed) is thrown.
+   * This [FetchPolicy] emits two or more [ApolloResponse]s.
+   * Cache misses and network errors have [ApolloResponse.exception] set to a non-null [ApolloException]
    */
   CacheAndNetwork,
 }
@@ -121,28 +123,32 @@ fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: B
       .writeToCacheAsynchronously(writeToCacheAsynchronously)
 }
 
+@Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
+@ApolloDeprecatedSince(v4_0_0)
+@Suppress("UNUSED_PARAMETER")
+fun <D : Query.Data> ApolloCall<D>.watch(
+    fetchThrows: Boolean,
+    refetchThrows: Boolean,
+): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
+
+@Deprecated(level = DeprecationLevel.ERROR, message = "Exceptions no longer throw", replaceWith = ReplaceWith("watch()"))
+@ApolloDeprecatedSince(v4_0_0)
+@Suppress("UNUSED_PARAMETER")
+fun <D : Query.Data> ApolloCall<D>.watch(
+    fetchThrows: Boolean,
+): Flow<ApolloResponse<D>> = throw UnsupportedOperationException("watch(fetchThrows: Boolean, refetchThrows: Boolean) is no longer supported, use watch() instead")
+
 /**
  * Gets the result from the network, then observes the cache for any changes.
  * [fetchPolicy] will control how the result is first queried, while [refetchPolicy] will control the subsequent fetches.
- * Network and cache exceptions are ignored by default, this can be changed by setting [fetchThrows] for the first fetch and [refetchThrows]
- * for subsequent fetches (non Apollo exceptions like `OutOfMemoryError` are always propagated).
- *
- * @param fetchThrows whether to throw if an [ApolloException] happens during the initial fetch. Default: false
- * @param refetchThrows whether to throw if an [ApolloException] happens during a refetch. Default: false
  */
-@JvmOverloads
-fun <D : Query.Data> ApolloCall<D>.watch(
-    fetchThrows: Boolean = false,
-    refetchThrows: Boolean = false,
-): Flow<ApolloResponse<D>> {
+fun <D : Query.Data> ApolloCall<D>.watch(): Flow<ApolloResponse<D>> {
   return flow {
     var lastResponse: ApolloResponse<D>? = null
     var response: ApolloResponse<D>? = null
 
     toFlow()
-        .catch {
-          if (it !is ApolloException || fetchThrows) throw it
-        }.collect {
+        .collect {
           response = it
 
           if (it.isLast) {
@@ -169,10 +175,8 @@ fun <D : Query.Data> ApolloCall<D>.watch(
         }
 
     copy().fetchPolicyInterceptor(refetchPolicyInterceptor)
-        .watch(response?.data) { _, _ ->
-          // If the exception is ignored (refetchThrows is false), we should continue watching - so retry
-          !refetchThrows
-        }.onStart {
+        .watch(response?.data)
+        .onStart {
           if (lastResponse != null) {
             emit(lastResponse!!)
           }
@@ -184,45 +188,10 @@ fun <D : Query.Data> ApolloCall<D>.watch(
 
 /**
  * Observes the cache for the given data. Unlike [watch], no initial request is executed on the network.
- * Network and cache exceptions are ignored by default, this can be controlled with the [retryWhen] lambda.
  * The fetch policy set by [fetchPolicy] will be used.
  */
-fun <D : Query.Data> ApolloCall<D>.watch(
-    data: D?,
-    retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean = { _, _ -> true },
-): Flow<ApolloResponse<D>> {
-  return copy().addExecutionContext(WatchContext(data, retryWhen)).toFlow()
-}
-
-/**
- * Gets the result from the cache first and always fetch from the network. Use this to get an early
- * cached result while also updating the network values.
- *
- * Any [FetchPolicy] previously set will be ignored
- */
-fun <D : Query.Data> ApolloCall<D>.executeCacheAndNetwork(): Flow<ApolloResponse<D>> {
-  return flow {
-    var cacheException: ApolloException? = null
-    var networkException: ApolloException? = null
-    try {
-      emit(copy().fetchPolicy(FetchPolicy.CacheOnly).execute())
-    } catch (e: ApolloException) {
-      cacheException = e
-    }
-
-    try {
-      emit(copy().fetchPolicy(FetchPolicy.NetworkOnly).execute())
-    } catch (e: ApolloException) {
-      networkException = e
-    }
-
-    if (cacheException != null && networkException != null) {
-      throw ApolloCompositeException(
-          first = cacheException,
-          second = networkException
-      )
-    }
-  }
+fun <D : Query.Data> ApolloCall<D>.watch(data: D?): Flow<ApolloResponse<D>> {
+  return copy().addExecutionContext(WatchContext(data)).toFlow()
 }
 
 val ApolloClient.apolloStore: ApolloStore
@@ -279,16 +248,10 @@ fun <T> MutableExecutionOptions<T>.doNotStore(doNotStore: Boolean) = addExecutio
     DoNotStoreContext(doNotStore)
 )
 
-/**
- * @param emitCacheMisses Whether to emit cache misses instead of throwing.
- * The returned response will have `response.data == null`
- * You can read `response.cacheInfo` to get more information about the cache miss
- *
- * Default: false
- */
-fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = addExecutionContext(
-    EmitCacheMissesContext(emitCacheMisses)
-)
+@Deprecated("Emitting cache misses is now the default behavior, this method is a no-op", replaceWith = ReplaceWith(""))
+@ApolloDeprecatedSince(v4_0_0)
+@Suppress("UNUSED_PARAMETER")
+fun <T> MutableExecutionOptions<T>.emitCacheMisses(emitCacheMisses: Boolean) = this
 
 /**
  * @param storePartialResponses Whether to store partial responses.
@@ -417,9 +380,6 @@ internal val <D : Operation.Data> ApolloRequest<D>.storePartialResponses
 
 internal val <D : Operation.Data> ApolloRequest<D>.storeReceiveDate
   get() = executionContext[StoreReceiveDateContext]?.value ?: false
-
-internal val <D : Operation.Data> ApolloRequest<D>.emitCacheMisses
-  get() = executionContext[EmitCacheMissesContext]?.value ?: false
 
 internal val <D : Operation.Data> ApolloRequest<D>.writeToCacheAsynchronously
   get() = executionContext[WriteToCacheAsynchronouslyContext]?.value ?: false
@@ -618,13 +578,6 @@ internal class CacheHeadersContext(val value: CacheHeaders) : ExecutionContext.E
   companion object Key : ExecutionContext.Key<CacheHeadersContext>
 }
 
-internal class EmitCacheMissesContext(val value: Boolean) : ExecutionContext.Element {
-  override val key: ExecutionContext.Key<*>
-    get() = Key
-
-  companion object Key : ExecutionContext.Key<EmitCacheMissesContext>
-}
-
 internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key
@@ -634,7 +587,6 @@ internal class OptimisticUpdatesContext<D : Mutation.Data>(val value: D) : Execu
 
 internal class WatchContext(
     val data: Query.Data?,
-    val retryWhen: suspend (cause: Throwable, attempt: Long) -> Boolean,
 ) : ExecutionContext.Element {
   override val key: ExecutionContext.Key<*>
     get() = Key

@@ -32,10 +32,19 @@ class QueueTestNetworkTransport : NetworkTransport {
       yield()
 
       val response = lock.withLock { queue.removeFirstOrNull() } ?: error("No more responses in queue")
-      if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
 
-      @Suppress("UNCHECKED_CAST")
-      val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
+      val apolloResponse = when (response) {
+        is TestResponse.NetworkError -> {
+          ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, data = null)
+              .exception(ApolloNetworkException("Network error queued in QueueTestNetworkTransport"))
+              .build()
+        }
+
+        is TestResponse.Response -> {
+          @Suppress("UNCHECKED_CAST")
+          response.response as ApolloResponse<D>
+        }
+      }
 
       emit(apolloResponse.newBuilder().isLast(true).build())
     }
@@ -64,9 +73,18 @@ class MapTestNetworkTransport : NetworkTransport {
   override fun <D : Operation.Data> execute(request: ApolloRequest<D>): Flow<ApolloResponse<D>> {
     val response = lock.withLock { operationsToResponses[request.operation] }
         ?: error("No response registered for operation ${request.operation}")
-    if (response is TestResponse.NetworkError) throw ApolloNetworkException("Network error queued in QueueTestNetworkTransport")
-    @Suppress("UNCHECKED_CAST")
-    val apolloResponse = (response as TestResponse.Response).response as ApolloResponse<D>
+    val apolloResponse = when (response) {
+      is TestResponse.NetworkError -> {
+        ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, data = null)
+            .exception(ApolloNetworkException("Network error registered in MapTestNetworkTransport"))
+            .build()
+      }
+
+      is TestResponse.Response -> {
+        @Suppress("UNCHECKED_CAST")
+        response.response as ApolloResponse<D>
+      }
+    }
     return flowOf(apolloResponse.newBuilder().isLast(true).build())
   }
 

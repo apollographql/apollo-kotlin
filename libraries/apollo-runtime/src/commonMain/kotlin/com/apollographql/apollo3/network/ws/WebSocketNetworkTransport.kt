@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.withDeferredFragmentIds
+import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
@@ -169,6 +170,7 @@ private constructor(
             mutableEvents.tryEmit(message)
           }
         }
+
         is Command -> {
           if (message is Dispose) {
             closeProtocol()
@@ -228,10 +230,12 @@ private constructor(
               activeMessages[message.request.requestUuid] = message
               protocol!!.startOperation(message.request)
             }
+
             is StopOperation<*> -> {
               activeMessages.remove(message.request.requestUuid)
               protocol!!.stopOperation(message.request)
             }
+
             else -> {
               // Other cases have been handled above
             }
@@ -265,10 +269,12 @@ private constructor(
         is OperationComplete -> {
           false
         }
+
         is NetworkError -> {
           emit(it)
           false
         }
+
         is GeneralError -> {
           // The server sends an error without an operation id. This happens when sending an unknown message type
           // to https://apollo-fullstack-tutorial.herokuapp.com/ for an example. In that case, this error is not fatal
@@ -276,6 +282,7 @@ private constructor(
           println("Received general error while executing operation ${request.operation.name()}: ${it.payload}")
           true
         }
+
         else -> {
           emit(it)
           true
@@ -303,8 +310,8 @@ private constructor(
           apolloResponse
         }
 
-        is OperationError -> throw SubscriptionOperationException(request.operation.name(), response.payload)
-        is NetworkError -> throw ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause)
+        is OperationError -> errorResponse(request, SubscriptionOperationException(request.operation.name(), response.payload))
+        is NetworkError -> errorResponse(request, ApolloNetworkException("Network error while executing ${request.operation.name()}", response.cause))
 
         // Cannot happen as these events are filtered out upstream
         is OperationComplete, is GeneralError -> error("Unexpected event $response")
@@ -315,6 +322,15 @@ private constructor(
       messages.send(StopOperation(request))
     }
   }
+
+  private fun <D : Operation.Data> errorResponse(
+      request: ApolloRequest<D>,
+      apolloException: ApolloException?,
+  ) =
+      ApolloResponse.Builder(requestUuid = request.requestUuid, operation = request.operation, data = null)
+          .exception(apolloException)
+          .isLast(true)
+          .build()
 
   override fun dispose() {
     messages.trySend(Dispose)

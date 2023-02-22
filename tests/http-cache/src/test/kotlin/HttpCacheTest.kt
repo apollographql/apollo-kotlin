@@ -22,9 +22,8 @@ import okhttp3.OkHttpClient
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertFailsWith
-import kotlin.test.fail
+import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 class HttpCacheTest {
   lateinit var mockServer: MockServer
@@ -95,11 +94,12 @@ class HttpCacheTest {
       assertEquals(42, response.data?.random)
       assertEquals(false, response.isFromHttpCache)
 
-      assertFails {
-        apolloClient.query(GetRandomQuery())
-            .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
-            .execute()
-      }
+      assertNotNull(
+          apolloClient.query(GetRandomQuery())
+              .httpFetchPolicy(HttpFetchPolicy.NetworkOnly)
+              .execute()
+              .exception
+      )
     }
   }
 
@@ -136,12 +136,13 @@ class HttpCacheTest {
       assertEquals(true, response.isFromHttpCache)
 
       delay(1000)
-      assertFailsWith(HttpCacheMissException::class) {
-        apolloClient.query(GetRandomQuery())
-            .httpExpireTimeout(500)
-            .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
-            .execute()
-      }
+      assertIs<HttpCacheMissException>(
+          apolloClient.query(GetRandomQuery())
+              .httpExpireTimeout(500)
+              .httpFetchPolicy(HttpFetchPolicy.CacheOnly)
+              .execute()
+              .exception
+      )
     }
   }
 
@@ -209,13 +210,13 @@ class HttpCacheTest {
   @Test
   fun incompleteJsonIsNotCached() = runTest(before = { before() }, after = { tearDown() }) {
     mockServer.enqueue("""{"data":""")
-    assertFailsWith<ApolloParseException> {
-      apolloClient.query(GetRandomQuery()).execute()
-    }
+    assertIs<ApolloParseException>(
+        apolloClient.query(GetRandomQuery()).execute().exception
+    )
     // Should not have been cached
-    assertFailsWith<HttpCacheMissException> {
-      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
-    }
+    assertIs<HttpCacheMissException>(
+        apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute().exception
+    )
   }
 
   @Test
@@ -230,9 +231,9 @@ class HttpCacheTest {
       """)
     apolloClient.query(GetRandomQuery()).execute()
     // Should not have been cached
-    assertFailsWith<HttpCacheMissException> {
-      apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute()
-    }
+    assertIs<HttpCacheMissException>(
+        apolloClient.query(GetRandomQuery()).httpFetchPolicy(HttpFetchPolicy.CacheOnly).execute().exception
+    )
   }
 
   @Test
@@ -243,14 +244,12 @@ class HttpCacheTest {
 
     mockServer.enqueueData(data)
 
-    try {
-      apolloClient.query(GetRandomQuery())
-          .addHttpHeader("foo", "bar")
-          .execute()
-      fail("An exception was expected")
-    } catch (e: Exception) {
-
-    }
+    assertNotNull(
+        apolloClient.query(GetRandomQuery())
+            .addHttpHeader("foo", "bar")
+            .execute()
+            .exception
+    )
   }
 
   @Test

@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
@@ -21,9 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -80,10 +77,6 @@ public class BatchingTest {
         }
         latch.countDown();
       }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
-      }
     });
 
     sleep(50);
@@ -94,10 +87,6 @@ public class BatchingTest {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -138,10 +127,6 @@ public class BatchingTest {
         }
         latch.countDown();
       }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
-      }
     });
 
     sleep(200);
@@ -152,10 +137,6 @@ public class BatchingTest {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -189,10 +170,6 @@ public class BatchingTest {
             }
             latch.countDown();
           }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
-          }
         });
 
     sleep(50);
@@ -203,10 +180,6 @@ public class BatchingTest {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -241,10 +214,6 @@ public class BatchingTest {
             }
             latch.countDown();
           }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
-          }
         });
 
     sleep(50);
@@ -258,10 +227,6 @@ public class BatchingTest {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 
@@ -305,10 +270,6 @@ public class BatchingTest {
         }
         latch.countDown();
       }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
-      }
     });
 
     sleep(50);
@@ -319,10 +280,6 @@ public class BatchingTest {
           items.add(response.dataAssertNoErrors().launch.id);
         }
         latch.countDown();
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        throw e;
       }
     });
 
@@ -359,10 +316,6 @@ public class BatchingTest {
             }
             latch.countDown();
           }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
-          }
         });
 
     sleep(50);
@@ -378,10 +331,6 @@ public class BatchingTest {
               items.add(response.dataAssertNoErrors().launch.id);
             }
             latch.countDown();
-          }
-
-          @Override public void onFailure(@NotNull ApolloException e) {
-            throw e;
           }
         });
 

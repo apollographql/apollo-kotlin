@@ -15,7 +15,6 @@ import defer.fragment.ScreenFields
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
-import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch

@@ -2,18 +2,20 @@ package test
 
 import IdCacheKeyGenerator
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
-import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicy
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloNetworkException
+import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameQuery
 import com.apollographql.apollo3.integration.normalizer.EpisodeHeroNameWithIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroAndFriendsNamesWithIDsQuery
@@ -41,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.fail
 
@@ -107,7 +110,7 @@ class WatcherTest {
   }
 
   @Test
-  fun emitCacheMissesIsWorking() = runTest(before = { setUp() }) {
+  fun cacheMissesAreEmitted() = runTest(before = { setUp() }) {
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
     val channel = Channel<EpisodeHeroNameQuery.Data?>()
 
@@ -116,7 +119,6 @@ class WatcherTest {
     val job = launch {
       apolloClient.query(query)
           .fetchPolicy(FetchPolicy.CacheOnly)
-          .emitCacheMisses(true)
           .watch()
           .collect {
             channel.send(it.data)
@@ -149,6 +151,8 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
+    assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Someone writes to the store directly
@@ -182,6 +186,8 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
+    assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Another newer call gets the same name (R2-D2)
@@ -209,6 +215,8 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
+    assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
@@ -240,6 +248,8 @@ class WatcherTest {
       }
     }
 
+    // Cache miss is emitted first (null data)
+    assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receive()?.hero?.name, "R2-D2")
 
     // Another newer call gets the same information
@@ -345,14 +355,14 @@ class WatcherTest {
 
   @Test
   fun queryWatcherWithCacheOnlyNeverGoesToTheNetwork() = runTest(before = { setUp() }) {
-    val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
+    val channel = Channel<ApolloResponse<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
     val job = launch {
 
       apolloClient.query(EpisodeHeroNameQuery(Episode.EMPIRE))
           .fetchPolicy(FetchPolicy.CacheOnly)
           .refetchPolicy(FetchPolicy.CacheOnly)
           .watch().collect {
-            channel.send(it.data)
+            channel.send(it)
           }
     }
 
@@ -360,7 +370,8 @@ class WatcherTest {
     // that will trigger a refetch that shouldn't throw
     apolloClient.query(StarshipByIdQuery("Starship1"))
 
-    // There should be no data
+    // Should see 1 cache miss values
+    assertIs<CacheMissException>(channel.receiveOrTimeout().exception)
     channel.assertEmpty()
 
     job.cancel()
@@ -382,10 +393,6 @@ class WatcherTest {
       // 1. query (will be a cache miss since the cache starts empty), then watch
       var data: EpisodeHeroNameQuery.Data? = null
       apolloClient.query(query).toFlow()
-          .catch {
-            // Swallow cache and network errors
-            if (it !is ApolloException) throw it
-          }
           .onEach { data = it.data }
           .onCompletion {
             // 2. watch
@@ -396,6 +403,8 @@ class WatcherTest {
           }
     }
 
+    // Cache miss is emitted first (null data)
+    assertNull(channel.receiveOrTimeout())
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
 
     // Another newer call gets updated information with "Artoo"
@@ -515,6 +524,8 @@ class WatcherTest {
             channel.send(it.data)
           }
     }
+    // 0. Cache miss (null data)
+    assertNull(channel.receiveOrTimeout())
     // 1. Value from the network
     assertEquals(channel.receiveOrTimeout(5000)?.hero?.name, "Artoo")
 
@@ -580,13 +591,16 @@ class WatcherTest {
     }
     // 1. Value from the cache
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "R2-D2")
+
+    // 2. Exception from the network (null data)
+    assertNull(channel.receiveOrTimeout())
     channel.assertEmpty()
 
     // Another newer call updates the cache with "ArTwo"
     apolloClient.enqueueTestResponse(query, episodeHeroNameChangedTwoData)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
-    // 2. Value from watching the cache
+    // 3. Value from watching the cache
     assertEquals(channel.receiveOrTimeout()?.hero?.name, "ArTwo")
 
     job.cancel()
@@ -597,7 +611,7 @@ class WatcherTest {
    */
   @Test
   fun watchCacheAndNetworkWithCacheAndNetworkError() = runTest(before = { setUp() }) {
-    val channel = Channel<EpisodeHeroNameQuery.Data?>(capacity = Channel.UNLIMITED)
+    val channel = Channel<ApolloResponse<EpisodeHeroNameQuery.Data>>(capacity = Channel.UNLIMITED)
     val query = EpisodeHeroNameQuery(Episode.EMPIRE)
 
     // Prepare next call to be a network error
@@ -606,19 +620,20 @@ class WatcherTest {
     val job = launch {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).watch()
           .collect {
-            channel.send(it.data)
+            channel.send(it)
           }
     }
 
-    // We got nothing
-    channel.assertEmpty()
+    // We ge the cache miss and the network error
+    assertIs<CacheMissException>(channel.receiveOrTimeout().exception)
+    assertIs<ApolloNetworkException>(channel.receiveOrTimeout().exception)
 
     // Another newer call updates the cache with "ArTwo"
     apolloClient.enqueueTestResponse(query, episodeHeroNameChangedTwoData)
     apolloClient.query(query).fetchPolicy(FetchPolicy.NetworkOnly).execute()
 
     // Value from watching the cache
-    assertEquals(channel.receiveOrTimeout()?.hero?.name, "ArTwo")
+    assertEquals(channel.receiveOrTimeout().data?.hero?.name, "ArTwo")
 
     job.cancel()
   }
@@ -635,4 +650,16 @@ suspend fun <D> Channel<D>.assertEmpty() {
     fail("Nothing should be received")
   } catch (_: TimeoutCancellationException) {
   }
+}
+
+suspend fun <D> Channel<D>.assertCount(count: Int) {
+  var elemCount = 0
+  try {
+    while (true) {
+      receiveOrTimeout()
+      elemCount++
+    }
+  } catch (_: TimeoutCancellationException) {
+  }
+  assertEquals(count, elemCount)
 }

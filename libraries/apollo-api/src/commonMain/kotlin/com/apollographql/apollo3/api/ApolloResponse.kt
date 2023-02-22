@@ -27,11 +27,27 @@ private constructor(
     val data: D?,
 
     /**
-     * GraphQL [operation] execution errors returned by the server to let client know that something has gone wrong.
-     * This can either be null or empty depending on what your server sends back
+     * [GraphQL errors](https://spec.graphql.org/October2021/#sec-Errors) returned by the server to let the client know that something
+     * has gone wrong.
+     *
+     * If no GraphQL error was raised, [errors] is null. Else it's a non-empty list of errors indicating where the error(s) happened.
+     *
+     * Note that because GraphQL allows partial data, it is possible to have both [data] non null and [errors] non null.
+     *
+     * See also [exception] for exceptions happening before a valid GraphQL response could be received.
      */
     @JvmField
     val errors: List<Error>?,
+
+    /**
+     * An [ApolloException] if a valid GraphQL response wasn't received or `null` if a valid GraphQL response was received.
+     * For example, `exception` is non null if there is a network failure or cache miss.
+     * If `exception` is non null, [data] and [errors] will be null.
+     *
+     * See also [errors] for GraphQL errors returned by the server.
+     */
+    @JvmField
+    val exception: ApolloException?,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
@@ -71,10 +87,10 @@ private constructor(
   @get:JvmName("dataAssertNoErrors")
   val dataAssertNoErrors: D
     get() {
-      return if (hasErrors()) {
-        throw ApolloException("The response has errors: $errors")
-      } else {
-        data ?: throw  ApolloException("The server did not return any data")
+      return when {
+        exception != null -> throw exception
+        hasErrors() -> throw ApolloException("The response has errors: $errors")
+        else -> data ?: throw ApolloException("The server did not return any data")
       }
     }
 
@@ -83,6 +99,7 @@ private constructor(
   fun newBuilder(): Builder<D> {
     return Builder(operation, requestUuid, data)
         .errors(errors)
+        .exception(exception)
         .extensions(extensions)
         .addExecutionContext(executionContext)
         .isLast(isLast)
@@ -95,6 +112,7 @@ private constructor(
   ) {
     private var executionContext: ExecutionContext = ExecutionContext.Empty
     private var errors: List<Error>? = null
+    private var exception: ApolloException? = null
     private var extensions: Map<String, Any?>? = null
     private var isLast = false
 
@@ -104,6 +122,10 @@ private constructor(
 
     fun errors(errors: List<Error>?) = apply {
       this.errors = errors
+    }
+
+    fun exception(exception: ApolloException?) = apply {
+      this.exception = exception
     }
 
     fun extensions(extensions: Map<String, Any?>?) = apply {
@@ -127,6 +149,7 @@ private constructor(
           executionContext = executionContext,
           extensions = extensions ?: emptyMap(),
           errors = errors,
+          exception = exception,
           isLast = isLast,
       )
     }

@@ -8,7 +8,10 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.writeObject
+import com.apollographql.apollo3.exception.JsonDataException
+import com.apollographql.apollo3.exception.JsonEncodingException
 import okio.Buffer
+import okio.IOException
 import okio.use
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -53,6 +56,10 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
  * ```
  *
  * This method takes ownership of [jsonReader] and will always close it
+ *
+ * @throws IOException if reading [jsonReader] fails
+ * @throws JsonEncodingException if the data is not valid json
+ * @throws JsonDataException if the data is not of the expected type
  */
 @JvmOverloads
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(

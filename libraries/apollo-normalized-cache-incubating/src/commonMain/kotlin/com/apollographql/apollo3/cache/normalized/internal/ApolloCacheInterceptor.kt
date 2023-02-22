@@ -15,7 +15,6 @@ import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.cacheHeaders
 import com.apollographql.apollo3.cache.normalized.cacheInfo
 import com.apollographql.apollo3.cache.normalized.doNotStore
-import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.fetchFromCache
 import com.apollographql.apollo3.cache.normalized.optimisticData
 import com.apollographql.apollo3.cache.normalized.storePartialResponses
@@ -28,7 +27,6 @@ import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -66,6 +64,9 @@ internal class ApolloCacheInterceptor(
     if (request.doNotStore) {
       return
     }
+    if (response.exception != null) {
+      return
+    }
     if (response.hasErrors() && !request.storePartialResponses) {
       return
     }
@@ -91,16 +92,19 @@ internal class ApolloCacheInterceptor(
         @Suppress("UNCHECKED_CAST")
         interceptSubscription(request as ApolloRequest<Subscription.Data>, chain) as Flow<ApolloResponse<D>>
       }
+
       is Mutation -> {
         // That's a lot of unchecked casts but should be always true
         @Suppress("UNCHECKED_CAST")
         interceptMutation(request as ApolloRequest<Mutation.Data>, chain) as Flow<ApolloResponse<D>>
       }
+
       is Query -> {
         // That's a lot of unchecked casts but should be always true
         @Suppress("UNCHECKED_CAST")
         interceptQuery(request as ApolloRequest<Query.Data>, chain) as Flow<ApolloResponse<D>>
       }
+
       else -> error("Unknown operation ${request.operation}")
     }.flowOn(request.executionContext[ConcurrencyInfo]!!.dispatcher)
   }
@@ -146,12 +150,8 @@ internal class ApolloCacheInterceptor(
        */
       var networkException: ApolloException? = null
       val networkResponses: Flow<ApolloResponse<D>> = chain.proceed(request)
-          .catch {
-            if (it is ApolloException) {
-              networkException = it
-            } else {
-              throw it
-            }
+          .onEach {
+            networkException = it.exception
           }
 
       var optimisticKeys: Set<String>? = null
@@ -180,7 +180,6 @@ internal class ApolloCacheInterceptor(
         }
 
         store.publish(optimisticKeys!!)
-        throw networkException!!
       }
     }
   }
@@ -212,25 +211,23 @@ internal class ApolloCacheInterceptor(
           cacheHeaders = request.cacheHeaders
       )
     } catch (e: CacheMissException) {
-      if (request.emitCacheMisses) {
-        return ApolloResponse.Builder(
-            requestUuid = request.requestUuid,
-            operation = operation,
-            data = null,
-        ).addExecutionContext(request.executionContext)
-            .cacheInfo(
-                CacheInfo.Builder()
-                    .cacheStartMillis(startMillis)
-                    .cacheEndMillis(currentTimeMillis())
-                    .cacheHit(false)
-                    .cacheMissException(e)
-                    .build()
-            )
-            .isLast(true)
-            .build()
-      } else {
-        throw e
-      }
+      return ApolloResponse.Builder(
+          requestUuid = request.requestUuid,
+          operation = operation,
+          data = null,
+      )
+          .addExecutionContext(request.executionContext)
+          .exception(e)
+          .cacheInfo(
+              CacheInfo.Builder()
+                  .cacheStartMillis(startMillis)
+                  .cacheEndMillis(currentTimeMillis())
+                  .cacheHit(false)
+                  .cacheMissException(e)
+                  .build()
+          )
+          .isLast(true)
+          .build()
     }
 
     return ApolloResponse.Builder(
@@ -264,6 +261,7 @@ internal class ApolloCacheInterceptor(
               CacheInfo.Builder()
                   .networkStartMillis(startMillis)
                   .networkEndMillis(currentTimeMillis())
+                  .networkException(networkResponse.exception)
                   .build()
           ).build()
     }
@@ -271,7 +269,7 @@ internal class ApolloCacheInterceptor(
 
   companion object {
     private fun nowDateCacheHeaders(): CacheHeaders {
-      return CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis() /1000).toString()).build()
+      return CacheHeaders.Builder().addHeader(ApolloCacheHeaders.DATE, (currentTimeMillis() / 1000).toString()).build()
     }
   }
 }

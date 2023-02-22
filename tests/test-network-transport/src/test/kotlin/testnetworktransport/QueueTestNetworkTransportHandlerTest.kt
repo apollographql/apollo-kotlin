@@ -98,7 +98,7 @@ class QueueTestNetworkTransportHandlerTest {
 
     apolloClient.query(GetHeroQuery("001")).toFlow()
         .test {
-          assertTrue(awaitError().message?.contains("Network error queued") ?: false)
+          assertTrue(awaitItem().exception?.message?.contains("Network error queued") ?: false)
           cancelAndConsumeRemainingEvents()
         }
   }

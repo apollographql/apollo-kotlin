@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.Error;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.http.HttpMethod;
-import com.apollographql.apollo3.exception.ApolloException;
 import com.apollographql.apollo3.exception.AutoPersistedQueriesNotSupported;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
@@ -51,15 +50,13 @@ public class AutoPersistedQueryInterceptor implements ApolloInterceptor {
         if (isPersistedQueryNotFound(response.errors)) {
           continueWithDocumentRequest(chain, request, callback);
         } else if (isPersistedQueryNotSupported(response.errors)) {
-          callback.onFailure(new AutoPersistedQueriesNotSupported());
+          callback.onResponse(new ApolloResponse.Builder<>(request.getOperation(), request.getRequestUuid(), null)
+              .exception(new AutoPersistedQueriesNotSupported())
+              .build());
         } else {
           // Cache hit
           callback.onResponse(addAutoPersistedQueryInfo(response, true));
         }
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        callback.onFailure(e);
       }
     };
 
@@ -77,10 +74,6 @@ public class AutoPersistedQueryInterceptor implements ApolloInterceptor {
     ApolloCallback<D> callback2 = new ApolloCallback<D>() {
       @Override public void onResponse(@NotNull ApolloResponse<D> response) {
         callback.onResponse(addAutoPersistedQueryInfo(response, false));
-      }
-
-      @Override public void onFailure(@NotNull ApolloException e) {
-        callback.onFailure(e);
       }
     };
 

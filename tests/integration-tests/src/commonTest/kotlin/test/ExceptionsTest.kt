@@ -6,12 +6,11 @@ import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
-import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
-import kotlinx.coroutines.flow.retryWhen
-import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ExceptionsTest {
@@ -31,22 +30,16 @@ class ExceptionsTest {
   fun whenQueryAndMalformedNetworkResponseAssertException() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue("malformed")
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    assertTrue(result.exceptionOrNull() != null)
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    assertTrue(response.exception != null)
   }
 
   @Test
   fun whenHttpErrorAssertExecuteFails() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(statusCode = 404)
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val exception = result.exceptionOrNull()
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    val exception = response.exception
     assertTrue(exception is ApolloHttpException)
     assertEquals(404, exception.statusCode)
   }
@@ -55,27 +48,19 @@ class ExceptionsTest {
   fun whenNetworkErrorAssertApolloNetworkException() = runTest(before = { setUp() }) {
     mockServer.stop()
 
-    val result = kotlin.runCatching {
-      apolloClient.query(HeroNameQuery()).execute()
-    }
-
-    val exception = result.exceptionOrNull()
-    assertTrue(exception is ApolloNetworkException)
+    val response = apolloClient.query(HeroNameQuery()).execute()
+    assertTrue(response.exception is ApolloNetworkException)
   }
 
   @Test
-  fun WhenQueryAndMalformedNetworkResponseAssertSuccessAfterRetry() = runTest(before = { setUp() }, after = { tearDown() }) {
-    mockServer.enqueue("")
-    val query = HeroNameQuery()
-    val data = HeroNameQuery.Data(HeroNameQuery.Hero("R2-D2"))
-    mockServer.enqueue(query, data)
+  @Suppress("DEPRECATION")
+  fun toFlowThrows() = runTest(before = { setUp() }, after = { tearDown() }) {
+    mockServer.enqueue("malformed")
 
-    val response = apolloClient
-        .query(query)
-        .toFlow()
-        .retryWhen { _, attempt -> attempt == 0L }
-        .single()
-
-    assertEquals(data, response.data)
+    val throwingClient = apolloClient.newBuilder().useV3ExceptionHandling(true).build()
+    var result = kotlin.runCatching {
+      throwingClient.query(HeroNameQuery()).toFlow().toList()
+    }
+    assertNotNull(result.exceptionOrNull())
   }
 }
