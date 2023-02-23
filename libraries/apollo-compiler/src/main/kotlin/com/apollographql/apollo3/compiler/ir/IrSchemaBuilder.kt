@@ -38,9 +38,6 @@ object IrSchemaBuilder {
       val typeDefinition = schema.typeDefinition(name)
 
       when {
-        typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition-> {
-          // do nothing, introspection types are in apollo-api
-        }
         typeDefinition is GQLScalarTypeDefinition -> {
           irScalars.add(typeDefinition.toIr(schema))
         }

@@ -306,7 +306,17 @@
                   "name": "__InputValue"
                 }
               }
-            }
+            },
+            "args": [
+              {
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean"
+                },
+                "defaultValue": "false"
+              }
+            ]
           },
           {
             "name": "ofType",
@@ -314,6 +324,43 @@
               "kind": "OBJECT",
               "name": "__Type"
             }
+          },
+          {
+            "name": "specifiedByURL",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            }
+          }
+        ]
+      },
+      {
+        "kind": "ENUM",
+        "name": "__TypeKind",
+        "enumValues": [
+          {
+            "name": "SCALAR"
+          },
+          {
+            "name": "OBJECT"
+          },
+          {
+            "name": "INTERFACE"
+          },
+          {
+            "name": "UNION"
+          },
+          {
+            "name": "ENUM"
+          },
+          {
+            "name": "INPUT_OBJECT"
+          },
+          {
+            "name": "LIST"
+          },
+          {
+            "name": "NON_NULL"
           }
         ]
       },
@@ -352,7 +399,17 @@
                   }
                 }
               }
-            }
+            },
+            "args": [
+              {
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean"
+                },
+                "defaultValue": "false"
+              }
+            ]
           },
           {
             "name": "type",
@@ -420,6 +477,23 @@
               "kind": "SCALAR",
               "name": "String"
             }
+          },
+          {
+            "name": "isDeprecated",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean"
+              }
+            }
+          },
+          {
+            "name": "deprecationReason",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String"
+            }
           }
         ]
       },
@@ -460,36 +534,6 @@
               "kind": "SCALAR",
               "name": "String"
             }
-          }
-        ]
-      },
-      {
-        "kind": "ENUM",
-        "name": "__TypeKind",
-        "enumValues": [
-          {
-            "name": "SCALAR"
-          },
-          {
-            "name": "OBJECT"
-          },
-          {
-            "name": "INTERFACE"
-          },
-          {
-            "name": "UNION"
-          },
-          {
-            "name": "ENUM"
-          },
-          {
-            "name": "INPUT_OBJECT"
-          },
-          {
-            "name": "LIST"
-          },
-          {
-            "name": "NON_NULL"
           }
         ]
       },
@@ -544,7 +588,17 @@
                   }
                 }
               }
-            }
+            },
+            "args": [
+              {
+                "name": "includeDeprecated",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean"
+                },
+                "defaultValue": "false"
+              }
+            ]
           },
           {
             "name": "isRepeatable",
