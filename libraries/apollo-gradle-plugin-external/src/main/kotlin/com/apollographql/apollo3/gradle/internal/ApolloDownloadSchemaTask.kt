@@ -59,11 +59,6 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Option(option = "insecure", description = "if set to true, TLS/SSL certificates will not be checked when downloading")
   abstract val insecure: Property<Boolean>
 
-  @get:Optional
-  @get:Input
-  @get:Option(option = "includeDeprecatedInputFieldsAndArguments", description = "if set to true, deprecated input fields and arguments will be included when using introspection")
-  abstract val includeDeprecatedInputFieldsAndArguments: Property<Boolean>
-
   init {
     /**
      * We cannot know in advance if the backend schema changed so don't cache or mark this task up-to-date
@@ -88,7 +83,6 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         schema = schemaFile,
         insecure = insecure.getOrElse(false),
         headers = header.toMap() + extraHeaders,
-        includeDeprecatedInputFieldsAndArguments = includeDeprecatedInputFieldsAndArguments.getOrElse(false),
     )
   }
 

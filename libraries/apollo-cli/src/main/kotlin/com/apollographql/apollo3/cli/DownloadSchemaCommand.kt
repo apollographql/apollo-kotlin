@@ -16,7 +16,6 @@ internal class DownloadSchemaCommand: CliktCommand() {
   private val endpoint by option(help = "The url of the GraphQL endpoint for introspection")
   private val headers by option(help = "A JSON object representing the HTTP headers to use while introspecting `endpoint`")
   private val insecure: Boolean by option(help = "Do not verify certificates during download").flag()
-  private val includeDeprecatedInputFieldsAndArguments: Boolean by option(help = "Include deprecated input fields and arguments when using introspection").flag()
 
   private val graph by option(help = "[Apollo Studio users only] The identifier of the Apollo graph used to download the schema.")
   private val key by option(help = "[Apollo Studio users only] The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
@@ -41,7 +40,6 @@ internal class DownloadSchemaCommand: CliktCommand() {
         schema = File(schema),
         headers = headersMap,
         insecure = insecure,
-        includeDeprecatedInputFieldsAndArguments = includeDeprecatedInputFieldsAndArguments,
     )
   }
 }

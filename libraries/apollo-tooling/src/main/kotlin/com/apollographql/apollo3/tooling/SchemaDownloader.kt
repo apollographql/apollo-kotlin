@@ -42,7 +42,6 @@ object SchemaDownloader {
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
-   * @param includeDeprecatedInputFieldsAndArguments if set to true, deprecated input fields and arguments will be included when using introspection.
    */
   fun download(
       endpoint: String?,
@@ -53,20 +52,29 @@ object SchemaDownloader {
       schema: File,
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
-      includeDeprecatedInputFieldsAndArguments: Boolean,
   ) {
     var introspectionSchemaJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
     var gqlSchema: GQLDocument? = null
     when {
       endpoint != null -> {
-        introspectionSchemaJson = downloadIntrospection(
-            endpoint = endpoint,
-            headers = headers,
-            insecure = insecure,
-            includeDeprecatedInputFieldsAndArguments = includeDeprecatedInputFieldsAndArguments,
-        )
-        introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
+        introspectionSchemaJson = try {
+          downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              includeDeprecatedInputFieldsAndArguments = true,
+          )
+        } catch (e: Exception) {
+          // Maybe the server doesn't support deprecated input fields / arguments, try without them
+          downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              includeDeprecatedInputFieldsAndArguments = false,
+          )
+        }
+        introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
       }
       else -> {
         check(key != null) {
