@@ -28,7 +28,7 @@ class IntrospectionSchema(
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
       val types: List<Type>,
-      val directives: List<Directive>,
+      val directives: List<Directive> = emptyList(),
   ) {
     @Serializable
     class QueryType(val name: String)
