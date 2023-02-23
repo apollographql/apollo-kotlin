@@ -42,16 +42,18 @@ object SchemaDownloader {
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
+   * @param includeDeprecatedInputValuesAndArguments if set to true, deprecated input values and arguments will be included when using introspection.
    */
   fun download(
-      endpoint: String? = null,
-      graph: String? = null,
-      key: String? = null,
-      graphVariant: String = "current",
+      endpoint: String?,
+      graph: String?,
+      key: String?,
+      graphVariant: String,
       registryUrl: String = "https://graphql.api.apollographql.com/api/graphql",
       schema: File,
       insecure: Boolean = false,
-      headers: Map<String, String> = emptyMap()
+      headers: Map<String, String> = emptyMap(),
+      includeDeprecatedInputValuesAndArguments: Boolean,
   ) {
     var introspectionSchemaJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
@@ -62,6 +64,7 @@ object SchemaDownloader {
             endpoint = endpoint,
             headers = headers,
             insecure = insecure,
+            includeDeprecatedInputValuesAndArguments = includeDeprecatedInputValuesAndArguments,
         )
         introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
       }
@@ -106,10 +109,11 @@ object SchemaDownloader {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+      includeDeprecatedInputValuesAndArguments: Boolean,
   ): String {
 
     val body = mapOf(
-        "query" to introspectionQuery,
+        "query" to getIntrospectionQuery(includeDeprecatedInputValuesAndArguments),
         "operationName" to "IntrospectionQuery"
     )
     val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
@@ -163,73 +167,72 @@ object SchemaDownloader {
 
   inline fun <reified T> Any?.cast() = this as? T
 
-  private val introspectionQuery = """
-    query IntrospectionQuery {
-      __schema {
-        queryType { name }
-        mutationType { name }
-        subscriptionType { name }
-        types {
-          ...FullType
+  private fun getIntrospectionQuery(includeDeprecatedInputValuesAndArguments: Boolean): String {
+    val includeDeprecated = if (includeDeprecatedInputValuesAndArguments) "(includeDeprecated: true)" else ""
+    return """
+      query IntrospectionQuery {
+        __schema {
+          queryType { name }
+          mutationType { name }
+          subscriptionType { name }
+          types {
+            ...FullType
+          }
+          directives {
+            name
+            description
+            locations
+            args$includeDeprecated {
+              ...InputValue
+            }
+            isRepeatable
+          }
         }
-        directives {
+      }
+  
+      fragment FullType on __Type {
+        kind
+        name
+        description
+        fields(includeDeprecated: true) {
           name
           description
-          locations
-          args(includeDeprecated: true) {
+          args$includeDeprecated {
             ...InputValue
           }
-          isRepeatable
+          type {
+            ...TypeRef
+          }
+          isDeprecated
+          deprecationReason
         }
-      }
-    }
-
-    fragment FullType on __Type {
-      kind
-      name
-      description
-      fields(includeDeprecated: true) {
-        name
-        description
-        args(includeDeprecated: true) {
+        inputFields$includeDeprecated {
           ...InputValue
         }
-        type {
+        interfaces {
           ...TypeRef
         }
-        isDeprecated
-        deprecationReason
+        enumValues(includeDeprecated: true) {
+          name
+          description
+          isDeprecated
+          deprecationReason
+        }
+        possibleTypes {
+          ...TypeRef
+        }
       }
-      inputFields(includeDeprecated: true) {
-        ...InputValue
-      }
-      interfaces {
-        ...TypeRef
-      }
-      enumValues(includeDeprecated: true) {
+  
+      fragment InputValue on __InputValue {
         name
         description
+        type { ...TypeRef }
+        defaultValue
         isDeprecated
         deprecationReason
       }
-      possibleTypes {
-        ...TypeRef
-      }
-    }
-
-    fragment InputValue on __InputValue {
-      name
-      description
-      type { ...TypeRef }
-      defaultValue
-      isDeprecated
-      deprecationReason
-    }
-
-    fragment TypeRef on __Type {
-      kind
-      name
-      ofType {
+  
+      fragment TypeRef on __Type {
         kind
         name
         ofType {
@@ -250,12 +253,16 @@ object SchemaDownloader {
                   ofType {
                     kind
                     name
+                    ofType {
+                      kind
+                      name
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
-    }""".trimIndent()
+      }""".trimIndent()
+  }
 }

@@ -9,6 +9,8 @@ import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
@@ -137,6 +139,10 @@ class DownloadSchemaTests {
 
       TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
 
+      mockServer.takeRequest().body.readUtf8().let {
+        assertFalse(it.contains("inputFields(includeDeprecated: true)"))
+        assertFalse(it.contains("args(includeDeprecated: true)"))
+      }
       assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
     }
   }
@@ -232,4 +238,27 @@ class DownloadSchemaTests {
       assertEquals(schemaString1, schema.readText())
     }
   }
+
+  @Test
+  fun `manually downloading a schema with deprecated input values and arguments is working`() {
+
+    withSimpleProject(apolloConfiguration = "") { dir ->
+      val mockResponse = MockResponse().setBody(schemaString1)
+      mockServer.enqueue(mockResponse)
+
+      val schema = File("build/testProject/schema.json")
+
+      TestUtils.executeGradle(dir, "downloadApolloSchema",
+          "--schema=${schema.absolutePath}",
+          "--endpoint=${mockServer.url("/")}",
+          "--includeDeprecatedInputValuesAndArguments"
+      )
+      mockServer.takeRequest().body.readUtf8().let {
+        assertTrue(it.contains("inputFields(includeDeprecated: true)"))
+        assertTrue(it.contains("args(includeDeprecated: true)"))
+      }
+      assertEquals(schemaString1, schema.readText())
+    }
+  }
+
 }
