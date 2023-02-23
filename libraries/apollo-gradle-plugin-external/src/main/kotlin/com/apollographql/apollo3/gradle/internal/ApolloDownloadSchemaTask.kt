@@ -61,8 +61,8 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
 
   @get:Optional
   @get:Input
-  @get:Option(option = "includeDeprecatedInputValuesAndArguments", description = "if set to true, deprecated input values and arguments will be included when using introspection")
-  abstract val includeDeprecatedInputValuesAndArguments: Property<Boolean>
+  @get:Option(option = "includeDeprecatedInputFieldsAndArguments", description = "if set to true, deprecated input fields and arguments will be included when using introspection")
+  abstract val includeDeprecatedInputFieldsAndArguments: Property<Boolean>
 
   init {
     /**
@@ -88,7 +88,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         schema = schemaFile,
         insecure = insecure.getOrElse(false),
         headers = header.toMap() + extraHeaders,
-        includeDeprecatedInputValuesAndArguments = includeDeprecatedInputValuesAndArguments.getOrElse(false),
+        includeDeprecatedInputFieldsAndArguments = includeDeprecatedInputFieldsAndArguments.getOrElse(false),
     )
   }
 

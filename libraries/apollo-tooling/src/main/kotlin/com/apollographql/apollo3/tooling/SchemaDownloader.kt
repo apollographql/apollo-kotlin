@@ -42,7 +42,7 @@ object SchemaDownloader {
    * Else it will use SDL. Prefer SDL if you can as it is more compact and carries more information.
    * @param insecure if set to true, TLS/SSL certificates will not be checked when downloading.
    * @param headers extra HTTP headers to send during introspection.
-   * @param includeDeprecatedInputValuesAndArguments if set to true, deprecated input values and arguments will be included when using introspection.
+   * @param includeDeprecatedInputFieldsAndArguments if set to true, deprecated input fields and arguments will be included when using introspection.
    */
   fun download(
       endpoint: String?,
@@ -53,7 +53,7 @@ object SchemaDownloader {
       schema: File,
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
-      includeDeprecatedInputValuesAndArguments: Boolean,
+      includeDeprecatedInputFieldsAndArguments: Boolean,
   ) {
     var introspectionSchemaJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
@@ -64,7 +64,7 @@ object SchemaDownloader {
             endpoint = endpoint,
             headers = headers,
             insecure = insecure,
-            includeDeprecatedInputValuesAndArguments = includeDeprecatedInputValuesAndArguments,
+            includeDeprecatedInputFieldsAndArguments = includeDeprecatedInputFieldsAndArguments,
         )
         introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
       }
@@ -109,11 +109,11 @@ object SchemaDownloader {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-      includeDeprecatedInputValuesAndArguments: Boolean,
+      includeDeprecatedInputFieldsAndArguments: Boolean,
   ): String {
 
     val body = mapOf(
-        "query" to getIntrospectionQuery(includeDeprecatedInputValuesAndArguments),
+        "query" to getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments),
         "operationName" to "IntrospectionQuery"
     )
     val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
@@ -167,8 +167,8 @@ object SchemaDownloader {
 
   inline fun <reified T> Any?.cast() = this as? T
 
-  private fun getIntrospectionQuery(includeDeprecatedInputValuesAndArguments: Boolean): String {
-    val includeDeprecated = if (includeDeprecatedInputValuesAndArguments) "(includeDeprecated: true)" else ""
+  private fun getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments: Boolean): String {
+    val includeDeprecated = if (includeDeprecatedInputFieldsAndArguments) "(includeDeprecated: true)" else ""
     return """
       query IntrospectionQuery {
         __schema {

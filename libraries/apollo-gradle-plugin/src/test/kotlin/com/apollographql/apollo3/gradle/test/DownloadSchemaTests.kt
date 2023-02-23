@@ -240,7 +240,7 @@ class DownloadSchemaTests {
   }
 
   @Test
-  fun `manually downloading a schema with deprecated input values and arguments is working`() {
+  fun `manually downloading a schema with deprecated input fields and arguments is working`() {
 
     withSimpleProject(apolloConfiguration = "") { dir ->
       val mockResponse = MockResponse().setBody(schemaString1)
@@ -251,7 +251,7 @@ class DownloadSchemaTests {
       TestUtils.executeGradle(dir, "downloadApolloSchema",
           "--schema=${schema.absolutePath}",
           "--endpoint=${mockServer.url("/")}",
-          "--includeDeprecatedInputValuesAndArguments"
+          "--includeDeprecatedInputFieldsAndArguments"
       )
       mockServer.takeRequest().body.readUtf8().let {
         assertTrue(it.contains("inputFields(includeDeprecated: true)"))
