@@ -30,6 +30,19 @@ data class IntrospectionSchema(
       val types: List<Type>,
       val directives: List<Directive> = emptyList(),
   ) {
+    constructor(
+        queryType: QueryType,
+        mutationType: MutationType?,
+        subscriptionType: SubscriptionType?,
+        types: List<Type>,
+    ) : this(
+        queryType = queryType,
+        mutationType = mutationType,
+        subscriptionType = subscriptionType,
+        types = types,
+        directives = emptyList(),
+    )
+
     @Serializable
     data class QueryType(val name: String)
 
@@ -122,17 +135,17 @@ data class IntrospectionSchema(
         val deprecationReason: String?,
         val type: TypeRef,
         val args: List<Argument> = emptyList(),
-    )
-
-    @Serializable
-    data class Argument(
-        val name: String,
-        val description: String?,
-        val isDeprecated: Boolean = false,
-        val deprecationReason: String?,
-        val type: TypeRef,
-        val defaultValue: String?,
-    )
+    ) {
+      @Serializable
+      data class Argument(
+          val name: String,
+          val description: String?,
+          val isDeprecated: Boolean = false,
+          val deprecationReason: String?,
+          val type: TypeRef,
+          val defaultValue: String?,
+      )
+    }
 
     /**
      * An introspection TypeRef
@@ -155,6 +168,16 @@ data class IntrospectionSchema(
         val args: List<Argument>,
         val isRepeatable: Boolean,
     ) {
+      @Serializable
+      data class Argument(
+          val name: String,
+          val description: String?,
+          val isDeprecated: Boolean = false,
+          val deprecationReason: String?,
+          val type: TypeRef,
+          val defaultValue: String?,
+      )
+
       enum class DirectiveLocation {
         QUERY,
         MUTATION,
@@ -181,6 +204,19 @@ data class IntrospectionSchema(
     enum class Kind {
       ENUM, INTERFACE, OBJECT, INPUT_OBJECT, SCALAR, NON_NULL, LIST, UNION
     }
+
+    fun copy(
+        queryType: QueryType = this.queryType,
+        mutationType: MutationType? = this.mutationType,
+        subscriptionType: SubscriptionType? = this.subscriptionType,
+        types: List<Type> = this.types,
+    ) = copy(
+        queryType = queryType,
+        mutationType = mutationType,
+        subscriptionType = subscriptionType,
+        types = types,
+        directives = emptyList(),
+    )
   }
 }
 

@@ -130,7 +130,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     )
   }
 
-  private fun IntrospectionSchema.Schema.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
+  private fun IntrospectionSchema.Schema.Field.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
     return GQLInputValueDefinition(
         sourceLocation = sourceLocation,
         name = name,
@@ -289,6 +289,17 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         arguments = args.map { it.toGQLInputValueDefinition() },
         locations = locations.map { it.toGQLDirectiveLocations() },
         repeatable = isRepeatable,
+    )
+  }
+
+  private fun IntrospectionSchema.Schema.Directive.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
+    return GQLInputValueDefinition(
+        sourceLocation = sourceLocation,
+        name = name,
+        description = description,
+        directives = makeDirectives(deprecationReason),
+        defaultValue = defaultValue.toGQLValue(),
+        type = type.toGQLType(),
     )
   }
 
