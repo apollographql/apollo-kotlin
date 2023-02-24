@@ -13,44 +13,31 @@ import okio.source
 import java.io.File
 
 @Serializable
-private data class IntrospectionSchemaEnvelope(
+private class IntrospectionSchemaEnvelope(
     val data: IntrospectionSchema?,
     val __schema: IntrospectionSchema.Schema?,
 )
 
 @Serializable
-data class IntrospectionSchema(
+class IntrospectionSchema(
     val __schema: Schema,
 ) {
   @Serializable
-  data class Schema(
+  class Schema(
       val queryType: QueryType,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
       val types: List<Type>,
-      val directives: List<Directive> = emptyList(),
+      val directives: List<Directive>,
   ) {
-    constructor(
-        queryType: QueryType,
-        mutationType: MutationType?,
-        subscriptionType: SubscriptionType?,
-        types: List<Type>,
-    ) : this(
-        queryType = queryType,
-        mutationType = mutationType,
-        subscriptionType = subscriptionType,
-        types = types,
-        directives = emptyList(),
-    )
+    @Serializable
+    class QueryType(val name: String)
 
     @Serializable
-    data class QueryType(val name: String)
+    class MutationType(val name: String)
 
     @Serializable
-    data class MutationType(val name: String)
-
-    @Serializable
-    data class SubscriptionType(val name: String)
+    class SubscriptionType(val name: String)
 
     @Serializable
     sealed class Type {
@@ -59,14 +46,14 @@ data class IntrospectionSchema(
 
       @SerialName("SCALAR")
       @Serializable
-      data class Scalar(
+      class Scalar(
           override val name: String,
           override val description: String?,
       ) : Type()
 
       @SerialName("OBJECT")
       @Serializable
-      data class Object(
+      class Object(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
@@ -75,7 +62,7 @@ data class IntrospectionSchema(
 
       @SerialName("INTERFACE")
       @Serializable
-      data class Interface(
+      class Interface(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
@@ -85,7 +72,7 @@ data class IntrospectionSchema(
 
       @SerialName("UNION")
       @Serializable
-      data class Union(
+      class Union(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
@@ -94,13 +81,13 @@ data class IntrospectionSchema(
 
       @SerialName("ENUM")
       @Serializable
-      data class Enum(
+      class Enum(
           override val name: String,
           override val description: String?,
           val enumValues: List<Value>,
       ) : Type() {
         @Serializable
-        data class Value(
+        class Value(
             val name: String,
             val description: String?,
             val isDeprecated: Boolean = false,
@@ -110,7 +97,7 @@ data class IntrospectionSchema(
 
       @SerialName("INPUT_OBJECT")
       @Serializable
-      data class InputObject(
+      class InputObject(
           override val name: String,
           override val description: String?,
           val inputFields: List<InputField>,
@@ -118,7 +105,7 @@ data class IntrospectionSchema(
     }
 
     @Serializable
-    data class InputField(
+    class InputField(
         val name: String,
         val description: String?,
         val isDeprecated: Boolean = false,
@@ -128,30 +115,30 @@ data class IntrospectionSchema(
     )
 
     @Serializable
-    data class Field(
+    class Field(
         val name: String,
         val description: String?,
         val isDeprecated: Boolean = false,
         val deprecationReason: String?,
         val type: TypeRef,
         val args: List<Argument> = emptyList(),
-    ) {
-      @Serializable
-      data class Argument(
-          val name: String,
-          val description: String?,
-          val isDeprecated: Boolean = false,
-          val deprecationReason: String?,
-          val type: TypeRef,
-          val defaultValue: String?,
-      )
-    }
+    )
+
+    @Serializable
+    class Argument(
+        val name: String,
+        val description: String?,
+        val isDeprecated: Boolean = false,
+        val deprecationReason: String?,
+        val type: TypeRef,
+        val defaultValue: String?,
+    )
 
     /**
      * An introspection TypeRef
      */
     @Serializable
-    data class TypeRef(
+    class TypeRef(
         val kind: Kind,
         val name: String? = "",
         val ofType: TypeRef? = null,
@@ -161,23 +148,13 @@ data class IntrospectionSchema(
      * An introspection directive
      */
     @Serializable
-    data class Directive(
+    class Directive(
         val name: String,
         val description: String?,
         val locations: List<DirectiveLocation> = emptyList(),
         val args: List<Argument>,
         val isRepeatable: Boolean = false,
     ) {
-      @Serializable
-      data class Argument(
-          val name: String,
-          val description: String?,
-          val isDeprecated: Boolean = false,
-          val deprecationReason: String?,
-          val type: TypeRef,
-          val defaultValue: String?,
-      )
-
       enum class DirectiveLocation {
         QUERY,
         MUTATION,
@@ -204,20 +181,6 @@ data class IntrospectionSchema(
     enum class Kind {
       ENUM, INTERFACE, OBJECT, INPUT_OBJECT, SCALAR, NON_NULL, LIST, UNION
     }
-
-    @Deprecated("For binary compatibility only.", level = DeprecationLevel.HIDDEN)
-    fun copy(
-        queryType: QueryType = this.queryType,
-        mutationType: MutationType? = this.mutationType,
-        subscriptionType: SubscriptionType? = this.subscriptionType,
-        types: List<Type> = this.types,
-    ) = copy(
-        queryType = queryType,
-        mutationType = mutationType,
-        subscriptionType = subscriptionType,
-        types = types,
-        directives = emptyList(),
-    )
   }
 }
 
@@ -261,14 +224,18 @@ fun File.toIntrospectionSchema() = inputStream().source().buffer().toIntrospecti
 fun String.toIntrospectionSchema() = Buffer().writeUtf8(this).toIntrospectionSchema()
 
 fun IntrospectionSchema.normalize(): IntrospectionSchema {
-  return copy(
+  return IntrospectionSchema(
       __schema = __schema.normalize()
   )
 }
 
 fun IntrospectionSchema.Schema.normalize(): IntrospectionSchema.Schema {
-  return copy(
-      types = types.sortedBy { it.name }
+  return IntrospectionSchema.Schema(
+      queryType = queryType,
+      mutationType = mutationType,
+      subscriptionType = subscriptionType,
+      types = types.sortedBy { it.name },
+      directives = directives.sortedBy { it.name }
   )
 }
 

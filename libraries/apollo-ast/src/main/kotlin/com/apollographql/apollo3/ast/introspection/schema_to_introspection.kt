@@ -71,14 +71,14 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(schema),
-        args = arguments.map { it.toSchemaFieldArgument() }
+        args = arguments.map { it.toSchemaArgument() }
     )
   }
 
-  private fun GQLInputValueDefinition.toSchemaFieldArgument(): IntrospectionSchema.Schema.Field.Argument {
+  private fun GQLInputValueDefinition.toSchemaArgument(): IntrospectionSchema.Schema.Argument {
     val deprecationReason = directives.findDeprecationReason()
 
-    return IntrospectionSchema.Schema.Field.Argument(
+    return IntrospectionSchema.Schema.Argument(
         name = name,
         description = description,
         isDeprecated = deprecationReason != null,
@@ -166,24 +166,11 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
     )
   }
 
-  private fun GQLInputValueDefinition.toSchemaDirectiveArgument(): IntrospectionSchema.Schema.Directive.Argument {
-    val deprecationReason = directives.findDeprecationReason()
-
-    return IntrospectionSchema.Schema.Directive.Argument(
-        name = name,
-        description = description,
-        isDeprecated = deprecationReason != null,
-        deprecationReason = deprecationReason,
-        type = type.toSchemaType(schema),
-        defaultValue = defaultValue?.toUtf8(indent = "")
-    )
-  }
-
   private fun GQLDirectiveDefinition.toSchemaDirective() = IntrospectionSchema.Schema.Directive(
       name = name,
       description = description,
       locations = locations.map { it.toSchemaDirectiveLocation() },
-      args = arguments.map { it.toSchemaDirectiveArgument() },
+      args = arguments.map { it.toSchemaArgument() },
       isRepeatable = repeatable,
   )
 
@@ -219,14 +206,12 @@ internal fun GQLType.toSchemaType(schema: Schema): IntrospectionSchema.Schema.Ty
           ofType = type.toSchemaType(schema)
       )
     }
-
     is GQLListType -> {
       IntrospectionSchema.Schema.TypeRef(
           kind = IntrospectionSchema.Schema.Kind.LIST,
           name = "", // why "" and not null ?
           ofType = type.toSchemaType(schema))
     }
-
     is GQLNamedType -> {
       IntrospectionSchema.Schema.TypeRef(
           kind = schema.typeDefinition(name).schemaKind(),
