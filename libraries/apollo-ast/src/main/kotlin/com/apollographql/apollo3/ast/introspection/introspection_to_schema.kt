@@ -36,7 +36,6 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
 import okio.Buffer
 import okio.buffer
 import okio.source
@@ -326,10 +325,6 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 @ApolloExperimental
 fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
     .toGQLDocument()
-    /**
-     * Introspection already contains builtin types like Int, Boolean, __Schema, etc...
-     */
-    .withoutBuiltinDefinitions()
 
 /**
  * Transforms the [IntrospectionSchema] into a [Schema] that contains builtin definitions

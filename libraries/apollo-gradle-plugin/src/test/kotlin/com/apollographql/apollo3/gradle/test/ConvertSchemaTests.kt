@@ -2,6 +2,7 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.ast.introspection.normalize
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
@@ -74,12 +75,8 @@ class ConvertSchemaTests {
           to.absolutePath
       )
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
-      // SDL to Json and back is not idempotent as SDL will add a `schema {}` block
-      Truth.assertThat(to.readText()).contains("""
-        type Query {
-          greeting: String
-        }
-      """.trimIndent())
+      assertjThat(to.readText())
+          .isEqualTo(File(dir, "schemas/schema.sdl").readText())
     }
   }
 }
