@@ -13,17 +13,17 @@ import okio.source
 import java.io.File
 
 @Serializable
-private class IntrospectionSchemaEnvelope(
+private data class IntrospectionSchemaEnvelope(
     val data: IntrospectionSchema?,
     val __schema: IntrospectionSchema.Schema?,
 )
 
 @Serializable
-class IntrospectionSchema(
+data class IntrospectionSchema(
     val __schema: Schema,
 ) {
   @Serializable
-  class Schema(
+  data class Schema(
       val queryType: QueryType,
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
@@ -31,13 +31,13 @@ class IntrospectionSchema(
       val directives: List<Directive> = emptyList(),
   ) {
     @Serializable
-    class QueryType(val name: String)
+    data class QueryType(val name: String)
 
     @Serializable
-    class MutationType(val name: String)
+    data class MutationType(val name: String)
 
     @Serializable
-    class SubscriptionType(val name: String)
+    data class SubscriptionType(val name: String)
 
     @Serializable
     sealed class Type {
@@ -46,14 +46,14 @@ class IntrospectionSchema(
 
       @SerialName("SCALAR")
       @Serializable
-      class Scalar(
+      data class Scalar(
           override val name: String,
           override val description: String?,
       ) : Type()
 
       @SerialName("OBJECT")
       @Serializable
-      class Object(
+      data class Object(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
@@ -62,7 +62,7 @@ class IntrospectionSchema(
 
       @SerialName("INTERFACE")
       @Serializable
-      class Interface(
+      data class Interface(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
@@ -72,7 +72,7 @@ class IntrospectionSchema(
 
       @SerialName("UNION")
       @Serializable
-      class Union(
+      data class Union(
           override val name: String,
           override val description: String?,
           val fields: List<Field>?,
@@ -81,13 +81,13 @@ class IntrospectionSchema(
 
       @SerialName("ENUM")
       @Serializable
-      class Enum(
+      data class Enum(
           override val name: String,
           override val description: String?,
           val enumValues: List<Value>,
       ) : Type() {
         @Serializable
-        class Value(
+        data class Value(
             val name: String,
             val description: String?,
             val isDeprecated: Boolean = false,
@@ -97,7 +97,7 @@ class IntrospectionSchema(
 
       @SerialName("INPUT_OBJECT")
       @Serializable
-      class InputObject(
+      data class InputObject(
           override val name: String,
           override val description: String?,
           val inputFields: List<InputField>,
@@ -105,7 +105,7 @@ class IntrospectionSchema(
     }
 
     @Serializable
-    class InputField(
+    data class InputField(
         val name: String,
         val description: String?,
         val isDeprecated: Boolean = false,
@@ -115,7 +115,7 @@ class IntrospectionSchema(
     )
 
     @Serializable
-    class Field(
+    data class Field(
         val name: String,
         val description: String?,
         val isDeprecated: Boolean = false,
@@ -125,7 +125,7 @@ class IntrospectionSchema(
     )
 
     @Serializable
-    class Argument(
+    data class Argument(
         val name: String,
         val description: String?,
         val isDeprecated: Boolean = false,
@@ -138,7 +138,7 @@ class IntrospectionSchema(
      * An introspection TypeRef
      */
     @Serializable
-    class TypeRef(
+    data class TypeRef(
         val kind: Kind,
         val name: String? = "",
         val ofType: TypeRef? = null,
@@ -148,7 +148,7 @@ class IntrospectionSchema(
      * An introspection directive
      */
     @Serializable
-    class Directive(
+    data class Directive(
         val name: String,
         val description: String?,
         val locations: List<DirectiveLocation>,
@@ -214,18 +214,14 @@ fun File.toIntrospectionSchema() = inputStream().source().buffer().toIntrospecti
 fun String.toIntrospectionSchema() = Buffer().writeUtf8(this).toIntrospectionSchema()
 
 fun IntrospectionSchema.normalize(): IntrospectionSchema {
-  return IntrospectionSchema(
+  return copy(
       __schema = __schema.normalize()
   )
 }
 
 fun IntrospectionSchema.Schema.normalize(): IntrospectionSchema.Schema {
-  return IntrospectionSchema.Schema(
-      queryType = queryType,
-      mutationType = mutationType,
-      subscriptionType = subscriptionType,
-      types = types.sortedBy { it.name },
-      directives = directives.sortedBy { it.name }
+  return copy(
+      types = types.sortedBy { it.name }
   )
 }
 

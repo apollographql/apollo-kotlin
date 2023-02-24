@@ -1221,7 +1221,13 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Companion;
 	public synthetic fun <init> (ILcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;
+	public final fun copy (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun get__schema ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1245,11 +1251,21 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public synthetic fun <init> (ILcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;Ljava/util/List;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;
+	public final fun component2 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;
+	public final fun component3 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun copy (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDirectives ()Ljava/util/List;
 	public final fun getMutationType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;
 	public final fun getQueryType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;
 	public final fun getSubscriptionType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;
 	public final fun getTypes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1269,12 +1285,23 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Argument;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Argument;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Argument;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDefaultValue ()Ljava/lang/String;
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
 	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Argument;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1301,11 +1328,21 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Z)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Z)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ZILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArgs ()Ljava/util/List;
 	public final fun getDescription ()Ljava/lang/String;
 	public final fun getLocations ()Ljava/util/List;
 	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
 	public final fun isRepeatable ()Z
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1353,12 +1390,23 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun component6 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getArgs ()Ljava/util/List;
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
 	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Field;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1382,12 +1430,23 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDefaultValue ()Ljava/lang/String;
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
 	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$InputField;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1423,7 +1482,13 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$MutationType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1446,7 +1511,13 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$QueryType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1469,7 +1540,13 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$SubscriptionType;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1504,9 +1581,17 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getDescription ()Ljava/lang/String;
 	public final fun getEnumValues ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1530,10 +1615,19 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;ZLjava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getDeprecationReason ()Ljava/lang/String;
 	public final fun getDescription ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
 	public final fun isDeprecated ()Z
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Enum$Value;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1556,9 +1650,17 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getDescription ()Ljava/lang/String;
 	public final fun getInputFields ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$InputObject;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1581,11 +1683,21 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getDescription ()Ljava/lang/String;
 	public final fun getFields ()Ljava/util/List;
 	public final fun getInterfaces ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public final fun getPossibleTypes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Interface;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1608,10 +1720,19 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getDescription ()Ljava/lang/String;
 	public final fun getFields ()Ljava/util/List;
 	public final fun getInterfaces ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Object;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1634,8 +1755,15 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getDescription ()Ljava/lang/String;
 	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Scalar;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1658,10 +1786,19 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public static final field Companion Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union$Companion;
 	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union;
+	public fun equals (Ljava/lang/Object;)Z
 	public fun getDescription ()Ljava/lang/String;
 	public final fun getFields ()Ljava/util/List;
 	public fun getName ()Ljava/lang/String;
 	public final fun getPossibleTypes ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Type$Union;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -1685,9 +1822,17 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 	public synthetic fun <init> (ILcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public fun <init> (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;)V
 	public synthetic fun <init> (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public final fun copy (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;Ljava/lang/String;Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;ILjava/lang/Object;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getKind ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Kind;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getOfType ()Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 	public static final synthetic fun write$Self (Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$TypeRef;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
