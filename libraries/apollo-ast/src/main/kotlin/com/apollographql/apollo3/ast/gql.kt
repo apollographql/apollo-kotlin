@@ -1,7 +1,5 @@
 package com.apollographql.apollo3.ast
 
-import com.apollographql.apollo3.annotations.ApolloInternal
-
 /**
  * The GraphQL AST definition
  *
@@ -124,7 +122,7 @@ sealed class GQLSelection : GQLNode
  *
  * See [parseAsGQLDocument] for how to obtain a [GQLDocument].
  */
-data class GQLDocument(
+class GQLDocument(
     val definitions: List<GQLDefinition>,
     val filePath: String?,
 ) : GQLNode {
@@ -135,8 +133,18 @@ data class GQLDocument(
     definitions.join(writer = writer, separator = "\n")
   }
 
-  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+  fun copy(
+      definitions: List<GQLDefinition> = this.definitions,
+      filePath: String? = this.filePath,
+  ): GQLDocument {
     return GQLDocument(
+        definitions = definitions,
+        filePath = filePath
+    )
+  }
+
+  override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
+    return copy(
         definitions = container.take(),
         filePath = filePath
     )
@@ -145,7 +153,7 @@ data class GQLDocument(
   companion object
 }
 
-data class GQLOperationDefinition(
+class GQLOperationDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val operationType: String,
     val name: String?,
@@ -177,6 +185,26 @@ data class GQLOperationDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      operationType: String = this.operationType,
+      name: String? = this.name,
+      variableDefinitions: List<GQLVariableDefinition> = this.variableDefinitions,
+      directives: List<GQLDirective> = this.directives,
+      selectionSet: GQLSelectionSet = this.selectionSet,
+      description: String? = this.description,
+  ): GQLOperationDefinition {
+    return GQLOperationDefinition(
+        sourceLocation = sourceLocation,
+        operationType = operationType,
+        name = name,
+        variableDefinitions = variableDefinitions,
+        directives = directives,
+        selectionSet = selectionSet,
+        description = description,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         variableDefinitions = container.take(),
@@ -186,7 +214,7 @@ data class GQLOperationDefinition(
   }
 }
 
-data class GQLFragmentDefinition(
+class GQLFragmentDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -211,6 +239,24 @@ data class GQLFragmentDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      typeCondition: GQLNamedType = this.typeCondition,
+      selectionSet: GQLSelectionSet = this.selectionSet,
+      description: String? = this.description,
+  ): GQLFragmentDefinition {
+    return GQLFragmentDefinition(
+        sourceLocation = sourceLocation,
+        name = name,
+        directives = directives,
+        typeCondition = typeCondition,
+        selectionSet = selectionSet,
+        description = description,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
@@ -220,7 +266,7 @@ data class GQLFragmentDefinition(
   }
 }
 
-data class GQLSchemaDefinition(
+class GQLSchemaDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     val directives: List<GQLDirective>,
@@ -245,10 +291,24 @@ data class GQLSchemaDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      directives: List<GQLDirective> = this.directives,
+      rootOperationTypeDefinitions: List<GQLOperationTypeDefinition> = this.rootOperationTypeDefinitions,
+  ): GQLSchemaDefinition {
+    return GQLSchemaDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        directives = directives,
+        rootOperationTypeDefinitions = rootOperationTypeDefinitions,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        rootOperationTypeDefinitions = container.take()
+        rootOperationTypeDefinitions = container.take(),
     )
   }
 }
@@ -278,7 +338,7 @@ sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed {
   }
 }
 
-data class GQLInterfaceTypeDefinition(
+class GQLInterfaceTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
@@ -312,15 +372,31 @@ data class GQLInterfaceTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      implementsInterfaces: List<String> = this.implementsInterfaces,
+      directives: List<GQLDirective> = this.directives,
+      fields: List<GQLFieldDefinition> = this.fields,
+  ): GQLInterfaceTypeDefinition = GQLInterfaceTypeDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      implementsInterfaces = implementsInterfaces,
+      directives = directives,
+      fields = fields,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        fields = container.take()
+        fields = container.take(),
     )
   }
 }
 
-data class GQLObjectTypeDefinition(
+class GQLObjectTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
@@ -354,15 +430,33 @@ data class GQLObjectTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      implementsInterfaces: List<String> = this.implementsInterfaces,
+      directives: List<GQLDirective> = this.directives,
+      fields: List<GQLFieldDefinition> = this.fields,
+  ): GQLObjectTypeDefinition {
+    return GQLObjectTypeDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        name = name,
+        implementsInterfaces = implementsInterfaces,
+        directives = directives,
+        fields = fields,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        fields = container.take()
+        fields = container.take(),
     )
   }
 }
 
-data class GQLInputObjectTypeDefinition(
+class GQLInputObjectTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
@@ -391,15 +485,31 @@ data class GQLInputObjectTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      inputFields: List<GQLInputValueDefinition> = this.inputFields,
+  ): GQLInputObjectTypeDefinition {
+    return GQLInputObjectTypeDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        name = name,
+        directives = directives,
+        inputFields = inputFields,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        inputFields = container.take()
+        inputFields = container.take(),
     )
   }
 }
 
-data class GQLScalarTypeDefinition(
+class GQLScalarTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
@@ -420,6 +530,18 @@ data class GQLScalarTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLScalarTypeDefinition = GQLScalarTypeDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      directives = directives,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
@@ -427,7 +549,7 @@ data class GQLScalarTypeDefinition(
   }
 }
 
-data class GQLEnumTypeDefinition(
+class GQLEnumTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
@@ -456,15 +578,29 @@ data class GQLEnumTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      enumValues: List<GQLEnumValueDefinition> = this.enumValues,
+  ): GQLEnumTypeDefinition = GQLEnumTypeDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      directives = directives,
+      enumValues = enumValues,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        enumValues = container.take()
+        enumValues = container.take(),
     )
   }
 }
 
-data class GQLUnionTypeDefinition(
+class GQLUnionTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
@@ -488,15 +624,29 @@ data class GQLUnionTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      memberTypes: List<GQLNamedType> = this.memberTypes,
+  ): GQLUnionTypeDefinition = GQLUnionTypeDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      directives = directives,
+      memberTypes = memberTypes,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        memberTypes = container.take()
+        memberTypes = container.take(),
     )
   }
 }
 
-data class GQLDirectiveDefinition(
+class GQLDirectiveDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     override val name: String,
@@ -525,6 +675,22 @@ data class GQLDirectiveDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      arguments: List<GQLInputValueDefinition> = this.arguments,
+      repeatable: Boolean = this.repeatable,
+      locations: List<GQLDirectiveLocation> = this.locations,
+  ): GQLDirectiveDefinition = GQLDirectiveDefinition(
+      sourceLocation = sourceLocation,
+      description = description,
+      name = name,
+      arguments = arguments,
+      repeatable = repeatable,
+      locations = locations,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         arguments = container.take(),
@@ -542,7 +708,7 @@ data class GQLDirectiveDefinition(
   }
 }
 
-data class GQLSchemaExtension(
+class GQLSchemaExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val directives: List<GQLDirective>,
     val operationTypesDefinition: List<GQLOperationTypeDefinition>,
@@ -554,6 +720,16 @@ data class GQLSchemaExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      directives: List<GQLDirective> = this.directives,
+      operationTypesDefinition: List<GQLOperationTypeDefinition> = this.operationTypesDefinition,
+  ): GQLSchemaExtension = GQLSchemaExtension(
+      sourceLocation = sourceLocation,
+      directives = directives,
+      operationTypesDefinition = operationTypesDefinition,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
@@ -562,7 +738,7 @@ data class GQLSchemaExtension(
   }
 }
 
-data class GQLEnumTypeExtension(
+class GQLEnumTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -575,15 +751,27 @@ data class GQLEnumTypeExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      enumValues: List<GQLEnumValueDefinition> = this.enumValues,
+  ): GQLEnumTypeExtension = GQLEnumTypeExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+      enumValues = enumValues,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        enumValues = container.take()
+        enumValues = container.take(),
     )
   }
 }
 
-data class GQLObjectTypeExtension(
+class GQLObjectTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val implementsInterfaces: List<String>,
@@ -597,15 +785,29 @@ data class GQLObjectTypeExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      implementsInterfaces: List<String> = this.implementsInterfaces,
+      directives: List<GQLDirective> = this.directives,
+      fields: List<GQLFieldDefinition> = this.fields,
+  ): GQLObjectTypeExtension = GQLObjectTypeExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      implementsInterfaces = implementsInterfaces,
+      directives = directives,
+      fields = fields,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        fields = container.take()
+        fields = container.take(),
     )
   }
 }
 
-data class GQLInputObjectTypeExtension(
+class GQLInputObjectTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -618,6 +820,18 @@ data class GQLInputObjectTypeExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      inputFields: List<GQLInputValueDefinition> = this.inputFields,
+  ): GQLInputObjectTypeExtension = GQLInputObjectTypeExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+      inputFields = inputFields,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
@@ -626,7 +840,7 @@ data class GQLInputObjectTypeExtension(
   }
 }
 
-data class GQLScalarTypeExtension(
+class GQLScalarTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -638,6 +852,16 @@ data class GQLScalarTypeExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLScalarTypeExtension = GQLScalarTypeExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
@@ -645,7 +869,7 @@ data class GQLScalarTypeExtension(
   }
 }
 
-data class GQLInterfaceTypeExtension(
+class GQLInterfaceTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val implementsInterfaces: List<String>,
@@ -659,6 +883,20 @@ data class GQLInterfaceTypeExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      implementsInterfaces: List<String> = this.implementsInterfaces,
+      directives: List<GQLDirective> = this.directives,
+      fields: List<GQLFieldDefinition> = this.fields,
+  ): GQLInterfaceTypeExtension = GQLInterfaceTypeExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      implementsInterfaces = implementsInterfaces,
+      directives = directives,
+      fields = fields,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         fields = container.take()
@@ -666,7 +904,7 @@ data class GQLInterfaceTypeExtension(
   }
 }
 
-data class GQLUnionTypeExtension(
+class GQLUnionTypeExtension(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val directives: List<GQLDirective>,
@@ -679,6 +917,18 @@ data class GQLUnionTypeExtension(
     TODO("Not yet implemented")
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      memberTypes: List<GQLNamedType> = this.memberTypes,
+  ): GQLUnionTypeExtension = GQLUnionTypeExtension(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+      memberTypes = memberTypes,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
@@ -687,7 +937,7 @@ data class GQLUnionTypeExtension(
   }
 }
 
-data class GQLEnumValueDefinition(
+class GQLEnumValueDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     override val name: String,
@@ -708,6 +958,20 @@ data class GQLEnumValueDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLEnumValueDefinition {
+    return GQLEnumValueDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        name = name,
+        directives = directives,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
@@ -715,7 +979,7 @@ data class GQLEnumValueDefinition(
   }
 }
 
-data class GQLFieldDefinition(
+class GQLFieldDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     override val name: String,
@@ -744,15 +1008,33 @@ data class GQLFieldDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      arguments: List<GQLInputValueDefinition> = this.arguments,
+      type: GQLType = this.type,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLFieldDefinition {
+    return GQLFieldDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        name = name,
+        arguments = arguments,
+        type = type,
+        directives = directives,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        arguments = container.take()
+        arguments = container.take(),
     )
   }
 }
 
-data class GQLInputValueDefinition(
+class GQLInputValueDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val description: String?,
     override val name: String,
@@ -797,6 +1079,24 @@ data class GQLInputValueDefinition(
     write(writer, false)
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      description: String? = this.description,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+      type: GQLType = this.type,
+      defaultValue: GQLValue? = this.defaultValue,
+  ): GQLInputValueDefinition {
+    return GQLInputValueDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        name = name,
+        directives = directives,
+        type = type,
+        defaultValue = defaultValue,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
@@ -808,7 +1108,7 @@ data class GQLInputValueDefinition(
  * A variable definition is very similar to an InputValue definition except it doesn't
  * have a description
  */
-data class GQLVariableDefinition(
+class GQLVariableDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
     val type: GQLType,
@@ -832,10 +1132,26 @@ data class GQLVariableDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      type: GQLType = this.type,
+      defaultValue: GQLValue? = this.defaultValue,
+      directives: List<GQLDirective> = this.directives,
+  ): GQLVariableDefinition {
+    return GQLVariableDefinition(
+        sourceLocation = sourceLocation,
+        name = name,
+        type = type,
+        defaultValue = defaultValue,
+        directives = directives,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
-        defaultValue = container.takeSingle()
+        defaultValue = container.takeSingle(),
     )
   }
 }
@@ -844,7 +1160,7 @@ data class GQLVariableDefinition(
  * @param operationType one of "query", "mutation", "subscription"
  * @param namedType the name of the root object type, i.e. "Query", ...
  */
-data class GQLOperationTypeDefinition(
+class GQLOperationTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val operationType: String,
     val namedType: String,
@@ -858,6 +1174,18 @@ data class GQLOperationTypeDefinition(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      operationType: String = this.operationType,
+      namedType: String = this.namedType,
+  ): GQLOperationTypeDefinition {
+    return GQLOperationTypeDefinition(
+        sourceLocation = sourceLocation,
+        operationType = operationType,
+        namedType = namedType,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
@@ -866,7 +1194,7 @@ data class GQLOperationTypeDefinition(
 /**
  * @param name the name of the directive without the '@'. Example: "include"
  */
-data class GQLDirective(
+class GQLDirective(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
     val arguments: GQLArguments?,
@@ -883,6 +1211,18 @@ data class GQLDirective(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      arguments: GQLArguments? = this.arguments,
+  ): GQLDirective {
+    return GQLDirective(
+        sourceLocation = sourceLocation,
+        name = name,
+        arguments = arguments,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         arguments = container.takeSingle()
@@ -890,7 +1230,7 @@ data class GQLDirective(
   }
 }
 
-data class GQLObjectField(
+class GQLObjectField(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
     val value: GQLValue,
@@ -905,6 +1245,18 @@ data class GQLObjectField(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      value: GQLValue = this.value,
+  ): GQLObjectField {
+    return GQLObjectField(
+        sourceLocation = sourceLocation,
+        name = name,
+        value = value,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         value = container.takeSingle()!!
@@ -912,7 +1264,7 @@ data class GQLObjectField(
   }
 }
 
-data class GQLArgument(
+class GQLArgument(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
     val value: GQLValue,
@@ -927,6 +1279,18 @@ data class GQLArgument(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      value: GQLValue = this.value,
+  ): GQLArgument {
+    return GQLArgument(
+        sourceLocation = sourceLocation,
+        name = name,
+        value = value,
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         value = container.takeSingle()!!
@@ -934,7 +1298,7 @@ data class GQLArgument(
   }
 }
 
-data class GQLSelectionSet(
+class GQLSelectionSet(
     val selections: List<GQLSelection>,
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
 ) : GQLNode {
@@ -950,6 +1314,16 @@ data class GQLSelectionSet(
     }
   }
 
+  fun copy(
+      selections: List<GQLSelection> = this.selections,
+      sourceLocation: SourceLocation = this.sourceLocation,
+  ): GQLSelectionSet {
+    return GQLSelectionSet(
+        selections = selections,
+        sourceLocation = sourceLocation
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         selections = container.take()
@@ -957,7 +1331,7 @@ data class GQLSelectionSet(
   }
 }
 
-data class GQLArguments(
+class GQLArguments(
     val arguments: List<GQLArgument>,
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
 ) : GQLNode {
@@ -967,6 +1341,16 @@ data class GQLArguments(
     arguments.join(writer, prefix = "(", separator = ", ", postfix = ")")
   }
 
+  fun copy(
+      arguments: List<GQLArgument> = this.arguments,
+      sourceLocation: SourceLocation = this.sourceLocation,
+  ): GQLArguments {
+    return GQLArguments(
+        arguments = arguments,
+        sourceLocation = sourceLocation
+    )
+  }
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         arguments = container.take()
@@ -974,7 +1358,7 @@ data class GQLArguments(
   }
 }
 
-data class GQLField(
+class GQLField(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val alias: String?,
     val name: String,
@@ -1007,16 +1391,32 @@ data class GQLField(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      alias: String? = this.alias,
+      name: String = this.name,
+      arguments: GQLArguments? = this.arguments,
+      directives: List<GQLDirective> = this.directives,
+      selectionSet: GQLSelectionSet? = this.selectionSet,
+  ) = GQLField(
+      sourceLocation = sourceLocation,
+      alias = alias,
+      name = name,
+      arguments = arguments,
+      directives = directives,
+      selectionSet = selectionSet,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         selectionSet = container.takeSingle(),
         arguments = container.takeSingle(),
-        directives = container.take()
+        directives = container.take(),
     )
   }
 }
 
-data class GQLInlineFragment(
+class GQLInlineFragment(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val typeCondition: GQLNamedType,
     val directives: List<GQLDirective>,
@@ -1039,17 +1439,28 @@ data class GQLInlineFragment(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      typeCondition: GQLNamedType = this.typeCondition,
+      directives: List<GQLDirective> = this.directives,
+      selectionSet: GQLSelectionSet = this.selectionSet,
+  ) = GQLInlineFragment(
+      sourceLocation = sourceLocation,
+      typeCondition = typeCondition,
+      directives = directives,
+      selectionSet = selectionSet,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take(),
         selectionSet = container.takeSingle()!!,
-        typeCondition = container.takeSingle()!!
-
+        typeCondition = container.takeSingle()!!,
     )
   }
 }
 
-data class GQLFragmentSpread(
+class GQLFragmentSpread(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
     val directives: List<GQLDirective>,
@@ -1068,6 +1479,16 @@ data class GQLFragmentSpread(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+      directives: List<GQLDirective> = this.directives,
+  ) = GQLFragmentSpread(
+      sourceLocation = sourceLocation,
+      name = name,
+      directives = directives,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         directives = container.take()
@@ -1077,7 +1498,7 @@ data class GQLFragmentSpread(
 
 sealed class GQLType : GQLNode
 
-data class GQLNamedType(
+class GQLNamedType(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val name: String,
 ) : GQLType(), GQLNamed {
@@ -1090,12 +1511,20 @@ data class GQLNamedType(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+  ) = GQLNamedType(
+      sourceLocation = sourceLocation,
+      name = name,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLNonNullType(
+class GQLNonNullType(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val type: GQLType,
 ) : GQLType() {
@@ -1109,6 +1538,14 @@ data class GQLNonNullType(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      type: GQLType = this.type,
+  ) = GQLNonNullType(
+      sourceLocation = sourceLocation,
+      type = type,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         type = container.takeSingle()!!
@@ -1116,7 +1553,7 @@ data class GQLNonNullType(
   }
 }
 
-data class GQLListType(
+class GQLListType(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val type: GQLType,
 ) : GQLType() {
@@ -1131,6 +1568,14 @@ data class GQLListType(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      type: GQLType = this.type,
+  ) = GQLListType(
+      sourceLocation = sourceLocation,
+      type = type,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         type = container.takeSingle()!!
@@ -1140,7 +1585,7 @@ data class GQLListType(
 
 
 sealed class GQLValue : GQLNode
-data class GQLVariableValue(
+class GQLVariableValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val name: String,
 ) : GQLValue() {
@@ -1153,12 +1598,20 @@ data class GQLVariableValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      name: String = this.name,
+  ) = GQLVariableValue(
+      sourceLocation = sourceLocation,
+      name = name,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLIntValue(
+class GQLIntValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val value: Int,
 ) : GQLValue() {
@@ -1171,12 +1624,20 @@ data class GQLIntValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      value: Int = this.value,
+  ) = GQLIntValue(
+      sourceLocation = sourceLocation,
+      value = value,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLFloatValue(
+class GQLFloatValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val value: Double,
 ) : GQLValue() {
@@ -1189,12 +1650,20 @@ data class GQLFloatValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      value: Double = this.value,
+  ) = GQLFloatValue(
+      sourceLocation = sourceLocation,
+      value = value,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLStringValue(
+class GQLStringValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val value: String,
 ) : GQLValue() {
@@ -1207,12 +1676,20 @@ data class GQLStringValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      value: String = this.value,
+  ) = GQLStringValue(
+      sourceLocation = sourceLocation,
+      value = value,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLBooleanValue(
+class GQLBooleanValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val value: Boolean,
 ) : GQLValue() {
@@ -1225,12 +1702,20 @@ data class GQLBooleanValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      value: Boolean = this.value,
+  ) = GQLBooleanValue(
+      sourceLocation = sourceLocation,
+      value = value,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLEnumValue(
+class GQLEnumValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val value: String,
 ) : GQLValue() {
@@ -1243,12 +1728,20 @@ data class GQLEnumValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      value: String = this.value,
+  ) = GQLEnumValue(
+      sourceLocation = sourceLocation,
+      value = value,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
   }
 }
 
-data class GQLListValue(
+class GQLListValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val values: List<GQLValue>,
 ) : GQLValue() {
@@ -1263,6 +1756,14 @@ data class GQLListValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      values: List<GQLValue> = this.values,
+  ) = GQLListValue(
+      sourceLocation = sourceLocation,
+      values = values,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         values = container.take()
@@ -1270,7 +1771,7 @@ data class GQLListValue(
   }
 }
 
-data class GQLObjectValue(
+class GQLObjectValue(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     val fields: List<GQLObjectField>,
 ) : GQLValue() {
@@ -1287,6 +1788,14 @@ data class GQLObjectValue(
     }
   }
 
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+      fields: List<GQLObjectField> = this.fields,
+  ) = GQLObjectValue(
+      sourceLocation = sourceLocation,
+      fields = fields,
+  )
+
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return copy(
         fields = container.take()
@@ -1294,7 +1803,7 @@ data class GQLObjectValue(
   }
 }
 
-data class GQLNullValue(override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN) : GQLValue() {
+class GQLNullValue(override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN) : GQLValue() {
 
   override val children = emptyList<GQLNode>()
 
@@ -1303,6 +1812,12 @@ data class GQLNullValue(override val sourceLocation: SourceLocation = SourceLoca
       write("null")
     }
   }
+
+  fun copy(
+      sourceLocation: SourceLocation = this.sourceLocation,
+  ) = GQLNullValue(
+      sourceLocation = sourceLocation,
+  )
 
   override fun copyWithNewChildrenInternal(container: NodeContainer): GQLNode {
     return this
