@@ -13,6 +13,8 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.obj
 import com.example.introspection_query.TestQuery
+import com.example.introspection_query.type.__TypeKind
+import com.example.introspection_query.type.adapter.__TypeKind_ResponseAdapter
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -146,21 +148,24 @@ public object TestQuery_ResponseAdapter {
     }
 
     private object __Type : Adapter<TestQuery.Data.__Type> {
-      public val RESPONSE_NAMES: List<String> = listOf("name")
+      public val RESPONSE_NAMES: List<String> = listOf("name", "kind")
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           TestQuery.Data.__Type {
         var _name: String? = null
+        var _kind: __TypeKind? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _name = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _kind = __TypeKind_ResponseAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
 
         return TestQuery.Data.__Type(
-          name = _name
+          name = _name,
+          kind = _kind!!
         )
       }
 
@@ -171,6 +176,9 @@ public object TestQuery_ResponseAdapter {
       ): Unit {
         writer.name("name")
         NullableStringAdapter.toJson(writer, customScalarAdapters, value.name)
+
+        writer.name("kind")
+        __TypeKind_ResponseAdapter.toJson(writer, customScalarAdapters, value.kind)
       }
     }
   }

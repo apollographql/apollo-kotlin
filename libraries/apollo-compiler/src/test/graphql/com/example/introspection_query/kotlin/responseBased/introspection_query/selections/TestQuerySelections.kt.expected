@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.CompiledTypeType
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.notNull
 import com.example.introspection_query.type.GraphQLString
+import com.example.introspection_query.type.__TypeKind
 import kotlin.collections.List
 
 public object TestQuerySelections {
@@ -47,6 +48,10 @@ public object TestQuerySelections {
         CompiledField.Builder(
           name = "name",
           type = GraphQLString.type
+        ).build(),
+        CompiledField.Builder(
+          name = "kind",
+          type = __TypeKind.type.notNull()
         ).build()
       )
 
