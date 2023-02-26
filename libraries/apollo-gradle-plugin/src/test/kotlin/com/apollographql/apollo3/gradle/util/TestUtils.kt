@@ -66,11 +66,14 @@ object TestUtils {
       appendLine("}")
       appendLine()
 
+      // Keep in sync with apollo-gradle-plugin/build.gradle.kts
+      // https://issuetracker.google.com/issues/260059413
       append("""
-        java {
-          toolchain { 
-            languageVersion.set(JavaLanguageVersion.of(8))
-          }
+        android {
+            compileOptions {
+                sourceCompatibility = 11
+                targetCompatibility = 11
+            }
         }
       """.trimIndent())
 

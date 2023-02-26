@@ -4,6 +4,7 @@ import configureJavaAndKotlinCompilers
 import configureMppDefaults
 import configurePublishing
 import configureTesting
+import configureTests
 import optIn
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -18,7 +19,7 @@ class LibraryConventionPlugin : Plugin<Project> {
       group = property("GROUP")!!
       version = property("VERSION_NAME")!!
 
-      extensions.create("apolloLibrary", Extension::class.java)
+      extensions.create("apolloLibrary", Extension::class.java, project)
 
       configureJavaAndKotlinCompilers()
       optIn(
@@ -57,6 +58,10 @@ class LibraryConventionPlugin : Plugin<Project> {
           attributes(mapOf("Automatic-Module-Name" to javaModuleName))
         }
       }
+    }
+
+    fun runTestsWithJavaVersion(javaVersion: Int) {
+      project.configureTests(javaVersion)
     }
   }
 }

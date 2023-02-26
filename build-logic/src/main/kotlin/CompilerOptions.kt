@@ -1,7 +1,9 @@
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
+import org.gradle.api.tasks.testing.Test
 import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
@@ -56,6 +58,15 @@ fun Project.configureJavaAndKotlinCompilers() {
   }
 
   allWarningsAsErrors(true)
+}
+
+fun Project.configureTests(jvmVersion: Int) {
+  tasks.withType(Test::class.java).configureEach {
+    val javaToolchains = this@configureTests.extensions.getByName("javaToolchains") as JavaToolchainService
+    javaLauncher.set(javaToolchains.launcherFor {
+      languageVersion.set(JavaLanguageVersion.of(jvmVersion))
+    })
+  }
 }
 
 internal fun Project.optIn(vararg annotations: String) {
