@@ -66,17 +66,6 @@ object TestUtils {
       appendLine("}")
       appendLine()
 
-      // Keep in sync with apollo-gradle-plugin/build.gradle.kts
-      // https://issuetracker.google.com/issues/260059413
-      append("""
-        android {
-            compileOptions {
-                sourceCompatibility = 11
-                targetCompatibility = 11
-            }
-        }
-      """.trimIndent())
-
       appendLine()
       append("""
         dependencies {
@@ -95,6 +84,13 @@ object TestUtils {
             |android {
             |  compileSdkVersion(libs.versions.android.sdkversion.compile.get().toInteger())
             |  namespace = "com.example"
+            |  
+            |  // Keep in sync with apollo-gradle-plugin/build.gradle.kts
+            |  // https://issuetracker.google.com/issues/260059413  
+            |  compileOptions {
+            |    sourceCompatibility = 11
+            |    targetCompatibility = 11
+            |  }
             |
           """.trimMargin()
         )
