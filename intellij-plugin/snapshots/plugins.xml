@@ -1,8 +1,8 @@
 <plugins>
   <plugin
       id="com.apollographql.ijplugin"
-      url="https://repsy.io/mvn/bod/apollo-intellij-plugin/com/apollographql/apollo-intellij-plugin/4.0.0-SNAPSHOT.6/apollo-intellij-plugin-4.0.0-SNAPSHOT.6.zip"
-      version="4.0.0-SNAPSHOT.6">
+      url="https://repsy.io/mvn/bod/apollo-intellij-plugin/com/apollographql/apollo-intellij-plugin/4.0.0-SNAPSHOT.7/apollo-intellij-plugin-4.0.0-SNAPSHOT.7.zip"
+      version="4.0.0-SNAPSHOT.7">
     <idea-version since-build="222" until-build="231.*"/>
     <name>Apollo GraphQL (Snapshot)</name>
   </plugin>
