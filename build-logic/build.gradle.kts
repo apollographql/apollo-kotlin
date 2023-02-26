@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverExtension
 import org.jetbrains.kotlin.samWithReceiver.gradle.SamWithReceiverGradleSubplugin
 
@@ -50,9 +51,15 @@ dependencies {
   runtimeOnly(golatac.lib("kotlinx.binarycompatibilityvalidator"))
 }
 
+// Keep in sync with CompilerOptions.kt
 java {
-  // Keep in sync with CompilerOptions.kt
   toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+tasks.withType(JavaCompile::class.java).configureEach {
+  options.release.set(11)
+}
+tasks.withType(KotlinJvmCompile::class.java).configureEach {
+  kotlinOptions.jvmTarget = "11"
 }
 
 gradlePlugin {

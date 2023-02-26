@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 17
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
       - name: Publish to Maven Central
         run: |
@@ -35,7 +35,7 @@ jobs:
       - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 17
       - name: Publish to JetBrains marketplace
         run: ./gradlew --no-build-cache :intellij-plugin:publishPlugin
         env:
