@@ -52,7 +52,7 @@ dependencies {
 
 java {
   // Keep in sync with CompilerOptions.kt
-  toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+  toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 gradlePlugin {
