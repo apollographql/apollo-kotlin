@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 import kotlin.jvm.JvmName
 
 /**
@@ -62,8 +64,15 @@ val CacheFirstInterceptor = object : ApolloInterceptor {
       }.singleOrNull()
 
       if (cacheResponse != null) {
-        emit(cacheResponse)
-        return@flow
+        if (cacheResponse.cacheInfo?.isCacheHit == true) {
+          // This is a cache hit, stop here
+          emit(cacheResponse)
+          return@flow
+        } else {
+          emit(cacheResponse.newBuilder().isLast(false).build())
+          // The response was a cache miss emitted by emitCacheMisses(true)
+          // We need to continue to the network
+        }
       }
 
       val networkResponses = chain.proceed(

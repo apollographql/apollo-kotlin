@@ -35,6 +35,7 @@ kotlin {
           because("OperationOutputTest uses it to check the json and we can't use moshi since it's mpp code")
         }
         implementation(golatac.lib("kotlinx.coroutines.test"))
+        implementation(golatac.lib("turbine"))
       }
     }
 
