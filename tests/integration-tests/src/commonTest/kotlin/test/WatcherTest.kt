@@ -1,12 +1,14 @@
 package test
 
 import IdCacheKeyGenerator
+import app.cash.turbine.test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.cacheInfo
 import com.apollographql.apollo3.cache.normalized.emitCacheMisses
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.normalizedCache
@@ -41,6 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.fail
 
@@ -623,6 +626,28 @@ class WatcherTest {
     job.cancel()
   }
 
+  @Test
+  fun cacheFirstAndEmitCacheMisses() = runTest(before = { setUp() }) {
+    val query = EpisodeHeroNameQuery(Episode.EMPIRE)
+    apolloClient.enqueueTestResponse(query, episodeHeroNameData)
+
+    apolloClient.query(query)
+        .emitCacheMisses(true)
+        .fetchPolicy(FetchPolicy.CacheFirst)
+        .watch()
+        .test {
+          awaitItem().also { response ->
+            assertEquals(false, response.cacheInfo?.isCacheHit)
+            assertNull(response.data)
+          }
+          awaitItem().also { response ->
+            assertEquals(false, response.cacheInfo?.isCacheHit)
+            assertNotNull(response.data)
+          }
+
+          cancelAndIgnoreRemainingEvents()
+        }
+  }
 }
 
 suspend fun <D> Channel<D>.assertEmpty() {
