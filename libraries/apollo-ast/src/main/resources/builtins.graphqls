@@ -1,6 +1,10 @@
 # Built in scalar and introspection types from:
 # - https://spec.graphql.org/June2018/#sec-Scalars
 # - https://github.com/graphql/graphql-spec/blob/afc0a35d271ba9502c3c68aeda6e6c6fbc223774/spec/Section%204%20--%20Introspection.md
+# In theory the user needs to provide the builtin definitions because we cannot know in advance what
+# version of the spec they are using neither if they have extended any of the introspection types.
+# This file is a fallback to make a best-effort guess in case the user didn't provide these definitions, at the
+# risk of potentially validating invalid queries.
 
 """
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
