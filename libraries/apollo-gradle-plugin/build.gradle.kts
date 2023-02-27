@@ -7,6 +7,9 @@ plugins {
 }
 
 apolloLibrary {
+  // See GradleVersionTests.kt the Gradle runner will choke on more recent versions
+  // Keep in sync with TestUtils.kt
+  runTestsWithJavaVersion(11)
 }
 
 // Configuration for extra jar to pass to R8 to give it more context about what can be relocated

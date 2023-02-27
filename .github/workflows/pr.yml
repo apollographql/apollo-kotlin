@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 17
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
       - name: Build with Gradle
         run: |
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 11 # Keep this one on an older JDK version to make sure we can still build with Java11
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
       - name: Build with Gradle
         run: |
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 17
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
       - name: Build with Gradle
         run: |
@@ -113,7 +113,7 @@ jobs:
         uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 17
 
       # Set environment variables
       - name: Export Properties

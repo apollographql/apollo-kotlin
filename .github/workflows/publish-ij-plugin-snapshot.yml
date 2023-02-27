@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b #v3.9.0
         with:
           distribution: 'temurin'
-          java-version: 11
+          java-version: 17
 
       - name: Increment snapshot version
         run: |
