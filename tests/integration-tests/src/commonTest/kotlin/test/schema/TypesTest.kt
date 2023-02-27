@@ -5,7 +5,7 @@ import schema.type.Cat
 import schema.type.Crocodile
 import schema.type.Dog
 import schema.type.Pet
-import schema.type.__Schema
+import schema.schema.__Schema
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
