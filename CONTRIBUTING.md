@@ -113,6 +113,8 @@ We usually favor Builders for reasons outlined in [this issue](https://github.co
 * For expect/actual, it's sometime convenient to expose an interface even if it's not intended to be subclassed by
   callers like `MockServerInterface`. In that case, it's ok to use `FooInterface` for the interface and `Foo()` for the
   implementation to avoid having "DefaultFoo" everywhere when there's only one "Foo".
+* Builders may open the door to bad combination of arguments. This is ok. In that case, they should be detected at
+  runtime and fail fast by throwing an exception.
 
 Java interop
 
@@ -134,7 +136,7 @@ Logging & Error messages
 * Apollo Kotlin must not log anything to System.out or System.err
 * Error messages are passed to the user through `Exception.message`
 * For debugging logs, APIs are provided to get diagnostics (like CacheMissException, HttpInfo, ...). APIs are better
-  defined and allow more fine-grained diagnostics.
+  defined and allow more fine-grained diagnostics. See  https://publicobject.com/2022/05/01/eventlisteners-are-good/
 * There is one exception for the Gradle plugin. It is allowed to log information though the lifecycle() methods.
 * Messages should contain "Apollo: " when it's not immediately clear that the message comes from Apollo.
 
