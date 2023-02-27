@@ -1,6 +1,8 @@
 package com.apollographql.ijplugin.gradle
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
+import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
 import com.apollographql.ijplugin.project.apolloProjectService
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
@@ -29,6 +31,7 @@ class GradleToolingModelService(
   private var gradleCancellation: CancellationTokenSource? = null
   private var abortRequested: Boolean = false
   private val gradleExecutorService = Executors.newSingleThreadExecutor()
+  var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
 
   init {
     logd("project=${project.name}")
@@ -110,35 +113,43 @@ class GradleToolingModelService(
   }
 
   private fun computeGraphQLProjectFiles(toolingModels: List<ApolloGradleToolingModel>) {
-    val projectServiceToDirs = mutableMapOf<String, Set<File>>()
-    fun getAllDirsForProjectService(projectName: String, serviceName: String): Set<File> {
+    // Compute the GraphQLProjectFiles, taking into account the dependencies between projects
+    val projectServiceToGraphQLProjectFiles = mutableMapOf<String, GraphQLProjectFiles>()
+    fun getGraphQLProjectFiles(projectName: String, serviceName: String): GraphQLProjectFiles {
       val key = "$projectName/$serviceName"
-      return projectServiceToDirs.getOrPut(key) {
+      return projectServiceToGraphQLProjectFiles.getOrPut(key) {
         val toolingModel = toolingModels.first { it.projectName == projectName }
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
-        serviceInfo.graphqlSrcDirs +
-            serviceInfo.schemaFiles +
-            serviceInfo.upstreamProjects.flatMap { getAllDirsForProjectService(it, serviceName) }
-      }
-    }
-
-    val projectDir = project.guessProjectDir() ?: return
-    val graphQLProjectFiles = mutableListOf<GraphQLProjectFiles>()
-    for (toolingModel in toolingModels) {
-      for (serviceInfo in toolingModel.serviceInfos) {
-        graphQLProjectFiles += GraphQLProjectFiles(
-            name = "${toolingModel.projectName}/${serviceInfo.name}",
-            includedPaths = getAllDirsForProjectService(toolingModel.projectName, serviceInfo.name).mapNotNull {
-              val virtualFile = VirtualFileManager.getInstance().findFileByNioPath(it.toPath()) ?: return@mapNotNull null
-              val relativePath = VfsUtilCore.getRelativeLocation(virtualFile, projectDir) ?: return@mapNotNull null
-              if (it.isDirectory) "$relativePath/*" else relativePath
-            }.toSet(),
+        val dependenciesProjectFiles = toolingModel.upstreamProjects.map { getGraphQLProjectFiles(it, serviceName) }
+        GraphQLProjectFiles(
+            name = key,
+            schemaPaths = (serviceInfo.schemaFiles.mapNotNull { it.toProjectLocalPathOrNull() } +
+                dependenciesProjectFiles.flatMap { it.schemaPaths })
+                .distinct(),
+            operationPaths = (serviceInfo.graphqlSrcDirs.mapNotNull { it.toProjectLocalPathOrNull() } +
+                dependenciesProjectFiles.flatMap { it.operationPaths })
+                .distinct(),
         )
       }
     }
 
-    // TODO expose this to the GraphQL plugin
+    val graphQLProjectFiles = mutableListOf<GraphQLProjectFiles>()
+    for (toolingModel in toolingModels) {
+      for (serviceInfo in toolingModel.serviceInfos) {
+        graphQLProjectFiles += getGraphQLProjectFiles(toolingModel.projectName, serviceInfo.name)
+      }
+    }
+    this.graphQLProjectFiles = graphQLProjectFiles
     logd("graphQLProjectFiles=$graphQLProjectFiles")
+
+    // Project files are available, notify interested parties
+    project.messageBus.syncPublisher(GraphQLProjectFilesListener.TOPIC).projectFilesAvailable()
+  }
+
+  private fun File.toProjectLocalPathOrNull(): String? {
+    val projectDir = project.guessProjectDir() ?: return null
+    val virtualFile = VirtualFileManager.getInstance().findFileByNioPath(toPath()) ?: return null
+    return VfsUtilCore.getRelativeLocation(virtualFile, projectDir)
   }
 
   private fun abortFetchToolingModels() {
@@ -154,8 +165,3 @@ class GradleToolingModelService(
     gradleExecutorService.shutdown()
   }
 }
-
-data class GraphQLProjectFiles(
-    val name: String,
-    val includedPaths: Set<String>,
-)

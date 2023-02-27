@@ -40,6 +40,13 @@ intellij {
 
   // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
   plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+
+  // TODO: Using the local maven repo for the GraphQL plugin, until v4 is published to the Marketplace
+  pluginsRepositories {
+    maven("file://${System.getProperty("user.home")}/.m2/repository")
+    // Note: using 2 repositories doesn't work currently - see https://github.com/JetBrains/gradle-intellij-plugin/issues/1292
+    // marketplace()
+  }
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin

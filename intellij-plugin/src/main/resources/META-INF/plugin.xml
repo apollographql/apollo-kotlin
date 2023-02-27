@@ -54,6 +54,14 @@
     <!-- Tooling model -->
     <projectService serviceImplementation="com.apollographql.ijplugin.gradle.GradleToolingModelService" />
 
+    <!-- Listens to availability of Tooling model, and notifies the GraphQL plugin -->
+    <projectService serviceImplementation="com.apollographql.ijplugin.graphql.GraphQLConfigService" />
+
+  </extensions>
+
+  <!-- Contribute configuration to the GraphQL plugin -->
+  <extensions defaultExtensionNs="com.intellij.lang.jsgraphql">
+    <configContributor implementation="com.apollographql.ijplugin.graphql.ApolloGraphQLConfigContributor" />
   </extensions>
 
   <applicationListeners>
