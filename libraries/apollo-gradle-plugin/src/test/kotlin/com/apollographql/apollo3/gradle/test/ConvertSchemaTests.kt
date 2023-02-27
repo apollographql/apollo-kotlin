@@ -81,7 +81,7 @@ class ConvertSchemaTests {
   @Test
   fun `convert from october-2015 JSON to SDL works`() {
     TestUtils.withTestProject("convertSchema") { dir ->
-      // schema-legacy.json doesn't have:
+      // schema-october-2015.json doesn't have:
       // - `__Directive.locations` (introduced in the April2016 spec)
       // - `__Directive.isRepeatable` (introduced in the October2021 spec)
       // - `__InputField.isDeprecated` and `__InputField.deprecatedReason` (introduced after the October2021 spec)
