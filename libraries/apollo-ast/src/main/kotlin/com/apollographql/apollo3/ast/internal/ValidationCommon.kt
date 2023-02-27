@@ -175,7 +175,7 @@ internal fun ValidationScope.validateDirective(
 internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirective, directiveContext: GQLNode) {
   if (directiveContext is GQLField && (directive.arguments?.arguments?.size ?: 0) > 0) {
     registerIssue(
-        message = "'$directive.name' cannot have arguments when applied on a field",
+        message = "'${directive.name}' cannot have arguments when applied on a field",
         sourceLocation = directive.sourceLocation
     )
 
