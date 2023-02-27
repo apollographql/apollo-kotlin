@@ -1512,8 +1512,7 @@
               },
               "defaultValue": null
             }
-          ],
-          "isRepeatable": false
+          ]
         },
         {
           "name": "include",
@@ -1538,8 +1537,7 @@
               },
               "defaultValue": null
             }
-          ],
-          "isRepeatable": false
+          ]
         },
         {
           "name": "operationDirective",
@@ -1564,8 +1562,7 @@
               },
               "defaultValue": null
             }
-          ],
-          "isRepeatable": false
+          ]
         },
         {
           "name": "deprecated",
@@ -1585,8 +1582,7 @@
               },
               "defaultValue": "\"No longer supported\""
             }
-          ],
-          "isRepeatable": false
+          ]
         }
       ]
     }

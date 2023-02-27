@@ -18,8 +18,7 @@ class ConfigurationCacheTests {
             "queryType": {
               "name": "foo"
             },
-            "types": [],
-            "directives": []
+            "types": []
           }
         }
       """.trimIndent()

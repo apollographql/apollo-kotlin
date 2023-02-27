@@ -112,8 +112,7 @@ class DownloadSchemaTests {
           "enumValues": null,
           "possibleTypes": null
         }
-      ],
-      "directives": []
+      ]
     }
   }
   """.trimIndent()

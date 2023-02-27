@@ -5815,13 +5815,7 @@
               },
               "defaultValue": null
             }
-          ],
-          "locations": [
-            "FIELD",
-            "FRAGMENT_SPREAD",
-            "INLINE_FRAGMENT"
-          ],
-          "isRepeatable": false
+          ]
         },
         {
           "name": "skip",
@@ -5841,13 +5835,7 @@
               },
               "defaultValue": null
             }
-          ],
-          "locations": [
-              "FIELD",
-              "FRAGMENT_SPREAD",
-              "INLINE_FRAGMENT"
-          ],
-          "isRepeatable": false
+          ]
         }
       ]
     }
