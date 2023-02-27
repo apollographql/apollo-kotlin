@@ -79,7 +79,7 @@ class ConvertSchemaTests {
   }
 
   @Test
-  fun `convert from legacy Json to SDL works`() {
+  fun `convert from october-2015 JSON to SDL works`() {
     TestUtils.withTestProject("convertSchema") { dir ->
       // schema-legacy.json doesn't have:
       // - `__Directive.locations` (introduced in the April2016 spec)
