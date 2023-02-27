@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 
-internal class AutoPersistedQueryInterceptor(
+class AutoPersistedQueryInterceptor(
     private val httpMethodForHashedQueries: HttpMethod,
     private val httpMethodForDocumentQueries: HttpMethod,
 ) : ApolloInterceptor {
@@ -77,7 +77,7 @@ internal class AutoPersistedQueryInterceptor(
   }
 
   companion object {
-    private const val PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND = "PersistedQueryNotFound"
-    private const val PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported"
+    const val PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND = "PersistedQueryNotFound"
+    const val PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED = "PersistedQueryNotSupported"
   }
 }

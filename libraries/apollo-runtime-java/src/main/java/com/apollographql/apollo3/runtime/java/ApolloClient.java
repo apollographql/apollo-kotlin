@@ -171,7 +171,6 @@ public class ApolloClient implements Closeable {
     private WebSocket.Factory webSocketFactory;
     private Executor executor;
     private List<ApolloInterceptor> interceptors = new ArrayList<>();
-    private ApolloInterceptor apqInterceptor;
     private List<HttpInterceptor> httpInterceptors = new ArrayList<>();
     private WsProtocol.Factory wsProtocolFactory;
     private List<HttpHeader> wsHeaders = new ArrayList<>();
@@ -354,38 +353,6 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-
-    public Builder autoPersistedQueries() {
-      return autoPersistedQueries(HttpMethod.Get, HttpMethod.Post, true);
-    }
-
-    public Builder autoPersistedQueries(
-        HttpMethod httpMethodForHashedQueries
-    ) {
-      return autoPersistedQueries(httpMethodForHashedQueries, HttpMethod.Post, true);
-    }
-
-    public Builder autoPersistedQueries(
-        HttpMethod httpMethodForHashedQueries,
-        HttpMethod httpMethodForDocumentQueries
-    ) {
-      return autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, true);
-    }
-
-    public Builder autoPersistedQueries(
-        HttpMethod httpMethodForHashedQueries,
-        HttpMethod httpMethodForDocumentQueries,
-        boolean enableByDefault
-    ) {
-      apqInterceptor = new AutoPersistedQueryInterceptor(
-              httpMethodForHashedQueries,
-              httpMethodForDocumentQueries);
-
-      enableAutoPersistedQueries(enableByDefault);
-
-      return this;
-    }
-
     public ApolloClient build() {
       if (executor == null) {
         executor = defaultExecutor();
@@ -463,9 +430,6 @@ public class ApolloClient implements Closeable {
         }
       }
 
-      if (apqInterceptor != null) {
-        interceptors.add(apqInterceptor);
-      }
       return new ApolloClient(
           executor,
           networkTransport,
@@ -481,6 +445,38 @@ public class ApolloClient implements Closeable {
       );
     }
 
+    public Builder autoPersistedQueries() {
+      return autoPersistedQueries(HttpMethod.Get, HttpMethod.Post, true);
+    }
+
+    public Builder autoPersistedQueries(
+        HttpMethod httpMethodForHashedQueries
+    ) {
+      return autoPersistedQueries(httpMethodForHashedQueries, HttpMethod.Post, true);
+    }
+
+    public Builder autoPersistedQueries(
+        HttpMethod httpMethodForHashedQueries,
+        HttpMethod httpMethodForDocumentQueries
+    ) {
+      return autoPersistedQueries(httpMethodForHashedQueries, httpMethodForDocumentQueries, true);
+    }
+
+    public Builder autoPersistedQueries(
+        HttpMethod httpMethodForHashedQueries,
+        HttpMethod httpMethodForDocumentQueries,
+        boolean enableByDefault
+    ) {
+      addInterceptor(
+          new AutoPersistedQueryInterceptor(
+              httpMethodForHashedQueries,
+              httpMethodForDocumentQueries
+          )
+      );
+      enableAutoPersistedQueries(enableByDefault);
+
+      return this;
+    }
 
     /**
      * Batch HTTP queries to execute multiple at once. This reduces the number of HTTP round trips at the price of increased latency as

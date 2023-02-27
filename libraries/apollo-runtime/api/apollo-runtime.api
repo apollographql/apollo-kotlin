@@ -168,6 +168,17 @@ public abstract interface class com/apollographql/apollo3/interceptor/ApolloInte
 	public abstract fun proceed (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor : com/apollographql/apollo3/interceptor/ApolloInterceptor {
+	public static final field Companion Lcom/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion;
+	public static final field PROTOCOL_NEGOTIATION_ERROR_NOT_SUPPORTED Ljava/lang/String;
+	public static final field PROTOCOL_NEGOTIATION_ERROR_QUERY_NOT_FOUND Ljava/lang/String;
+	public fun <init> (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)V
+	public fun intercept (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/interceptor/ApolloInterceptorChain;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class com/apollographql/apollo3/interceptor/AutoPersistedQueryInterceptor$Companion {
+}
+
 public abstract interface class com/apollographql/apollo3/network/NetworkTransport {
 	public abstract fun dispose ()V
 	public abstract fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;

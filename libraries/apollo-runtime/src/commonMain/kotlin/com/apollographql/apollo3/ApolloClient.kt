@@ -171,12 +171,6 @@ private constructor(
     private var subscriptionNetworkTransport: NetworkTransport? = null
     private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
     private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
-
-    /**
-     * The APQ interceptor is special because it needs to be always last.
-     * If not, there is the risk that it retries cache queries which make no sense.
-     */
-    private var apqInterceptor: ApolloInterceptor? = null
     val interceptors: List<ApolloInterceptor> = _interceptors
     private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     private var dispatcher: CoroutineDispatcher? = null
@@ -429,11 +423,12 @@ private constructor(
         httpMethodForDocumentQueries: HttpMethod = HttpMethod.Post,
         enableByDefault: Boolean = true,
     ) = apply {
-      apqInterceptor = AutoPersistedQueryInterceptor(
-          httpMethodForHashedQueries,
-          httpMethodForDocumentQueries
+      addInterceptor(
+          AutoPersistedQueryInterceptor(
+              httpMethodForHashedQueries,
+              httpMethodForDocumentQueries
+          )
       )
-
       enableAutoPersistedQueries(enableByDefault)
     }
 
@@ -544,7 +539,7 @@ private constructor(
           networkTransport = networkTransport,
           subscriptionNetworkTransport = subscriptionNetworkTransport,
           customScalarAdapters = customScalarAdaptersBuilder.build(),
-          interceptors = _interceptors + listOfNotNull(apqInterceptor),
+          interceptors = _interceptors,
           dispatcher = dispatcher,
           executionContext = executionContext,
           httpMethod = httpMethod,
