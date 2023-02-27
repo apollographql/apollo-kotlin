@@ -85,14 +85,14 @@ public class TestQuery implements Query<TestQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (input == null) ? 0 : input.hashCode();
-      h *= 1000003;
-      h ^= (scalar == null) ? 0 : scalar.hashCode();
-      h *= 1000003;
-      h ^= (enum_ == null) ? 0 : enum_.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (input == null) ? 0 : input.hashCode();
+      __h *= 1000003;
+      __h ^= (scalar == null) ? 0 : scalar.hashCode();
+      __h *= 1000003;
+      __h ^= (enum_ == null) ? 0 : enum_.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -225,18 +225,18 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (object == null) ? 0 : object.hashCode();
-        h *= 1000003;
-        h ^= (interface_ == null) ? 0 : interface_.hashCode();
-        h *= 1000003;
-        h ^= (union == null) ? 0 : union.hashCode();
-        h *= 1000003;
-        h ^= (scalar == null) ? 0 : scalar.hashCode();
-        h *= 1000003;
-        h ^= (enum_ == null) ? 0 : enum_.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (object == null) ? 0 : object.hashCode();
+        __h *= 1000003;
+        __h ^= (interface_ == null) ? 0 : interface_.hashCode();
+        __h *= 1000003;
+        __h ^= (union == null) ? 0 : union.hashCode();
+        __h *= 1000003;
+        __h ^= (scalar == null) ? 0 : scalar.hashCode();
+        __h *= 1000003;
+        __h ^= (enum_ == null) ? 0 : enum_.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -285,10 +285,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (field == null) ? 0 : field.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (field == null) ? 0 : field.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -333,10 +333,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (field == null) ? 0 : field.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (field == null) ? 0 : field.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -388,12 +388,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (onReservedObject == null) ? 0 : onReservedObject.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onReservedObject == null) ? 0 : onReservedObject.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -439,10 +439,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (field == null) ? 0 : field.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (field == null) ? 0 : field.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

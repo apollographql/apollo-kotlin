@@ -82,10 +82,10 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (cond == null) ? 0 : cond.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (cond == null) ? 0 : cond.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -185,10 +185,10 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (hero == null) ? 0 : hero.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -255,16 +255,16 @@ public class SpreadMultipleWithDeferWithIf implements Query<SpreadMultipleWithDe
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (characterDetails == null) ? 0 : characterDetails.hashCode();
-        h *= 1000003;
-        h ^= (characterDetails2 == null) ? 0 : characterDetails2.hashCode();
-        h *= 1000003;
-        h ^= (characterDetails3 == null) ? 0 : characterDetails3.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (characterDetails == null) ? 0 : characterDetails.hashCode();
+        __h *= 1000003;
+        __h ^= (characterDetails2 == null) ? 0 : characterDetails2.hashCode();
+        __h *= 1000003;
+        __h ^= (characterDetails3 == null) ? 0 : characterDetails3.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

@@ -57,14 +57,14 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (organizationId == null) ? 0 : organizationId.hashCode();
-      h *= 1000003;
-      h ^= (query == null) ? 0 : query.hashCode();
-      h *= 1000003;
-      h ^= (size == null) ? 0 : size.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (organizationId == null) ? 0 : organizationId.hashCode();
+      __h *= 1000003;
+      __h ^= (query == null) ? 0 : query.hashCode();
+      __h *= 1000003;
+      __h ^= (size == null) ? 0 : size.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;

@@ -45,12 +45,12 @@ public class IFragment implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
-      h *= 1000003;
-      h ^= (onA == null) ? 0 : onA.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (__typename == null) ? 0 : __typename.hashCode();
+      __h *= 1000003;
+      __h ^= (onA == null) ? 0 : onA.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -95,10 +95,10 @@ public class IFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (fieldA == null) ? 0 : fieldA.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (fieldA == null) ? 0 : fieldA.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

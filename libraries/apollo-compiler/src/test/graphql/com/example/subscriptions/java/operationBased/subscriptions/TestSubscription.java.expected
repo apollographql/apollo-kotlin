@@ -65,10 +65,10 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (repo == null) ? 0 : repo.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (repo == null) ? 0 : repo.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -171,10 +171,10 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (commentAdded == null) ? 0 : commentAdded.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (commentAdded == null) ? 0 : commentAdded.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -229,12 +229,12 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (id == null) ? 0 : id.hashCode();
-        h *= 1000003;
-        h ^= (content == null) ? 0 : content.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (id == null) ? 0 : id.hashCode();
+        __h *= 1000003;
+        __h ^= (content == null) ? 0 : content.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
