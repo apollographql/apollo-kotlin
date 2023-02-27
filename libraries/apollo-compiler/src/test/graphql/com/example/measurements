@@ -2,11 +2,10 @@
 // If you updated the codegen and test fixtures, you should commit this file too.
 
 Test:                                                                                      Total LOC:
-aggregate-all                                                                                    2500
-aggregate-kotlin-responseBased                                                                      0
+aggregate-all                                                                                     243
+aggregate-kotlin-responseBased                                                                    243
 aggregate-kotlin-operationBased                                                                     0
 aggregate-kotlin-compat                                                                             0
-aggregate-java-operationBased                                                                    2500
+aggregate-java-operationBased                                                                       0
 
-java-operationBased-simple_fragment                                                              1456
-java-operationBased-simple_fragment_with_inline_fragments                                        1044
+kotlin-responseBased-java_hashcode                                                                243
