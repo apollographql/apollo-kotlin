@@ -166,8 +166,8 @@ internal class IrBuilder(
       }
       visitedTypes.add(name)
       val typeDefinition = schema.typeDefinition(name)
-      if (typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition) {
-        // We don't generate builtin types, except scalars
+      if (typeDefinition.isBuiltIn() && typeDefinition !is GQLScalarTypeDefinition && typeDefinition !is GQLEnumTypeDefinition) {
+        // do nothing, introspection types are in apollo-api
         continue
       }
 

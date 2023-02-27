@@ -28,7 +28,21 @@ data class IntrospectionSchema(
       val mutationType: MutationType?,
       val subscriptionType: SubscriptionType?,
       val types: List<Type>,
+      val directives: List<Directive> = emptyList(),
   ) {
+    constructor(
+        queryType: QueryType,
+        mutationType: MutationType?,
+        subscriptionType: SubscriptionType?,
+        types: List<Type>,
+    ) : this(
+        queryType = queryType,
+        mutationType = mutationType,
+        subscriptionType = subscriptionType,
+        types = types,
+        directives = emptyList(),
+    )
+
     @Serializable
     data class QueryType(val name: String)
 
@@ -122,7 +136,6 @@ data class IntrospectionSchema(
         val type: TypeRef,
         val args: List<Argument> = emptyList(),
     ) {
-
       @Serializable
       data class Argument(
           val name: String,
@@ -144,9 +157,67 @@ data class IntrospectionSchema(
         val ofType: TypeRef? = null,
     )
 
+    /**
+     * An introspection directive
+     */
+    @Serializable
+    data class Directive(
+        val name: String,
+        val description: String?,
+        val locations: List<DirectiveLocation> = emptyList(),
+        val args: List<Argument>,
+        val isRepeatable: Boolean = false,
+    ) {
+      @Serializable
+      data class Argument(
+          val name: String,
+          val description: String?,
+          val isDeprecated: Boolean = false,
+          val deprecationReason: String?,
+          val type: TypeRef,
+          val defaultValue: String?,
+      )
+
+      enum class DirectiveLocation {
+        QUERY,
+        MUTATION,
+        SUBSCRIPTION,
+        FIELD,
+        FRAGMENT_DEFINITION,
+        FRAGMENT_SPREAD,
+        INLINE_FRAGMENT,
+        VARIABLE_DEFINITION,
+        SCHEMA,
+        SCALAR,
+        OBJECT,
+        FIELD_DEFINITION,
+        ARGUMENT_DEFINITION,
+        INTERFACE,
+        UNION,
+        ENUM,
+        ENUM_VALUE,
+        INPUT_OBJECT,
+        INPUT_FIELD_DEFINITION,
+      }
+    }
+
     enum class Kind {
       ENUM, INTERFACE, OBJECT, INPUT_OBJECT, SCALAR, NON_NULL, LIST, UNION
     }
+
+    @Deprecated("For binary compatibility only.", level = DeprecationLevel.HIDDEN)
+    fun copy(
+        queryType: QueryType = this.queryType,
+        mutationType: MutationType? = this.mutationType,
+        subscriptionType: SubscriptionType? = this.subscriptionType,
+        types: List<Type> = this.types,
+    ) = copy(
+        queryType = queryType,
+        mutationType = mutationType,
+        subscriptionType = subscriptionType,
+        types = types,
+        directives = emptyList(),
+    )
   }
 }
 
@@ -168,7 +239,17 @@ fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSche
 
   return try {
     val introspectionSchemaEnvelope = json.decodeFromString(IntrospectionSchemaEnvelope.serializer(), this.readUtf8())
-    introspectionSchemaEnvelope.data ?: introspectionSchemaEnvelope.__schema?.let { IntrospectionSchema(it) }
+    introspectionSchemaEnvelope.data ?: introspectionSchemaEnvelope.__schema?.let { schema ->
+      IntrospectionSchema(IntrospectionSchema.Schema(
+          queryType = schema.queryType,
+          mutationType = schema.mutationType,
+          subscriptionType = schema.subscriptionType,
+          types = schema.types,
+          // Old introspection json (pre `April2016`) may not have the `locations` field, in which case the list will be empty, which is invalid. Exclude those directives.
+          // Validation doesn't validate the unknown directives (yet). A future version may want to fail here and enforce proper validation.
+          directives = schema.directives.filter { directive -> directive.locations.isNotEmpty() }
+      ))
+    }
     ?: throw IllegalArgumentException("Invalid introspection schema: $origin")
   } catch (e: Exception) {
     throw RuntimeException("Cannot decode introspection $origin", e)

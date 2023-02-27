@@ -9,7 +9,7 @@ interface Foo {
 interface Bar implements Foo {
   x: Int
 
-  y(z: Int @deprecated(reason: "This argument is deprecated")): Int
+  y(z: Int): Int
 
   z: String @deprecated(reason: "This field is deprecated")
 }
@@ -17,7 +17,7 @@ interface Bar implements Foo {
 input MyInput {
   a: Int
 
-  b: String @deprecated(reason: "This input field is deprecated")
+  b: String
 }
 
 """
@@ -188,18 +188,6 @@ enum __DirectiveLocation {
 
   INPUT_FIELD_DEFINITION
 }
-
-directive @MyDirective1 (a: Int, b: String @deprecated(reason: "This argument is deprecated")) on FIELD_DEFINITION|SCALAR
-
-directive @skip (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
-
-directive @include (if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
-
-directive @deprecated (reason: String = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
-
-directive @defer (label: String, if: Boolean! = true) on FRAGMENT_SPREAD|INLINE_FRAGMENT
-
-directive @specifiedBy (url: String!) on SCALAR
 
 schema {
   query: Query

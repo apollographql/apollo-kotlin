@@ -9,5 +9,6 @@ query TestQuery {
   }
   __type(name: "Vehicle") {
     name
+    kind
   }
 }

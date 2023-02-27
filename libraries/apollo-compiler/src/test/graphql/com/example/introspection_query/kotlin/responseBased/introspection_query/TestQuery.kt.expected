@@ -14,6 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.introspection_query.adapter.TestQuery_ResponseAdapter
 import com.example.introspection_query.selections.TestQuerySelections
+import com.example.introspection_query.type.__TypeKind
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -66,12 +67,13 @@ public class TestQuery() : Query<TestQuery.Data> {
 
     public data class __Type(
       public val name: String?,
+      public val kind: __TypeKind,
     )
   }
 
   public companion object {
     public const val OPERATION_ID: String =
-        "0df748160db73d1bbdea0e6e8437222dd4026ef9a3d699923485cf95c7df8366"
+        "2bf29cc74f10b0b5551a609396f4e489fc4ebce15c0504cdd102be8447976b97"
 
     /**
      * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -88,12 +90,13 @@ public class TestQuery() : Query<TestQuery.Data> {
      *   }
      *   __type(name: "Vehicle") {
      *     name
+     *     kind
      *   }
      * }
      */
     public val OPERATION_DOCUMENT: String
       get() =
-          "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name } }"
+          "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name kind } }"
 
     public const val OPERATION_NAME: String = "TestQuery"
   }

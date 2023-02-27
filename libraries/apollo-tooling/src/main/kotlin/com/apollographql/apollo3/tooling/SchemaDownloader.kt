@@ -2,12 +2,12 @@ package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLDocument
-import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.toUtf8
-import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.compiler.toJson
 import okio.Buffer
@@ -44,26 +44,37 @@ object SchemaDownloader {
    * @param headers extra HTTP headers to send during introspection.
    */
   fun download(
-      endpoint: String? = null,
-      graph: String? = null,
-      key: String? = null,
-      graphVariant: String = "current",
+      endpoint: String?,
+      graph: String?,
+      key: String?,
+      graphVariant: String,
       registryUrl: String = "https://graphql.api.apollographql.com/api/graphql",
       schema: File,
       insecure: Boolean = false,
-      headers: Map<String, String> = emptyMap()
+      headers: Map<String, String> = emptyMap(),
   ) {
     var introspectionSchemaJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
     var gqlSchema: GQLDocument? = null
     when {
       endpoint != null -> {
-        introspectionSchemaJson = downloadIntrospection(
-            endpoint = endpoint,
-            headers = headers,
-            insecure = insecure,
-        )
-        introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
+        introspectionSchemaJson = try {
+          downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              includeDeprecatedInputFieldsAndArguments = true,
+          )
+        } catch (e: Exception) {
+          // Maybe the server doesn't support deprecated input fields / arguments, try without them
+          downloadIntrospection(
+              endpoint = endpoint,
+              headers = headers,
+              insecure = insecure,
+              includeDeprecatedInputFieldsAndArguments = false,
+          )
+        }
+        introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
       }
       else -> {
         check(key != null) {
@@ -106,10 +117,11 @@ object SchemaDownloader {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
+      includeDeprecatedInputFieldsAndArguments: Boolean,
   ): String {
 
     val body = mapOf(
-        "query" to introspectionQuery,
+        "query" to getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments),
         "operationName" to "IntrospectionQuery"
     )
     val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
@@ -163,72 +175,72 @@ object SchemaDownloader {
 
   inline fun <reified T> Any?.cast() = this as? T
 
-  private val introspectionQuery = """
-    query IntrospectionQuery {
-      __schema {
-        queryType { name }
-        mutationType { name }
-        subscriptionType { name }
-        types {
-          ...FullType
-        }
-        directives {
-          name
-          description
-          locations
-          args {
-            ...InputValue
+  private fun getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments: Boolean): String {
+    val includeDeprecated = if (includeDeprecatedInputFieldsAndArguments) "(includeDeprecated: true)" else ""
+    return """
+      query IntrospectionQuery {
+        __schema {
+          queryType { name }
+          mutationType { name }
+          subscriptionType { name }
+          types {
+            ...FullType
+          }
+          directives {
+            name
+            description
+            locations
+            args$includeDeprecated {
+              ...InputValue
+            }
+            isRepeatable
           }
         }
       }
-    }
-
-    fragment FullType on __Type {
-      kind
-      name
-      description
-      fields(includeDeprecated: true) {
+  
+      fragment FullType on __Type {
+        kind
         name
         description
-        args {
+        fields(includeDeprecated: true) {
+          name
+          description
+          args$includeDeprecated {
+            ...InputValue
+          }
+          type {
+            ...TypeRef
+          }
+          isDeprecated
+          deprecationReason
+        }
+        inputFields$includeDeprecated {
           ...InputValue
         }
-        type {
+        interfaces {
           ...TypeRef
         }
-        isDeprecated
-        deprecationReason
+        enumValues(includeDeprecated: true) {
+          name
+          description
+          isDeprecated
+          deprecationReason
+        }
+        possibleTypes {
+          ...TypeRef
+        }
       }
-      inputFields(includeDeprecated: true) {
-        ...InputValue
-      }
-      interfaces {
-        ...TypeRef
-      }
-      enumValues(includeDeprecated: true) {
+  
+      fragment InputValue on __InputValue {
         name
         description
+        type { ...TypeRef }
+        defaultValue
         isDeprecated
         deprecationReason
       }
-      possibleTypes {
-        ...TypeRef
-      }
-    }
-
-    fragment InputValue on __InputValue {
-      name
-      description
-      type { ...TypeRef }
-      defaultValue
-      isDeprecated
-      deprecationReason
-    }
-
-    fragment TypeRef on __Type {
-      kind
-      name
-      ofType {
+  
+      fragment TypeRef on __Type {
         kind
         name
         ofType {
@@ -249,12 +261,16 @@ object SchemaDownloader {
                   ofType {
                     kind
                     name
+                    ofType {
+                      kind
+                      name
+                    }
                   }
                 }
               }
             }
           }
         }
-      }
-    }""".trimIndent()
+      }""".trimIndent()
+  }
 }

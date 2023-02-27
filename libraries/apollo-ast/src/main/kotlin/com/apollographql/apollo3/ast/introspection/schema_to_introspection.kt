@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.ast.introspection
 
 import com.apollographql.apollo3.ast.GQLBooleanValue
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveLocation
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValue
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
@@ -46,7 +48,8 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
                 is GQLEnumTypeDefinition -> it.toSchemaType()
                 is GQLUnionTypeDefinition -> it.toSchemaType()
               }
-            }
+            },
+            directives = schema.directiveDefinitions.values.map { it.toSchemaDirective() },
         )
     )
   }
@@ -68,11 +71,11 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         isDeprecated = deprecationReason != null,
         deprecationReason = deprecationReason,
         type = type.toSchemaType(schema),
-        args = arguments.map { it.toSchemaArgument() }
+        args = arguments.map { it.toSchemaFieldArgument() }
     )
   }
 
-  private fun GQLInputValueDefinition.toSchemaArgument(): IntrospectionSchema.Schema.Field.Argument {
+  private fun GQLInputValueDefinition.toSchemaFieldArgument(): IntrospectionSchema.Schema.Field.Argument {
     val deprecationReason = directives.findDeprecationReason()
 
     return IntrospectionSchema.Schema.Field.Argument(
@@ -162,6 +165,49 @@ private class IntrospectionSchemaBuilder(private val schema: Schema) {
         possibleTypes = memberTypes.map { it.toSchemaType(schema) }
     )
   }
+
+  private fun GQLInputValueDefinition.toSchemaDirectiveArgument(): IntrospectionSchema.Schema.Directive.Argument {
+    val deprecationReason = directives.findDeprecationReason()
+
+    return IntrospectionSchema.Schema.Directive.Argument(
+        name = name,
+        description = description,
+        isDeprecated = deprecationReason != null,
+        deprecationReason = deprecationReason,
+        type = type.toSchemaType(schema),
+        defaultValue = defaultValue?.toUtf8(indent = "")
+    )
+  }
+
+  private fun GQLDirectiveDefinition.toSchemaDirective() = IntrospectionSchema.Schema.Directive(
+      name = name,
+      description = description,
+      locations = locations.map { it.toSchemaDirectiveLocation() },
+      args = arguments.map { it.toSchemaDirectiveArgument() },
+      isRepeatable = repeatable,
+  )
+
+  private fun GQLDirectiveLocation.toSchemaDirectiveLocation() = when (this) {
+    GQLDirectiveLocation.QUERY -> IntrospectionSchema.Schema.Directive.DirectiveLocation.QUERY
+    GQLDirectiveLocation.MUTATION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.MUTATION
+    GQLDirectiveLocation.SUBSCRIPTION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.SUBSCRIPTION
+    GQLDirectiveLocation.FIELD -> IntrospectionSchema.Schema.Directive.DirectiveLocation.FIELD
+    GQLDirectiveLocation.FRAGMENT_DEFINITION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.FRAGMENT_DEFINITION
+    GQLDirectiveLocation.FRAGMENT_SPREAD -> IntrospectionSchema.Schema.Directive.DirectiveLocation.FRAGMENT_SPREAD
+    GQLDirectiveLocation.INLINE_FRAGMENT -> IntrospectionSchema.Schema.Directive.DirectiveLocation.INLINE_FRAGMENT
+    GQLDirectiveLocation.VARIABLE_DEFINITION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.VARIABLE_DEFINITION
+    GQLDirectiveLocation.SCHEMA -> IntrospectionSchema.Schema.Directive.DirectiveLocation.SCHEMA
+    GQLDirectiveLocation.SCALAR -> IntrospectionSchema.Schema.Directive.DirectiveLocation.SCALAR
+    GQLDirectiveLocation.OBJECT -> IntrospectionSchema.Schema.Directive.DirectiveLocation.OBJECT
+    GQLDirectiveLocation.FIELD_DEFINITION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.FIELD_DEFINITION
+    GQLDirectiveLocation.ARGUMENT_DEFINITION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.ARGUMENT_DEFINITION
+    GQLDirectiveLocation.INTERFACE -> IntrospectionSchema.Schema.Directive.DirectiveLocation.INTERFACE
+    GQLDirectiveLocation.UNION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.UNION
+    GQLDirectiveLocation.ENUM -> IntrospectionSchema.Schema.Directive.DirectiveLocation.ENUM
+    GQLDirectiveLocation.ENUM_VALUE -> IntrospectionSchema.Schema.Directive.DirectiveLocation.ENUM_VALUE
+    GQLDirectiveLocation.INPUT_OBJECT -> IntrospectionSchema.Schema.Directive.DirectiveLocation.INPUT_OBJECT
+    GQLDirectiveLocation.INPUT_FIELD_DEFINITION -> IntrospectionSchema.Schema.Directive.DirectiveLocation.INPUT_FIELD_DEFINITION
+  }
 }
 
 internal fun GQLType.toSchemaType(schema: Schema): IntrospectionSchema.Schema.TypeRef {
@@ -173,12 +219,14 @@ internal fun GQLType.toSchemaType(schema: Schema): IntrospectionSchema.Schema.Ty
           ofType = type.toSchemaType(schema)
       )
     }
+
     is GQLListType -> {
       IntrospectionSchema.Schema.TypeRef(
           kind = IntrospectionSchema.Schema.Kind.LIST,
           name = "", // why "" and not null ?
           ofType = type.toSchemaType(schema))
     }
+
     is GQLNamedType -> {
       IntrospectionSchema.Schema.TypeRef(
           kind = schema.typeDefinition(name).schemaKind(),

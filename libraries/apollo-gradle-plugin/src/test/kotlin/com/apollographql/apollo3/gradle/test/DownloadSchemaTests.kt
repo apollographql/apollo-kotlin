@@ -9,6 +9,8 @@ import okhttp3.tls.HandshakeCertificates
 import okhttp3.tls.HeldCertificate
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 
@@ -141,6 +143,27 @@ class DownloadSchemaTests {
   }
 
   @Test
+  fun `schema is downloaded correctly when server doesn't support deprecated input fields and arguments`() {
+    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+      mockServer.enqueue(MockResponse().setResponseCode(400))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
+
+      TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
+
+      mockServer.takeRequest().body.readUtf8().let {
+        assertTrue(it.contains("inputFields(includeDeprecated: true)"))
+        assertTrue(it.contains("args(includeDeprecated: true)"))
+      }
+      mockServer.takeRequest().body.readUtf8().let {
+        assertFalse(it.contains("inputFields(includeDeprecated: true)"))
+        assertFalse(it.contains("args(includeDeprecated: true)"))
+      }
+      assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
+    }
+  }
+
+
+  @Test
   fun `download schema is never up-to-date`() {
 
     withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
@@ -231,4 +254,5 @@ class DownloadSchemaTests {
       assertEquals(schemaString1, schema.readText())
     }
   }
+
 }
