@@ -85,7 +85,7 @@ class ConvertSchemaTests {
       // - `__Directive.locations` (introduced in the April2016 spec)
       // - `__Directive.isRepeatable` (introduced in the October2021 spec)
       // - `__InputField.isDeprecated` and `__InputField.deprecatedReason` (introduced after the October2021 spec)
-      val from = File(dir, "schemas/schema-legacy.json")
+      val from = File(dir, "schemas/schema-october-2015-spec.json")
       val to = File(dir, "schema.sdl")
       val result = TestUtils.executeTask("convertApolloSchema",
           dir,
@@ -96,7 +96,7 @@ class ConvertSchemaTests {
       )
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
       assertjThat(to.readText())
-          .isEqualTo(File(dir, "schemas/schema-legacy.sdl").readText())
+          .isEqualTo(File(dir, "schemas/schema-october-2015-spec.sdl").readText())
     }
   }
 
