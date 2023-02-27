@@ -246,6 +246,7 @@ fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSche
           subscriptionType = schema.subscriptionType,
           types = schema.types,
           // Old introspection json (pre `April2016`) may not have the `locations` field, in which case the list will be empty, which is invalid. Exclude those directives.
+          // Validation doesn't validate the unknown directives (yet). A future version may want to fail here and enforce proper validation.
           directives = schema.directives.filter { directive -> directive.locations.isNotEmpty() }
       ))
     }
