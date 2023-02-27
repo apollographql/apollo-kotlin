@@ -2,9 +2,7 @@ package com.apollographql.apollo3.gradle.test
 
 import com.apollographql.apollo3.ast.introspection.normalize
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
-import com.apollographql.apollo3.ast.introspection.toSchema
 import com.apollographql.apollo3.gradle.util.TestUtils
-import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
 import org.junit.Test
@@ -79,4 +77,27 @@ class ConvertSchemaTests {
           .isEqualTo(File(dir, "schemas/schema.sdl").readText())
     }
   }
+
+  @Test
+  fun `convert from legacy Json to SDL works`() {
+    TestUtils.withTestProject("convertSchema") { dir ->
+      // schema-legacy.json doesn't have:
+      // - `__Directive.locations` (introduced in the April2016 spec)
+      // - `__Directive.isRepeatable` (introduced in the October2021 spec)
+      // - `__InputField.isDeprecated` and `__InputField.deprecatedReason` (introduced after the October2021 spec)
+      val from = File(dir, "schemas/schema-legacy.json")
+      val to = File(dir, "schema.sdl")
+      val result = TestUtils.executeTask("convertApolloSchema",
+          dir,
+          "--from",
+          from.absolutePath,
+          "--to",
+          to.absolutePath
+      )
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
+      assertjThat(to.readText())
+          .isEqualTo(File(dir, "schemas/schema-legacy.sdl").readText())
+    }
+  }
+
 }

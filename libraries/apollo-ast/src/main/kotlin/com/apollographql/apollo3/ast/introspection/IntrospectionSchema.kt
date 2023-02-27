@@ -164,9 +164,9 @@ data class IntrospectionSchema(
     data class Directive(
         val name: String,
         val description: String?,
-        val locations: List<DirectiveLocation>,
+        val locations: List<DirectiveLocation> = emptyList(),
         val args: List<Argument>,
-        val isRepeatable: Boolean,
+        val isRepeatable: Boolean = false,
     ) {
       @Serializable
       data class Argument(
@@ -238,7 +238,16 @@ fun BufferedSource.toIntrospectionSchema(origin: String = ""): IntrospectionSche
 
   return try {
     val introspectionSchemaEnvelope = json.decodeFromString(IntrospectionSchemaEnvelope.serializer(), this.readUtf8())
-    introspectionSchemaEnvelope.data ?: introspectionSchemaEnvelope.__schema?.let { IntrospectionSchema(it) }
+    introspectionSchemaEnvelope.data ?: introspectionSchemaEnvelope.__schema?.let { schema ->
+      IntrospectionSchema(IntrospectionSchema.Schema(
+          queryType = schema.queryType,
+          mutationType = schema.mutationType,
+          subscriptionType = schema.subscriptionType,
+          types = schema.types,
+          // Old introspection json (pre `April2016`) may not have the `locations` field, in which case the list will be empty, which is invalid. Exclude those directives.
+          directives = schema.directives.filter { directive -> directive.locations.isNotEmpty() }
+      ))
+    }
     ?: throw IllegalArgumentException("Invalid introspection schema: $origin")
   } catch (e: Exception) {
     throw RuntimeException("Cannot decode introspection $origin", e)
