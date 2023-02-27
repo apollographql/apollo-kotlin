@@ -31,6 +31,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
+import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import com.apollographql.apollo3.network.http.HttpInfo
 import kotlinx.coroutines.flow.Flow
@@ -141,6 +142,9 @@ fun ApolloClient.Builder.logCacheMisses(
 }
 
 fun ApolloClient.Builder.store(store: ApolloStore, writeToCacheAsynchronously: Boolean = false): ApolloClient.Builder {
+  check(interceptors.none { it is AutoPersistedQueryInterceptor }) {
+    "Apollo: the normalized cache must be configured before the auto persisted queries"
+  }
   return addInterceptor(WatcherInterceptor(store))
       .addInterceptor(FetchPolicyRouterInterceptor)
       .addInterceptor(ApolloCacheInterceptor(store))
