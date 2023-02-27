@@ -205,6 +205,7 @@ data class IntrospectionSchema(
       ENUM, INTERFACE, OBJECT, INPUT_OBJECT, SCALAR, NON_NULL, LIST, UNION
     }
 
+    @Deprecated("For binary compatibility only.", level = DeprecationLevel.HIDDEN)
     fun copy(
         queryType: QueryType = this.queryType,
         mutationType: MutationType? = this.mutationType,
