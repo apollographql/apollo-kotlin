@@ -6,6 +6,8 @@ import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLBooleanValue
 import com.apollographql.apollo3.ast.GQLDirective
+import com.apollographql.apollo3.ast.GQLDirectiveDefinition
+import com.apollographql.apollo3.ast.GQLDirectiveLocation
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLEnumTypeDefinition
 import com.apollographql.apollo3.ast.GQLEnumValueDefinition
@@ -34,7 +36,6 @@ import com.apollographql.apollo3.ast.SourceLocation
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLValue
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.ast.withoutBuiltinDefinitions
 import okio.Buffer
 import okio.buffer
 import okio.source
@@ -59,7 +60,9 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
               is IntrospectionSchema.Schema.Type.InputObject -> it.toGQLInputObjectTypeDefinition()
               is IntrospectionSchema.Schema.Type.Scalar -> it.toGQLScalarTypeDefinition()
             }
-          } + schemaDefinition(),
+          }
+              + directives.map { it.toGQLDirectiveDefinition() }
+              + schemaDefinition(),
           filePath = sourceLocation.filePath
       )
     }
@@ -162,6 +165,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
       this is Map<*, *> -> GQLObjectValue(fields = this.map {
         GQLObjectField(name = it.key as String, value = it.value.toGQLValue()!!)
       })
+
       this is List<*> -> GQLListValue(values = map { it.toGQLValue()!! })
       else -> throw ConversionException("cannot convert $this to a GQLValue")
     }
@@ -200,9 +204,11 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
       IntrospectionSchema.Schema.Kind.NON_NULL -> GQLNonNullType(
           type = ofType?.toGQLType() ?: throw ConversionException("ofType must not be null for non null types")
       )
+
       IntrospectionSchema.Schema.Kind.LIST -> GQLListType(
           type = ofType?.toGQLType() ?: throw ConversionException("ofType must not be null for list types")
       )
+
       else -> GQLNamedType(
           name = name!!
       )
@@ -274,6 +280,50 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
         directives = emptyList()
     )
   }
+
+  private fun IntrospectionSchema.Schema.Directive.toGQLDirectiveDefinition(): GQLDirectiveDefinition {
+    return GQLDirectiveDefinition(
+        sourceLocation = sourceLocation,
+        description = description,
+        name = name,
+        arguments = args.map { it.toGQLInputValueDefinition() },
+        locations = locations.map { it.toGQLDirectiveLocations() },
+        repeatable = isRepeatable,
+    )
+  }
+
+  private fun IntrospectionSchema.Schema.Directive.Argument.toGQLInputValueDefinition(): GQLInputValueDefinition {
+    return GQLInputValueDefinition(
+        sourceLocation = sourceLocation,
+        name = name,
+        description = description,
+        directives = makeDirectives(deprecationReason),
+        defaultValue = defaultValue.toGQLValue(),
+        type = type.toGQLType(),
+    )
+  }
+
+  private fun IntrospectionSchema.Schema.Directive.DirectiveLocation.toGQLDirectiveLocations() = when (this) {
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.QUERY -> GQLDirectiveLocation.QUERY
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.MUTATION -> GQLDirectiveLocation.MUTATION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.SUBSCRIPTION -> GQLDirectiveLocation.SUBSCRIPTION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.FIELD -> GQLDirectiveLocation.FIELD
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.FRAGMENT_DEFINITION -> GQLDirectiveLocation.FRAGMENT_DEFINITION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.FRAGMENT_SPREAD -> GQLDirectiveLocation.FRAGMENT_SPREAD
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.INLINE_FRAGMENT -> GQLDirectiveLocation.INLINE_FRAGMENT
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.VARIABLE_DEFINITION -> GQLDirectiveLocation.VARIABLE_DEFINITION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.SCHEMA -> GQLDirectiveLocation.SCHEMA
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.SCALAR -> GQLDirectiveLocation.SCALAR
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.OBJECT -> GQLDirectiveLocation.OBJECT
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.FIELD_DEFINITION -> GQLDirectiveLocation.FIELD_DEFINITION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.ARGUMENT_DEFINITION -> GQLDirectiveLocation.ARGUMENT_DEFINITION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.INTERFACE -> GQLDirectiveLocation.INTERFACE
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.UNION -> GQLDirectiveLocation.UNION
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.ENUM -> GQLDirectiveLocation.ENUM
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.ENUM_VALUE -> GQLDirectiveLocation.ENUM_VALUE
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.INPUT_OBJECT -> GQLDirectiveLocation.INPUT_OBJECT
+    IntrospectionSchema.Schema.Directive.DirectiveLocation.INPUT_FIELD_DEFINITION -> GQLDirectiveLocation.INPUT_FIELD_DEFINITION
+  }
 }
 
 /**
@@ -286,10 +336,6 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
 @ApolloExperimental
 fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = GQLDocumentBuilder(this, filePath)
     .toGQLDocument()
-    /**
-     * Introspection already contains builtin types like Int, Boolean, __Schema, etc...
-     */
-    .withoutBuiltinDefinitions()
 
 /**
  * Transforms the [IntrospectionSchema] into a [Schema] that contains builtin definitions

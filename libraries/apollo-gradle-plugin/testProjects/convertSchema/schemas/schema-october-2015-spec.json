@@ -52,8 +52,6 @@
             "args": [
               {
                 "name": "z",
-                "isDeprecated": true,
-                "deprecationReason": "This argument is deprecated",
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int"
@@ -92,8 +90,6 @@
           },
           {
             "name": "b",
-            "isDeprecated": true,
-            "deprecationReason": "This input field is deprecated",
             "type": {
               "kind": "SCALAR",
               "name": "String"
@@ -679,10 +675,6 @@
     "directives": [
       {
         "name": "MyDirective1",
-        "locations": [
-          "FIELD_DEFINITION",
-          "SCALAR"
-        ],
         "args": [
           {
             "name": "a",
@@ -693,23 +685,15 @@
           },
           {
             "name": "b",
-            "isDeprecated": true,
-            "deprecationReason": "This argument is deprecated",
             "type": {
               "kind": "SCALAR",
               "name": "String"
             }
           }
-        ],
-        "isRepeatable": false
+        ]
       },
       {
         "name": "skip",
-        "locations": [
-          "FIELD",
-          "FRAGMENT_SPREAD",
-          "INLINE_FRAGMENT"
-        ],
         "args": [
           {
             "name": "if",
@@ -721,16 +705,10 @@
               }
             }
           }
-        ],
-        "isRepeatable": false
+        ]
       },
       {
         "name": "include",
-        "locations": [
-          "FIELD",
-          "FRAGMENT_SPREAD",
-          "INLINE_FRAGMENT"
-        ],
         "args": [
           {
             "name": "if",
@@ -742,17 +720,10 @@
               }
             }
           }
-        ],
-        "isRepeatable": false
+        ]
       },
       {
         "name": "deprecated",
-        "locations": [
-          "FIELD_DEFINITION",
-          "ARGUMENT_DEFINITION",
-          "INPUT_FIELD_DEFINITION",
-          "ENUM_VALUE"
-        ],
         "args": [
           {
             "name": "reason",
@@ -762,15 +733,10 @@
             },
             "defaultValue": "\"No longer supported\""
           }
-        ],
-        "isRepeatable": false
+        ]
       },
       {
         "name": "defer",
-        "locations": [
-          "FRAGMENT_SPREAD",
-          "INLINE_FRAGMENT"
-        ],
         "args": [
           {
             "name": "label",
@@ -790,14 +756,10 @@
             },
             "defaultValue": "true"
           }
-        ],
-        "isRepeatable": false
+        ]
       },
       {
         "name": "specifiedBy",
-        "locations": [
-          "SCALAR"
-        ],
         "args": [
           {
             "name": "url",
@@ -809,8 +771,7 @@
               }
             }
           }
-        ],
-        "isRepeatable": false
+        ]
       }
     ]
   }
