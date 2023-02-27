@@ -16,10 +16,10 @@ import com.apollographql.apollo3.api.buildFragmentData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.fragment.selections.HeroDetailsSelections
+import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.type.Character
 import com.example.simple_fragment.type.CharacterMap
 import com.example.simple_fragment.type.__CustomScalarAdapters
-import com.example.simple_fragment.type.__Schema
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
