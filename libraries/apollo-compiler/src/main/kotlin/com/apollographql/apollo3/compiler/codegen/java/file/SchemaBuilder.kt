@@ -35,7 +35,7 @@ internal class SchemaBuilder(
     private val enums: List<IrEnum>
 ) : JavaClassBuilder {
   private val layout = context.layout
-  private val packageName = layout.typePackageName()
+  private val packageName = layout.schemaPackageName()
 
   override fun prepare() {
     context.resolver.registerSchema(ClassName.get(packageName, generatedSchemaName))
