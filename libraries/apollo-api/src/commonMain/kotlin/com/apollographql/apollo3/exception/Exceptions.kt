@@ -126,38 +126,8 @@ class CacheMissException @ApolloInternal constructor(
  */
 class HttpCacheMissException(message: String, cause: Exception? = null) : ApolloException(message = message, cause = cause)
 
-/**
- * Multiple exceptions happened. This happens typically when a [CacheFirst] request fails to fetch
- * both the cache and the network. In that case, [ApolloCompositeException] is thrown, and you
- * can access the underlying cache and network exceptions in [suppressedExceptions].
- *
- * [suppressedExceptions] uses [Throwable.suppressedExceptions] for convenience, but you can
- * safely cast any [suppressedExceptions] to an [ApolloException].
- *
- * ```
- * try {
- *     val response = apolloClient.query(sampleQuery).fetchPolicy(CacheFirst).execute()
- * } catch (e: ApolloException) {
- *   when (e) {
- *     is ApolloCompositeException -> {
- *       e.suppressedExceptions.forEach { suppressed ->
- *         handleException(suppressed as ApolloException)
- *       }
- *     }
- *     else -> handleException(e)
- *   }
- * }
- *
- * // A function that handles all non-composite exceptions
- * fun handleException(e: ApolloException) {
- *   when (e) {
- *     is CacheMissException -> // There was a cache miss
- *     is ApolloHttpException -> // The response was received with an HTTP error
- *     is ApolloNetworkException -> // The response was not received due to a network exception
- *     else -> // Something else happened (parsing error, ...)
- *   }
- * ```
- */
+// See https://github.com/apollographql/apollo-kotlin/issues/4062
+@Deprecated("ApolloCompositeException is not used anymore, check for suppressed exceptions instead", level = DeprecationLevel.ERROR)
 class ApolloCompositeException : ApolloException {
   constructor(first: Throwable?, second: Throwable?) : super(message = "Multiple exceptions happened", second) {
     if (first != null) addSuppressed(first)

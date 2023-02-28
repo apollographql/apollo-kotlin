@@ -19,10 +19,10 @@ import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.adapter.TestQuery_ResponseAdapter
 import com.example.simple_fragment.fragment.HeroDetails
 import com.example.simple_fragment.fragment.HumanDetails
+import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.selections.TestQuerySelections
 import com.example.simple_fragment.type.QueryBuilder
 import com.example.simple_fragment.type.__CustomScalarAdapters
-import com.example.simple_fragment.type.__Schema
 import com.example.simple_fragment.type.buildQuery
 import kotlin.Any
 import kotlin.Boolean

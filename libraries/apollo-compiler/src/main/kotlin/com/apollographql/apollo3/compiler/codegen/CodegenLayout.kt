@@ -77,6 +77,8 @@ internal abstract class CodegenLayout(
 
   fun paginationPackageName() = "$schemaPackageName.pagination"
 
+  fun schemaPackageName() = "$schemaPackageName.schema"
+
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 
   // ------------------------ Names ---------------------------------

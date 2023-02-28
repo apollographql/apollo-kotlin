@@ -7,11 +7,14 @@ description: From 3.x
 
 * Requires Kotlin Gradle Plugin 1.6 (from 1.5)
 * Dropped `enableCompatibilityMetadataVariant`
-* Configuring your cache after enabling APQs will now fail (see https://github.com/apollographql/apollo-kotlin/pull/4709)
+* Configuring your cache after enabling APQs will now fail (
+  see https://github.com/apollographql/apollo-kotlin/pull/4709)
 * The AST classes (GQLNode and subclasses) as well as Introspection classes are not data classes anymore (see https://github.com/apollographql/apollo-kotlin/pull/4704/)
 * Enums are now capitalized
 * Using the `apolloMetadata` configuration is now an error
 * Publishing is not configured automatically any more
+* To avoid a name clash with the introspection type of the same name, the `__Schema` type is now generated in a `schema`
+  subpackage (instead of `type`) when using the `generateSchema` option.
 
 ## Error handling
 

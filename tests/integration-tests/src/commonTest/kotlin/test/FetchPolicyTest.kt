@@ -18,10 +18,11 @@ import com.apollographql.apollo3.cache.normalized.isFromCache
 import com.apollographql.apollo3.cache.normalized.refetchPolicyInterceptor
 import com.apollographql.apollo3.cache.normalized.store
 import com.apollographql.apollo3.cache.normalized.watch
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -88,9 +89,10 @@ class FetchPolicyTest {
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
     mockServer.enqueue("malformed")
-    assertIs<ApolloCompositeException>(
-        apolloClient.query(query).execute().exception
-    )
+    apolloClient.query(query).execute().exception.let {
+      assertIs<CacheMissException>(it)
+      assertIs<JsonEncodingException>(it.suppressedExceptions.first())
+    }
   }
 
   @Test
@@ -122,7 +124,7 @@ class FetchPolicyTest {
       apolloClient.query(query).execute()
       fail("we expected the query to fail")
     } catch (e: Exception) {
-      assertTrue(e is ApolloCompositeException)
+      assertIs<CacheMissException>(e)
     }
   }
 
@@ -166,7 +168,7 @@ class FetchPolicyTest {
         .fetchPolicy(FetchPolicy.CacheFirst)
         .toFlow()
     responses.test {
-      assertTrue(awaitError() is ApolloCompositeException)
+      assertIs<CacheMissException>(awaitError())
     }
   }
 
@@ -201,9 +203,11 @@ class FetchPolicyTest {
     // Network error and no cache -> we should get an error
     mockServer.enqueue("malformed")
     store.clearAll()
-    assertIs<ApolloCompositeException>(
-        call.execute().exception
-    )
+
+    call.execute().exception.let {
+      assertIs<JsonEncodingException>(it)
+      assertIs<CacheMissException>(it.suppressedExceptions.first())
+    }
   }
 
   @Test
@@ -292,7 +296,7 @@ class FetchPolicyTest {
     store.clearAll()
     responses = call.toFlow()
     responses.test {
-      assertTrue(awaitError() is ApolloCompositeException)
+      assertIs<JsonEncodingException>(awaitError())
     }
   }
 
@@ -370,9 +374,10 @@ class FetchPolicyTest {
     // Initial state: everything fails
     // Cache Error + Network Error => Error
     mockServer.enqueue(statusCode = 500)
-    assertIs<ApolloCompositeException>(
-        apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception
-    )
+    apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception.let {
+      assertIs<CacheMissException>(it)
+      assertIs<ApolloHttpException>(it.suppressedExceptions.first())
+    }
 
     // Make the network return something
     // Cache Error + Network Success => 2 responses
@@ -441,7 +446,7 @@ class FetchPolicyTest {
     // Initial state: everything fails
     // Cache Error + Network Error => Error
     mockServer.enqueue(statusCode = 500)
-    assertFailsWith(ApolloCompositeException::class) {
+    assertFailsWith<CacheMissException> {
       apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).toFlow().toList()
     }
 
