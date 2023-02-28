@@ -9,6 +9,7 @@ import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.File
 
@@ -301,7 +302,6 @@ class JavaCodegenOptions(
 /**
  * Controls how scalar adapters are used in the generated code.
  */
-@JsonClass(generateAdapter = true, generator = "sealed:type")
 @Serializable
 sealed interface AdapterInitializer
 
@@ -310,19 +310,17 @@ sealed interface AdapterInitializer
  *
  * e.g. `"com.example.MyAdapter"` or `"com.example.MyAdapter()"`.
  */
-@TypeLabel("Expression")
-@JsonClass(generateAdapter = true)
 @Serializable
+@SerialName("expression")
 class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 
 /**
  * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
  */
-@TypeLabel("Runtime")
 @Serializable
+@SerialName("runtime")
 object RuntimeAdapterInitializer : AdapterInitializer
 
-@JsonClass(generateAdapter = true)
 @Serializable
 data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)
 
