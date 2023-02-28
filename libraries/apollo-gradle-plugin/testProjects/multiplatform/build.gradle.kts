@@ -5,13 +5,6 @@ plugins {
     alias(libs.plugins.apollo)
 }
 
-repositories {
-    maven {
-        url = uri("../../../../build/localMaven")
-    }
-    mavenCentral()
-}
-
 configure<KotlinMultiplatformExtension> {
     iosArm64 {
         binaries {

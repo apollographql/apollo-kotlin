@@ -71,8 +71,8 @@ public class HeroDetails implements Query<HeroDetails.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -164,10 +164,10 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (hero == null) ? 0 : hero.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (hero == null) ? 0 : hero.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -229,14 +229,14 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (type == null) ? 0 : type.hashCode();
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (type == null) ? 0 : type.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -293,12 +293,12 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        __h *= 1000003;
+        __h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -347,10 +347,10 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -398,10 +398,10 @@ public class HeroDetails implements Query<HeroDetails.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

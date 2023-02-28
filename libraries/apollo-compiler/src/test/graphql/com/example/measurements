@@ -200,7 +200,6 @@ java-operationBased-merged_include                                              
 java-operationBased-operation_id_generator                                                        461
 kotlin-operationBased-interface_always_nested                                                     458
 kotlin-operationBased-monomorphic                                                                 454
-kotlin-responseBased-introspection_query                                                          453
 java-operationBased-enums_as_sealed                                                               452
 kotlin-responseBased-monomorphic                                                                  450
 java-operationBased-case_sensitive_enum                                                           449

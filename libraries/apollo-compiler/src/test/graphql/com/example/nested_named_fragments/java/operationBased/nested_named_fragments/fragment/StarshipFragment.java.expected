@@ -53,14 +53,14 @@ public class StarshipFragment implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (id == null) ? 0 : id.hashCode();
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (pilotConnection == null) ? 0 : pilotConnection.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (id == null) ? 0 : id.hashCode();
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (pilotConnection == null) ? 0 : pilotConnection.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -109,10 +109,10 @@ public class StarshipFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -160,10 +160,10 @@ public class StarshipFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -215,12 +215,12 @@ public class StarshipFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (pilotFragment == null) ? 0 : pilotFragment.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (pilotFragment == null) ? 0 : pilotFragment.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

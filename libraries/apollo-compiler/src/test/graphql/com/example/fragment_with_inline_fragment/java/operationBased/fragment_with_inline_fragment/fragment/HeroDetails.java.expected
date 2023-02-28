@@ -69,18 +69,18 @@ public class HeroDetails implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
-      h *= 1000003;
-      h ^= (onDroid == null) ? 0 : onDroid.hashCode();
-      h *= 1000003;
-      h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (__typename == null) ? 0 : __typename.hashCode();
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (friendsConnection == null) ? 0 : friendsConnection.hashCode();
+      __h *= 1000003;
+      __h ^= (onDroid == null) ? 0 : onDroid.hashCode();
+      __h *= 1000003;
+      __h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -152,12 +152,12 @@ public class HeroDetails implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (totalCount == null) ? 0 : totalCount.hashCode();
-        h *= 1000003;
-        h ^= (edges == null) ? 0 : edges.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (totalCount == null) ? 0 : totalCount.hashCode();
+        __h *= 1000003;
+        __h ^= (edges == null) ? 0 : edges.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -250,12 +250,12 @@ public class HeroDetails implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -341,10 +341,10 @@ public class HeroDetails implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (node == null) ? 0 : node.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (node == null) ? 0 : node.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -421,10 +421,10 @@ public class HeroDetails implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

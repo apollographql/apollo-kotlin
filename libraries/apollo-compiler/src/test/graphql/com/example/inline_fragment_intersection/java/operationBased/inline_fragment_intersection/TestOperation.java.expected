@@ -98,8 +98,8 @@ public class TestOperation implements Query<TestOperation.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -191,10 +191,10 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (random == null) ? 0 : random.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (random == null) ? 0 : random.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -253,14 +253,14 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (onBeing == null) ? 0 : onBeing.hashCode();
-        h *= 1000003;
-        h ^= (onWookie == null) ? 0 : onWookie.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onBeing == null) ? 0 : onBeing.hashCode();
+        __h *= 1000003;
+        __h ^= (onWookie == null) ? 0 : onWookie.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -322,16 +322,16 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
-        h *= 1000003;
-        h ^= (onHuman == null) ? 0 : onHuman.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (friends == null) ? 0 : friends.hashCode();
+        __h *= 1000003;
+        __h ^= (onHuman == null) ? 0 : onHuman.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -390,14 +390,14 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        h *= 1000003;
-        h ^= (onWookie == null) ? 0 : onWookie.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (onWookie == null) ? 0 : onWookie.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -444,10 +444,10 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (lifeExpectancy == null) ? 0 : lifeExpectancy.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (lifeExpectancy == null) ? 0 : lifeExpectancy.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -496,12 +496,12 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (profilePictureUrl == null) ? 0 : profilePictureUrl.hashCode();
-        h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (profilePictureUrl == null) ? 0 : profilePictureUrl.hashCode();
+        __h *= 1000003;
+        __h ^= (friends == null) ? 0 : friends.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -558,14 +558,14 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (isFamous == null) ? 0 : isFamous.hashCode();
-        h *= 1000003;
-        h ^= (onWookie == null) ? 0 : onWookie.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (isFamous == null) ? 0 : isFamous.hashCode();
+        __h *= 1000003;
+        __h ^= (onWookie == null) ? 0 : onWookie.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -612,10 +612,10 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (race == null) ? 0 : race.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (race == null) ? 0 : race.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -664,12 +664,12 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (race == null) ? 0 : race.hashCode();
-        h *= 1000003;
-        h ^= (friends == null) ? 0 : friends.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (race == null) ? 0 : race.hashCode();
+        __h *= 1000003;
+        __h ^= (friends == null) ? 0 : friends.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -715,10 +715,10 @@ public class TestOperation implements Query<TestOperation.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (lifeExpectancy == null) ? 0 : lifeExpectancy.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (lifeExpectancy == null) ? 0 : lifeExpectancy.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

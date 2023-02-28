@@ -63,8 +63,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -160,12 +160,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (reviews == null) ? 0 : reviews.hashCode();
-        h *= 1000003;
-        h ^= (testNullableArguments == null) ? 0 : testNullableArguments.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (reviews == null) ? 0 : reviews.hashCode();
+        __h *= 1000003;
+        __h ^= (testNullableArguments == null) ? 0 : testNullableArguments.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -221,12 +221,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (stars == null) ? 0 : stars.hashCode();
-        h *= 1000003;
-        h ^= (commentary == null) ? 0 : commentary.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (stars == null) ? 0 : stars.hashCode();
+        __h *= 1000003;
+        __h ^= (commentary == null) ? 0 : commentary.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

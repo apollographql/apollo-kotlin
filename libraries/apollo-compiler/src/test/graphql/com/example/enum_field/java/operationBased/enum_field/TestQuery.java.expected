@@ -60,8 +60,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -157,12 +157,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (gravity == null) ? 0 : gravity.hashCode();
-        h *= 1000003;
-        h ^= (gravityAsEnum == null) ? 0 : gravityAsEnum.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (gravity == null) ? 0 : gravity.hashCode();
+        __h *= 1000003;
+        __h ^= (gravityAsEnum == null) ? 0 : gravityAsEnum.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

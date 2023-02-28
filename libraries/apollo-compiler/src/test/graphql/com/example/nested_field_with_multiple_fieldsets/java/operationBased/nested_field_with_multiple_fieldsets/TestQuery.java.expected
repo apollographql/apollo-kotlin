@@ -81,8 +81,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -174,10 +174,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (iface1 == null) ? 0 : iface1.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (iface1 == null) ? 0 : iface1.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -236,14 +236,14 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (onIface1 == null) ? 0 : onIface1.hashCode();
-        h *= 1000003;
-        h ^= (onImpl1 == null) ? 0 : onImpl1.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onIface1 == null) ? 0 : onIface1.hashCode();
+        __h *= 1000003;
+        __h ^= (onImpl1 == null) ? 0 : onImpl1.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -290,10 +290,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (iface2 == null) ? 0 : iface2.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (iface2 == null) ? 0 : iface2.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -352,14 +352,14 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (onIface2 == null) ? 0 : onIface2.hashCode();
-        h *= 1000003;
-        h ^= (onImpl2 == null) ? 0 : onImpl2.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onIface2 == null) ? 0 : onIface2.hashCode();
+        __h *= 1000003;
+        __h ^= (onImpl2 == null) ? 0 : onImpl2.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -406,10 +406,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (scalar1 == null) ? 0 : scalar1.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (scalar1 == null) ? 0 : scalar1.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -454,10 +454,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (scalar2 == null) ? 0 : scalar2.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (scalar2 == null) ? 0 : scalar2.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -502,10 +502,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (iface2 == null) ? 0 : iface2.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (iface2 == null) ? 0 : iface2.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -564,14 +564,14 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (onIface2 == null) ? 0 : onIface2.hashCode();
-        h *= 1000003;
-        h ^= (onImpl2 == null) ? 0 : onImpl2.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (onIface2 == null) ? 0 : onIface2.hashCode();
+        __h *= 1000003;
+        __h ^= (onImpl2 == null) ? 0 : onImpl2.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -618,10 +618,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (scalar3 == null) ? 0 : scalar3.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (scalar3 == null) ? 0 : scalar3.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -666,10 +666,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (scalar4 == null) ? 0 : scalar4.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (scalar4 == null) ? 0 : scalar4.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

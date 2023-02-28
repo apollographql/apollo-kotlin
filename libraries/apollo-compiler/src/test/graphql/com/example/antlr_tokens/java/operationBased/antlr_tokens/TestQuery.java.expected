@@ -66,10 +66,10 @@ public class TestQuery implements Query<TestQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (operation == null) ? 0 : operation.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (operation == null) ? 0 : operation.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -169,10 +169,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (typeWithGraphQLKeywords == null) ? 0 : typeWithGraphQLKeywords.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (typeWithGraphQLKeywords == null) ? 0 : typeWithGraphQLKeywords.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -225,14 +225,14 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (on == null) ? 0 : on.hashCode();
-        h *= 1000003;
-        h ^= (null_ == null) ? 0 : null_.hashCode();
-        h *= 1000003;
-        h ^= (alias == null) ? 0 : alias.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (on == null) ? 0 : on.hashCode();
+        __h *= 1000003;
+        __h ^= (null_ == null) ? 0 : null_.hashCode();
+        __h *= 1000003;
+        __h ^= (alias == null) ? 0 : alias.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
