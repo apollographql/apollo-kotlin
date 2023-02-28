@@ -18,7 +18,7 @@ import com.apollographql.apollo3.compiler.singularize
  * Inputs should always be GraphQL identifiers and outputs are valid Kotlin/Java identifiers.
  */
 internal abstract class CodegenLayout(
-    allTypes: List<CodegenType>, // XXX: this should also take incoming types into account
+    allTypes: List<CodegenType>,
     private val packageNameGenerator: PackageNameGenerator,
     private val schemaPackageName: String,
     private val useSemanticNaming: Boolean,
@@ -33,6 +33,8 @@ internal abstract class CodegenLayout(
      * type URL @targetName(newName: "Url1")
      * type Url
      * type url
+     *
+     * Because we capitalize the first letter, we need to escape the name because else `Url` and `url` clash
      */
     // 1. Compute a unique name for types without a targetName
     for (type in allTypes.filter { it.targetName == null }) {

@@ -148,6 +148,8 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Service {
 	public abstract fun registerOperations (Lorg/gradle/api/Action;)V
 	public abstract fun registry (Lorg/gradle/api/Action;)V
 	public abstract fun srcDir (Ljava/lang/Object;)V
+	public abstract fun usedCoordinates (Ljava/io/File;)V
+	public abstract fun usedCoordinates (Ljava/lang/String;)V
 }
 
 public final class com/apollographql/apollo3/gradle/api/Service$DefaultImpls {

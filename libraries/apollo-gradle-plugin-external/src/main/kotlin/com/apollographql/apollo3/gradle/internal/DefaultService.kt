@@ -16,6 +16,7 @@ import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.util.GradleVersion
+import java.io.File
 import javax.inject.Inject
 
 abstract class DefaultService @Inject constructor(val project: Project, override val name: String)
@@ -51,6 +52,11 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   override fun srcDir(directory: Any) {
     graphqlSourceDirectorySet.srcDir(directory)
   }
+
+  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  override fun usedCoordinates(file: File) = TODO()
+  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  override fun usedCoordinates(file: String) = TODO()
 
   var introspection: DefaultIntrospection? = null
 

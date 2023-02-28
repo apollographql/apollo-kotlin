@@ -18,6 +18,8 @@ In your schema module, opt-in multi-module by generating metadata for use by dow
 apollo {
   service("service") {
     packageName.set("schema")
+    
+    // enable generation of metadata for use by downstream modules 
     generateApolloMetadata.set(true)
     
     // If you need to specify the location of your schema
@@ -26,7 +28,7 @@ apollo {
     // define options that must be shared between all modules using this schema
     mapScalar(/*...*/)
     generateDataBuilders.set(true)
-    // ...
+    // more options...
   }
 }
 ```
@@ -39,16 +41,18 @@ apollo {
   // service names must match
   service("service") {
     packageName.set("feature")
-    dependsOn(project(":schema"))
+    
+    // The 'feature' depends on the 'schema' module
+    dependsOn(project(":schema")) // highlight-line
   }
 }
 ```
 
 ## Auto-detection of used types
 
-By default, Apollo Kotlin will generate all the types in your schema module. This is because by default, there is no way to know in advance what types are going to be used by feature modules. 
+By default, Apollo Kotlin generates all the types in your schema module. This is because there is no way to know in advance what types are going to be used by feature modules. 
 
-For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt-in auto-detection of used types. This works by splitting the codegen task in different steps so that feature modules can let the schema know what types are used before actually generating the models. To opt-in, doubly link your projects using `isADependencyOf()`:
+For large schemas, this can generate a lot of code and increase your build time significantly. In this case, you can opt in auto-detection of used types. This works by splitting the codegen task in different steps so that feature modules can let the schema module know what types are used before actually generating the models. To opt in, you need to add the "opposite" link by using `isADependencyOf()`:
 
 ```kotlin
 // schema/build.gradle.kts
@@ -57,7 +61,9 @@ apollo {
     packageName.set("schema")
     generateApolloMetadata.set(true)
     
+    // Get the used types from the downstream module
     isADependencyOf(project(":feature1")) // highlight-line
+    
     // you can have several feature modules
     isADependencyOf(project(":feature2"))
     // ...
@@ -70,9 +76,11 @@ apollo {
 apollo {
   service("service") {
     packageName.set("feature")
+    
+    // Get the generated schema types (and fragments) from the upstream schema module 
     dependsOn(project(":schema")) // highlight-line
   }
 }
 ```
 
-Once you opt-in auto-detection of used types, it's important that **all** modules are doubly linked. If not the feature modules will fail to compile due to some missing schema classes.
+Once you opt in auto-detection of used types, it's important that **all** modules are doubly linked like above. If not the feature modules will fail to compile due to some missing schema classes.

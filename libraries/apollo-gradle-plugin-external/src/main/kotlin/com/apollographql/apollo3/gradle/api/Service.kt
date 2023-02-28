@@ -633,6 +633,11 @@ interface Service {
   @ApolloExperimental
   val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
+  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  fun usedCoordinates(file: File)
+  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
+  fun usedCoordinates(file: String)
+
   /**
    * Configures [Introspection] to download an introspection Json schema
    */
