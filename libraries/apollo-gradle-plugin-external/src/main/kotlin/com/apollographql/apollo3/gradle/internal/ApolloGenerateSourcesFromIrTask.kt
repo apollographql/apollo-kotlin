@@ -57,10 +57,7 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBase() {
         upstreamMetadata = upstreamMetadata.files.map { it.toCodegenMetadata() }
     )
 
-    metadataOutputFile.get().asFile.let {
-      it.parentFile.mkdirs()
-      codegenMetadata.writeTo(it)
-    }
+    codegenMetadata.writeTo(metadataOutputFile.get().asFile)
   }
 
   companion object {

@@ -267,7 +267,7 @@ abstract class DefaultApolloExtension(
           }
 
           val version = allVersions.firstOrNull()
-          outputFile.get().asFile.parentFile.mkdirs()
+
           outputFile.get().asFile.writeText("All versions are consistent: $version")
         }
       })

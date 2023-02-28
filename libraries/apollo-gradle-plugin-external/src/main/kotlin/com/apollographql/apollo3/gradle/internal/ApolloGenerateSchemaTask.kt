@@ -88,7 +88,6 @@ abstract class ApolloGenerateSchemaTask : DefaultTask() {
       }
 
       outputFile.get().asFile.let {
-        it.parentFile.mkdirs()
         it.delete()
         it.createNewFile()
       }
@@ -105,9 +104,6 @@ abstract class ApolloGenerateSchemaTask : DefaultTask() {
         generateDataBuilders = generateDataBuilders.getOrElse(defaultGenerateDataBuilders)
     )
 
-    outputFile.get().asFile.let {
-      it.parentFile.mkdirs()
-      codegenSchema.writeTo(it)
-    }
+    codegenSchema.writeTo(outputFile.get().asFile)
   }
 }

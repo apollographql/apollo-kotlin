@@ -43,9 +43,6 @@ abstract class ApolloGenerateUsedCoordinatesAndCheckFragmentsTask : DefaultTask(
   fun taskAction() {
     val usedCoordinates = ApolloCompiler.buildUsedCoordinates((downStreamIrOperations.files + irOperations.get().asFile).toList())
 
-    outputFile.get().asFile.let {
-      it.parentFile.mkdirs()
-      usedCoordinates.writeTo(it)
-    }
+    usedCoordinates.writeTo(outputFile.get().asFile)
   }
 }
