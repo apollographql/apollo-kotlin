@@ -29,6 +29,8 @@ object ModelNames {
   fun checkApolloVersions() = "checkApolloVersions"
   fun convertApolloSchema() = "convertApolloSchema"
 
+  // Configuration names
+  fun metadataConfiguration() = "apolloMetadata"
   fun metadataProducerConfiguration(service: Service) = camelCase("apollo", service.name, "Producer")
   fun metadataConsumerConfiguration(service: Service) = camelCase("apollo", service.name, "Consumer")
   fun upstreamIrProducerConfiguration(service: Service) = camelCase("apollo", service.name, "UpstreamIrProducer")

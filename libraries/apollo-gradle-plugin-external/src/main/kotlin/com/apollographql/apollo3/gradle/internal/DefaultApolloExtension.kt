@@ -26,6 +26,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.attributes.Usage
 import org.gradle.api.component.AdhocComponentWithVariants
@@ -37,6 +38,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinJsTarget
+import org.jetbrains.kotlin.gradle.utils.`is`
 import java.io.File
 import java.util.concurrent.Callable
 import javax.inject.Inject
@@ -71,6 +73,7 @@ abstract class DefaultApolloExtension(
   private val generateApolloSources: TaskProvider<Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants
+  private val apolloMetadataConfiguration: Configuration
 
   internal fun getServiceInfos(project: Project): List<ApolloGradleToolingModel.ServiceInfo> = services.map { service ->
     DefaultServiceInfo(
@@ -127,6 +130,11 @@ abstract class DefaultApolloExtension(
       task.projectRootDir = project.rootDir.absolutePath
     }
 
+    apolloMetadataConfiguration = project.configurations.create(ModelNames.metadataConfiguration()) {
+      it.isCanBeConsumed = false
+      it.isCanBeResolved = false
+    }
+
     project.afterEvaluate {
       val hasApolloBlock = !defaultService.graphqlSourceDirectorySet.isEmpty
           || defaultService.schemaFile.isPresent
@@ -153,7 +161,7 @@ abstract class DefaultApolloExtension(
           "packageNamesFromFilePaths()"
         }
         error("""
-            Apollo: using the default service is deprecated. Please define your service explicitly:
+            Apollo: using the default service is not supported anymore. Please define your service explicitly:
             
             apollo {
               service("service") {
@@ -164,8 +172,31 @@ abstract class DefaultApolloExtension(
       }
 
       maybeLinkSqlite()
-
       checkForLegacyJsTarget()
+      checkApolloMetadataIsEmpty()
+    }
+  }
+
+  private fun checkApolloMetadataIsEmpty() {
+    check(apolloMetadataConfiguration.dependencies.isEmpty()) {
+      val projectLines = apolloMetadataConfiguration.dependencies.map {
+        if (it is ProjectDependency) {
+          "project(\"${it.dependencyProject.path}\")"
+        } else if (it is ExternalModuleDependency) {
+          "\"group:artifact:version\""
+        } else {
+          "project(\":foo\")"
+        }
+      }.joinToString("\n") { "dependsOn($it)" }
+      """
+        Apollo: using apolloMetadata is not supported anymore. Please use `dependsOn`:
+         
+        apollo {
+          service("service") {
+            $projectLines
+          }
+        }
+      """.trimIndent()
     }
   }
 
