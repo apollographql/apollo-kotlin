@@ -21,13 +21,19 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 _Approximate Dates: 2023-04-27 (Alpha), 2023-07-31 (Beta), 2023-09-26 (GA)_
 
-Our next major release is currently in active development. You can review this [umbrella issue](https://github.com/apollographql/apollo-kotlin/issues/4171) which identifies the planned changes in `4.0`.  Here's a high-level overview of what to expect:
+Our next major release is currently in active development. 4.0 will remove some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible. 
+
+Here's a high-level overview of what to expect:
 
 - [IntelliJ / Android Studio plugin](https://github.com/apollographql/apollo-kotlin/issues?q=is%3Aissue+is%3Aopen+plugin+label%3A%22%F0%9F%90%99+IJ%2FAS+plugin%22)
 - [Better Java support](https://github.com/apollographql/apollo-kotlin/milestone/25)
+- Better error handling ([RFC here](https://github.com/apollographql/apollo-kotlin/issues/4711)) 
 - Annotation processing for custom scalars
 - Client-controlled nullability
 - New tutorial with Jetpack Compose
+- [API tweaks and cleanups](https://github.com/apollographql/apollo-kotlin/issues/4171)
+
+
 
 ## Better support for Jetpack Compose
 
