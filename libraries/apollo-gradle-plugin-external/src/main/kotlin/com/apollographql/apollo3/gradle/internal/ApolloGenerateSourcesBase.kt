@@ -3,7 +3,7 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.compiler.ApolloCompiler
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
-import com.apollographql.apollo3.compiler.CompilerMetadata
+import com.apollographql.apollo3.compiler.CodegenMetadata
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.UsedCoordinates
-import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
@@ -140,8 +139,8 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
       usedCoordinates: UsedCoordinates?,
-      upstreamMetadata: List<CompilerMetadata>,
-  ): ResolverInfo {
+      upstreamMetadata: List<CodegenMetadata>,
+  ): CodegenMetadata {
 
     val operationOutput = ApolloCompiler.buildOperationOutput(
         ir = irOperations,

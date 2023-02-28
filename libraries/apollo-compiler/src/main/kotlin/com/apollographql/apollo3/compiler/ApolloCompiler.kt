@@ -18,8 +18,6 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
 import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
-import com.apollographql.apollo3.compiler.codegen.ResolverInfo
-import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
@@ -304,7 +302,7 @@ object ApolloCompiler {
   fun writeJava(
       commonCodegenOptions: CommonCodegenOptions,
       javaCodegenOptions: JavaCodegenOptions,
-  ): ResolverInfo {
+  ): CodegenMetadata {
     val ir = commonCodegenOptions.ir
     val codegenModels = commonCodegenOptions.codegenSchema.codegenModels
     check(ir is DefaultIrOperations)
@@ -319,22 +317,26 @@ object ApolloCompiler {
           "enclosing one.")
     }
 
-    return JavaCodeGen(
-        commonCodegenOptions = commonCodegenOptions,
-        javaCodegenOptions = javaCodegenOptions,
-    ).write(outputDir = commonCodegenOptions.outputDir)
+    return CodegenMetadata(
+        JavaCodeGen(
+            commonCodegenOptions = commonCodegenOptions,
+            javaCodegenOptions = javaCodegenOptions,
+        ).write(outputDir = commonCodegenOptions.outputDir)
+    )
   }
 
 
   fun writeKotlin(
       commonCodegenOptions: CommonCodegenOptions,
       kotlinCodegenOptions: KotlinCodegenOptions,
-  ): ResolverInfo {
+  ): CodegenMetadata {
     codegenSetup(commonCodegenOptions)
 
-    return KotlinCodeGen.write(
-        commonCodegenOptions = commonCodegenOptions,
-        kotlinCodegenOptions = kotlinCodegenOptions,
+    return CodegenMetadata(
+        KotlinCodeGen.write(
+            commonCodegenOptions = commonCodegenOptions,
+            kotlinCodegenOptions = kotlinCodegenOptions,
+        )
     )
   }
 
@@ -377,7 +379,7 @@ object ApolloCompiler {
       addJvmOverloads: Boolean = defaultAddJvmOverloads,
       requiresOptInAnnotation: String = defaultRequiresOptInAnnotation,
       compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
-  ): CompilerMetadata {
+  ): CodegenMetadata {
     /**
      * Inject all built-in scalars
      * I think these are always needed
@@ -441,7 +443,7 @@ object ApolloCompiler {
         incomingResolverInfos = emptyList(),
     )
 
-    val resolverInfo = when (targetLanguage) {
+    return when (targetLanguage) {
       TargetLanguage.JAVA -> {
         val javaCodegenOptions = JavaCodegenOptions(
             nullableFieldStyle = nullableFieldStyle,
@@ -473,8 +475,5 @@ object ApolloCompiler {
         )
       }
     }
-    return CompilerMetadata(
-        resolverInfo = resolverInfo,
-    )
   }
 }

@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.gradle.test
 
-import com.apollographql.apollo3.compiler.toCompilerMetadata
+import com.apollographql.apollo3.compiler.toCodegenMetadata
 import com.apollographql.apollo3.gradle.util.TestUtils
 import com.apollographql.apollo3.gradle.util.replaceInText
 import com.google.common.truth.Truth
@@ -85,8 +85,8 @@ class MultiModulesTests {
       Assert.assertTrue(File(dir, "root/build/generated/source/apollo/service/com/library/type/Date.kt").exists())
       Assert.assertTrue(File(dir, "root/build/generated/source/apollo/service/com/library/type/GeoPoint.kt").exists())
       // Leaf metadata doesn't contain anything regarding Date
-      val compilerMetadata = File(dir, "leaf/build/generated/metadata/apollo/service/metadata.json").toCompilerMetadata()
-      Truth.assertThat(compilerMetadata.resolverInfo.entries.map { it.key.id }).doesNotContain("Date")
+      val codegenMetadata = File(dir, "leaf/build/generated/metadata/apollo/service/metadata.json").toCodegenMetadata()
+      Truth.assertThat(codegenMetadata.resolverInfo.entries.map { it.key.id }).doesNotContain("Date")
     }
   }
 
