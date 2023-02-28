@@ -22,7 +22,7 @@ import data.builders.SkipQuery
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
 import data.builders.type.__CustomScalarAdapters
-import data.builders.type.__Schema
+import data.builders.schema.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
 import data.builders.type.buildOtherAnimal

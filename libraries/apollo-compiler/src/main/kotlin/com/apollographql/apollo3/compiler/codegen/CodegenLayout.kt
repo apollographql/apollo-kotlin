@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.codegen
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.capitalizeFirstLetter
 import com.apollographql.apollo3.compiler.decapitalizeFirstLetter
-import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrFieldInfo
 import com.apollographql.apollo3.compiler.ir.IrListType
@@ -82,6 +81,8 @@ internal abstract class CodegenLayout(
   fun fragmentResponseFieldsPackageName(filePath: String) = "${fragmentPackageName(filePath)}.selections".stripDots()
 
   fun paginationPackageName() = "$schemaPackageName.pagination"
+
+  fun schemaPackageName() = "$schemaPackageName.schema"
 
   private fun String.stripDots() = this.removePrefix(".").removeSuffix(".")
 

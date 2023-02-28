@@ -18,12 +18,12 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_ResponseAdapter
 import com.example.mutation_create_review.adapter.CreateReviewForEpisode_VariablesAdapter
+import com.example.mutation_create_review.schema.__Schema
 import com.example.mutation_create_review.selections.CreateReviewForEpisodeSelections
 import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.MutationBuilder
 import com.example.mutation_create_review.type.ReviewInput
 import com.example.mutation_create_review.type.__CustomScalarAdapters
-import com.example.mutation_create_review.type.__Schema
 import com.example.mutation_create_review.type.buildMutation
 import java.util.Date
 import kotlin.Int
