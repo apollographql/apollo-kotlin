@@ -11,7 +11,6 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.optimisticUpdates
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -329,12 +328,11 @@ class DeferNormalizedCacheTest {
 
     mockServer.enqueue(statusCode = 500)
     // Because of the error the cache is missing some fields, so we get a cache miss, and fallback to the network (which also fails)
-    val exception = assertFailsWith<ApolloCompositeException> {
+    val exception = assertFailsWith<CacheMissException> {
       apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
     }
-    assertIs<CacheMissException>(exception.suppressedExceptions.first())
-    assertIs<ApolloHttpException>(exception.suppressedExceptions.getOrNull(1))
-    assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.suppressedExceptions.first().message)
+    assertIs<ApolloHttpException>(exception.suppressedExceptions.first())
+    assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.message)
     mockServer.takeRequest()
   }
 
