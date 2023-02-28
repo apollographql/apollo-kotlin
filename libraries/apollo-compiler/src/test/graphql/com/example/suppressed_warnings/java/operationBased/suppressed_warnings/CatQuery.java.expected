@@ -68,10 +68,10 @@ public class CatQuery implements Query<CatQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (filter == null) ? 0 : filter.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (filter == null) ? 0 : filter.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -175,12 +175,12 @@ public class CatQuery implements Query<CatQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (search == null) ? 0 : search.hashCode();
-        h *= 1000003;
-        h ^= (direction == null) ? 0 : direction.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (search == null) ? 0 : search.hashCode();
+        __h *= 1000003;
+        __h ^= (direction == null) ? 0 : direction.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -226,10 +226,10 @@ public class CatQuery implements Query<CatQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (mustaches == null) ? 0 : mustaches.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (mustaches == null) ? 0 : mustaches.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

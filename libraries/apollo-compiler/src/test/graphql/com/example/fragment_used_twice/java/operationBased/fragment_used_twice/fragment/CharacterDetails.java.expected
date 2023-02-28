@@ -48,12 +48,12 @@ public class CharacterDetails implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (birthDate == null) ? 0 : birthDate.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (birthDate == null) ? 0 : birthDate.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;

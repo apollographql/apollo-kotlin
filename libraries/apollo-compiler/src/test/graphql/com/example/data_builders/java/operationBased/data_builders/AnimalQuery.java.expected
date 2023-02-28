@@ -76,8 +76,8 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -184,10 +184,10 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (animal == null) ? 0 : animal.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (animal == null) ? 0 : animal.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -246,14 +246,14 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (catFragment == null) ? 0 : catFragment.hashCode();
-        h *= 1000003;
-        h ^= (dogFragment == null) ? 0 : dogFragment.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (catFragment == null) ? 0 : catFragment.hashCode();
+        __h *= 1000003;
+        __h ^= (dogFragment == null) ? 0 : dogFragment.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

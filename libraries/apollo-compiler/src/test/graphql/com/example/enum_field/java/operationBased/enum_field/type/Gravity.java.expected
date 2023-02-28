@@ -77,8 +77,8 @@ public class Gravity {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        $hashCode = h;
+        int __h = 1;
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

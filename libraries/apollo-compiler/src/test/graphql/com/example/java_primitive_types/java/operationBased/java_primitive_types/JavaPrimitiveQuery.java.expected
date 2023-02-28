@@ -98,20 +98,20 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
-      h *= 1000003;
-      h ^= nonNullableInt;
-      h *= 1000003;
-      h ^= (nonNullableIntWithDefault == null) ? 0 : nonNullableIntWithDefault.hashCode();
-      h *= 1000003;
-      h ^= (nullableInput == null) ? 0 : nullableInput.hashCode();
-      h *= 1000003;
-      h ^= (nonNullableInput == null) ? 0 : nonNullableInput.hashCode();
-      h *= 1000003;
-      h ^= (nonNullableInputWithDefault == null) ? 0 : nonNullableInputWithDefault.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+      __h *= 1000003;
+      __h ^= nonNullableInt;
+      __h *= 1000003;
+      __h ^= (nonNullableIntWithDefault == null) ? 0 : nonNullableIntWithDefault.hashCode();
+      __h *= 1000003;
+      __h ^= (nullableInput == null) ? 0 : nullableInput.hashCode();
+      __h *= 1000003;
+      __h ^= (nonNullableInput == null) ? 0 : nonNullableInput.hashCode();
+      __h *= 1000003;
+      __h ^= (nonNullableInputWithDefault == null) ? 0 : nonNullableInputWithDefault.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -264,16 +264,16 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
-        h *= 1000003;
-        h ^= nonNullableInt;
-        h *= 1000003;
-        h ^= (nullableMyType == null) ? 0 : nullableMyType.hashCode();
-        h *= 1000003;
-        h ^= (nonNullableMyType == null) ? 0 : nonNullableMyType.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+        __h *= 1000003;
+        __h ^= nonNullableInt;
+        __h *= 1000003;
+        __h ^= (nullableMyType == null) ? 0 : nullableMyType.hashCode();
+        __h *= 1000003;
+        __h ^= (nonNullableMyType == null) ? 0 : nonNullableMyType.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -375,12 +375,12 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
-        h *= 1000003;
-        h ^= nonNullableInt;
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+        __h *= 1000003;
+        __h ^= nonNullableInt;
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -464,12 +464,12 @@ public class JavaPrimitiveQuery implements Query<JavaPrimitiveQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
-        h *= 1000003;
-        h ^= nonNullableInt;
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+        __h *= 1000003;
+        __h ^= nonNullableInt;
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

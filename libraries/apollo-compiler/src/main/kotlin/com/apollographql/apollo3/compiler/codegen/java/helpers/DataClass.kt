@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
+import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.__h
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
@@ -174,16 +176,16 @@ fun TypeSpec.withEqualsImplementation(): TypeSpec {
 fun TypeSpec.withHashCodeImplementation(): TypeSpec {
   fun hashFieldCode(field: FieldSpec) =
       CodeBlock.builder()
-          .addStatement("h *= 1000003")
+          .addStatement("$__h *= 1000003")
           .let {
             if (field.type.isPrimitive) {
               when (field.type.withoutAnnotations()) {
-                TypeName.DOUBLE -> it.addStatement("h ^= Double.valueOf(\$L).hashCode()", field.name)
-                TypeName.BOOLEAN -> it.addStatement("h ^= Boolean.valueOf(\$L).hashCode()", field.name)
-                else -> it.addStatement("h ^= \$L", field.name)
+                TypeName.DOUBLE -> it.addStatement("$__h ^= Double.valueOf(\$L).hashCode()", field.name)
+                TypeName.BOOLEAN -> it.addStatement("$__h ^= Boolean.valueOf(\$L).hashCode()", field.name)
+                else -> it.addStatement("$__h ^= \$L", field.name)
               }
             } else {
-              it.addStatement("h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
+              it.addStatement("$__h ^= (\$L == null) ? 0 : \$L.hashCode()", field.name, field.name)
             }
           }
           .build()
@@ -191,14 +193,14 @@ fun TypeSpec.withHashCodeImplementation(): TypeSpec {
   fun methodCode() =
       CodeBlock.builder()
           .beginControlFlow("if (!\$L)", MEMOIZED_HASH_CODE_FLAG_VAR)
-          .addStatement("int h = 1")
+          .addStatement("int $__h = 1")
           .add(fieldSpecs
               .filter { !it.hasModifier(Modifier.STATIC) }
               .filter { !it.hasModifier(Modifier.TRANSIENT) }
               .map(::hashFieldCode)
               .fold(CodeBlock.builder(), CodeBlock.Builder::add)
               .build())
-          .addStatement("\$L = h", MEMOIZED_HASH_CODE_VAR)
+          .addStatement("\$L = $__h", MEMOIZED_HASH_CODE_VAR)
           .addStatement("\$L = true", MEMOIZED_HASH_CODE_FLAG_VAR)
           .endControlFlow()
           .addStatement("return \$L", MEMOIZED_HASH_CODE_VAR)
