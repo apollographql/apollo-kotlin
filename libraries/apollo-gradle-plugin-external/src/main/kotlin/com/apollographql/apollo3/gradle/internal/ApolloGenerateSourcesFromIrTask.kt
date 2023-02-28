@@ -1,11 +1,12 @@
 package com.apollographql.apollo3.gradle.internal
 
-import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CompilerMetadata
 import com.apollographql.apollo3.compiler.ir.toIrOperations
 import com.apollographql.apollo3.compiler.toCodegenSchema
+import com.apollographql.apollo3.compiler.toCompilerMetadata
 import com.apollographql.apollo3.compiler.toUsedCoordinates
+import com.apollographql.apollo3.compiler.writeTo
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.CacheableTask
@@ -54,12 +55,13 @@ abstract class ApolloGenerateSourcesFromIrTask : ApolloGenerateSourcesBase() {
         codegenSchema = codegenSchema,
         irOperations = irOperations,
         usedCoordinates = usedCoordinates,
-        upstreamMetadata = upstreamMetadata.files.map { ApolloMetadata.readFrom(it) }
+        upstreamMetadata = upstreamMetadata.files.map { it.toCompilerMetadata() }
     )
 
-    ApolloMetadata(
-        compilerMetadata = CompilerMetadata(resolverInfo = resolverInfo)
-    ).writeTo(metadataOutputFile.get().asFile)
+    metadataOutputFile.get().asFile.let {
+      it.parentFile.mkdirs()
+      CompilerMetadata(resolverInfo = resolverInfo).writeTo(it)
+    }
   }
 
   companion object {

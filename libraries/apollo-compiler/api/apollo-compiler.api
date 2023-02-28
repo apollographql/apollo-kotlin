@@ -21,32 +21,6 @@ public abstract interface class com/apollographql/apollo3/compiler/ApolloCompile
 	public abstract fun warning (Ljava/lang/String;)V
 }
 
-public final class com/apollographql/apollo3/compiler/ApolloMetadata {
-	public static final field Companion Lcom/apollographql/apollo3/compiler/ApolloMetadata$Companion;
-	public fun <init> (Lcom/apollographql/apollo3/compiler/CompilerMetadata;)V
-	public final fun component1 ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
-	public final fun copy (Lcom/apollographql/apollo3/compiler/CompilerMetadata;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/ApolloMetadata;Lcom/apollographql/apollo3/compiler/CompilerMetadata;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getCompilerMetadata ()Lcom/apollographql/apollo3/compiler/CompilerMetadata;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-	public final fun writeTo (Ljava/io/File;)V
-}
-
-public final class com/apollographql/apollo3/compiler/ApolloMetadata$Companion {
-	public final fun readFrom (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
-}
-
-public final class com/apollographql/apollo3/compiler/ApolloMetadataJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/ApolloMetadata;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ApolloMetadata;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/compiler/CodegenSchema {
 	public static final field Companion Lcom/apollographql/apollo3/compiler/CodegenSchema$Companion;
 	public synthetic fun <init> (ILcom/apollographql/apollo3/ast/Schema;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo3/compiler/TargetLanguage;ZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
@@ -98,6 +72,11 @@ public final class com/apollographql/apollo3/compiler/CompilerMetadataJsonAdapte
 	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/CompilerMetadata;)V
 	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/apollographql/apollo3/compiler/CompilerMetadataKt {
+	public static final fun toCompilerMetadata (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CompilerMetadata;
+	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CompilerMetadata;Ljava/io/File;)V
 }
 
 public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer : com/apollographql/apollo3/compiler/AdapterInitializer {

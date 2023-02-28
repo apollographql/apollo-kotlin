@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.gradle.internal
 
 import com.apollographql.apollo3.compiler.ApolloCompiler
-import com.apollographql.apollo3.compiler.ApolloMetadata
 import com.apollographql.apollo3.compiler.CodegenSchema
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
+import com.apollographql.apollo3.compiler.CompilerMetadata
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
@@ -140,7 +140,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
       codegenSchema: CodegenSchema,
       irOperations: IrOperations,
       usedCoordinates: UsedCoordinates?,
-      upstreamMetadata: List<ApolloMetadata>,
+      upstreamMetadata: List<CompilerMetadata>,
   ): ResolverInfo {
 
     val operationOutput = ApolloCompiler.buildOperationOutput(
@@ -153,7 +153,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
       ApolloCompiler.buildIrSchema(
           codegenSchema = codegenSchema,
           usedFields = it.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).associateWith { emptySet() }),
-          incomingTypes = upstreamMetadata.flatMap { it.compilerMetadata.resolverInfo.entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id } }.toSet()
+          incomingTypes = upstreamMetadata.flatMap { it.resolverInfo.entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id } }.toSet()
       )
     }
 
@@ -170,7 +170,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
-        incomingResolverInfos = upstreamMetadata.map { it.compilerMetadata.resolverInfo },
+        incomingResolverInfos = upstreamMetadata.map { it.resolverInfo },
     )
 
     return when (codegenSchema.targetLanguage) {
