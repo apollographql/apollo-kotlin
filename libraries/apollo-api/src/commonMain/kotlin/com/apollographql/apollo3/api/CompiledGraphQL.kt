@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
@@ -375,31 +377,37 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
 }
 
 @Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledSchemaType = ObjectType.Builder("__Schema").build()
 
 @Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledTypeType = ObjectType.Builder("__Type").build()
 
 @Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledFieldType = ObjectType.Builder("__Field").build()
 
 @Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledInputValueType = ObjectType.Builder("__InputValue").build()
 
 @Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledEnumValueType = ObjectType.Builder("__EnumValue").build()
 
 @Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledDirectiveType = ObjectType.Builder("__Directive").build()
