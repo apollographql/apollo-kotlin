@@ -121,7 +121,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
             val first = exceptionResponses.first()
             first.newBuilder()
                 .exception(
-                    exceptionResponses.fold(first.exception!!) { acc, response ->
+                    exceptionResponses.drop(1).fold(first.exception!!) { acc, response ->
                       acc.also {
                         it.addSuppressed(response.exception!!)
                       }

@@ -22,6 +22,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.JsonEncodingException
 import com.apollographql.apollo3.integration.normalizer.CharacterNameByIdQuery
 import com.apollographql.apollo3.integration.normalizer.HeroNameQuery
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -88,8 +89,10 @@ class FetchPolicyTest {
     // Clear the store and offer a malformed response, we should get a composite error
     store.clearAll()
     mockServer.enqueue("malformed")
-    assertIs<CacheMissException>(apolloClient.query(query).execute().exception)
-    assertIs<ApolloNetworkException>(apolloClient.query(query).execute().exception?.suppressedExceptions?.first())
+    apolloClient.query(query).execute().exception.let {
+      assertIs<CacheMissException>(it)
+      assertIs<JsonEncodingException>(it.suppressedExceptions.first())
+    }
   }
 
   @Test
@@ -200,8 +203,11 @@ class FetchPolicyTest {
     // Network error and no cache -> we should get an error
     mockServer.enqueue("malformed")
     store.clearAll()
-    assertIs<ApolloNetworkException>(call.execute().exception)
-    assertIs<CacheMissException>(call.execute().exception?.suppressedExceptions?.first())
+
+    call.execute().exception.let {
+      assertIs<JsonEncodingException>(it)
+      assertIs<CacheMissException>(it.suppressedExceptions.first())
+    }
   }
 
   @Test
@@ -290,7 +296,7 @@ class FetchPolicyTest {
     store.clearAll()
     responses = call.toFlow()
     responses.test {
-      assertIs<ApolloNetworkException>(awaitError())
+      assertIs<JsonEncodingException>(awaitError())
     }
   }
 
@@ -370,7 +376,7 @@ class FetchPolicyTest {
     mockServer.enqueue(statusCode = 500)
     apolloClient.query(query).fetchPolicy(FetchPolicy.CacheAndNetwork).execute().exception.let {
       assertIs<CacheMissException>(it)
-      assertIs<ApolloNetworkException>(it?.suppressedExceptions?.first())
+      assertIs<ApolloHttpException>(it.suppressedExceptions.first())
     }
 
     // Make the network return something

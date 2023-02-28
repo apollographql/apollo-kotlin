@@ -331,9 +331,8 @@ class DeferNormalizedCacheTest {
     val exception = assertFailsWith<CacheMissException> {
       apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
     }
-    assertIs<CacheMissException>(exception.suppressedExceptions.first())
-    assertIs<ApolloHttpException>(exception.suppressedExceptions.getOrNull(1))
-    assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.suppressedExceptions.first().message)
+    assertIs<ApolloHttpException>(exception.suppressedExceptions.first())
+    assertEquals("Object 'computers.0.screen' has no field named 'isColor'", exception.message)
     mockServer.takeRequest()
   }
 
