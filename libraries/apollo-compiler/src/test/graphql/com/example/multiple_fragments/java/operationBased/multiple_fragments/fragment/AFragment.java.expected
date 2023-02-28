@@ -38,10 +38,10 @@ public class AFragment implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (node == null) ? 0 : node.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (node == null) ? 0 : node.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -99,14 +99,14 @@ public class AFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__typename == null) ? 0 : __typename.hashCode();
-        h *= 1000003;
-        h ^= (fragment1 == null) ? 0 : fragment1.hashCode();
-        h *= 1000003;
-        h ^= (fragment2 == null) ? 0 : fragment2.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__typename == null) ? 0 : __typename.hashCode();
+        __h *= 1000003;
+        __h ^= (fragment1 == null) ? 0 : fragment1.hashCode();
+        __h *= 1000003;
+        __h ^= (fragment2 == null) ? 0 : fragment2.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

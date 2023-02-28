@@ -65,10 +65,10 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (input == null) ? 0 : input.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (input == null) ? 0 : input.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -169,10 +169,10 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (login == null) ? 0 : login.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (login == null) ? 0 : login.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -218,10 +218,10 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (response == null) ? 0 : response.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (response == null) ? 0 : response.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

@@ -41,10 +41,10 @@ public class CharacterDetails3 implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (birthDate == null) ? 0 : birthDate.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (birthDate == null) ? 0 : birthDate.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;

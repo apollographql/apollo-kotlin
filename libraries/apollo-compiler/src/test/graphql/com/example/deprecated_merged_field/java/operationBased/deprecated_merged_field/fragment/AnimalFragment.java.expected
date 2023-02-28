@@ -53,14 +53,14 @@ public class AnimalFragment implements Fragment.Data {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (__typename == null) ? 0 : __typename.hashCode();
-      h *= 1000003;
-      h ^= (onCat == null) ? 0 : onCat.hashCode();
-      h *= 1000003;
-      h ^= (onDog == null) ? 0 : onDog.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (__typename == null) ? 0 : __typename.hashCode();
+      __h *= 1000003;
+      __h ^= (onCat == null) ? 0 : onCat.hashCode();
+      __h *= 1000003;
+      __h ^= (onDog == null) ? 0 : onDog.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -106,10 +106,10 @@ public class AnimalFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -158,10 +158,10 @@ public class AnimalFragment implements Fragment.Data {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;

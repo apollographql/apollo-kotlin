@@ -84,12 +84,12 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (ep == null) ? 0 : ep.hashCode();
-      h *= 1000003;
-      h ^= (review == null) ? 0 : review.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (ep == null) ? 0 : ep.hashCode();
+      __h *= 1000003;
+      __h ^= (review == null) ? 0 : review.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -212,10 +212,10 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (createReview == null) ? 0 : createReview.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (createReview == null) ? 0 : createReview.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -300,20 +300,20 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (stars == null) ? 0 : stars.hashCode();
-        h *= 1000003;
-        h ^= (commentary == null) ? 0 : commentary.hashCode();
-        h *= 1000003;
-        h ^= (listOfListOfString == null) ? 0 : listOfListOfString.hashCode();
-        h *= 1000003;
-        h ^= (listOfListOfEnum == null) ? 0 : listOfListOfEnum.hashCode();
-        h *= 1000003;
-        h ^= (listOfListOfCustom == null) ? 0 : listOfListOfCustom.hashCode();
-        h *= 1000003;
-        h ^= (listOfListOfObject == null) ? 0 : listOfListOfObject.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (stars == null) ? 0 : stars.hashCode();
+        __h *= 1000003;
+        __h ^= (commentary == null) ? 0 : commentary.hashCode();
+        __h *= 1000003;
+        __h ^= (listOfListOfString == null) ? 0 : listOfListOfString.hashCode();
+        __h *= 1000003;
+        __h ^= (listOfListOfEnum == null) ? 0 : listOfListOfEnum.hashCode();
+        __h *= 1000003;
+        __h ^= (listOfListOfCustom == null) ? 0 : listOfListOfCustom.hashCode();
+        __h *= 1000003;
+        __h ^= (listOfListOfObject == null) ? 0 : listOfListOfObject.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -366,10 +366,10 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
