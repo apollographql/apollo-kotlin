@@ -2,8 +2,12 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.exception.ApolloNetworkException
 
 interface HttpInterceptorChain {
+  /**
+   * @throws [ApolloNetworkException] if a network error happens
+   */
   suspend fun proceed(request: HttpRequest): HttpResponse
 }
 

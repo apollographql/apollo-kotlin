@@ -11,7 +11,6 @@ import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.optimisticUpdates
 import com.apollographql.apollo3.cache.normalized.store
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -329,7 +328,7 @@ class DeferNormalizedCacheTest {
 
     mockServer.enqueue(statusCode = 500)
     // Because of the error the cache is missing some fields, so we get a cache miss, and fallback to the network (which also fails)
-    val exception = assertFailsWith<ApolloCompositeException> {
+    val exception = assertFailsWith<CacheMissException> {
       apolloClient.query(WithFragmentSpreadsQuery()).execute().dataAssertNoErrors
     }
     assertIs<CacheMissException>(exception.suppressedExceptions.first())

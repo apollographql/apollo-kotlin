@@ -7,7 +7,6 @@ import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
@@ -112,21 +111,28 @@ class ApolloCall<D : Operation.Data> internal constructor(
    */
   suspend fun execute(): ApolloResponse<D> {
     val responses = toFlow().toList()
-    val (errors, successes) = responses.partition { it.exception != null }
-    return when (successes.size) {
+    val (exceptionResponses, successResponses) = responses.partition { it.exception != null }
+    return when (successResponses.size) {
       0 -> {
-        when (errors.size) {
+        when (exceptionResponses.size) {
           0 -> throw ApolloException("The operation did not emit any item, check your interceptor chain")
-          1 -> errors.first()
+          1 -> exceptionResponses.first()
           else -> {
-            errors[1].newBuilder()
-                .exception(ApolloCompositeException(errors.map { it.exception!! }))
+            val first = exceptionResponses.first()
+            first.newBuilder()
+                .exception(
+                    exceptionResponses.fold(first.exception!!) { acc, response ->
+                      acc.also {
+                        it.addSuppressed(response.exception!!)
+                      }
+                    }
+                )
                 .build()
           }
         }
       }
 
-      1 -> successes.first()
+      1 -> successResponses.first()
       else -> throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
     }
   }

@@ -15,8 +15,9 @@ interface HttpEngine {
   /**
    * Executes the given HttpRequest
    *
-   * throws [ApolloNetworkException] if a network error happens
    * HTTP errors should not throw but instead return a [HttpResponse] indicating the status code
+   *
+   * @throws [ApolloNetworkException] if a network error happens
    */
   suspend fun execute(request: HttpRequest): HttpResponse
 

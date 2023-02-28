@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
@@ -138,22 +137,22 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
       return request.fetchPolicyInterceptor.intercept(request, chain)
     }
     return flow {
-      val foldedExceptions = mutableListOf<ApolloException>()
+      val exceptions = mutableListOf<ApolloException>()
       var hasEmitted = false
 
       request.fetchPolicyInterceptor.intercept(request, chain)
           .collect {
             if (!hasEmitted && it.exception != null) {
               // Remember to send the exception later
-              foldedExceptions.add(it.exception!!)
+              exceptions.add(it.exception!!)
               return@collect
             }
             emit(
                 it.newBuilder()
                     .cacheInfo(
                         it.cacheInfo!!.newBuilder()
-                            .cacheMissException(foldedExceptions.filterIsInstance<CacheMissException>().firstOrNull())
-                            .networkException(foldedExceptions.firstOrNull { it !is CacheMissException })
+                            .cacheMissException(exceptions.filterIsInstance<CacheMissException>().firstOrNull())
+                            .networkException(exceptions.firstOrNull { it !is CacheMissException })
                             .build()
                     )
                     .build()
@@ -163,12 +162,21 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
 
       if (!hasEmitted) {
         // If we haven't emitted anything, send a composite exception
-        val first = foldedExceptions.firstOrNull()
-        val second = foldedExceptions.getOrNull(1)
+        val first = exceptions.firstOrNull()
+        val exception = if (first == null) {
+          ApolloException("No response emitted")
+        } else {
+          first.also { firstException ->
+            exceptions.drop(1).forEach {
+              firstException.addSuppressed(it)
+            }
+          }
+        }
         emit(
             ApolloResponse.Builder(request.operation, request.requestUuid, null)
-                .exception(ApolloCompositeException(first, second))
+                .exception(exception)
                 .build()
+
         )
       }
     }

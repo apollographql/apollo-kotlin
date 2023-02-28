@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
-import com.apollographql.apollo3.exception.ApolloCompositeException
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.HttpCacheMissException
@@ -43,10 +42,9 @@ class CachingHttpInterceptor(
         try {
           return networkMightThrow(request, chain, cacheKey)
         } catch (e: ApolloException) {
-          throw ApolloCompositeException(
-              first = cacheException,
-              second = e
-          )
+          throw cacheException.also {
+            it.addSuppressed(e)
+          }
         }
       }
       CACHE_ONLY -> {
@@ -81,10 +79,9 @@ class CachingHttpInterceptor(
           // In case of exception thrown by network request,
           // ApolloException will be suppressed and HttpCacheMissException will throw as cause
           // this behavior might change in future where both will be treated as suppressed
-          throw ApolloCompositeException(
-              first = networkException,
-              second = cacheMissException
-          )
+          throw networkException.also {
+            it.addSuppressed(cacheMissException)
+          }
         }
       }
       else -> {
