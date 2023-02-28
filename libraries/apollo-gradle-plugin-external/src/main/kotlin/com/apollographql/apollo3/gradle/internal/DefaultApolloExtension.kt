@@ -51,25 +51,6 @@ abstract class DefaultApolloExtension(
 
   private val services = mutableListOf<DefaultService>()
   private val checkVersionsTask: TaskProvider<Task>
-
-  /**
-   * this is a convenience bag of dependencies for apollo dependencies. This way, users can do:
-   *
-   * dependencies {
-   *   apollo(/* ... */)
-   * }
-   *
-   * Instead of
-   *
-   * dependencies {
-   *   apolloMyService1Metadata(/* ... */)
-   *   apolloMyService2Ir(/* ... */)
-   *   etc...
-   * }
-   *
-   * We create specialised versions that will filter these dependencies
-   */
-
   private val generateApolloSources: TaskProvider<Task>
   private var hasExplicitService = false
   private val adhocComponentWithVariants: AdhocComponentWithVariants
