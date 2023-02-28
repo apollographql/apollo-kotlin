@@ -489,7 +489,7 @@ internal class IrOperationsBuilder(
         /**
          * Keep track of used fields.
          *
-         * Note1: we don't want to track this is generateDataBuilders is false:
+         * Note1: we don't want to track this if generateDataBuilders is false:
          *
          * ```graphql
          * {
