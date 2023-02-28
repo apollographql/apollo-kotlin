@@ -22,12 +22,9 @@ public abstract interface class com/apollographql/apollo3/compiler/ApolloCompile
 }
 
 public final class com/apollographql/apollo3/compiler/CodegenMetadata {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)V
-	public final fun component1 ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
 	public final fun copy (Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)Lcom/apollographql/apollo3/compiler/CodegenMetadata;
 	public static synthetic fun copy$default (Lcom/apollographql/apollo3/compiler/CodegenMetadata;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;ILjava/lang/Object;)Lcom/apollographql/apollo3/compiler/CodegenMetadata;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getResolverInfo ()Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -42,6 +39,7 @@ public final class com/apollographql/apollo3/compiler/CodegenMetadataJsonAdapter
 }
 
 public final class com/apollographql/apollo3/compiler/CodegenMetadataKt {
+	public static final fun schemaTypes (Lcom/apollographql/apollo3/compiler/CodegenMetadata;)Ljava/util/Set;
 	public static final fun toCodegenMetadata (Ljava/io/File;)Lcom/apollographql/apollo3/compiler/CodegenMetadata;
 	public static final fun writeTo (Lcom/apollographql/apollo3/compiler/CodegenMetadata;Ljava/io/File;)V
 }
@@ -329,53 +327,6 @@ public final class com/apollographql/apollo3/compiler/VersionKt {
 	public static final field APOLLO_VERSION Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/ResolverClassName {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
-	public fun <init> (Ljava/lang/String;[Ljava/lang/String;)V
-	public final fun getPackageName ()Ljava/lang/String;
-	public final fun getSimpleNames ()Ljava/util/List;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/ResolverClassNameJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/ResolverEntry {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)V
-	public final fun getClassName ()Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
-	public final fun getKey ()Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/ResolverEntryJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverEntry;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/ResolverInfo {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
-	public final fun getEntries ()Ljava/util/List;
-	public final fun getMagic ()Ljava/lang/String;
-	public final fun getVersion ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/ResolverInfoJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverInfo;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/ResolverKey {
 	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;Ljava/lang/String;)V
 	public final fun component1 ()Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
@@ -419,21 +370,6 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : 
 	public static fun values ()[Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/ResolverMemberName {
-	public fun <init> (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;Ljava/lang/String;)V
-	public final fun getClassName ()Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;
-	public final fun getName ()Ljava/lang/String;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/ResolverMemberNameJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/codegen/ResolverMemberName;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/codegen/ResolverMemberName;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/java/CodegenJavaFile {
 	public fun <init> (Ljava/lang/String;Lcom/squareup/javapoet/TypeSpec;)V
 	public final fun getPackageName ()Ljava/lang/String;
@@ -451,10 +387,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/JavaCodeGenKt
 	public static synthetic fun joinToCode$default (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/java/JavaResolverKt {
-	public static final fun toJavaPoetClassName (Lcom/apollographql/apollo3/compiler/codegen/ResolverClassName;)Lcom/squareup/javapoet/ClassName;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/java/adapter/AdapterCommonKt {
 	public static final fun singletonAdapterInitializer (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;Z)Lcom/squareup/javapoet/CodeBlock;
 	public static synthetic fun singletonAdapterInitializer$default (Lcom/squareup/javapoet/TypeName;Lcom/squareup/javapoet/TypeName;ZILjava/lang/Object;)Lcom/squareup/javapoet/CodeBlock;
@@ -467,44 +399,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withEqualsImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 	public static final fun withHashCodeImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
-}
-
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver {
-	public fun <init> (Ljava/util/List;Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;Ljava/util/Map;Ljava/lang/String;Lcom/apollographql/apollo3/compiler/hooks/ApolloCompilerKotlinHooks;)V
-	public final fun entries ()Ljava/util/List;
-	public final fun getNext ()Lcom/apollographql/apollo3/compiler/codegen/kotlin/KotlinResolver;
-	public final fun registerBuilderFun (Ljava/lang/String;Lcom/squareup/kotlinpoet/MemberName;)V
-	public final fun registerBuilderType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerCustomScalarAdapters (Lcom/squareup/kotlinpoet/ClassName;)V
-	public final fun registerEnumAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerFragment (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerFragmentSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerFragmentVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerInputObjectAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerMapType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerModel (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerModelAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerOperation (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerOperationSelections (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerOperationVariablesAdapter (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun registerSchema (Lcom/squareup/kotlinpoet/ClassName;)V
-	public final fun registerSchemaType (Ljava/lang/String;Lcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolve (Lcom/apollographql/apollo3/compiler/codegen/ResolverKey;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveBuilderFun (Ljava/lang/String;)Lcom/squareup/kotlinpoet/MemberName;
-	public final fun resolveBuilderType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveCompiledType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/CodeBlock;
-	public final fun resolveCustomScalarAdapters ()Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveFragment (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveFragmentSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveFragmentVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveModel (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveModelAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveOperation (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveOperationSelections (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveOperationVariablesAdapter (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveRequiresOptInAnnotation ()Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveSchema ()Lcom/squareup/kotlinpoet/ClassName;
-	public final fun resolveSchemaType (Ljava/lang/String;)Lcom/squareup/kotlinpoet/ClassName;
 }
 
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {

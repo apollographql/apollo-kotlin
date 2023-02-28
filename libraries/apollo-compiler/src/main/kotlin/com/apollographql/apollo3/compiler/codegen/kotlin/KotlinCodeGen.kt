@@ -50,7 +50,7 @@ internal object KotlinCodeGen {
     check(ir is DefaultIrOperations)
 
     val operationOutput = commonCodegenOptions.operationOutput
-    val resolverInfos = commonCodegenOptions.incomingResolverInfos
+    val resolverInfos = commonCodegenOptions.incomingCodegenMetadata.map { it.resolverInfo }
     val generateAsInternal = kotlinCodegenOptions.generateAsInternal
     val useSemanticNaming = commonCodegenOptions.useSemanticNaming
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator

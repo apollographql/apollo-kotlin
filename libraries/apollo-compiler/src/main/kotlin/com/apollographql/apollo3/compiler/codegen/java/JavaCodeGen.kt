@@ -56,7 +56,7 @@ internal class JavaCodeGen(
     val ir = commonCodegenOptions.ir
     check(ir is DefaultIrOperations)
 
-    val resolverInfos = commonCodegenOptions.incomingResolverInfos
+    val resolverInfos = commonCodegenOptions.incomingCodegenMetadata.map { it.resolverInfo }
     val operationOutput = commonCodegenOptions.operationOutput
     val useSemanticNaming = commonCodegenOptions.useSemanticNaming
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator

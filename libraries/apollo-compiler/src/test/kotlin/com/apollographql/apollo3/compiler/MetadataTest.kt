@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.ast.SourceAwareException
-import com.apollographql.apollo3.compiler.codegen.schemaTypes
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.toIrOperations
 import com.apollographql.apollo3.compiler.ir.writeTo
@@ -142,7 +141,7 @@ class MetadataTest {
         ir = rootIrOperations,
         irSchema = rootIrSchema,
         operationOutput = rootOperationOutput,
-        incomingResolverInfos = emptyList(),
+        incomingCodegenMetadata = emptyList(),
         outputDir = rootSourcesDir,
         packageNameGenerator = PackageNameGenerator.Flat(rootPackageName),
         useSemanticNaming = defaultUseSemanticNaming,
@@ -163,7 +162,7 @@ class MetadataTest {
         requiresOptInAnnotation = defaultRequiresOptInAnnotation
     )
 
-    val rootResolverInfo = ApolloCompiler.writeKotlin(
+    val codegenMetadata = ApolloCompiler.writeKotlin(
         commonCodegenOptions = rootCommonCodegenOptions,
         kotlinCodegenOptions = kotlinCodegenOptions
     )
@@ -176,13 +175,13 @@ class MetadataTest {
     val leafIrSchema = ApolloCompiler.buildIrSchema(
         codegenSchema = codegenSchema,
         usedFields = leafIrOperations.usedFields,
-        incomingTypes = rootResolverInfo.schemaTypes()
+        incomingTypes = codegenMetadata.schemaTypes()
     )
 
     val leafCommonCodegenOptions = rootCommonCodegenOptions.copy(
         ir = leafIrOperations,
         irSchema = leafIrSchema,
-        incomingResolverInfos = listOf(rootResolverInfo),
+        incomingCodegenMetadata = listOf(codegenMetadata),
         operationOutput = leafOperationOutput,
         outputDir = leafSourcesDir,
         packageNameGenerator = PackageNameGenerator.Flat(leafPackageName),

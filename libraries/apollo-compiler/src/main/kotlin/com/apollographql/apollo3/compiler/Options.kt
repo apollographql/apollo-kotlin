@@ -2,11 +2,6 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toSchema
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrOperations
@@ -156,7 +151,7 @@ data class CommonCodegenOptions(
     val irSchema: IrSchema?,
     val operationOutput: OperationOutput,
 
-    val incomingResolverInfos: List<ResolverInfo>,
+    val incomingCodegenMetadata: List<CodegenMetadata>,
 
     /**
      * The directory where to write the generated models

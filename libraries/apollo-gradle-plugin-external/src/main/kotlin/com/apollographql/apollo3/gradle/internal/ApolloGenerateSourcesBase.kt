@@ -11,7 +11,6 @@ import com.apollographql.apollo3.compiler.OperationOutputGenerator
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.TargetLanguage
 import com.apollographql.apollo3.compiler.UsedCoordinates
-import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
 import com.apollographql.apollo3.compiler.defaultAddJvmOverloads
 import com.apollographql.apollo3.compiler.defaultClassesForEnumsMatching
 import com.apollographql.apollo3.compiler.defaultGenerateFilterNotNull
@@ -30,6 +29,7 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.mergeWith
+import com.apollographql.apollo3.compiler.schemaTypes
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
@@ -152,7 +152,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
       ApolloCompiler.buildIrSchema(
           codegenSchema = codegenSchema,
           usedFields = it.mergeWith((codegenSchema.scalarMapping.keys + setOf("Int", "Float", "String", "ID", "Boolean")).associateWith { emptySet() }),
-          incomingTypes = upstreamMetadata.flatMap { it.resolverInfo.entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id } }.toSet()
+          incomingTypes = upstreamMetadata.flatMap { it.schemaTypes() }.toSet()
       )
     }
 
@@ -169,7 +169,7 @@ abstract class ApolloGenerateSourcesBase : DefaultTask() {
         generateSchema = generateSchema.getOrElse(defaultGenerateSchema),
         generatedSchemaName = generatedSchemaName.getOrElse(defaultGeneratedSchemaName),
         generateResponseFields = generateResponseFields.getOrElse(defaultGenerateResponseFields),
-        incomingResolverInfos = upstreamMetadata.map { it.resolverInfo },
+        incomingCodegenMetadata = upstreamMetadata,
     )
 
     return when (codegenSchema.targetLanguage) {

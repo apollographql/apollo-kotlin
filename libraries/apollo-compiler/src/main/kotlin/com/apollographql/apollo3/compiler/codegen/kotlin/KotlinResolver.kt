@@ -33,7 +33,7 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeName
 
 
-class KotlinResolver(
+internal class KotlinResolver(
     entries: List<ResolverEntry>,
     val next: KotlinResolver?,
     private val scalarMapping: Map<String, ScalarInfo>,
