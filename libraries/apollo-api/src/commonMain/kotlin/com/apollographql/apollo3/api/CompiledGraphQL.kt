@@ -6,7 +6,9 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.writeAny
 import okio.Buffer
+import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
+import kotlin.native.concurrent.SharedImmutable
 
 sealed class CompiledSelection
 
@@ -371,6 +373,36 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
     else -> value
   }
 }
+
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@SharedImmutable
+@JvmField
+val CompiledSchemaType = ObjectType.Builder("__Schema").build()
+
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@SharedImmutable
+@JvmField
+val CompiledTypeType = ObjectType.Builder("__Type").build()
+
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@SharedImmutable
+@JvmField
+val CompiledFieldType = ObjectType.Builder("__Field").build()
+
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@SharedImmutable
+@JvmField
+val CompiledInputValueType = ObjectType.Builder("__InputValue").build()
+
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@SharedImmutable
+@JvmField
+val CompiledEnumValueType = ObjectType.Builder("__EnumValue").build()
+
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
+@SharedImmutable
+@JvmField
+val CompiledDirectiveType = ObjectType.Builder("__Directive").build()
 
 fun CompiledNamedType.isComposite(): Boolean {
   return when (this) {

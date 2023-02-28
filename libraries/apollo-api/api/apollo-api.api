@@ -349,6 +349,12 @@ public final class com/apollographql/apollo3/api/CompiledFragment$Builder {
 }
 
 public final class com/apollographql/apollo3/api/CompiledGraphQL {
+	public static final field CompiledDirectiveType Lcom/apollographql/apollo3/api/ObjectType;
+	public static final field CompiledEnumValueType Lcom/apollographql/apollo3/api/ObjectType;
+	public static final field CompiledFieldType Lcom/apollographql/apollo3/api/ObjectType;
+	public static final field CompiledInputValueType Lcom/apollographql/apollo3/api/ObjectType;
+	public static final field CompiledSchemaType Lcom/apollographql/apollo3/api/ObjectType;
+	public static final field CompiledTypeType Lcom/apollographql/apollo3/api/ObjectType;
 	public static final fun -list (Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledListType;
 	public static final fun -notNull (Lcom/apollographql/apollo3/api/CompiledType;)Lcom/apollographql/apollo3/api/CompiledNotNullType;
 	public static final fun isComposite (Lcom/apollographql/apollo3/api/CompiledNamedType;)Z
