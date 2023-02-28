@@ -72,7 +72,7 @@ abstract class ApolloGenerateSchemaTask : DefaultTask() {
        * We already have a schema
        */
       check(!generateDataBuilders.isPresent) {
-        "Apollo: generateDataBuilders is not used because this module depends on another one that has already set generateDataBuilders"
+        "Apollo: generateDataBuilders cannot be used because this module depends on another one that has already set generateDataBuilders"
       }
       check(scalarTypeMapping.get().isEmpty()) {
         "Apollo: scalarTypeMapping is not used because this module depends on another one that has already set scalarTypeMapping"
