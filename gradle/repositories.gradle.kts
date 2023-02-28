@@ -1,5 +1,8 @@
 listOf(pluginManagement.repositories, dependencyResolutionManagement.repositories).forEach {
   it.apply {
+    maven {
+      url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev/")
+    }
     mavenCentral()
 
     exclusiveContent {
@@ -19,8 +22,6 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
         includeModule("com.gradle.publish", "plugin-publish-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
-        // Because we use 1.6.10 during sync and this version is not on mavenCentral
-        includeVersion("org.jetbrains.kotlin.plugin.serialization", "org.jetbrains.kotlin.plugin.serialization.gradle.plugin", "1.6.10")
 
         // For org.jetbrains.intellij
         includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
