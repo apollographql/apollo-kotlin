@@ -9,14 +9,6 @@ public final class com/apollographql/apollo3/compiler/AdapterInitializer$Compani
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class com/apollographql/apollo3/compiler/AdapterInitializerJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/AdapterInitializer;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/AdapterInitializer;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-}
-
 public abstract interface class com/apollographql/apollo3/compiler/ApolloCompiler$Logger {
 	public abstract fun warning (Ljava/lang/String;)V
 }
@@ -98,15 +90,6 @@ public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializ
 
 public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializer$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ExpressionAdapterInitializerJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ExpressionAdapterInitializer;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/IncomingOptions {
@@ -294,15 +277,6 @@ public final class com/apollographql/apollo3/compiler/ScalarInfo$$serializer : k
 
 public final class com/apollographql/apollo3/compiler/ScalarInfo$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class com/apollographql/apollo3/compiler/ScalarInfoJsonAdapter : com/squareup/moshi/JsonAdapter {
-	public fun <init> (Lcom/squareup/moshi/Moshi;)V
-	public fun fromJson (Lcom/squareup/moshi/JsonReader;)Lcom/apollographql/apollo3/compiler/ScalarInfo;
-	public synthetic fun fromJson (Lcom/squareup/moshi/JsonReader;)Ljava/lang/Object;
-	public fun toJson (Lcom/squareup/moshi/JsonWriter;Lcom/apollographql/apollo3/compiler/ScalarInfo;)V
-	public synthetic fun toJson (Lcom/squareup/moshi/JsonWriter;Ljava/lang/Object;)V
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/apollographql/apollo3/compiler/StringsKt {
