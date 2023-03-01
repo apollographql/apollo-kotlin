@@ -19,9 +19,9 @@ class IncomingOptions(
     val schemaPackageName: String,
 ) {
   companion object {
-    fun resolveSchema(schemaFiles: Collection<File>, rootFolders: List<String>): Pair<Schema, String> {
+    fun resolveSchema(schemaFiles: Collection<File>): Pair<Schema, String> {
       check(schemaFiles.isNotEmpty()) {
-        "No schema file found in:\n${rootFolders.joinToString("\n")}"
+        "No schema file found\n"
       }
 
       val schemaDocuments = schemaFiles.map {

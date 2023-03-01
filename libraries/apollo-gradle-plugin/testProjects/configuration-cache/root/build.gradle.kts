@@ -6,6 +6,9 @@ plugins {
 apollo {
   service("service") {
     packageName.set("com.example")
+    generateApolloMetadata.set(true)
+    isADependencyOf(project(":leaf"))
+
     introspection {
       this.endpointUrl.set("ENDPOINT")
       this.schemaFile.set(file("schema.json"))

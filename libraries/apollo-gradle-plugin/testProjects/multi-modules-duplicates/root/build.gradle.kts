@@ -1,6 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  alias(libs.plugins.apollo)
   id("maven-publish")
 }
 
@@ -16,6 +16,8 @@ apollo {
     alwaysGenerateTypesMatching.set(listOf("Cat"))
     packageNamesFromFilePaths()
     generateApolloMetadata.set(true)
+    isADependencyOf(project(":node1:impl"))
+    isADependencyOf(project(":node2:impl"))
     mapScalar("Date", "java.util.Date")
   }
 }

@@ -1,5 +1,5 @@
-query GetHero {
-    heroDetailQuery {
+query GetCharacter {
+    character {
       ...CharacterFragment
     }
 }

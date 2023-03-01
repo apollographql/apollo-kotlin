@@ -48,7 +48,7 @@ class GradleToolingTests {
             connection.getModel(ApolloGradleToolingModel::class.java)
           }
       Assert.assertEquals(ApolloGradleToolingModel.VERSION, toolingModel.version)
-      Assert.assertEquals(emptyList<String>(), toolingModel.metadataProjectDependencies)
+      Assert.assertEquals(emptyList<String>(), toolingModel.serviceInfos.flatMap { it.upstreamProjects })
 
       val serviceInfo0 = toolingModel.serviceInfos[0]
       Assert.assertEquals("starwars", serviceInfo0.name)
@@ -72,7 +72,7 @@ class GradleToolingTests {
             connection.getModel(ApolloGradleToolingModel::class.java)
           }
       Assert.assertEquals(ApolloGradleToolingModel.VERSION, toolingModel.version)
-      Assert.assertEquals(listOf("node1", "node2"), toolingModel.metadataProjectDependencies)
+      Assert.assertEquals(listOf("node1", "node2"), toolingModel.serviceInfos.flatMap { it.upstreamProjects }.sorted())
     }
   }
 }

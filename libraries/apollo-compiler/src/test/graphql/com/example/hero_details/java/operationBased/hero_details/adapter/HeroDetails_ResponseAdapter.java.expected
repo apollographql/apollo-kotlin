@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_details.HeroDetails;
-import com.example.hero_details.type.adapter.hero_type_ResponseAdapter;
-import com.example.hero_details.type.hero_type;
+import com.example.hero_details.type.Hero_type;
+import com.example.hero_details.type.adapter.Hero_type_ResponseAdapter;
 import java.io.IOException;
 import java.lang.Integer;
 import java.lang.Override;
@@ -64,14 +64,14 @@ public class HeroDetails_ResponseAdapter {
     @Override
     public HeroDetails.Hero fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
-      hero_type _type = null;
+      Hero_type _type = null;
       String _name = null;
       HeroDetails.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _type = hero_type_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: _type = Hero_type_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           case 2: _friendsConnection = new ObjectAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
           default: break loop;
@@ -93,7 +93,7 @@ public class HeroDetails_ResponseAdapter {
     public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
         HeroDetails.Hero value) throws IOException {
       writer.name("type");
-      hero_type_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.type);
+      Hero_type_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.type);
 
       writer.name("name");
       Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);

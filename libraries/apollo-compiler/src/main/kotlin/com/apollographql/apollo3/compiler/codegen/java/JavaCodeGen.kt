@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.JavaCodegenOptions
+import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -55,17 +56,17 @@ internal class JavaCodeGen(
     val ir = commonCodegenOptions.ir
     check(ir is DefaultIrOperations)
 
-    val resolverInfos = commonCodegenOptions.incomingResolverInfos
+    val resolverInfos = commonCodegenOptions.incomingCodegenMetadata.map { it.resolverInfo }
     val operationOutput = commonCodegenOptions.operationOutput
     val useSemanticNaming = commonCodegenOptions.useSemanticNaming
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator
-    val schemaPackageName = commonCodegenOptions.schemaPackageName
+    val schemaPackageName = commonCodegenOptions.codegenSchema.packageName
     val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
     val generateQueryDocument = commonCodegenOptions.generateQueryDocument
     val generatedSchemaName = commonCodegenOptions.generatedSchemaName
     val flatten = ir.flattenModels
     val classesForEnumsMatching = javaCodegenOptions.classesForEnumsMatching
-    val scalarMapping = commonCodegenOptions.scalarMapping
+    val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping
     val generateDataBuilders = ir.generateDataBuilders
     val generateModelBuilders = javaCodegenOptions.generateModelBuilders
     val generatePrimitiveTypes = javaCodegenOptions.generatePrimitiveTypes
@@ -78,10 +79,9 @@ internal class JavaCodeGen(
       JavaResolver(resolverInfo.entries, acc, scalarMapping, generatePrimitiveTypes, nullableFieldStyle, hooks)
     }
     val irSchema = commonCodegenOptions.irSchema
-    check(irSchema is DefaultIrSchema)
 
     val layout = JavaCodegenLayout(
-        allTypes = irSchema.allTypes,
+        allTypes = commonCodegenOptions.codegenSchema.allTypes(),
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
@@ -97,42 +97,50 @@ internal class JavaCodeGen(
     val builders = mutableListOf<JavaClassBuilder>()
 
 
-    irSchema.irScalars.forEach { irScalar ->
-      builders.add(CustomScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
-    }
-    irSchema.irEnums.forEach { irEnum ->
-      if (classesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
-        builders.add(EnumAsClassBuilder(context, irEnum))
-      } else {
-        builders.add(EnumAsEnumBuilder(context, irEnum))
+    if (irSchema is DefaultIrSchema) {
+      irSchema.irScalars.forEach { irScalar ->
+        builders.add(CustomScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
       }
-      builders.add(EnumResponseAdapterBuilder(context, irEnum))
-    }
-    irSchema.irInputObjects.forEach { irInputObject ->
-      builders.add(InputObjectBuilder(context, irInputObject))
-      builders.add(InputObjectAdapterBuilder(context, irInputObject))
-    }
-    irSchema.irUnions.forEach { irUnion ->
-      builders.add(UnionBuilder(context, irUnion))
-      if (generateDataBuilders) {
-        builders.add(UnionBuilderBuilder(context, irUnion))
-        builders.add(UnionUnknownMapBuilder(context, irUnion))
-        builders.add(UnionMapBuilder(context, irUnion))
+      irSchema.irEnums.forEach { irEnum ->
+        if (classesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
+          builders.add(EnumAsClassBuilder(context, irEnum))
+        } else {
+          builders.add(EnumAsEnumBuilder(context, irEnum))
+        }
+        builders.add(EnumResponseAdapterBuilder(context, irEnum))
       }
-    }
-    irSchema.irInterfaces.forEach { irInterface ->
-      builders.add(InterfaceBuilder(context, irInterface))
-      if (generateDataBuilders) {
-        builders.add(InterfaceBuilderBuilder(context, irInterface))
-        builders.add(InterfaceUnknownMapBuilder(context, irInterface))
-        builders.add(InterfaceMapBuilder(context, irInterface))
+      irSchema.irInputObjects.forEach { irInputObject ->
+        builders.add(InputObjectBuilder(context, irInputObject))
+        builders.add(InputObjectAdapterBuilder(context, irInputObject))
       }
-    }
-    irSchema.irObjects.forEach { irObject ->
-      builders.add(ObjectBuilder(context, irObject))
+      irSchema.irUnions.forEach { irUnion ->
+        builders.add(UnionBuilder(context, irUnion))
+        if (generateDataBuilders) {
+          builders.add(UnionBuilderBuilder(context, irUnion))
+          builders.add(UnionUnknownMapBuilder(context, irUnion))
+          builders.add(UnionMapBuilder(context, irUnion))
+        }
+      }
+      irSchema.irInterfaces.forEach { irInterface ->
+        builders.add(InterfaceBuilder(context, irInterface))
+        if (generateDataBuilders) {
+          builders.add(InterfaceBuilderBuilder(context, irInterface))
+          builders.add(InterfaceUnknownMapBuilder(context, irInterface))
+          builders.add(InterfaceMapBuilder(context, irInterface))
+        }
+      }
+      irSchema.irObjects.forEach { irObject ->
+        builders.add(ObjectBuilder(context, irObject))
+        if (generateDataBuilders) {
+          builders.add(ObjectBuilderBuilder(context, irObject))
+          builders.add(ObjectMapBuilder(context, irObject))
+        }
+      }
+      if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
+        builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+      }
       if (generateDataBuilders) {
-        builders.add(ObjectBuilderBuilder(context, irObject))
-        builders.add(ObjectMapBuilder(context, irObject))
+        builders.add(BuilderFactoryBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions))
       }
     }
 
@@ -188,13 +196,6 @@ internal class JavaCodeGen(
               )
           )
         }
-
-    if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-      builders.add(SchemaBuilder(context, generatedSchemaName, scalarMapping, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
-    }
-    if (generateDataBuilders) {
-      builders.add(BuilderFactoryBuilder(context, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions))
-    }
 
     builders.forEach { it.prepare() }
     val fileInfos = builders

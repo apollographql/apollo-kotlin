@@ -11,10 +11,9 @@ import com.apollographql.apollo3.ast.Schema
 object IrSchemaBuilder {
   fun build(
       schema: Schema,
-      irOperations: IrOperations,
-      incomingTypes: Set<String>,
+      usedFields: Map<String, Set<String>>,
+      incomingTypes: Set<String>
   ): IrSchema {
-    check(irOperations is DefaultIrOperations)
 
     val irEnums = mutableListOf<IrEnum>()
     val irScalars = mutableListOf<IrScalar>()
@@ -23,11 +22,8 @@ object IrSchemaBuilder {
     val irInterfaces = mutableListOf<IrInterface>()
     val irObjects = mutableListOf<IrObject>()
 
-    val usedFields = irOperations.usedFields
-    val usedTypes = irOperations.usedTypes
-
     val visitedTypes = incomingTypes.toMutableSet()
-    val typesStack = usedTypes.toMutableList()
+    val typesStack = usedFields.keys.toMutableList()
     while (typesStack.isNotEmpty()) {
       val name = typesStack.removeFirst()
       if (visitedTypes.contains(name)) {

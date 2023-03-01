@@ -14,7 +14,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.hero_details.adapter.HeroDetails_ResponseAdapter
 import com.example.hero_details.selections.HeroDetailsSelections
-import com.example.hero_details.type.hero_type
+import com.example.hero_details.type.Hero_type
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -55,7 +55,7 @@ public class HeroDetails() : Query<HeroDetails.Data> {
       /**
        * Hero type
        */
-      public val type: hero_type,
+      public val type: Hero_type,
       /**
        * The name of the character
        */

@@ -2,11 +2,6 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
-import com.apollographql.apollo3.ast.Schema
-import com.apollographql.apollo3.ast.introspection.toGQLDocument
-import com.apollographql.apollo3.ast.introspection.toSchema
-import com.apollographql.apollo3.ast.toSchema
-import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrOperations
@@ -14,6 +9,8 @@ import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.squareup.moshi.JsonClass
 import dev.zacsweers.moshix.sealed.annotations.TypeLabel
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.io.File
 
 
@@ -95,14 +92,10 @@ class IrOptions(
      * The files containing the operations and fragments
      */
     val executableFiles: Set<File>,
-    /**
-     * The schema as obtained by [toGQLDocument].[toSchema]
-     *
-     * In order to pass a single schema file, see the secondary constructors
-     */
-    val schema: Schema,
 
-    val codegenModels: String,
+    /**
+     */
+    val codegenSchema: CodegenSchema,
 
     /**
      * The fragments from upstream
@@ -150,43 +143,28 @@ class IrOptions(
      * For input types, this will recursively add all input fields types/enums.
      */
     val alwaysGenerateTypesMatching: Set<String>,
-
-    /**
-     * Whether to generate the type safe Data builders. These are mainly used for tests but can also be used for other use
-     * cases too.
-     */
-    val generateDataBuilders: Boolean,
 )
 
 @ApolloExperimental
-class CommonCodegenOptions(
+data class CommonCodegenOptions(
+    val codegenSchema: CodegenSchema,
     val ir: IrOperations,
-    val irSchema: IrSchema,
+    val irSchema: IrSchema?,
     val operationOutput: OperationOutput,
 
-    val incomingResolverInfos: List<ResolverInfo>,
+    val incomingCodegenMetadata: List<CodegenMetadata>,
 
-    /**
-     * The schema as obtained by [toGQLDocument].[toSchema]
-     *
-     * In order to pass a single schema file, see the secondary constructors
-     */
-    val schema: Schema,
     /**
      * The directory where to write the generated models
      */
     val outputDir: File,
-    /**
-     * The package name used as a base for input objects, fragments, enums and types
-     */
-    val schemaPackageName: String,
+
     /**
      * The package name used for operations
      */
     val packageNameGenerator: PackageNameGenerator,
 
     //========== codegen options ============
-    val scalarMapping: Map<String, ScalarInfo>,
     val useSemanticNaming: Boolean,
 
     //========== on/off flags to switch some codegen off ============
@@ -229,7 +207,7 @@ class CommonCodegenOptions(
      * Default: "__Schema"
      */
     val generatedSchemaName: String,
-    )
+)
 
 class KotlinCodegenOptions(
     val languageVersion: TargetLanguage,
@@ -324,7 +302,7 @@ class JavaCodegenOptions(
 /**
  * Controls how scalar adapters are used in the generated code.
  */
-@JsonClass(generateAdapter = true, generator = "sealed:type")
+@Serializable
 sealed interface AdapterInitializer
 
 /**
@@ -332,23 +310,29 @@ sealed interface AdapterInitializer
  *
  * e.g. `"com.example.MyAdapter"` or `"com.example.MyAdapter()"`.
  */
-@TypeLabel("Expression")
-@JsonClass(generateAdapter = true)
+@Serializable
+@SerialName("expression")
 class ExpressionAdapterInitializer(val expression: String) : AdapterInitializer
 
 /**
  * The adapter instance will be looked up in the [com.apollographql.apollo3.api.CustomScalarAdapters] provided at runtime.
  */
-@TypeLabel("Runtime")
+@Serializable
+@SerialName("runtime")
 object RuntimeAdapterInitializer : AdapterInitializer
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ScalarInfo(val targetName: String, val adapterInitializer: AdapterInitializer = RuntimeAdapterInitializer)
+
+private val NoOpLogger = object : ApolloCompiler.Logger {
+  override fun warning(message: String) {
+  }
+}
 
 val defaultAlwaysGenerateTypesMatching = emptySet<String>()
 val defaultOperationOutputGenerator = OperationOutputGenerator.Default(OperationIdGenerator.Sha256)
 val defaultScalarMapping = emptyMap<String, ScalarInfo>()
-val defaultLogger = ApolloCompiler.NoOpLogger
+val defaultLogger = NoOpLogger
 const val defaultUseSemanticNaming = true
 const val defaultWarnOnDeprecatedUsages = true
 const val defaultFailOnWarnings = false

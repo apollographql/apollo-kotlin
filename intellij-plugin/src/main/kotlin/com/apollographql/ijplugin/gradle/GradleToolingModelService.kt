@@ -118,7 +118,7 @@ class GradleToolingModelService(
         val serviceInfo = toolingModel.serviceInfos.first { it.name == serviceName }
         serviceInfo.graphqlSrcDirs +
             serviceInfo.schemaFiles +
-            toolingModel.metadataProjectDependencies.flatMap { getAllDirsForProjectService(it, serviceName) }
+            serviceInfo.upstreamProjects.flatMap { getAllDirsForProjectService(it, serviceName) }
       }
     }
 

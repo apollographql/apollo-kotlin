@@ -2,8 +2,6 @@ package com.apollographql.apollo3.ast
 
 /**
  * The GraphQL AST definition
- *
- * This is all in one file so we can use sealed classes. Extensions are in gqlxyz.kt
  */
 
 /**
@@ -17,7 +15,7 @@ package com.apollographql.apollo3.ast
  *
  * Whitespace tokens are not mapped to GQLNodes so some formatting will be lost during modification
  */
-interface GQLNode {
+sealed interface GQLNode {
   val sourceLocation: SourceLocation
 
   /**
@@ -110,9 +108,13 @@ interface GQLDescribed {
   val description: String?
 }
 
-interface GQLDefinition : GQLNode
-interface GQLTypeSystemExtension : GQLNode
-interface GQLTypeExtension : GQLTypeSystemExtension, GQLNamed
+interface GQLHasDirectives {
+  val directives: List<GQLDirective>
+}
+
+sealed interface GQLDefinition : GQLNode
+sealed interface GQLTypeSystemExtension : GQLNode
+sealed interface GQLTypeExtension : GQLTypeSystemExtension, GQLNamed
 
 sealed class GQLSelection : GQLNode
 
@@ -313,7 +315,7 @@ class GQLSchemaDefinition(
   }
 }
 
-sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed {
+sealed class GQLTypeDefinition : GQLDefinition, GQLNamed, GQLDescribed, GQLHasDirectives {
   fun isBuiltIn(): Boolean = builtInTypes.contains(this.name)
 
   /**
@@ -343,7 +345,7 @@ class GQLInterfaceTypeDefinition(
     override val description: String?,
     override val name: String,
     val implementsInterfaces: List<String>,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val fields: List<GQLFieldDefinition>,
 ) : GQLTypeDefinition() {
 
@@ -401,7 +403,7 @@ class GQLObjectTypeDefinition(
     override val description: String?,
     override val name: String,
     val implementsInterfaces: List<String>,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val fields: List<GQLFieldDefinition>,
 ) : GQLTypeDefinition() {
 
@@ -460,7 +462,7 @@ class GQLInputObjectTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val inputFields: List<GQLInputValueDefinition>,
 ) : GQLTypeDefinition() {
 
@@ -513,7 +515,7 @@ class GQLScalarTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
 ) : GQLTypeDefinition() {
 
   override val children = directives
@@ -553,7 +555,7 @@ class GQLEnumTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val enumValues: List<GQLEnumValueDefinition>,
 ) : GQLTypeDefinition() {
 
@@ -604,7 +606,7 @@ class GQLUnionTypeDefinition(
     override val sourceLocation: SourceLocation = SourceLocation.UNKNOWN,
     override val description: String?,
     override val name: String,
-    val directives: List<GQLDirective>,
+    override val directives: List<GQLDirective>,
     val memberTypes: List<GQLNamedType>,
 ) : GQLTypeDefinition() {
 

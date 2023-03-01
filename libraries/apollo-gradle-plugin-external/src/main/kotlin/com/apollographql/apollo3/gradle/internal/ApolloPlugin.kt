@@ -6,11 +6,11 @@ import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ExternalDependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.tooling.provider.model.ToolingModelBuilder
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
 import javax.inject.Inject
 
+@Suppress("UnstableApiUsage")
 open class ApolloPlugin
 @Inject
 constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plugin<Project> {
@@ -23,14 +23,9 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
           override fun canBuild(modelName: String) = modelName == ApolloGradleToolingModel::class.java.name
 
           override fun buildAll(modelName: String, project: Project): ApolloGradleToolingModel {
-            val apolloMetadataConfiguration = project.configurations.findByName(ModelNames.metadataConfiguration())
             return DefaultApolloGradleToolingModel(
                 projectName = project.name,
                 serviceInfos = apolloExtension.getServiceInfos(project),
-                metadataProjectDependencies = apolloMetadataConfiguration?.dependencies
-                    ?.filterIsInstance(ProjectDependency::class.java)
-                    ?.map { it.dependencyProject.name }
-                    ?: emptyList()
             )
           }
         }
@@ -57,7 +52,7 @@ constructor(private val toolingModelRegistry: ToolingModelBuilderRegistry) : Plu
   companion object {
     internal val extraHeaders = mapOf(
         "apollographql-client-name" to "apollo-gradle-plugin",
-        "apollographql-client-version" to com.apollographql.apollo3.compiler.APOLLO_VERSION
+        "apollographql-client-version" to APOLLO_VERSION
     )
   }
 }

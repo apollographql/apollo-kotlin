@@ -8,19 +8,19 @@ import com.squareup.moshi.JsonClass
  * This allows children modules to reference classes generated in parents (and know when to skip generating them).
  */
 @JsonClass(generateAdapter = true)
-class ResolverInfo(
+internal class ResolverInfo(
     val magic: String,
     val version: String,
     val entries: List<ResolverEntry>
 )
 
 @JsonClass(generateAdapter = true)
-class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
+internal class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())
 }
 
 @JsonClass(generateAdapter = true)
-class ResolverMemberName(val className: ResolverClassName, val name: String)
+internal class ResolverMemberName(val className: ResolverClassName, val name: String)
 
 /**
  * Must be a data class because it is used as a key in resolvers
@@ -48,7 +48,7 @@ enum class ResolverKeyKind {
 }
 
 @JsonClass(generateAdapter = true)
-class ResolverEntry(
+internal class ResolverEntry(
     val key: ResolverKey,
     val className: ResolverClassName
 )

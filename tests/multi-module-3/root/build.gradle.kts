@@ -6,14 +6,13 @@ plugins {
 
 dependencies {
   implementation(golatac.lib("apollo.api"))
-  apolloUsedCoordinates(project(":multi-module-3:child"))
 }
 
 apollo {
   service("multimodule3") {
     packageName.set("multimodule3.root")
     alwaysGenerateTypesMatching.set(listOf("Cat"))
-    //usedCoordinates("src/main/graphql/used-coordinates.json")
+    isADependencyOf(project(":multi-module-3:child"))
     generateApolloMetadata.set(true)
     generateDataBuilders.set(true)
   }

@@ -36,6 +36,7 @@ import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.TransformResult
 import com.apollographql.apollo3.ast.coerceInSchemaContextOrThrow
 import com.apollographql.apollo3.ast.definitionFromScope
+import com.apollographql.apollo3.ast.fieldDefinitions
 import com.apollographql.apollo3.ast.findDeprecationReason
 import com.apollographql.apollo3.ast.findNonnull
 import com.apollographql.apollo3.ast.findOptInFeature
@@ -65,9 +66,7 @@ internal class IrOperationsBuilder(
     private val alwaysGenerateTypesMatching: Set<String>,
     private val generateDataBuilders: Boolean,
 ) : FieldMerger {
-  private val usedTypes = mutableSetOf<String>()
   private val usedFields = mutableMapOf<String, MutableSet<String>>()
-
   private val responseBasedBuilder = ResponseBasedModelGroupBuilder(
       schema,
       allFragmentDefinitions,
@@ -91,180 +90,29 @@ internal class IrOperationsBuilder(
     else -> error("codegenModels='$codegenModels' is not supported")
   }
 
-  private fun shouldAlwaysGenerate(name: String) = alwaysGenerateTypesMatching.map { Regex(it) }.any { it.matches(name) }
-
   fun build(): IrOperations {
     val operations = operationDefinitions.map { it.toIr() }
     val fragments = fragmentDefinitions.map { it.toIr() }
 
-    /**
-     * Add schema types that are requested by the user
-     */
-    schema.typeDefinitions.values.forEach {gqlTypeDefinition ->
-      if (shouldAlwaysGenerate(gqlTypeDefinition.name)) {
-        usedTypes.add(gqlTypeDefinition.name)
-      }
-
-      val fields = when(gqlTypeDefinition) {
-        is GQLObjectTypeDefinition -> gqlTypeDefinition.fields
-        is GQLInterfaceTypeDefinition -> gqlTypeDefinition.fields
-        else -> null
-      }
-
-      if (fields != null) {
-        fields.forEach {
-          if (shouldAlwaysGenerate("${gqlTypeDefinition.name}.${it.name}")) {
-            usedFields.putField(gqlTypeDefinition.name, it.name)
-          }
-        }
-      }
-    }
+    addUserCoordinates(schema, alwaysGenerateTypesMatching, usedFields)
 
     /**
-     * Add the types that are needed by data builders
-     * Hydrate the output types.
-     * No need to add recursively here, this was done while scanning the operations already.
-     * visitedOutputTypes contains a map of type -> set of used fields
+     * Loop to add referenced types
+     *
+     * - Add the types that are needed by data builders
+     * - Add the types that are referenced in CompiledGraphQL
      */
-    val hydratedUsedFields = mutableMapOf<String, MutableSet<String>>()
-    if (generateDataBuilders) {
-      usedFields.entries.forEach { entry ->
-        when (val typeDefinition = schema.typeDefinition(entry.key)) {
-          is GQLObjectTypeDefinition -> {
-            typeDefinition.implementsInterfaces.forEach {
-              /**
-               * Make sure data builders generate the map interface
-               */
-              hydratedUsedFields.putType(it)
-            }
-            hydratedUsedFields.putAllFields(typeDefinition.name, entry.value)
-          }
-
-          is GQLInterfaceTypeDefinition -> {
-            /**
-             * Add all possible types because the user might want to use any of them
-             * GetHeroQuery.Data {
-             *   hero = buildHuman {}  // or buildDroid {}
-             * }
-             */
-            schema.typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>()
-                .filter {
-                  it.implementsInterfaces.contains(typeDefinition.name)
-                }
-                .forEach {
-                  hydratedUsedFields.putAllFields(it.name, entry.value)
-                }
-
-            /**
-             * And also add the fields on the interface itself for building the "Other" builder.
-             * Note that this over-generates a bit in cases where fragments conditions are always true:
-             *
-             * ```graphql
-             * {
-             *   cat {
-             *     ... on Animal {
-             *       species
-             *     }
-             *   }
-             * }
-             * ```
-             *
-             * In the above case, there's no reason a data builder would need to create a fallback animal
-             * yet `buildOtherAnimal` will be generated
-             */
-            hydratedUsedFields.putAllFields(typeDefinition.name, entry.value)
-          }
-
-          is GQLUnionTypeDefinition -> {
-            /**
-             * Same logic as for interface above
-             */
-            typeDefinition.memberTypes.forEach {
-              hydratedUsedFields.putAllFields(it.name, entry.value)
-            }
-            hydratedUsedFields.putAllFields(typeDefinition.name, entry.value)
-          }
-
-          else -> Unit // Nothing to do
-        }
-      }
-
-      usedTypes += hydratedUsedFields.keys
-    }
-
-    /**
-     * Add schema types that are referenced indirectly
-     */
-    val visitedNames = mutableSetOf<String>()
-    val namesStack = usedTypes.toMutableList()
-    while (namesStack.isNotEmpty()) {
-      val name = namesStack.removeFirst()
-      if (visitedNames.contains(name)) {
+    val visitedTypes = mutableSetOf<String>()
+    val typesToVisit = usedFields.keys.toMutableList()
+    while(typesToVisit.isNotEmpty()) {
+      val name = typesToVisit.removeFirst()
+      if (visitedTypes.contains(name)) {
         continue
       }
-      visitedNames.add(name)
+      visitedTypes.add(name)
 
-      when(val typeDefinition = schema.typeDefinition(name)) {
-        is GQLInputObjectTypeDefinition -> {
-          /**
-           * Loop on the input types.
-           * Recursively add all their input fields types.
-           * Note that input types may contain cycles, so we have to keep track of visited types to
-           * avoid looping endlessly (in addition to not computing them multiple times)
-           */
-          typeDefinition.inputFields.forEach {
-            when (val fieldType = schema.typeDefinition(it.type.rawType().name)) {
-              is GQLScalarTypeDefinition -> namesStack.add(fieldType.name)
-              is GQLEnumTypeDefinition -> namesStack.add(fieldType.name)
-              is GQLInputObjectTypeDefinition -> namesStack.add(fieldType.name)
-              else -> error("output type '${fieldType.name}' used in input position")
-            }
-          }
-        }
-
-        is GQLUnionTypeDefinition -> {
-          /**
-           * Unions reference their members, generate them:
-           *
-           * public class SearchResult {
-           *   public companion object {
-           *     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
-           *   }
-           * }
-           */
-          typeDefinition.memberTypes.forEach {
-            namesStack.add(it.name)
-          }
-        }
-        is GQLInterfaceTypeDefinition -> {
-          /**
-           * Interface classes reference their super interfaces, generate them:
-           *
-           * public class Character {
-           *   public companion object {
-           *     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
-           *   }
-           * }
-           */
-          typeDefinition.implementsInterfaces.forEach {
-            namesStack.add(it)
-          }
-        }
+      when (val typeDefinition = schema.typeDefinition(name)) {
         is GQLObjectTypeDefinition -> {
-          /**
-           * Object classes reference their super interfaces, generate them:
-           *
-           * public class Droid {
-           *   public companion object {
-           *     public val type: ObjectType =
-           *         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
-           *   }
-           * }
-           */
-          typeDefinition.implementsInterfaces.forEach {
-            namesStack.add(it)
-          }
-
           if (generateDataBuilders) {
             /**
              * DataBuilder maps reference all their super types, including unions
@@ -278,20 +126,119 @@ internal class IrOperationsBuilder(
                 it.name == typeDefinition.name
               }
             }.forEach {
-              namesStack.add(it.name)
+              typesToVisit.add(it.name)
+              usedFields.putType(it.name)
+            }
+          }
+
+          /**
+           * Object classes reference their super interfaces, generate them:
+           *
+           * public class Droid {
+           *   public companion object {
+           *     public val type: ObjectType =
+           *         ObjectType.Builder(name = "Droid").interfaces(listOf(Character.type)).build()
+           *   }
+           * }
+           *
+           * Also Make sure data builders generate the map interface
+           */
+          typeDefinition.implementsInterfaces.forEach {
+            usedFields.putType(it)
+            typesToVisit.add(it)
+          }
+        }
+
+        is GQLInterfaceTypeDefinition -> {
+          if (generateDataBuilders) {
+            /**
+             * Add all possible types because the user might want to use any of them
+             * GetHeroQuery.Data {
+             *   hero = buildHuman {}  // or buildDroid {}
+             * }
+             */
+            schema.typeDefinitions.values.filterIsInstance<GQLObjectTypeDefinition>()
+                .filter {
+                  it.implementsInterfaces.contains(typeDefinition.name)
+                }
+                .forEach {
+                  /**
+                   * Add all the fields of the interface to the implementing objects
+                   *
+                   * This is suboptimal. We should traverse from the bottom most types
+                   * and collect used fields as we go up the type hierarchy
+                   */
+                  usedFields.putAllFields(it.name, usedFields[name].orEmpty())
+                  typesToVisit.add(it.name)
+                }
+          }
+          /**
+           * Interface classes reference their super interfaces, generate them:
+           *
+           * public class Character {
+           *   public companion object {
+           *     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
+           *   }
+           * }
+           * also Make sure data builders generate the map interface
+           */
+          typeDefinition.implementsInterfaces.forEach {
+            usedFields.putType(it)
+            typesToVisit.add(it)
+          }
+        }
+
+        is GQLUnionTypeDefinition -> {
+          /**
+           * Unions reference their members, generate them:
+           *
+           * public class SearchResult {
+           *   public companion object {
+           *     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
+           *   }
+           * }
+           */
+            typeDefinition.memberTypes.forEach {
+              if (generateDataBuilders) {
+                usedFields.putAllFields(it.name, usedFields[name].orEmpty())
+              } else {
+                usedFields.putType(it.name)
+              }
+              typesToVisit.add(it.name)
+            }
+        }
+        is GQLInputObjectTypeDefinition -> {
+          /**
+           * Loop on the input types.
+           * Recursively add all their input fields types.
+           * Note that input types may contain cycles, so we have to keep track of visited types to
+           * avoid looping endlessly (in addition to not computing them multiple times)
+           */
+          typeDefinition.inputFields.forEach {
+            when (val fieldType = schema.typeDefinition(it.type.rawType().name)) {
+              is GQLScalarTypeDefinition -> {
+                typesToVisit.add(fieldType.name)
+                usedFields.putType(fieldType.name)
+              }
+              is GQLEnumTypeDefinition -> {
+                typesToVisit.add(fieldType.name)
+                usedFields.putType(fieldType.name)
+              }
+              is GQLInputObjectTypeDefinition -> {
+                typesToVisit.add(fieldType.name)
+                usedFields.putType(fieldType.name)
+              }
+              else -> error("output type '${fieldType.name}' used in input position")
             }
           }
         }
       }
     }
 
-
     return DefaultIrOperations(
         operations = operations,
         fragments = fragments,
-        usedTypes = visitedNames,
-        usedFields = hydratedUsedFields,
-        codegenModels = codegenModels,
+        usedFields = usedFields,
         flattenModels = flattenModels,
         decapitalizeFields = decapitalizeFields,
         fragmentDefinitions = fragmentDefinitions,
@@ -344,7 +291,7 @@ internal class IrOperationsBuilder(
       else -> null
     }
     // Add the root type to use from the selections
-    usedTypes.add(typeDefinition.name)
+    usedFields.putType(typeDefinition.name)
     return IrOperation(
         name = name!!,
         description = description,
@@ -381,7 +328,7 @@ internal class IrOperationsBuilder(
     )
 
     // Add the root type to use from the fragment selections
-    usedTypes.add(typeCondition.name)
+    usedFields.putType(typeCondition.name)
     return IrFragmentDefinition(
         name = name,
         description = description,
@@ -453,7 +400,7 @@ internal class IrOperationsBuilder(
    * Maps to [IrType]
    */
   private fun GQLType.toIr(): IrType {
-    usedTypes.add(rawType().name)
+    usedFields.putType(rawType().name)
     return toIr(schema)
   }
 
@@ -482,31 +429,6 @@ internal class IrOperationsBuilder(
       val parentType: String,
   ) {
     val responseName = alias ?: name
-  }
-
-  private fun MutableMap<String, MutableSet<String>>.putField(typeName: String, fieldName: String) {
-    compute(typeName) { _, v ->
-      if (v == null) {
-        mutableSetOf(fieldName)
-      } else {
-        v.add(fieldName)
-        v
-      }
-    }
-  }
-
-  private fun MutableMap<String, MutableSet<String>>.putAllFields(typeName: String, fields: MutableSet<String>) {
-    compute(typeName) { _, v ->
-      (v ?: mutableSetOf()).apply {
-        this.addAll(fields)
-      }
-    }
-  }
-
-  private fun MutableMap<String, MutableSet<String>>.putType(typeName: String) {
-    compute(typeName) { _, v ->
-      v ?: mutableSetOf()
-    }
   }
 
   override fun merge(fields: List<FieldWithParent>): List<MergedField> {
@@ -563,7 +485,40 @@ internal class IrOperationsBuilder(
         it.forceOptional
       }
 
-      usedFields.putField(first.parentType, first.name)
+      if (generateDataBuilders) {
+        /**
+         * Keep track of used fields.
+         *
+         * Note1: we don't want to track this if generateDataBuilders is false:
+         *
+         * ```graphql
+         * {
+         *   animal {
+         *     ... on Cat {
+         *        meow # We don't need to track Cat.meow here as Cat is not used unless data builders are enabled
+         *     }
+         *   }
+         * }
+         * ```
+         *
+         * Note2: that this over-generates a bit in cases where fragments conditions are always true and parentType is an interface:
+         *
+         * ```graphql
+         * {
+         *   cat {
+         *     ... on Animal {
+         *       species
+         *     }
+         *   }
+         * }
+         * ```
+         *
+         * In the above case, there's no reason a data builder would need to create a fallback animal
+         * yet `buildOtherAnimal` will be generated
+         */
+        usedFields.putField(first.parentType, first.name)
+      }
+
       /**
        * We track field usages, but we also need to track the type itself because it might be that there is only fragments
        * node {
@@ -626,6 +581,67 @@ internal class IrOperationsBuilder(
           selections = childSelections,
           rawTypeName = first.type.rawType().name,
       )
+    }
+  }
+
+  companion object {
+    private fun MutableMap<String, MutableSet<String>>.putField(typeName: String, fieldName: String) {
+      compute(typeName) { _, v ->
+        if (v == null) {
+          mutableSetOf(fieldName)
+        } else {
+          v.add(fieldName)
+          v
+        }
+      }
+    }
+
+    private fun MutableMap<String, MutableSet<String>>.putAllFields(typeName: String, fields: Set<String>) {
+      compute(typeName) { _, v ->
+        (v ?: mutableSetOf()).apply {
+          this.addAll(fields)
+        }
+      }
+    }
+
+    private fun MutableMap<String, MutableSet<String>>.putType(typeName: String) {
+      compute(typeName) { _, v ->
+        v ?: mutableSetOf()
+      }
+    }
+
+    fun addUserCoordinates(
+        schema: Schema,
+        alwaysGenerateTypesMatching: Set<String>,
+        usedFields: MutableMap<String, MutableSet<String>>,
+    ) {
+      val regexes = alwaysGenerateTypesMatching.map { Regex(it) }
+
+      /**
+       * Add schema types that are requested by the user
+       */
+      val visitedTypes = mutableSetOf<String>()
+      val typesToVisit = schema.typeDefinitions.values.map { it.name }.toMutableList()
+      while (typesToVisit.isNotEmpty()) {
+        val type = typesToVisit.removeFirst()
+        if (visitedTypes.contains(type)) {
+          continue
+        }
+        visitedTypes.add(type)
+
+        if (regexes.any { it.matches(type) }) {
+          usedFields.putType(type)
+        }
+
+        val gqlTypeDefinition = schema.typeDefinition(type)
+        gqlTypeDefinition.fieldDefinitions(schema).forEach { gqlFieldDefinition ->
+          if (regexes.any { it.matches("${gqlTypeDefinition.name}.${gqlFieldDefinition.name}") }) {
+            usedFields.putField(gqlTypeDefinition.name, gqlFieldDefinition.name)
+            // Recursively add types used by this field
+            typesToVisit.add(gqlFieldDefinition.type.rawType().name)
+          }
+        }
+      }
     }
   }
 }

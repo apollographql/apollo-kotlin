@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.CommonCodegenOptions
 import com.apollographql.apollo3.compiler.KotlinCodegenOptions
+import com.apollographql.apollo3.compiler.allTypes
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKey
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
@@ -49,11 +50,11 @@ internal object KotlinCodeGen {
     check(ir is DefaultIrOperations)
 
     val operationOutput = commonCodegenOptions.operationOutput
-    val resolverInfos = commonCodegenOptions.incomingResolverInfos
+    val resolverInfos = commonCodegenOptions.incomingCodegenMetadata.map { it.resolverInfo }
     val generateAsInternal = kotlinCodegenOptions.generateAsInternal
     val useSemanticNaming = commonCodegenOptions.useSemanticNaming
     val packageNameGenerator = commonCodegenOptions.packageNameGenerator
-    val schemaPackageName = commonCodegenOptions.schemaPackageName
+    val schemaPackageName = commonCodegenOptions.codegenSchema.packageName
     val generateFilterNotNull = kotlinCodegenOptions.generateFilterNotNull
     val generateFragmentImplementations = commonCodegenOptions.generateFragmentImplementations
     val generateQueryDocument = commonCodegenOptions.generateQueryDocument
@@ -62,7 +63,7 @@ internal object KotlinCodeGen {
     val flatten = ir.flattenModels
     val sealedClassesForEnumsMatching = kotlinCodegenOptions.sealedClassesForEnumsMatching
     val targetLanguageVersion = kotlinCodegenOptions.languageVersion
-    val scalarMapping = commonCodegenOptions.scalarMapping
+    val scalarMapping = commonCodegenOptions.codegenSchema.scalarMapping
     val addJvmOverloads = kotlinCodegenOptions.addJvmOverloads
     val requiresOptInAnnotation = kotlinCodegenOptions.requiresOptInAnnotation
     val decapitalizeFields = ir.decapitalizeFields
@@ -75,10 +76,9 @@ internal object KotlinCodeGen {
     }
 
     val irSchema = commonCodegenOptions.irSchema
-    check (irSchema is DefaultIrSchema)
 
     val layout = KotlinCodegenLayout(
-        allTypes = irSchema.allTypes,
+        allTypes = commonCodegenOptions.codegenSchema.allTypes(),
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
         schemaPackageName = schemaPackageName,
@@ -92,29 +92,39 @@ internal object KotlinCodeGen {
     )
     val builders = mutableListOf<CgFileBuilder>()
 
-    irSchema.irScalars.forEach {irScalar ->
-      builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
-    }
-    irSchema.irEnums.forEach {irEnum ->
-      if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
-        builders.add(EnumAsSealedBuilder(context, irEnum))
-      } else {
-        builders.add(EnumAsEnumBuilder(context, irEnum))
+    if (irSchema is DefaultIrSchema) {
+      irSchema.irScalars.forEach {irScalar ->
+        builders.add(ScalarBuilder(context, irScalar, scalarMapping.get(irScalar.name)?.targetName))
       }
-      builders.add(EnumResponseAdapterBuilder(context, irEnum))
-    }
-    irSchema.irInputObjects.forEach { irInputObject ->
-      builders.add(InputObjectBuilder(context, irInputObject))
-      builders.add(InputObjectAdapterBuilder(context, irInputObject))
-    }
-    irSchema.irUnions.forEach {irUnion ->
-      builders.add(UnionBuilder(context, irUnion, generateDataBuilders))
-    }
-    irSchema.irInterfaces.forEach {irInterface ->
-      builders.add(InterfaceBuilder(context, irInterface, generateDataBuilders))
-    }
-    irSchema.irObjects.forEach { irObject ->
-      builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
+      irSchema.irEnums.forEach {irEnum ->
+        if (sealedClassesForEnumsMatching.any { Regex(it).matches(irEnum.name) }) {
+          builders.add(EnumAsSealedBuilder(context, irEnum))
+        } else {
+          builders.add(EnumAsEnumBuilder(context, irEnum))
+        }
+        builders.add(EnumResponseAdapterBuilder(context, irEnum))
+      }
+      irSchema.irInputObjects.forEach { irInputObject ->
+        builders.add(InputObjectBuilder(context, irInputObject))
+        builders.add(InputObjectAdapterBuilder(context, irInputObject))
+      }
+      irSchema.irUnions.forEach {irUnion ->
+        builders.add(UnionBuilder(context, irUnion, generateDataBuilders))
+      }
+      irSchema.irInterfaces.forEach {irInterface ->
+        builders.add(InterfaceBuilder(context, irInterface, generateDataBuilders))
+      }
+      irSchema.irObjects.forEach { irObject ->
+        builders.add(ObjectBuilder(context, irObject, generateDataBuilders))
+      }
+      if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
+        builders.add(SchemaBuilder(context, generatedSchemaName, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
+        builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
+      }
+
+      if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
+        builders.add(PaginationBuilder(context, irSchema.connectionTypes))
+      }
     }
 
     ir.fragments
@@ -175,14 +185,6 @@ internal object KotlinCodeGen {
           )
         }
 
-    if (generateSchema && context.resolver.resolve(ResolverKey(ResolverKeyKind.Schema, "")) == null) {
-      builders.add(SchemaBuilder(context, generatedSchemaName, irSchema.irObjects, irSchema.irInterfaces, irSchema.irUnions, irSchema.irEnums))
-      builders.add(CustomScalarAdaptersBuilder(context, scalarMapping))
-    }
-
-    if (irSchema.connectionTypes.isNotEmpty() && context.resolver.resolve(ResolverKey(ResolverKeyKind.Pagination, "")) == null) {
-      builders.add(PaginationBuilder(context, irSchema.connectionTypes))
-    }
 
     /**
      * 1st pass: call prepare on all builders

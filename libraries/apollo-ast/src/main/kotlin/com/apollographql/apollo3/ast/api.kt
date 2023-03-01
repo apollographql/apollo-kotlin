@@ -8,6 +8,7 @@ import com.apollographql.apollo3.ast.internal.ExecutableValidationScope
 import com.apollographql.apollo3.ast.internal.antlrParse
 import com.apollographql.apollo3.ast.internal.toGQLDocument
 import com.apollographql.apollo3.ast.internal.toGQLSelection
+import com.apollographql.apollo3.ast.internal.toGQLType
 import com.apollographql.apollo3.ast.internal.toGQLValue
 import com.apollographql.apollo3.ast.internal.validateSchema
 import okio.BufferedSource
@@ -50,6 +51,14 @@ fun BufferedSource.parseAsGQLDocument(filePath: String? = null): GQLResult<GQLDo
 @ApolloExperimental
 fun BufferedSource.parseAsGQLValue(filePath: String? = null): GQLResult<GQLValue> = use { source ->
   return antlrParse(source, filePath, { it.value() }, { it.toGQLValue(filePath) })
+}
+
+/**
+ * Parses the source to a [GQLType], validating the syntax but not the contents of the value.
+ */
+@ApolloExperimental
+fun BufferedSource.parseAsGQLType(filePath: String? = null): GQLResult<GQLType> = use { source ->
+  return antlrParse(source, filePath, { it.type() }, { it.toGQLType(filePath) })
 }
 
 /**

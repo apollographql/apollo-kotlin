@@ -1,14 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.java
 
+import com.apollographql.apollo3.compiler.CodegenType
 import com.apollographql.apollo3.compiler.PackageNameGenerator
 import com.apollographql.apollo3.compiler.codegen.CodegenLayout
 import com.apollographql.apollo3.compiler.escapeJavaReservedWord
 import com.apollographql.apollo3.compiler.escapeTypeReservedWord
-import com.apollographql.apollo3.compiler.ir.IrOperations
-import com.apollographql.apollo3.compiler.ir.IrSchemaType
 
 internal class JavaCodegenLayout(
-    allTypes: List<IrSchemaType>,
+    allTypes: List<CodegenType>,
     packageNameGenerator: PackageNameGenerator,
     schemaPackageName: String,
     useSemanticNaming: Boolean,

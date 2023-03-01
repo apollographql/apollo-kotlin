@@ -196,14 +196,12 @@ class ServiceTests {
 
       File(dir, "build.gradle").replaceInText("libs.apollo.api", "\"com.apollographql.apollo3:apollo-api:1.2.0\"")
 
-      var exception: Exception? = null
       try {
         TestUtils.executeTask("checkApolloVersions", dir)
+        fail("An exception was expected")
       } catch (e: UnexpectedBuildFailure) {
-        exception = e
         Truth.assertThat(e.message).contains("All apollo versions should be the same")
       }
-      assertNotNull(exception)
     }
   }
 

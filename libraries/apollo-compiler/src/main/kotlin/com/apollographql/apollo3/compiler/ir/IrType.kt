@@ -12,11 +12,16 @@ import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.GQLUnionTypeDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 internal sealed class IrType {
   open fun rawType() = this
 }
 
+@Serializable
+@SerialName("nonnull")
 internal data class IrNonNullType(val ofType: IrType) : IrType() {
   init {
     check(ofType !is IrNonNullType)
@@ -25,10 +30,14 @@ internal data class IrNonNullType(val ofType: IrType) : IrType() {
   override fun rawType() = ofType.rawType()
 }
 
+@Serializable
+@SerialName("optional")
 internal data class IrOptionalType(val ofType: IrType) : IrType() {
   override fun rawType() = ofType.rawType()
 }
 
+@Serializable
+@SerialName("list")
 internal data class IrListType(val ofType: IrType) : IrType() {
   init {
     check(ofType !is IrOptionalType)
@@ -37,12 +46,19 @@ internal data class IrListType(val ofType: IrType) : IrType() {
   override fun rawType() = ofType.rawType()
 }
 
+@Serializable
 internal sealed interface IrNamedType {
   val name: String
 }
 
+@Serializable
+@SerialName("scalar")
 internal data class IrScalarType(override val name: String) : IrType(), IrNamedType
+@Serializable
+@SerialName("input")
 internal data class IrInputObjectType(override val name: String) : IrType(), IrNamedType
+@Serializable
+@SerialName("enum")
 internal data class IrEnumType(override val name: String) : IrType(), IrNamedType
 
 
@@ -64,6 +80,8 @@ internal data class IrEnumType(override val name: String) : IrType(), IrNamedTyp
  * operationData.$operationName.Data.OtherHero.Starship
  *
  */
+@Serializable
+@SerialName("model")
 internal data class IrModelType(val path: String) : IrType()
 
 internal const val MODEL_OPERATION_DATA = "operationData"

@@ -11,6 +11,9 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.hooks.internal.AddInternalCompilerHooks
 import org.gradle.api.Action
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ExternalModuleDependency
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
@@ -630,19 +633,9 @@ interface Service {
   @ApolloExperimental
   val compilerJavaHooks: ListProperty<ApolloCompilerJavaHooks>
 
-  /**
-   * By default, the used coordinates are computed automatically from all modules sharing a schema. This means that
-   * changing a query in a module might trigger task execution in a completely different module. If your used coordinates
-   * do not change too often, you can opt-in to save them in a file that is read instead of checking all modules.
-   *
-   * This is more performant but more error prone because you'll need to keep this file up to date by calling `generate${service}ApolloUsedCoordinates`
-   *
-   * We recommend checking the file in source control. For an example in `src/main/graphql/used-coordinates.json`
-   *
-   * @param file A Json file containing an array of GraphQL coordinates
-   *
-   */
+  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   fun usedCoordinates(file: File)
+  @Deprecated("Not supported any more, use dependsOn() instead", level = DeprecationLevel.ERROR)
   fun usedCoordinates(file: String)
 
   /**
@@ -668,6 +661,12 @@ interface Service {
    * By default, operationOutput is not connected
    */
   fun operationOutputConnection(action: Action<in OperationOutputConnection>)
+
+  /**
+   * Adds a given dependency for the codegen
+   */
+  fun dependsOn(dependencyNotation: Any)
+  fun isADependencyOf(dependencyNotation: Any)
 
   class OperationOutputConnection(
       /**

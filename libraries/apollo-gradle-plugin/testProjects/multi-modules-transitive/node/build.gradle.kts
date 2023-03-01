@@ -1,18 +1,18 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  alias(libs.plugins.apollo)
 }
 
 dependencies {
   implementation(libs.apollo.api)
 
   api(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 apollo {
   service("service") {
     packageNamesFromFilePaths()
-    generateApolloMetadata.set(true)
+    isADependencyOf(project(":leaf"))
+    dependsOn(project(":root"))
   }
 }

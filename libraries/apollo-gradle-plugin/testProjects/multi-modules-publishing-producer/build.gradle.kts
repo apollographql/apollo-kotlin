@@ -16,10 +16,12 @@ apollo {
   service("jvm") {
     packageName.set("com.jvm")
     generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.add(".*")
   }
   service("jvm2") {
     packageName.set("com.jvm2")
     generateApolloMetadata.set(true)
+    alwaysGenerateTypesMatching.add(".*")
   }
 }
 
@@ -27,6 +29,10 @@ configure<PublishingExtension> {
   publications {
     create<MavenPublication>("mavenJava") {
       from(components["java"])
+    }
+    create<MavenPublication>("apollo") {
+      from(components["apollo"])
+      artifactId = "jvm-producer-apollo"
     }
   }
   repositories {

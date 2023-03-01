@@ -6,16 +6,18 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLScalarTypeDefinition
+import com.apollographql.apollo3.ast.GQLSchemaDefinition
+import com.apollographql.apollo3.ast.GQLTypeDefinition
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.checkKeyFields
 import com.apollographql.apollo3.ast.checkNoErrors
+import com.apollographql.apollo3.ast.introspection.toSchemaGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.transformation.addRequiredFields
 import com.apollographql.apollo3.ast.validateAsExecutable
-import com.apollographql.apollo3.compiler.codegen.ResolverInfo
-import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
+import com.apollographql.apollo3.ast.validateAsSchemaAndAddApolloDefinition
 import com.apollographql.apollo3.compiler.codegen.java.JavaCodeGen
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinCodeGen
 import com.apollographql.apollo3.compiler.hooks.ApolloCompilerJavaHooks
@@ -23,7 +25,9 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.DefaultIrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrOperationsBuilder
+import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
+import com.apollographql.apollo3.compiler.ir.toIrOperations
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import okio.buffer
@@ -35,6 +39,64 @@ object ApolloCompiler {
 
   interface Logger {
     fun warning(message: String)
+  }
+
+  fun buildCodegenSchema(
+      schemaFiles: Iterable<File>,
+      logger: Logger,
+      packageNameGenerator: PackageNameGenerator,
+      scalarMapping: Map<String, ScalarInfo>,
+      codegenModels: String,
+      targetLanguage: TargetLanguage,
+      generateDataBuilders: Boolean,
+  ): CodegenSchema {
+
+    val schemaDocuments = schemaFiles.map {
+      it.toSchemaGQLDocument()
+    }
+
+    // Locate the mainSchemaDocument. It's the one that contains the operation roots
+    val mainSchemaDocuments = schemaDocuments.filter {
+      it.definitions.filterIsInstance<GQLSchemaDefinition>().isNotEmpty()
+          || it.definitions.filterIsInstance<GQLTypeDefinition>().any { it.name == "Query" }
+    }
+
+    if (mainSchemaDocuments.size > 1) {
+      error("Multiple schemas found:\n${mainSchemaDocuments.map { it.filePath }.joinToString("\n")}\n" +
+          "Use different services for different schemas")
+    } else if (mainSchemaDocuments.isEmpty()) {
+      error("Schema(s) found:\n${schemaFiles.map { it.absolutePath }.joinToString("\n")}\n" +
+          "But none of them contain type definitions.")
+    }
+    val mainSchemaDocument = mainSchemaDocuments.single()
+
+    val schemaDefinitions = schemaDocuments.flatMap { it.definitions }
+    val schemaDocument = GQLDocument(
+        definitions = schemaDefinitions,
+        filePath = null
+    )
+
+    /**
+     * TODO: use `validateAsSchema` to not automatically add the apollo definitions
+     */
+    val result = schemaDocument.validateAsSchemaAndAddApolloDefinition()
+
+    result.issues.filter { it.severity == Issue.Severity.WARNING }.forEach {
+      // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
+      logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
+    }
+
+    val schema = result.valueAssertNoErrors()
+
+    checkCustomScalars(schema, scalarMapping)
+    return CodegenSchema(
+        schema = schema,
+        packageName = packageNameGenerator.packageName(mainSchemaDocument.filePath!!),
+        codegenModels = codegenModels,
+        scalarMapping = scalarMapping,
+        targetLanguage = targetLanguage,
+        generateDataBuilders = generateDataBuilders
+    )
   }
 
   /**
@@ -63,7 +125,7 @@ object ApolloCompiler {
       options: IrOptions,
   ): IrOperations {
     val executableFiles = options.executableFiles
-    val schema = options.schema
+    val schema = options.codegenSchema.schema
 
     /**
      * Step 1: parse the documents
@@ -78,11 +140,12 @@ object ApolloCompiler {
     val validationResult = GQLDocument(
         definitions = definitions + incomingFragments,
         filePath = null
-    ).validateAsExecutable(options.schema, options.fieldsOnDisjointTypesMustMerge)
+    ).validateAsExecutable(schema, options.fieldsOnDisjointTypesMustMerge)
 
     validationResult.issues.checkNoErrors()
 
-    if (options.codegenModels == MODELS_RESPONSE_BASED || options.codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
+    val codegenModels = options.codegenSchema.codegenModels
+    if (codegenModels == MODELS_RESPONSE_BASED || codegenModels == MODELS_OPERATION_BASED_WITH_INTERFACES) {
       checkConditionalFragments(definitions).checkNoErrors()
     }
 
@@ -111,11 +174,11 @@ object ApolloCompiler {
      */
     val fragmentDefinitions = (definitions.filterIsInstance<GQLFragmentDefinition>() + incomingFragments).associateBy { it.name }
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().map {
-      addRequiredFields(it, options.addTypename, options.schema, fragmentDefinitions)
+      addRequiredFields(it, options.addTypename, schema, fragmentDefinitions)
     }
 
     val operations = definitions.filterIsInstance<GQLOperationDefinition>().map {
-      addRequiredFields(it, options.addTypename, options.schema, fragmentDefinitions)
+      addRequiredFields(it, options.addTypename, schema, fragmentDefinitions)
     }
 
     // Remember the fragments with the possibly updated fragments
@@ -123,12 +186,12 @@ object ApolloCompiler {
 
     // Check if all the key fields are present in operations and fragments
     // (do this only if there are key fields as it may be costly)
-    if (options.schema.hasTypeWithTypePolicy()) {
+    if (schema.hasTypeWithTypePolicy()) {
       operations.forEach {
-        checkKeyFields(it, options.schema, allFragmentDefinitions)
+        checkKeyFields(it, schema, allFragmentDefinitions)
       }
       fragments.forEach {
-        checkKeyFields(it, options.schema, allFragmentDefinitions)
+        checkKeyFields(it, schema, allFragmentDefinitions)
       }
     }
 
@@ -136,18 +199,53 @@ object ApolloCompiler {
      * Build the IR
      */
     return IrOperationsBuilder(
-        schema = options.schema,
+        schema = schema,
         operationDefinitions = operations,
         fragmentDefinitions = fragments,
         allFragmentDefinitions = allFragmentDefinitions,
-        codegenModels = options.codegenModels,
+        codegenModels = codegenModels,
         generateOptionalOperationVariables = options.generateOptionalOperationVariables,
         fieldsOnDisjointTypesMustMerge = options.fieldsOnDisjointTypesMustMerge,
         flattenModels = options.flattenModels,
         decapitalizeFields = options.decapitalizeFields,
         alwaysGenerateTypesMatching = options.alwaysGenerateTypesMatching,
-        generateDataBuilders = options.generateDataBuilders
+        generateDataBuilders = options.codegenSchema.generateDataBuilders
     ).build()
+  }
+
+  fun buildUsedCoordinates(irOperations: IrOperations): UsedCoordinates {
+    return irOperations.usedFields
+  }
+
+  fun buildUsedCoordinates(irOperationsFiles: List<File>): UsedCoordinates {
+    val irOperations = irOperationsFiles.map { it.toIrOperations() }
+
+    val duplicates = irOperations.flatMapIndexed { index, irOperations1 ->
+      irOperations1.fragmentDefinitions.map { it.name to irOperationsFiles.get(index).path }
+    }.groupBy { it.first }.mapValues { it.value.map { it.second } }
+        .entries
+        .filter { it.value.size > 1 }
+        .flatMap { entry ->
+          entry.value.map {
+            "- ${entry.key}: $it"
+          }
+        }
+
+    if (duplicates.isNotEmpty()) {
+      error("Apollo: duplicate fragments:\n${duplicates.joinToString("\n")}")
+    }
+
+    return irOperations.fold(emptyMap()) { acc, irOperations1 ->
+      acc.mergeWith(irOperations1.usedFields)
+    }
+  }
+
+  fun buildIrSchema(
+      codegenSchema: CodegenSchema,
+      usedFields: Map<String, Set<String>>,
+      incomingTypes: Set<String>,
+  ): IrSchema {
+    return IrSchemaBuilder.build(codegenSchema.schema, usedFields, incomingTypes)
   }
 
   fun buildOperationOutput(
@@ -178,49 +276,6 @@ object ApolloCompiler {
     return operationOutput
   }
 
-  private fun codegenSetup(commonOptions: CommonCodegenOptions) {
-    checkCustomScalars(commonOptions.schema, commonOptions.scalarMapping)
-
-    commonOptions.outputDir.deleteRecursively()
-    commonOptions.outputDir.mkdirs()
-  }
-
-  fun writeJava(
-      commonCodegenOptions: CommonCodegenOptions,
-      javaCodegenOptions: JavaCodegenOptions,
-  ): ResolverInfo {
-    val ir = commonCodegenOptions.ir
-    check(ir is DefaultIrOperations)
-
-    codegenSetup(commonCodegenOptions)
-
-    if (ir.codegenModels != MODELS_OPERATION_BASED) {
-      error("Java codegen does not support ${ir.codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
-    }
-    if (!ir.flattenModels) {
-      error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
-          "enclosing one.")
-    }
-
-    return JavaCodeGen(
-        commonCodegenOptions = commonCodegenOptions,
-        javaCodegenOptions = javaCodegenOptions,
-    ).write(outputDir = commonCodegenOptions.outputDir)
-  }
-
-
-  fun writeKotlin(
-      commonCodegenOptions: CommonCodegenOptions,
-      kotlinCodegenOptions: KotlinCodegenOptions,
-  ): ResolverInfo {
-    codegenSetup(commonCodegenOptions)
-
-    return KotlinCodeGen.write(
-        commonCodegenOptions = commonCodegenOptions,
-        kotlinCodegenOptions = kotlinCodegenOptions,
-    )
-  }
-
   private fun checkCustomScalars(schema: Schema, scalarMapping: Map<String, ScalarInfo>) {
     /**
      * Generate the mapping for all custom scalars
@@ -239,13 +294,50 @@ object ApolloCompiler {
     }
   }
 
-  fun writeUsedCoordinates(schema: Schema, files: Set<File>, outputFile: File) {
-    usedCoordinates(schema, files.definitions()).writeTo(outputFile)
+  private fun codegenSetup(commonOptions: CommonCodegenOptions) {
+    commonOptions.outputDir.deleteRecursively()
+    commonOptions.outputDir.mkdirs()
   }
 
-  val NoOpLogger = object : Logger {
-    override fun warning(message: String) {
+  fun writeJava(
+      commonCodegenOptions: CommonCodegenOptions,
+      javaCodegenOptions: JavaCodegenOptions,
+  ): CodegenMetadata {
+    val ir = commonCodegenOptions.ir
+    val codegenModels = commonCodegenOptions.codegenSchema.codegenModels
+    check(ir is DefaultIrOperations)
+
+    codegenSetup(commonCodegenOptions)
+
+    if (codegenModels != MODELS_OPERATION_BASED) {
+      error("Java codegen does not support ${codegenModels}. Only $MODELS_OPERATION_BASED is supported.")
     }
+    if (!ir.flattenModels) {
+      error("Java codegen does not support nested models as it could trigger name clashes when a nested class has the same name as an " +
+          "enclosing one.")
+    }
+
+    return CodegenMetadata(
+        JavaCodeGen(
+            commonCodegenOptions = commonCodegenOptions,
+            javaCodegenOptions = javaCodegenOptions,
+        ).write(outputDir = commonCodegenOptions.outputDir)
+    )
+  }
+
+
+  fun writeKotlin(
+      commonCodegenOptions: CommonCodegenOptions,
+      kotlinCodegenOptions: KotlinCodegenOptions,
+  ): CodegenMetadata {
+    codegenSetup(commonCodegenOptions)
+
+    return CodegenMetadata(
+        KotlinCodeGen.write(
+            commonCodegenOptions = commonCodegenOptions,
+            kotlinCodegenOptions = kotlinCodegenOptions,
+        )
+    )
   }
 
   fun writeSimple(
@@ -265,7 +357,6 @@ object ApolloCompiler {
       generateOptionalOperationVariables: Boolean = defaultGenerateOptionalOperationVariables,
       alwaysGenerateTypesMatching: Set<String> = defaultAlwaysGenerateTypesMatching,
       operationOutputGenerator: OperationOutputGenerator = defaultOperationOutputGenerator,
-      incomingCompilerMetadata: List<CompilerMetadata> = emptyList(),
       useSemanticNaming: Boolean = defaultUseSemanticNaming,
       generateFragmentImplementations: Boolean = defaultGenerateFragmentImplementations,
       generateQueryDocument: Boolean = defaultGenerateQueryDocument,
@@ -288,8 +379,7 @@ object ApolloCompiler {
       addJvmOverloads: Boolean = defaultAddJvmOverloads,
       requiresOptInAnnotation: String = defaultRequiresOptInAnnotation,
       compilerKotlinHooks: ApolloCompilerKotlinHooks = defaultCompilerKotlinHooks,
-  ): CompilerMetadata {
-
+  ): CodegenMetadata {
     /**
      * Inject all built-in scalars
      * I think these are always needed
@@ -302,20 +392,25 @@ object ApolloCompiler {
         setOf("String", "Boolean", "Int", "Float", "ID")
 
     val irOptions = IrOptions(
-        schema = schema,
+        codegenSchema = CodegenSchema(
+            schema = schema,
+            packageName = schemaPackageName,
+            codegenModels = codegenModels,
+            scalarMapping = scalarMapping,
+            targetLanguage = targetLanguage,
+            generateDataBuilders = generateDataBuilders,
+        ),
         executableFiles = executableFiles,
         warnOnDeprecatedUsages = warnOnDeprecatedUsages,
         failOnWarnings = failOnWarnings,
         logger = logger,
         flattenModels = flattenModels,
-        incomingFragments = incomingCompilerMetadata.flatMap { it.fragments },
-        codegenModels = codegenModels,
+        incomingFragments = emptyList(),
         addTypename = addTypename,
         decapitalizeFields = decapitalizeFields,
         fieldsOnDisjointTypesMustMerge = fieldsOnDisjointTypesMustMerge,
         generateOptionalOperationVariables = generateOptionalOperationVariables,
         alwaysGenerateTypesMatching = alwaysGenerateTypesMatching,
-        generateDataBuilders = generateDataBuilders,
     )
 
     val irOperations = buildIrOperations(irOptions)
@@ -327,16 +422,16 @@ object ApolloCompiler {
     )
 
     val irSchema = IrSchemaBuilder.build(
-        schema = irOptions.schema,
-        irOperations = irOperations,
-        incomingTypes = incomingCompilerMetadata.flatMap { it.resolverInfo.entries.filter { it.key.kind == ResolverKeyKind.SchemaType }.map { it.key.id } }.toSet(),
+        schema = irOptions.codegenSchema.schema,
+        usedFields = irOperations.usedFields,
+        incomingTypes = emptySet(),
     )
 
     val commonCodegenOptions = CommonCodegenOptions(
-        schema = irOptions.schema,
+        codegenSchema = irOptions.codegenSchema,
         ir = irOperations,
         irSchema = irSchema,
-        operationOutput= operationOutput,
+        operationOutput = operationOutput,
         outputDir = outputDir,
         useSemanticNaming = useSemanticNaming,
         packageNameGenerator = packageNameGenerator,
@@ -345,12 +440,10 @@ object ApolloCompiler {
         generateSchema = generateSchema,
         generatedSchemaName = generatedSchemaName,
         generateResponseFields = generateResponseFields,
-        schemaPackageName = schemaPackageName,
-        scalarMapping = scalarMapping,
-        incomingResolverInfos = incomingCompilerMetadata.map { it.resolverInfo },
+        incomingCodegenMetadata = emptyList(),
     )
 
-    val resolverInfo = when (targetLanguage) {
+    return when (targetLanguage) {
       TargetLanguage.JAVA -> {
         val javaCodegenOptions = JavaCodegenOptions(
             nullableFieldStyle = nullableFieldStyle,
@@ -382,9 +475,5 @@ object ApolloCompiler {
         )
       }
     }
-    return CompilerMetadata(
-        fragments = irOperations.fragmentDefinitions,
-        resolverInfo = resolverInfo,
-    )
   }
 }

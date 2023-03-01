@@ -1,6 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  alias(libs.plugins.apollo)
   id("application")
 }
 
@@ -10,7 +10,6 @@ dependencies {
   testImplementation(libs.kotlin.test.junit)
 
   implementation(project(":root"))
-  apolloMetadata(project(":root"))
 }
 
 application {
@@ -20,5 +19,6 @@ application {
 apollo {
   service("service") {
     packageName.set("com.library")
+    dependsOn(project(":root"))
   }
 }

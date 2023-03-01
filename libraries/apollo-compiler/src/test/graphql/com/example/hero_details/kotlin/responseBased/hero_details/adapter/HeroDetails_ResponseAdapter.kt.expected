@@ -15,8 +15,8 @@ import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.example.hero_details.HeroDetails
-import com.example.hero_details.type.adapter.hero_type_ResponseAdapter
-import com.example.hero_details.type.hero_type
+import com.example.hero_details.type.Hero_type
+import com.example.hero_details.type.adapter.Hero_type_ResponseAdapter
 import kotlin.Int
 import kotlin.String
 import kotlin.Unit
@@ -56,13 +56,13 @@ public object HeroDetails_ResponseAdapter {
 
       public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           HeroDetails.Data.Hero {
-        var _type: hero_type? = null
+        var _type: Hero_type? = null
         var _name: String? = null
         var _friendsConnection: HeroDetails.Data.Hero.FriendsConnection? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _type = hero_type_ResponseAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _type = Hero_type_ResponseAdapter.fromJson(reader, customScalarAdapters)
             1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
             else -> break
@@ -82,7 +82,7 @@ public object HeroDetails_ResponseAdapter {
         `value`: HeroDetails.Data.Hero,
       ): Unit {
         writer.name("type")
-        hero_type_ResponseAdapter.toJson(writer, customScalarAdapters, value.type)
+        Hero_type_ResponseAdapter.toJson(writer, customScalarAdapters, value.type)
 
         writer.name("name")
         StringAdapter.toJson(writer, customScalarAdapters, value.name)

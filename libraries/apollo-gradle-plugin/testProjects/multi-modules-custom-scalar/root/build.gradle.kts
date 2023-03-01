@@ -1,6 +1,6 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
-  id("com.apollographql.apollo3")
+  alias(libs.plugins.apollo)
   id("maven-publish")
 }
 
@@ -15,6 +15,7 @@ apollo {
   service("service") {
     packageName.set("com.library")
     generateApolloMetadata.set(true)
+    isADependencyOf(project(":leaf"))
     mapScalar("Date", "java.util.Date")
     mapScalar("ID", "com.library.MyID", "com.library.MyIDAdapter()")
   }
