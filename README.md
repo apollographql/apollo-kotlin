@@ -50,17 +50,17 @@ Here's the current matrix of supported features per platform:
 
 ¹: Apple currently includes:
 
-* `macosX64`
-* `macosArm64`
-* `iosArm64`
-* `iosX64`
-* `iosSimulatorArm64`
-* `watchosArm32`
-* `watchosArm64`
-* `watchosSimulatorArm64`
-* `tvosArm64`
-* `tvosX64`
-* `tvosSimulatorArm64`
+- `macosX64`
+- `macosArm64`
+- `iosArm64`
+- `iosX64`
+- `iosSimulatorArm64`
+- `watchosArm32`
+- `watchosArm64`
+- `watchosSimulatorArm64`
+- `tvosArm64`
+- `tvosX64`
+- `tvosSimulatorArm64`
 
 ## Maintainers
 
@@ -98,14 +98,16 @@ Set the package name to use for the generated models:
 
 ```kotlin
 apollo {
-  packageName.set("com.example")
+  service("service") {
+    packageName.set("com.example")
+  }
 }
 ```
 
 Apollo Kotlin supports three types of files:
-* `.graphqls` schema files: describes the types in your backend using the GraphQL syntax.
-* `.json` schema files: describes the types in your backend using the Json syntax.
-* `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
+- `.graphqls` schema files: describes the types in your backend using the GraphQL syntax.
+- `.json` schema files: describes the types in your backend using the Json syntax.
+- `.graphql` executable files: describes your queries and operations in the GraphQL syntax.
 
 By default, Apollo Kotlin requires a schema in your module's `src/main/graphql` directory. You can download a schema using introspection with the `./gradlew downloadApolloSchema` task. Sometimes introspection is disabled and you will have to ask your backend team to provide a schema. Copy this schema to your module:
 
@@ -125,7 +127,7 @@ query HeroQuery($id: String!) {
 }
 ```
 
-Build your project, this will generate a `HeroQuery` class that you can use with an instance of `ApolloClient`:
+Build your project. This will generate a `HeroQuery` class that you can use with an instance of `ApolloClient`:
 
 ```kotlin
   // Create a client
@@ -141,9 +143,22 @@ Build your project, this will generate a `HeroQuery` class that you can use with
 
 **To learn more about other Apollo Kotlin APIs:**
 
-* Execute your first [mutation](https://www.apollographql.com/docs/android/essentials/mutations/)
-* Handle [custom scalar types](https://www.apollographql.com/docs/android/essentials/custom-scalars/)
-* Factor common patterns using [fragments](https://www.apollographql.com/docs/android/essentials/inline-fragments)
+* Execute your first [mutation](https://www.apollographql.com/docs/kotlin/essentials/mutations/)
+* Handle [custom scalar types](https://www.apollographql.com/docs/kotlin/essentials/custom-scalars/)
+* Factor common patterns using [fragments](https://www.apollographql.com/docs/kotlin/essentials/fragments/)
+
+## Requirements
+
+Some platforms have specific requirements:
+
+* Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
+* JDK 8+ (JDK 11+ when using Android Gradle Plugin 7.0+)
+* iOS 13+
+
+For building, it requires:
+
+* Gradle 5.6
+* Kotlin 1.5+ (1.7+ for native)
 
 ## Proguard / R8 configuration
 
@@ -211,37 +226,28 @@ pluginManagement {
 
 And then use the `4.0.0-SNAPSHOT` version for the plugin and libraries.
 
-## Requirements
+## Deprecation policy
 
-Some platforms have specific requirements:
-
-* Android API level 21+ (`apollo-http-cache` and `apollo-adapters` require enabling [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring) on Android API levels < 26)
-* JDK 8+ (JDK 11+ when using Android Gradle Plugin 7.0+)
-* iOS 13+
-
-For building, it requires:
-
-* Gradle 5.6
-* Kotlin 1.5+ (1.7+ for native)
+The project observes [Semantic Versioning](https://semver.org/). No breaking change should be introduced in minor or patch releases.
 
 ## Contributing
 
-If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/CONTRIBUTING.md).
+If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-kotlin/blob/main/CONTRIBUTING.md).
 
 ## Community integrations
 
-* If you're using the [Maven](https://maven.apache.org/) build tool, <https://github.com/aoudiamoncef/apollo-client-maven-plugin> is a Maven plugin that calls the Apollo Android compiler to generate your Java/Kotlin sources.
+* If you're using the [Maven](https://maven.apache.org/) build tool, [apollo-client-maven-plugin](https://github.com/aoudiamoncef/apollo-client-maven-plugin) is a Maven plugin that calls the Apollo Kotlin compiler to generate your Java/Kotlin sources.
 * If you're using [Absinthe Phoenix subscriptions](https://hexdocs.pm/absinthe_phoenix/readme.html), [kotlin-phoenix](https://github.com/ajacquierbret/kotlin-phoenix) has a [PhoenixNetworkTransport](https://github.com/ajacquierbret/kotlin-phoenix/blob/main/kotlinphoenix-adapters/src/commonMain/kotlin/io/github/ajacquierbret/kotlinphoenix/adapters/apollo/PhoenixNetworkTransport.kt) that you can use together with `ApolloClient` ([doc](https://github.com/ajacquierbret/kotlin-phoenix/tree/main/kotlinphoenix-adapters))
 
 ## Additional resources
 
-* [MortyComposeKMM](https://github.com/joreilly/MortyComposeKMM): A Kotlin Multiplatform Github template using Apollo Kotlin, SwiftUI and Jetpack Compose.
-* [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
-* [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Kotlin and the entire journey.
-* [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
-* [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
-* [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
-* [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
+- [MortyComposeKMM](https://github.com/joreilly/MortyComposeKMM): A Kotlin Multiplatform Github template using Apollo Kotlin, SwiftUI and Jetpack Compose.
+- [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
+- [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Kotlin and the entire journey.
+- [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.
+- [apollographql.com](http://www.apollographql.com/) to learn about Apollo open-source and commercial tools.
+- [The Apollo blog](https://www.apollographql.com/blog/) for long-form articles about GraphQL, feature announcements for Apollo, and guest articles from the community.
+- [The Apollo Twitter account](https://twitter.com/apollographql) for in-the-moment news.
 
 ## Who is Apollo?
 
