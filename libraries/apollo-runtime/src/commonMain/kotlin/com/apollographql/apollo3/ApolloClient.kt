@@ -34,6 +34,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
@@ -56,6 +57,7 @@ private constructor(
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
     private val useV3ExceptionHandling: Boolean?,
+    private val ignorePartialData: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
@@ -150,18 +152,40 @@ private constructor(
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
         .proceed(request)
-        .let {
+        .let { flow ->
           if (request.useV3ExceptionHandling == true) {
-            it.onEach { response ->
+            flow.onEach { response ->
               if (response.exception != null) {
                 throw response.exception!!
               }
             }
           } else {
-            it
+            flow
+          }
+        }
+        .let { flow ->
+          if (ignorePartialData == true) {
+            flow.map { response ->
+              if (response.data != null && response.hasErrors()) {
+                response.withNullData()
+              } else {
+                response
+              }
+            }
+          } else {
+            flow
           }
         }
   }
+
+  private fun <D : Operation.Data> ApolloResponse<D>.withNullData() =
+      ApolloResponse.Builder(operation = operation, requestUuid = requestUuid, data = null)
+          .errors(errors)
+          .exception(exception)
+          .extensions(extensions)
+          .addExecutionContext(executionContext)
+          .isLast(isLast)
+          .build()
 
   /**
    * A Builder used to create instances of [ApolloClient]
@@ -241,6 +265,29 @@ private constructor(
     @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
     fun useV3ExceptionHandling(useV3ExceptionHandling: Boolean?): Builder = apply {
       this.useV3ExceptionHandling = useV3ExceptionHandling
+    }
+
+    private var ignorePartialData: Boolean? = null
+
+    /**
+     * Configures whether partial data should be ignored.
+     *
+     * If true, responses with errors will always be surfaced with a null [ApolloResponse.data], even if the received data was not null.
+     * This can simplify error handling at the call site, if you don't care about partial data. E.g.:
+     *
+     * ```
+     * val response = apolloClient.query(MyQuery()).execute()
+     * if (response.data == null) {
+     *   // There were network or GraphQL error(s)
+     * } else {
+     *   // No errors
+     * }
+     * ```
+     *
+     * Default: false
+     */
+    fun ignorePartialData(ignorePartialData: Boolean?): Builder = apply {
+      this.ignorePartialData = ignorePartialData
     }
 
     /**
@@ -549,6 +596,7 @@ private constructor(
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
           useV3ExceptionHandling = useV3ExceptionHandling,
+          ignorePartialData = ignorePartialData,
 
           // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
           // are important to rebuild `networkTransport` (and potentially others)
@@ -570,6 +618,7 @@ private constructor(
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
           .useV3ExceptionHandling(useV3ExceptionHandling)
+          .ignorePartialData(ignorePartialData)
       _networkTransport?.let { builder.networkTransport(it) }
       httpServerUrl?.let { builder.httpServerUrl(it) }
       httpEngine?.let { builder.httpEngine(it) }

@@ -61,6 +61,19 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 }
 ```
 
+### Ignoring partial data
+
+With GraphQL it is possible to receive partial data (both `data` and `errors` are filled), but clients sometimes don't want to handle it and prefer to consider any errors as fatal. To help with this, an option `ApolloClient.ignorePartialData` has been added to force `ApolloResponse.data` to be `null` even if it wasn't null in the response, when there are errors. This can simplify error handling at the call site, e.g.:
+
+```kotlin
+val response = apolloClient.query(MyQuery()).execute()
+if (response.data == null) {
+  // There were network or GraphQL error(s)
+} else {
+  // No errors
+}
+```
+
 ### Exception folding when using the cache
 
 In v3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
@@ -68,7 +81,7 @@ In v3, when using the normalized cache, you could set `emitCacheMisses` to `true
 In v4, this is now the default behavior and `emitCacheMisses` has been removed. 
 With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
 
-To ease the migration to v4, the v3 behavior can be restored by by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
+To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
 
 ### Exceptions in `watch`
 
