@@ -3,9 +3,13 @@ package com.apollographql.ijplugin.gradle
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
 import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
 import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
+import com.apollographql.ijplugin.project.ApolloProjectListener
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.util.dispose
+import com.apollographql.ijplugin.util.isNotDisposed
 import com.apollographql.ijplugin.util.logd
 import com.apollographql.ijplugin.util.logw
+import com.apollographql.ijplugin.util.newDisposable
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
@@ -13,6 +17,7 @@ import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.util.CheckedDisposable
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFileManager
 import org.gradle.tooling.CancellationTokenSource
@@ -28,28 +33,71 @@ import java.util.concurrent.Executors
 class GradleToolingModelService(
     private val project: Project,
 ) : Disposable {
+  private var gradleHasSyncedDisposable: CheckedDisposable? = null
+
   private var gradleCancellation: CancellationTokenSource? = null
   private var abortRequested: Boolean = false
   private val gradleExecutorService = Executors.newSingleThreadExecutor()
+
   var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
 
   init {
     logd("project=${project.name}")
-    startObserveGradleHasSynced()
+    startObserveApolloProject()
+    startOrStopObserveGradleHasSynced()
+    startOrAbortFetchToolingModels()
+  }
+
+  private fun startObserveApolloProject() {
+    logd()
+    project.messageBus.connect(this).subscribe(ApolloProjectListener.TOPIC, object : ApolloProjectListener {
+      override fun apolloProjectChanged(isApolloAndroid2Project: Boolean, isApolloKotlin3Project: Boolean) {
+        logd("isApolloAndroid2Project=$isApolloAndroid2Project isApolloKotlin3Project=$isApolloKotlin3Project")
+        startOrStopObserveGradleHasSynced()
+        startOrAbortFetchToolingModels()
+      }
+    })
+  }
+
+  private fun shouldFetchToolingModels() = project.apolloProjectService.isApolloKotlin3Project
+
+  private fun startOrStopObserveGradleHasSynced() {
+    logd()
+    if (shouldFetchToolingModels()) {
+      startObserveGradleHasSynced()
+    } else {
+      stopObserveGradleHasSynced()
+    }
   }
 
   private fun startObserveGradleHasSynced() {
     logd()
-    project.messageBus.connect(this).subscribe(GradleHasSyncedListener.TOPIC, object : GradleHasSyncedListener {
+    if (gradleHasSyncedDisposable.isNotDisposed()) {
+      logd("Already observing")
+      return
+    }
+    val disposable = newDisposable()
+    gradleHasSyncedDisposable = disposable
+    project.messageBus.connect(disposable).subscribe(GradleHasSyncedListener.TOPIC, object : GradleHasSyncedListener {
       override fun gradleHasSynced() {
         logd()
-        abortFetchToolingModels()
-
-        if (project.apolloProjectService.isApolloKotlin3Project) {
-          fetchToolingModels()
-        }
+        startOrAbortFetchToolingModels()
       }
     })
+  }
+
+  private fun stopObserveGradleHasSynced() {
+    logd()
+    dispose(gradleHasSyncedDisposable)
+    gradleHasSyncedDisposable = null
+  }
+
+  private fun startOrAbortFetchToolingModels() {
+    logd()
+    abortFetchToolingModels()
+    if (shouldFetchToolingModels()) {
+      fetchToolingModels()
+    }
   }
 
   private fun fetchToolingModels() {
