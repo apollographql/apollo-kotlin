@@ -212,17 +212,23 @@ pluginManagement {
 ```
 And then use the `4.0.0-SNAPSHOT` version for the plugin and libraries.
 
+## Deprecation policy
+
+The project observes [Semantic Versioning](https://semver.org/). No breaking change should be introduced in minor or patch releases.
+
 ## Contributing
 
-If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-android/blob/main/Contributing.md).
+If you'd like to contribute, please see [Contributing.md](https://github.com/apollographql/apollo-kotlin/blob/main/CONTRIBUTING.md).
 
 ## Community integrations
 
-* If you're using the [Maven](https://maven.apache.org/) build tool, https://github.com/aoudiamoncef/apollo-client-maven-plugin is a Maven plugin that calls the Apollo Android compiler to generate your Java/Kotlin sources.
+* If you're using the [Maven](https://maven.apache.org/) build tool, [apollo-client-maven-plugin](https://github.com/aoudiamoncef/apollo-client-maven-plugin) is a Maven plugin that calls the Apollo Kotlin compiler to generate your Java/Kotlin sources.
 * If you're using [Absinthe Phoenix subscriptions](https://hexdocs.pm/absinthe_phoenix/readme.html), [kotlin-phoenix](https://github.com/ajacquierbret/kotlin-phoenix) has a [PhoenixNetworkTransport](https://github.com/ajacquierbret/kotlin-phoenix/blob/main/kotlinphoenix-adapters/src/commonMain/kotlin/io/github/ajacquierbret/kotlinphoenix/adapters/apollo/PhoenixNetworkTransport.kt) that you can use together with `ApolloClient` ([doc](https://github.com/ajacquierbret/kotlin-phoenix/tree/main/kotlinphoenix-adapters))
 
 ## Additional resources
 
+- [Confetti](https://github.com/joreilly/Confetti): A Kotlin Multiplatform conference app using Apollo Kotlin, SwiftUI and Jetpack Compose.
+- [MortyComposeKMM](https://github.com/joreilly/MortyComposeKMM): A Kotlin Multiplatform Github template using Apollo Kotlin, SwiftUI and Jetpack Compose.
 - [A journey to Kotlin multiplatform](https://www.youtube.com/watch?v=GN6LHrqyimI): how the project was moved to Kotlin multiplatform, talk given at Kotliners in June 2020.
 - [#125, Fragmented Podcast](http://fragmentedpodcast.com/episodes/125/): Why's and How's about Apollo Kotlin and the entire journey.
 - [GraphQL.org](http://graphql.org) for an introduction and reference to GraphQL itself.

@@ -167,16 +167,41 @@ Please note that we will not accept pull requests for style changes.
 
 ## API compatibility
 
-Apollo Kotlin observes [semantic versioning](https://semver.org/). Between major releases, breaking changes are not
-allowed and any public API change will fail the build.
+Apollo Kotlin observes [semantic versioning](https://semver.org/). No breaking change should be introduced in minor or patch releases.
 
-If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before committing these
+The public API is tracked thanks to the [Binary compatibility validator](https://github.com/Kotlin/binary-compatibility-validator) plugin.
+
+Any change to the public API will fail the build. If that happens, you will need to run `./gradlew apiDump` and check for any incompatible changes before committing these
 files.
 
 ## Deprecation
 
-When marking an API with `@Deprecated`, also mark it with `ApolloDeprecatedSince` so we can keep track of when it
-has been deprecated.
+When deprecating an API, also mark it with `ApolloDeprecatedSince` so we can keep track of when it has been deprecated.
+
+In general, when an existing API must be deprecated, use the `WARNING` level. Use the `replaceWith` parameter to guide the developer to an alternative API to use. This can happen in a minor release (not a breaking change).
+
+The API can then be removed in the next major release (breaking change).
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    NotDeprecated: Not deprecated
+    NotDeprecated --> Deprecated(WARNING): Minor release
+    Deprecated(WARNING) --> Removed: Major release
+```
+
+However, there are cases where an API must be removed even if it hasn't been deprecated. For instance when a high level behavior is changed and the related API is made irrelevant. 
+In this case don't remove the API yet, instead, deprecate with the `ERROR` level. This will make the build fail if the API is used, but the message can guide the developer with an explanation or recommended steps. This should only happen in a major release (source breaking change).
+
+The API can then be removed in the next major release (breaking change).
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    NotDeprecated: Not deprecated
+    NotDeprecated --> Deprecated(ERROR): Major release
+    Deprecated(ERROR) --> Removed: Major release
+```
 
 ## Experimental / internal APIs
 
