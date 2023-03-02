@@ -83,7 +83,7 @@ gradle-japicmp-plugin = { group = "me.champeau.gradle", name = "japicmp-gradle-p
 gradle-publish-plugin = { group = "com.gradle.publish", name = "plugin-publish-plugin", version = "0.12.0" }
 graphqlkotlin = { group = "com.expediagroup", name = "graphql-kotlin-spring-server", version = "5.3.0" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava" }
-intellij-plugin = "org.jetbrains.intellij.plugins:gradle-intellij-plugin:1.13.0"
+intellij-plugin = "org.jetbrains.intellij.plugins:gradle-intellij-plugin:1.13.1"
 intellij-changelog = "org.jetbrains.intellij.plugins:gradle-changelog-plugin:1.3.1"
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
