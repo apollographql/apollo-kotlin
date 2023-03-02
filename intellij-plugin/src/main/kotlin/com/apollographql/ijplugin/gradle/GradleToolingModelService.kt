@@ -1,6 +1,7 @@
 package com.apollographql.ijplugin.gradle
 
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.graphql.GraphQLProjectFiles
 import com.apollographql.ijplugin.graphql.GraphQLProjectFilesListener
 import com.apollographql.ijplugin.project.ApolloProjectListener
@@ -15,6 +16,10 @@ import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListenerAdapter
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskType
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
+import com.intellij.openapi.progress.ProcessCanceledException
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.util.CheckedDisposable
@@ -28,7 +33,6 @@ import org.jetbrains.plugins.gradle.service.execution.GradleExecutionHelper
 import org.jetbrains.plugins.gradle.settings.GradleExecutionSettings
 import org.jetbrains.plugins.gradle.util.GradleConstants
 import java.io.File
-import java.util.concurrent.Executors
 
 class GradleToolingModelService(
     private val project: Project,
@@ -37,7 +41,6 @@ class GradleToolingModelService(
 
   private var gradleCancellation: CancellationTokenSource? = null
   private var abortRequested: Boolean = false
-  private val gradleExecutorService = Executors.newSingleThreadExecutor()
 
   var graphQLProjectFiles: List<GraphQLProjectFiles> = emptyList()
 
@@ -108,8 +111,17 @@ class GradleToolingModelService(
       return
     }
 
-    val rootProjectPath = project.getGradleRootPath() ?: return
-    gradleExecutorService.submit {
+    FetchToolingModelsTask().queue()
+  }
+
+  private inner class FetchToolingModelsTask : Task.Backgroundable(
+      project,
+      @Suppress("DialogTitleCapitalization")
+      ApolloBundle.message("GradleToolingModelService.fetchToolingModels.progress"),
+      true,
+  ) {
+    override fun run(indicator: ProgressIndicator) {
+      val rootProjectPath = project.getGradleRootPath() ?: return
       abortRequested = false
       val gradleExecutionHelper = GradleExecutionHelper()
       val executionSettings = ExternalSystemApiUtil.getExecutionSettings<GradleExecutionSettings>(project, rootProjectPath, GradleConstants.SYSTEM_ID)
@@ -127,17 +139,26 @@ class GradleToolingModelService(
         } finally {
           gradleCancellation = null
         }
-      } ?: return@submit
+      } ?: return
 
       // We're only interested in projects that apply the Apollo plugin - and thus have the codegen task registered
       val allApolloGradleProjects: List<GradleProject> = (rootGradleProject.children + rootGradleProject)
           .filter { it.tasks.any { it.name == CODEGEN_GRADLE_TASK_NAME } }
       logd("allApolloGradleProjects=${allApolloGradleProjects.map { it.name }}")
-      val allToolingModels = allApolloGradleProjects.mapNotNull { gradleProject ->
+      indicator.isIndeterminate = false
+      val allToolingModels = allApolloGradleProjects.mapIndexedNotNull { index, gradleProject ->
         if (abortRequested) {
           logd("Aborted")
-          return@submit
+          return@run
         }
+        try {
+          ProgressManager.checkCanceled()
+        } catch (e: ProcessCanceledException) {
+          logd("Canceled by user")
+          return@run
+        }
+
+        indicator.fraction = (index + 1).toDouble() / allApolloGradleProjects.size
         gradleExecutionHelper.execute(gradleProject.projectDirectory.canonicalPath, executionSettings) { connection ->
           gradleCancellation = GradleConnector.newCancellationTokenSource()
           logd("Fetch tooling model for :${gradleProject.name}")
@@ -157,6 +178,11 @@ class GradleToolingModelService(
 
       logd("allToolingModels=$allToolingModels")
       computeGraphQLProjectFiles(allToolingModels)
+    }
+
+    override fun onCancel() {
+      logd()
+      abortFetchToolingModels()
     }
   }
 
@@ -210,6 +236,5 @@ class GradleToolingModelService(
   override fun dispose() {
     logd("project=${project.name}")
     abortFetchToolingModels()
-    gradleExecutorService.shutdown()
   }
 }
