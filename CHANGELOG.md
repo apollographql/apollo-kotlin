@@ -458,8 +458,8 @@ From now on, you no longer need to specify explicitly the versions of Apollo dep
 ```kotlin
 plugins {
   plugins {
-    id("org.jetbrains.kotlin.jvm").version("1.7.10")
-    id("com.apollographql.apollo3").version("3.5.0")
+    id("org.jetbrains.kotlin.jvm") version "1.7.10"
+    id("com.apollographql.apollo3") version "3.5.0"
   }
 
   dependencies {
