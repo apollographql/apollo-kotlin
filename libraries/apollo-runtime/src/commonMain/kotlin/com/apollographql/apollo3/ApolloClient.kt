@@ -167,7 +167,7 @@ private constructor(
           if (ignorePartialData == true) {
             flow.map { response ->
               if (response.data != null && response.hasErrors()) {
-                response.withNullData()
+                response.newBuilder().data(null).build()
               } else {
                 response
               }
@@ -177,15 +177,6 @@ private constructor(
           }
         }
   }
-
-  private fun <D : Operation.Data> ApolloResponse<D>.withNullData() =
-      ApolloResponse.Builder(operation = operation, requestUuid = requestUuid, data = null)
-          .errors(errors)
-          .exception(exception)
-          .extensions(extensions)
-          .addExecutionContext(executionContext)
-          .isLast(isLast)
-          .build()
 
   /**
    * A Builder used to create instances of [ApolloClient]

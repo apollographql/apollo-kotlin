@@ -108,9 +108,9 @@ private constructor(
   }
 
   class Builder<D : Operation.Data>(
-      private val operation: Operation<D>,
+      private var operation: Operation<D>,
       private var requestUuid: Uuid,
-      private val data: D?,
+      private var data: D?,
   ) {
     private var executionContext: ExecutionContext = ExecutionContext.Empty
     private var errors: List<Error>? = null
@@ -134,8 +134,16 @@ private constructor(
       this.extensions = extensions
     }
 
+    fun operation(operation: Operation<D>) = apply {
+      this.operation = operation
+    }
+
     fun requestUuid(requestUuid: Uuid) = apply {
       this.requestUuid = requestUuid
+    }
+
+    fun data(data: D?) = apply {
+      this.data = data
     }
 
     fun isLast(isLast: Boolean) = apply {
