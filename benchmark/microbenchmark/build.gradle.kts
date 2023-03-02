@@ -59,11 +59,11 @@ dependencies {
       }
     }
   }
-  implementation(golatac.lib("moshi"))
-  ksp(golatac.lib("moshix.ksp"))
+  implementation(libs.moshi)
+  ksp(benchmarks.moshix.ksp)
 
-  androidTestImplementation("androidx.benchmark:benchmark-junit4:1.1.0")
-  androidTestImplementation("androidx.test:core:1.4.0")
+  androidTestImplementation(benchmarks.benchmark.junit4)
+  androidTestImplementation(benchmarks.androidx.test.core)
 }
 
 configure<com.android.build.gradle.LibraryExtension> {

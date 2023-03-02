@@ -23,8 +23,6 @@ kotlinx-datetime = "0.4.0"
 kotlinx-serialization-runtime = "1.4.1"
 ksp = "1.8.20-Beta-1.0.9"
 ktor = "2.2.2"
-moshi = "1.12.0"
-moshix = "0.14.1"
 okhttp = "4.9.3"
 rx-android = "2.0.1"
 rx-java2 = "2.2.21"
@@ -116,14 +114,12 @@ kotlinx-serialization-json-okio = { group = "org.jetbrains.kotlinx", name = "kot
 kotlinx-binarycompatibilityvalidator = { group = "org.jetbrains.kotlinx", name = "binary-compatibility-validator", version = "0.10.1" }
 ksp = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
 ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
-moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
-moshix-sealed-codegen = { group = "dev.zacsweers.moshix", name = "moshi-sealed-codegen", version.ref = "moshix" }
-moshix-sealed-runtime = { group = "dev.zacsweers.moshix", name = "moshi-sealed-runtime", version.ref = "moshix" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 okhttp-tls = { group = "com.squareup.okhttp3", name = "okhttp-tls", version.ref = "okhttp" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.12.0" }
+okio = "com.squareup.okio:okio-jvm:3.3.0"
 poet-java = { group = "com.squareup", name = "javapoet", version.ref = "javaPoet" }
 poet-kotlin = { group = "com.squareup", name = "kotlinpoet", version = "1.12.0" }
 rx-java2 = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rx-java2" }

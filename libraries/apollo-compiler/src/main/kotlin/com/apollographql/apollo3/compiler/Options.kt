@@ -7,8 +7,6 @@ import com.apollographql.apollo3.compiler.hooks.ApolloCompilerKotlinHooks
 import com.apollographql.apollo3.compiler.ir.IrOperations
 import com.apollographql.apollo3.compiler.ir.IrSchema
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.squareup.moshi.JsonClass
-import dev.zacsweers.moshix.sealed.annotations.TypeLabel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.File

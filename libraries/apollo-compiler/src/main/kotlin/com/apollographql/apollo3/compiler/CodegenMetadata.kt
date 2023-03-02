@@ -2,8 +2,6 @@ package com.apollographql.apollo3.compiler
 
 import com.apollographql.apollo3.compiler.codegen.ResolverInfo
 import com.apollographql.apollo3.compiler.codegen.ResolverKeyKind
-import com.squareup.moshi.JsonClass
-import com.squareup.moshi.Moshi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

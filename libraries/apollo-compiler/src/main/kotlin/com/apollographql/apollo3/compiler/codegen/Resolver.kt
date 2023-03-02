@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen
 
-import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 
 /**
