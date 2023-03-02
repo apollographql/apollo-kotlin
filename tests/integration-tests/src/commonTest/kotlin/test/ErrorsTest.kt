@@ -20,7 +20,7 @@ class ErrorsTest {
   }
 
   @Test
-  fun ignorePartialData() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun ignorePartialDataOnClient() = runTest(before = { setUp() }, after = { tearDown() }) {
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .ignorePartialData(true)
@@ -43,4 +43,29 @@ class ErrorsTest {
     val response = apolloClient.query(HeroNameQuery()).execute()
     assertNull(response.data)
   }
+
+  @Test
+  fun ignorePartialDataOnCall() = runTest(before = { setUp() }, after = { tearDown() }) {
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .build()
+    mockServer.enqueue("""
+      {
+        "data": {
+          "hero": {
+            "name": "R2-D2"
+          }
+        },
+        "errors": [
+          {
+            "message": "Something went wrong"
+          }
+        ]
+      }
+    """.trimIndent())
+
+    val response = apolloClient.query(HeroNameQuery()).ignorePartialData(true).execute()
+    assertNull(response.data)
+  }
+
 }

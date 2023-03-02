@@ -56,8 +56,8 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
+    override val ignorePartialData: Boolean?,
     private val useV3ExceptionHandling: Boolean?,
-    private val ignorePartialData: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
   private val concurrencyInfo: ConcurrencyInfo
@@ -126,6 +126,7 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .useV3ExceptionHandling(useV3ExceptionHandling)
+        .ignorePartialData(ignorePartialData)
         .apply {
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
@@ -147,6 +148,12 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
+          if (apolloRequest.ignorePartialData != null) {
+            ignorePartialData(apolloRequest.ignorePartialData)
+          }
+          if (apolloRequest.useV3ExceptionHandling != null) {
+            useV3ExceptionHandling(apolloRequest.useV3ExceptionHandling)
+          }
         }
         .build()
 
@@ -164,7 +171,7 @@ private constructor(
           }
         }
         .let { flow ->
-          if (ignorePartialData == true) {
+          if (request.ignorePartialData == true) {
             flow.map { response ->
               if (response.data != null && response.hasErrors()) {
                 response.newBuilder().data(null).build()
@@ -258,26 +265,9 @@ private constructor(
       this.useV3ExceptionHandling = useV3ExceptionHandling
     }
 
-    private var ignorePartialData: Boolean? = null
+    override var ignorePartialData: Boolean? = null
 
-    /**
-     * Configures whether partial data should be ignored.
-     *
-     * If true, responses with errors will always be surfaced with a null [ApolloResponse.data], even if the received data was not null.
-     * This can simplify error handling at the call site, if you don't care about partial data. E.g.:
-     *
-     * ```
-     * val response = apolloClient.query(MyQuery()).execute()
-     * if (response.data == null) {
-     *   // There were network or GraphQL error(s)
-     * } else {
-     *   // No errors
-     * }
-     * ```
-     *
-     * Default: false
-     */
-    fun ignorePartialData(ignorePartialData: Boolean?): Builder = apply {
+    override fun ignorePartialData(ignorePartialData: Boolean?): Builder = apply {
       this.ignorePartialData = ignorePartialData
     }
 

@@ -25,6 +25,9 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var sendApqExtensions: Boolean? = null
   override var sendDocument: Boolean? = null
   override var enableAutoPersistedQueries: Boolean? = null
+  override var canBeBatched: Boolean? = null
+  override var ignorePartialData: Boolean? = null
+
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
   }
@@ -53,10 +56,12 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
   }
 
-  override var canBeBatched: Boolean? = null
-
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
     this.canBeBatched = canBeBatched
+  }
+
+  override fun ignorePartialData(ignorePartialData: Boolean?) = apply {
+    this.ignorePartialData = ignorePartialData
   }
 
   fun copy(): ApolloCall<D> {
@@ -69,6 +74,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .ignorePartialData(ignorePartialData)
   }
 
   /**
@@ -97,6 +103,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
+        .ignorePartialData(ignorePartialData)
         .build()
     return apolloClient.executeAsFlow(request)
   }
