@@ -96,8 +96,6 @@ private constructor(
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
-  fun isSuccessful(): Boolean = exception == null && !hasErrors()
-
   fun newBuilder(): Builder<D> {
     return Builder(operation, requestUuid, data)
         .errors(errors)

@@ -122,7 +122,6 @@ public final class com/apollographql/apollo3/api/ApolloResponse {
 	public synthetic fun <init> (Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Lcom/apollographql/apollo3/exception/ApolloException;Ljava/util/Map;Lcom/apollographql/apollo3/api/ExecutionContext;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun dataAssertNoErrors ()Lcom/apollographql/apollo3/api/Operation$Data;
 	public final fun hasErrors ()Z
-	public final fun isSuccessful ()Z
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 }
 
