@@ -1,31 +1,32 @@
 package com.apollographql.apollo3.compiler.codegen
 
 import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
 /**
  * Additional resolver data generated alongside the models and adapters.
  * This data maps a GraphQL identifier (such as a typename or model path) to its target class.
  * This allows children modules to reference classes generated in parents (and know when to skip generating them).
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 internal class ResolverInfo(
     val magic: String,
     val version: String,
     val entries: List<ResolverEntry>
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 internal class ResolverClassName(val packageName: String, val simpleNames: List<String>) {
   constructor(packageName: String, vararg simpleNames: String): this(packageName, simpleNames.toList())
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 internal class ResolverMemberName(val className: ResolverClassName, val name: String)
 
 /**
  * Must be a data class because it is used as a key in resolvers
  */
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ResolverKey(val kind: ResolverKeyKind, val id: String)
 
 enum class ResolverKeyKind {
@@ -47,7 +48,7 @@ enum class ResolverKeyKind {
   Pagination
 }
 
-@JsonClass(generateAdapter = true)
+@Serializable
 internal class ResolverEntry(
     val key: ResolverKey,
     val className: ResolverClassName

@@ -1,0 +1,4 @@
+public final class com/apollographql/apollo3/tooling/SerializationKt {
+	public static final fun toJsonElement (Ljava/lang/Object;)Lkotlinx/serialization/json/JsonElement;
+}
+

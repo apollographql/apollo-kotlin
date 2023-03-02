@@ -243,7 +243,7 @@ fun IntrospectionSchema.toJson(): String {
   return json.encodeToString(IntrospectionSchema.serializer(), this)
 }
 
-fun IntrospectionSchema.toJson(file: File) {
+fun IntrospectionSchema.writeTo(file: File) {
   file.outputStream().sink().buffer().use {
     it.writeUtf8(json.encodeToString(IntrospectionSchema.serializer(), this))
   }
