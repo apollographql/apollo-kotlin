@@ -19,7 +19,16 @@ pluginManagement {
 }
 
 plugins {
+  `gradle-enterprise`
   id("org.gradle.toolchains.foojay-resolver-convention") version "0.4.0"
 }
 
 apply(from = "./gradle/repositories.gradle.kts")
+
+gradleEnterprise {
+  buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+    publishAlways()
+  }
+}
