@@ -10,24 +10,29 @@ package com.apollographql.apollo3.ast
  *
  * - no value and no issues => not possible
  */
-class GQLResult<out V:Any>(
+class GQLResult<out V : Any>(
     val value: V?,
-    val issues: List<Issue>
+    val issues: List<Issue>,
 ) {
 
   init {
-    check (value != null || issues.containsError()) {
+    check(value != null || issues.containsError()) {
       "Apollo: GQLResult must contain a value or an error"
     }
+  }
+
+  @Deprecated("Use getOrThrow instead", replaceWith = ReplaceWith("getOrThrow"))
+  fun valueAssertNoErrors(): V {
+    return getOrThrow()
   }
 
   /**
    * @throws SourceAwareException if there are validation errors
    */
-   fun valueAssertNoErrors(): V {
+  fun getOrThrow(): V {
     issues.checkNoErrors()
 
-    check (value != null) {
+    check(value != null) {
       "Apollo: no value and no error found"
     }
     return value

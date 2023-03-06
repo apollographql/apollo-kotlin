@@ -72,7 +72,7 @@ internal object TestUtils {
     return listOf("graphqls", "sdl", "json").map { File(dir, "schema.$it") }
         .firstOrNull { it.exists() }
         ?.let {
-          it.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors()
+          it.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().getOrThrow()
         }
   }
 

@@ -15,7 +15,7 @@ class IntrospectionTest {
   @Test
   fun parseSchema() {
     try {
-      File("src/test/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json").toSchemaGQLDocument().validateAsSchema().valueAssertNoErrors()
+      File("src/test/kotlin/com/apollographql/apollo3/graphql/ast/test/introspection/duplicate.json").toSchemaGQLDocument().validateAsSchema().getOrThrow()
     } catch (e: SourceAwareException) {
       assert(e.message!!.contains("is defined multiple times"))
     }

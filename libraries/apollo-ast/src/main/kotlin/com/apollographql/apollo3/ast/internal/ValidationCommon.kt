@@ -186,7 +186,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
     )
     val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
 
-    val selections = stringValue.buffer().parseAsGQLSelections().valueAssertNoErrors()
+    val selections = stringValue.buffer().parseAsGQLSelections().getOrThrow()
 
     val badSelection = selections.firstOrNull { it !is GQLField }
     check(badSelection == null) {
@@ -207,7 +207,7 @@ internal fun ValidationScope.extraValidateNonNullDirective(directive: GQLDirecti
  * Extra Apollo-specific validation for @typePolicy
  */
 internal fun ValidationScope.extraValidateTypePolicyDirective(directive: GQLDirective) {
-  (directive.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().valueAssertNoErrors().forEach {
+  (directive.arguments!!.arguments.first().value as GQLStringValue).value.buffer().parseAsGQLSelections().getOrThrow().forEach {
     if (it !is GQLField) {
       registerIssue("Fragments are not supported in @$TYPE_POLICY directives", it.sourceLocation)
     } else if (it.selectionSet != null) {

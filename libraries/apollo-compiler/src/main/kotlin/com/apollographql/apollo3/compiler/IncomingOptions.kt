@@ -58,7 +58,7 @@ class IncomingOptions(
         // Using this format, IntelliJ will parse the warning and display it in the 'run' panel
         println("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
       }
-      return result.valueAssertNoErrors() to mainSchemaDocument.filePath!!
+      return result.getOrThrow() to mainSchemaDocument.filePath!!
     }
   }
 }

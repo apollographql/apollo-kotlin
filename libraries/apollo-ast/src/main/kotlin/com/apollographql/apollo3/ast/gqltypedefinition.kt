@@ -27,7 +27,7 @@ fun GQLTypeDefinition.isFieldNonNull(fieldName: String, schema: Schema? = null):
 
   val stringValue = (directive.arguments!!.arguments.first().value as GQLStringValue).value
 
-  val selections = stringValue.buffer().parseAsGQLSelections().valueAssertNoErrors()
+  val selections = stringValue.buffer().parseAsGQLSelections().getOrThrow()
 
   return selections.filterIsInstance<GQLField>()
       .map { it.name }

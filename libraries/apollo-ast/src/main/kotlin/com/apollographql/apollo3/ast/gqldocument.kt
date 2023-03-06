@@ -36,7 +36,7 @@ private fun definitionsFromResources(name: String): List<GQLDefinition> {
       .source()
       .buffer()
       .parseAsGQLDocument("($name)")
-      .valueAssertNoErrors()
+      .getOrThrow()
       .definitions
 }
 

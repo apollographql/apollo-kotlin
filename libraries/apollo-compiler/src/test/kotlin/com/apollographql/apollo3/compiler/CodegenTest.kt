@@ -162,7 +162,7 @@ class CodegenTest {
             check(queryFile != null) {
               "Cannot find query file in ${file.absolutePath}"
             }
-            val hasFragments = queryFile.source().buffer().parseAsGQLDocument().valueAssertNoErrors().hasFragments()
+            val hasFragments = queryFile.source().buffer().parseAsGQLDocument().getOrThrow().hasFragments()
 
             when {
               file.name == "companion" -> listOf(Parameters(file, MODELS_OPERATION_BASED, true))
@@ -384,7 +384,7 @@ class CodegenTest {
       val packageNameGenerator = PackageNameGenerator.Flat(packageName)
 
       ApolloCompiler.writeSimple(
-          schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().valueAssertNoErrors(),
+          schema = schemaFile.toSchemaGQLDocument().validateAsSchemaAndAddApolloDefinition().getOrThrow(),
           executableFiles = graphqlFiles,
           outputDir = outputDir,
           flattenModels = flattenModels,

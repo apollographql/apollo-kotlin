@@ -19,7 +19,7 @@ import okio.BufferedSource
  * See [parseAsGQLDocument] and [validateAsSchema] for more granular error reporting
  */
 @ApolloExperimental
-fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocument(filePath).valueAssertNoErrors().validateAsSchema().valueAssertNoErrors()
+fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocument(filePath).getOrThrow().validateAsSchema().getOrThrow()
 
 /**
  * Parses the source to a List<[GQLDefinition]>, throwing on parsing or validation errors.
@@ -28,9 +28,9 @@ fun BufferedSource.toSchema(filePath: String? = null): Schema = parseAsGQLDocume
  */
 @ApolloExperimental
 fun BufferedSource.toExecutableDefinitions(schema: Schema, filePath: String? = null, fieldsOnDisjointTypesMustMerge: Boolean = true): List<GQLDefinition> = parseAsGQLDocument(filePath)
-    .valueAssertNoErrors()
+    .getOrThrow()
     .validateAsExecutable(schema, fieldsOnDisjointTypesMustMerge)
-    .valueAssertNoErrors()
+    .getOrThrow()
 
 /**
  * Parses the source to a [GQLDocument], validating the syntax but not the contents of the document.

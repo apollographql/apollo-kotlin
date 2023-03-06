@@ -101,7 +101,7 @@ object SchemaDownloader {
             endpoint = registryUrl,
             headers = headers,
             insecure = insecure,
-        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().valueAssertNoErrors()
+        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().getOrThrow()
       }
     }
 
@@ -109,7 +109,7 @@ object SchemaDownloader {
 
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = gqlSchema!!.validateAsSchema().valueAssertNoErrors().toIntrospectionSchema()
+        introspectionSchema = gqlSchema!!.validateAsSchema().getOrThrow().toIntrospectionSchema()
         introspectionSchema.writeTo(schema)
       } else {
         schema.writeText(introspectionSchemaJson!!)
