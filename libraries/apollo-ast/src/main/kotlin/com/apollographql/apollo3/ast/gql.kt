@@ -113,6 +113,7 @@ interface GQLHasDirectives {
 }
 
 sealed interface GQLDefinition : GQLNode
+sealed interface GQLExecutableDefinition : GQLDefinition
 sealed interface GQLTypeSystemExtension : GQLNode
 sealed interface GQLTypeExtension : GQLTypeSystemExtension, GQLNamed
 
@@ -163,7 +164,7 @@ class GQLOperationDefinition(
     val directives: List<GQLDirective>,
     val selectionSet: GQLSelectionSet,
     override val description: String?,
-) : GQLDefinition, GQLDescribed {
+) : GQLExecutableDefinition, GQLDescribed {
   override val children = variableDefinitions + directives + selectionSet
 
   override fun writeInternal(writer: SDLWriter) {
@@ -223,7 +224,7 @@ class GQLFragmentDefinition(
     val typeCondition: GQLNamedType,
     val selectionSet: GQLSelectionSet,
     override val description: String?,
-) : GQLDefinition, GQLNamed, GQLDescribed {
+) : GQLExecutableDefinition, GQLNamed, GQLDescribed {
 
   override val children = directives + selectionSet + typeCondition
 
