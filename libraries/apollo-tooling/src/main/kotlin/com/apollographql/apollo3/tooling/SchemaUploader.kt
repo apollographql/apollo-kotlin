@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.tooling.SchemaDownloader.cast
+import kotlinx.serialization.json.Json
 
 @ApolloExperimental
 object SchemaUploader {
@@ -42,7 +42,8 @@ object SchemaUploader {
     val responseString = response.body.use { it?.string() }
 
     val uploadSchema = responseString
-        ?.fromJson<Map<String, *>>()
+        ?.let { Json.parseToJsonElement(it) }
+        ?.toAny().cast<Map<String, *>>()
         ?.get("data").cast<Map<String, *>>()
         ?.get("service").cast<Map<String, *>>()
         ?.get("uploadSchema").cast<Map<String, *>>()

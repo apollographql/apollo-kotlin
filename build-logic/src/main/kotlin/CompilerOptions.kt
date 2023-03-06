@@ -27,7 +27,9 @@ fun Project.configureJavaAndKotlinCompilers() {
       apiVersion = "1.5"
       languageVersion = "1.5"
 
-      (this as? KotlinJvmOptions)?.jvmTarget = "1.8"
+      (this as? KotlinJvmOptions)?.let {
+        it.jvmTarget = "1.8"
+      }
     }
   }
   tasks.withType(KotlinNativeCompile::class.java).configureEach {

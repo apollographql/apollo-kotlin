@@ -30,7 +30,7 @@ abstract class ApolloRegisterOperationsTask: DefaultTask() {
         key = key.get() ?: error("key is required to register operations"),
         graphID = graph.get() ?: error("graphID is required to register operations"),
         graphVariant = graphVariant.get() ?: error("graphVariant is required to register operations"),
-        operationOutput = operationOutput.get().asFile.source().buffer().toOperationOutput()
+        operationOutput = operationOutput.get().asFile.toOperationOutput()
     )
   }
 }

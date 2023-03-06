@@ -1,0 +1,11 @@
+[versions]
+moshix = "0.14.1"
+
+[libraries]
+jar-relocator = "me.lucko:jar-relocator:1.5"
+benchmark-gradle-plugin = "androidx.benchmark:benchmark-gradle-plugin:1.1.1"
+agp = "com.android.tools.build:gradle:7.4.2"
+asm = "org.ow2.asm:asm-commons:9.3"
+moshix-ksp = { group = "dev.zacsweers.moshix", name = "moshi-ksp", version.ref = "moshix" }
+benchmark-junit4 = "androidx.benchmark:benchmark-junit4:1.1.1"
+androidx-test-core = "androidx.test:core:1.5.0"
