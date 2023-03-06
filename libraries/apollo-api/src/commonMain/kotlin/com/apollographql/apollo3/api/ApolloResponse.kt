@@ -106,7 +106,7 @@ private constructor(
   }
 
   class Builder<D : Operation.Data>(
-      private var operation: Operation<D>,
+      private val operation: Operation<D>,
       private var requestUuid: Uuid,
       private var data: D?,
   ) {
@@ -130,10 +130,6 @@ private constructor(
 
     fun extensions(extensions: Map<String, Any?>?) = apply {
       this.extensions = extensions
-    }
-
-    fun operation(operation: Operation<D>) = apply {
-      this.operation = operation
     }
 
     fun requestUuid(requestUuid: Uuid) = apply {

@@ -139,7 +139,6 @@ public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
 	public final fun exception (Lcom/apollographql/apollo3/exception/ApolloException;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 	public final fun extensions (Ljava/util/Map;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 	public final fun isLast (Z)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
-	public final fun operation (Lcom/apollographql/apollo3/api/Operation;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 	public final fun requestUuid (Ljava/util/UUID;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 }
 
