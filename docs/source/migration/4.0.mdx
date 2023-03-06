@@ -63,7 +63,6 @@ client.subscription(MySubscription()).toFlow().collect { response ->
   }
 }
 ```
-
 ### Exception folding when using the cache
 
 In v3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.
@@ -71,7 +70,7 @@ In v3, when using the normalized cache, you could set `emitCacheMisses` to `true
 In v4, this is now the default behavior and `emitCacheMisses` has been removed. 
 With the `CacheFirst`, `NetworkFirst` and `CacheAndNetwork` policies, cache misses and network errors are now emitted in `ApolloResponse.exception`.
 
-To ease the migration to v4, the v3 behavior can be restored by by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
+To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
 
 ### Exceptions in `watch`
 
