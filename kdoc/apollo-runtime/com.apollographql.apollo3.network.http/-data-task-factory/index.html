@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>DataTaskFactory</title>
 <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -19,6 +27,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../../images/apollo.svg">
 <link href="../../../styles/style.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
@@ -44,31 +53,33 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="apollo-runtime::com.apollographql.apollo3.network.http/DataTaskFactory///PointingToDeclaration//-958752389">
-  <div class="breadcrumbs"><a href="../../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.network.http</a><span class="delimiter">/</span><a href="index.html">DataTaskFactory</a></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-runtime::com.apollographql.apollo3.network.http/DataTaskFactory///PointingToDeclaration//-958752389">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.network.http</a><span class="delimiter">/</span><span class="current">DataTaskFactory</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Data</span><wbr><span>Task</span><wbr><span><span>Factory</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="index.html">DataTaskFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>    </div>
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token keyword">interface </span><a href="index.html">DataTaskFactory</a></div></div>    </div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-1202807377%2FFunctions%2F-958752389" anchor-label="dataTask" id="-1202807377%2FFunctions%2F-958752389" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="data-task.html"><span>data</span><wbr><span><span>Task</span></span></a></div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1202807377%2FFunctions%2F-958752389" anchor-label="dataTask" id="-1202807377%2FFunctions%2F-958752389" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="data-task.html"><span>data</span><wbr><span><span>Task</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1202807377%2FFunctions%2F-958752389"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/appleMain">apple</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="data-task.html"><span class="token function">dataTask</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSURLRequest///PointingToDeclaration/">NSURLRequest</span><span class="token punctuation">, </span></span><span class="parameter ">completionHandler<span class="token operator">: </span><a href="../index.html#-1866597995%2FClasslikes%2F-958752389">UrlSessionDataTaskCompletionHandler</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSURLSessionDataTask///PointingToDeclaration/">NSURLSessionDataTask</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/appleMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/appleMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/appleMain">apple</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/appleMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="data-task.html"><span class="token function">dataTask</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSURLRequest///PointingToDeclaration/">NSURLRequest</span><span class="token punctuation">, </span></span><span class="parameter ">completionHandler<span class="token operator">: </span><a href="../index.html#-1866597995%2FClasslikes%2F-958752389">UrlSessionDataTaskCompletionHandler</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="platform.Foundation/NSURLSessionDataTask///PointingToDeclaration/">NSURLSessionDataTask</span></div></div>                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -82,6 +93,6 @@ if(savedDarkMode === true){
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 
