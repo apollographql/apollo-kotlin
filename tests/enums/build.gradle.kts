@@ -18,10 +18,10 @@ apollo {
 
   service("java") {
     packageName.set("enums.java")
+    classesForEnumsMatching.set(listOf(".*avity", "FooClass"))
     generateKotlinModels.set(false)
     outputDirConnection {
       connectToJavaSourceSet("main")
     }
-    classesForEnumsMatching.set(listOf(".*avity", "FooClass"))
   }
 }
