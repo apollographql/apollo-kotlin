@@ -26,7 +26,7 @@ class KeyFieldsTest {
         .source()
         .buffer()
         .parseAsGQLDocument()
-        .valueAssertNoErrors()
+        .getOrThrow()
         .definitions
 
     val fragments = definitions.filterIsInstance<GQLFragmentDefinition>().associateBy { it.name }

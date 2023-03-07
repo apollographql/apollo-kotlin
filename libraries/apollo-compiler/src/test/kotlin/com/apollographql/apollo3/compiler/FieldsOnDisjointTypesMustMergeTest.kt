@@ -17,7 +17,7 @@ class FieldsOnDisjointTypesMustMergeTest {
   @Test
   fun testEnableFieldsOnDisjointTypesMustMerge() = checkExpected(graphQLFile) { schema ->
     val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(filePath = graphQLFile.name)
-    val issues = parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = true).issues
+    val issues = parseResult.getOrThrow().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = true).issues
     issues.serialize()
   }
 
@@ -26,7 +26,7 @@ class FieldsOnDisjointTypesMustMergeTest {
     val schema = findSchema(graphQLFile.parentFile)!!
     val parseResult = graphQLFile.source().buffer().parseAsGQLDocument(filePath = graphQLFile.name)
 
-    val issues = parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema, fieldsOnDisjointTypesMustMerge = false).issues
+    val issues = parseResult.getOrThrow().validateAsExecutable(schema = schema, fieldsOnDisjointTypesMustMerge = false).issues
 
     assertTrue(issues.isEmpty())
   }

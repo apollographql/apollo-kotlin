@@ -87,7 +87,7 @@ object ApolloCompiler {
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
-    val schema = result.valueAssertNoErrors()
+    val schema = result.getOrThrow()
 
     checkCustomScalars(schema, scalarMapping)
     return CodegenSchema(

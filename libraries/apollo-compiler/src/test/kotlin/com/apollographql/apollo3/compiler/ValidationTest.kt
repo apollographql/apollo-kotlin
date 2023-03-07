@@ -27,7 +27,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
         parseResult.issues
       } else {
         val mustMerge = graphQLFile.name != "merging_allowed.graphql"
-        parseResult.valueAssertNoErrors().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = mustMerge).issues +
+        parseResult.getOrThrow().validateAsExecutable(schema = schema!!, fieldsOnDisjointTypesMustMerge = mustMerge).issues +
             if (graphQLFile.name == "capitalized_fields_disallowed.graphql") {
               checkCapitalizedFields(parseResult.value!!.definitions, checkFragmentsOnly = false)
             } else {
@@ -43,7 +43,7 @@ class ValidationTest(name: String, private val graphQLFile: File) {
       if (parseResult.issues.isNotEmpty()) {
         parseResult.issues
       } else {
-        val schemaResult = parseResult.valueAssertNoErrors().validateAsSchemaAndAddApolloDefinition()
+        val schemaResult = parseResult.getOrThrow().validateAsSchemaAndAddApolloDefinition()
         schemaResult.issues +
             (schemaResult.value?.let { checkApolloReservedEnumValueNames(it) } ?: emptyList()) +
             (schemaResult.value?.let { checkApolloTargetNameClashes(it) } ?: emptyList())

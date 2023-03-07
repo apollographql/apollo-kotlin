@@ -148,7 +148,7 @@ private class GQLDocumentBuilder(private val introspectionSchema: IntrospectionS
     }
     try {
       if (this is String) {
-        return Buffer().writeUtf8(this).parseAsGQLValue().valueAssertNoErrors()
+        return Buffer().writeUtf8(this).parseAsGQLValue().getOrThrow()
       }
     } catch (e: Exception) {
       println("Wrongly encoded default value: $this: ${e.message}")
@@ -332,7 +332,7 @@ fun IntrospectionSchema.toGQLDocument(filePath: String? = null): GQLDocument = G
  * In the process, the builtin definitions are removed and added again.
  */
 @ApolloExperimental
-fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().validateAsSchema().valueAssertNoErrors()
+fun IntrospectionSchema.toSchema(): Schema = toGQLDocument().validateAsSchema().getOrThrow()
 
 /**
  * Transforms the given file to a [GQLDocument] without doing validation
@@ -342,9 +342,9 @@ fun File.toSchemaGQLDocument(): GQLDocument {
   return if (extension == "json") {
     toIntrospectionSchema().toGQLDocument(filePath = path)
   } else {
-    source().buffer().parseAsGQLDocument(filePath = path).valueAssertNoErrors()
+    source().buffer().parseAsGQLDocument(filePath = path).getOrThrow()
   }
 }
 
 @ApolloExperimental
-fun File.toSchema(): Schema = toSchemaGQLDocument().validateAsSchema().valueAssertNoErrors()
+fun File.toSchema(): Schema = toSchemaGQLDocument().validateAsSchema().getOrThrow()

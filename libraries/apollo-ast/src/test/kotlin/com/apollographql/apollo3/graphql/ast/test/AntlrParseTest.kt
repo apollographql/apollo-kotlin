@@ -19,7 +19,7 @@ class AntlrParseTest {
       """.trimIndent()
           .buffer()
           .parseAsGQLDocument()
-          .valueAssertNoErrors()
+          .getOrThrow()
       fail("An exception was expected")
     } catch (e: Exception) {
       check(e.message?.contains("Extra token at end of file") == true)
@@ -35,12 +35,12 @@ class AntlrParseTest {
       """.trimIndent()
           .buffer()
           .parseAsGQLDocument()
-          .valueAssertNoErrors()
+          .getOrThrow()
   }
 
   @Test
   fun blockString() {
-    val value = "\"\"\" \\\"\"\" \"\"\"".buffer().parseAsGQLValue().valueAssertNoErrors()
+    val value = "\"\"\" \\\"\"\" \"\"\"".buffer().parseAsGQLValue().getOrThrow()
 
     assertEquals(" \"\"\" ", (value as GQLStringValue).value)
   }
@@ -52,7 +52,7 @@ class AntlrParseTest {
         "   \n" +
         "  second line\n" +
         "   \n" +
-        "\"\"\"").buffer().parseAsGQLValue().valueAssertNoErrors()
+        "\"\"\"").buffer().parseAsGQLValue().getOrThrow()
 
     assertEquals("first line\n \nsecond line", (value as GQLStringValue).value)
   }
