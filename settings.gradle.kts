@@ -29,7 +29,6 @@ gradleEnterprise {
   buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
-    publishAlways()
 
     val isCiBuild = System.getenv("CI") != null
     isUploadInBackground = !isCiBuild
