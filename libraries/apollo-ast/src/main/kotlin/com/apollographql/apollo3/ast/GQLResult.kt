@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.ast
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+
 
 /**
  * The result of a parsing or validation operation. It's tri-state:
@@ -22,6 +24,7 @@ class GQLResult<out V : Any>(
   }
 
   @Deprecated("Use getOrThrow instead", replaceWith = ReplaceWith("getOrThrow"))
+  @ApolloDeprecatedSince(ApolloDeprecatedSince.Version.v4_0_0)
   fun valueAssertNoErrors(): V {
     return getOrThrow()
   }
