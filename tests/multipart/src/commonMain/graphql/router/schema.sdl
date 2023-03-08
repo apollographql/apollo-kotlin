@@ -1,0 +1,124 @@
+type AnewDieWasCreated {
+  id: ID!
+
+  die: Die
+}
+
+type Die {
+  id: ID!
+
+  sides: Int!
+
+  color: String!
+
+  roll: Int!
+}
+
+type Product implements ProductItf & SkuItf {
+  id: ID!
+
+  sku: String
+
+  name: String
+
+  package: String
+
+  variation: ProductVariation
+
+  dimensions: ProductDimension
+
+  createdBy: User
+
+  hidden: String
+
+  reviewsScore: Float!
+
+  oldField: String
+
+  reviewsCount: Int!
+
+  reviews: [Review!]!
+}
+
+type ProductDimension {
+  size: String
+
+  weight: Float
+}
+
+interface ProductItf implements SkuItf {
+  id: ID!
+
+  sku: String
+
+  name: String
+
+  package: String
+
+  variation: ProductVariation
+
+  dimensions: ProductDimension
+
+  createdBy: User
+
+  oldField: String @deprecated(reason: "refactored out")
+
+  reviewsCount: Int!
+
+  reviewsScore: Float!
+
+  reviews: [Review!]!
+}
+
+type ProductVariation {
+  id: ID!
+
+  name: String
+}
+
+type Query {
+  dice: [Die!]!
+
+  allProducts: [ProductItf]
+
+  product(id: ID!): ProductItf
+
+  review(id: Int!): Review
+}
+
+type Review {
+  id: Int!
+
+  body: String!
+
+  product: Product!
+}
+
+enum ShippingClass {
+  STANDARD
+
+  EXPRESS
+}
+
+interface SkuItf {
+  sku: String
+}
+
+type Subscription {
+  aNewDieWasCreated: AnewDieWasCreated!
+
+  aReviewWasAdded: Review
+}
+
+type User {
+  email: ID!
+
+  totalProductsCreated: Int
+
+  name: String
+}
+
+schema {
+  query: Query
+  subscription: Subscription
+}

@@ -30,7 +30,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs
           ./gradlew --stop
-          ./gradlew ciTestsGradle
+          ./gradlew ciTestsGradle --scan
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -58,7 +58,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs --stacktrace 
           ./gradlew --stop
-          ./gradlew ciTestsNoGradle --stacktrace 
+          ./gradlew ciTestsNoGradle --stacktrace --scan
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -86,7 +86,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs
           ./gradlew --stop
-          ./gradlew -p tests ciBuild
+          ./gradlew -p tests ciBuild --scan
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -143,7 +143,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: ./gradlew :intellij-plugin:check
+        run: ./gradlew :intellij-plugin:check --scan
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result
