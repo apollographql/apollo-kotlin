@@ -3,9 +3,7 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.gradle.internal.ApolloPlugin.Companion.extraHeaders
 import com.apollographql.apollo3.tooling.SchemaDownloader
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
@@ -13,9 +11,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-import org.jetbrains.kotlin.gradle.utils.`is`
 import java.io.File
-import javax.inject.Inject
 
 /**
  * A task to download a schema either from introspection or from the registry.
