@@ -38,7 +38,7 @@ internal object SchemaHelper {
     return clientBuilder.build()
   }
 
-  internal fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
+  internal fun  executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
     val body = map.toJsonElement().toString().toRequestBody("application/json".toMediaTypeOrNull())
     val request = Request.Builder()
         .post(body)

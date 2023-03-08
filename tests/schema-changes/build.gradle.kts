@@ -12,9 +12,28 @@ dependencies {
   testImplementation(golatac.lib("turbine"))
 }
 
+val myFormattingTask = tasks.register("downloadAndFormatSchema") {
+  doLast {
+    val schemaFile = inputs.files.singleFile
+    val textWithoutDoubleLineBreaks = schemaFile.readText().replace("\n\n", "\n")
+    outputs.files.singleFile.writeText(textWithoutDoubleLineBreaks)
+  }
+}
+
 apollo {
   service("service") {
-    packageName.set("schema.changes")
-    codegenModels.set("responseBased")
+    packageName.set("com.example")
+
+    introspection {
+      schemaFile.set(file("downloaded_schema.graphqls"))
+      endpointUrl.set("https://apollo-fullstack-tutorial.herokuapp.com/graphql")
+
+      schemaConnection {
+        myFormattingTask.configure {
+          outputs.file(file("formatted_schema.graphqls"))
+          inputs.file(schema)
+        }
+      }
+    }
   }
 }

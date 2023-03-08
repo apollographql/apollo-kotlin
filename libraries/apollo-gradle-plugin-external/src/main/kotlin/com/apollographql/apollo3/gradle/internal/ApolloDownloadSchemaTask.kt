@@ -3,13 +3,19 @@ package com.apollographql.apollo3.gradle.internal
 import com.apollographql.apollo3.gradle.internal.ApolloPlugin.Companion.extraHeaders
 import com.apollographql.apollo3.tooling.SchemaDownloader
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.jetbrains.kotlin.gradle.utils.`is`
 import java.io.File
+import javax.inject.Inject
 
 /**
  * A task to download a schema either from introspection or from the registry.
@@ -42,9 +48,15 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   @get:Option(option = "registryUrl", description = "[Apollo Studio users only] The registry url of the registry instance used to download the schema. Defaults to \"https://graphql.api.apollographql.com/api/graphql\"")
   abstract val registryUrl: Property<String>
 
+
   @get:Input
+  @get:Optional
   @get:Option(option = "schema", description = "path where the schema will be downloaded, relative to the root project directory")
   abstract val schema: Property<String>
+
+  @get:OutputFile
+  @get:Optional
+  abstract val outputFile: RegularFileProperty
 
   @get:Internal
   abstract var projectRootDir: String
@@ -62,7 +74,6 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   init {
     /**
      * We cannot know in advance if the backend schema changed so don't cache or mark this task up-to-date
-     * This code actually redundant because the task has no output but adding it make it explicit.
      */
     outputs.upToDateWhen { false }
     outputs.cacheIf { false }
@@ -72,15 +83,22 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
   fun taskAction() {
     // Schema file is relative to the root project. It is not possible in a consistent way to have it relative to the current
     // working directory where the gradle command was started
-    val schemaFile = File(projectRootDir).resolve(schema.get())
 
+    val file = if (outputFile.isPresent) {
+      outputFile.asFile.get()
+    } else {
+      check(schema.isPresent) {
+        "--schema is mandatory"
+      }
+      File(projectRootDir).resolve(schema.get())
+    }
     SchemaDownloader.download(
         endpoint = endpoint.orNull,
         graph = graph.orNull,
         graphVariant = graphVariant.getOrElse("current"),
         key = key.orNull,
         registryUrl = registryUrl.getOrElse("https://graphql.api.apollographql.com/api/graphql"),
-        schema = schemaFile,
+        schema = file,
         insecure = insecure.getOrElse(false),
         headers = header.toMap() + extraHeaders,
     )

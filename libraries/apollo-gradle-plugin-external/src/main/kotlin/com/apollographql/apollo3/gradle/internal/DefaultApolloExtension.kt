@@ -15,6 +15,7 @@ import com.apollographql.apollo3.gradle.api.AndroidProject
 import com.apollographql.apollo3.gradle.api.ApolloAttributes
 import com.apollographql.apollo3.gradle.api.ApolloExtension
 import com.apollographql.apollo3.gradle.api.ApolloGradleToolingModel
+import com.apollographql.apollo3.gradle.api.SchemaConnection
 import com.apollographql.apollo3.gradle.api.Service
 import com.apollographql.apollo3.gradle.api.androidExtension
 import com.apollographql.apollo3.gradle.api.isKotlinMultiplatform
@@ -705,9 +706,9 @@ abstract class DefaultApolloExtension(
    *
    * If that ever becomes an issue, making the path relative to the project root might be a good idea.
    */
-  private fun lazySchemaFileForDownload(service: DefaultService, schemaFile: RegularFileProperty): String {
+  private fun lazySchemaFileForDownload(service: DefaultService, schemaFile: RegularFileProperty): File {
     if (schemaFile.isPresent) {
-      return schemaFile.get().asFile.absolutePath
+      return schemaFile.get().asFile
     }
 
     val candidates = service.lazySchemaFiles(project)
@@ -718,32 +719,45 @@ abstract class DefaultApolloExtension(
       "Multiple schema files found:\n${candidates.joinToString("\n")}\n\nSpecify introspection.schemaFile or registry.schemaFile"
     }
 
-    return candidates.single().absolutePath
+    return candidates.single()
   }
 
   private fun registerDownloadSchemaTasks(service: DefaultService) {
     val introspection = service.introspection
+    var taskProvider: TaskProvider<ApolloDownloadSchemaTask>? = null
+    var connection: Action<SchemaConnection>? = null
+
     if (introspection != null) {
-      project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
+      taskProvider = project.tasks.register(ModelNames.downloadApolloSchemaIntrospection(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
-        task.projectRootDir = project.rootDir.absolutePath
+        task.outputFile.set(lazySchemaFileForDownload(service, introspection.schemaFile))
         task.endpoint.set(introspection.endpointUrl)
         task.header = introspection.headers.get().map { "${it.key}: ${it.value}" }
-        task.schema.set(project.provider { lazySchemaFileForDownload(service, introspection.schemaFile) })
       }
+      connection = introspection.schemaConnection
     }
     val registry = service.registry
     if (registry != null) {
-      project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
+      taskProvider = project.tasks.register(ModelNames.downloadApolloSchemaRegistry(service), ApolloDownloadSchemaTask::class.java) { task ->
 
         task.group = TASK_GROUP
-        task.projectRootDir = project.rootDir.absolutePath
+        task.outputFile.set(lazySchemaFileForDownload(service, registry.schemaFile))
         task.graph.set(registry.graph)
         task.key.set(registry.key)
         task.graphVariant.set(registry.graphVariant)
-        task.schema.set(project.provider { lazySchemaFileForDownload(service, registry.schemaFile) })
       }
+      connection = registry.schemaConnection
+    }
+    if (connection != null && taskProvider != null) {
+      connection.execute(
+          SchemaConnection(
+              taskProvider,
+              taskProvider.flatMap { downloadSchemaTask ->
+                downloadSchemaTask.outputFile
+              }
+          )
+      )
     }
   }
 
