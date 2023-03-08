@@ -51,5 +51,5 @@ class SchemaConnection(
     /**
      * A provider for the schema file. This [Provider] carries task dependencies so you can use it as input to other tasks
      */
-    val schema: Provider<RegularFile>,
+    val downloadedSchema: Provider<RegularFile>,
 )
