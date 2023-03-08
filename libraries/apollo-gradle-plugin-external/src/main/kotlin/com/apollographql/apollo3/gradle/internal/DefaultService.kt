@@ -139,7 +139,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
 
   override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
     check(!registered) {
-      "Apollo: outputDirAction {} cannot be configured outside of a service {} block"
+      "Apollo: outputDirConnection {} cannot be configured outside of a service {} block"
     }
 
     this.outputDirAction = action
