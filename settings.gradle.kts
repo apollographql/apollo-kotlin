@@ -1,5 +1,4 @@
-// TODO: See https://youtrack.jetbrains.com/issue/KT-56536
-//rootProject.name = "apollo-kotlin"
+rootProject.name = "apollo-kotlin"
 
 rootProject.projectDir
     .resolve("libraries")
