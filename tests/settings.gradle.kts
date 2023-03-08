@@ -1,5 +1,4 @@
-// TODO: See https://youtrack.jetbrains.com/issue/KT-56536
-//rootProject.name = "apollo-tests"
+rootProject.name = "apollo-tests"
 
 // Include all tests
 rootProject.projectDir
@@ -14,7 +13,10 @@ rootProject.projectDir
       include(project)
     }
 
-includeBuild("../")
+includeBuild("../") {
+  // See https://youtrack.jetbrains.com/issue/KT-56536
+  name = "apollo-kotlin"
+}
 
 pluginManagement {
   includeBuild("../build-logic")
