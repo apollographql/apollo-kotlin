@@ -10,15 +10,6 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArray
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.longOrNull
 import okio.Buffer
 import java.io.File
 
@@ -185,8 +176,11 @@ object SchemaDownloader {
 
   inline fun <reified T> Any?.cast() = this as? T
 
-  private fun getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments: Boolean): String {
-    val includeDeprecated = if (includeDeprecatedInputFieldsAndArguments) "(includeDeprecated: true)" else ""
+  private fun getIntrospectionQuery(new: Boolean): String {
+    val includeDeprecated = if (new) "(includeDeprecated: true)" else ""
+    val isRepeatable = if (new) "isRepeatable" else ""
+    val isDeprecated = if (new) "isDeprecated" else ""
+    val deprecationReason = if (new) "deprecationReason" else ""
     return """
       query IntrospectionQuery {
         __schema {
@@ -203,7 +197,7 @@ object SchemaDownloader {
             args$includeDeprecated {
               ...InputValue
             }
-            isRepeatable
+            $isRepeatable
           }
         }
       }
@@ -246,8 +240,8 @@ object SchemaDownloader {
         description
         type { ...TypeRef }
         defaultValue
-        isDeprecated
-        deprecationReason
+        $isDeprecated
+        $deprecationReason
       }
   
       fragment TypeRef on __Type {
