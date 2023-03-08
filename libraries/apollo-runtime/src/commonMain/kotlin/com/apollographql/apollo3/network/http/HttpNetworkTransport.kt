@@ -323,8 +323,8 @@ private constructor(
   }
 
   private companion object {
-    const val EMPTY = 0
-    const val PAYLOAD = 1
-    const val OTHER = 2
+    private const val EMPTY = 0
+    private const val PAYLOAD = 1
+    private const val OTHER = 2
   }
 }
