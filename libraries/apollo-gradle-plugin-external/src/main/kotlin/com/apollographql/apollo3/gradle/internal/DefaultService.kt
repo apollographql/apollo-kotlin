@@ -25,8 +25,7 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   internal val upstreamDependencies = mutableListOf<Dependency>()
   internal val downstreamDependencies = mutableListOf<Dependency>()
 
-  private val objects = project.objects
-  var registered = false
+  val objects = project.objects
 
   init {
     @Suppress("LeakingThis")
@@ -62,9 +61,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var introspection: DefaultIntrospection? = null
 
   override fun introspection(configure: Action<in Introspection>) {
-    check(!registered) {
-      "Apollo: introspection {} cannot be configured outside of a service {} block"
-    }
     val introspection = objects.newInstance(DefaultIntrospection::class.java)
 
     if (this.introspection != null) {
@@ -83,10 +79,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var registry: DefaultRegistry? = null
 
   override fun registry(configure: Action<in Registry>) {
-    check(!registered) {
-      "Apollo: registry {} cannot be configured outside of a service {} block"
-    }
-
     val registry = objects.newInstance(DefaultRegistry::class.java)
 
     if (this.registry != null) {
@@ -108,10 +100,6 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var registerOperationsConfig: DefaultRegisterOperationsConfig? = null
 
   override fun registerOperations(configure: Action<in RegisterOperationsConfig>) {
-    check(!registered) {
-      "Apollo: registerOperations {} cannot be configured outside of a service {} block"
-    }
-
     generateOperationOutput.set(true)
 
     val registerOperationsConfig = objects.newInstance(DefaultRegisterOperationsConfig::class.java)
@@ -128,20 +116,12 @@ abstract class DefaultService @Inject constructor(val project: Project, override
   var operationOutputAction: Action<in Service.OperationOutputConnection>? = null
 
   override fun operationOutputConnection(action: Action<in Service.OperationOutputConnection>) {
-    check(!registered) {
-      "Apollo: operationOutputConnection {} cannot be configured outside of a service {} block"
-    }
-
     this.operationOutputAction = action
   }
 
   var outputDirAction: Action<in Service.DirectoryConnection>? = null
 
   override fun outputDirConnection(action: Action<in Service.DirectoryConnection>) {
-    check(!registered) {
-      "Apollo: outputDirAction {} cannot be configured outside of a service {} block"
-    }
-
     this.outputDirAction = action
   }
 
