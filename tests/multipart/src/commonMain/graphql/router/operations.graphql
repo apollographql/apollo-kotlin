@@ -1,0 +1,9 @@
+subscription Die {
+  aNewDieWasCreated {
+    die {
+      roll
+      sides
+      color
+    }
+  }
+}

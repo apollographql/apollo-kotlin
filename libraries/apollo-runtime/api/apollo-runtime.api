@@ -303,8 +303,6 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport :
 	public fun dispose ()V
 	public fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public final fun execute (Lcom/apollographql/apollo3/api/ApolloRequest;Lcom/apollographql/apollo3/api/http/HttpRequest;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Lkotlinx/coroutines/flow/Flow;
-	public final fun getEngine ()Lcom/apollographql/apollo3/network/http/HttpEngine;
-	public final fun getExposeErrorBody ()Z
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 }
