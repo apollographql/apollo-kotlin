@@ -154,15 +154,8 @@ private fun Project.configurePublishingInternal() {
         plugins.hasPlugin("java-gradle-plugin") -> {
           /**
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
+           * the new publish plugin creates everything
            */
-          withType(MavenPublication::class.java) {
-            artifact(javadocJarTaskProvider)
-            // Only add sources for the main publication
-            // XXX: is there a nicer way to do this?
-            if (!name.lowercase().contains("marker")) {
-              artifact(createJavaSourcesTask())
-            }
-          }
         }
 
         extensions.findByName("android") != null -> {

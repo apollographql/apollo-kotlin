@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.gradle.api
 
+import org.gradle.api.Action
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 
@@ -32,4 +33,9 @@ interface Registry {
    * Uses the schema from the service by default
    */
   val schemaFile: RegularFileProperty
+
+  /**
+   * Use this to connect your schema to other parts of your build or just modify it
+   */
+  fun schemaConnection(connection: Action<SchemaConnection>)
 }

@@ -51,6 +51,7 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Introspecti
 	public abstract fun getEndpointUrl ()Lorg/gradle/api/provider/Property;
 	public abstract fun getHeaders ()Lorg/gradle/api/provider/MapProperty;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
 }
 
 public final class com/apollographql/apollo3/gradle/api/JavaProjectKt {
@@ -76,6 +77,13 @@ public abstract interface class com/apollographql/apollo3/gradle/api/Registry {
 	public abstract fun getGraphVariant ()Lorg/gradle/api/provider/Property;
 	public abstract fun getKey ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSchemaFile ()Lorg/gradle/api/file/RegularFileProperty;
+	public abstract fun schemaConnection (Lorg/gradle/api/Action;)V
+}
+
+public final class com/apollographql/apollo3/gradle/api/SchemaConnection {
+	public fun <init> (Lorg/gradle/api/tasks/TaskProvider;Lorg/gradle/api/provider/Provider;)V
+	public final fun getDownloadedSchema ()Lorg/gradle/api/provider/Provider;
+	public final fun getTask ()Lorg/gradle/api/tasks/TaskProvider;
 }
 
 public abstract interface class com/apollographql/apollo3/gradle/api/Service {

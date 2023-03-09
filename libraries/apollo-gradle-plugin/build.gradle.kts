@@ -81,11 +81,6 @@ if (relocateJar) {
   }
 }
 
-pluginBundle {
-  website = "https://github.com/apollographql/apollo-android"
-  vcsUrl = "https://github.com/apollographql/apollo-android"
-  tags = listOf("graphql", "apollo", "apollographql", "kotlin", "java", "jvm", "android", "graphql-client")
-}
 
 gradlePlugin {
   plugins {
