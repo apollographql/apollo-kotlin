@@ -17,10 +17,15 @@ Note: this plugin is still in early development and is not yet ready for product
 
 ## Installation
 
-In Android Studio or IntelliJ, add the custom plugin repository:
+As time of writing, the plugin is supported by:
+
+* IntelliJ EAP (2023.1)
+* Android Studio Canary (Girafe)
+
+Android Studio Sable (Electric Eel) is not supported
 
 <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > ⚙️ > <kbd>Manage Plugin
-Repositories</kbd> > <kbd>+</kbd> > <kbd>https://plugins.jetbrains.com/plugins/preview/20645 </kbd>
+Repositories</kbd> > <kbd>+</kbd> > <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>
 
 Then:
 
