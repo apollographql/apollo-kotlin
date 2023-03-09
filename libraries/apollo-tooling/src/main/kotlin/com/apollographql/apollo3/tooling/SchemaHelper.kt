@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.tooling
 
-import com.apollographql.apollo3.compiler.toJson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -40,7 +39,7 @@ internal object SchemaHelper {
   }
 
   internal fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
-    val body = map.toJson().toByteArray().toRequestBody("application/json".toMediaTypeOrNull())
+    val body = map.toJsonElement().toString().toRequestBody("application/json".toMediaTypeOrNull())
     val request = Request.Builder()
         .post(body)
         .apply {

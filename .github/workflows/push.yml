@@ -18,6 +18,8 @@ jobs:
           distribution: 'temurin'
           java-version: 17
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
+        with:
+          gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -28,6 +30,7 @@ jobs:
           ./gradlew --no-build-cache ciBuild
           ./gradlew --stop
           ./gradlew --no-build-cache -p tests ciBuild
+          ./gradlew --no-build-cache dokkaHtmlMultiModule
           ./gradlew --no-build-cache ciPublishSnapshot
         env:
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
@@ -41,3 +44,8 @@ jobs:
         with:
           name: push.zip
           path: push.zip
+      - name: Deploy Kdoc to github pages
+        uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6 #v4.4.1
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/dokkaHtml # The folder the action should deploy.

@@ -24,7 +24,7 @@ class TransformTest {
   @Test
   fun stripFieldsWithDirective() {
 
-    val document = query.buffer().parseAsGQLDocument().valueAssertNoErrors()
+    val document = query.buffer().parseAsGQLDocument().getOrThrow()
 
     val currentVersion = 4
     val transformed = document.transform {
@@ -79,7 +79,7 @@ class TransformTest {
       }
     """.trimIndent()
 
-    val transformed = query.buffer().parseAsGQLDocument().valueAssertNoErrors().transform {
+    val transformed = query.buffer().parseAsGQLDocument().getOrThrow().transform {
       if (it is GQLField && it.name == "objectType") {
         val newField = GQLField(
             alias = null,

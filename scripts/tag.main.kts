@@ -150,7 +150,9 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
     val content = file.readText()
         // Plugin
         .replace(Regex("""id\("com\.apollographql\.apollo3"\)\.version\("(.+)\)""")) {
-          """id("com.apollographql.apollo3").version("$version")"""
+          """
+            id("com.apollographql.apollo3") version "$version"
+          """.trimIndent()
         }
         // Dependencies
         .replace(Regex(""""com\.apollographql\.apollo3:(.+):.+"""")) {

@@ -30,6 +30,7 @@ import com.apollographql.apollo3.compiler.ir.IrSchemaBuilder
 import com.apollographql.apollo3.compiler.ir.toIrOperations
 import com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo3.compiler.operationoutput.writeTo
 import okio.buffer
 import okio.source
 import java.io.File
@@ -86,7 +87,7 @@ object ApolloCompiler {
       logger.warning("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
-    val schema = result.valueAssertNoErrors()
+    val schema = result.getOrThrow()
 
     checkCustomScalars(schema, scalarMapping)
     return CodegenSchema(
@@ -271,7 +272,9 @@ object ApolloCompiler {
       """.trimMargin()
     }
 
-    operationOutputFile?.writeText(operationOutput.toJson("  "))
+    if (operationOutputFile != null) {
+      operationOutput.writeTo(operationOutputFile)
+    }
 
     return operationOutput
   }

@@ -26,7 +26,12 @@ kotlin {
 
 
 apollo {
-  service("service") {
+  service("mockserver") {
+    sourceFolder.set("mockserver")
     packageName.set("multipart")
+  }
+  service("router") {
+    sourceFolder.set("router")
+    packageName.set("router")
   }
 }

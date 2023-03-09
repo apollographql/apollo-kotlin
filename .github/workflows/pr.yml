@@ -21,6 +21,8 @@ jobs:
           distribution: 'temurin'
           java-version: 17
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
+        with:
+          gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -28,7 +30,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs
           ./gradlew --stop
-          ./gradlew ciTestsGradle
+          ./gradlew ciTestsGradle --scan
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -47,6 +49,8 @@ jobs:
           distribution: 'temurin'
           java-version: 11 # Keep this one on an older JDK version to make sure we can still build with Java11
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
+        with:
+          gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -54,7 +58,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs --stacktrace 
           ./gradlew --stop
-          ./gradlew ciTestsNoGradle --stacktrace 
+          ./gradlew ciTestsNoGradle --stacktrace --scan
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -73,6 +77,8 @@ jobs:
           distribution: 'temurin'
           java-version: 17
       - uses: gradle/gradle-build-action@3fbe033aaae657f011f88f29be9e65ed26bd29ef #v2.3.3
+        with:
+          gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
           ulimit -c unlimited
@@ -80,7 +86,7 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs
           ./gradlew --stop
-          ./gradlew -p tests ciBuild
+          ./gradlew -p tests ciBuild --scan
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -137,7 +143,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: ./gradlew :intellij-plugin:check
+        run: ./gradlew :intellij-plugin:check --scan
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result

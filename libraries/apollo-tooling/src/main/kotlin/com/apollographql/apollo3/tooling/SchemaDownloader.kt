@@ -5,11 +5,20 @@ import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
+import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.compiler.fromJson
-import com.apollographql.apollo3.compiler.toJson
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.longOrNull
 import okio.Buffer
 import java.io.File
 
@@ -92,7 +101,7 @@ object SchemaDownloader {
             endpoint = registryUrl,
             headers = headers,
             insecure = insecure,
-        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().valueAssertNoErrors()
+        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().getOrThrow()
       }
     }
 
@@ -100,8 +109,8 @@ object SchemaDownloader {
 
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = gqlSchema!!.validateAsSchema().valueAssertNoErrors().toIntrospectionSchema()
-        schema.writeText(introspectionSchema.toJson(indent = "  "))
+        introspectionSchema = gqlSchema!!.validateAsSchema().getOrThrow().toIntrospectionSchema()
+        introspectionSchema.writeTo(schema)
       } else {
         schema.writeText(introspectionSchemaJson!!)
       }
@@ -159,7 +168,8 @@ object SchemaDownloader {
     val responseString = response.body.use { it?.string() }
 
     val document = responseString
-        ?.fromJson<Map<String, *>>()
+        ?.let { Json.parseToJsonElement(it) }
+        ?.toAny().cast<Map<String, *>>()
         ?.get("data").cast<Map<String, *>>()
         ?.get("service").cast<Map<String, *>>()
         ?.get("variant").cast<Map<String, *>>()

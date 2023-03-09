@@ -1,6 +1,6 @@
 plugins {
-  id("apollo.test").apply(false)
-  id("net.mbonnin.golatac").version("0.0.3")
+  id("apollo.test") apply false
+  id("net.mbonnin.golatac") version "0.0.3"
 }
 
 golatac.init(file("../gradle/libraries.toml"))

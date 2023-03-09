@@ -27,6 +27,6 @@ internal fun Iterable<File>.toSchema(logger: Logger): Schema {
       logger.warn("w: ${it.sourceLocation.pretty()}: Apollo: ${it.message}")
     }
 
-    result.valueAssertNoErrors()
+    result.getOrThrow()
   }
 }

@@ -26,9 +26,9 @@ import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
-import com.apollographql.apollo3.compiler.fromJson
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
 import com.apollographql.apollo3.tooling.SchemaDownloader.cast
+import kotlinx.serialization.json.Json
 import okio.Buffer
 
 
@@ -57,10 +57,6 @@ private fun GQLSelection.score(): String {
 private fun GQLDirective.score() = name
 
 private fun GQLArgument.score() = name
-
-private fun isEmpty(s: String?): Boolean {
-  return s == null || s.trim { it <= ' ' }.length == 0
-}
 
 private fun <T : GQLNode> List<T>.join(
     writer: SDLWriter,
@@ -196,7 +192,7 @@ object RegisterOperations {
   """.trimIndent()
 
   private fun String.normalize(): String {
-    val gqlDocument = Buffer().writeUtf8(this).parseAsGQLDocument().valueAssertNoErrors()
+    val gqlDocument = Buffer().writeUtf8(this).parseAsGQLDocument().getOrThrow()
 
     // From https://github.com/apollographql/apollo-tooling/blob/6d69f226c2e2c54b4fc0de6394d813bddfb54694/packages/apollo-graphql/src/operationId.ts#L84
 
@@ -209,6 +205,7 @@ object RegisterOperations {
         is GQLIntValue -> {
           TransformResult.Replace(it.copy(value = 0))
         }
+
         is GQLFloatValue -> {
           /**
            * Because in JS (0.0).toString == "0" (vs "0.0" on the JVM), we replace the FloatValue by an IntValue
@@ -222,16 +219,18 @@ object RegisterOperations {
               )
           )
         }
+
         is GQLStringValue -> {
           TransformResult.Replace(it.copy(value = ""))
         }
+
         else -> TransformResult.Continue
       }
     }
 
     /**
      * Algorithm taken from https://github.com/apollographql/apollo-tooling/blob/6d69f226c2e2c54b4fc0de6394d813bddfb54694/packages/apollo-graphql/src/transforms.ts#L102
-     * It's not 100% exact but it's important that it matches what apollo-tooling is doing for safelisting
+     * It's not 100% exact, but it's important that it matches what apollo-tooling is doing for safelisting
      *
      * Especially:
      * - it doesn't sort inline fragment
@@ -239,12 +238,10 @@ object RegisterOperations {
      */
     val sortedDocument = hiddenLiterals!!.sort()
 
-    val minimized = printDocument(sortedDocument)
+    return printDocument(sortedDocument)
         .replace(Regex("\\s+"), " ")
         .replace(Regex("([^_a-zA-Z0-9]) ")) { it.groupValues[1] }
         .replace(Regex(" ([^_a-zA-Z0-9])")) { it.groupValues[1] }
-
-    return minimized
   }
 
   fun String.safelistingHash(): String {
@@ -282,7 +279,8 @@ object RegisterOperations {
     val responseString = response.body.use { it?.string() }
 
     val errors = responseString
-        ?.fromJson<Map<String, *>>()
+        ?.let { Json.parseToJsonElement(it) }
+        ?.toAny().cast<Map<String, *>>()
         ?.get("data").cast<Map<String, *>>()
         ?.get("service").cast<Map<String, *>>()
         ?.get("registerOperationsWithResponse").cast<Map<String, *>>()
@@ -296,7 +294,8 @@ object RegisterOperations {
     }
 
     val success = responseString
-        ?.fromJson<Map<String, *>>()
+        ?.let { Json.parseToJsonElement(it) }
+        ?.toAny().cast<Map<String, *>>()
         ?.get("data").cast<Map<String, *>>()
         ?.get("service").cast<Map<String, *>>()
         ?.get("registerOperationsWithResponse").cast<Map<String, *>>()
