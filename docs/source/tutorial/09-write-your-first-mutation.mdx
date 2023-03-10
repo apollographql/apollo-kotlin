@@ -67,64 +67,106 @@ Build your project to generate the `LoginMutation` class.
 
 ## Connect the Submit button to your mutation
 
-Open `LoginFragment.kt` and like you did for the other fragments, override `onViewCreated`. Add a click listener and some checks to verify that the email is a valid email:
+To navigate back to the previous screen after logging-in, add a `navigateBack` lambda parameter to the `Login` composable:
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LoginFragment.kt"
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+```kotlin title="app/src/main/java/com/example/rocketreserver/Login.kt"
+@Composable
+fun Login(navigateBack: () -> Unit) { // highlight-line
+```
 
-        binding.submitProgressBar.visibility = View.GONE
-        binding.submit.setOnClickListener {
-            val email = binding.email.text.toString()
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                binding.emailLayout.error = getString(R.string.invalid_email)
-                return@setOnClickListener
-            }
+Again, it should be initialized in `MainActivity`:
+    
+```kotlin title="app/src/main/java/com/example/rocketreserver/MainActivity.kt"
+composable(route = NavigationDestinations.LOGIN) {
+    Login(
+        navigateBack = { // highlight-line
+            navController.popBackStack() // highlight-line
+        } // highlight-line
+    )
+}
+```
 
-            // TODO: More code here
+Go back to `Login.kt` and create a function to execute the Login mutation:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/Login.kt"
+private suspend fun login(email: String): Boolean {
+    val response = try {
+        apolloClient.mutation(LoginMutation(email = email)).execute()
+    } catch (e: ApolloException) {
+        Log.w("Login", "Failed to login", e)
+        return false
+    }
+    if (response.hasErrors()) {
+        Log.w("Login", "Failed to login: ${response.errors?.get(0)?.message}")
+        return false
+    }
+    val token = response.data?.login?.token
+    if (token == null) {
+        Log.w("Login", "Failed to login: no token returned by the backend")
+        return false
+    }
+    TokenRepository.setToken(token)
+    return true
+}
+```
+The possible error cases are handled and a boolean is returned to indicate if the login was successful or not. If it was, the token is saved in the `TokenRepository`.
+
+Note that the function is marked as `suspend` and so will need to be called from a coroutine. To do that, declare a scope in `Login`:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/Login.kt"
+// Submit button
+val scope = rememberCoroutineScope()
+```
+
+Then, in the `onClick` lambda, replace the `TODO` with a call to `login()`, and handle the result:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/Login.kt"
+Button(
+    modifier = Modifier
+        .padding(top = 32.dp)
+        .fillMaxWidth(),
+    onClick = {
+        scope.launch {
+            val ok = login(email)
+            if (ok) navigateBack()
         }
     }
+) {
+    Text(text = "Submit")
+}
 ```
 
-From the click listener, display the ProgressBar and execute the query with the email the user just entered. Replace the `TODO` with:
+To improve the UX, add a loading indicator that will be shown while the login is in progress (let's also disable the button to avoid multiple clicks):
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LoginFragment.kt"
-            binding.submitProgressBar.visibility = View.VISIBLE
-            binding.submit.visibility = View.GONE
-            lifecycleScope.launchWhenResumed {
-                val response = try {
-                    apolloClient.mutation(LoginMutation(email = email)).execute()
-                } catch (e: Exception) {
-                    null
-                }
-
-                // TODO: handle errors
-            }
+```kotlin title="app/src/main/java/com/example/rocketreserver/Login.kt"
+// Submit button
+var loading by remember { mutableStateOf(false) } // highlight-line
+val scope = rememberCoroutineScope()
+Button(
+    modifier = Modifier
+        .padding(top = 32.dp)
+        .fillMaxWidth(),
+    enabled = !loading, // highlight-line
+    onClick = {
+        loading = true // highlight-line
+        scope.launch {
+            val ok = login(email)
+            loading = false // highlight-line
+            if (ok) navigateBack()
+        }
+    }
+) {
+    if (loading) { // highlight-line
+        Loading() // highlight-line
+    } else { // highlight-line
+        Text(text = "Submit")
+    }
+}
 ```
-
-Handle errors if needed by replacing the `TODO` you just added:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LoginFragment.kt"
-                val token = response?.data?.login?.token
-                if (token == null || response.hasErrors()) {
-                    binding.submitProgressBar.visibility = View.GONE
-                    binding.submit.visibility = View.VISIBLE
-                    return@launchWhenResumed
-                }
-```
-
-Finally if everything is successful, store the token and go back to the previous screen at the end of `launchWhenResumed`:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LoginFragment.kt"
-                User.setToken(requireContext(), token)
-                findNavController().popBackStack()
-```
-
-`User` is a helper class that saves the token in [EncryptedSharedPreference](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). This is the reason why this tutorial uses API level 23+. Apollo Kotlin itself supports API levels 21+.
 
 ## Test the login
 
-Go to the details fragment, click **Book** and in the Login fragment, enter your email and click **Submit**. You now have a token that allows you to authenticate your operations.
+Go to the details screen, click **Book** and in the Login screen, enter your email and click **Submit**. You now have a token that allows you to authenticate your operations.
 
 <img src="images/login_screen.png" alt="The login screen" class="screenshot" width="300"/>
 
