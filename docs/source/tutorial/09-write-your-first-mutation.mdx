@@ -54,7 +54,7 @@ Next, copy the operation, either manually or using the three-dot menu's "Copy op
 
 Now that your mutation is working, add it to your project. Create a file named `Login.graphql` next to `schema.graphqls` and your other GraphQL files and paste the contents of the mutation:
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/Login.graphql"
+```graphql title="app/src/main/graphql/Login.graphql"
 mutation Login($email: String!) {
   login(email: $email) {
     token
@@ -126,10 +126,10 @@ Button(
         .padding(top = 32.dp)
         .fillMaxWidth(),
     onClick = {
-        scope.launch {
-            val ok = login(email)
-            if (ok) navigateBack()
-        }
+        scope.launch { // highlight-line
+            val ok = login(email) // highlight-line
+            if (ok) navigateBack() // highlight-line
+        } // highlight-line
     }
 ) {
     Text(text = "Submit")

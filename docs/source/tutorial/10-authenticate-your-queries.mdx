@@ -44,7 +44,7 @@ val apolloClient = ApolloClient.Builder()
 
 Next to `schema.graphqls` add a `BookTrip.graphql` file:
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/BookTrip.graphql"
+```graphql title="app/src/main/graphql/BookTrip.graphql"
 mutation BookTrip($id:ID!) {
   bookTrips(launchIds: [$id]) {
     success
@@ -57,7 +57,7 @@ Notice how the `bookTrips` field takes a list as argument but the mutation itsel
 
 Also add the `CancelTrip.graphql` file. This mutation doesn't use lists:
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/CancelTrip.graphql"
+```graphql title="app/src/main/graphql/CancelTrip.graphql"
 mutation CancelTrip($id:ID!) {
   cancelTrip(launchId: $id) {
     success

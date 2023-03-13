@@ -12,7 +12,7 @@ As you did for `$cursor`, add a variable named `id`. Notice that this variable i
 
 Because it's a details view, request the `LARGE` size for the missionPatch. Also request the rocket type and name:
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/LaunchDetails.graphql"
+```graphql title="app/src/main/graphql/LaunchDetails.graphql"
 query LaunchDetails($id: ID!) {
   launch(id: $id) {
     id
@@ -127,7 +127,7 @@ As you execute your query, two types of errors can happen:
 
 Since Apollo Kotlin throws an `ApolloException` in case of protocol errors, you'll need to wrap the call in a try/catch block.
 
-First let's create a `State` sealed class that will hold the possible states of the UI:
+First let's create a `LaunchDetailsState` sealed interface that will hold the possible states of the UI:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
 private sealed interface LaunchDetailsState {
@@ -156,7 +156,7 @@ fun LaunchDetails(launchId: String) {
 Now use the state to show the appropriate UI:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
-    // Use the state
+‎    // Use the state
     when (val s = state) {
         Loading -> Loading()
         is ProtocolError -> ErrorMessage("Oh no... A protocol error happened: ${s.exception.message}")
