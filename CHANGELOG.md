@@ -3,7 +3,7 @@ Change Log
 
 # Version 3.7.4
 
-_2022-01-13_
+_2023-01-13_
 
 This release contains a handful of bug fixes and improvements.
 
