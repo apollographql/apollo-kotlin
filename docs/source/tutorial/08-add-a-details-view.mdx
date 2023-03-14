@@ -179,7 +179,7 @@ To handle application errors, you can check `response.hasErrors()`. First, add a
 private sealed interface LaunchDetailsState {
     object Loading : LaunchDetailsState
     data class ProtocolError(val exception: ApolloException) : LaunchDetailsState
-    data class BackendError(val errors: List<Error>) : LaunchDetailsState // highlight-line
+    data class ApplicationError(val errors: List<Error>) : LaunchDetailsState // highlight-line
     data class Success(val data: LaunchDetailsQuery.Data) : LaunchDetailsState
 }
 ```
@@ -190,7 +190,7 @@ Then, in the `try` block, check for `response.hasErrors()` and wrap the result i
     state = try {
         val response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
         if (response.hasErrors()) { // highlight-line
-            BackendError(response.errors!!) // highlight-line
+            ApplicationError(response.errors!!) // highlight-line
         } else { // highlight-line
             Success(response.data!!) // highlight-line
         } // highlight-line
