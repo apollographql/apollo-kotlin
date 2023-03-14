@@ -137,6 +137,8 @@ class CompiledFragment internal constructor(
 
 data class CompiledCondition(val name: String, val inverted: Boolean, val defaultValue: Boolean) {
   constructor(name: String, inverted: Boolean): this(name, inverted, true)
+
+  fun copy(name: String = this.name, inverted: Boolean = this.inverted) = CompiledCondition(name, inverted, defaultValue)
 }
 
 sealed class CompiledType {

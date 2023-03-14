@@ -153,6 +153,8 @@ sealed class BTerm
  */
 data class BVariable(val name: String, val defaultValue: Boolean?) : BTerm() {
   constructor(name: String): this(name, true)
+
+  fun copy(name: String = this.name) = BVariable(name, defaultValue)
 }
 
 /**
