@@ -74,7 +74,7 @@ private constructor(
     }
 
     override fun addHttpHeader(name: String, value: String): Builder<D> = apply {
-      this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
+      this.additionalHttpHeaders_ = (this.additionalHttpHeaders_ ?: emptyList()) + HttpHeader(name, value)
     }
 
     override var sendApqExtensions: Boolean? = null

@@ -56,7 +56,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * headers, use [httpHeaders] instead.
    */
   override fun addHttpHeader(name: String, value: String) = apply {
-    this.additionalHttpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
+    this.additionalHttpHeaders = (this.additionalHttpHeaders ?: emptyList()) + HttpHeader(name, value)
   }
 
   override fun sendApqExtensions(sendApqExtensions: Boolean?) = apply {
