@@ -113,14 +113,13 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .executionContext(executionContext)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
-        .additionalHttpHeaders(additionalHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .ignorePartialData(ignorePartialData)
         .build()
-    return apolloClient.executeAsFlow(request)
+    return apolloClient.executeAsFlow(request, additionalHttpHeaders)
   }
 
   /**

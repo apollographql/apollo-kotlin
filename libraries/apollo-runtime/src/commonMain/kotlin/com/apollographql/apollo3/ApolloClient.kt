@@ -112,6 +112,10 @@ private constructor(
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
    */
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
+    return executeAsFlow(apolloRequest, emptyList())
+  }
+
+  internal fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>, extraHeaders: List<HttpHeader>?): Flow<ApolloResponse<D>> {
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
     @Suppress("DEPRECATION")
@@ -132,12 +136,12 @@ private constructor(
             httpMethod(apolloRequest.httpMethod)
           }
           if (apolloRequest.httpHeaders != null) {
-            check (apolloRequest.additionalHttpHeaders == null) {
+            check (extraHeaders == null) {
               "Apollo: it is an error to call both .headers() and .addHeader() or .additionalHeaders() at the same time"
             }
             httpHeaders(apolloRequest.httpHeaders)
-          } else if (apolloRequest.additionalHttpHeaders != null) {
-            httpHeaders(httpHeaders.orEmpty() + apolloRequest.additionalHttpHeaders.orEmpty())
+          } else if (extraHeaders != null) {
+            httpHeaders(httpHeaders.orEmpty() + extraHeaders)
           }
           if (apolloRequest.sendApqExtensions != null) {
             sendApqExtensions(apolloRequest.sendApqExtensions)
