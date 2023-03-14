@@ -13,6 +13,7 @@ import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.introspection_query.adapter.TestQuery_ResponseAdapter;
 import com.example.introspection_query.selections.TestQuerySelections;
+import com.example.introspection_query.type.__TypeKind;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.Override;
@@ -20,7 +21,7 @@ import java.lang.String;
 import java.util.List;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "0df748160db73d1bbdea0e6e8437222dd4026ef9a3d699923485cf95c7df8366";
+  public static final String OPERATION_ID = "2bf29cc74f10b0b5551a609396f4e489fc4ebce15c0504cdd102be8447976b97";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
@@ -37,10 +38,11 @@ public class TestQuery implements Query<TestQuery.Data> {
    *   }
    *   __type(name: "Vehicle") {
    *     name
+   *     kind
    *   }
    * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name } }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery { __schema { queryType { name } types { name } } __type(name: \"Vehicle\") { name kind } }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -68,8 +70,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      $hashCode = h;
+      int __h = 1;
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
@@ -165,12 +167,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (__schema == null) ? 0 : __schema.hashCode();
-        h *= 1000003;
-        h ^= (__type == null) ? 0 : __type.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (__schema == null) ? 0 : __schema.hashCode();
+        __h *= 1000003;
+        __h ^= (__type == null) ? 0 : __type.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -220,12 +222,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (queryType == null) ? 0 : queryType.hashCode();
-        h *= 1000003;
-        h ^= (types == null) ? 0 : types.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (queryType == null) ? 0 : queryType.hashCode();
+        __h *= 1000003;
+        __h ^= (types == null) ? 0 : types.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -271,10 +273,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -319,10 +321,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -342,14 +344,17 @@ public class TestQuery implements Query<TestQuery.Data> {
   public static class __Type {
     public String name;
 
+    public __TypeKind kind;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
 
     private transient volatile String $toString;
 
-    public __Type(String name) {
+    public __Type(String name, __TypeKind kind) {
       this.name = name;
+      this.kind = kind;
     }
 
     @Override
@@ -359,7 +364,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof __Type) {
         __Type that = (__Type) o;
-        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name));
+        return ((this.name == null) ? (that.name == null) : this.name.equals(that.name))
+         &&((this.kind == null) ? (that.kind == null) : this.kind.equals(that.kind));
       }
       return false;
     }
@@ -367,10 +373,12 @@ public class TestQuery implements Query<TestQuery.Data> {
     @Override
     public int hashCode() {
       if (!$hashCodeMemoized) {
-        int h = 1;
-        h *= 1000003;
-        h ^= (name == null) ? 0 : name.hashCode();
-        $hashCode = h;
+        int __h = 1;
+        __h *= 1000003;
+        __h ^= (name == null) ? 0 : name.hashCode();
+        __h *= 1000003;
+        __h ^= (kind == null) ? 0 : kind.hashCode();
+        $hashCode = __h;
         $hashCodeMemoized = true;
       }
       return $hashCode;
@@ -380,7 +388,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "__Type{"
-          + "name=" + name
+          + "name=" + name + ", "
+          + "kind=" + kind
           + "}";
       }
       return $toString;

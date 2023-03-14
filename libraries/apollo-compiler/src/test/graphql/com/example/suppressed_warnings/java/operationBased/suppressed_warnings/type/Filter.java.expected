@@ -46,14 +46,14 @@ public class Filter {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (name == null) ? 0 : name.hashCode();
-      h *= 1000003;
-      h ^= (deprecated == null) ? 0 : deprecated.hashCode();
-      h *= 1000003;
-      h ^= (experimental == null) ? 0 : experimental.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (name == null) ? 0 : name.hashCode();
+      __h *= 1000003;
+      __h ^= (deprecated == null) ? 0 : deprecated.hashCode();
+      __h *= 1000003;
+      __h ^= (experimental == null) ? 0 : experimental.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;

@@ -3,7 +3,6 @@ package com.apollographql.apollo3.gradle.test
 import com.apollographql.apollo3.ast.introspection.normalize
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.gradle.util.TestUtils
-import com.google.common.truth.Truth
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Assert
 import org.junit.Test
@@ -74,12 +73,31 @@ class ConvertSchemaTests {
           to.absolutePath
       )
       Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
-      // SDL to Json and back is not idempotent as SDL will add a `schema {}` block
-      Truth.assertThat(to.readText()).contains("""
-        type Query {
-          greeting: String
-        }
-      """.trimIndent())
+      assertjThat(to.readText())
+          .isEqualTo(File(dir, "schemas/schema.sdl").readText())
     }
   }
+
+  @Test
+  fun `convert from october-2015 JSON to SDL works`() {
+    TestUtils.withTestProject("convertSchema") { dir ->
+      // schema-october-2015.json doesn't have:
+      // - `__Directive.locations` (introduced in the April2016 spec)
+      // - `__Directive.isRepeatable` (introduced in the October2021 spec)
+      // - `__InputField.isDeprecated` and `__InputField.deprecatedReason` (introduced after the October2021 spec)
+      val from = File(dir, "schemas/schema-october-2015-spec.json")
+      val to = File(dir, "schema.sdl")
+      val result = TestUtils.executeTask("convertApolloSchema",
+          dir,
+          "--from",
+          from.absolutePath,
+          "--to",
+          to.absolutePath
+      )
+      Assert.assertEquals(TaskOutcome.SUCCESS, result.task(":convertApolloSchema")!!.outcome)
+      assertjThat(to.readText())
+          .isEqualTo(File(dir, "schemas/schema-october-2015-spec.sdl").readText())
+    }
+  }
+
 }

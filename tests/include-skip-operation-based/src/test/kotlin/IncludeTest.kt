@@ -1,11 +1,18 @@
+
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.apollographql.apollo3.api.GlobalBuilder
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery
+import com.example.GetCatIncludeVariableWithDefaultQuery
 import com.example.GetDogSkipFalseQuery
 import com.example.GetDogSkipTrueQuery
 import com.example.GetDogSkipVariableQuery
@@ -15,6 +22,7 @@ import com.example.type.buildQuery
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class IncludeTest {
 
@@ -140,6 +148,33 @@ class IncludeTest {
     val response = operation.parseData(data)
 
     assertEquals("ouaf", response.dataAssertNoErrors.animal!!.dogFragment!!.barf)
+  }
+
+  @Test
+  fun getCatIncludeVariableWithDefaultQuery(): Unit = runBlocking {
+    val operation = GetCatIncludeVariableWithDefaultQuery()
+
+    val data = GetCatIncludeVariableWithDefaultQuery.Data {
+      animal = buildCat {
+        this["species"] = Optional.Absent
+      }
+    }
+
+    operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+  }
+
+  @Test
+  fun getCatIncludeVariableWithDefaultQuery2() = runBlocking {
+    val operation = GetCatIncludeVariableWithDefaultQuery()
+
+    val data = GlobalBuilder.buildQuery {
+      animal = buildCat {
+      }
+    }
+
+    val response = operation.parseData(data)
+
+    assertNull(response.dataAssertNoErrors.animal!!.species)
   }
 }
 

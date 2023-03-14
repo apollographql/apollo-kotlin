@@ -7,6 +7,7 @@ import com.apollographql.apollo3.compiler.CommonMetadata
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.IncomingOptions.Companion.resolveSchema
 import com.apollographql.apollo3.compiler.JavaNullable
+import com.apollographql.apollo3.compiler.MODELS_COMPAT
 import com.apollographql.apollo3.compiler.MODELS_OPERATION_BASED
 import com.apollographql.apollo3.compiler.MODELS_RESPONSE_BASED
 import com.apollographql.apollo3.compiler.OperationOutputGenerator
@@ -327,11 +328,39 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
 
       else -> commonMetadata.codegenModels
     }
+    @Suppress("DEPRECATION")
+    if (codegenModels == MODELS_COMPAT) {
+      this.logger.warn("""
+      Apollo: "compat" codegen is deprecated.
+      
+      Update your code to work with the "operationBased" generated models:
+      - remove `.fragments` synthetic fields
+      - replace inline fragments usage: `as${'$'}Fragment}` is now `on${'$'}Fragment}`
+      """.trimIndent())
+    }
 
     val alwaysGenerateTypesMatching = usedCoordinates.files.map { it.toUsedCoordinates() }
         .fold(alwaysGenerateTypesMatching.getOrElse(defaultAlwaysGenerateTypesMatching)) { acc, new ->
           acc + new
         }
+
+    val useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments)
+    if (useSchemaPackageNameForFragments) {
+      this.logger.warn("""
+      Apollo: useSchemaPackageNameForFragments is deprecated.
+      
+      If your fragments are not defined in the same directory as your schema, their package name has changed, update usages to the new package name that matches the location of the fragment. 
+      """.trimIndent())
+    }
+
+    val generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders)
+    if (generateTestBuilders) {
+      this.logger.warn("""
+      Apollo: generateTestBuilders is deprecated. Use generateDataBuilders instead.
+      
+      See https://www.apollographql.com/docs/kotlin/testing/data-builders for more details. 
+      """.trimIndent())
+    }
 
     val options = Options(
         executableFiles = graphqlFiles.files,
@@ -361,10 +390,10 @@ abstract class ApolloGenerateSourcesTask : DefaultTask() {
         codegenModels = codegenModels,
         addTypename = addTypename.getOrElse(defaultAddTypename),
         schemaPackageName = commonMetadata.schemaPackageName,
-        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments.getOrElse(defaultUseSchemaPackageNameForFragments),
+        useSchemaPackageNameForFragments = useSchemaPackageNameForFragments,
         scalarMapping = commonMetadata.scalarMapping,
         targetLanguage = targetLanguage,
-        generateTestBuilders = generateTestBuilders.getOrElse(defaultGenerateTestBuilders),
+        generateTestBuilders = generateTestBuilders,
         generateDataBuilders = generateDataBuilders,
         sealedClassesForEnumsMatching = sealedClassesForEnumsMatching.getOrElse(defaultSealedClassesForEnumsMatching),
         classesForEnumsMatching = classesForEnumsMatching.getOrElse(defaultClassesForEnumsMatching),

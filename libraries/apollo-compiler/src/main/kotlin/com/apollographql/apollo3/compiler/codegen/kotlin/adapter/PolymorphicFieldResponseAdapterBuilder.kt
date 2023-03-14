@@ -117,7 +117,12 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     builder.add(typenameFromReaderCodeBlock())
 
     builder.beginControlFlow("return·when($__typename) {")
-    implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
+    implementations.sortedByDescending {
+      it.typeSet.size
+    }.sortedByDescending {
+      // make sure the fallback type is always last so that the else is the last branch
+     if (it.isFallback) 0 else 1
+    }.forEach { model ->
       if (!model.isFallback) {
         model.possibleTypes.forEach { possibleType ->
           builder.addStatement("%S,", possibleType)

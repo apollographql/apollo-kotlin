@@ -14,6 +14,8 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.introspection_query.TestQuery;
+import com.example.introspection_query.type.__TypeKind;
+import com.example.introspection_query.type.adapter.__TypeKind_ResponseAdapter;
 import java.io.IOException;
 import java.lang.Override;
 import java.lang.String;
@@ -166,23 +168,28 @@ public class TestQuery_ResponseAdapter {
   public enum __Type implements Adapter<TestQuery.__Type> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "kind");
 
     @Override
     public TestQuery.__Type fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       String _name = null;
+      __TypeKind _kind = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _kind = __TypeKind_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
+      Assertions.checkFieldNotMissing(_kind, "kind");
+
       return new TestQuery.__Type(
-        _name
+        _name,
+        _kind
       );
     }
 
@@ -191,6 +198,9 @@ public class TestQuery_ResponseAdapter {
         TestQuery.__Type value) throws IOException {
       writer.name("name");
       Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.name);
+
+      writer.name("kind");
+      __TypeKind_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.kind);
     }
   }
 }

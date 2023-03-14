@@ -39,7 +39,7 @@ internal class DownloadSchemaCommand: CliktCommand() {
         registryUrl = registryUrl,
         schema = File(schema),
         headers = headersMap,
-        insecure =insecure,
+        insecure = insecure,
     )
   }
 }

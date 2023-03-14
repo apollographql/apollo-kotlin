@@ -60,18 +60,18 @@ public class ColorInput {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (red == null) ? 0 : red.hashCode();
-      h *= 1000003;
-      h ^= (green == null) ? 0 : green.hashCode();
-      h *= 1000003;
-      h ^= (blue == null) ? 0 : blue.hashCode();
-      h *= 1000003;
-      h ^= (enumWithDefaultValue == null) ? 0 : enumWithDefaultValue.hashCode();
-      h *= 1000003;
-      h ^= (reviewRefInput == null) ? 0 : reviewRefInput.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (red == null) ? 0 : red.hashCode();
+      __h *= 1000003;
+      __h ^= (green == null) ? 0 : green.hashCode();
+      __h *= 1000003;
+      __h ^= (blue == null) ? 0 : blue.hashCode();
+      __h *= 1000003;
+      __h ^= (enumWithDefaultValue == null) ? 0 : enumWithDefaultValue.hashCode();
+      __h *= 1000003;
+      __h ^= (reviewRefInput == null) ? 0 : reviewRefInput.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;

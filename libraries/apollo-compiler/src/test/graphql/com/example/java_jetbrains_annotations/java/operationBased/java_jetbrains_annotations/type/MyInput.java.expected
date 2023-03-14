@@ -52,14 +52,14 @@ public class MyInput {
   @Override
   public int hashCode() {
     if (!$hashCodeMemoized) {
-      int h = 1;
-      h *= 1000003;
-      h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
-      h *= 1000003;
-      h ^= nonNullableInt;
-      h *= 1000003;
-      h ^= (nonNullableIntWithDefault == null) ? 0 : nonNullableIntWithDefault.hashCode();
-      $hashCode = h;
+      int __h = 1;
+      __h *= 1000003;
+      __h ^= (nullableInt == null) ? 0 : nullableInt.hashCode();
+      __h *= 1000003;
+      __h ^= nonNullableInt;
+      __h *= 1000003;
+      __h ^= (nonNullableIntWithDefault == null) ? 0 : nonNullableIntWithDefault.hashCode();
+      $hashCode = __h;
       $hashCodeMemoized = true;
     }
     return $hashCode;
