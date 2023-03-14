@@ -3,9 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.mockserver.MockServer
-import com.apollographql.apollo3.testing.QueueTestNetworkTransport
 import com.apollographql.apollo3.testing.enqueue
-import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
 import com.example.GetRandomQuery
 import org.junit.Assert.assertTrue
@@ -71,7 +69,7 @@ class HeadersTest {
           .httpHeaders(listOf(HttpHeader("requestKey", "requestValue")))
           .addHttpHeader("requestKey", "requestValue")
           .execute()
-      
+
       fail("an exception was expected")
     } catch (e: Exception) {
       assertTrue(e.message!!.contains("it is an error to call both .headers() and .addHeader()"))

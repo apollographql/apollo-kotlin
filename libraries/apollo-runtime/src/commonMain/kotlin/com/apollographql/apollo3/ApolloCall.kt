@@ -26,11 +26,9 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var enableAutoPersistedQueries: Boolean? = null
   override var canBeBatched: Boolean? = null
   override var ignorePartialData: Boolean? = null
-  override val httpHeaders: List<HttpHeader>?
-    get() = httpHeaders_
+  override var httpHeaders: List<HttpHeader>? = null
 
-  private var additionalHttpHeaders_: List<HttpHeader>? = null
-  private var httpHeaders_: List<HttpHeader>? = null
+  private var additionalHttpHeaders: List<HttpHeader>? = null
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
@@ -41,7 +39,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   private fun additionalHttpHeaders(additionalHttpHeaders: List<HttpHeader>?) = apply {
-    this.additionalHttpHeaders_ = additionalHttpHeaders
+    this.additionalHttpHeaders = additionalHttpHeaders
   }
 
   /**
@@ -49,7 +47,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * This method overrides any HTTP header previously set on [ApolloClient]
    */
   override fun httpHeaders(httpHeaders: List<HttpHeader>?) = apply {
-    this.httpHeaders_ = httpHeaders
+    this.httpHeaders = httpHeaders
   }
 
   /**
@@ -58,7 +56,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * headers, use [httpHeaders] instead.
    */
   override fun addHttpHeader(name: String, value: String) = apply {
-    this.additionalHttpHeaders_ = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
+    this.additionalHttpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
   }
 
   override fun sendApqExtensions(sendApqExtensions: Boolean?) = apply {
@@ -82,12 +80,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   fun copy(): ApolloCall<D> {
-    @Suppress("DEPRECATION")
     return ApolloCall(apolloClient, operation)
         .addExecutionContext(executionContext)
         .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders_)
-        .additionalHttpHeaders(additionalHttpHeaders_)
+        .httpHeaders(httpHeaders)
+        .additionalHttpHeaders(additionalHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
@@ -112,12 +109,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * ```
    */
   fun toFlow(): Flow<ApolloResponse<D>> {
-    @Suppress("DEPRECATION")
     val request = ApolloRequest.Builder(operation)
         .executionContext(executionContext)
         .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders_)
-        .additionalHttpHeaders(additionalHttpHeaders_)
+        .httpHeaders(httpHeaders)
+        .additionalHttpHeaders(additionalHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
