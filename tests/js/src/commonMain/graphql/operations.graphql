@@ -1,3 +1,11 @@
 mutation CreateCustomer($name: String!, $id: Int!) {
   createCustomer(input: {customer: {storeId: $id, name: $name}})
 }
+
+query GetSalesPeople {
+  getSalesPeople {
+    __typename
+    name
+    favoriteNumbers
+  }
+}
