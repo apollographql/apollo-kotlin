@@ -22,7 +22,7 @@ private constructor(
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
     override val ignorePartialData: Boolean?,
-
+    val additionalHttpHeaders: List<HttpHeader>?,
     @ApolloInternal
     val useV3ExceptionHandling: Boolean?,
 ) : ExecutionOptions {
@@ -37,6 +37,7 @@ private constructor(
         .executionContext(executionContext)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
+        .additionalHttpHeaders(additionalHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
@@ -59,8 +60,17 @@ private constructor(
 
     override var httpHeaders: List<HttpHeader>? = null
 
+    val additionalHttpHeaders: List<HttpHeader>?
+      get() = additionalHttpHeaders_
+
+    private var additionalHttpHeaders_: List<HttpHeader>? = null
+
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder<D> = apply {
       this.httpHeaders = httpHeaders
+    }
+
+    fun additionalHttpHeaders(additionalHttpHeaders: List<HttpHeader>?) = apply {
+      this.additionalHttpHeaders_ = additionalHttpHeaders
     }
 
     override fun addHttpHeader(name: String, value: String): Builder<D> = apply {
@@ -129,6 +139,7 @@ private constructor(
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
           ignorePartialData = ignorePartialData,
+          additionalHttpHeaders = additionalHttpHeaders,
           useV3ExceptionHandling = useV3ExceptionHandling,
       )
     }

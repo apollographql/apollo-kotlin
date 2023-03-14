@@ -132,7 +132,12 @@ private constructor(
             httpMethod(apolloRequest.httpMethod)
           }
           if (apolloRequest.httpHeaders != null) {
+            check (apolloRequest.additionalHttpHeaders == null) {
+              "Apollo: it is an error to call both .headers() and .addHeader() or .additionalHeaders() at the same time"
+            }
             httpHeaders(apolloRequest.httpHeaders)
+          } else if (apolloRequest.additionalHttpHeaders != null) {
+            httpHeaders(httpHeaders.orEmpty() + apolloRequest.additionalHttpHeaders.orEmpty())
           }
           if (apolloRequest.sendApqExtensions != null) {
             sendApqExtensions(apolloRequest.sendApqExtensions)
