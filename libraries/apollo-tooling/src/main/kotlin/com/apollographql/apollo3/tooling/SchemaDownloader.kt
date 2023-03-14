@@ -25,8 +25,14 @@ internal fun String.getGraph(): String? {
   return split(":")[1]
 }
 
+
 @ApolloExperimental
 object SchemaDownloader {
+  enum class SpecVersion {
+    June_2018,
+    October_2021
+  }
+
   /**
    * Main entry point for downloading a schema either from introspection or from the Apollo Studio registry
    *
@@ -63,7 +69,7 @@ object SchemaDownloader {
               endpoint = endpoint,
               headers = headers,
               insecure = insecure,
-              includeDeprecatedInputFieldsAndArguments = true,
+              specVersion = SpecVersion.October_2021,
           )
         } catch (e: Exception) {
           // Maybe the server doesn't support deprecated input fields / arguments, try without them
@@ -71,7 +77,7 @@ object SchemaDownloader {
               endpoint = endpoint,
               headers = headers,
               insecure = insecure,
-              includeDeprecatedInputFieldsAndArguments = false,
+              specVersion = SpecVersion.June_2018,
           )
         }
         introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
@@ -117,11 +123,11 @@ object SchemaDownloader {
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-      includeDeprecatedInputFieldsAndArguments: Boolean,
+      specVersion: SpecVersion,
   ): String {
 
     val body = mapOf(
-        "query" to getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments),
+        "query" to getIntrospectionQuery(specVersion),
         "operationName" to "IntrospectionQuery"
     )
     val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
@@ -175,8 +181,23 @@ object SchemaDownloader {
 
   inline fun <reified T> Any?.cast() = this as? T
 
-  private fun getIntrospectionQuery(includeDeprecatedInputFieldsAndArguments: Boolean): String {
-    val includeDeprecated = if (includeDeprecatedInputFieldsAndArguments) "(includeDeprecated: true)" else ""
+  fun getIntrospectionQuery(specVersion: SpecVersion): String {
+    val isRepeatable = when(specVersion) {
+      SpecVersion.October_2021 -> "isRepeatable"
+      else -> ""
+    }
+    val inputValueIncludeDeprecated = when(specVersion) {
+      SpecVersion.October_2021 -> "(includeDeprecated: true)"
+      else -> ""
+    }
+    val inputValueIsDeprecated = when(specVersion) {
+      SpecVersion.October_2021 -> "isDeprecated"
+      else -> ""
+    }
+    val inputValueDeprecationReason = when(specVersion) {
+      SpecVersion.October_2021 -> "deprecationReason"
+      else -> ""
+    }
     return """
       query IntrospectionQuery {
         __schema {
@@ -190,10 +211,10 @@ object SchemaDownloader {
             name
             description
             locations
-            args$includeDeprecated {
+            args$inputValueIncludeDeprecated {
               ...InputValue
             }
-            isRepeatable
+            $isRepeatable
           }
         }
       }
@@ -205,7 +226,7 @@ object SchemaDownloader {
         fields(includeDeprecated: true) {
           name
           description
-          args$includeDeprecated {
+          args$inputValueIncludeDeprecated {
             ...InputValue
           }
           type {
@@ -214,7 +235,7 @@ object SchemaDownloader {
           isDeprecated
           deprecationReason
         }
-        inputFields$includeDeprecated {
+        inputFields$inputValueIncludeDeprecated {
           ...InputValue
         }
         interfaces {
@@ -236,8 +257,8 @@ object SchemaDownloader {
         description
         type { ...TypeRef }
         defaultValue
-        isDeprecated
-        deprecationReason
+        $inputValueIsDeprecated
+        $inputValueDeprecationReason
       }
   
       fragment TypeRef on __Type {
