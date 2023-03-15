@@ -6,10 +6,35 @@ import com.apollographql.apollo3.api.json.internal.toDoubleExact
 import com.apollographql.apollo3.api.json.internal.toIntExact
 import com.apollographql.apollo3.api.json.internal.toLongExact
 import com.apollographql.apollo3.exception.JsonDataException
-import kotlin.jvm.JvmOverloads
+
+@Suppress("NOTHING_TO_INLINE")
+private inline fun objectEntries(json: dynamic) = js("Object").entries(json).unsafeCast<Array<Array<Any>>>()
 
 /**
- * A [JsonReader] that reads data from a regular [Map<String, Any?>]
+ * By wrapping each iterator we can use introspection to determine what kind of iterator we have in the stack
+ *
+ */
+sealed interface IteratorWrapper {
+  val iterator: Iterator<*>
+
+  /**
+   * A wrapped iterator of the standard non-entry types
+   *
+   * @property iterator
+   */
+  data class StandardIterator(override val iterator: Iterator<*>) : IteratorWrapper
+
+  /**
+   * A wrapped entry of object entries (pairs of [String, Any?]) that represent the members
+   * of the container.
+   *
+   * @property iterator
+   */
+  data class EntryIterator(override val iterator: Iterator<Array<Any>>) : IteratorWrapper
+}
+
+/**
+ * A [JsonReader] that reads data from a javascript dynamic
  *
  * Map values should be any of:
  * - String
@@ -18,8 +43,8 @@ import kotlin.jvm.JvmOverloads
  * - Long
  * - JsonNumber
  * - null
- * - Map<String, Any?> where values are any of these values recursively
- * - List<Any?> where values are any of these values recursively
+ * - dynamic where values are any of these values recursively
+ * - Array<Any?> where values are any of these values recursively
  *
  * Anything else is undefined
  *
@@ -28,11 +53,10 @@ import kotlin.jvm.JvmOverloads
  * @param root the root [Map] to read from
  * @param pathRoot the path root to be prefixed to the returned path when calling [getPath]. Useful for [buffer].
  */
-class MapJsonReader
-@JvmOverloads
+class DynamicJsJsonReader
 constructor(
-    val root: Map<String, Any?>,
-    private val pathRoot: List<Any> = emptyList(),
+    val root: dynamic,
+    private val pathRoot: Array<Any> = emptyArray(),
 ) : JsonReader {
 
   private var peekedToken: JsonReader.Token
@@ -55,8 +79,8 @@ constructor(
   /**
    * The current object memorized in case we need to rewind
    */
-  private var containerStack = arrayOfNulls<Map<String, Any?>>(MAX_STACK_SIZE)
-  private val iteratorStack = arrayOfNulls<Iterator<*>>(MAX_STACK_SIZE)
+  private var containerStack = arrayOfNulls<Any?>(MAX_STACK_SIZE)
+  private val iteratorStack = arrayOfNulls<IteratorWrapper>(MAX_STACK_SIZE)
   private val nameIndexStack = IntArray(MAX_STACK_SIZE)
 
   private var stackSize = 0
@@ -68,7 +92,7 @@ constructor(
 
   private fun anyToToken(any: Any?) = when (any) {
     null -> JsonReader.Token.NULL
-    is List<*> -> JsonReader.Token.BEGIN_ARRAY
+    is Array<*> -> JsonReader.Token.BEGIN_ARRAY
     is Map<*, *> -> JsonReader.Token.BEGIN_OBJECT
     is Int -> JsonReader.Token.NUMBER
     is Long -> JsonReader.Token.LONG
@@ -76,7 +100,13 @@ constructor(
     is JsonNumber -> JsonReader.Token.NUMBER
     is String -> JsonReader.Token.STRING
     is Boolean -> JsonReader.Token.BOOLEAN
-    else -> JsonReader.Token.ANY
+    else -> {
+      if (objectEntries(any).isNotEmpty()) {
+        JsonReader.Token.BEGIN_OBJECT
+      } else {
+        JsonReader.Token.ANY
+      }
+    }
   }
 
   /**
@@ -90,19 +120,19 @@ constructor(
       return
     }
 
-    val currentIterator = iteratorStack[stackSize - 1]!!
+    val currentIteratorWrapper = iteratorStack[stackSize - 1]!!
 
     if (path[stackSize - 1] is Int) {
       path[stackSize - 1] = (path[stackSize - 1] as Int) + 1
     }
 
-    if (currentIterator.hasNext()) {
-      val next = currentIterator.next()
+    if (currentIteratorWrapper.iterator.hasNext()) {
+      val next = currentIteratorWrapper.iterator.next()
       peekedData = next
 
-      peekedToken = when (next) {
-        is Map.Entry<*, *> -> JsonReader.Token.NAME
-        else -> anyToToken(next)
+      peekedToken = when (currentIteratorWrapper) {
+        is IteratorWrapper.EntryIterator -> JsonReader.Token.NAME
+        is IteratorWrapper.StandardIterator -> anyToToken(next)
       }
     } else {
       peekedToken = if (path[stackSize - 1] is Int) {
@@ -118,7 +148,7 @@ constructor(
       throw JsonDataException("Expected BEGIN_ARRAY but was ${peek()} at path ${getPathAsString()}")
     }
 
-    val currentValue = peekedData as List<Any?>
+    val currentValue = peekedData as Array<*>
 
     check(stackSize < MAX_STACK_SIZE) {
       "Nesting too deep"
@@ -126,7 +156,7 @@ constructor(
     stackSize++
 
     path[stackSize - 1] = -1
-    iteratorStack[stackSize - 1] = currentValue.iterator()
+    iteratorStack[stackSize - 1] = IteratorWrapper.StandardIterator(currentValue.iterator())
     advanceIterator()
   }
 
@@ -149,8 +179,7 @@ constructor(
       "Nesting too deep"
     }
     stackSize++
-    @Suppress("UNCHECKED_CAST")
-    containerStack[stackSize - 1] = peekedData as Map<String, Any?>
+    containerStack[stackSize - 1] = peekedData.asDynamic()
 
     rewind()
   }
@@ -185,12 +214,13 @@ constructor(
       throw JsonDataException("Expected NAME but was ${peek()} at path ${getPathAsString()}")
     }
     @Suppress("UNCHECKED_CAST")
-    val data = peekedData as Map.Entry<String, Any?>
+    val data = peekedData as Array<Any>
 
-    path[stackSize - 1] = data.key
-    peekedData = data.value
-    peekedToken = anyToToken(data.value)
-    return data.key
+    val (key, value) = data
+    path[stackSize - 1] = key
+    peekedData = value
+    peekedToken = anyToToken(value)
+    return key as String
   }
 
   override fun nextString(): String {
@@ -379,7 +409,7 @@ constructor(
   override fun rewind() {
     val container = containerStack[stackSize - 1]
     path[stackSize - 1] = null
-    iteratorStack[stackSize - 1] = container!!.iterator()
+    iteratorStack[stackSize - 1] = IteratorWrapper.EntryIterator(objectEntries(container!!).iterator())
     nameIndexStack[stackSize - 1] = 0
     advanceIterator()
   }
@@ -394,27 +424,4 @@ constructor(
   }
 
   private fun getPathAsString() = getPath().joinToString(".")
-
-  companion object {
-
-    /**
-     * buffers the next Object. Has to be called in `BEGIN_OBJECT` position.
-     * The returned [MapJsonReader] can use [MapJsonReader.rewind] to read fields
-     * multiple times
-     */
-    fun JsonReader.buffer(): MapJsonReader {
-      if (this is MapJsonReader) return this
-
-      val token = this.peek()
-      check(token == JsonReader.Token.BEGIN_OBJECT) {
-        "Failed to buffer json reader, expected `BEGIN_OBJECT` but found `$token` json token"
-      }
-
-      val pathRoot = getPath()
-
-      @Suppress("UNCHECKED_CAST")
-      val data = this.readAny() as Map<String, Any?>
-      return MapJsonReader(root = data, pathRoot = pathRoot)
-    }
-  }
 }

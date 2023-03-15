@@ -1,9 +1,15 @@
 type Query {
   a: String
+  getSalesPeople: [SalesPerson]
 }
 
 type Mutation {
   createCustomer(input: CreateCustomerInput!): Boolean
+}
+
+type SalesPerson {
+  name: String
+  favoriteNumbers: [Int]
 }
 
 input CreateCustomerInput {
