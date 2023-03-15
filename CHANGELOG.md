@@ -1,6 +1,38 @@
 Change Log
 ==========
 
+# Version 3.7.5
+
+_2023-03-14_
+
+This release contains a bunch of fixes and minor improvements.
+
+Many thanks to @adubovkin and @ndwhelan for contributing to the project, and to all the people who sent feedback! 💜
+
+## 🐛 Bug fixes
+
+* Fix CacheFirst + emitCacheMisses(true) (#4708)
+* Fix content-length for the String constructor in MockServer (#4683)
+* Fix same shape validation (#4641)
+* Add a `@JsName` annotation to Operation.name() (#4643)
+* Remove unreachable lenient mode from JSON writer/reader (#4656)
+* Remove deprecation on connectToAndroidSourceSet because alternative have issues too (#4674)
+* Fail fast if trying to set browser WebSocket headers (#4676)
+* Make sure the fallback type is always last (#4692)
+* Fix normalizing data when using `@include` or `@skip` with default values (#4700)
+* Java codegen: fix h nameclash in hashCode (#4715)
+
+## 🔍 Deprecation warnings (#4610)
+
+As we're starting to work on version 4.0 which will drop support for the "compat" codegen and a few other options dating from version 2, we've added in this release some deprecation warnings that will warn when they're used. If you haven't done already, now is a good time to migrate!
+
+## 👷‍ Other changes
+
+* Data builders: support for `@skip` and `@include` (#4645)
+* SchemaDownloader: Update to download deprecated input fields (#4678)
+* Include deprecated arguments and directives in introspection (#4702)
+* Update JS dependencies (#4634)
+
 # Version 3.7.4
 
 _2023-01-13_
