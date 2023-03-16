@@ -2,56 +2,57 @@
 title: "5. Connect your queries to your UI"
 ---
 
-In this chapter, you are going to display a list of Launch Sites in a [RecyclerView](https://developer.android.com/guide/topics/ui/layout/recyclerview).
+In this chapter, you are going to display a list of Launch Sites in a [LazyColumn](https://developer.android.com/jetpack/compose/lists#lazy).
 
 ## Configure LaunchListAdapter
 
-Open `LaunchListAdapter` and add a `launches` property:
+In `LaunchList`, declare a list of `LaunchListQuery.Launch`, initialized as empty:
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
-class LaunchListAdapter(
-    private val launches: List<LaunchListQuery.Launch>
-) : RecyclerView.Adapter<LaunchListAdapter.ViewHolder>() {
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchList.kt"
+@Composable
+fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
+  var launchList by remember { mutableStateOf(emptyList<LaunchListQuery.Launch>()) }
 ```
 
 `LaunchListQuery.Launch` is a typesafe generated model from your LaunchList.graphql query.
 
-## Bind the data to the UI
+## Make a UI for the items
 
-Use the `launches` property to bind items to your adapter:
+Update the `LaunchItem` composable to pass it a `LaunchListQuery.Launch` and display the id:
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
-    override fun getItemCount(): Int {
-        return launches.size
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches.get(position)
-        holder.binding.site.text = launch.site ?: ""
-    }
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchList.kt"
+@Composable
+private fun LaunchItem(launch: LaunchListQuery.Launch, onClick: (launchId: String) -> Unit) { // highlight-line
+    ListItem(
+        modifier = Modifier.clickable { onClick(launch.id) }, // highlight-line
+        headlineText = {
+            // Mission name
+            Text(text = "Launch ${launch.id}") // highlight-line
+        },
 ```
 
-## Pass the LaunchListAdapter to the RecyclerView
+## Use the data in the list
 
-In **LaunchListFragment.kt**, update what happens within your `lifecycleScope` in `onViewCreated` to create a new Adapter and pass it to your RecyclerView:
+Fill `launchList` with the data from the response, and use it in the LazyColumn:
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
-        lifecycleScope.launchWhenResumed {
-            val response = try {
-                apolloClient.query(LaunchListQuery()).execute()
-            } catch (e: ApolloException) {
-                Log.d("LaunchList", "Failure", e)
-                null
-            }
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchList.kt"
+@Composable
+fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
+  var launchList by remember { mutableStateOf(emptyList<LaunchListQuery.Launch>()) } // highlight-line
+  LaunchedEffect(Unit) {
+    val response = apolloClient.query(LaunchListQuery()).execute()
+    launchList = response.data?.launches?.launches?.filterNotNull() ?: emptyList() // highlight-line
+  }
 
-            val launches = response?.data?.launches?.launches?.filterNotNull()
-            if (launches != null && !response.hasErrors()) {
-                val adapter = LaunchListAdapter(launches)
-                binding.launches.layoutManager = LinearLayoutManager(requireContext())
-                binding.launches.adapter = adapter
-            }
-        }
+  LazyColumn {
+    items(launchList) { launch -> // highlight-line
+      LaunchItem(launch = launch, onClick = onLaunchClick)
+    }
+  }
+}
 ```
+
+> **Note:** the `.filterNotNull()` is necessary because the schema defines `launches` as a list of _nullable_ `Launch` objects.
 
 ## Test your query
 

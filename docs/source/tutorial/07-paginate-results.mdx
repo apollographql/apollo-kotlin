@@ -8,15 +8,16 @@ When using a cursor-based pagination system, it's important to remember that the
 
 In the previous section, you hardcoded the `SMALL` size argument directly in the GraphQL query, but you can also define arguments programmatically using variables. You will use them here to implement pagination.
 
-## add a `cursor` variable
+## Add a `cursor` variable, and the `cursor` and `hasMore` fields
 
-In `LaunchList.graphql`, add a `cursor` variable. In GraphQL, variables are prefixed with the dollar sign, like so:
+In `LaunchList.graphql`, add a `cursor` variable. In GraphQL, variables are prefixed with the dollar sign. 
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/LaunchList.graphql"
-query LaunchList($cursor: String) {
-  launches(after: $cursor) {
-    cursor
-    hasMore
+Also add the `cursor` and `hasMore` fields to the query, as we will use them to paginate:
+
+```graphql title="app/src/main/graphql/LaunchList.graphql"
+query LaunchList($cursor: String) { # highlight-line
+  launches(after: $cursor) { # highlight-line
+    cursor # highlight-line
     launches {
       id
       site
@@ -25,6 +26,7 @@ query LaunchList($cursor: String) {
         missionPatch(size: SMALL)
       }
     }
+    hasMore # highlight-line
   }
 }
 ```
@@ -33,85 +35,52 @@ You can experiment with GraphQL variables in Sandbox Explorer by using the pane 
 
 <img src="images/explorer_cursor.png" alt="Explorer variables" class="screenshot"/>
 
-## Get a callback when more data is needed
+## Fetch the next page when reaching the end of the list
 
-Add the following to `LaunchListAdapter.kt` to get a callback when the end of the list is reached:
+Declare and remember a `cursor` var, initialized to `null`, and make the [`LauchedEffect` depend on it](https://developer.android.com/jetpack/compose/side-effects#launchedeffect). That way, the query will be re-executed every time the `cursor` changes.
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
-    var onEndOfListReached: (() -> Unit)? = null
+Also keep a reference to `response` so we can access the `hasMore` and `cursor` fields further down.
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches[position]
-        // ...
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchList.kt"
+@Composable
+fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
+    var cursor: String? by remember { mutableStateOf(null) } // highlight-line
+    var response: ApolloResponse<LaunchListQuery.Data>? by remember { mutableStateOf(null) } // highlight-line
+    var launchList by remember { mutableStateOf(emptyList<LaunchListQuery.Launch>()) }
+    LaunchedEffect(cursor) { // highlight-line
+```
 
-        if (position == launches.size - 1) {
-            onEndOfListReached?.invoke()
-        }
+Pass the `cursor` to the `LaunchListQuery`, and add a special item at the end of the list which updates the `cursor` if `hasNext` is true. This will trigger a new query with the new cursor whenever the user scrolls to the end of the list, and `launchList` will be concatenated with the new results.
+
+> **Note:** this is a basic implementation of paging in Compose. In a real project you may use something more advanced, like the [Jetpack Paging library](https://developer.android.com/jetpack/compose/lists#large-datasets).
+
+The whole function should look like this:
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchList.kt"
+@Composable
+fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
+    var cursor: String? by remember { mutableStateOf(null) }
+    var response: ApolloResponse<LaunchListQuery.Data>? by remember { mutableStateOf(null) }
+    var launchList by remember { mutableStateOf(emptyList<LaunchListQuery.Launch>()) }
+    LaunchedEffect(cursor) {
+        response = apolloClient.query(LaunchListQuery(Optional.present(cursor))).execute() // highlight-line
+        launchList = launchList + response?.data?.launches?.launches?.filterNotNull().orEmpty() // highlight-line
     }
-```
-
-Note that you can add some look-ahead and trigger the callback before the end of list is reached if you want to minimize the wait time and trigger a new network requests a few items before the end of list is reached.
-This is a basic implementation of a paging adapter - in a real project you would probably use something like the [Jetpack Paging library](https://developer.android.com/topic/libraries/architecture/paging/v3-overview).
-
-## Connect to the callback
-
-In `LaunchListFragment.kt`'s `onViewCreated` between the `super` call and your existing `lifecyleScope` code, register this callback and link it to a coroutine [Channel](https://kotlinlang.org/docs/reference/coroutines/channels.html):
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
-        val launches = mutableListOf<LaunchListQuery.Launch>()
-        val adapter = LaunchListAdapter(launches)
-        binding.launches.layoutManager = LinearLayoutManager(requireContext())
-        binding.launches.adapter = adapter
-
-        val channel = Channel<Unit>(Channel.CONFLATED)
-
-        // Send a first item to do the initial load else the list will stay empty forever
-        channel.trySend(Unit)
-        adapter.onEndOfListReached = {
-            channel.trySend(Unit)
+    
+    LazyColumn {
+        items(launchList) { launch ->
+            LaunchItem(launch = launch, onClick = onLaunchClick)
         }
+        item { // highlight-line
+            if (response?.data?.launches?.hasMore == true) { // highlight-line
+                LoadingItem() // highlight-line
+                cursor = response?.data?.launches?.cursor // highlight-line
+            } // highlight-line
+        } // highlight-line
+    }
+}
 ```
 
-`Channel`s are useful for communicating between coroutines. In this case, the channel does not transfer any real data besides the information that the end of list has been reached. For this it uses the `Unit` data type. Every time a `Unit` object is read from the channel, it means the adapter might need more data.
-
-Also note that the channel is [CONFLATED](https://play.kotlinlang.org/hands-on/Introduction%20to%20Coroutines%20and%20Channels/08_Channels). A conflated channel will drop items if the consumer cannot proceed through them fast enough. In this case, if the user scrolls up and down while a query is still in flight, you don't want to buffer these requests to replay them later, so it's fine to drop them.
-
-## Execute the paginated query
-
-Start a coroutine and execute the query. Replace the previous single query in your call to the `lifecycleScope` with the paginated version:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
-  lifecycleScope.launchWhenResumed {
-      var cursor: String? = null
-      for (item in channel) {
-          val response = try {
-              apolloClient.query(LaunchListQuery(Optional.Present(cursor))).execute()
-          } catch (e: ApolloException) {
-              Log.d("LaunchList", "Failure", e)
-              return@launchWhenResumed
-          }
-
-          val newLaunches = response.data?.launches?.launches?.filterNotNull()
-
-          if (newLaunches != null) {
-              launches.addAll(newLaunches)
-              adapter.notifyDataSetChanged()
-          }
-
-          cursor = response.data?.launches?.cursor
-          if (response.data?.launches?.hasMore != true) {
-              break
-          }
-      }
-
-      adapter.onEndOfListReached = null
-      channel.close()
-  }
-```
-
-Coroutines help you write pagination as if it were a procedural `while` loop. Notice how the cursor is updated at each iteration and the loop is terminated if there is no data to get from the backend anymore (`hasMore == false`)
-
-Note that we wrap the `cursor` in an `Optional`: this is because this parameter can be omitted in the query. 
+> Note that we wrap the `cursor` in an `Optional`: this is because this parameter can be omitted in the query. 
 
 ## Test scrolling
 
