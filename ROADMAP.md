@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-01-30**
+**Last updated: 2023-03-16**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -17,9 +17,15 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 `3.7` is the last planned minor release under version 3.  All active feature development is now being done for the `4.0.0` release on the `main` branch.  Version 3 is still actively maintained and we will continue to release `3.7.x` patches on the `release-3.x` branch.
 
+## Better support for Jetpack Compose
+
+_Approximate Date: TBD_
+
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  When we have something ready to share we will welcome your feedback!
+
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
-_Approximate Dates: 2023-04-27 (Alpha), 2023-07-31 (Beta), 2023-09-26 (GA)_
+_Approximate Dates: 2023-04-27 (Alpha), Summer 2023 (Beta), Autumn 2023 (GA)_
 
 Our next major release is currently in active development. 4.0 will remove some deprecated APIs but will otherwise contain mostly incremental changes and most of the API will stay compatible. 
 
@@ -30,16 +36,7 @@ Here's a high-level overview of what to expect:
 - Better error handling ([RFC here](https://github.com/apollographql/apollo-kotlin/issues/4711)) 
 - Annotation processing for custom scalars
 - Client-controlled nullability
-- New tutorial with Jetpack Compose
 - [API tweaks and cleanups](https://github.com/apollographql/apollo-kotlin/issues/4171)
-
-
-
-## Better support for Jetpack Compose
-
-_Approximate Date: TBD_
-
-[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We plan to offer better integrations with Compose in a 4.x minor release.
 
 ## Cache improvements
 
