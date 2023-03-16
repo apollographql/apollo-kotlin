@@ -90,23 +90,28 @@ Go back to `Login.kt` and create a function to execute the Login mutation:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/Login.kt"
 private suspend fun login(email: String): Boolean {
-    val response = try {
-        apolloClient.mutation(LoginMutation(email = email)).execute()
-    } catch (e: ApolloException) {
-        Log.w("Login", "Failed to login", e)
-        return false
+    val response = apolloClient.mutation(LoginMutation(email = email)).execute()
+    return when {
+        response.exception != null -> {
+            Log.w("Login", "Failed to login", response.exception)
+            false
+        }
+    
+        response.hasErrors() -> {
+            Log.w("Login", "Failed to login: ${response.errors?.get(0)?.message}")
+            false
+        }
+    
+        response.data?.login?.token == null -> {
+            Log.w("Login", "Failed to login: no token returned by the backend")
+            false
+        }
+    
+        else -> {
+            TokenRepository.setToken(response.data!!.login!!.token!!)
+            true
+        }
     }
-    if (response.hasErrors()) {
-        Log.w("Login", "Failed to login: ${response.errors?.get(0)?.message}")
-        return false
-    }
-    val token = response.data?.login?.token
-    if (token == null) {
-        Log.w("Login", "Failed to login: no token returned by the backend")
-        return false
-    }
-    TokenRepository.setToken(token)
-    return true
 }
 ```
 The possible error cases are handled and a boolean is returned to indicate if the login was successful or not. If it was, the token is saved in the `TokenRepository`.

@@ -122,10 +122,8 @@ fun LaunchDetails(launchId: String) {
 
 As you execute your query, two types of errors can happen:
 
-* Protocol errors. Connectivity issues, HTTP errors, or JSON parsing errors will throw an `ApolloException`.
+* Protocol errors: connectivity issues, HTTP errors, or JSON parsing errors. In this case, `response.exception` will contain an `ApolloException`, and `response.data` will be null.
 * Application errors. In this case, `response.errors` will contain the application errors and `response.data` might be `null`.
-
-Since Apollo Kotlin throws an `ApolloException` in case of protocol errors, you'll need to wrap the call in a try/catch block.
 
 First let's create a `LaunchDetailsState` sealed interface that will hold the possible states of the UI:
 
@@ -137,17 +135,21 @@ private sealed interface LaunchDetailsState {
 }
 ```
 
-Then, in `LaunchDetails`, surround the call to `execute` around a try/catch block, and wrap the results into a `State`:
+Then, in `LaunchDetails`, examine the response returned by `execute` and map it to a `State`:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
 @Composable
 fun LaunchDetails(launchId: String) {
     var state by remember { mutableStateOf<LaunchDetailsState>(Loading) }
     LaunchedEffect(Unit) {
-        state = try {
-            Success(apolloClient.query(LaunchDetailsQuery(launchId)).execute().data!!)
-        } catch (e: ApolloException) {
-            ProtocolError(e)
+        val response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
+        state = when {
+            response.exception != null -> {
+              ProtocolError(response.exception!!)
+            }
+            else -> {
+              Success(response.data!!)
+            }
         }
     }
     // Use the state
@@ -187,16 +189,17 @@ private sealed interface LaunchDetailsState {
 Then, in the `try` block, check for `response.hasErrors()` and wrap the result in the new state:
 
 ```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
-    state = try {
-        val response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
-        if (response.hasErrors()) { // highlight-line
-            ApplicationError(response.errors!!) // highlight-line
-        } else { // highlight-line
-            Success(response.data!!) // highlight-line
-        } // highlight-line
-    } catch (e: ApolloException) {
-        ProtocolError(e)
+state = when {
+    response.exception != null -> {
+        ProtocolError(response.exception!!)
     }
+    response.hasErrors() -> { // highlight-line
+        ApplicationError(response.errors!!) // highlight-line
+    } // highlight-line
+    else -> {
+        Success(response.data!!)
+    }
+}
 ```
 
 `response.errors` contains details about any errors that occurred. Note that this code also null-checks `response.data!!`. In theory, a server should not set `response.data == null` and `response.hasErrors == false` at the same time, but the type system cannot guarantee this.
@@ -230,7 +233,7 @@ To trigger an error, replace `LaunchDetailsQuery(launchId)` with `LaunchDetailsQ
 
 <img src="images/error_application.png" alt="Oh no" class="screenshot" width="300"/>
 
-This is all good! You can use the `error` field to add more advanced error management.
+This is all good! You can use the `errors` field to add more advanced error management.
 
 Restore the correct launch ID: `LaunchDetailsQuery(launchId)` before displaying details.
 
