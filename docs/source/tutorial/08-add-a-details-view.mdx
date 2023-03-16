@@ -4,43 +4,6 @@ title: "8. Add a details view"
 
 In this section, you'll write a second GraphQL query that requests details about a single launch.
 
-## Open the details fragment from the list
-
-In `LaunchListAdapter.kt`, add a click listener:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListAdapter.kt"
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = LaunchItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
-    var onEndOfListReached: (() -> Unit)? = null
-    var onItemClicked: ((LaunchListQuery.Launch) -> Unit)? = null
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        // ...
-
-        holder.binding.root.setOnClickListener {
-            onItemClicked?.invoke(launch)
-        }
-    }
-```
-
-In `LaunchListFragment.kt`, register a click listener and navigate to the details screen:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchListFragment.kt"
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        // ...
-
-        adapter.onItemClicked = { launch ->
-            findNavController().navigate(
-                LaunchListFragmentDirections.openLaunchDetails(launchId = launch.id)
-            )
-        }
-    }
-```
-
 ## Create the details query
 
 Create a new GraphQL query named `LaunchDetails.graphql`.
@@ -49,14 +12,14 @@ As you did for `$cursor`, add a variable named `id`. Notice that this variable i
 
 Because it's a details view, request the `LARGE` size for the missionPatch. Also request the rocket type and name:
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/LaunchDetails.graphql"
-query LaunchDetails($id:ID!) {
+```graphql title="app/src/main/graphql/LaunchDetails.graphql"
+query LaunchDetails($id: ID!) {
   launch(id: $id) {
     id
     site
     mission {
       name
-      missionPatch(size:LARGE)
+      missionPatch(size: LARGE)
     }
     rocket {
       name
@@ -69,45 +32,137 @@ query LaunchDetails($id:ID!) {
 
 > Remember you can always experiment in Studio Explorer and check out the left sidebar for a list of fields that are available.
 
-## Show a loading ProgressBar
+## Execute the query and update the UI
 
-In `LaunchDetailsFragment.kt`, override `onViewCreated` and launch a new coroutine
+In `LaunchDetails.kt`, declare `response` and a `LaunchedEffect` to execute the query:
 
-This time, display a progressBar while the query executes:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        lifecycleScope.launchWhenResumed {
-            binding.bookButton.visibility = View.GONE
-            binding.bookProgressBar.visibility = View.GONE
-            binding.progressBar.visibility = View.VISIBLE
-            binding.error.visibility = View.GONE
-
-            val response = apolloClient.query(LaunchDetailsQuery(id = args.launchId)).execute()
-        }
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+@Composable
+fun LaunchDetails(launchId: String) {
+    var response by remember { mutableStateOf<ApolloResponse<LaunchDetailsQuery.Data>?>(null) }
+    LaunchedEffect(Unit) {
+        response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
     }
+```
+
+Use the response in the UI. Here too we'll use Coil's `AsyncImage` for the patch:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Mission patch
+            AsyncImage( // highlight-line
+                modifier = Modifier.size(160.dp, 160.dp),
+                model = response?.data?.launch?.mission?.missionPatch,
+                placeholder = painterResource(R.drawable.ic_placeholder),
+                error = painterResource(R.drawable.ic_placeholder),
+                contentDescription = "Mission patch"
+            )
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            Column {
+                // Mission name
+                Text(
+                    style = MaterialTheme.typography.headlineMedium,
+                    text = response?.data?.launch?.mission?.name ?: "" // highlight-line
+                )
+
+                // Rocket name
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.headlineSmall,
+                    text = response?.data?.launch?.rocket?.name?.let { "🚀 $it" } ?: "", // highlight-line
+                )
+
+                // Site
+                Text(
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    text = response?.data?.launch?.site ?: "", // highlight-line
+                )
+            }
+        }
+
+```
+
+## Show a loading state
+
+Since `response` is initialized to `null`, you can use this as an indication that the result has not been received yet.
+
+To structure the code a bit, extract the details UI into a separate function that takes the response as a parameter:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+@Composable
+private fun LaunchDetails(response: ApolloResponse<LaunchDetailsQuery.Data>) {
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+```
+Now in the original `LaunchDetails` function, check if `response` is `null` and show a loading indicator if it is, otherwise call the new function with the response:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+@Composable
+fun LaunchDetails(launchId: String) {
+    var response by remember { mutableStateOf<ApolloResponse<LaunchDetailsQuery.Data>?>(null) }
+    LaunchedEffect(Unit) {
+        response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
+    }
+    if (response == null) { // highlight-line
+        Loading() // highlight-line
+    } else { // highlight-line
+        LaunchDetails(response!!) // highlight-line
+    }
+}
 ```
 
 ## Handle protocol errors
 
 As you execute your query, two types of errors can happen:
 
-* Protocol errors. HTTP errors or JSON parsing errors will throw an `ApolloException`.
+* Protocol errors. Connectivity issues, HTTP errors, or JSON parsing errors will throw an `ApolloException`.
 * Application errors. In this case, `response.errors` will contain the application errors and `response.data` might be `null`.
 
-For protocol errors, Apollo Kotlin throws an `ApolloException`, so you'll need to wrap the call in a try/catch block:
+Since Apollo Kotlin throws an `ApolloException` in case of protocol errors, you'll need to wrap the call in a try/catch block.
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
-            val response = try {
-                apolloClient.query(LaunchDetailsQuery(id = args.launchId)).execute()
-            } catch (e: ApolloException) {
-                binding.progressBar.visibility = View.GONE
-                binding.error.text = "Oh no... A protocol error happened"
-                binding.error.visibility = View.VISIBLE
-                return@launchWhenResumed
-            }
+First let's create a `LaunchDetailsState` sealed interface that will hold the possible states of the UI:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+private sealed interface LaunchDetailsState {
+    object Loading : LaunchDetailsState
+    data class ProtocolError(val exception: ApolloException) : LaunchDetailsState
+    data class Success(val data: LaunchDetailsQuery.Data) : LaunchDetailsState
+}
+```
+
+Then, in `LaunchDetails`, surround the call to `execute` around a try/catch block, and wrap the results into a `State`:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+@Composable
+fun LaunchDetails(launchId: String) {
+    var state by remember { mutableStateOf<LaunchDetailsState>(Loading) }
+    LaunchedEffect(Unit) {
+        state = try {
+            Success(apolloClient.query(LaunchDetailsQuery(launchId)).execute().data!!)
+        } catch (e: ApolloException) {
+            ProtocolError(e)
+        }
+    }
+    // Use the state
+```
+
+Now use the state to show the appropriate UI:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+‎    // Use the state
+    when (val s = state) {
+        Loading -> Loading()
+        is ProtocolError -> ErrorMessage("Oh no... A protocol error happened: ${s.exception.message}")
+        is Success -> LaunchDetails(s.data)
+    }
+}
 ```
 
 Enable airplane mode before clicking the details of a launch. You should see this:
@@ -118,21 +173,35 @@ This is good! But it's not enough. Even if the request executes correctly at the
 
 ## Handle application errors
 
-To handle application errors, you can check `response.hasErrors`. Add the following just below the previous `try`/`catch` block:
+To handle application errors, you can check `response.hasErrors()`. First, add a new state to the sealed interface:
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
-            val launch = response.data?.launch
-            if (launch == null || response.hasErrors()) {
-                binding.progressBar.visibility = View.GONE
-                binding.error.text = response.errors?.get(0)?.message
-                binding.error.visibility = View.VISIBLE
-                return@launchWhenResumed
-            }
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+private sealed interface LaunchDetailsState {
+    object Loading : LaunchDetailsState
+    data class ProtocolError(val exception: ApolloException) : LaunchDetailsState
+    data class ApplicationError(val errors: List<Error>) : LaunchDetailsState // highlight-line
+    data class Success(val data: LaunchDetailsQuery.Data) : LaunchDetailsState
+}
 ```
 
-`response.errors` contains details about any errors that occurred. Note that this code also checks for `response.data == null`. In theory, a server should not set `response.data == null` and `response.hasErrors == false` at the same time, but the type system cannot guarantee this.
+Then, in the `try` block, check for `response.hasErrors()` and wrap the result in the new state:
 
-To trigger an error, replace `LaunchDetailsQuery(id = args.launchId)` with `LaunchDetailsQuery(id = "invalidId")`. Disable airplane mode and select a launch. The server will send this response:
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+    state = try {
+        val response = apolloClient.query(LaunchDetailsQuery(launchId)).execute()
+        if (response.hasErrors()) { // highlight-line
+            ApplicationError(response.errors!!) // highlight-line
+        } else { // highlight-line
+            Success(response.data!!) // highlight-line
+        } // highlight-line
+    } catch (e: ApolloException) {
+        ProtocolError(e)
+    }
+```
+
+`response.errors` contains details about any errors that occurred. Note that this code also null-checks `response.data!!`. In theory, a server should not set `response.data == null` and `response.hasErrors == false` at the same time, but the type system cannot guarantee this.
+
+To trigger an error, replace `LaunchDetailsQuery(launchId)` with `LaunchDetailsQuery("invalidId")`. Disable airplane mode and select a launch. The server will send this response:
 
 ```json title="(error)"
 {
@@ -163,67 +232,69 @@ To trigger an error, replace `LaunchDetailsQuery(id = args.launchId)` with `Laun
 
 This is all good! You can use the `error` field to add more advanced error management.
 
-Restore the correct launch ID: `LaunchDetailsQuery(id = args.launchId)` before displaying details.
-
-## Display details
-
-If no errors occurred, hide the progressBar and display the detailed information. Add the following code below the error handling code you just added:
-
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
-            binding.progressBar.visibility = View.GONE
-
-            binding.missionPatch.load(launch.mission?.missionPatch) {
-                placeholder(R.drawable.ic_placeholder)
-            }
-            binding.site.text = launch.site
-            binding.missionName.text = launch.mission?.name
-            val rocket = launch.rocket
-            binding.rocketName.text = "🚀 ${rocket?.name} ${rocket?.type}"
-```
+Restore the correct launch ID: `LaunchDetailsQuery(launchId)` before displaying details.
 
 ## Handle the **Book now** button
 
-Add a `configureButton` method that redirects to the login page:
+To book a trip, the user must be logged in. If the user is not logged in, clicking the **Book now** button should open the login screen.
 
-```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetailsFragment.kt"
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+First let's pass a lambda to `LaunchDetails` to take care of navigation:
 
-        lifecycleScope.launchWhenResumed {
-
-          // ...
-
-          configureButton(launch.isBooked)
-        }
-    }
-
-    private fun configureButton(isBooked: Boolean) {
-        binding.bookButton.visibility = View.VISIBLE
-        binding.bookProgressBar.visibility = View.GONE
-
-        binding.bookButton.text = if (isBooked) {
-            getString(R.string.cancel)
-        } else {
-            getString(R.string.book_now)
-        }
-
-        binding.bookButton.setOnClickListener {
-            if (User.getToken(requireContext()) == null) {
-                findNavController().navigate(
-                    R.id.open_login
-                )
-                return@setOnClickListener
-            }
-        }
-    }
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+@Composable
+fun LaunchDetails(launchId: String, navigateToLogin: () -> Unit) { // highlight-line
 ```
 
-## Test your query
+The lambda should be declared in MainActivity, where the navigation is handled:
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/MainActivity.kt"
+composable(route = "${NavigationDestinations.LAUNCH_DETAILS}/{${NavigationArguments.LAUNCH_ID}}") { navBackStackEntry ->
+    LaunchDetails(
+        launchId = navBackStackEntry.arguments!!.getString(NavigationArguments.LAUNCH_ID)!!,
+        navigateToLogin = { // highlight-line
+          navController.navigate(NavigationDestinations.LOGIN) // highlight-line
+        } // highlight-line
+    )
+}
+```
+Next, go back to `LaunchDetails.kt` and replace the `TODO` with a call to a function where we handle the button click: 
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+onClick = {
+    onBookButtonClick(
+        launchId = data.launch?.id ?: "",
+        isBooked = data.launch?.isBooked == true,
+        navigateToLogin = navigateToLogin
+    )
+}
+```
+
+```kotlin title="app/src/main/java/com/example/rocketreserver/LaunchDetails.kt"
+private fun onBookButtonClick(launchId: String, isBooked: Boolean, navigateToLogin: () -> Unit): Boolean {
+    if (TokenRepository.getToken() == null) {
+        navigateToLogin()
+        return false
+    }
+
+    if (isBooked) {
+        // TODO Cancel booking
+    } else {
+        // TODO Book
+    }
+    return false
+}
+```
+
+`TokenRepository` is a helper class that handles saving/retrieving a user token in [EncryptedSharedPreference](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences). We will use it to store the user token when logging in.
+
+Returning a boolean will be useful later to update the UI depending on whether the execution happened or not.
+
+## Test the button
 
 Hit **Run**. Your screen should look like this:
 
 <img src="images/details.png" alt="Details" class="screenshot" width="300"/>
 
-Right now, you aren't logged in, so `isBooked` will always be `false` and you won't be able to book a trip.
+Right now, you aren't logged in, so you won't be able to book a trip and clicking will always navigate to the login screen.
 
 Next, you will [write your first mutation](09-write-your-first-mutation) to log in to the backend.

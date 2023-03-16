@@ -2,13 +2,13 @@
 title: "3. Write your first query"
 ---
 
-The most common GraphQL operation is the **query**, which requests data from your graph in a structure that conforms to your server's schema. If you return to [the Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql)  for your server, you can see available queries in the Schema Reference tab you opened earlier.
+The most common GraphQL operation is the **query**, which requests data from your graph in a structure that conforms to your server's schema. If you return to [the Sandbox](https://studio.apollographql.com/sandbox/explorer?endpoint=https%3A%2F%2Fapollo-fullstack-tutorial.herokuapp.com%2Fgraphql) for your server, you can see available queries in the Schema Reference tab you opened earlier.
 
 Scroll down to the `launches` query to get details about it:
 
 <img src="images/launches_detail.png" class="screenshot" alt="Detail about launches query"/>
 
-Here, you see both the query term itself, the return type, and information about parameters that can be passed to the query.  You can use this information to write a query you'll eventually add to your app.
+Here, you see both the query term itself, the return type, and information about parameters that can be passed to the query. You can use this information to write a query you'll eventually add to your app.
 
 To start working with this query in the Sandbox Explorer, select the "play" button to the right side of the information:
 
@@ -32,7 +32,7 @@ Let's break down what you're seeing here:
 - The actual query being called is the next set of brackets in. Since the `arguments` for this query both have default values, they are not automatically added to the query for you.
 - An error in the empty space between the brackets, which is where you'll put the list of information you want back from each launch.
 
-The Apollo Kotlin SDK requires every query to have a name (even though this isn't required by the GraphQL spec). Since you're going to be creating more than one query, it's also a good idea to give this operation a specific name other than `Query`. Change the name of the operation to `LaunchList`:
+The Apollo Kotlin SDK requires every query to have a name (even though this isn't required by the GraphQL spec). Since you're going to create more than one query, it's also a good idea to give this operation a specific name other than `Query`. Change the name of the operation to `LaunchList`:
 
 <img src="images/explorer_launch_list_rename.png" class="screenshot" alt="Renaming the query"/>
 
@@ -58,7 +58,7 @@ You'll quickly see the query returns results as a JSON object on the right-hand 
 
 <img src="images/explorer_launch_list_initial_response.png" class="screenshot" alt="Query JSON in Sandbox Explorer"/>
 
-This query executes successfully, but it doesn't include any information about the `launches`! That's because we didn't include the necessary field in the query.
+This query executes successfully, but it doesn't include any information about the `launches`! That's because we didn't include the necessary fields in the query.
 
 Click the button next to the `launches` field at the bottom of the left column. It will add a set of braces for `launches` to the operations section, and then move the documentation to show information for the `Launch` type:
 
@@ -69,8 +69,6 @@ The fields you add in this set of brackets will be fetched for every launch in t
 ```graphql title="(Sandbox Explorer)"
 query LaunchList {
   launches {
-    cursor
-    hasMore
     launches {
       id
       site
@@ -87,19 +85,17 @@ Run the operation again, and you'll now see that in addition to the information 
 
 Now that your query is fetching the right data, head back to Android Studio.
 
-1. Right click on the `src/main/graphql/com/example/rocketreserver` folder. This folder should contain your `schema.graphqls`. Select **New > File**:
+1. Right click on the `src/main/graphql/` folder. This folder should contain your `schema.graphqls`. Select **New > File**:
 
 <img src="images/new_file.png" class="screenshot" alt="New GraphQL file"/>
 
 2. Name the file `LaunchList.graphql`. Make sure it's saved at the same level as your `schema.graphqls` file.
 
-3. Copy your final query from GraphiQL and paste it into `LaunchList.graphql`.
+3. Copy your final query from Sandbox Explorer and paste it into `LaunchList.graphql`.
 
-```graphql title="app/src/main/graphql/com/example/rocketreserver/LaunchList.graphql"
+```graphql title="app/src/main/graphql/LaunchList.graphql"
 query LaunchList {
   launches {
-    cursor
-    hasMore
     launches {
       id
       site

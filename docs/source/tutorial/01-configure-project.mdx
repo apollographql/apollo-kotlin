@@ -8,33 +8,32 @@ In this step, you'll import the starter project and add the Apollo Kotlin SDK to
 
 ```
 git clone https://github.com/apollographql/apollo-kotlin-tutorial
-cd apollo-kotlin-tutorial
-git checkout initial
+cd apollo-kotlin-tutorial/compose
 ```
 
-At any time, if you want to view a completed version of the project, checkout the `main` branch.
+The starter project is in the `start` folder. 
 
-## Open the project in Android Studio
+At any time, if you want to view a completed version of the project, open the project in the `final` folder.
 
-Android Studio will take some time to index the contents of the project. Take some time to look around. You should see 3 Fragments:
+## Open the 'start' project in Android Studio
 
-* `LaunchListFragment` is the first fragment. You will display a list of launches there.
-* `LaunchDetailsFragment` will display details about a launch and give you the opportunity to book a seat.
-* `LoginFragment` will allow you to log in before booking the seat.
+Android Studio will take some time to index the contents of the project. Take some time to look around. You should see 3 files:
+
+* `LaunchList.kt` is the first screen. You will display a list of launches there.
+* `LaunchDetails.kt` will display details about a launch and give you the opportunity to book a seat.
+* `Login.kt` will allow you to log in before booking the seat.
 
 Now build and run the project.
 
-Note: if you see build errors, make sure you are using JDK 11 or later.
-
-You should see an empty app:
+You should see a list with static placeholder data:
 
 <img src="images/initial.png" alt="The initial state of the project!" class="screenshot" width="300"/>
 
-Now you will add Apollo Kotlin to the project.
+Now let's add Apollo Kotlin to the project.
 
 ## Get the latest version of Apollo Kotlin
 
-You can find the latest version of Apollo Kotlin from the [github releases page](https://github.com/apollographql/apollo-android/releases). It is also displayed at the top of the [apollo-android repo](https://github.com/apollographql/apollo-android/).
+You can find the latest version of Apollo Kotlin from the [GitHub releases page](https://github.com/apollographql/apollo-kotlin/releases). It is also displayed at the top of the [apollo-kotlin repo](https://github.com/apollographql/apollo-kotlin/).
 
 This tutorial uses `3.7.5` because it is the latest version at the time of writing. Feel free to use a more recent version if one is available.
 
@@ -64,11 +63,13 @@ apollo {
 }
 ```
 
+> Notice the `service` block: Apollo Kotlin supports configuring several services, which is useful if you have several GraphQL endpoints. In this tutorial there is only one, so you can name it anything you want (here we call it `"service"`). 
+
 ## Add dependencies
 
-Now add `apollo-runtime` to the list of dependencies. This is the actual code that will run on the device, execute queries and parse responses.
+Now add `apollo-runtime` to the list of dependencies. This is the code that executes queries and parses responses.
 
-```groovy title="app/build.gradle.kts"
+```kotlin title="app/build.gradle.kts"
 dependencies {
     // ...
     implementation("com.apollographql.apollo3:apollo-runtime:3.7.5")
