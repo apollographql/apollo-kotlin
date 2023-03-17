@@ -297,7 +297,7 @@ private constructor(
     }
 
     fun httpHeaders(headers: List<HttpHeader>) = apply {
-      // In case this builder comes newBuilder() remove any existing interceptor
+      // In case this builder comes from newBuilder(), remove any existing interceptor
       interceptors.removeAll {
         it is TransportHeadersInterceptor
       }
