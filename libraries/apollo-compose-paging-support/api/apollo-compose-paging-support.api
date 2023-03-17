@@ -1,0 +1,10 @@
+public final class com/apollographql/apollo3/compose/paging/ApolloPagingSourceKt {
+}
+
+public final class com/apollographql/apollo3/compose/paging/BuildConfig {
+	public static final field BUILD_TYPE Ljava/lang/String;
+	public static final field DEBUG Z
+	public static final field LIBRARY_PACKAGE_NAME Ljava/lang/String;
+	public fun <init> ()V
+}
+
