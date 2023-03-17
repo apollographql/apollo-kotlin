@@ -72,7 +72,7 @@ class DefaultHttpRequestComposer(
   }
 
   companion object {
-    const val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
+    val HEADER_APOLLO_OPERATION_ID = "X-APOLLO-OPERATION-ID"
 
     // Note: in addition to this being a generally useful header to send, Apollo
     // Server's CSRF prevention feature (introduced in AS3.7 and intended to be
