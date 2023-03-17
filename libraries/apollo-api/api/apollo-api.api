@@ -105,14 +105,6 @@ public final class com/apollographql/apollo3/api/ApolloRequest$Builder : com/apo
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/ApolloRequest$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
-	public fun setCanBeBatched (Ljava/lang/Boolean;)V
-	public fun setEnableAutoPersistedQueries (Ljava/lang/Boolean;)V
-	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
-	public fun setHttpHeaders (Ljava/util/List;)V
-	public fun setHttpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)V
-	public fun setIgnorePartialData (Ljava/lang/Boolean;)V
-	public fun setSendApqExtensions (Ljava/lang/Boolean;)V
-	public fun setSendDocument (Ljava/lang/Boolean;)V
 }
 
 public final class com/apollographql/apollo3/api/ApolloResponse {

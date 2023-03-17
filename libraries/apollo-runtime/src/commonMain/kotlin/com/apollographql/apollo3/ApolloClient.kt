@@ -206,6 +206,7 @@ private constructor(
     private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
     private var dispatcher: CoroutineDispatcher? = null
     override var executionContext: ExecutionContext = ExecutionContext.Empty
+      private set
     private var httpServerUrl: String? = null
     private var httpEngine: HttpEngine? = null
     private var webSocketServerUrl: String? = null
@@ -220,12 +221,14 @@ private constructor(
     }
 
     override var httpMethod: HttpMethod? = null
+      private set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder = apply {
       this.httpMethod = httpMethod
     }
 
     override var httpHeaders: List<HttpHeader>? = null
+      private set
 
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder = apply {
       this.httpHeaders = httpHeaders
@@ -236,30 +239,35 @@ private constructor(
     }
 
     override var sendApqExtensions: Boolean? = null
+      private set
 
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder = apply {
       this.sendApqExtensions = sendApqExtensions
     }
 
     override var sendDocument: Boolean? = null
+      private set
 
     override fun sendDocument(sendDocument: Boolean?): Builder = apply {
       this.sendDocument = sendDocument
     }
 
     override var enableAutoPersistedQueries: Boolean? = null
+      private set
 
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
     override var canBeBatched: Boolean? = null
+      private set
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder = apply {
       this.canBeBatched = canBeBatched
     }
 
     private var useV3ExceptionHandling: Boolean? = null
+      private set
 
     /**
      * Configures whether exceptions such as cache miss or other [ApolloException] should throw, instead of being emitted in
@@ -275,6 +283,7 @@ private constructor(
     }
 
     override var ignorePartialData: Boolean? = null
+      private set
 
     override fun ignorePartialData(ignorePartialData: Boolean?): Builder = apply {
       this.ignorePartialData = ignorePartialData
