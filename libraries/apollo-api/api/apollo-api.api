@@ -863,6 +863,9 @@ public final class com/apollographql/apollo3/api/http/ByteStringHttpBody : com/a
 
 public final class com/apollographql/apollo3/api/http/DefaultHttpRequestComposer : com/apollographql/apollo3/api/http/HttpRequestComposer {
 	public static final field Companion Lcom/apollographql/apollo3/api/http/DefaultHttpRequestComposer$Companion;
+	public static final field HEADER_ACCEPT_NAME Ljava/lang/String;
+	public static final field HEADER_ACCEPT_VALUE_DEFER Ljava/lang/String;
+	public static final field HEADER_ACCEPT_VALUE_MULTIPART Ljava/lang/String;
 	public static final field HEADER_APOLLO_OPERATION_ID Ljava/lang/String;
 	public static final field HEADER_APOLLO_OPERATION_NAME Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;)V

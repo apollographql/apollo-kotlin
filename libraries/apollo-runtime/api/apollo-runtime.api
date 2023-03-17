@@ -309,6 +309,7 @@ public final class com/apollographql/apollo3/network/http/HttpNetworkTransport :
 
 public final class com/apollographql/apollo3/network/http/HttpNetworkTransport$Builder {
 	public fun <init> ()V
+	public final fun addHttpHeader (Ljava/lang/String;Ljava/lang/String;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/network/http/HttpInterceptor;)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/network/http/HttpNetworkTransport;
 	public final fun exposeErrorBody (Z)Lcom/apollographql/apollo3/network/http/HttpNetworkTransport$Builder;
