@@ -41,9 +41,9 @@ class DefaultHttpRequestComposer(
       add(HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name()))
       if (apolloRequest.httpHeaders != null) {
         addAll(apolloRequest.httpHeaders)
-        if (apolloRequest.httpHeaders.none { it.name.lowercase() == HEADER_ACCEPT_NAME.lowercase() }) {
-          add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
-        }
+      }
+      if (apolloRequest.httpHeaders.orEmpty().none { it.name.lowercase() == HEADER_ACCEPT_NAME.lowercase() }) {
+        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
       }
     }
 
