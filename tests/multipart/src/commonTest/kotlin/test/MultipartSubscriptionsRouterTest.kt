@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import router.DieSubscription
@@ -18,6 +19,7 @@ class MultipartSubscriptionsRouterTest {
         .serverUrl("http://localhost:4040/")
         .subscriptionNetworkTransport(
             HttpNetworkTransport.Builder()
+                .addHttpHeader(DefaultHttpRequestComposer.HEADER_ACCEPT_NAME, DefaultHttpRequestComposer.HEADER_ACCEPT_VALUE_MULTIPART)
                 .serverUrl("http://localhost:4040/")
                 .build()
         )
