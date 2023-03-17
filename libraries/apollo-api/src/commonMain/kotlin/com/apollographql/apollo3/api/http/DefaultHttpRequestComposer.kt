@@ -83,15 +83,15 @@ class DefaultHttpRequestComposer(
     // CSRF prevention enabled. See
     // https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
     // for details.
-    const val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
+    val HEADER_APOLLO_OPERATION_NAME = "X-APOLLO-OPERATION-NAME"
 
-    const val HEADER_ACCEPT_NAME = "Accept"
+    val HEADER_ACCEPT_NAME = "Accept"
 
     // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
     // can recognize early client implementations and potentially reply in a compatible way.
     // This should be removed in later versions.
-    const val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed; deferSpec=20220824, application/json"
-    const val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed; boundary=\"graphql\"; subscriptionSpec=1.0, application/json"
+    val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed; deferSpec=20220824, application/json"
+    val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed; boundary=\"graphql\"; subscriptionSpec=1.0, application/json"
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,
