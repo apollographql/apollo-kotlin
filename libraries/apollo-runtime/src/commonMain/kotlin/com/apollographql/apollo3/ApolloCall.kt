@@ -20,13 +20,21 @@ class ApolloCall<D : Operation.Data> internal constructor(
     val operation: Operation<D>,
 ) : MutableExecutionOptions<ApolloCall<D>> {
   override var executionContext: ExecutionContext = ExecutionContext.Empty
+    private set
   override var httpMethod: HttpMethod? = null
+    private set
   override var sendApqExtensions: Boolean? = null
+    private set
   override var sendDocument: Boolean? = null
+    private set
   override var enableAutoPersistedQueries: Boolean? = null
+    private set
   override var canBeBatched: Boolean? = null
+    private set
   override var ignorePartialData: Boolean? = null
+    private set
   override var httpHeaders: List<HttpHeader>? = null
+    private set
 
   private var additionalHttpHeaders: List<HttpHeader>? = null
 

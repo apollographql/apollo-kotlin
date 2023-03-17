@@ -50,14 +50,17 @@ private constructor(
   ) : MutableExecutionOptions<Builder<D>> {
     private var requestUuid: Uuid = uuid4()
     override var executionContext: ExecutionContext = ExecutionContext.Empty
+      private set
 
     override var httpMethod: HttpMethod? = null
+      private set
 
     override fun httpMethod(httpMethod: HttpMethod?): Builder<D> = apply {
       this.httpMethod = httpMethod
     }
 
     override var httpHeaders: List<HttpHeader>? = null
+      private set
 
     override fun httpHeaders(httpHeaders: List<HttpHeader>?): Builder<D> = apply {
       this.httpHeaders = httpHeaders
@@ -68,30 +71,35 @@ private constructor(
     }
 
     override var sendApqExtensions: Boolean? = null
+      private set
 
     override fun sendApqExtensions(sendApqExtensions: Boolean?): Builder<D> = apply {
       this.sendApqExtensions = sendApqExtensions
     }
 
     override var sendDocument: Boolean? = null
+      private set
 
     override fun sendDocument(sendDocument: Boolean?): Builder<D> = apply {
       this.sendDocument = sendDocument
     }
 
     override var enableAutoPersistedQueries: Boolean? = null
+      private set
 
     override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): Builder<D> = apply {
       this.enableAutoPersistedQueries = enableAutoPersistedQueries
     }
 
     override var canBeBatched: Boolean? = null
+      private set
 
     override fun canBeBatched(canBeBatched: Boolean?): Builder<D> = apply {
       this.canBeBatched = canBeBatched
     }
 
     override var ignorePartialData: Boolean? = null
+      private set
 
     override fun ignorePartialData(ignorePartialData: Boolean?): Builder<D> = apply {
       this.ignorePartialData = ignorePartialData
