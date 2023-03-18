@@ -1,6 +1,7 @@
 type Query {
   viewer: Viewer!
   home: Home!
+  country(code: ID!): Country
 }
 
 type Viewer {
@@ -27,4 +28,9 @@ type Author {
 
 type Home {
   address: String
+}
+
+type Country {
+  code: ID!
+  name: String!
 }
