@@ -7,7 +7,7 @@ android-sdkversion-target = "30"
 androidx-sqlite = "2.1.0"
 antlr = "4.9.3"
 # This is used by the gradle integration tests to get the artifacts locally
-apollo = "4.0.0-SNAPSHOT"
+apollo = "4.0.1"
 cache = "2.0.2"
 dokka = "1.8.10"
 guava = "31.1-jre"
