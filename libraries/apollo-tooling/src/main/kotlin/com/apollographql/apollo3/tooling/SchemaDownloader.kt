@@ -70,7 +70,7 @@ object SchemaDownloader {
       endpoint != null -> {
         var exception: Exception? = null
         // Try the latest spec first
-        SpecVersion.values().reversed().forEach { specVersion ->
+        for (specVersion in SpecVersion.values().reversed()) {
           try {
             introspectionSchemaJson = downloadIntrospection(
                 endpoint = endpoint,
@@ -78,8 +78,9 @@ object SchemaDownloader {
                 insecure = insecure,
                 specVersion = specVersion,
             )
-            introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
-            return@forEach
+            introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
+            exception = null
+            break
           } catch (e: Exception) {
             exception = e
           }
@@ -114,7 +115,7 @@ object SchemaDownloader {
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
         introspectionSchema = gqlSchema!!.validateAsSchema().getOrThrow().toIntrospectionSchema()
-        introspectionSchema!!.writeTo(schema)
+        introspectionSchema.writeTo(schema)
       } else {
         schema.writeText(introspectionSchemaJson!!)
       }

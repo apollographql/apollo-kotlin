@@ -162,6 +162,34 @@ class DownloadSchemaTests {
     }
   }
 
+  @Test
+  fun `schema is downloaded correctly when server doesn't support deprecated input fields and arguments nor isRepeatable on directives`() {
+    withSimpleProject(apolloConfiguration = apolloConfiguration) { dir ->
+      mockServer.enqueue(MockResponse().setResponseCode(400))
+      mockServer.enqueue(MockResponse().setResponseCode(400))
+      mockServer.enqueue(MockResponse().setBody(schemaString1))
+
+      TestUtils.executeTask("downloadMockApolloSchemaFromIntrospection", dir)
+
+      mockServer.takeRequest().body.readUtf8().let {
+        assertTrue(it.contains("inputFields(includeDeprecated: true)"))
+        assertTrue(it.contains("args(includeDeprecated: true)"))
+        assertTrue(it.contains("isRepeatable"))
+      }
+      mockServer.takeRequest().body.readUtf8().let {
+        assertFalse(it.contains("inputFields(includeDeprecated: true)"))
+        assertFalse(it.contains("args(includeDeprecated: true)"))
+        assertTrue(it.contains("isRepeatable"))
+      }
+      mockServer.takeRequest().body.readUtf8().let {
+        assertFalse(it.contains("inputFields(includeDeprecated: true)"))
+        assertFalse(it.contains("args(includeDeprecated: true)"))
+        assertFalse(it.contains("isRepeatable"))
+      }
+      assertEquals(schemaString1, File(dir, "src/main/graphql/com/example/schema.json").readText())
+    }
+  }
+
 
   @Test
   fun `download schema is never up-to-date`() {
