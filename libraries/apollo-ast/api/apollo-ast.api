@@ -1320,7 +1320,6 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1357,7 +1356,6 @@ public final class com/apollographql/apollo3/ast/introspection/IntrospectionSche
 
 public final class com/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive$Argument$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive$Argument$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lcom/apollographql/apollo3/ast/introspection/IntrospectionSchema$Schema$Directive$Argument;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
