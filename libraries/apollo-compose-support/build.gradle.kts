@@ -7,6 +7,7 @@ plugins {
 dependencies {
   api(golatac.lib("compose-runtime"))
   api(project(":apollo-runtime"))
+  api(project(":apollo-normalized-cache"))
 }
 
 android {
