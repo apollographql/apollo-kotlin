@@ -12,6 +12,9 @@ import com.apollographql.apollo3.ast.validateAsSchema
 import kotlinx.serialization.json.Json
 import okio.Buffer
 import java.io.File
+import com.apollographql.apollo3.tooling.draft.IntrospectionQuery as DraftIntrospectionQuery
+import com.apollographql.apollo3.tooling.june2018.IntrospectionQuery as June2018IntrospectionQuery
+import com.apollographql.apollo3.tooling.october2021.IntrospectionQuery as October2021IntrospectionQuery
 
 /**
  * @return the graph from a service key like "service:$graph:$token"
@@ -30,7 +33,8 @@ internal fun String.getGraph(): String? {
 object SchemaDownloader {
   enum class SpecVersion {
     June_2018,
-    October_2021
+    October_2021,
+    Draft,
   }
 
   /**
@@ -64,30 +68,33 @@ object SchemaDownloader {
     var gqlSchema: GQLDocument? = null
     when {
       endpoint != null -> {
-        introspectionSchemaJson = try {
-          downloadIntrospection(
-              endpoint = endpoint,
-              headers = headers,
-              insecure = insecure,
-              specVersion = SpecVersion.October_2021,
-          )
-        } catch (e: Exception) {
-          // Maybe the server doesn't support deprecated input fields / arguments, try without them
-          downloadIntrospection(
-              endpoint = endpoint,
-              headers = headers,
-              insecure = insecure,
-              specVersion = SpecVersion.June_2018,
-          )
+        var exception: Exception? = null
+        // Try the latest spec first
+        SpecVersion.values().reversed().forEach { specVersion ->
+          try {
+            introspectionSchemaJson = downloadIntrospection(
+                endpoint = endpoint,
+                headers = headers,
+                insecure = insecure,
+                specVersion = specVersion,
+            )
+            introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
+            return@forEach
+          } catch (e: Exception) {
+            exception = e
+          }
         }
-        introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
+        if (introspectionSchemaJson == null) {
+          throw exception!!
+        }
       }
+
       else -> {
         check(key != null) {
           "Apollo: either endpoint (for introspection) or key (for registry) is required"
         }
         val graph2 = graph ?: key.getGraph()
-        check (graph2 != null) {
+        check(graph2 != null) {
           "Apollo: graph is required to download from the registry"
         }
 
@@ -107,7 +114,7 @@ object SchemaDownloader {
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
         introspectionSchema = gqlSchema!!.validateAsSchema().getOrThrow().toIntrospectionSchema()
-        introspectionSchema.writeTo(schema)
+        introspectionSchema!!.writeTo(schema)
       } else {
         schema.writeText(introspectionSchemaJson!!)
       }
@@ -183,116 +190,10 @@ object SchemaDownloader {
   inline fun <reified T> Any?.cast() = this as? T
 
   fun getIntrospectionQuery(specVersion: SpecVersion): String {
-    val isRepeatable = when(specVersion) {
-      SpecVersion.October_2021 -> "isRepeatable"
-      else -> ""
+    return when (specVersion) {
+      SpecVersion.June_2018 -> June2018IntrospectionQuery.OPERATION_DOCUMENT
+      SpecVersion.October_2021 -> October2021IntrospectionQuery.OPERATION_DOCUMENT
+      SpecVersion.Draft -> DraftIntrospectionQuery.OPERATION_DOCUMENT
     }
-    val inputValueIncludeDeprecated = when(specVersion) {
-      SpecVersion.October_2021 -> "(includeDeprecated: true)"
-      else -> ""
-    }
-    val inputValueIsDeprecated = when(specVersion) {
-      SpecVersion.October_2021 -> "isDeprecated"
-      else -> ""
-    }
-    val inputValueDeprecationReason = when(specVersion) {
-      SpecVersion.October_2021 -> "deprecationReason"
-      else -> ""
-    }
-    return """
-      query IntrospectionQuery {
-        __schema {
-          queryType { name }
-          mutationType { name }
-          subscriptionType { name }
-          types {
-            ...FullType
-          }
-          directives {
-            name
-            description
-            locations
-            args$inputValueIncludeDeprecated {
-              ...InputValue
-            }
-            $isRepeatable
-          }
-        }
-      }
-  
-      fragment FullType on __Type {
-        kind
-        name
-        description
-        fields(includeDeprecated: true) {
-          name
-          description
-          args$inputValueIncludeDeprecated {
-            ...InputValue
-          }
-          type {
-            ...TypeRef
-          }
-          isDeprecated
-          deprecationReason
-        }
-        inputFields$inputValueIncludeDeprecated {
-          ...InputValue
-        }
-        interfaces {
-          ...TypeRef
-        }
-        enumValues(includeDeprecated: true) {
-          name
-          description
-          isDeprecated
-          deprecationReason
-        }
-        possibleTypes {
-          ...TypeRef
-        }
-      }
-  
-      fragment InputValue on __InputValue {
-        name
-        description
-        type { ...TypeRef }
-        defaultValue
-        $inputValueIsDeprecated
-        $inputValueDeprecationReason
-      }
-  
-      fragment TypeRef on __Type {
-        kind
-        name
-        ofType {
-          kind
-          name
-          ofType {
-            kind
-            name
-            ofType {
-              kind
-              name
-              ofType {
-                kind
-                name
-                ofType {
-                  kind
-                  name
-                  ofType {
-                    kind
-                    name
-                    ofType {
-                      kind
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }""".trimIndent()
   }
 }
