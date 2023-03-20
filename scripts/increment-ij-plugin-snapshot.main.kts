@@ -3,9 +3,13 @@ import java.io.File
 
 incrementSnapshotVersion()
 runCommand("bash", "-c", "./gradlew :intellij-plugin:updatePluginsXml")
+val branchName = "increment-ij-plugin-snapshot"
+runCommand("git", "checkout", "-b", branchName)
 runCommand("git", "add", "intellij-plugin/gradle.properties", "intellij-plugin/snapshots/plugins.xml")
 runCommand("git", "commit", "-m", "Increment IJ plugin snapshot version")
 runCommand("git", "push")
+runCommand("gh", "pr", "create", "--fill")
+runCommand("gh", "pr", "merge", branchName, "--squash", "--admin")
 
 fun incrementSnapshotVersion() {
   val ijPropertiesFile = File("intellij-plugin/gradle.properties")
