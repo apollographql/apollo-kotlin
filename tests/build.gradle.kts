@@ -37,6 +37,8 @@ gradle.startParameter.setExcludedTaskNames(listOf(
     ":models-operation-based:compileCommonMainKotlinMetadata",
     ":models-response-based:compileAppleMainKotlinMetadata",
     ":models-response-based:compileCommonMainKotlinMetadata",
+    ":models-compat:compileAppleMainKotlinMetadata",
+    ":models-compat:compileCommonMainKotlinMetadata",
     ":multipart:compileCommonMainKotlinMetadata",
     ":native-benchmarks:compileAppleMainKotlinMetadata",
     ":native-benchmarks:compileCommonMainKotlinMetadata",
