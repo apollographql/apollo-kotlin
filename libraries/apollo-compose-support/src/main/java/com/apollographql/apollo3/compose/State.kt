@@ -25,7 +25,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  *     when {
  *         response == null -> Loading()
  *         response!!.exception != null -> NetworkError(response!!.exception!!)
- *         response!!.hasErrors() -> BackendError(r.errors!!)
+ *         response!!.hasErrors() -> BackendError(response!!.errors!!)
  *         else -> Screen(response!!.data!!)
  *     }
  * ```
