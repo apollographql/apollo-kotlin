@@ -50,7 +50,7 @@ runCommand("gh", "pr", "create", "--fill")
 
 println("Press enter to merge the release PR")
 readLine()
-runCommand("gh", "pr", "merge", releaseBranchName, "--squash", "--admin")
+mergeAndWait(releaseBranchName)
 println("Release PR merged.")
 
 // Tag the release, and push the tag
@@ -74,7 +74,7 @@ runCommand("gh", "pr", "create", "--fill")
 
 println("Press enter to merge the bump version PR")
 readLine()
-runCommand("gh", "pr", "merge", bumpVersionBranchName, "--squash", "--admin")
+mergeAndWait(bumpVersionBranchName)
 println("Bump version PR merged.")
 
 // Go back and pull the changes
@@ -202,4 +202,12 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
         }
     file.writeText(content)
   }
+}
+
+fun mergeAndWait(branchName: String) {
+  runCommand("gh", "pr", "merge", branchName, "--squash")
+  println("Waiting for the PR to be merged...")
+  do {
+    Thread.sleep(1000)
+  } while (!runCommand("gh", "pr", "view", branchName).contains(""""state": "MERGED""""))
 }
