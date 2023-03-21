@@ -3,9 +3,13 @@ import java.io.File
 
 incrementSnapshotVersion()
 runCommand("bash", "-c", "./gradlew :intellij-plugin:updatePluginsXml")
+val branchName = "release-increment-ij-plugin-snapshot"
+runCommand("git", "checkout", "-b", branchName)
 runCommand("git", "add", "intellij-plugin/gradle.properties", "intellij-plugin/snapshots/plugins.xml")
 runCommand("git", "commit", "-m", "Increment IJ plugin snapshot version")
 runCommand("git", "push")
+runCommand("gh", "pr", "create", "--fill")
+mergeAndWait(branchName)
 
 fun incrementSnapshotVersion() {
   val ijPropertiesFile = File("intellij-plugin/gradle.properties")
@@ -30,6 +34,15 @@ fun runCommand(vararg args: String): String {
     throw java.lang.Exception("command ${args.joinToString(" ")} failed:\n$output")
   }
 
-  return output
+  return output.trim()
 }
 
+fun mergeAndWait(branchName: String) {
+  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto")
+  println("Waiting for the PR to be merged...")
+  while (true) {
+    val state = runCommand("gh", "pr", "view", branchName, "--json", "state", "--jq", ".state")
+    if (state == "MERGED") break
+    Thread.sleep(1000)
+  }
+}

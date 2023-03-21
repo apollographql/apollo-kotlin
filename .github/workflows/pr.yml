@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   tests-gradle:
+    if: "!startsWith(github.head_ref, 'release-')"
     runs-on: macos-11
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
@@ -41,6 +42,7 @@ jobs:
           path: diagnostics.zip
 
   tests-no-gradle:
+    if: "!startsWith(github.head_ref, 'release-')"
     runs-on: macos-11
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
@@ -56,7 +58,7 @@ jobs:
           ulimit -c unlimited
           # Workaround an issue where kotlinNpmInstall outputs
           # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew compileKotlinJs --stacktrace 
+          ./gradlew compileKotlinJs --stacktrace
           ./gradlew --stop
           ./gradlew ciTestsNoGradle --stacktrace --scan
       - name: Collect Diagnostics
@@ -69,6 +71,7 @@ jobs:
           path: diagnostics.zip
 
   tests-integration:
+    if: "!startsWith(github.head_ref, 'release-')"
     runs-on: macos-11
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c #v3.3.0
@@ -97,6 +100,7 @@ jobs:
           path: diagnostics.zip
 
   intellij-plugin:
+    if: "!startsWith(github.head_ref, 'release-')"
     name: Build IntelliJ Plugin
     runs-on: ubuntu-latest
     outputs:
