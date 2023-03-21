@@ -1,4 +1,3 @@
-
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.GlobalBuilder
@@ -15,12 +14,14 @@ import com.example.GetCatIncludeVariableWithDefaultQuery
 import com.example.GetDogSkipFalseQuery
 import com.example.GetDogSkipTrueQuery
 import com.example.GetDogSkipVariableQuery
+import com.example.SkipFragmentWithDefaultToFalseQuery
 import com.example.type.buildCat
 import com.example.type.buildDog
 import com.example.type.buildQuery
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class IncludeTest {
@@ -174,6 +175,21 @@ class IncludeTest {
     val response = operation.parseData(data)
 
     assertNull(response.dataAssertNoErrors.animal!!.species)
+  }
+
+  @Test
+  fun skipFragmentWithDefaultToFalseQuery(): Unit = runBlocking {
+    val operation = SkipFragmentWithDefaultToFalseQuery()
+
+    val data = GlobalBuilder.buildQuery {
+      animal = buildDog {
+        barf = "ouaf"
+      }
+    }
+
+    val response = operation.parseData(data)
+
+    assertNotNull(response.dataAssertNoErrors.animal!!.animalFragment)
   }
 }
 

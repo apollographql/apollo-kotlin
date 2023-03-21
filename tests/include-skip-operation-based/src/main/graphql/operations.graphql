@@ -61,3 +61,9 @@ query SkipInFragment($skipIf: Boolean = true) {
     ...animalFragment
   }
 }
+
+query SkipFragmentWithDefaultToFalse($skipIf: Boolean = false) {
+  animal {
+    ...animalFragment @skip(if: $skipIf)
+  }
+}
