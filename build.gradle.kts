@@ -29,7 +29,7 @@ fun shouldPublishSnapshots(): Boolean {
   val eventName = System.getenv("GITHUB_EVENT_NAME")
   val ref = System.getenv("GITHUB_REF")
 
-  return eventName == "push" && (ref == "refs/heads/main")
+  return eventName == "push" && (ref in setOf("refs/heads/main", "refs/heads/release-3.x"))
 }
 
 tasks.register("ciPublishSnapshot") {
