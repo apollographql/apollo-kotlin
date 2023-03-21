@@ -88,24 +88,27 @@ public class ApolloWsTest {
   public void interleavedSubscriptions() throws Exception {
     List<Integer> items = new ArrayList<>();
     CountDownLatch latch = new CountDownLatch(2);
-    apolloClient.subscription(new CountSubscription(5, 1000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+    // Execute 1st subscription, adds even numbers
+    apolloClient.subscription(new CountSubscription(4, 2000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.dataAssertNoErrors().count * 2);
-      }
-    }).addListener(latch::countDown);
-
-    sleep(500);
-
-    apolloClient.subscription(new CountSubscription(5, 1000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
-      @Override
-      public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.dataAssertNoErrors().count * 2 + 1);
+        Integer count = response.dataAssertNoErrors().count;
+        items.add(count * 2);
+        if (count == 0) {
+          sleep(500);
+          // Execute 2nd subscription, adds odd numbers
+          apolloClient.subscription(new CountSubscription(4, 2000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
+            @Override
+            public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
+              items.add(response.dataAssertNoErrors().count * 2 + 1);
+            }
+          }).addListener(latch::countDown);
+        }
       }
     }).addListener(latch::countDown);
 
     latch.await(30, TimeUnit.SECONDS);
-    Truth.assertThat(items).containsExactly(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).inOrder();
+    Truth.assertThat(items).containsExactly(0, 1, 2, 3, 4, 5, 6, 7).inOrder();
   }
 
   @Test
