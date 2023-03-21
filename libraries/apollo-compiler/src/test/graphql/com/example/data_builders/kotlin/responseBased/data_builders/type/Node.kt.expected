@@ -5,6 +5,7 @@
 //
 package com.example.data_builders.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.InterfaceType
@@ -15,29 +16,28 @@ import kotlin.Unit
 import kotlin.collections.Map
 
 public class Node {
-  public companion object {
+  public companion object : BuilderFactory<OtherNodeBuilder> {
     public val type: InterfaceType = InterfaceType.Builder(name = "Node").build()
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): OtherNodeBuilder =
+        OtherNodeBuilder(customScalarAdapters)
   }
 }
 
+public interface NodeMap : Map<String, Any?>
+
 public class OtherNodeBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+) : ObjectBuilder<OtherNodeMap>(customScalarAdapters) {
   public var id: String by __fields
 
-  public fun build(): OtherNodeMap = OtherNodeMap(__fields)
+  public override fun build(): OtherNodeMap = OtherNodeMap(__fields)
 }
-
-public interface NodeMap
 
 public class OtherNodeMap(
   __fields: Map<String, Any?>,
 ) : NodeMap, Map<String, Any?> by __fields
 
-public fun BuilderScope.buildOtherNode(__typename: String, block: OtherNodeBuilder.() -> Unit):
-    OtherNodeMap {
-  val builder = OtherNodeBuilder(customScalarAdapters)
-  builder.__typename = __typename
-  builder.block()
-  return builder.build()
-}
+public fun BuilderScope.buildOtherNode(typename: String, block: OtherNodeBuilder.() -> Unit):
+    OtherNodeMap =
+    OtherNodeBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()

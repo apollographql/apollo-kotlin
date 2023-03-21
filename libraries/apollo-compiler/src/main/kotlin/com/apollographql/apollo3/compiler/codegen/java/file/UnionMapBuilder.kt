@@ -14,7 +14,7 @@ internal class UnionMapBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.objectMapName(union.name)
+  private val simpleName = layout.mapName(union.name)
 
   override fun prepare() {
     context.resolver.registerMapType(union.name, ClassName.get(packageName, simpleName))

@@ -1,21 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDeprecation
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
-import com.apollographql.apollo3.compiler.ir.IrCompositeType2
-import com.apollographql.apollo3.compiler.ir.IrNonNullType2
 import com.apollographql.apollo3.compiler.ir.IrUnion
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
 internal class UnionBuilder(
@@ -26,10 +18,15 @@ internal class UnionBuilder(
   private val layout = context.layout
   private val packageName = layout.typePackageName()
   private val simpleName = layout.compiledTypeName(union.name)
+  private val builderName = layout.builderName(union.name)
+  private val otherBuilderName = layout.otherBuilderName(union.name)
+  private val mapName = layout.mapName(union.name)
+  private val otherMapName = layout.otherMapName(union.name)
 
   override fun prepare() {
     context.resolver.registerSchemaType(union.name, ClassName(packageName, simpleName))
-    context.resolver.registerMapType(union.name, ClassName(packageName, layout.objectMapName(union.name)))
+    context.resolver.registerMapType(union.name, ClassName(packageName, mapName))
+    context.resolver.registerBuilderType(union.name, ClassName(packageName, builderName))
   }
 
   override fun build(): CgFile {
@@ -39,100 +36,41 @@ internal class UnionBuilder(
         typeSpecs = mutableListOf<TypeSpec>().apply {
           add(union.typeSpec())
           if (generateDataBuilders) {
-            add(union.builderTypeSpec())
-            add(union.mapTypeSpec())
-            add(union.unknownMapTypeSpec())
+            add(abstractMapTypeSpec(context.resolver, mapName, emptyList()))
+            add(
+                concreteBuilderTypeSpec(
+                    context = context,
+                    packageName = packageName,
+                    builderName = otherBuilderName,
+                    mapName = otherMapName,
+                    properties = emptyList(),
+                    typename = null
+                )
+            )
+            add(
+                concreteMapTypeSpec(
+                    resolver = context.resolver,
+                    mapName = otherMapName,
+                    extendsFromType = union.name,
+                    implements = emptyList()
+                )
+            )
           }
         },
         funSpecs = mutableListOf<FunSpec>().apply {
           if (generateDataBuilders) {
-            add(union.builderFunSpec())
+            add(
+                topLevelBuildFunSpec(
+                    layout.buildOtherFunName(union.name),
+                    ClassName(packageName, otherBuilderName),
+                    ClassName(packageName, otherMapName),
+                    requiresTypename = true
+                )
+            )
           }
         }
     )
   }
-
-  private fun IrUnion.builderTypeSpec(): TypeSpec {
-    return TypeSpec
-        .classBuilder(layout.otherBuilderName(name))
-        .superclass(KotlinSymbols.ObjectBuilder)
-        .addSuperclassConstructorParameter(CodeBlock.of(Identifier.customScalarAdapters))
-        .primaryConstructor(
-            FunSpec.constructorBuilder()
-                .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
-                .build()
-        )
-        .addFunction(buildFunSpec())
-        .build()
-  }
-
-  private fun IrUnion.buildFunSpec(): FunSpec {
-    val mapClassName = ClassName(packageName, layout.otherMapName(name))
-    return FunSpec.builder(Identifier.build)
-        .returns(mapClassName)
-        .addCode(
-            CodeBlock.builder()
-                .addStatement("return·%T(${Identifier.__fields})", mapClassName)
-                .build()
-        )
-        .build()
-  }
-
-  private fun IrUnion.unknownMapTypeSpec(): TypeSpec {
-    return TypeSpec
-        .classBuilder(layout.otherMapName(name))
-        .primaryConstructor(
-            FunSpec.constructorBuilder()
-                .addParameter(
-                    ParameterSpec.builder(
-                        Identifier.__fields,
-                        KotlinSymbols.MapOfStringToNullableAny
-                    ).build()
-                )
-                .build()
-        )
-        .addSuperinterface(context.resolver.resolveIrType2(IrNonNullType2(IrCompositeType2(name))))
-        .addSuperinterface(
-            superinterface = KotlinSymbols.MapOfStringToNullableAny,
-            delegate = CodeBlock.of(Identifier.__fields)
-        )
-        .build()
-  }
-
-  private fun IrUnion.builderFunSpec(): FunSpec {
-    val builderClassName = ClassName(packageName, layout.otherBuilderName(name))
-    val mapClassName = ClassName(packageName, layout.otherMapName(name))
-    return FunSpec.builder(layout.otherBuilderFunName(name))
-        .returns(mapClassName)
-        .addParameter(Identifier.__typename, String::class)
-        .addParameter(
-            ParameterSpec.builder(
-                Identifier.block,
-                LambdaTypeName.get(
-                    receiver = builderClassName,
-                    parameters = emptyArray<TypeName>(),
-                    returnType = KotlinSymbols.Unit
-                )
-            ).build()
-        )
-        .receiver(KotlinSymbols.BuilderScope)
-        .addCode(
-            CodeBlock.builder()
-                .addStatement("val·builder·=·%T(${Identifier.customScalarAdapters})", builderClassName)
-                .addStatement("builder.__typename·=·__typename")
-                .addStatement("builder.${Identifier.block}()")
-                .addStatement("return·builder.build()")
-                .build()
-        )
-        .build()
-  }
-
-  private fun IrUnion.mapTypeSpec(): TypeSpec {
-    return TypeSpec
-        .interfaceBuilder(layout.objectMapName(name))
-        .build()
-  }
-
 
   private fun IrUnion.typeSpec(): TypeSpec {
     return TypeSpec
@@ -146,6 +84,7 @@ internal class UnionBuilder(
   private fun IrUnion.companionTypeSpec(): TypeSpec {
     return TypeSpec.companionObjectBuilder()
         .addProperty(typePropertySpec(context.resolver))
+        .maybeImplementBuilderFactory(generateDataBuilders, ClassName(packageName, otherBuilderName))
         .build()
   }
 }

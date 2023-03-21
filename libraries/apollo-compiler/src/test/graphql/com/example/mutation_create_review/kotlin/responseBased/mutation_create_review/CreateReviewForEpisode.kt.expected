@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
-import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,7 +23,6 @@ import com.example.mutation_create_review.type.Episode
 import com.example.mutation_create_review.type.MutationBuilder
 import com.example.mutation_create_review.type.ReviewInput
 import com.example.mutation_create_review.type.__CustomScalarAdapters
-import com.example.mutation_create_review.type.buildMutation
 import java.util.Date
 import kotlin.Int
 import kotlin.String
@@ -123,10 +121,11 @@ internal data class CreateReviewForEpisode(
 
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
         block: MutationBuilder.() -> Unit = {}): Data = buildData(
+      com.example.mutation_create_review.type.Mutation,
+      block,
       CreateReviewForEpisode_ResponseAdapter.Data,
       CreateReviewForEpisodeSelections.__root,
       "Mutation",
-      GlobalBuilder.buildMutation(block),
       resolver,
       __CustomScalarAdapters,
     )

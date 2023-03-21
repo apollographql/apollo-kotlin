@@ -5,6 +5,7 @@
 //
 package com.example.data_builders.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
@@ -15,29 +16,31 @@ import kotlin.Unit
 import kotlin.collections.Map
 
 public class Dog {
-  public companion object {
+  public companion object : BuilderFactory<DogBuilder> {
     public val type: ObjectType =
         ObjectType.Builder(name = "Dog").interfaces(listOf(Node.type)).build()
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): DogBuilder =
+        DogBuilder(customScalarAdapters)
   }
 }
 
 public class DogBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+) : ObjectBuilder<DogMap>(customScalarAdapters) {
   public var id: String by __fields
 
   public var woof: String by __fields
 
-  public fun build(): DogMap = DogMap(__fields)
+  init {
+    __typename = "Dog"}
+
+  public override fun build(): DogMap = DogMap(__fields)
 }
 
 public class DogMap(
   __fields: Map<String, Any?>,
 ) : NodeMap, AnimalMap, Map<String, Any?> by __fields
 
-public fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap {
-  val builder = DogBuilder(customScalarAdapters)
-  builder.__typename = "Dog"
-  builder.block()
-  return builder.build()
-}
+public fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap =
+    DogBuilder(customScalarAdapters).apply(block).build()

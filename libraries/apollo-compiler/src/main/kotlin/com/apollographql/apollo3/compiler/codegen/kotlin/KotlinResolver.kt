@@ -302,6 +302,8 @@ internal class KotlinResolver(
   fun resolveSchemaType(name: String) = resolveAndAssert(ResolverKeyKind.SchemaType, name)
   fun registerSchemaType(name: String, className: ClassName) = register(ResolverKeyKind.SchemaType, name, className)
   fun registerMapType(name: String, className: ClassName) = register(ResolverKeyKind.MapType, name, className)
+  fun resolveMapType(name: String) = resolveAndAssert(ResolverKeyKind.MapType, name)
+
   fun registerModel(path: String, className: ClassName) = register(ResolverKeyKind.Model, path, className)
 
   fun registerBuilderType(name: String, className: ClassName) = register(ResolverKeyKind.BuilderType, name, className)

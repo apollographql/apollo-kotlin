@@ -61,6 +61,9 @@ internal object Identifier {
   const val testResolver = "testResolver"
   const val block = "block"
   const val resolver = "resolver"
+  const val newBuilder = "newBuilder"
+  const val factory = "factory"
+  const val Builder = "Builder"
 
   /**
    * Kotlin language identifiers

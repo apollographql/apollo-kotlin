@@ -5,6 +5,7 @@
 //
 package com.example.data_builders.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
@@ -15,30 +16,32 @@ import kotlin.Unit
 import kotlin.collections.Map
 
 public class Query {
-  public companion object {
+  public companion object : BuilderFactory<QueryBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Query").build()
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): QueryBuilder =
+        QueryBuilder(customScalarAdapters)
   }
 }
 
 public class QueryBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+) : ObjectBuilder<QueryMap>(customScalarAdapters) {
   public var animal: AnimalMap by __fields
 
   public var character: CharacterMap by __fields
 
   public var node: NodeMap by __fields
 
-  public fun build(): QueryMap = QueryMap(__fields)
+  init {
+    __typename = "Query"}
+
+  public override fun build(): QueryMap = QueryMap(__fields)
 }
 
 public class QueryMap(
   __fields: Map<String, Any?>,
 ) : Map<String, Any?> by __fields
 
-public fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap {
-  val builder = QueryBuilder(customScalarAdapters)
-  builder.__typename = "Query"
-  builder.block()
-  return builder.build()
-}
+public fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap =
+    QueryBuilder(customScalarAdapters).apply(block).build()

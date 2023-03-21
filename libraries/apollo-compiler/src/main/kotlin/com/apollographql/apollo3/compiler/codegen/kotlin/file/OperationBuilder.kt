@@ -2,20 +2,15 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.ast.QueryDocumentMinifier
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_DOCUMENT
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_ID
 import com.apollographql.apollo3.compiler.codegen.Identifier.OPERATION_NAME
-import com.apollographql.apollo3.compiler.codegen.Identifier.block
 import com.apollographql.apollo3.compiler.codegen.Identifier.document
 import com.apollographql.apollo3.compiler.codegen.Identifier.id
 import com.apollographql.apollo3.compiler.codegen.Identifier.name
-import com.apollographql.apollo3.compiler.codegen.Identifier.resolver
-import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.makeDataClass
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.maybeAddDescription
@@ -26,11 +21,8 @@ import com.apollographql.apollo3.compiler.codegen.maybeFlatten
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.apollographql.apollo3.compiler.ir.IrOperationType
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
@@ -174,10 +166,11 @@ internal class OperationBuilder(
         .applyIf(generateDataBuilders) {
           addFunction(
               dataBuilderCtor(
-                  context,
-                  operation.dataModelGroup.baseModelId,
-                  context.resolver.resolveOperationSelections(operation.name),
-                  operation.operationType.typeName
+                  context = context,
+                  modelId = operation.dataModelGroup.baseModelId,
+                  selectionsClassName = context.resolver.resolveOperationSelections(operation.name),
+                  typename = operation.operationType.typeName,
+                  builderFactoryParameterRequired = false
               )
           )
         }
@@ -204,56 +197,6 @@ internal class OperationBuilder(
         operation.typeCondition,
         context.resolver.resolveOperationSelections(operation.name)
     )
-  }
-
-  companion object {
-    private fun dataBuilderCtor(
-        context: KotlinContext,
-        modelId: String,
-        selectionsClassName: ClassName,
-        typename: String,
-
-        ): FunSpec {
-      return FunSpec.builder(Identifier.Data)
-          .addParameter(
-              ParameterSpec.builder(
-                  resolver,
-                  KotlinSymbols.FakeResolver
-              ).defaultValue(
-                  CodeBlock.of("%T(%T.all)", KotlinSymbols.DefaultFakeResolver, context.resolver.resolveSchema())
-              ).build()
-          ).addParameter(
-              ParameterSpec.builder(
-                  Identifier.block,
-                  LambdaTypeName.get(
-                      receiver = context.resolver.resolveBuilderType(typename),
-                      parameters = emptyArray<TypeName>(),
-                      returnType = KotlinSymbols.Unit
-                  )
-              ).defaultValue(CodeBlock.of("{}"))
-                  .build()
-          )
-          .addCode(
-              CodeBlock.builder()
-                  .add("return·%M(\n", KotlinMemberNames.buildData)
-                  .indent()
-                  .add("%T,\n", context.resolver.resolveModelAdapter(modelId))
-                  .add("%T.$root,\n", selectionsClassName)
-                  .add("%S,\n", typename)
-                  .add(
-                      "%M.%M(${Identifier.block}),\n",
-                      KotlinMemberNames.GlobalBuilder,
-                      context.resolver.resolveBuilderFun(typename),
-                  )
-                  .add("$resolver,\n")
-                  .add("%T,\n", context.resolver.resolveCustomScalarAdapters())
-                  .unindent()
-                  .add(")\n")
-                  .build()
-          )
-          .returns(context.resolver.resolveModel(modelId))
-          .build()
-    }
   }
 }
 

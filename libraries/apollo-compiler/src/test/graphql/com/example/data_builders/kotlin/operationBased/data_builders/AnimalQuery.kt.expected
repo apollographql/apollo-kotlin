@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
-import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,7 +22,6 @@ import com.example.data_builders.schema.__Schema
 import com.example.data_builders.selections.AnimalQuerySelections
 import com.example.data_builders.type.QueryBuilder
 import com.example.data_builders.type.__CustomScalarAdapters
-import com.example.data_builders.type.buildQuery
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -104,10 +102,11 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
 
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
         block: QueryBuilder.() -> Unit = {}): Data = buildData(
+      com.example.data_builders.type.Query,
+      block,
       AnimalQuery_ResponseAdapter.Data,
       AnimalQuerySelections.__root,
       "Query",
-      GlobalBuilder.buildQuery(block),
       resolver,
       __CustomScalarAdapters,
     )

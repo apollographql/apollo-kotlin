@@ -82,6 +82,8 @@ private fun collect(selections: List<CompiledSelection>, typename: String): List
   }
 }
 
+
+
 private fun collectAndMerge(selections: List<CompiledSelection>, typename: String): List<CompiledField> {
   /**
    * This doesn't check the condition and will therefore overfetch
@@ -191,9 +193,10 @@ private fun buildFieldOfNonNullType(
 
           /**
            * If the map was created through one of the builders, we are guaranteed that __typename
-           * is present because it was created as a concrete type
+           * is present because it was created as a concrete type.
+           * It might still be empty if users create fragments manually
            */
-          val typename = (map["__typename"] as? String) ?: error("")
+          val typename = (map["__typename"] as? String) ?: error("When building fallback types, you must specify '__typename'")
 
           val stableId = resolver.stableIdForObject(map, mergedField) ?: id
 
@@ -337,37 +340,15 @@ fun <T> buildData(
   )
 }
 
-fun <T> buildFragmentData(
+fun <T, Builder: ObjectBuilder<*>> buildData(
+    builderFactory: BuilderFactory<Builder>,
+    block: (Builder.() -> Unit),
     adapter: Adapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
-    block: Any? = null,
     resolver: FakeResolver,
-    type: CompiledType,
     customScalarAdapters: CustomScalarAdapters,
 ): T {
-  val map = if (block == null) {
-    mapOf(
-        "__typename" to resolver.resolveTypename(
-            FakeResolverContext(
-                emptyList(),
-                "fragmentRoot",
-                CompiledField.Builder("__fragmentRoot", type).build()
-            )
-        )
-    )
-  } else {
-    @Suppress("UNCHECKED_CAST")
-    block as (BuilderScope.() -> Map<String, Any?>)
-    block.invoke(GlobalBuilder)
-  }
-
-  return buildData(
-      adapter,
-      selections,
-      typename,
-      map,
-      resolver,
-      customScalarAdapters
-  )
+  val map = builderFactory.newBuilder(CustomScalarAdapters.PassThrough).apply(block).build()
+  return buildData(adapter, selections, typename, map, resolver, customScalarAdapters)
 }

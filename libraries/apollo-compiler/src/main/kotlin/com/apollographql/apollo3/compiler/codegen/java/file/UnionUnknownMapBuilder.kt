@@ -35,7 +35,7 @@ internal class UnionUnknownMapBuilder(
         .classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
         .superclass(JavaClassNames.ObjectMap)
-        .addSuperinterface(ClassName.get(packageName, context.layout.objectMapName(union.name)))
+        .addSuperinterface(ClassName.get(packageName, context.layout.mapName(union.name)))
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
