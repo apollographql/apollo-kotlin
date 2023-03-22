@@ -80,6 +80,7 @@ internal class FragmentBuilder(
         .addSuperinterface(superInterfaceType())
         .maybeAddDescription(description)
         .makeDataClass(variables.map { it.toNamedType().toParameterSpec(context) }, addJvmOverloads)
+        .addFunction(variablesFunSpec(this.variables))
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec(context.resolver, dataProperty))
         .addFunction(rootFieldFunSpec())

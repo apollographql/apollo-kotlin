@@ -64,6 +64,6 @@ query SkipInFragment($skipIf: Boolean = true) {
 
 query SkipFragmentWithDefaultToFalse($skipIf: Boolean = false) {
   animal {
-    ...animalFragment @skip(if: $skipIf)
+    ...dogFragment @skip(if: $skipIf)
   }
 }

@@ -189,7 +189,6 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertNotNull(response.dataAssertNoErrors.animal!!.animalFragment)
+    assertNotNull(response.dataAssertNoErrors.animal!!.dogFragment)
   }
 }
-
