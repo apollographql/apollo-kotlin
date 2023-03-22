@@ -3,18 +3,14 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
-import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import kotlin.jvm.JvmName
 
-@Suppress("UNCHECKED_CAST")
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
-  val valueMap = MapJsonWriter().apply {
-    beginObject()
-    serializeVariables(this, customScalarAdapters)
-    endObject()
-  }.root() as Map<String, Any?>
-  return Executable.Variables(valueMap)
+/**
+ * TODO deprecate it?
+ */
+fun <D : Executable.Data> Executable<D>.variables(@Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters): Executable.Variables {
+  return variables(withDefaultBooleanValues = true)
 }
 
 fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
