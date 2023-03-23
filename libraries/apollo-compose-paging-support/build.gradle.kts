@@ -26,6 +26,12 @@ android {
   composeOptions {
     kotlinCompilerExtensionVersion = golatac.version("compose.compiler")
   }
+
+  // TODO: compiling fails only with the debug variant currently, due to using a version of Kotlin non supported by Compose.
+  // For now, disabling the debug variant works around the issue.
+  variantFilter {
+    ignore = name == "debug"
+  }
 }
 
 // TODO: needed as long as we use a non supported version of Kotlin
