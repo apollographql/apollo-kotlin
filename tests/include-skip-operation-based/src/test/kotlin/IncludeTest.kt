@@ -160,7 +160,8 @@ class IncludeTest {
       }
     }
 
-    operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    val normalized = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    assertNull((normalized["animal"] as Map<*, *>)["species"])
   }
 
   @Test
@@ -190,5 +191,19 @@ class IncludeTest {
     val response = operation.parseData(data)
 
     assertNotNull(response.dataAssertNoErrors.animal!!.dogFragment)
+  }
+
+  @Test
+  fun skipFragmentWithDefaultToFalseQuery2(): Unit = runBlocking {
+    val operation = SkipFragmentWithDefaultToFalseQuery()
+
+    val data = SkipFragmentWithDefaultToFalseQuery.Data {
+      animal = buildDog {
+        barf = "ouaf"
+      }
+    }
+
+    val normalized = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    assertNull((normalized["animal"] as Map<*, *>)["barf"])
   }
 }

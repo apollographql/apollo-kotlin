@@ -166,13 +166,10 @@ public abstract class com/apollographql/apollo3/api/BTerm {
 
 public final class com/apollographql/apollo3/api/BVariable : com/apollographql/apollo3/api/BTerm {
 	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/Boolean;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/Boolean;
-	public final fun copy (Ljava/lang/String;Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/BVariable;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/api/BVariable;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/BVariable;
+	public final fun copy (Ljava/lang/String;)Lcom/apollographql/apollo3/api/BVariable;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/api/BVariable;Ljava/lang/String;ILjava/lang/Object;)Lcom/apollographql/apollo3/api/BVariable;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDefaultValue ()Ljava/lang/Boolean;
 	public final fun getName ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -287,14 +284,11 @@ public final class com/apollographql/apollo3/api/CompiledArgument$Builder {
 
 public final class com/apollographql/apollo3/api/CompiledCondition {
 	public fun <init> (Ljava/lang/String;Z)V
-	public fun <init> (Ljava/lang/String;ZZ)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Z
-	public final fun component3 ()Z
-	public final fun copy (Ljava/lang/String;ZZ)Lcom/apollographql/apollo3/api/CompiledCondition;
-	public static synthetic fun copy$default (Lcom/apollographql/apollo3/api/CompiledCondition;Ljava/lang/String;ZZILjava/lang/Object;)Lcom/apollographql/apollo3/api/CompiledCondition;
+	public final fun copy (Ljava/lang/String;Z)Lcom/apollographql/apollo3/api/CompiledCondition;
+	public static synthetic fun copy$default (Lcom/apollographql/apollo3/api/CompiledCondition;Ljava/lang/String;ZILjava/lang/Object;)Lcom/apollographql/apollo3/api/CompiledCondition;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDefaultValue ()Z
 	public final fun getInverted ()Z
 	public final fun getName ()Ljava/lang/String;
 	public fun hashCode ()I

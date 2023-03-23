@@ -136,9 +136,7 @@ sealed class BTerm
 /**
  * A term that comes from @include/@skip or @defer directives and that needs to be matched against operation variables
  */
-data class BVariable(val name: String, val defaultValue: Boolean?) : BTerm() {
-  constructor(name: String): this(name, true)
-}
+data class BVariable(val name: String) : BTerm()
 
 /**
  * A term that comes from @defer directives and that needs to be matched against label and current JSON path
