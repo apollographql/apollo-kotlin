@@ -3,22 +3,34 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
+import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
 import kotlin.jvm.JvmName
 
-/**
- * TODO deprecate it?
- */
-fun <D : Executable.Data> Executable<D>.variables(@Suppress("UNUSED_PARAMETER") customScalarAdapters: CustomScalarAdapters): Executable.Variables {
-  return variables(withDefaultBooleanValues = true)
+@Suppress("UNCHECKED_CAST")
+fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
+  val valueMap = MapJsonWriter().apply {
+    beginObject()
+    serializeVariables(this, customScalarAdapters.serializeVariablesWithDefaultBooleanValues())
+    endObject()
+  }.root() as Map<String, Any?>
+  return Executable.Variables(valueMap)
 }
 
 fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters)
+    serializeVariables(this, customScalarAdapters.serializeVariablesWithDefaultBooleanValues())
     endObject()
   }
   return buffer.readUtf8()
 }
+
+private fun CustomScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
+    .adapterContext(
+        adapterContext.newBuilder()
+            .serializeVariablesWithDefaultBooleanValues(true)
+            .build()
+    )
+    .build()

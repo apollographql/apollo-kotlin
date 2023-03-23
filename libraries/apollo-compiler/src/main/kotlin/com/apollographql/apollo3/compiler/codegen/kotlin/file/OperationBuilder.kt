@@ -93,7 +93,6 @@ internal class OperationBuilder(
         .addFunction(operationIdFunSpec())
         .addFunction(queryDocumentFunSpec(generateQueryDocument))
         .addFunction(nameFunSpec())
-        .addFunction(variablesFunSpec(operation.variables))
         .addFunction(serializeVariablesFunSpec())
         .addFunction(adapterFunSpec(context.resolver, operation.dataProperty))
         .addFunction(rootFieldFunSpec())
