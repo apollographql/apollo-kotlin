@@ -108,7 +108,7 @@ internal fun dataBuilderCtor(
       .build()
 }
 
-fun TypeSpec.Builder.maybeImplementBuilderFactory(generateDataBuilders: Boolean, builderClassName: ClassName): TypeSpec.Builder = apply {
+internal fun TypeSpec.Builder.maybeImplementBuilderFactory(generateDataBuilders: Boolean, builderClassName: ClassName): TypeSpec.Builder = apply {
   if (!generateDataBuilders) return@apply
 
   addSuperinterface(KotlinSymbols.BuilderFactory.parameterizedBy(builderClassName))

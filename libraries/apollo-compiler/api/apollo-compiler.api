@@ -389,10 +389,6 @@ public final class com/apollographql/apollo3/compiler/codegen/java/helpers/DataC
 	public static final fun withToStringImplementation (Lcom/squareup/javapoet/TypeSpec;)Lcom/squareup/javapoet/TypeSpec;
 }
 
-public final class com/apollographql/apollo3/compiler/codegen/kotlin/file/Data_buildersKt {
-	public static final fun maybeImplementBuilderFactory (Lcom/squareup/kotlinpoet/TypeSpec$Builder;ZLcom/squareup/kotlinpoet/ClassName;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
-}
-
 public final class com/apollographql/apollo3/compiler/codegen/kotlin/helpers/DataClassKt {
 	public static final fun makeDataClass (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;Z)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
 	public static synthetic fun makeDataClass$default (Lcom/squareup/kotlinpoet/TypeSpec$Builder;Ljava/util/List;ZILjava/lang/Object;)Lcom/squareup/kotlinpoet/TypeSpec$Builder;
