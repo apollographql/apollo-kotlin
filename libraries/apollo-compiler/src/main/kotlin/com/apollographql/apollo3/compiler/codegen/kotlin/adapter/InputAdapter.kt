@@ -26,7 +26,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     context: KotlinContext,
     adapterName: String,
     adaptedTypeName: TypeName,
-    withDefaultBooleanValues: Boolean = false,
+    withDefaultBooleanValues: Boolean,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
       .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))

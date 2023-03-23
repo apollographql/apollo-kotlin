@@ -10,8 +10,10 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
+import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.javapoet.CodeBlock
@@ -22,6 +24,8 @@ internal class NamedType(
     val description: String?,
     val deprecationReason: String?,
     val type: IrType,
+    // Relevant only for variables
+    val defaultValue: IrValue?,
 )
 
 
@@ -42,6 +46,7 @@ internal fun IrInputField.toNamedType() = NamedType(
     type = type,
     description = description,
     deprecationReason = deprecationReason,
+    defaultValue = null,
 )
 
 internal fun IrVariable.toNamedType() = NamedType(
@@ -49,18 +54,19 @@ internal fun IrVariable.toNamedType() = NamedType(
     type = type,
     description = null,
     deprecationReason = null,
+    defaultValue = defaultValue,
 )
 
 
-internal fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+internal fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext, withDefaultBooleanValues: Boolean): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
-    builder.add(it.writeToResponseCodeBlock(context))
+    builder.add(it.writeToResponseCodeBlock(context, withDefaultBooleanValues))
   }
   return builder.build()
 }
 
-internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock {
+internal fun NamedType.writeToResponseCodeBlock(context: JavaContext, withDefaultBooleanValues: Boolean): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
@@ -72,6 +78,12 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock
   builder.addStatement("$L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)", adapterInitializer)
   if (type.isOptional()) {
     builder.endControlFlow()
+    if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
+      builder.beginControlFlow("else if ($customScalarAdapters.adapterContext.serializeVariablesWithDefaultBooleanValues)")
+      builder.addStatement("$writer.name($S)", graphQlName)
+      builder.addStatement("$L.${Identifier.toJson}($writer, $customScalarAdapters, $L)", adapterInitializer, defaultValue.value)
+      builder.endControlFlow()
+    }
   }
 
   return builder.build()
