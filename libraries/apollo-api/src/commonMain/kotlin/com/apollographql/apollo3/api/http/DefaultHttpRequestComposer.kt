@@ -40,14 +40,13 @@ class DefaultHttpRequestComposer(
     val requestHeaders = mutableListOf<HttpHeader>().apply {
       add(HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()))
       add(HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name()))
-      if (apolloRequest.httpHeaders != null) {
-        addAll(apolloRequest.httpHeaders)
-      }
-
       if (apolloRequest.operation is Subscription<*>) {
         add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
       } else {
         add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
+      }
+      if (apolloRequest.httpHeaders != null) {
+        addAll(apolloRequest.httpHeaders)
       }
     }
 
