@@ -9,12 +9,15 @@ import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.adapter.TestQuery_ResponseAdapter;
 import com.example.fragment_spread_with_include_directive.adapter.TestQuery_VariablesAdapter;
+import com.example.fragment_spread_with_include_directive.fragment.DroidDetails;
 import com.example.fragment_spread_with_include_directive.fragment.HeroDetails;
 import com.example.fragment_spread_with_include_directive.fragment.HumanDetails;
+import com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails;
 import com.example.fragment_spread_with_include_directive.selections.TestQuerySelections;
 import java.io.IOException;
 import java.lang.Boolean;
@@ -23,19 +26,22 @@ import java.lang.Override;
 import java.lang.String;
 
 public class TestQuery implements Query<TestQuery.Data> {
-  public static final String OPERATION_ID = "3dbd5da247db9417fdbd2b79ef02f682006b1a507298b2bb57ef40a2fd2db850";
+  public static final String OPERATION_ID = "c028b2bef2e87616481fc4e418cdde6d31d6c4a48d669d7c8ac4c5ac0145ec07";
 
   /**
    * The minimized GraphQL document being sent to the server to save a few bytes.
    * The un-minimized version is:
    *
-   * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) {
+   * query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!, $optionalWithDefaultFalse: Boolean = false , $optionalWithDefaultTrue: Boolean = true , $optionalWithNoDefault: Boolean) {
    *   hero {
    *     __typename
    *     id
    *     ...HeroDetails @include(if: $withDetails) @skip(if: $skipHumanDetails)
    *     ...HumanDetails @include(if: $withDetails)
+   *     ...DroidDetails @skip(if: $optionalWithDefaultTrue)
+   *     ...OtherDroidDetails @include(if: $optionalWithDefaultTrue)
    *   }
+   *   getBoolean(booleanArg: $optionalWithNoDefault)
    * }
    *
    * fragment HeroDetails on Character {
@@ -45,8 +51,16 @@ public class TestQuery implements Query<TestQuery.Data> {
    * fragment HumanDetails on Human {
    *   homePlanet
    * }
+   *
+   * fragment DroidDetails on Droid {
+   *   primaryFunction
+   * }
+   *
+   * fragment OtherDroidDetails on Droid {
+   *   id
+   * }
    */
-  public static final String OPERATION_DOCUMENT = "query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!) { hero { __typename id ...HeroDetails @include(if: $withDetails) @skip(if: $skipHumanDetails) ...HumanDetails @include(if: $withDetails) } }  fragment HeroDetails on Character { name }  fragment HumanDetails on Human { homePlanet }";
+  public static final String OPERATION_DOCUMENT = "query TestQuery($withDetails: Boolean!, $skipHumanDetails: Boolean!, $optionalWithDefaultFalse: Boolean = false , $optionalWithDefaultTrue: Boolean = true , $optionalWithNoDefault: Boolean) { hero { __typename id ...HeroDetails @include(if: $withDetails) @skip(if: $skipHumanDetails) ...HumanDetails @include(if: $withDetails) ...DroidDetails @skip(if: $optionalWithDefaultTrue) ...OtherDroidDetails @include(if: $optionalWithDefaultTrue) } getBoolean(booleanArg: $optionalWithNoDefault) }  fragment HeroDetails on Character { name }  fragment HumanDetails on Human { homePlanet }  fragment DroidDetails on Droid { primaryFunction }  fragment OtherDroidDetails on Droid { id }";
 
   public static final String OPERATION_NAME = "TestQuery";
 
@@ -54,15 +68,26 @@ public class TestQuery implements Query<TestQuery.Data> {
 
   public final Boolean skipHumanDetails;
 
+  public final Optional<Boolean> optionalWithDefaultFalse;
+
+  public final Optional<Boolean> optionalWithDefaultTrue;
+
+  public final Optional<Boolean> optionalWithNoDefault;
+
   private transient volatile int $hashCode;
 
   private transient volatile boolean $hashCodeMemoized;
 
   private transient volatile String $toString;
 
-  public TestQuery(Boolean withDetails, Boolean skipHumanDetails) {
+  public TestQuery(Boolean withDetails, Boolean skipHumanDetails,
+      Optional<Boolean> optionalWithDefaultFalse, Optional<Boolean> optionalWithDefaultTrue,
+      Optional<Boolean> optionalWithNoDefault) {
     this.withDetails = withDetails;
     this.skipHumanDetails = skipHumanDetails;
+    this.optionalWithDefaultFalse = optionalWithDefaultFalse;
+    this.optionalWithDefaultTrue = optionalWithDefaultTrue;
+    this.optionalWithNoDefault = optionalWithNoDefault;
   }
 
   @Override
@@ -73,7 +98,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     if (o instanceof TestQuery) {
       TestQuery that = (TestQuery) o;
       return ((this.withDetails == null) ? (that.withDetails == null) : this.withDetails.equals(that.withDetails))
-       &&((this.skipHumanDetails == null) ? (that.skipHumanDetails == null) : this.skipHumanDetails.equals(that.skipHumanDetails));
+       &&((this.skipHumanDetails == null) ? (that.skipHumanDetails == null) : this.skipHumanDetails.equals(that.skipHumanDetails))
+       &&((this.optionalWithDefaultFalse == null) ? (that.optionalWithDefaultFalse == null) : this.optionalWithDefaultFalse.equals(that.optionalWithDefaultFalse))
+       &&((this.optionalWithDefaultTrue == null) ? (that.optionalWithDefaultTrue == null) : this.optionalWithDefaultTrue.equals(that.optionalWithDefaultTrue))
+       &&((this.optionalWithNoDefault == null) ? (that.optionalWithNoDefault == null) : this.optionalWithNoDefault.equals(that.optionalWithNoDefault));
     }
     return false;
   }
@@ -86,6 +114,12 @@ public class TestQuery implements Query<TestQuery.Data> {
       __h ^= (withDetails == null) ? 0 : withDetails.hashCode();
       __h *= 1000003;
       __h ^= (skipHumanDetails == null) ? 0 : skipHumanDetails.hashCode();
+      __h *= 1000003;
+      __h ^= (optionalWithDefaultFalse == null) ? 0 : optionalWithDefaultFalse.hashCode();
+      __h *= 1000003;
+      __h ^= (optionalWithDefaultTrue == null) ? 0 : optionalWithDefaultTrue.hashCode();
+      __h *= 1000003;
+      __h ^= (optionalWithNoDefault == null) ? 0 : optionalWithNoDefault.hashCode();
       $hashCode = __h;
       $hashCodeMemoized = true;
     }
@@ -97,7 +131,10 @@ public class TestQuery implements Query<TestQuery.Data> {
     if ($toString == null) {
       $toString = "TestQuery{"
         + "withDetails=" + withDetails + ", "
-        + "skipHumanDetails=" + skipHumanDetails
+        + "skipHumanDetails=" + skipHumanDetails + ", "
+        + "optionalWithDefaultFalse=" + optionalWithDefaultFalse + ", "
+        + "optionalWithDefaultTrue=" + optionalWithDefaultTrue + ", "
+        + "optionalWithNoDefault=" + optionalWithNoDefault
         + "}";
     }
     return $toString;
@@ -148,6 +185,12 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private Boolean skipHumanDetails;
 
+    private Optional<Boolean> optionalWithDefaultFalse = Optional.absent();
+
+    private Optional<Boolean> optionalWithDefaultTrue = Optional.absent();
+
+    private Optional<Boolean> optionalWithNoDefault = Optional.absent();
+
     Builder() {
     }
 
@@ -161,13 +204,30 @@ public class TestQuery implements Query<TestQuery.Data> {
       return this;
     }
 
+    public Builder optionalWithDefaultFalse(Boolean optionalWithDefaultFalse) {
+      this.optionalWithDefaultFalse = Optional.present(optionalWithDefaultFalse);
+      return this;
+    }
+
+    public Builder optionalWithDefaultTrue(Boolean optionalWithDefaultTrue) {
+      this.optionalWithDefaultTrue = Optional.present(optionalWithDefaultTrue);
+      return this;
+    }
+
+    public Builder optionalWithNoDefault(Boolean optionalWithNoDefault) {
+      this.optionalWithNoDefault = Optional.present(optionalWithNoDefault);
+      return this;
+    }
+
     public TestQuery build() {
-      return new TestQuery(withDetails, skipHumanDetails);
+      return new TestQuery(withDetails, skipHumanDetails, optionalWithDefaultFalse, optionalWithDefaultTrue, optionalWithNoDefault);
     }
   }
 
   public static class Data implements Query.Data {
     public Hero hero;
+
+    public Boolean getBoolean;
 
     private transient volatile int $hashCode;
 
@@ -175,8 +235,9 @@ public class TestQuery implements Query<TestQuery.Data> {
 
     private transient volatile String $toString;
 
-    public Data(Hero hero) {
+    public Data(Hero hero, Boolean getBoolean) {
       this.hero = hero;
+      this.getBoolean = getBoolean;
     }
 
     @Override
@@ -186,7 +247,8 @@ public class TestQuery implements Query<TestQuery.Data> {
       }
       if (o instanceof Data) {
         Data that = (Data) o;
-        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero));
+        return ((this.hero == null) ? (that.hero == null) : this.hero.equals(that.hero))
+         &&((this.getBoolean == null) ? (that.getBoolean == null) : this.getBoolean.equals(that.getBoolean));
       }
       return false;
     }
@@ -197,6 +259,8 @@ public class TestQuery implements Query<TestQuery.Data> {
         int __h = 1;
         __h *= 1000003;
         __h ^= (hero == null) ? 0 : hero.hashCode();
+        __h *= 1000003;
+        __h ^= (getBoolean == null) ? 0 : getBoolean.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }
@@ -207,7 +271,8 @@ public class TestQuery implements Query<TestQuery.Data> {
     public String toString() {
       if ($toString == null) {
         $toString = "Data{"
-          + "hero=" + hero
+          + "hero=" + hero + ", "
+          + "getBoolean=" + getBoolean
           + "}";
       }
       return $toString;
@@ -232,17 +297,30 @@ public class TestQuery implements Query<TestQuery.Data> {
      */
     public HumanDetails humanDetails;
 
+    /**
+     * Synthetic field for 'DroidDetails'
+     */
+    public DroidDetails droidDetails;
+
+    /**
+     * Synthetic field for 'OtherDroidDetails'
+     */
+    public OtherDroidDetails otherDroidDetails;
+
     private transient volatile int $hashCode;
 
     private transient volatile boolean $hashCodeMemoized;
 
     private transient volatile String $toString;
 
-    public Hero(String __typename, String id, HeroDetails heroDetails, HumanDetails humanDetails) {
+    public Hero(String __typename, String id, HeroDetails heroDetails, HumanDetails humanDetails,
+        DroidDetails droidDetails, OtherDroidDetails otherDroidDetails) {
       this.__typename = __typename;
       this.id = id;
       this.heroDetails = heroDetails;
       this.humanDetails = humanDetails;
+      this.droidDetails = droidDetails;
+      this.otherDroidDetails = otherDroidDetails;
     }
 
     @Override
@@ -255,7 +333,9 @@ public class TestQuery implements Query<TestQuery.Data> {
         return ((this.__typename == null) ? (that.__typename == null) : this.__typename.equals(that.__typename))
          &&((this.id == null) ? (that.id == null) : this.id.equals(that.id))
          &&((this.heroDetails == null) ? (that.heroDetails == null) : this.heroDetails.equals(that.heroDetails))
-         &&((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails));
+         &&((this.humanDetails == null) ? (that.humanDetails == null) : this.humanDetails.equals(that.humanDetails))
+         &&((this.droidDetails == null) ? (that.droidDetails == null) : this.droidDetails.equals(that.droidDetails))
+         &&((this.otherDroidDetails == null) ? (that.otherDroidDetails == null) : this.otherDroidDetails.equals(that.otherDroidDetails));
       }
       return false;
     }
@@ -272,6 +352,10 @@ public class TestQuery implements Query<TestQuery.Data> {
         __h ^= (heroDetails == null) ? 0 : heroDetails.hashCode();
         __h *= 1000003;
         __h ^= (humanDetails == null) ? 0 : humanDetails.hashCode();
+        __h *= 1000003;
+        __h ^= (droidDetails == null) ? 0 : droidDetails.hashCode();
+        __h *= 1000003;
+        __h ^= (otherDroidDetails == null) ? 0 : otherDroidDetails.hashCode();
         $hashCode = __h;
         $hashCodeMemoized = true;
       }
@@ -285,7 +369,9 @@ public class TestQuery implements Query<TestQuery.Data> {
           + "__typename=" + __typename + ", "
           + "id=" + id + ", "
           + "heroDetails=" + heroDetails + ", "
-          + "humanDetails=" + humanDetails
+          + "humanDetails=" + humanDetails + ", "
+          + "droidDetails=" + droidDetails + ", "
+          + "otherDroidDetails=" + otherDroidDetails
           + "}";
       }
       return $toString;

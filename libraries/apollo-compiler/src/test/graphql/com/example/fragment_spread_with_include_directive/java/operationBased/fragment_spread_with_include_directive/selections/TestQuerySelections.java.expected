@@ -5,14 +5,19 @@
 //
 package com.example.fragment_spread_with_include_directive.selections;
 
+import com.apollographql.apollo3.api.CompiledArgument;
 import com.apollographql.apollo3.api.CompiledCondition;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.CompiledFragment;
 import com.apollographql.apollo3.api.CompiledNotNullType;
 import com.apollographql.apollo3.api.CompiledSelection;
+import com.apollographql.apollo3.api.CompiledVariable;
+import com.example.fragment_spread_with_include_directive.fragment.selections.DroidDetailsSelections;
 import com.example.fragment_spread_with_include_directive.fragment.selections.HeroDetailsSelections;
 import com.example.fragment_spread_with_include_directive.fragment.selections.HumanDetailsSelections;
+import com.example.fragment_spread_with_include_directive.fragment.selections.OtherDroidDetailsSelections;
 import com.example.fragment_spread_with_include_directive.type.Character;
+import com.example.fragment_spread_with_include_directive.type.GraphQLBoolean;
 import com.example.fragment_spread_with_include_directive.type.GraphQLID;
 import com.example.fragment_spread_with_include_directive.type.GraphQLString;
 import java.util.Arrays;
@@ -23,10 +28,13 @@ public class TestQuerySelections {
     new CompiledField.Builder("__typename", new CompiledNotNullType(GraphQLString.type)).build(),
     new CompiledField.Builder("id", new CompiledNotNullType(GraphQLID.type)).build(),
     new CompiledFragment.Builder("Character", Arrays.asList("Droid", "Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false), new CompiledCondition("skipHumanDetails", true))).selections(HeroDetailsSelections.__root).build(),
-    new CompiledFragment.Builder("Human", Arrays.asList("Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false))).selections(HumanDetailsSelections.__root).build()
+    new CompiledFragment.Builder("Human", Arrays.asList("Human")).condition(Arrays.asList(new CompiledCondition("withDetails", false))).selections(HumanDetailsSelections.__root).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("optionalWithDefaultTrue", true))).selections(DroidDetailsSelections.__root).build(),
+    new CompiledFragment.Builder("Droid", Arrays.asList("Droid")).condition(Arrays.asList(new CompiledCondition("optionalWithDefaultTrue", false))).selections(OtherDroidDetailsSelections.__root).build()
   );
 
   public static List<CompiledSelection> __root = Arrays.asList(
-    new CompiledField.Builder("hero", Character.type).selections(__hero).build()
+    new CompiledField.Builder("hero", Character.type).selections(__hero).build(),
+    new CompiledField.Builder("getBoolean", GraphQLBoolean.type).arguments(Arrays.asList(new CompiledArgument.Builder("booleanArg", new CompiledVariable("optionalWithNoDefault")).build())).build()
   );
 }
