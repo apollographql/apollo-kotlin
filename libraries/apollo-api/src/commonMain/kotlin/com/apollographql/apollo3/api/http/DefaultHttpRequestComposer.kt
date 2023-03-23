@@ -4,6 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.http.internal.urlEncode
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -42,7 +43,10 @@ class DefaultHttpRequestComposer(
       if (apolloRequest.httpHeaders != null) {
         addAll(apolloRequest.httpHeaders)
       }
-      if (apolloRequest.httpHeaders.orEmpty().none { it.name.lowercase() == HEADER_ACCEPT_NAME.lowercase() }) {
+
+      if (apolloRequest.operation is Subscription<*>) {
+        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
+      } else {
         add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
       }
     }
