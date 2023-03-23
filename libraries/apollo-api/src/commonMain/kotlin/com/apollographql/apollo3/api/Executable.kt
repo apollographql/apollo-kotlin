@@ -24,11 +24,6 @@ interface Executable<D: Executable.Data> {
   fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
 
   /**
-   * TODO doc
-   */
-  fun variables(withDefaultBooleanValues: Boolean): Variables
-
-  /**
    * A list of [CompiledSelection]. Used when reading from the cache and/or normalizing a model.
    * Use [com.apollographql.apollo3.cache.normalized.ApolloStore.readOperation] for a higher level API
    */

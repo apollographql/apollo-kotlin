@@ -36,7 +36,8 @@ internal class FragmentVariablesAdapterBuilder(
         .inputAdapterTypeSpec(
             context = context,
             adapterName = simpleName,
-            adaptedTypeName = context.resolver.resolveFragment(fragment.name)
+            adaptedTypeName = context.resolver.resolveFragment(fragment.name),
+            withDefaultBooleanValues = true,
         )
   }
 }

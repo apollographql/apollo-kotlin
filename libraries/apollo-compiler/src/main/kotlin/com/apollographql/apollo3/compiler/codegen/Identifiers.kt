@@ -15,13 +15,11 @@ internal object Identifier {
   const val value = "value"
   const val reader = "reader"
   const val writer = "writer"
-  const val withDefaultBooleanValues = "withDefaultBooleanValues"
   const val toJson = "toJson"
   const val build = "build"
   const val fromJson = "fromJson"
   const val getPath = "getPath"
   const val serializeVariables = "serializeVariables"
-  const val variables = "variables"
   const val fields = "fields"
   const val rootField = "rootField"
 
