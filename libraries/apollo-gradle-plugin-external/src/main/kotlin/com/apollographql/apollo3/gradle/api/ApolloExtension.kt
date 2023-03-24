@@ -80,4 +80,12 @@ interface ApolloExtension : Service {
    * By default, will try to detect if `apollo-normalized-cache-sqlite` is in the classpath
    */
   val linkSqlite: Property<Boolean>
+
+  /**
+   * Adds "generateApolloSources" as a dependency of "prepareKotlinIdeaImport"
+   * This makes IDEA aware of codegen and will run it during your Gradle Sync
+   *
+   * Default: true.
+   */
+  val generateSourcesDuringGradleSync: Property<Boolean>
 }
