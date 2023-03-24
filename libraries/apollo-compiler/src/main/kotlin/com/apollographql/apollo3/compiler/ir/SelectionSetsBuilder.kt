@@ -11,7 +11,6 @@ import com.apollographql.apollo3.ast.GQLNamedType
 import com.apollographql.apollo3.ast.GQLNonNullType
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.GQLType
-import com.apollographql.apollo3.ast.GQLVariableDefinition
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.definitionFromScope
 import com.apollographql.apollo3.ast.rawType
@@ -36,8 +35,8 @@ internal class SelectionSetsBuilder(
     return name
   }
 
-  fun build(gqlSelections: List<GQLSelection>, parentType: String, variableDefinitions: List<GQLVariableDefinition>): List<IrSelectionSet> {
-    return gqlSelections.walk("root", true, parentType, variableDefinitions)
+  fun build(gqlSelections: List<GQLSelection>, parentType: String): List<IrSelectionSet> {
+    return gqlSelections.walk("root", true, parentType)
   }
 
   private class WalkResult(val self: IrSelection, val nested: List<IrSelectionSet>)
@@ -45,8 +44,8 @@ internal class SelectionSetsBuilder(
   /**
    * @param name the name to use for this [IrSelectionSet]. Must be unique for a given operation/fragment definition
    */
-  private fun List<GQLSelection>.walk(name: String, isRoot: Boolean, parentType: String, variableDefinitions: List<GQLVariableDefinition>): List<IrSelectionSet> {
-    val results = mapNotNull { it.walk(parentType, variableDefinitions) }
+  private fun List<GQLSelection>.walk(name: String, isRoot: Boolean, parentType: String): List<IrSelectionSet> {
+    val results = mapNotNull { it.walk(parentType) }
 
     /**
      * Order is important. The selection set will ultimately reference nested selection sets, so the nested need to come first
@@ -55,11 +54,11 @@ internal class SelectionSetsBuilder(
     return results.flatMap { it.nested } + IrSelectionSet(name, isRoot, results.map { it.self })
   }
 
-  private fun GQLSelection.walk(parentType: String, variableDefinitions: List<GQLVariableDefinition>): WalkResult? {
+  private fun GQLSelection.walk(parentType: String): WalkResult? {
     return when (this) {
-      is GQLField -> walk(parentType, variableDefinitions)
-      is GQLInlineFragment -> walk(variableDefinitions)
-      is GQLFragmentSpread -> walk(variableDefinitions)
+      is GQLField -> walk(parentType)
+      is GQLInlineFragment -> walk()
+      is GQLFragmentSpread -> walk()
     }
   }
 
@@ -72,8 +71,8 @@ internal class SelectionSetsBuilder(
     )
   }
 
-  private fun GQLField.walk(parentType: String, variableDefinitions: List<GQLVariableDefinition>): WalkResult? {
-    val expression = directives.toIncludeBooleanExpression(variableDefinitions)
+  private fun GQLField.walk(parentType: String): WalkResult? {
+    val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }
@@ -97,7 +96,7 @@ internal class SelectionSetsBuilder(
             condition = expression,
             selectionSetName = if (selectionSet != null) selectionSetName else null
         ),
-        nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.rawType().name, variableDefinitions).orEmpty()
+        nested = selectionSet?.selections?.walk(selectionSetName, false, fieldDefinition.type.rawType().name).orEmpty()
     )
   }
 
@@ -110,8 +109,8 @@ internal class SelectionSetsBuilder(
     is GQLNamedType -> IrNamedTypeRef(name)
   }
 
-  private fun GQLInlineFragment.walk(variableDefinitions: List<GQLVariableDefinition>): WalkResult? {
-    val expression = directives.toIncludeBooleanExpression(variableDefinitions)
+  private fun GQLInlineFragment.walk(): WalkResult? {
+    val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }
@@ -127,12 +126,12 @@ internal class SelectionSetsBuilder(
             selectionSetName = selectionSetName,
             name = null
         ),
-        nested = selectionSet.selections.walk(selectionSetName, false, typeCondition.name, variableDefinitions)
+        nested = selectionSet.selections.walk(selectionSetName, false, typeCondition.name)
     )
   }
 
-  private fun GQLFragmentSpread.walk(variableDefinitions: List<GQLVariableDefinition>): WalkResult? {
-    val expression = directives.toIncludeBooleanExpression(variableDefinitions)
+  private fun GQLFragmentSpread.walk(): WalkResult? {
+    val expression = directives.toIncludeBooleanExpression()
     if (expression == BooleanExpression.False) {
       return null
     }

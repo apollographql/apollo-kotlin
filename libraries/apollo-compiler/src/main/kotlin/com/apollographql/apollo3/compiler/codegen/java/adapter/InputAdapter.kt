@@ -14,8 +14,8 @@ import com.apollographql.apollo3.compiler.codegen.java.JavaContext
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.helpers.NamedType
-import com.apollographql.apollo3.compiler.codegen.java.helpers.writeToResponseCodeBlock
 import com.apollographql.apollo3.compiler.codegen.java.helpers.suppressDeprecatedAnnotation
+import com.apollographql.apollo3.compiler.codegen.java.helpers.writeToResponseCodeBlock
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeName
@@ -27,13 +27,14 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     context: JavaContext,
     adapterName: String,
     adaptedTypeName: TypeName,
+    withDefaultBooleanValues: Boolean,
 ): TypeSpec {
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
       .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
-      .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
+      .addMethod(writeToResponseMethodSpec(context, adaptedTypeName, withDefaultBooleanValues))
       .apply {
         if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
           addAnnotation(suppressDeprecatedAnnotation())
@@ -56,6 +57,7 @@ private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = Me
 private fun List<NamedType>.writeToResponseMethodSpec(
     context: JavaContext,
     adaptedTypeName: TypeName,
+    withDefaultBooleanValues: Boolean,
 ): MethodSpec {
   return MethodSpec.methodBuilder(toJson)
       .addModifiers(Modifier.PUBLIC)
@@ -64,7 +66,7 @@ private fun List<NamedType>.writeToResponseMethodSpec(
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
       .addParameter(adaptedTypeName, value)
-      .addCode(writeToResponseCodeBlock(context))
+      .addCode(writeToResponseCodeBlock(context, withDefaultBooleanValues))
       .build()
 }
 

@@ -11,7 +11,7 @@ import kotlin.jvm.JvmName
 fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters)
+    serializeVariables(this, customScalarAdapters.serializeVariablesWithDefaultBooleanValues())
     endObject()
   }.root() as Map<String, Any?>
   return Executable.Variables(valueMap)
@@ -21,8 +21,16 @@ fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: Cust
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters)
+    serializeVariables(this, customScalarAdapters.serializeVariablesWithDefaultBooleanValues())
     endObject()
   }
   return buffer.readUtf8()
 }
+
+private fun CustomScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
+    .adapterContext(
+        adapterContext.newBuilder()
+            .serializeVariablesWithDefaultBooleanValues(true)
+            .build()
+    )
+    .build()
