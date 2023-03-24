@@ -49,6 +49,7 @@ abstract class DefaultApolloExtension(
     private val defaultService: DefaultService,
 ) : ApolloExtension, Service by defaultService {
 
+  private var codegenOnGradleSyncConfigured: Boolean = false
   private val services = mutableListOf<DefaultService>()
   private val checkVersionsTask: TaskProvider<Task>
   private val generateApolloSources: TaskProvider<Task>
@@ -220,6 +221,20 @@ abstract class DefaultApolloExtension(
     action.execute(service)
 
     registerService(service)
+
+    maybeConfigureCodegenOnGradleSync()
+  }
+
+  // See https://twitter.com/Sellmair/status/1619308362881187840
+  private fun maybeConfigureCodegenOnGradleSync() {
+    if (codegenOnGradleSyncConfigured) {
+      return
+    }
+
+    codegenOnGradleSyncConfigured = true
+    if (this.generateSourcesDuringGradleSync.getOrElse(true)) {
+      project.tasks.maybeCreate("prepareKotlinIdeaImport").dependsOn(generateApolloSources)
+    }
   }
 
   // Gradle will consider the task never UP-TO-DATE if we pass a lambda to doLast()
@@ -809,6 +824,7 @@ abstract class DefaultApolloExtension(
   }
 
   abstract override val linkSqlite: Property<Boolean>
+  abstract override val generateSourcesDuringGradleSync: Property<Boolean>
 
   companion object {
     private const val TASK_GROUP = "apollo"
