@@ -10,7 +10,7 @@ import kotlin.jvm.JvmName
 
 @Suppress("UNCHECKED_CAST")
 fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
-  return variables(customScalarAdapters, true)
+  return variables(customScalarAdapters, false)
 }
 
 fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
