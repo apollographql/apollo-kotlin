@@ -7,6 +7,7 @@ package com.example.fragment_spread_with_include_directive.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
@@ -19,29 +20,35 @@ import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.possibleTypes
 import com.apollographql.apollo3.api.variable
 import com.example.fragment_spread_with_include_directive.TestQuery
+import com.example.fragment_spread_with_include_directive.fragment.DroidDetails
 import com.example.fragment_spread_with_include_directive.fragment.HeroDetails
 import com.example.fragment_spread_with_include_directive.fragment.HumanDetails
+import com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails
+import kotlin.Boolean
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
-    public val RESPONSE_NAMES: List<String> = listOf("hero")
+    public val RESPONSE_NAMES: List<String> = listOf("hero", "getBoolean")
 
     public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         TestQuery.Data {
       var _hero: TestQuery.Hero? = null
+      var _getBoolean: Boolean? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          1 -> _getBoolean = NullableBooleanAdapter.fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
 
       return TestQuery.Data(
-        hero = _hero
+        hero = _hero,
+        getBoolean = _getBoolean
       )
     }
 
@@ -52,6 +59,9 @@ public object TestQuery_ResponseAdapter {
     ): Unit {
       writer.name("hero")
       Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+
+      writer.name("getBoolean")
+      NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.getBoolean)
     }
   }
 
@@ -119,9 +129,25 @@ public object TestQuery_ResponseAdapter {
               customScalarAdapters)
         }
 
+        var _droidDetails: DroidDetails? = null
+        if (and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue"))).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          reader.rewind()
+          _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+              customScalarAdapters)
+        }
+
+        var _otherDroidDetails: OtherDroidDetails? = null
+        if (and(possibleTypes("Droid"),variable("optionalWithDefaultTrue")).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          reader.rewind()
+          _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.fromJson(reader,
+              customScalarAdapters)
+        }
+
         return TestQuery.Hero.Fragments(
           heroDetails = _heroDetails,
-          humanDetails = _humanDetails
+          humanDetails = _humanDetails,
+          droidDetails = _droidDetails,
+          otherDroidDetails = _otherDroidDetails
         )
       }
 
@@ -138,6 +164,16 @@ public object TestQuery_ResponseAdapter {
         if (value.humanDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
               customScalarAdapters, value.humanDetails)
+        }
+
+        if (value.droidDetails != null) {
+          com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
+        }
+
+        if (value.otherDroidDetails != null) {
+          com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.toJson(writer,
+              customScalarAdapters, value.otherDroidDetails)
         }
       }
     }
