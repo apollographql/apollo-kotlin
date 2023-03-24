@@ -7,7 +7,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize
-import com.apollographql.apollo3.api.GlobalBuilder
+import com.example.GetAnimalByIdWithDefaultValueQuery
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery
@@ -24,6 +24,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class IncludeTest {
 
@@ -192,4 +193,33 @@ class IncludeTest {
 
     assertNotNull(response.dataAssertNoErrors.animal!!.dogFragment)
   }
+
+  @Test
+  fun cacheKeyContainsNullWhenArgumentValueIsDefault(): Unit = runBlocking {
+    val operation = GetAnimalByIdWithDefaultValueQuery()
+
+    val data = GetAnimalByIdWithDefaultValueQuery.Data {
+      animal = buildCat {
+        meow = "miaou"
+      }
+    }
+
+    val records = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    assertTrue(records.containsKey("""animalById({"id":null})"""))
+  }
+
+  @Test
+  fun cacheKeyContainsArgumentValueWhenNotDefault(): Unit = runBlocking {
+    val operation = GetAnimalByIdWithDefaultValueQuery(Optional.present("0"))
+
+    val data = GetAnimalByIdWithDefaultValueQuery.Data {
+      animal = buildCat {
+        meow = "miaou"
+      }
+    }
+
+    val records = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+    assertTrue(records.containsKey("""animalById({"id":"0"})"""))
+  }
+
 }

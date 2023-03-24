@@ -67,3 +67,9 @@ query SkipFragmentWithDefaultToFalse($skipIf: Boolean = false) {
     ...dogFragment @skip(if: $skipIf)
   }
 }
+
+query GetAnimalByIdWithDefaultValue($id: ID = 0) {
+  animalById(id: $id) {
+    species
+  }
+}
