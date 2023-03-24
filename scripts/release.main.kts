@@ -5,7 +5,7 @@ import kotlin.system.exitProcess
 /**
  * A script to run locally in order to make a release.
  *
- * You need kotlin 1.3.70+ installed on your machine
+ * You need kotlin 1.3.70+ and gh installed on your machine
  */
 
 
@@ -21,13 +21,14 @@ check(getCurrentVersion().endsWith("-SNAPSHOT")) {
 check(args.size == 1) {
   "tag.main.kts [version to tag]"
 }
-val tagVersion = args[0]
-val nextSnapshot = getNextSnapshot(tagVersion)
+val versionToRelease = args[0]
+val nextSnapshot = getNextSnapshot(versionToRelease)
 
+val startBranch = runCommand("git", "symbolic-ref", "--short", "HEAD")
 
 while (true) {
   println("Current version is '${getCurrentVersion()}'.")
-  println("Tag '$tagVersion' and bump to $nextSnapshot [y/n]?")
+  println("Release '$versionToRelease' and bump to '$nextSnapshot' [y/n]?")
 
   when (readLine()!!.trim()) {
     "y" -> break
@@ -38,16 +39,49 @@ while (true) {
   }
 }
 
-setCurrentVersion(tagVersion)
-setVersionInDocs(tagVersion, nextSnapshot)
+// 'De-snapshot' the version, open a PR, and merge it
+val releaseBranchName = "release-$versionToRelease"
+runCommand("git", "checkout", "-b", releaseBranchName)
+setCurrentVersion(versionToRelease)
+setVersionInDocs(versionToRelease, nextSnapshot)
+runCommand("git", "commit", "-a", "-m", "release $versionToRelease")
+runCommand("git", "push", "origin", releaseBranchName)
+runCommand("gh", "pr", "create", "--fill")
 
-runCommand("git", "commit", "-a", "-m", "release $tagVersion")
-runCommand("git", "tag", "v$tagVersion")
+println("Press enter to merge the release PR")
+readLine()
+mergeAndWait(releaseBranchName)
+println("Release PR merged.")
 
+// Tag the release, and push the tag
+runCommand("git", "checkout", startBranch)
+runCommand("git", "pull", "origin", startBranch)
+val tagName = "v$versionToRelease"
+runCommand("git", "tag", tagName)
+
+println("Press enter to push the tag")
+readLine()
+runCommand("git", "push", "origin", tagName)
+println("Tag pushed.")
+
+// Bump the version to the next snapshot
+val bumpVersionBranchName = "release-$versionToRelease-bump-snapshot"
+runCommand("git", "checkout", "-b", bumpVersionBranchName)
 setCurrentVersion(nextSnapshot)
 runCommand("git", "commit", "-a", "-m", "version is now $nextSnapshot")
+runCommand("git", "push", "origin", bumpVersionBranchName)
+runCommand("gh", "pr", "create", "--fill")
 
-println("Everything is done. Verify everything is ok and push upstream to trigger the new version.")
+println("Press enter to merge the bump version PR")
+readLine()
+mergeAndWait(bumpVersionBranchName)
+println("Bump version PR merged.")
+
+// Go back and pull the changes
+runCommand("git", "checkout", startBranch)
+runCommand("git", "pull", "origin", startBranch)
+
+println("Everything is done.")
 
 fun runCommand(vararg args: String): String {
   val builder = ProcessBuilder(*args)
@@ -61,7 +95,7 @@ fun runCommand(vararg args: String): String {
     throw java.lang.Exception("command ${args.joinToString(" ")} failed:\n$output")
   }
 
-  return output
+  return output.trim()
 }
 
 fun setCurrentVersion(version: String) {
@@ -167,5 +201,15 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
           "And then use the `$nextSnapshot` version for the plugin and libraries."
         }
     file.writeText(content)
+  }
+}
+
+fun mergeAndWait(branchName: String) {
+  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto")
+  println("Waiting for the PR to be merged...")
+  while (true) {
+    val state = runCommand("gh", "pr", "view", branchName, "--json", "state", "--jq", ".state")
+    if (state == "MERGED") break
+    Thread.sleep(1000)
   }
 }

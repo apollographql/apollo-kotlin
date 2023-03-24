@@ -226,8 +226,7 @@ Releases are published when a tag is pushed.
 Here are the steps to do a new release:
 
 * `git checkout main && git pull`
-* `scripts/tag.main.kts <version-name>`
-* push the tag and branch
+* `scripts/release.main.kts <version-name>`
 * while it compiles, prepare the changelog, open a PR to `CHANGELOG.md`
 * wait for the CI to finish compiling
 * go to https://s01.oss.sonatype.org/, and release the artifacts manually. This step is called "close, release and drop"

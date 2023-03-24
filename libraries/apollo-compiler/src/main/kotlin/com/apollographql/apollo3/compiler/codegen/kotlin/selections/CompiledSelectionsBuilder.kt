@@ -119,11 +119,7 @@ internal class CompiledSelectionsBuilder(
 
     check(expression is BooleanExpression.Element)
 
-    return if (expression.value.defaultValue != null) {
-      CodeBlock.of("%T(%S,·%L,·%L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString(), expression.value.defaultValue.toString())
-    } else {
-      CodeBlock.of("%T(%S,·%L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString())
-    }
+    return CodeBlock.of("%T(%S,·%L)", KotlinSymbols.CompiledCondition, expression.value.name, inverted.toString())
   }
 
   private fun IrArgument.codeBlock(): CodeBlock {

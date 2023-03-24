@@ -8,10 +8,12 @@ import kotlin.jvm.JvmName
 class AdapterContext private constructor(
     private val variables: Executable.Variables?,
     private val mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>?,
+    val serializeVariablesWithDefaultBooleanValues: Boolean,
 ) {
   fun newBuilder() = Builder()
       .variables(variables)
       .mergedDeferredFragmentIds(mergedDeferredFragmentIds)
+      .serializeVariablesWithDefaultBooleanValues(serializeVariablesWithDefaultBooleanValues)
 
   fun variables(): Set<String> {
     if (variables == null) {
@@ -34,6 +36,7 @@ class AdapterContext private constructor(
   class Builder {
     private var variables: Executable.Variables? = null
     private var mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>? = null
+    private var serializeVariablesWithDefaultBooleanValues: Boolean? = null
 
     fun variables(variables: Executable.Variables?) = apply {
       this.variables = variables
@@ -43,8 +46,16 @@ class AdapterContext private constructor(
       this.mergedDeferredFragmentIds = mergedDeferredFragmentIds
     }
 
+    fun serializeVariablesWithDefaultBooleanValues(serializeVariablesWithDefaultBooleanValues: Boolean?) = apply {
+      this.serializeVariablesWithDefaultBooleanValues = serializeVariablesWithDefaultBooleanValues
+    }
+
     fun build(): AdapterContext {
-      return AdapterContext(variables = variables, mergedDeferredFragmentIds = mergedDeferredFragmentIds)
+      return AdapterContext(
+          variables = variables,
+          mergedDeferredFragmentIds = mergedDeferredFragmentIds,
+          serializeVariablesWithDefaultBooleanValues = serializeVariablesWithDefaultBooleanValues == true
+      )
     }
   }
 }

@@ -63,7 +63,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpBatching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 1000)
         .build()
 
     val result1 = async {
@@ -124,7 +124,7 @@ class QueryBatchingTest {
     mockServer.enqueue("""[{"data":{"launch":{"id":"84"}}}]""")
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpBatching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 1000)
         .build()
 
     val result1 = async {
@@ -156,7 +156,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpBatching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 1000)
         // Opt out by default
         .canBeBatched(false)
         .build()
@@ -203,7 +203,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpBatching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 1000)
         .httpHeaders(
             listOf(
                 HttpHeader("client0", "0"),
@@ -240,7 +240,7 @@ class QueryBatchingTest {
     mockServer.enqueue(response)
     apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .httpBatching(batchIntervalMillis = 300)
+        .httpBatching(batchIntervalMillis = 1000)
         .build()
 
     val result1 = async {

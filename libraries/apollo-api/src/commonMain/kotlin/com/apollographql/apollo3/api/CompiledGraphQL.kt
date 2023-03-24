@@ -134,9 +134,8 @@ class CompiledFragment internal constructor(
   }
 }
 
-data class CompiledCondition(val name: String, val inverted: Boolean, val defaultValue: Boolean) {
-  constructor(name: String, inverted: Boolean): this(name, inverted, true)
-}
+
+data class CompiledCondition(val name: String, val inverted: Boolean)
 
 sealed class CompiledType {
   @Deprecated("Use rawType instead", ReplaceWith("rawType()"))

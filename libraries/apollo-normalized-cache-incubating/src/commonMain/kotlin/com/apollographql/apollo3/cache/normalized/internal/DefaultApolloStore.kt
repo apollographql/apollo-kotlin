@@ -43,7 +43,11 @@ internal class DefaultApolloStore(
 
   override val changedKeys = changedKeysEvents.asSharedFlow()
 
-  private val cache: OptimisticCache = OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
+  // Keeping this as lazy to avoid accessing the disk at initialization which usually happens on the main thread
+  private val cache: OptimisticCache by lazy {
+    OptimisticCache().chain(normalizedCacheFactory.createChain()) as OptimisticCache
+  }
+
   private val lock = Lock()
 
   override suspend fun publish(keys: Set<String>) {
