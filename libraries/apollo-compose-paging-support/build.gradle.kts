@@ -15,7 +15,7 @@ android {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
 
   defaultConfig {
-    minSdk = golatac.version("android.sdkversion.min").toInt()
+    minSdk = golatac.version("android.sdkversion.compose.min").toInt()
     targetSdk = golatac.version("android.sdkversion.target").toInt()
   }
 
