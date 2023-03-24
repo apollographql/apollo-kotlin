@@ -14,3 +14,10 @@ fragment nestedBook on Library {
   }
 }
 
+query getCountry($code:ID!) {
+  #efredsver
+  country(code:$code) {
+    code @skip(if:true)
+    name
+  }
+}
