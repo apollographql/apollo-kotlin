@@ -19,7 +19,6 @@ class MultipartSubscriptionsRouterTest {
         .serverUrl("http://localhost:4040/")
         .subscriptionNetworkTransport(
             HttpNetworkTransport.Builder()
-                .addHttpHeader(DefaultHttpRequestComposer.HEADER_ACCEPT_NAME, DefaultHttpRequestComposer.HEADER_ACCEPT_VALUE_MULTIPART)
                 .serverUrl("http://localhost:4040/")
                 .build()
         )
