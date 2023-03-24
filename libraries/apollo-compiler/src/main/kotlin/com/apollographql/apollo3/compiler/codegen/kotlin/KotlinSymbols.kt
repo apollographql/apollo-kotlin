@@ -100,6 +100,7 @@ internal object KotlinSymbols {
 
 
   val BuilderScope = ClassName(apolloApiPackageName, "BuilderScope")
+  val BuilderFactory = ClassName(apolloApiPackageName, "BuilderFactory")
 
   val ApolloAdaptableWith = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloAdaptableWith")
   val ApolloExperimental = ClassName(ClassNames.apolloAnnotationsPackageName, "ApolloExperimental")
@@ -113,6 +114,5 @@ internal object KotlinMemberNames {
   val obj = MemberName(apolloApiPackageName, "obj")
   val readTypename = MemberName(apolloApiJsonPackageName, "readTypename")
   val buildData = MemberName(apolloApiPackageName, "buildData")
-  val buildFragmentData = MemberName(apolloApiPackageName, "buildFragmentData")
   val GlobalBuilder = MemberName(apolloApiPackageName, "GlobalBuilder")
 }

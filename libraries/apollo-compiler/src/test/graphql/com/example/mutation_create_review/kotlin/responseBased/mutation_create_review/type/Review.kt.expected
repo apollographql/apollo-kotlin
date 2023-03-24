@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -24,14 +25,17 @@ import kotlin.collections.Map
  * Represents a review for a movie
  */
 internal class Review {
-  public companion object {
+  public companion object : BuilderFactory<ReviewBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Review").build()
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): ReviewBuilder =
+        ReviewBuilder(customScalarAdapters)
   }
 }
 
 internal class ReviewBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+) : ObjectBuilder<ReviewMap>(customScalarAdapters) {
   public var commentary: String? by BuilderProperty(com.example.MyStringAdapter().nullable())
 
   public var listOfListOfCustom: List<List<java.util.Date>>? by
@@ -47,16 +51,15 @@ internal class ReviewBuilder(
 
   public var stars: Int by __fields
 
-  public fun build(): ReviewMap = ReviewMap(__fields)
+  init {
+    __typename = "Review"}
+
+  public override fun build(): ReviewMap = ReviewMap(__fields)
 }
 
 internal class ReviewMap(
   __fields: Map<String, Any?>,
 ) : Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildReview(block: ReviewBuilder.() -> Unit): ReviewMap {
-  val builder = ReviewBuilder(customScalarAdapters)
-  builder.__typename = "Review"
-  builder.block()
-  return builder.build()
-}
+internal fun BuilderScope.buildReview(block: ReviewBuilder.() -> Unit): ReviewMap =
+    ReviewBuilder(customScalarAdapters).apply(block).build()

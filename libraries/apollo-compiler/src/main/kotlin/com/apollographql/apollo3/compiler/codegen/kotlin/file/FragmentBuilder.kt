@@ -90,10 +90,11 @@ internal class FragmentBuilder(
               TypeSpec.companionObjectBuilder()
                   .addFunction(
                       dataBuilderCtor(
-                          context,
-                          fragment.dataModelGroup.baseModelId,
-                          context.resolver.resolveFragmentSelections(name),
-                          fragment.typeCondition
+                          context = context,
+                          modelId = fragment.dataModelGroup.baseModelId,
+                          selectionsClassName = context.resolver.resolveFragmentSelections(name),
+                          typename = fragment.typeCondition,
+                          builderFactoryParameterRequired = fragment.isTypeConditionAbstract
                       )
                   )
                   .build()
@@ -122,69 +123,6 @@ internal class FragmentBuilder(
     return KotlinSymbols.Fragment.parameterizedBy(
         context.resolver.resolveModel(fragment.dataModelGroup.baseModelId)
     )
-  }
-
-  companion object {
-    /**
-     * companion object {
-     *   public fun Data(
-     *       resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-     *       block: (BuilderScope.() -> CharacterMap)? = null,
-     *   ): HeroWithFriendsFragment {
-     *     return buildFragmentData(
-     *         HeroWithFriendsFragmentImpl_ResponseAdapter.HeroWithFriendsFragment,
-     *         HeroWithFriendsFragmentSelections.__root,
-     *         "Character",
-     *         block,
-     *         resolver,
-     *         Character.type
-     *     )
-     *   }
-     * }
-     */
-    private fun dataBuilderCtor(
-        context: KotlinContext,
-        modelId: String,
-        selectionsClassName: ClassName,
-        typename: String,
-    ): FunSpec {
-      return FunSpec.builder(Identifier.Data)
-          .addParameter(
-              ParameterSpec.builder(
-                  resolver,
-                  KotlinSymbols.FakeResolver
-              ).defaultValue(
-                  CodeBlock.of("%T(%T.all)", KotlinSymbols.DefaultFakeResolver, context.resolver.resolveSchema())
-              ).build()
-          ).addParameter(
-              ParameterSpec.builder(
-                  block,
-                  LambdaTypeName.get(
-                      receiver = KotlinSymbols.BuilderScope,
-                      parameters = emptyArray<TypeName>(),
-                      returnType = context.resolver.resolveIrType2(IrNonNullType2(IrCompositeType2(typename)))
-                  ).copy(nullable = true)
-              ).defaultValue(CodeBlock.of("null"))
-                  .build()
-          )
-          .addCode(
-              CodeBlock.builder()
-                  .add("return·%M(\n", KotlinMemberNames.buildFragmentData)
-                  .indent()
-                  .add("%T,\n", context.resolver.resolveModelAdapter(modelId))
-                  .add("%T.${Identifier.root},\n", selectionsClassName)
-                  .add("%S,\n", typename)
-                  .add("$block,\n")
-                  .add("$resolver,\n")
-                  .add("%T.$type,\n", context.resolver.resolveSchemaType(typename))
-                  .add("%T,\n", context.resolver.resolveCustomScalarAdapters())
-                  .unindent()
-                  .add(")\n")
-                  .build()
-          )
-          .returns(context.resolver.resolveModel(modelId))
-          .build()
-    }
   }
 }
 

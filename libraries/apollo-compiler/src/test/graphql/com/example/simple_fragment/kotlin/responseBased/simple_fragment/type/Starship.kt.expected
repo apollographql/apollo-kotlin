@@ -5,6 +5,7 @@
 //
 package com.example.simple_fragment.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
@@ -15,24 +16,26 @@ import kotlin.Unit
 import kotlin.collections.Map
 
 internal class Starship {
-  public companion object {
+  public companion object : BuilderFactory<StarshipBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Starship").build()
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): StarshipBuilder =
+        StarshipBuilder(customScalarAdapters)
   }
 }
 
 internal class StarshipBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
-  public fun build(): StarshipMap = StarshipMap(__fields)
+) : ObjectBuilder<StarshipMap>(customScalarAdapters) {
+  init {
+    __typename = "Starship"}
+
+  public override fun build(): StarshipMap = StarshipMap(__fields)
 }
 
 internal class StarshipMap(
   __fields: Map<String, Any?>,
 ) : SearchResultMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildStarship(block: StarshipBuilder.() -> Unit): StarshipMap {
-  val builder = StarshipBuilder(customScalarAdapters)
-  builder.__typename = "Starship"
-  builder.block()
-  return builder.build()
-}
+internal fun BuilderScope.buildStarship(block: StarshipBuilder.() -> Unit): StarshipMap =
+    StarshipBuilder(customScalarAdapters).apply(block).build()

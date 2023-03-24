@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
@@ -15,27 +16,26 @@ import kotlin.Unit
 import kotlin.collections.Map
 
 internal class SearchResult {
-  public companion object {
+  public companion object : BuilderFactory<OtherSearchResultBuilder> {
     public val type: UnionType = UnionType("SearchResult", Human.type, Droid.type, Starship.type)
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters):
+        OtherSearchResultBuilder = OtherSearchResultBuilder(customScalarAdapters)
   }
 }
 
+internal interface SearchResultMap : Map<String, Any?>
+
 internal class OtherSearchResultBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
-  public fun build(): OtherSearchResultMap = OtherSearchResultMap(__fields)
+) : ObjectBuilder<OtherSearchResultMap>(customScalarAdapters) {
+  public override fun build(): OtherSearchResultMap = OtherSearchResultMap(__fields)
 }
-
-internal interface SearchResultMap
 
 internal class OtherSearchResultMap(
   __fields: Map<String, Any?>,
 ) : SearchResultMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildOtherSearchResult(__typename: String,
-    block: OtherSearchResultBuilder.() -> Unit): OtherSearchResultMap {
-  val builder = OtherSearchResultBuilder(customScalarAdapters)
-  builder.__typename = __typename
-  builder.block()
-  return builder.build()
-}
+internal fun BuilderScope.buildOtherSearchResult(typename: String,
+    block: OtherSearchResultBuilder.() -> Unit): OtherSearchResultMap =
+    OtherSearchResultBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()

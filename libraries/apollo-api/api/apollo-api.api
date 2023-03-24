@@ -260,6 +260,10 @@ public final class com/apollographql/apollo3/api/BooleanExpressions {
 	public static final fun variable (Ljava/lang/String;)Lcom/apollographql/apollo3/api/BooleanExpression;
 }
 
+public abstract interface class com/apollographql/apollo3/api/BuilderFactory {
+	public abstract fun newBuilder (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
+}
+
 public final class com/apollographql/apollo3/api/BuilderProperty {
 	public fun <init> (Lcom/apollographql/apollo3/api/Adapter;)V
 	public final fun getAdapter ()Lcom/apollographql/apollo3/api/Adapter;
@@ -576,8 +580,7 @@ public final class com/apollographql/apollo3/api/FakeResolverContext {
 
 public final class com/apollographql/apollo3/api/FakeResolverKt {
 	public static final fun buildData (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/util/Map;Lcom/apollographql/apollo3/api/FakeResolver;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
-	public static final fun buildFragmentData (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/lang/Object;Lcom/apollographql/apollo3/api/FakeResolver;Lcom/apollographql/apollo3/api/CompiledType;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
-	public static synthetic fun buildFragmentData$default (Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Ljava/lang/Object;Lcom/apollographql/apollo3/api/FakeResolver;Lcom/apollographql/apollo3/api/CompiledType;Lcom/apollographql/apollo3/api/CustomScalarAdapters;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun buildData (Lcom/apollographql/apollo3/api/BuilderFactory;Lkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/api/Adapter;Ljava/util/List;Ljava/lang/String;Lcom/apollographql/apollo3/api/FakeResolver;Lcom/apollographql/apollo3/api/CustomScalarAdapters;)Ljava/lang/Object;
 }
 
 public final class com/apollographql/apollo3/api/FileUpload {
@@ -659,6 +662,7 @@ public final class com/apollographql/apollo3/api/ObjectAdapter : com/apollograph
 
 public abstract class com/apollographql/apollo3/api/ObjectBuilder : com/apollographql/apollo3/api/BuilderScope {
 	public fun <init> (Lcom/apollographql/apollo3/api/CustomScalarAdapters;)V
+	public abstract fun build ()Ljava/util/Map;
 	public fun getCustomScalarAdapters ()Lcom/apollographql/apollo3/api/CustomScalarAdapters;
 	public final fun get__fields ()Ljava/util/Map;
 	public final fun get__typename ()Ljava/lang/String;

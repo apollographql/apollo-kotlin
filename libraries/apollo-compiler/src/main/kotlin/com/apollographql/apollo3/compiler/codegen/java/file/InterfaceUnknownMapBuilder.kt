@@ -37,10 +37,10 @@ internal class InterfaceUnknownMapBuilder(
         .superclass(JavaClassNames.ObjectMap)
         .addSuperinterfaces(
             implements.map {
-              ClassName.get(packageName, context.layout.objectMapName(it))
+              ClassName.get(packageName, context.layout.mapName(it))
             }
         )
-        .addSuperinterface(ClassName.get(packageName, context.layout.objectMapName(iface.name)))
+        .addSuperinterface(ClassName.get(packageName, context.layout.mapName(iface.name)))
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)

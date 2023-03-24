@@ -134,11 +134,7 @@ internal abstract class CodegenLayout(
     return escapeReservedWord(name.capitalizeFirstLetter())
   }
 
-  fun testBuilder(modelName: String): String {
-    return "${modelName}Builder"
-  }
-
-  fun objectBuilderName(name: String): String {
+  fun builderName(name: String): String {
     return "${name.capitalizeFirstLetter()}Builder"
   }
 
@@ -146,7 +142,7 @@ internal abstract class CodegenLayout(
     return "Other${name.capitalizeFirstLetter()}Builder"
   }
 
-  fun objectMapName(name: String): String {
+  fun mapName(name: String): String {
     return "${name.capitalizeFirstLetter()}Map"
   }
 
@@ -154,11 +150,11 @@ internal abstract class CodegenLayout(
     return "Other${name.capitalizeFirstLetter()}Map"
   }
 
-  fun objectBuilderFunName(name: String): String {
+  fun buildFunName(name: String): String {
     return "build${name.capitalizeFirstLetter()}"
   }
 
-  fun otherBuilderFunName(name: String): String {
+  fun buildOtherFunName(name: String): String {
     return "buildOther${name.capitalizeFirstLetter()}"
   }
 

@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
+import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.newBuilder
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
@@ -12,7 +14,11 @@ import com.apollographql.apollo3.compiler.ir.IrEnum
 import com.apollographql.apollo3.compiler.ir.IrInterface
 import com.apollographql.apollo3.compiler.ir.IrObject
 import com.apollographql.apollo3.compiler.ir.IrUnion
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.joinToCode
 
@@ -83,6 +89,14 @@ internal fun IrObject.typePropertySpec(resolver: KotlinResolver): PropertySpec {
       .build()
 }
 
+internal fun newBuilderFunSpec(returnedClassName: ClassName): FunSpec {
+  return FunSpec.builder(newBuilder)
+      .returns(returnedClassName)
+      .addModifiers(KModifier.OVERRIDE)
+      .addParameter(ParameterSpec.builder(customScalarAdapters, KotlinSymbols.CustomScalarAdapters).build())
+      .addCode("return·%T($customScalarAdapters)", returnedClassName)
+      .build()
+}
 internal fun IrInterface.typePropertySpec(resolver: KotlinResolver): PropertySpec {
   val builder = CodeBlock.builder()
   builder.add("%T(name·=·%S)", KotlinSymbols.InterfaceTypeBuilder, name)

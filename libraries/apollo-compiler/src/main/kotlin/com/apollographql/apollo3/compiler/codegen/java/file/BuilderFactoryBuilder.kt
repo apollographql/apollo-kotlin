@@ -78,8 +78,8 @@ internal class BuilderFactoryBuilder(
   }
 
   private fun IrObject.toObjectBuilderMethodSpec(): MethodSpec {
-    val builderClassName = ClassName.get(packageName, layout.objectBuilderName(name))
-    return MethodSpec.methodBuilder(layout.objectBuilderFunName(name))
+    val builderClassName = ClassName.get(packageName, layout.builderName(name))
+    return MethodSpec.methodBuilder(layout.buildFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
         .addStatement("return new $T($customScalarAdapters)", builderClassName)
@@ -88,7 +88,7 @@ internal class BuilderFactoryBuilder(
 
   private fun IrSchemaType.toUnknownBuilderMethodSpec(): MethodSpec {
     val builderClassName = ClassName.get(packageName, layout.otherBuilderName(name))
-    return MethodSpec.methodBuilder(layout.otherBuilderFunName(name))
+    return MethodSpec.methodBuilder(layout.buildOtherFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .addParameter(JavaClassNames.String, Identifier.__typename)
         .returns(builderClassName)

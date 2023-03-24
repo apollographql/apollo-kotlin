@@ -152,7 +152,7 @@ internal class OperationBuilder(
   private fun buildDataMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), layout.objectMapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
         .addParameter(JavaClassNames.FakeResolver, Identifier.resolver)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addCode(
@@ -175,7 +175,7 @@ internal class OperationBuilder(
   private fun buildDataOverloadMethod(): MethodSpec {
     return MethodSpec.methodBuilder(Identifier.buildData)
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-        .addParameter(ClassName.get(layout.builderPackageName(), layout.objectMapName(operation.operationType.typeName)), Identifier.map)
+        .addParameter(ClassName.get(layout.builderPackageName(), layout.mapName(operation.operationType.typeName)), Identifier.map)
         .returns(context.resolver.resolveModel(operation.dataModelGroup.baseModelId))
         .addStatement(
             "return buildData(${Identifier.map}, new $T($T.types))",

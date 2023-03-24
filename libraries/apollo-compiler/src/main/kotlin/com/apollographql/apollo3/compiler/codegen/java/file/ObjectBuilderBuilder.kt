@@ -25,8 +25,8 @@ internal class ObjectBuilderBuilder(
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.builderPackageName()
-  private val simpleName = layout.objectBuilderName(obj.name)
-  private val mapClassName = ClassName.get(packageName, layout.objectMapName(obj.name))
+  private val simpleName = layout.builderName(obj.name)
+  private val mapClassName = ClassName.get(packageName, layout.mapName(obj.name))
 
   override fun prepare() {
   }

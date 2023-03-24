@@ -6,19 +6,18 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.buildFragmentData
+import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.simple_fragment.fragment.selections.HumanDetailsSelections
 import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.type.Human
-import com.example.simple_fragment.type.HumanMap
+import com.example.simple_fragment.type.HumanBuilder
 import com.example.simple_fragment.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
@@ -58,13 +57,13 @@ internal class HumanDetailsImpl() : Fragment<HumanDetailsImpl.Data> {
 
   public companion object {
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: (BuilderScope.() -> HumanMap)? = null): Data = buildFragmentData(
+        block: HumanBuilder.() -> Unit = {}): Data = buildData(
+      Human,
+      block,
       HumanDetailsImpl_ResponseAdapter.Data,
       HumanDetailsSelections.__root,
       "Human",
-      block,
       resolver,
-      Human.type,
       __CustomScalarAdapters,
     )
   }

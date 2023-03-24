@@ -5,6 +5,7 @@
 //
 package com.example.mutation_create_review.type
 
+import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CustomScalarAdapters
@@ -19,29 +20,28 @@ import kotlin.collections.Map
  * A character from the Star Wars universe
  */
 internal class Character {
-  public companion object {
+  public companion object : BuilderFactory<OtherCharacterBuilder> {
     public val type: InterfaceType = InterfaceType.Builder(name = "Character").build()
+
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters):
+        OtherCharacterBuilder = OtherCharacterBuilder(customScalarAdapters)
   }
 }
 
+internal interface CharacterMap : Map<String, Any?>
+
 internal class OtherCharacterBuilder(
   customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+) : ObjectBuilder<OtherCharacterMap>(customScalarAdapters) {
   public var name: String by BuilderProperty(com.example.MyStringAdapter())
 
-  public fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
+  public override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }
-
-internal interface CharacterMap
 
 internal class OtherCharacterMap(
   __fields: Map<String, Any?>,
 ) : CharacterMap, Map<String, Any?> by __fields
 
-internal fun BuilderScope.buildOtherCharacter(__typename: String,
-    block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap {
-  val builder = OtherCharacterBuilder(customScalarAdapters)
-  builder.__typename = __typename
-  builder.block()
-  return builder.build()
-}
+internal fun BuilderScope.buildOtherCharacter(typename: String,
+    block: OtherCharacterBuilder.() -> Unit): OtherCharacterMap =
+    OtherCharacterBuilder(customScalarAdapters).apply(block).apply { __typename = typename }.build()

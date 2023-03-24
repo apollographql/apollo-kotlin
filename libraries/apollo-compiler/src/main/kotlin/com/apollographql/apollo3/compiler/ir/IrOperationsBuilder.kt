@@ -339,7 +339,8 @@ internal class IrOperationsBuilder(
         interfaceModelGroup = interfaceModelGroup,
         dataProperty = dataProperty,
         dataModelGroup = dataModelGroup,
-        source = formatToString()
+        source = formatToString(),
+        isTypeConditionAbstract = typeDefinition !is GQLObjectTypeDefinition
     )
   }
 

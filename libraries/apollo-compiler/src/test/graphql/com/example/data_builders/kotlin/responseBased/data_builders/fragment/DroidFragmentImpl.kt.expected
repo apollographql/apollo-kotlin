@@ -6,19 +6,18 @@
 package com.example.data_builders.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.buildFragmentData
+import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.data_builders.fragment.selections.DroidFragmentSelections
 import com.example.data_builders.schema.__Schema
 import com.example.data_builders.type.Droid
-import com.example.data_builders.type.DroidMap
+import com.example.data_builders.type.DroidBuilder
 import com.example.data_builders.type.__CustomScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
@@ -51,13 +50,13 @@ public class DroidFragmentImpl() : Fragment<DroidFragmentImpl.Data> {
 
   public companion object {
     public fun Data(resolver: FakeResolver = DefaultFakeResolver(__Schema.all),
-        block: (BuilderScope.() -> DroidMap)? = null): Data = buildFragmentData(
+        block: DroidBuilder.() -> Unit = {}): Data = buildData(
+      Droid,
+      block,
       DroidFragmentImpl_ResponseAdapter.Data,
       DroidFragmentSelections.__root,
       "Droid",
-      block,
       resolver,
-      Droid.type,
       __CustomScalarAdapters,
     )
   }

@@ -1,0 +1,19 @@
+fragment CatDetails on Cat {
+  species
+  mustaches
+  bestFriend {
+    species
+  }
+}
+
+fragment AnimalDetails on Animal {
+  species
+}
+
+fragment TrivialFragment on Animal {
+  species
+  ... on Animal {
+    id
+    country
+  }
+}

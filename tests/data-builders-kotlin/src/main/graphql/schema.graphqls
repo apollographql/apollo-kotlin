@@ -52,6 +52,7 @@ interface Node {
 interface Animal @typePolicy(keyFields: "id") {
   id: ID!
   species: String!
+  country: String!
 }
 
 type Cat implements Animal & Animal2 & Node {
@@ -60,12 +61,14 @@ type Cat implements Animal & Animal2 & Node {
   mustaches: Int!
   unusedField: String!
   bestFriend: Animal!
+  country: String!
 }
 
 type Lion implements Animal {
   id: ID!
   species: String!
   roar: String!
+  country: String!
 }
 
 union Feline = Cat | Lion
