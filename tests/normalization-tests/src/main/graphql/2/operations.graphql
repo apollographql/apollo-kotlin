@@ -14,3 +14,14 @@ fragment nestedBook on Library {
   }
 }
 
+query GetUsersWithoutAdmins($includeAdmins: Boolean = false) {
+  users(includeAdmins: $includeAdmins) {
+    id
+  }
+}
+
+query GetUsersWithAdmins($includeAdmins: Boolean = true) {
+  users(includeAdmins: $includeAdmins) {
+    id
+  }
+}

@@ -36,7 +36,7 @@ fun <D : Executable.Data> Executable<D>.normalize(
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
-  val variables = variables(customScalarAdapters)
+  val variables = variables(customScalarAdapters, withDefaultBooleanValues = false)
   return Normalizer(variables, rootKey, cacheKeyGenerator, EmptyMetadataGenerator)
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType())
 }
@@ -52,7 +52,7 @@ fun <D : Executable.Data> Executable<D>.normalize(
 ): Map<String, Record> {
   val writer = MapJsonWriter()
   adapter().toJson(writer, customScalarAdapters, data)
-  val variables = variables(customScalarAdapters)
+  val variables = variables(customScalarAdapters, withDefaultBooleanValues = false)
   return Normalizer(variables, rootKey, cacheKeyGenerator, metadataGenerator)
       .normalize(writer.root() as Map<String, Any?>, rootField().selections, rootField().type.rawType())
 }
@@ -126,7 +126,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
       cache = cache,
       cacheHeaders = cacheHeaders,
       cacheResolver = cacheResolver,
-      variables = variables(customScalarAdapters),
+      variables = variables(customScalarAdapters, withDefaultBooleanValues = false),
       rootKey = cacheKey.key,
       rootSelections = rootField().selections,
       rootTypename = rootField().type.rawType().name

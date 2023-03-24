@@ -16,10 +16,13 @@ import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerato
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
 import com.example.one.fragment.SectionFragment
+import com.example.two.GetUsersWithAdminsQuery
+import com.example.two.GetUsersWithoutAdminsQuery
 import com.example.two.NestedFragmentQuery
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import org.junit.Test
+import kotlin.test.assertEquals
 
 internal object IdBasedCacheKeyResolver : CacheResolver, CacheKeyGenerator {
 
@@ -96,5 +99,14 @@ class NormalizationTest {
     check(data.home.sectionA?.name == "section-name")
     check(data.home.sectionFragment.sectionA?.id == "section-id")
     check(data.home.sectionFragment.sectionA?.imageUrl == "https://...")
+  }
+
+  @Test
+  fun cacheKeyIsSameWithDifferentDefaultValues() = runBlocking {
+    val apolloStore = ApolloStore(MemoryCacheFactory())
+    val data = GetUsersWithoutAdminsQuery.Data(emptyList())
+    apolloStore.writeOperation(GetUsersWithoutAdminsQuery(), data)
+    val dataFromCache = apolloStore.readOperation(GetUsersWithAdminsQuery())
+    assertEquals(data.users.size, dataFromCache.users.size)
   }
 }
