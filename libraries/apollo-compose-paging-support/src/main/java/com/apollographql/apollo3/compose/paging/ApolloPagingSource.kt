@@ -19,24 +19,30 @@ class ApolloPagingSource<Data : Operation.Data, Value : Any>(
      * The call to fetch the next page, given the response for the current page.
      * This is also used for the initial/refresh call.
      * The response will be null for the initial/refresh call.
+     * Return null if there is no next page.
      */
-    private val appendCall: (response: ApolloResponse<Data>?) -> ApolloCall<Data>,
+    private val appendCall: (response: ApolloResponse<Data>?, loadSize: Int) -> ApolloCall<Data>?,
 
     /**
-     * Whether there is a next page, given the response for the current page.
+     * Count of items after the loaded data, given the response for the current page and the count of loaded items so far.
+     * Used to display placeholders.
+     * Return [PagingSource.LoadResult.Page.COUNT_UNDEFINED] if the count is unknown.
      */
-    private val hasNextPage: (response: ApolloResponse<Data>) -> Boolean,
+    private val itemsAfter: (response: ApolloResponse<Data>, loadedItemsCount: Int) -> Int = { _, _ -> LoadResult.Page.COUNT_UNDEFINED },
 
     /**
      * The call to fetch the previous page, given the response for the current page.
+     * Return null if there is no previous page.
      * Can be null if prepend is not supported.
      */
-    private val prependCall: ((response: ApolloResponse<Data>) -> ApolloCall<Data>)? = null,
+    private val prependCall: ((response: ApolloResponse<Data>, loadSize: Int) -> ApolloCall<Data>?)? = null,
 
     /**
-     * Whether there is a previous page, given the response for the current page.
+     * Count of items before the loaded data, given the response for the current page and the count of loaded items so far.
+     * Used to display placeholders.
+     * Return [PagingSource.LoadResult.Page.COUNT_UNDEFINED] if the count is unknown.
      */
-    private val hasPreviousPage: (response: ApolloResponse<Data>) -> Boolean = { false },
+    private val itemsBefore: (response: ApolloResponse<Data>, loadedItemsCount: Int) -> Int = { _, _ -> LoadResult.Page.COUNT_UNDEFINED },
 
     /**
      * Extract the list of items from a response.
@@ -44,23 +50,43 @@ class ApolloPagingSource<Data : Operation.Data, Value : Any>(
      */
     private val getItems: (response: ApolloResponse<Data>) -> Result<List<Value>>,
 ) : PagingSource<ApolloCall<Data>, Value>() {
+  private var loadedItemsCount = 0
+
   override fun getRefreshKey(state: PagingState<ApolloCall<Data>, Value>): ApolloCall<Data>? = null
 
   override suspend fun load(params: LoadParams<ApolloCall<Data>>): LoadResult<ApolloCall<Data>, Value> {
     val call = when (params) {
-      is LoadParams.Refresh -> appendCall(null)
+      is LoadParams.Refresh -> {
+        loadedItemsCount = 0
+        appendCall(null, params.loadSize)
+      }
+
       is LoadParams.Append -> params.key
       is LoadParams.Prepend -> params.key
     }
 
-    val response = call.execute()
+    val response = call?.execute() ?: error("appendCall must not return null for the initial/refresh call")
     if (response.exception != null) return LoadResult.Error(response.exception!!)
     val itemsResult: Result<List<Value>> = getItems(response)
     if (itemsResult.isFailure) return LoadResult.Error(itemsResult.exceptionOrNull()!!)
+    val data = itemsResult.getOrThrow()
+    loadedItemsCount += data.size
+    val itemsBefore = if (params.placeholdersEnabled) {
+      itemsBefore(response, loadedItemsCount)
+    } else {
+      LoadResult.Page.COUNT_UNDEFINED
+    }
+    val itemsAfter = if (params.placeholdersEnabled) {
+      itemsAfter(response, loadedItemsCount)
+    } else {
+      LoadResult.Page.COUNT_UNDEFINED
+    }
     return LoadResult.Page(
-        data = itemsResult.getOrThrow(),
-        prevKey = prependCall?.let { prependCall -> if (hasPreviousPage(response)) prependCall.invoke(response) else null },
-        nextKey = if (hasNextPage(response)) appendCall(response) else null,
+        data = data,
+        prevKey = prependCall?.invoke(response, params.loadSize),
+        nextKey = appendCall(response, params.loadSize),
+        itemsBefore = itemsBefore,
+        itemsAfter = itemsAfter,
     )
   }
 }
@@ -76,24 +102,30 @@ fun <Data : Operation.Data, Value : Any> Pager(
      * The call to fetch the next page, given the response for the current page.
      * This is also used for the initial/refresh call.
      * The response will be null for the initial/refresh call.
+     * Return null if there is no next page.
      */
-    appendCall: (response: ApolloResponse<Data>?) -> ApolloCall<Data>,
+    appendCall: (response: ApolloResponse<Data>?, loadSize: Int) -> ApolloCall<Data>?,
 
     /**
-     * Whether there is a next page, given the response for the current page.
+     * Count of items after the loaded data, given the response for the current page and the count of loaded items so far.
+     * Used to display placeholders.
+     * Return [PagingSource.LoadResult.Page.COUNT_UNDEFINED] if the count is unknown.
      */
-    hasNextPage: (response: ApolloResponse<Data>) -> Boolean,
+    itemsAfter: (response: ApolloResponse<Data>, loadedItemsCount: Int) -> Int = { _, _ -> PagingSource.LoadResult.Page.COUNT_UNDEFINED },
 
     /**
      * The call to fetch the previous page, given the response for the current page.
+     * Return null if there is no previous page.
      * Can be null if prepend is not supported.
      */
-    prependCall: ((response: ApolloResponse<Data>) -> ApolloCall<Data>)? = null,
+    prependCall: ((response: ApolloResponse<Data>, loadSize: Int) -> ApolloCall<Data>?)? = null,
 
     /**
-     * Whether there is a previous page, given the response for the current page.
+     * Count of items before the loaded data, given the response for the current page and the count of loaded items so far.
+     * Used to display placeholders.
+     * Return [PagingSource.LoadResult.Page.COUNT_UNDEFINED] if the count is unknown.
      */
-    hasPreviousPage: (response: ApolloResponse<Data>) -> Boolean = { false },
+    itemsBefore: (response: ApolloResponse<Data>, loadedItemsCount: Int) -> Int = { _, _ -> PagingSource.LoadResult.Page.COUNT_UNDEFINED },
 
     /**
      * Extract the list of items from a response.
@@ -103,7 +135,16 @@ fun <Data : Operation.Data, Value : Any> Pager(
 ): Pager<ApolloCall<Data>, Value> {
   return Pager(
       config = config,
-      pagingSourceFactory = { ApolloPagingSource(appendCall, hasNextPage, prependCall, hasPreviousPage, getItems) })
+      pagingSourceFactory = {
+        ApolloPagingSource(
+            appendCall = appendCall,
+            itemsAfter = itemsAfter,
+            prependCall = prependCall,
+            itemsBefore = itemsBefore,
+            getItems = getItems,
+        )
+      }
+  )
 }
 
 @ApolloExperimental
@@ -118,24 +159,30 @@ fun <Data : Operation.Data, Value : Any> rememberAndCollectPager(
      * The call to fetch the next page, given the response for the current page.
      * This is also used for the initial/refresh call.
      * The response will be null for the initial/refresh call.
+     * Return null if there is no next page.
      */
-    appendCall: (response: ApolloResponse<Data>?) -> ApolloCall<Data>,
+    appendCall: (response: ApolloResponse<Data>?, loadSize: Int) -> ApolloCall<Data>?,
 
     /**
-     * Whether there is a next page, given the response for the current page.
+     * Count of items after the loaded data, given the response for the current page and the count of loaded items so far.
+     * Used to display placeholders.
+     * Return [PagingSource.LoadResult.Page.COUNT_UNDEFINED] if the count is unknown.
      */
-    hasNextPage: (response: ApolloResponse<Data>) -> Boolean,
+    itemsAfter: (response: ApolloResponse<Data>, loadedItemsCount: Int) -> Int = { _, _ -> PagingSource.LoadResult.Page.COUNT_UNDEFINED },
 
     /**
      * The call to fetch the previous page, given the response for the current page.
      * Can be null if prepend is not supported.
+     * Return null if there is no previous page.
      */
-    prependCall: ((response: ApolloResponse<Data>) -> ApolloCall<Data>)? = null,
+    prependCall: ((response: ApolloResponse<Data>, loadSize: Int) -> ApolloCall<Data>?)? = null,
 
     /**
-     * Whether there is a previous page, given the response for the current page.
+     * Count of items before the loaded data, given the response for the current page and the count of loaded items so far.
+     * Used to display placeholders.
+     * Return [PagingSource.LoadResult.Page.COUNT_UNDEFINED] if the count is unknown.
      */
-    hasPreviousPage: (response: ApolloResponse<Data>) -> Boolean = { false },
+    itemsBefore: (response: ApolloResponse<Data>, loadedItemsCount: Int) -> Int = { _, _ -> PagingSource.LoadResult.Page.COUNT_UNDEFINED },
 
     /**
      * Extract the list of items from a response.
@@ -143,6 +190,15 @@ fun <Data : Operation.Data, Value : Any> rememberAndCollectPager(
      */
     getItems: (response: ApolloResponse<Data>) -> Result<List<Value>>,
 ): LazyPagingItems<Value> {
-  val pager = remember { Pager(config, appendCall, hasNextPage, prependCall, hasPreviousPage, getItems) }
+  val pager = remember {
+    Pager(
+        config = config,
+        appendCall = appendCall,
+        itemsAfter = itemsAfter,
+        prependCall = prependCall,
+        itemsBefore = itemsBefore,
+        getItems = getItems,
+    )
+  }
   return pager.flow.collectAsLazyPagingItems()
 }
