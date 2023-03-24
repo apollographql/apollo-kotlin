@@ -66,7 +66,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
 ): ApolloResponse<D> {
-  val variables = variables(customScalarAdapters)
+  val variables = booleanVariables(customScalarAdapters)
   return ResponseParser.parse(
       jsonReader,
       this,
