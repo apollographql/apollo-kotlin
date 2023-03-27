@@ -49,13 +49,13 @@ kotlin {
 
     findByName("jvmMain")?.apply {
       dependencies {
-        implementation(golatac.lib("sqldelight.jvm"))
+        api(golatac.lib("sqldelight.jvm"))
       }
     }
 
     findByName("appleMain")?.apply {
       dependencies {
-        implementation(golatac.lib("sqldelight.native"))
+        api(golatac.lib("sqldelight.native"))
       }
     }
 
@@ -68,7 +68,7 @@ kotlin {
     findByName("androidMain")?.apply {
       dependencies {
         api(golatac.lib("androidx.sqlite"))
-        implementation(golatac.lib("sqldelight.android"))
+        api(golatac.lib("sqldelight.android"))
         implementation(golatac.lib("androidx.sqlite.framework"))
         implementation(golatac.lib("androidx.startup.runtime"))
       }
@@ -88,7 +88,7 @@ kotlin {
 
 configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
-  namespace ="com.apollographql.apollo3.cache.normalized.sql"
+  namespace = "com.apollographql.apollo3.cache.normalized.sql"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()
