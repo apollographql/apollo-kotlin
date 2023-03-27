@@ -182,10 +182,10 @@ private constructor(
         .let { flow ->
           if (request.ignorePartialData == true) {
             flow.map { response ->
-              if (response.data != null && response.hasErrors()) {
-                response.newBuilder().data(null).build()
-              } else {
-                response
+              when {
+                response.hasErrors() -> response.newBuilder().data(null).exception(ApolloException("Partial data. Read errors to get more details.")).build()
+                response.data == null -> response.newBuilder().data(null).exception(ApolloException("Not data found")).build()
+                else -> response
               }
             }
           } else {
