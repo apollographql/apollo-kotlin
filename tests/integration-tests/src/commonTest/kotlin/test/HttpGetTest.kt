@@ -43,7 +43,7 @@ class HttpGetTest {
     fun encodeReservedCharactersTest() = mockServerTest {
         // Response not needed, just testing generated url
         mockServer.enqueueData(data = emptyMap())
-        val response = apolloClient.query(SearchHeroQuery("!#\$&'\"()*+,/:;=?@[]{}% "))
+        apolloClient.query(SearchHeroQuery("!#\$&'\"()*+,/:;=?@[]{}% "))
                 .httpMethod(HttpMethod.Get)
                 .execute()
         assertEquals(
