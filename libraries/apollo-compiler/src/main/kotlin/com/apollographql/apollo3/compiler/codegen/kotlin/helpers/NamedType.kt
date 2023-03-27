@@ -4,8 +4,10 @@ import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.CodeBlock
@@ -17,6 +19,8 @@ internal class NamedType(
     val deprecationReason: String?,
     val optInFeature: String?,
     val type: IrType,
+    // Relevant only for variables
+    val defaultValue: IrValue?,
 )
 
 internal fun NamedType.toParameterSpec(context: KotlinContext): ParameterSpec {
@@ -39,7 +43,8 @@ internal fun IrInputField.toNamedType() = NamedType(
     type = type,
     description = description,
     deprecationReason = deprecationReason,
-    optInFeature = optInFeature
+    optInFeature = optInFeature,
+    defaultValue = null,
 )
 
 internal fun IrVariable.toNamedType() = NamedType(
@@ -47,19 +52,20 @@ internal fun IrVariable.toNamedType() = NamedType(
     type = type,
     description = null,
     deprecationReason = null,
-    optInFeature = null
+    optInFeature = null,
+    defaultValue = defaultValue,
 )
 
 
-internal fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+internal fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext, withDefaultBooleanValues: Boolean): CodeBlock {
   val builder = CodeBlock.builder()
   forEach {
-    builder.add(it.writeToResponseCodeBlock(context))
+    builder.add(it.writeToResponseCodeBlock(context, withDefaultBooleanValues))
   }
   return builder.build()
 }
 
-internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
+internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefaultBooleanValues: Boolean): CodeBlock {
   val adapterInitializer = context.resolver.adapterInitializer(type, false)
   val builder = CodeBlock.builder()
   val propertyName = context.layout.propertyName(graphQlName)
@@ -75,6 +81,17 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
   )
   if (type.isOptional()) {
     builder.endControlFlow()
+    if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
+      builder.beginControlFlow("else if (${Identifier.customScalarAdapters}.adapterContext.serializeVariablesWithDefaultBooleanValues)")
+      builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
+      builder.addStatement(
+          "%M.${Identifier.toJson}(${Identifier.writer}, ${Identifier.customScalarAdapters}, %L)",
+          KotlinSymbols.BooleanAdapter,
+          defaultValue.value,
+      )
+
+      builder.endControlFlow()
+    }
   }
 
   return builder.build()

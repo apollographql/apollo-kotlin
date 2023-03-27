@@ -35,7 +35,8 @@ internal class OperationVariablesAdapterBuilder(
         .inputAdapterTypeSpec(
             context = context,
             adapterName = simpleName,
-            adaptedTypeName = context.resolver.resolveOperation(operation.name)
+            adaptedTypeName = context.resolver.resolveOperation(operation.name),
+            withDefaultBooleanValues = true,
         )
   }
 }

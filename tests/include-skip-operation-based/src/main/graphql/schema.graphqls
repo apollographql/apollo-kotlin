@@ -1,5 +1,6 @@
 type Query {
   animal: Animal
+  animalById(id: ID!): Animal
 }
 
 interface Animal {

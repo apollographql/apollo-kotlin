@@ -1,6 +1,7 @@
 type Query {
   viewer: Viewer!
   home: Home!
+  users(includeAdmins: Boolean!): [User!]!
 }
 
 type Viewer {
@@ -27,4 +28,10 @@ type Author {
 
 type Home {
   address: String
+}
+
+type User {
+  id: String!
+  name: String!
+  email: String!
 }

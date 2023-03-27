@@ -9,11 +9,11 @@ import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
-import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.NamedType
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.requiresOptInAnnotation
+import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.suppressDeprecationAnnotationSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.writeToResponseCodeBlock
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
@@ -26,11 +26,12 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     context: KotlinContext,
     adapterName: String,
     adaptedTypeName: TypeName,
+    withDefaultBooleanValues: Boolean,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
       .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
-      .addFunction(writeToResponseFunSpec(context, adaptedTypeName))
+      .addFunction(writeToResponseFunSpec(context, adaptedTypeName, withDefaultBooleanValues))
       .apply {
         if (this@inputAdapterTypeSpec.any { it.deprecationReason != null }) {
           addAnnotation(suppressDeprecationAnnotationSpec)
@@ -57,13 +58,14 @@ private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSp
 private fun List<NamedType>.writeToResponseFunSpec(
     context: KotlinContext,
     adaptedTypeName: TypeName,
+    withDefaultBooleanValues: Boolean,
 ): FunSpec {
   return FunSpec.builder(toJson)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
-      .addParameter(customScalarAdapters,  KotlinSymbols.CustomScalarAdapters)
+      .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
       .addParameter(value, adaptedTypeName)
-      .addCode(writeToResponseCodeBlock(context))
+      .addCode(writeToResponseCodeBlock(context, withDefaultBooleanValues))
       .build()
 }
 

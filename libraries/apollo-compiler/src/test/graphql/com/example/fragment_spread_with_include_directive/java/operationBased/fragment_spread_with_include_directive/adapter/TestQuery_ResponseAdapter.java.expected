@@ -19,9 +19,12 @@ import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.TestQuery;
+import com.example.fragment_spread_with_include_directive.fragment.DroidDetails;
 import com.example.fragment_spread_with_include_directive.fragment.HeroDetails;
 import com.example.fragment_spread_with_include_directive.fragment.HumanDetails;
+import com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails;
 import java.io.IOException;
+import java.lang.Boolean;
 import java.lang.Override;
 import java.lang.String;
 import java.util.Arrays;
@@ -31,23 +34,26 @@ public class TestQuery_ResponseAdapter {
   public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
-    private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
+    private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "getBoolean");
 
     @Override
     public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
         throws IOException {
       TestQuery.Hero _hero = null;
+      Boolean _getBoolean = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 1: _getBoolean = Adapters.NullableBooleanAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
 
       return new TestQuery.Data(
-        _hero
+        _hero,
+        _getBoolean
       );
     }
 
@@ -56,6 +62,9 @@ public class TestQuery_ResponseAdapter {
         TestQuery.Data value) throws IOException {
       writer.name("hero");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+
+      writer.name("getBoolean");
+      Adapters.NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.getBoolean);
     }
   }
 
@@ -92,13 +101,27 @@ public class TestQuery_ResponseAdapter {
         _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, customScalarAdapters);
       }
 
+      DroidDetails _droidDetails = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue")))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+        reader.rewind();
+        _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+      }
+
+      OtherDroidDetails _otherDroidDetails = null;
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue"))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+        reader.rewind();
+        _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+      }
+
       Assertions.checkFieldNotMissing(_id, "id");
 
       return new TestQuery.Hero(
         __typename,
         _id,
         _heroDetails,
-        _humanDetails
+        _humanDetails,
+        _droidDetails,
+        _otherDroidDetails
       );
     }
 
@@ -117,6 +140,14 @@ public class TestQuery_ResponseAdapter {
 
       if (value.humanDetails != null) {
         com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, customScalarAdapters, value.humanDetails);
+      }
+
+      if (value.droidDetails != null) {
+        com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
+      }
+
+      if (value.otherDroidDetails != null) {
+        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.otherDroidDetails);
       }
     }
   }

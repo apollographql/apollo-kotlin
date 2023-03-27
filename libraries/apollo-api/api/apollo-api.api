@@ -7,7 +7,8 @@ public abstract interface class com/apollographql/apollo3/api/Adapter {
 }
 
 public final class com/apollographql/apollo3/api/AdapterContext {
-	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/api/Executable$Variables;Ljava/util/Set;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getSerializeVariablesWithDefaultBooleanValues ()Z
 	public final fun hasDeferredFragment (Ljava/util/List;Ljava/lang/String;)Z
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 	public final fun variables ()Ljava/util/Set;
@@ -17,6 +18,7 @@ public final class com/apollographql/apollo3/api/AdapterContext$Builder {
 	public fun <init> ()V
 	public final fun build ()Lcom/apollographql/apollo3/api/AdapterContext;
 	public final fun mergedDeferredFragmentIds (Ljava/util/Set;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
+	public final fun serializeVariablesWithDefaultBooleanValues (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 	public final fun variables (Lcom/apollographql/apollo3/api/Executable$Variables;)Lcom/apollographql/apollo3/api/AdapterContext$Builder;
 }
 
