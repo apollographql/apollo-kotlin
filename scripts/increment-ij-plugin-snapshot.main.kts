@@ -7,7 +7,7 @@ val branchName = "release-increment-ij-plugin-snapshot"
 runCommand("git", "checkout", "-b", branchName)
 runCommand("git", "add", "intellij-plugin/gradle.properties", "intellij-plugin/snapshots/plugins.xml")
 runCommand("git", "commit", "-m", "Increment IJ plugin snapshot version")
-runCommand("git", "push")
+runCommand("git", "push", "origin", branchName)
 runCommand("gh", "pr", "create", "--fill")
 mergeAndWait(branchName)
 
