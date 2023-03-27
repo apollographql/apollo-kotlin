@@ -12,6 +12,8 @@ import com.apollographql.apollo3.ApolloCall
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.compose.exception
+import com.apollographql.apollo3.compose.tryExecute
 
 @ApolloExperimental
 class ApolloPagingSource<Data : Operation.Data, Value : Any>(
@@ -65,7 +67,7 @@ class ApolloPagingSource<Data : Operation.Data, Value : Any>(
       is LoadParams.Prepend -> params.key
     }
 
-    val response = call?.execute() ?: error("appendCall must not return null for the initial/refresh call")
+    val response = call?.tryExecute() ?: error("appendCall must not return null for the initial/refresh call")
     if (response.exception != null) return LoadResult.Error(response.exception!!)
     val itemsResult: Result<List<Value>> = getItems(response)
     if (itemsResult.isFailure) return LoadResult.Error(itemsResult.exceptionOrNull()!!)
