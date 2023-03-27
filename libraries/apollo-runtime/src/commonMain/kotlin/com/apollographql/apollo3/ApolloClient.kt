@@ -184,7 +184,7 @@ private constructor(
             flow.map { response ->
               when {
                 response.hasErrors() -> response.newBuilder().data(null).exception(ApolloException("Partial data. Read errors to get more details.")).build()
-                response.data == null -> response.newBuilder().data(null).exception(ApolloException("Not data found")).build()
+                response.data == null -> response.newBuilder().exception(ApolloException("No data found")).build()
                 else -> response
               }
             }
