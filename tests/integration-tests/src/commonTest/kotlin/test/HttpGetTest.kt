@@ -38,17 +38,16 @@ class HttpGetTest {
         mockServer.takeRequest().path
     )
   }
-
-    @Test
-    fun encodeReservedCharactersTest() = mockServerTest {
-        // Response not needed, just testing generated url
-        mockServer.enqueueData(data = emptyMap())
-        apolloClient.query(SearchHeroQuery("!#\$&'\"()*+,/:;=?@[]{}% "))
-                .httpMethod(HttpMethod.Get)
-                .execute()
-        assertEquals(
-                "/?operationName=SearchHero&variables=%7B%22text%22%3A%22%21%23%24%26%27%5C%22%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D%7B%7D%25%20%22%7D&query=query%20SearchHero%28%24text%3A%20String%29%20%7B%20search%28text%3A%20%24text%29%20%7B%20__typename%20...%20on%20Character%20%7B%20__typename%20name%20...%20on%20Human%20%7B%20homePlanet%20%7D%20...%20on%20Droid%20%7B%20primaryFunction%20%7D%20%7D%20%7D%20%7D",
-                mockServer.takeRequest().path
-        )
-    }
+  @Test
+  fun encodeReservedCharactersTest() = mockServerTest {
+    // Response not needed, just testing generated url
+    mockServer.enqueueData(data = emptyMap())
+    apolloClient.query(SearchHeroQuery("!#$&'()*+,/:;=?@[]{}% "))
+            .httpMethod(HttpMethod.Get)
+            .execute()
+    assertEquals(
+            "/?operationName=SearchHero&variables=%7B%22text%22%3A%22%21%23%24%26%27%28%29%2A%2B%2C%2F%3A%3B%3D%3F%40%5B%5D%7B%7D%25%20%22%7D&query=query%20SearchHero%28%24text%3A%20String%29%20%7B%20search%28text%3A%20%24text%29%20%7B%20__typename%20...%20on%20Character%20%7B%20__typename%20name%20...%20on%20Human%20%7B%20homePlanet%20%7D%20...%20on%20Droid%20%7B%20primaryFunction%20%7D%20%7D%20%7D%20%7D",
+            mockServer.takeRequest().path
+    )
+  }
 }
