@@ -375,37 +375,37 @@ fun resolveVariables(value: Any?, variables: Executable.Variables): Any? {
   }
 }
 
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.")
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledSchemaType = ObjectType.Builder("__Schema").build()
 
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.")
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledTypeType = ObjectType.Builder("__Type").build()
 
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.")
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledFieldType = ObjectType.Builder("__Field").build()
 
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.")
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledInputValueType = ObjectType.Builder("__InputValue").build()
 
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.")
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField
 val CompiledEnumValueType = ObjectType.Builder("__EnumValue").build()
 
-@Deprecated("Introspection types are now generated like other types. Use the generated class instead.")
+@Deprecated("Introspection types are now generated like other types. Use the generated class instead.", level = DeprecationLevel.ERROR)
 @ApolloDeprecatedSince(v4_0_0)
 @SharedImmutable
 @JvmField

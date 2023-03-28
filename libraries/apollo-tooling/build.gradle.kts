@@ -3,14 +3,14 @@ plugins {
   id("apollo.library")
 
   // Depend on a published version of the plugin to avoid a "chicken and egg" problem
-  id("com.apollographql.apollo3").version("3.7.5")
+  id("com.apollographql.apollo3") version "3.7.5"
 }
 
 dependencies {
   api(project(":apollo-compiler"))
 
   implementation(project(":apollo-ast"))
-  implementation(project(":apollo-runtime"))
+  implementation(golatac.lib("apollo-runtime-published"))
   implementation(golatac.lib("okhttp"))
   implementation(golatac.lib("kotlinx.serialization.json"))
 
@@ -47,6 +47,3 @@ tasks.configureEach {
     enabled = false
   }
 }
-
-// Code generated with 3.x uses classes which are deprecated in current apollo-api
-allWarningsAsErrors(false)
