@@ -112,9 +112,15 @@ fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
 }
 ```
 
+As always, feedback is very welcome. Let us know what you think of the feature by
+either [opening an issue on our GitHub repo](https://github.com/apollographql/apollo-android/issues)
+, [joining the community](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
+or [stopping by our channel in the KotlinLang Slack](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)(get your
+invite [here](https://slack.kotl.in/)).
+
 ## ✨ [New] Gradle plugin: run codegen after gradle sync
 
-If you import a new project or run a Gradle sync, your GraphQL models are now automatically generated so that the IDE can find the symbols and your files do not show red underlines. This takes into acocunt Gradle up-to-date checks and it should be pretty fast. If you want to opt-out, you can do so with `generateSourcesDuringGradleSync.set(false)`:
+If you import a new project or run a Gradle sync, your GraphQL models are now automatically generated so that the IDE can find the symbols and your files do not show red underlines. This takes into account Gradle up-to-date checks and it should be pretty fast. If you want to opt-out, you can do so with `generateSourcesDuringGradleSync.set(false)`:
 
 ```kotlin
 apollo {
