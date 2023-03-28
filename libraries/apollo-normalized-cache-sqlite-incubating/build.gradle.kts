@@ -44,6 +44,7 @@ kotlin {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api-incubating"))
         api(project(":apollo-normalized-cache-incubating"))
+        api(golatac.lib("sqldelight.runtime"))
       }
     }
 
