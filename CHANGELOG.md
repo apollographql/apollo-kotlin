@@ -139,6 +139,7 @@ apollo {
 ## 👷‍ All changes
 
 * Allow to add HTTP headers on top of ApolloClient ones (#4754)
+* Kotlin 1.8 (#4776)
 * Move cache creation outside the main thread (#4781)
 * Cache: ignore hardcoded @include(if: false) directives (#4795)
 * Add % to reserved characters to encode in URL (#4804)
