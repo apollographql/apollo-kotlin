@@ -1,10 +1,17 @@
 package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.http.ByteStringHttpBody
+import com.apollographql.apollo3.api.http.HttpBody
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
 import okio.Buffer
+import okio.BufferedSink
+import okio.Source
+import okio.Timeout
+import okio.buffer
+import okio.use
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -122,11 +129,35 @@ class LoggingInterceptor(
     return if (!logBody || responseBody == null) {
       httpResponse
     } else {
-      val bodyByteString = responseBody.readByteString()
-      log(bodyByteString.utf8())
-      @Suppress("DEPRECATION")
+      val source = object: Source {
+        private val buffer = Buffer()
+
+        override fun close() {
+          responseBody.close()
+        }
+
+        override fun read(sink: Buffer, byteCount: Long): Long {
+          val tmp = Buffer()
+          val read = responseBody.read(tmp, byteCount)
+          buffer.writeAll(tmp.peek())
+          while (true) {
+            val next = buffer.indexOf('\n'.code.toByte())
+            if (next == -1L) {
+              break
+            }
+            log(buffer.readUtf8(next + 1))
+          }
+          sink.writeAll(tmp)
+          return read
+        }
+
+        override fun timeout(): Timeout {
+          return Timeout.NONE
+        }
+
+      }
       HttpResponse.Builder(statusCode = httpResponse.statusCode)
-          .body(bodyByteString)
+          .body(source.buffer())
           .addHeaders(httpResponse.headers)
           .build()
     }
