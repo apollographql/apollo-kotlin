@@ -4,17 +4,20 @@ import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
+import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.internal.DeferredJsonMerger
 import com.apollographql.apollo3.internal.isMultipart
 import com.apollographql.apollo3.internal.multipartBodyFlow
@@ -23,6 +26,7 @@ import com.apollographql.apollo3.network.NetworkTransport
 import com.benasher44.uuid.Uuid
 import com.benasher44.uuid.uuid4
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -156,63 +160,66 @@ private constructor(
 
     return multipartBodyFlow(httpResponse)
         .mapNotNull { part ->
-          try {
-            val what = part.peek().jsonReader().use { reader ->
+          if (operation is Subscription) {
+            val kind = part.peek().jsonReader().use { reader ->
               // detect what kind of payload we have
               reader.beginObject()
               if (!reader.hasNext()) {
-                return@use EMPTY
+                return@use Kind.EMPTY
               }
               val name = reader.nextName()
 
-              if (name == "payload") {
-                return@use PAYLOAD
-              } else {
-                return@use OTHER
+              return@use when (name) {
+                "payload" -> Kind.PAYLOAD
+                else -> Kind.OTHER
               }
             }
-
-            when (what) {
-              EMPTY -> {
-                // nothing to do
+            when (kind) {
+              Kind.EMPTY -> {
+                // nothing to do, maybe it's a ping
                 null
               }
 
-              PAYLOAD -> {
+              Kind.PAYLOAD -> {
                 val reader = part.jsonReader()
                 // advance the reader
                 reader.beginObject()
                 reader.nextName()
+
+                // Do nothing with "done", we just rely on the multipart closing boundary to close the stream gracefully
+                // TODO: make parseJsonResponse not close the jsonReader
                 operation.parseJsonResponse(
                     jsonReader = reader,
                     customScalarAdapters = customScalarAdapters
-                ).newBuilder().build()
+                )
               }
 
-              else -> {
-                if (jsonMerger == null) {
-                  jsonMerger = DeferredJsonMerger()
-                }
-                val merged = jsonMerger!!.merge(part)
-                val deferredFragmentIds = jsonMerger!!.mergedFragmentIds
-                val isLast = !jsonMerger!!.hasNext
-
-                if (jsonMerger!!.isEmptyPayload) {
-                  null
-                } else {
-                  operation.parseJsonResponse(
-                      jsonReader = merged.jsonReader(),
-                      customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
-                  ).newBuilder().isLast(isLast).build()
-                }
+              Kind.OTHER -> {
+                // We assume if there's something that is not a payload, it is an error
+                val response = part.jsonReader().readAny()
+                errorResponse(operation, SubscriptionOperationException(operation.name(), response))
               }
             }
+          } else {
+            if (jsonMerger == null) {
+              jsonMerger = DeferredJsonMerger()
+            }
+            val merged = jsonMerger!!.merge(part)
+            val deferredFragmentIds = jsonMerger!!.mergedFragmentIds
+            val isLast = !jsonMerger!!.hasNext
 
-          } catch (e: Exception) {
-            errorResponse(operation, e)
+            if (jsonMerger!!.isEmptyPayload) {
+              null
+            } else {
+              operation.parseJsonResponse(
+                  jsonReader = merged.jsonReader(),
+                  customScalarAdapters = customScalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+              ).newBuilder().isLast(isLast).build()
+            }
           }
+        }.catch {
+          emit(errorResponse(operation, it))
         }
-
   }
 
   private fun <D : Operation.Data> ApolloResponse<D>.withHttpInfo(
@@ -350,8 +357,10 @@ private constructor(
 
 
   private companion object {
-    private const val EMPTY = 0
-    private const val PAYLOAD = 1
-    private const val OTHER = 2
+    enum class Kind {
+      EMPTY,
+      PAYLOAD,
+      OTHER,
+    }
   }
 }
