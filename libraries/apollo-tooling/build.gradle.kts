@@ -40,6 +40,10 @@ apollo {
     packageName.set("com.apollographql.apollo3.tooling.platformApi")
     sourceFolder.set("platformApi")
     generateAsInternal.set(true)
+    introspection {
+      endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
+      schemaFile.set(file("src/main/graphql/platformApi/schema.graphqls"))
+    }
   }
 }
 
