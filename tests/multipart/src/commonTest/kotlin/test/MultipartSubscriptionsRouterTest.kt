@@ -1,6 +1,8 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.SubscriptionOperationException
 import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.network.http.LoggingInterceptor
 import com.apollographql.apollo3.testing.internal.runTest
@@ -9,6 +11,7 @@ import router.DieSubscription
 import router.ReviewSubscription
 import kotlin.test.Ignore
 import kotlin.test.Test
+import kotlin.test.assertIs
 
 /**
  * A test that runs against https://github.com/apollographql/federated-subscriptions-poc
@@ -58,17 +61,22 @@ class MultipartSubscriptionsRouterTest {
     }
   }
 
+  /**
+   * Run docker compose kill reviews to trigger an exception
+   */
   @Test
   fun reviewTest() = runTest {
+    var exception: ApolloException? = null
     client(log = true).use { apolloClient ->
       apolloClient.subscription(ReviewSubscription()).toFlow().collect {
         if (it.data != null) {
           println("${it.data} isLast=${it.isLast}")
         } else {
-          println("exception: ${it.exception}")
-          it.exception?.printStackTrace()
+          check(exception == null)
+          exception = it.exception
         }
       }
     }
+    assertIs<SubscriptionOperationException>(exception)
   }
 }
