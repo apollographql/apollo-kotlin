@@ -1,0 +1,16 @@
+subscription Die {
+  aNewDieWasCreated {
+    die {
+      roll
+      sides
+      color
+    }
+  }
+}
+
+subscription Review {
+  aReviewWasAdded {
+    id
+    body
+  }
+}

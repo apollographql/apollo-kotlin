@@ -1,3 +1,0 @@
-query MyQuery {
-  __typename
-}
