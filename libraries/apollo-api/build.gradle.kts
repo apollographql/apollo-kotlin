@@ -17,6 +17,13 @@ kotlin {
         api(project(":apollo-annotations"))
       }
     }
+
+    findByName("commonTest")?.apply {
+      dependencies {
+        //implementation(golatac.lib("kotlin.test.junit"))
+        implementation(golatac.lib("kotlin.test"))
+      }
+    }
   }
 }
 
