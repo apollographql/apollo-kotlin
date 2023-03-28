@@ -13,7 +13,7 @@ Many thanks to @slinstacart and @hbmartin for their contributions to this releas
 
 ## ✨ [New] Jetpack compose extension (#4802)
 
-You can now use the `apollo-compose-support` artifact to 
+You can now use the `apollo-compose-support` artifact: 
 
 ```kotlin
 // build.gradle.kts
