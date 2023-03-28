@@ -195,6 +195,7 @@ private constructor(
               }
 
               Kind.OTHER -> {
+                // We assume if there's something that is not a payload, it is an error
                 val response = part.jsonReader().readAny()
                 errorResponse(operation, SubscriptionOperationException(operation.name(), response))
               }
@@ -217,7 +218,6 @@ private constructor(
             }
           }
         }.catch {
-          it.printStackTrace()
           emit(errorResponse(operation, it))
         }
   }
