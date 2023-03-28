@@ -44,18 +44,19 @@ kotlin {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api-incubating"))
         api(project(":apollo-normalized-cache-incubating"))
+        api(golatac.lib("sqldelight.runtime"))
       }
     }
 
     findByName("jvmMain")?.apply {
       dependencies {
-        api(golatac.lib("sqldelight.jvm"))
+        implementation(golatac.lib("sqldelight.jvm"))
       }
     }
 
     findByName("appleMain")?.apply {
       dependencies {
-        api(golatac.lib("sqldelight.native"))
+        implementation(golatac.lib("sqldelight.native"))
       }
     }
 
@@ -68,7 +69,7 @@ kotlin {
     findByName("androidMain")?.apply {
       dependencies {
         api(golatac.lib("androidx.sqlite"))
-        api(golatac.lib("sqldelight.android"))
+        implementation(golatac.lib("sqldelight.android"))
         implementation(golatac.lib("androidx.sqlite.framework"))
         implementation(golatac.lib("androidx.startup.runtime"))
       }
