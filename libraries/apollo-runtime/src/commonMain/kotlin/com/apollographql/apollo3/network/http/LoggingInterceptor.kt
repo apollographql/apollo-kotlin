@@ -8,6 +8,8 @@ import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.network.http.LoggingInterceptor.Level
 import okio.Buffer
 import okio.BufferedSink
+import okio.BufferedSource
+import okio.Sink
 import okio.Source
 import okio.Timeout
 import okio.buffer
@@ -17,8 +19,11 @@ import kotlin.jvm.JvmOverloads
 /**
  * An interceptor that logs requests and responses.
  *
- * @param [level] the level of logging. Caution: when uploading files, setting this to [Level.BODY] will cause the files to
+ * @param level the level of logging. Caution: when uploading files, setting this to [Level.BODY] will cause the files to
  * be fully loaded into memory, which may cause OutOfMemoryErrors.
+ *
+ * @param log a callback that gets called with a line of log. Contains headers and/or body. No attempt is made at detecting
+ * binary bodies. Do use [Level.BODY] with binary content
  */
 class LoggingInterceptor(
     private val level: Level,
@@ -81,6 +86,35 @@ class LoggingInterceptor(
     BODY,
   }
 
+  private fun BufferedSource.intercept(): Source {
+    return object: Source {
+      private val buffer = Buffer()
+
+      override fun close() {
+        this@intercept.close()
+      }
+
+      override fun read(sink: Buffer, byteCount: Long): Long {
+        val tmp = Buffer()
+        val read = this@intercept.read(tmp, byteCount)
+        buffer.writeAll(tmp.peek())
+        while (true) {
+          val next = buffer.indexOf('\n'.code.toByte())
+          if (next == -1L) {
+            break
+          }
+          log(buffer.readUtf8Line()!!)
+        }
+        sink.writeAll(tmp)
+        return read
+      }
+
+      override fun timeout(): Timeout {
+        return Timeout.NONE
+      }
+    }
+  }
+
   override suspend fun intercept(
       request: HttpRequest,
       chain: HttpInterceptorChain,
@@ -129,35 +163,8 @@ class LoggingInterceptor(
     return if (!logBody || responseBody == null) {
       httpResponse
     } else {
-      val source = object: Source {
-        private val buffer = Buffer()
-
-        override fun close() {
-          responseBody.close()
-        }
-
-        override fun read(sink: Buffer, byteCount: Long): Long {
-          val tmp = Buffer()
-          val read = responseBody.read(tmp, byteCount)
-          buffer.writeAll(tmp.peek())
-          while (true) {
-            val next = buffer.indexOf('\n'.code.toByte())
-            if (next == -1L) {
-              break
-            }
-            log(buffer.readUtf8(next + 1))
-          }
-          sink.writeAll(tmp)
-          return read
-        }
-
-        override fun timeout(): Timeout {
-          return Timeout.NONE
-        }
-
-      }
       HttpResponse.Builder(statusCode = httpResponse.statusCode)
-          .body(source.buffer())
+          .body(responseBody.intercept().buffer())
           .addHeaders(httpResponse.headers)
           .build()
     }
