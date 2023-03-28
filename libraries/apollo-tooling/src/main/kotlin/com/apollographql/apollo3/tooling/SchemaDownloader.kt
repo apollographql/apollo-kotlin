@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
@@ -9,8 +11,9 @@ import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.network.okHttpClient
 import com.apollographql.apollo3.tooling.platformApi.DownloadSchemaQuery
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import java.io.File
 import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as GraphQLDraftIntrospectionQuery
@@ -161,18 +164,17 @@ object SchemaDownloader {
         headers = headers + mapOf("x-api-key" to key),
         insecure = insecure
     )
-
-    // TODO use ApolloClient since we're only interested in `document`, a String
-    val document = responseString
-        .let { Json.parseToJsonElement(it) }
-        .toAny().cast<Map<String, *>>()
-        ?.get("data").cast<Map<String, *>>()
-        ?.get("service").cast<Map<String, *>>()
-        ?.get("variant").cast<Map<String, *>>()
-        ?.get("activeSchemaPublish").cast<Map<String, *>>()
-        ?.get("schema").cast<Map<String, *>>()
-        ?.get("document").cast<String>()
-
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(endpoint)
+        .okHttpClient(SchemaHelper.newOkHttpClient(insecure))
+        .build()
+    val response = runBlocking {
+      apolloClient.query(DownloadSchemaQuery(graphID = graph, variant = variant))
+          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+          .addHttpHeader("x-api-key", key)
+          .execute()
+    }
+    val document = response.data?.service?.variant?.activeSchemaPublish?.schema?.document
     check(document != null) {
       "Cannot retrieve document from $responseString\nCheck graph id and variant"
     }

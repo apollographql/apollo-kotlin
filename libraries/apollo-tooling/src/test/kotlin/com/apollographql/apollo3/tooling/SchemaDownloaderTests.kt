@@ -23,7 +23,6 @@ class SchemaDownloaderTests {
     tempFile.delete()
   }
 
-
   private val schemaString1 = """
   {
     "__schema": {
@@ -138,7 +137,6 @@ class SchemaDownloaderTests {
         graphVariant = "",
         schema = tempFile,
     )
-
 
     mockServer.takeRequest().body.utf8().let {
       assertTrue(it.contains("inputFields(includeDeprecated: true)"))

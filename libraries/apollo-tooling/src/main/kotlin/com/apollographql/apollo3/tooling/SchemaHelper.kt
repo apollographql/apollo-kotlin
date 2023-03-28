@@ -22,7 +22,7 @@ import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
 
 internal object SchemaHelper {
-  private fun newOkHttpClient(insecure: Boolean): OkHttpClient {
+  internal fun newOkHttpClient(insecure: Boolean): OkHttpClient {
     val connectTimeoutSeconds = System.getProperty("okHttp.connectTimeout", "600").toLong()
     val readTimeoutSeconds = System.getProperty("okHttp.readTimeout", "600").toLong()
     val clientBuilder = OkHttpClient.Builder()
