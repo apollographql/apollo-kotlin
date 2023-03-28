@@ -1,5 +1,11 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -21,14 +27,6 @@ internal object SchemaHelper {
     val readTimeoutSeconds = System.getProperty("okHttp.readTimeout", "600").toLong()
     val clientBuilder = OkHttpClient.Builder()
         .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
-        .addInterceptor { chain ->
-          chain.request().newBuilder()
-              .build()
-              .let {
-                chain.proceed(it)
-              }
-
-        }
         .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
 
     if (insecure) {
@@ -36,6 +34,24 @@ internal object SchemaHelper {
     }
 
     return clientBuilder.build()
+  }
+
+  internal fun executeQuery(
+      endpoint: String,
+      headers: Map<String, String>,
+      insecure: Boolean,
+      query: Query<*>,
+  ): String {
+    val composer = DefaultHttpRequestComposer(endpoint)
+    val apolloRequest = ApolloRequest.Builder(query)
+        .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+        .build()
+    val httpRequest = composer.compose(apolloRequest)
+    val httpEngine = DefaultHttpEngine(newOkHttpClient(insecure))
+    val httpResponse = runBlocking { httpEngine.execute(httpRequest) }
+    return httpResponse.body.use { responseBody ->
+      return responseBody!!.readUtf8()
+    }
   }
 
   internal fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {

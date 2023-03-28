@@ -133,16 +133,16 @@ object SchemaDownloader {
       insecure: Boolean,
       specVersion: SpecVersion,
   ): String {
-
-    val body = mapOf(
-        "query" to getIntrospectionQuery(specVersion),
-        "operationName" to "IntrospectionQuery"
+    return SchemaHelper.executeQuery(
+        query = when (specVersion) {
+          SpecVersion.June_2018 -> June2018IntrospectionQuery()
+          SpecVersion.October_2021 -> October2021IntrospectionQuery()
+          SpecVersion.Draft -> DraftIntrospectionQuery()
+        },
+        endpoint = endpoint,
+        headers = headers,
+        insecure = insecure,
     )
-    val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
-
-    return response.body.use { responseBody ->
-      responseBody!!.string()
-    }
   }
 
   fun downloadRegistry(
@@ -189,12 +189,4 @@ object SchemaDownloader {
   }
 
   inline fun <reified T> Any?.cast() = this as? T
-
-  fun getIntrospectionQuery(specVersion: SpecVersion): String {
-    return when (specVersion) {
-      SpecVersion.June_2018 -> June2018IntrospectionQuery.OPERATION_DOCUMENT
-      SpecVersion.October_2021 -> October2021IntrospectionQuery.OPERATION_DOCUMENT
-      SpecVersion.Draft -> DraftIntrospectionQuery.OPERATION_DOCUMENT
-    }
-  }
 }
