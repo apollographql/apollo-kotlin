@@ -9,7 +9,7 @@ import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
-import com.apollographql.apollo3.tooling.apollo.DownloadSchemaQuery
+import com.apollographql.apollo3.tooling.platformApi.DownloadSchemaQuery
 import kotlinx.serialization.json.Json
 import okio.Buffer
 import java.io.File
@@ -162,6 +162,7 @@ object SchemaDownloader {
         insecure = insecure
     )
 
+    // TODO use ApolloClient since we're only interested in `document`, a String
     val document = responseString
         .let { Json.parseToJsonElement(it) }
         .toAny().cast<Map<String, *>>()

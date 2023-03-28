@@ -36,9 +36,9 @@ apollo {
     sourceFolder.set("graphql/Draft")
     generateAsInternal.set(true)
   }
-  service("apollo") {
-    packageName.set("com.apollographql.apollo3.tooling.apollo")
-    sourceFolder.set("apollo")
+  service("platformApi") {
+    packageName.set("com.apollographql.apollo3.tooling.platformApi")
+    sourceFolder.set("platformApi")
     generateAsInternal.set(true)
   }
 }
