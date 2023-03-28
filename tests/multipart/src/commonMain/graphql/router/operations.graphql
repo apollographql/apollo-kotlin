@@ -7,3 +7,10 @@ subscription Die {
     }
   }
 }
+
+subscription Review {
+  aReviewWasAdded {
+    id
+    body
+  }
+}
