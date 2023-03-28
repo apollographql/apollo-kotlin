@@ -1,6 +1,147 @@
 Change Log
 ==========
 
+# Version 3.8.0
+
+_2023-03-28_
+
+This release adds two new artifacts that contain Jetpack compose extensions amongst other fixes.
+
+## 💙️ External contributors
+
+Many thanks to @slinstacart and @hbmartin for their contributions to this release!
+
+## ✨ [New] Jetpack compose extension (#4802)
+
+You can now use the `apollo-compose-support` artifact to 
+
+```kotlin
+// build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-compose-support")
+}
+```
+
+This artifact contains the `toState()` and `watchAsState()` extensions:
+
+```kotlin
+/**
+ * A stateful composable that retrieves your data
+ */
+@OptIn(ApolloExperimental::class)
+@Composable
+fun LaunchDetails(launchId: String) {
+    val response by apolloClient.query(LaunchDetailsQuery(launchId)).toState()
+    val r = response
+    when {
+        r == null -> Loading() // no response yet
+        r.exception != null -> ErrorMessage("Oh no... A network error happened: ${r.exception!!.message}")
+        r.hasErrors() -> ErrorMessage("Oh no... A GraphQL error happened ${r.errors[0].message}.")
+        else -> LaunchDetails(r.data!!, navigateToLogin)
+    }
+}
+
+/**
+ * A stateless composable that displays your data
+ */
+@Composable
+private fun LaunchDetails(
+        data: LaunchDetailsQuery.Data,
+) {
+  // Your UI code goes here
+}
+```
+
+If you are working with paginated data, you can also add `apollo-compose-paging-support` to your dependencies:
+
+```kotlin
+// build.gradle.kts
+dependencies {
+  implementation("com.apollographql.apollo3:apollo-compose-paging-support")
+}
+```
+
+This artifact contains a helper function to create `androidx.pagin.Pager` instances ([androix documentation](https://developer.android.com/reference/androidx/paging/Pager)):
+
+```kotlin
+@OptIn(ApolloExperimental::class)
+@Composable
+fun LaunchList(onLaunchClick: (launchId: String) -> Unit) {
+  val lazyPagingItems = rememberAndCollectPager<LaunchListQuery.Data, LaunchListQuery.Launch>(
+          config = PagingConfig(pageSize = 10),
+          appendCall = { response, loadSize ->
+            if (response?.data?.launches?.hasMore == false) {
+              // No more pages
+              null
+            } else {
+              // Compute the next call from the current response
+              apolloClient.query(
+                      LaunchListQuery(
+                              cursor = Optional.present(response?.data?.launches?.cursor),
+                              pageSize = Optional.present(loadSize)
+                      )
+              )
+            }
+          },
+          getItems = { response ->
+            // Compute the items to be added to the page from the current response
+            if (response.hasErrors()) {
+              Result.failure(ApolloException(response.errors!![0].message))
+            } else {
+              Result.success(response.data!!.launches.launches.filterNotNull())
+            }
+          },
+  )
+  
+  // Use your paging items:
+  if (lazyPagingItems.loadState.refresh is LoadState.Loading) {
+    Loading()
+  } else {
+    LazyColumn {
+      items(lazyPagingItems) { launch ->
+        // Your UI code goes here
+      }
+      item {
+        when (val append = lazyPagingItems.loadState.append) {
+          is LoadState.Error -> // Add error indicator here 
+          LoadState.Loading -> // Add loading indicator here
+        }
+      }
+    }
+  }
+}
+```
+
+## ✨ [New] Gradle plugin: run codegen after gradle sync
+
+If you import a new project or run a Gradle sync, your GraphQL models are now automatically generated so that the IDE can find the symbols and your files do not show red underlines. This takes into acocunt Gradle up-to-date checks and it should be pretty fast. If you want to opt-out, you can do so with `generateSourcesDuringGradleSync.set(false)`:
+
+```kotlin
+apollo {
+  // Enable automatic generation of models during Gradle sync (default)
+  generateSourcesDuringGradleSync.set(true)
+
+  // Or disable automatic generation of models to save on your Gradle sync times
+  generateSourcesDuringGradleSync.set(false)
+
+  service("api") {
+    // Your  GraphQL configuration
+  }
+}
+```
+
+## 👷‍ All changes
+
+* Allow to add HTTP headers on top of ApolloClient ones (#4754)
+* Move cache creation outside the main thread (#4781)
+* Cache: ignore hardcoded @include(if: false) directives (#4795)
+* Add % to reserved characters to encode in URL (#4804)
+* First drop of experimental Compose support libraries (#4783)
+* Consider variable default values with @skip/@include/@defer (#4785)
+* Gradle plugin: run codegen after gradle sync (#4796)
+* Allow custom SqlDriver (#4806)
+* Multipart subscriptions (#4768, #4807, #4738)
+
 # Version 3.7.5
 
 _2023-03-14_
