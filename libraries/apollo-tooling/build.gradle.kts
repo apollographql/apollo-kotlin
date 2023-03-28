@@ -19,19 +19,24 @@ dependencies {
 }
 
 apollo {
-  service("June2018") {
-    packageName.set("com.apollographql.apollo3.tooling.june2018")
-    sourceFolder.set("June2018")
+  service("graphql-June2018") {
+    packageName.set("com.apollographql.apollo3.tooling.graphql.june2018")
+    sourceFolder.set("graphql/June2018")
     generateAsInternal.set(true)
   }
-  service("October2021") {
-    packageName.set("com.apollographql.apollo3.tooling.october2021")
-    sourceFolder.set("October2021")
+  service("graphql-October2021") {
+    packageName.set("com.apollographql.apollo3.tooling.graphql.october2021")
+    sourceFolder.set("graphql/October2021")
     generateAsInternal.set(true)
   }
-  service("Draft") {
-    packageName.set("com.apollographql.apollo3.tooling.draft")
-    sourceFolder.set("Draft")
+  service("graphql-Draft") {
+    packageName.set("com.apollographql.apollo3.tooling.graphql.draft")
+    sourceFolder.set("graphql/Draft")
+    generateAsInternal.set(true)
+  }
+  service("apollo") {
+    packageName.set("com.apollographql.apollo3.tooling.apollo")
+    sourceFolder.set("apollo")
     generateAsInternal.set(true)
   }
 }

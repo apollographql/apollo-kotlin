@@ -1,0 +1,11 @@
+query DownloadSchema($graphID: ID!, $variant: String!) {
+  service(id: $graphID) {
+    variant(name: $variant) {
+      activeSchemaPublish {
+        schema {
+          document
+        }
+      }
+    }
+  }
+}

@@ -9,12 +9,13 @@ import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
+import com.apollographql.apollo3.tooling.apollo.DownloadSchemaQuery
 import kotlinx.serialization.json.Json
 import okio.Buffer
 import java.io.File
-import com.apollographql.apollo3.tooling.draft.IntrospectionQuery as DraftIntrospectionQuery
-import com.apollographql.apollo3.tooling.june2018.IntrospectionQuery as June2018IntrospectionQuery
-import com.apollographql.apollo3.tooling.october2021.IntrospectionQuery as October2021IntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as GraphQLDraftIntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.october2021.IntrospectionQuery as GraphQLOctober2021IntrospectionQuery
 
 /**
  * @return the graph from a service key like "service:$graph:$token"
@@ -78,6 +79,7 @@ object SchemaDownloader {
                 insecure = insecure,
                 specVersion = specVersion,
             )
+            // Validates the JSON schema
             introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
             exception = null
             break
@@ -135,9 +137,9 @@ object SchemaDownloader {
   ): String {
     return SchemaHelper.executeQuery(
         query = when (specVersion) {
-          SpecVersion.June_2018 -> June2018IntrospectionQuery()
-          SpecVersion.October_2021 -> October2021IntrospectionQuery()
-          SpecVersion.Draft -> DraftIntrospectionQuery()
+          SpecVersion.June_2018 -> GraphQLJune2018IntrospectionQuery()
+          SpecVersion.October_2021 -> GraphQLOctober2021IntrospectionQuery()
+          SpecVersion.Draft -> GraphQLDraftIntrospectionQuery()
         },
         endpoint = endpoint,
         headers = headers,
@@ -153,28 +155,16 @@ object SchemaDownloader {
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    val query = """
-    query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
-      service(id: ${'$'}graphID) {
-        variant(name: ${'$'}variant) {
-          activeSchemaPublish {
-            schema {
-              document
-            }
-          }
-        }
-      }
-    }
-  """.trimIndent()
-    val variables = mapOf("graphID" to graph, "variant" to variant)
-
-    val response = SchemaHelper.executeQuery(query, variables, endpoint, headers + mapOf("x-api-key" to key), insecure)
-
-    val responseString = response.body.use { it?.string() }
+    val responseString = SchemaHelper.executeQuery(
+        query = DownloadSchemaQuery(graphID = graph, variant = variant),
+        endpoint = endpoint,
+        headers = headers + mapOf("x-api-key" to key),
+        insecure = insecure
+    )
 
     val document = responseString
-        ?.let { Json.parseToJsonElement(it) }
-        ?.toAny().cast<Map<String, *>>()
+        .let { Json.parseToJsonElement(it) }
+        .toAny().cast<Map<String, *>>()
         ?.get("data").cast<Map<String, *>>()
         ?.get("service").cast<Map<String, *>>()
         ?.get("variant").cast<Map<String, *>>()

@@ -37,10 +37,10 @@ internal object SchemaHelper {
   }
 
   internal fun executeQuery(
+      query: Query<*>,
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
-      query: Query<*>,
   ): String {
     val composer = DefaultHttpRequestComposer(endpoint)
     val apolloRequest = ApolloRequest.Builder(query)
@@ -49,12 +49,16 @@ internal object SchemaHelper {
     val httpRequest = composer.compose(apolloRequest)
     val httpEngine = DefaultHttpEngine(newOkHttpClient(insecure))
     val httpResponse = runBlocking { httpEngine.execute(httpRequest) }
-    return httpResponse.body.use { responseBody ->
-      return responseBody!!.readUtf8()
+    val bodyStr = httpResponse.body?.use {
+      it.readUtf8()
     }
+    check(httpResponse.statusCode in 200..299 && bodyStr != null) {
+      "Cannot get schema from $endpoint: ${httpResponse.statusCode}:\n${bodyStr ?: "(empty body)"}"
+    }
+    return bodyStr
   }
 
-  internal fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
+  private fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
     val body = map.toJsonElement().toString().toRequestBody("application/json".toMediaTypeOrNull())
     val request = Request.Builder()
         .post(body)
