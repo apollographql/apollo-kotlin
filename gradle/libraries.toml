@@ -132,6 +132,7 @@ sqldelight-android = { group = "com.squareup.sqldelight", name = "android-driver
 sqldelight-jvm = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight" }
 sqldelight-native = { group = "com.squareup.sqldelight", name = "native-driver", version.ref = "sqldelight" }
 sqldelight-plugin = { group = "com.squareup.sqldelight", name = "gradle-plugin", version.ref = "sqldelight" }
+sqldelight-runtime = { group = "com.squareup.sqldelight", name = "runtime", version.ref = "sqldelight" }
 truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "0.7.0" }
 uuid = { group = "com.benasher44", name = "uuid", version = "0.3.1" }

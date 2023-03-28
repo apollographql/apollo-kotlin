@@ -44,6 +44,7 @@ kotlin {
         api(project(":apollo-api"))
         api(project(":apollo-normalized-cache-api-incubating"))
         api(project(":apollo-normalized-cache-incubating"))
+        api(golatac.lib("sqldelight.runtime"))
       }
     }
 
@@ -88,7 +89,7 @@ kotlin {
 
 configure<com.android.build.gradle.LibraryExtension> {
   compileSdk = golatac.version("android.sdkversion.compile").toInt()
-  namespace ="com.apollographql.apollo3.cache.normalized.sql"
+  namespace = "com.apollographql.apollo3.cache.normalized.sql"
 
   defaultConfig {
     minSdk = golatac.version("android.sdkversion.min").toInt()
