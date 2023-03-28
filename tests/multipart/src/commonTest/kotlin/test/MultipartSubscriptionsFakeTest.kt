@@ -7,9 +7,15 @@ import com.apollographql.apollo3.network.http.HttpNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import kotlinx.coroutines.flow.toList
 import multipart.CounterSubscription
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
+/**
+ * This is a test from the early days of multipart subscriptions. It's not valid anymore but kept around
+ * as reference. If you come here and wonder what this is, now is probably a good time to remove it.
+ */
+@Ignore
 class MultipartSubscriptionsFakeTest {
   private lateinit var mockServer: MockServer
   private lateinit var apolloClient: ApolloClient
