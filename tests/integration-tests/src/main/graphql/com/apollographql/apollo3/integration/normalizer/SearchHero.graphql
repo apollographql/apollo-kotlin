@@ -1,0 +1,15 @@
+query SearchHero($text: String) {
+    search(text: $text) {
+        __typename
+        ... on Character {
+            __typename
+            name
+            ... on Human {
+                homePlanet
+            }
+            ... on Droid {
+                primaryFunction
+            }
+        }
+    }
+}
