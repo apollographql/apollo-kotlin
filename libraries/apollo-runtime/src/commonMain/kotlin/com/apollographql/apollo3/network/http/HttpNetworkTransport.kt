@@ -286,7 +286,7 @@ private constructor(
   }
 
   companion object {
-    enum class Kind {
+    private enum class Kind {
       EMPTY,
       PAYLOAD,
       OTHER,
