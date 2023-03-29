@@ -7,6 +7,7 @@ import com.apollographql.apollo3.integration.normalizer.type.Episode
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.enqueueData
 import com.apollographql.apollo3.testing.mockServerTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,7 +39,10 @@ class HttpGetTest {
         mockServer.takeRequest().path
     )
   }
+
+  // Ignored because of https://youtrack.jetbrains.com/issue/KT-35508
   @Test
+  @Ignore
   fun encodeReservedCharactersTest() = mockServerTest {
     // Response not needed, just testing generated url
     mockServer.enqueueData(data = emptyMap())
