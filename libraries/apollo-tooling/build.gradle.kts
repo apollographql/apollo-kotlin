@@ -48,7 +48,8 @@ apollo {
   }
 }
 
-// Using a published version of the plugin but project dependencies, so checkApolloVersions would complain
+// We're using project(":apollo-compiler") and the published "apollo-runtime" which do not have the same version
+// TODO: exclude apollo-compiler from the version check as it's not used at runtime.
 tasks.configureEach {
   if (name == "checkApolloVersions") {
     enabled = false
