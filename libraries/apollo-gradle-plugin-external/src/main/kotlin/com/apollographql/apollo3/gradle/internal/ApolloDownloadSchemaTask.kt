@@ -93,7 +93,7 @@ abstract class ApolloDownloadSchemaTask : DefaultTask() {
         graph = graph.orNull,
         graphVariant = graphVariant.getOrElse("current"),
         key = key.orNull,
-        registryUrl = registryUrl.getOrElse("https://graphql.api.apollographql.com/api/graphql"),
+        registryUrl = registryUrl.getOrElse("https://api.apollographql.com/graphql"),
         schema = file,
         insecure = insecure.getOrElse(false),
         headers = header.toMap() + extraHeaders,

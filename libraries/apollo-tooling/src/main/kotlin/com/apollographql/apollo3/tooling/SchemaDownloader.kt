@@ -62,7 +62,7 @@ object SchemaDownloader {
       graph: String?,
       key: String?,
       graphVariant: String,
-      registryUrl: String = "https://graphql.api.apollographql.com/api/graphql",
+      registryUrl: String = "https://api.apollographql.com/graphql",
       schema: File,
       insecure: Boolean = false,
       headers: Map<String, String> = emptyMap(),
@@ -154,7 +154,7 @@ object SchemaDownloader {
       key: String,
       graph: String,
       variant: String,
-      endpoint: String = "https://graphql.api.apollographql.com/api/graphql",
+      endpoint: String = "https://api.apollographql.com/graphql",
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
@@ -168,7 +168,7 @@ object SchemaDownloader {
           .addHttpHeader("x-api-key", key)
           .execute()
     }
-    val document = response.data?.service?.variant?.activeSchemaPublish?.schema?.document
+    val document = response.data?.graph?.variant?.latestPublication?.schema?.document
     check(document != null) {
       "Cannot retrieve document from $endpoint\nCheck graph id and variant"
     }

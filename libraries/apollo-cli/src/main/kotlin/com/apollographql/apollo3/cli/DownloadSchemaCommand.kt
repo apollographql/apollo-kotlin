@@ -20,7 +20,7 @@ internal class DownloadSchemaCommand: CliktCommand() {
   private val graph by option(help = "[Apollo Studio users only] The identifier of the Apollo graph used to download the schema.")
   private val key by option(help = "[Apollo Studio users only] The Apollo API key. See https://www.apollographql.com/docs/studio/api-keys/ for more information on how to get your API key.")
   private val graph_variant by option(help = "[Apollo Studio users only] The variant of the Apollo graph used to download the schema.").default("current")
-  private val registryUrl by option(help = "[Apollo Studio users only] The registry url of the registry instance used to download the schema.").default("https://graphql.api.apollographql.com/api/graphql")
+  private val registryUrl by option(help = "[Apollo Studio users only] The registry url of the registry instance used to download the schema.").default("https://api.apollographql.com/graphql")
 
   override fun run() {
     val headersMap: Map<String, String> = headers?.let { headerJsonStr ->

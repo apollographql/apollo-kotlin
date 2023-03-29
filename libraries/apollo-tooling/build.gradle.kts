@@ -41,8 +41,10 @@ apollo {
     sourceFolder.set("platform-api")
     generateAsInternal.set(true)
     mapScalarToKotlinString("GraphQLDocument")
-    introspection {
-      endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
+    registry {
+      graph.set("apollo-platform")
+      graphVariant.set("main")
+      key.set("")
       schemaFile.set(file("src/main/graphql/platform-api/schema.graphqls"))
     }
   }
