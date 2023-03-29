@@ -1,15 +1,15 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
-import com.apollographql.apollo3.api.BLabel
-import com.apollographql.apollo3.api.BPossibleTypes
-import com.apollographql.apollo3.api.BTerm
-import com.apollographql.apollo3.api.BVariable
-import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.L
 import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
 import com.apollographql.apollo3.compiler.codegen.java.joinToCode
+import com.apollographql.apollo3.compiler.ir.BLabel
+import com.apollographql.apollo3.compiler.ir.BPossibleTypes
+import com.apollographql.apollo3.compiler.ir.BTerm
+import com.apollographql.apollo3.compiler.ir.BVariable
+import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterizedTypeName
 
@@ -66,11 +66,9 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
               v.possibleTypes.map { CodeBlock.of(S, it) }.joinToCode(",")
           )
         }
-        else -> error("")
       }
 
       CodeBlock.of("new $T($L)", ParameterizedTypeName.get(JavaClassNames.BooleanExpressionElement, JavaClassNames.BTerm), params)
     }
-    else -> error("")
   }
 }

@@ -1,16 +1,16 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.api.BLabel
-import com.apollographql.apollo3.api.BPossibleTypes
-import com.apollographql.apollo3.api.BTerm
-import com.apollographql.apollo3.api.BVariable
-import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLType
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.parseAsGQLType
 import com.apollographql.apollo3.ast.toUtf8
+import com.apollographql.apollo3.compiler.ir.BLabel
+import com.apollographql.apollo3.compiler.ir.BPossibleTypes
+import com.apollographql.apollo3.compiler.ir.BTerm
+import com.apollographql.apollo3.compiler.ir.BVariable
+import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor

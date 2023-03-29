@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.compiler
 
-import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLDefinition
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
@@ -10,6 +9,7 @@ import com.apollographql.apollo3.ast.GQLOperationDefinition
 import com.apollographql.apollo3.ast.GQLSelection
 import com.apollographql.apollo3.ast.Issue
 import com.apollographql.apollo3.ast.internal.IssuesScope
+import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.toBooleanExpression
 
 internal fun checkConditionalFragments(definitions: List<GQLDefinition>): List<Issue> {

@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
-import com.apollographql.apollo3.api.BLabel
-import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.api.firstElementOfType
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
@@ -19,12 +16,15 @@ import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinMemberNames
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.codeBlock
+import com.apollographql.apollo3.compiler.ir.BLabel
+import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.apollographql.apollo3.compiler.ir.IrModel
 import com.apollographql.apollo3.compiler.ir.IrModelType
 import com.apollographql.apollo3.compiler.ir.IrNonNullType
 import com.apollographql.apollo3.compiler.ir.IrOptionalType
 import com.apollographql.apollo3.compiler.ir.IrProperty
 import com.apollographql.apollo3.compiler.ir.IrType
+import com.apollographql.apollo3.compiler.ir.firstElementOfType
 import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
