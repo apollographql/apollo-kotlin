@@ -55,10 +55,3 @@ tasks.configureEach {
     enabled = false
   }
 }
-
-// Within the 'tests' project (a composite build), dependencies are automatically substituted to use the project's one.
-// But here we want to keep the published version of apollo-api when compiling the generated models.
-// So, disable the substitution rules (see https://docs.gradle.org/current/userguide/composite_builds.html#deactivate_included_build_substitutions).
-configurations.all {
-  resolutionStrategy.useGlobalDependencySubstitutionRules.set(false)
-}
