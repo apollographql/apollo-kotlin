@@ -138,7 +138,7 @@ object SchemaDownloader {
       insecure: Boolean,
       specVersion: SpecVersion,
   ): String {
-    return SchemaHelper.executeQuery(
+    return SchemaHelper.executeSchemaQuery(
         query = when (specVersion) {
           SpecVersion.June_2018 -> GraphQLJune2018IntrospectionQuery()
           SpecVersion.October_2021 -> GraphQLOctober2021IntrospectionQuery()
@@ -158,12 +158,6 @@ object SchemaDownloader {
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    val responseString = SchemaHelper.executeQuery(
-        query = DownloadSchemaQuery(graphID = graph, variant = variant),
-        endpoint = endpoint,
-        headers = headers + mapOf("x-api-key" to key),
-        insecure = insecure
-    )
     val apolloClient = ApolloClient.Builder()
         .serverUrl(endpoint)
         .okHttpClient(SchemaHelper.newOkHttpClient(insecure))
@@ -176,7 +170,7 @@ object SchemaDownloader {
     }
     val document = response.data?.service?.variant?.activeSchemaPublish?.schema?.document
     check(document != null) {
-      "Cannot retrieve document from $responseString\nCheck graph id and variant"
+      "Cannot retrieve document from $endpoint\nCheck graph id and variant"
     }
     return document
   }

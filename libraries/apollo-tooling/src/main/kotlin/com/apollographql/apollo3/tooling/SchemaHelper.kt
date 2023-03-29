@@ -1,9 +1,12 @@
 package com.apollographql.apollo3.tooling
 
 import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -12,6 +15,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.platform.Platform
+import okio.Buffer
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
@@ -36,7 +40,7 @@ internal object SchemaHelper {
     return clientBuilder.build()
   }
 
-  internal fun executeQuery(
+  internal fun executeSchemaQuery(
       query: Query<*>,
       endpoint: String,
       headers: Map<String, String>,
@@ -54,6 +58,15 @@ internal object SchemaHelper {
     }
     check(httpResponse.statusCode in 200..299 && bodyStr != null) {
       "Cannot get schema from $endpoint: ${httpResponse.statusCode}:\n${bodyStr ?: "(empty body)"}"
+    }
+    // Make sure the response is a valid schema
+    try {
+      query.parseJsonResponse(
+          jsonReader = Buffer().writeUtf8(bodyStr).jsonReader(),
+          customScalarAdapters = CustomScalarAdapters.Empty
+      )
+    } catch (e: Exception) {
+      throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$bodyStr", e)
     }
     return bodyStr
   }
