@@ -21,29 +21,29 @@ dependencies {
 }
 
 apollo {
-  service("graphql-June2018") {
+  service("graphql-june2018") {
     packageName.set("com.apollographql.apollo3.tooling.graphql.june2018")
-    sourceFolder.set("graphql/June2018")
+    sourceFolder.set("graphql/june2018")
     generateAsInternal.set(true)
   }
-  service("graphql-October2021") {
+  service("graphql-october2021") {
     packageName.set("com.apollographql.apollo3.tooling.graphql.october2021")
-    sourceFolder.set("graphql/October2021")
+    sourceFolder.set("graphql/october2021")
     generateAsInternal.set(true)
   }
-  service("graphql-Draft") {
+  service("graphql-draft") {
     packageName.set("com.apollographql.apollo3.tooling.graphql.draft")
-    sourceFolder.set("graphql/Draft")
+    sourceFolder.set("graphql/draft")
     generateAsInternal.set(true)
   }
-  service("platformApi") {
-    packageName.set("com.apollographql.apollo3.tooling.platformApi")
-    sourceFolder.set("platformApi")
+  service("platform-api") {
+    packageName.set("com.apollographql.apollo3.tooling.platformapi")
+    sourceFolder.set("platform-api")
     generateAsInternal.set(true)
     mapScalarToKotlinString("GraphQLDocument")
     introspection {
       endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
-      schemaFile.set(file("src/main/graphql/platformApi/schema.graphqls"))
+      schemaFile.set(file("src/main/graphql/platform-api/schema.graphqls"))
     }
   }
 }

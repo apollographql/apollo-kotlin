@@ -12,7 +12,7 @@ import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.network.okHttpClient
-import com.apollographql.apollo3.tooling.platformApi.DownloadSchemaQuery
+import com.apollographql.apollo3.tooling.platformapi.DownloadSchemaQuery
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import java.io.File
