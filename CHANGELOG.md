@@ -148,6 +148,7 @@ apollo {
 * Gradle plugin: run codegen after gradle sync (#4796)
 * Allow custom SqlDriver (#4806)
 * Multipart subscriptions (#4768, #4807, #4738)
+* GQLNode.print for type extensions (#4814)
 
 # Version 3.7.5
 
