@@ -1,6 +1,6 @@
 # 🔮 Apollo Kotlin Roadmap
 
-**Last updated: 2023-03-16**
+**Last updated: 2023-03-30**
 
 For up to date release notes, refer to the project [Changelog](https://github.com/apollographql/apollo-kotlin/blob/main/CHANGELOG.md).
 
@@ -15,13 +15,13 @@ For up to date release notes, refer to the project [Changelog](https://github.co
 
 ## Version 3 releases
 
-`3.7` is the last planned minor release under version 3.  All active feature development is now being done for the `4.0.0` release on the `main` branch.  Version 3 is still actively maintained and we will continue to release `3.7.x` patches on the `release-3.x` branch.
+`3.8` is the last planned minor release under version 3.  All active feature development is now being done for the `4.0.0` release on the `main` branch.  Version 3 is still actively maintained and we will continue to release `3.8.x` patches on the `release-3.x` branch.
 
 ## Better support for Jetpack Compose
 
-_Approximate Date: TBD_
+_Approximate Date: 2023-04-03 (experimental), stable release with 4.0_
 
-[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  When we have something ready to share we will welcome your feedback!
+[Jetpack Compose](https://developer.android.com/jetpack/compose) is a declarative UI framework for building Android UIs written in Kotlin.  We are experimenting with a few different approaches for supporting Compose in the Apollo Kotlin library.  Our 3.8.0 release contains an experimental API for use with Compose, please do try it out and give us feedback!
 
 ## [4.0](https://github.com/apollographql/apollo-kotlin/milestone/29)
 
@@ -37,6 +37,7 @@ Here's a high-level overview of what to expect:
 - Annotation processing for custom scalars
 - Client-controlled nullability
 - [API tweaks and cleanups](https://github.com/apollographql/apollo-kotlin/issues/4171)
+- Stable Jetpack Compose extensions
 
 ## Cache improvements
 
