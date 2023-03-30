@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.ast.GQLArgument
 import com.apollographql.apollo3.ast.GQLArguments
 import com.apollographql.apollo3.ast.GQLDefinition
@@ -27,8 +29,10 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
-import com.apollographql.apollo3.tooling.SchemaDownloader.cast
-import kotlinx.serialization.json.Json
+import com.apollographql.apollo3.tooling.platformapi.internal.RegisterOperationsMutation
+import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredClientIdentityInput
+import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredOperationInput
+import kotlinx.coroutines.runBlocking
 import okio.Buffer
 
 
@@ -108,6 +112,7 @@ private fun printDocument(gqlNode: GQLNode): String {
             write("\n")
           }
         }
+
         else -> super.write(gqlNode)
       }
     }
@@ -123,30 +128,39 @@ private fun GQLNode.copyWithSortedChildren(): GQLNode {
     is GQLDocument -> {
       copy(definitions = definitions.sortedBy { it.score() })
     }
+
     is GQLOperationDefinition -> {
       copy(variableDefinitions = variableDefinitions.sortedBy { it.score() })
     }
+
     is GQLSelectionSet -> {
       copy(selections = selections.sortedBy { it.score() })
     }
+
     is GQLField -> {
       copy(arguments = arguments)
     }
+
     is GQLFragmentSpread -> {
       copy(directives = directives.sortedBy { it.score() })
     }
+
     is GQLInlineFragment -> {
       copy(directives = directives.sortedBy { it.score() })
     }
+
     is GQLFragmentDefinition -> {
       copy(directives = directives.sortedBy { it.score() })
     }
+
     is GQLDirective -> {
       copy(arguments = arguments)
     }
+
     is GQLArguments -> {
       copy(arguments = arguments.sortedBy { it.score() })
     }
+
     else -> this
   }
 }
@@ -161,36 +175,6 @@ private fun GQLNode.sort(): GQLNode {
 
 @ApolloExperimental
 object RegisterOperations {
-  private val mutation = """
-      mutation RegisterOperations(
-            ${'$'}id    : ID!
-            ${'$'}clientIdentity    : RegisteredClientIdentityInput!
-            ${'$'}operations    : [RegisteredOperationInput!]!
-            ${'$'}manifestVersion    : Int!
-            ${'$'}graphVariant    : String
-      ) {
-        service(id:     ${'$'}id    ) {
-          registerOperationsWithResponse(
-            clientIdentity:     ${'$'}clientIdentity
-            operations:     ${'$'}operations
-            manifestVersion:     ${'$'}manifestVersion
-            graphVariant:     ${'$'}graphVariant
-          ) {
-            invalidOperations {
-              errors {
-                message
-              }
-              signature
-            }
-            newOperations {
-              signature
-            }
-            registrationSuccess
-          }
-        }
-      }
-  """.trimIndent()
-
   private fun String.normalize(): String {
     val gqlDocument = Buffer().writeUtf8(this).parseAsGQLDocument().getOrThrow()
 
@@ -254,58 +238,43 @@ object RegisterOperations {
       graphVariant: String,
       operationOutput: OperationOutput,
   ) {
-    val variables = mapOf(
-        "id" to graphID,
-        "clientIdentity" to mapOf(
-            "name" to "apollo-android",
-            "identifier" to "apollo-android",
-            "version" to APOLLO_VERSION,
-        ),
-        "operations" to operationOutput.entries.map {
-          val document = it.value.source
-          mapOf(
-              "signature" to document.safelistingHash(),
-              "document" to document
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl("https://graphql.api.apollographql.com/api/graphql")
+        .build()
+
+    val response = runBlocking {
+      apolloClient.mutation(
+          RegisterOperationsMutation(
+              id = graphID,
+              clientIdentity = RegisteredClientIdentityInput(
+                  name = "apollo-kotlin",
+                  identifier = "apollo-kotlin",
+                  version = Optional.present(APOLLO_VERSION),
+              ),
+              operations = operationOutput.entries.map {
+                val document = it.value.source
+                RegisteredOperationInput(
+                    signature = document.safelistingHash(),
+                    document = Optional.present(document)
+                )
+              },
+              manifestVersion = 2,
+              graphVariant = Optional.present(graphVariant)
           )
-        },
-        "manifestVersion" to 2,
-        "graphVariant" to graphVariant
-    )
-
-    val response = SchemaHelper.executeQuery(mutation, variables, "https://graphql.api.apollographql.com/api/graphql", mapOf("x-api-key" to key))
-
-    check(response.isSuccessful)
-
-    val responseString = response.body.use { it?.string() }
-
-    val errors = responseString
-        ?.let { Json.parseToJsonElement(it) }
-        ?.toAny().cast<Map<String, *>>()
-        ?.get("data").cast<Map<String, *>>()
-        ?.get("service").cast<Map<String, *>>()
-        ?.get("registerOperationsWithResponse").cast<Map<String, *>>()
-        ?.get("invalidOperations").cast<List<Map<String, *>>>()
-        ?.flatMap {
-          it.get("errors").cast<List<String>>() ?: emptyList()
-        } ?: emptyList()
+      )
+          .addHttpHeader("x-api-key", key)
+          .execute()
+    }
+    check(!response.hasErrors()) {
+      "Cannot push operations: ${response.errors!!.joinToString { it.message }}"
+    }
+    val errors = response.data?.service?.registerOperationsWithResponse?.invalidOperations?.flatMap {
+      it.errors ?: emptyList()
+    } ?: emptyList()
 
     check(errors.isEmpty()) {
-      "Cannot push operations: ${errors.joinToString("\n")}"
+      "Cannot push operations:\n${errors.joinToString("\n")}"
     }
-
-    val success = responseString
-        ?.let { Json.parseToJsonElement(it) }
-        ?.toAny().cast<Map<String, *>>()
-        ?.get("data").cast<Map<String, *>>()
-        ?.get("service").cast<Map<String, *>>()
-        ?.get("registerOperationsWithResponse").cast<Map<String, *>>()
-        ?.get("registrationSuccess").cast<Boolean>()
-        ?: false
-
-    check(success) {
-      "Cannot push operations: $responseString"
-    }
-
     println("Operations pushed successfully")
   }
 }

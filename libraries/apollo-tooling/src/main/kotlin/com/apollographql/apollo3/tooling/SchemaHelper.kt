@@ -9,11 +9,7 @@ import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.network.http.DefaultHttpEngine
 import kotlinx.coroutines.runBlocking
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import okhttp3.internal.platform.Platform
 import okio.Buffer
 import java.security.SecureRandom
@@ -69,42 +65,6 @@ internal object SchemaHelper {
       throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$bodyStr", e)
     }
     return bodyStr
-  }
-
-  private fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
-    val body = map.toJsonElement().toString().toRequestBody("application/json".toMediaTypeOrNull())
-    val request = Request.Builder()
-        .post(body)
-        .apply {
-          headers.entries.forEach {
-            addHeader(it.key, it.value)
-          }
-        }
-        .url(url)
-        .build()
-
-    val response = newOkHttpClient(insecure)
-        .newCall(request)
-        .execute()
-
-    check(response.isSuccessful) {
-      "cannot get schema from $url: ${response.code}:\n${response.body?.string()}"
-    }
-
-    return response
-  }
-
-  /**
-   * @param variables a map representing the variable as Json values
-   */
-  internal fun executeQuery(
-      query: String,
-      variables: Map<String, Any>,
-      url: String,
-      headers: Map<String, String>,
-      insecure: Boolean = false,
-  ): Response {
-    return executeQuery(mapOf("query" to query, "variables" to variables), url, headers, insecure)
   }
 
   private fun OkHttpClient.Builder.applyInsecureTrustManager() = apply {
