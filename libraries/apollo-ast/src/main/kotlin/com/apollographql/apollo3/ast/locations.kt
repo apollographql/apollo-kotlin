@@ -1,141 +1,141 @@
 package com.apollographql.apollo3.ast
 
-fun GQLDocument.removeLocation(): GQLDocument = copy(
-    definitions = definitions.map { it.removeLocation1() },
+internal fun GQLDocument.removeLocation(): GQLDocument = copy(
+    definitions = definitions.map { it.removeLocation() },
     filePath = null
 )
 
-fun GQLDefinition.removeLocation1(): GQLDefinition = when(this) {
-  is GQLDirectiveDefinition -> removeLocation()
-  is GQLEnumTypeExtension -> removeLocation()
-  is GQLFragmentDefinition -> removeLocation()
-  is GQLOperationDefinition -> removeLocation()
-  is GQLInputObjectTypeExtension -> removeLocation()
-  is GQLInterfaceTypeExtension -> removeLocation()
-  is GQLObjectTypeExtension -> removeLocation()
-  is GQLScalarTypeExtension -> removeLocation()
-  is GQLSchemaDefinition -> removeLocation()
-  is GQLSchemaExtension -> removeLocation()
-  is GQLEnumTypeDefinition -> removeLocation()
-  is GQLInputObjectTypeDefinition -> removeLocation()
-  is GQLInterfaceTypeDefinition -> removeLocation()
-  is GQLObjectTypeDefinition -> removeLocation()
-  is GQLScalarTypeDefinition -> removeLocation()
-  is GQLUnionTypeDefinition -> removeLocation()
-  is GQLUnionTypeExtension -> removeLocation()
+internal fun GQLDefinition.removeLocation(): GQLDefinition = when(this) {
+  is GQLDirectiveDefinition -> this@removeLocation.removeLocation()
+  is GQLEnumTypeExtension -> this@removeLocation.removeLocation()
+  is GQLFragmentDefinition -> this@removeLocation.removeLocation()
+  is GQLOperationDefinition -> this@removeLocation.removeLocation()
+  is GQLInputObjectTypeExtension -> this@removeLocation.removeLocation()
+  is GQLInterfaceTypeExtension -> this@removeLocation.removeLocation()
+  is GQLObjectTypeExtension -> this@removeLocation.removeLocation()
+  is GQLScalarTypeExtension -> this@removeLocation.removeLocation()
+  is GQLSchemaDefinition -> this@removeLocation.removeLocation()
+  is GQLSchemaExtension -> this@removeLocation.removeLocation()
+  is GQLEnumTypeDefinition -> this@removeLocation.removeLocation()
+  is GQLInputObjectTypeDefinition -> this@removeLocation.removeLocation()
+  is GQLInterfaceTypeDefinition -> this@removeLocation.removeLocation()
+  is GQLObjectTypeDefinition -> this@removeLocation.removeLocation()
+  is GQLScalarTypeDefinition -> this@removeLocation.removeLocation()
+  is GQLUnionTypeDefinition -> this@removeLocation.removeLocation()
+  is GQLUnionTypeExtension -> this@removeLocation.removeLocation()
 }
 
-fun GQLEnumTypeDefinition.removeLocation() = copy(
+internal fun GQLEnumTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     enumValues = enumValues.map { it.removeLocation() }
 )
-fun GQLInputObjectTypeDefinition.removeLocation() = copy(
+internal fun GQLInputObjectTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     inputFields = inputFields.map { it.removeLocation() }
 )
-fun GQLInterfaceTypeDefinition.removeLocation() = copy(
+internal fun GQLInterfaceTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     fields = fields.map { it.removeLocation() }
 )
-fun GQLObjectTypeDefinition.removeLocation() = copy(
+internal fun GQLObjectTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     fields =  fields.map { it.removeLocation() }
 )
-fun GQLScalarTypeDefinition.removeLocation() = copy(
+internal fun GQLScalarTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
 )
-fun GQLUnionTypeDefinition.removeLocation() = copy(
+internal fun GQLUnionTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     memberTypes = memberTypes.map { it.removeLocation() }
 )
-fun GQLUnionTypeExtension.removeLocation() = copy(
+internal fun GQLUnionTypeExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     memberTypes = memberTypes.map { it.removeLocation() }
 )
 
-fun GQLFieldDefinition.removeLocation() = copy(
+internal fun GQLFieldDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     arguments = arguments.map { it.removeLocation() },
     type = type.removeLocation()
 )
-fun GQLScalarTypeExtension.removeLocation() = copy(
+internal fun GQLScalarTypeExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
 )
 
-fun GQLSchemaDefinition.removeLocation() = copy(
+internal fun GQLSchemaDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     rootOperationTypeDefinitions = rootOperationTypeDefinitions.map { it.removeLocation() },
 )
 
-fun GQLOperationTypeDefinition.removeLocation() = copy(
+internal fun GQLOperationTypeDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
 )
-fun GQLSchemaExtension.removeLocation() = copy(
+internal fun GQLSchemaExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     operationTypesDefinition =operationTypesDefinition.map { it.removeLocation() },
 )
 
-fun GQLInterfaceTypeExtension.removeLocation() = copy(
+internal fun GQLInterfaceTypeExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     fields = fields.map { it.removeLocation() },
 )
 
-fun GQLInputObjectTypeExtension.removeLocation() = copy(
+internal fun GQLInputObjectTypeExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     inputFields = inputFields.map { it.removeLocation() },
 )
 
-fun GQLObjectTypeExtension.removeLocation() = copy(
+internal fun GQLObjectTypeExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     fields = fields.map { it.removeLocation() },
 )
 
-fun GQLOperationDefinition.removeLocation() = copy(
+internal fun GQLOperationDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     selectionSet = selectionSet.removeLocation(),
     variableDefinitions = variableDefinitions.map { it.removeLocation() }
 )
 
-fun GQLVariableDefinition.removeLocation() = copy(
+internal fun GQLVariableDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     type = type.removeLocation(),
     defaultValue = defaultValue?.removeLocation(),
     directives = directives.map { it.removeLocation() }
 )
 
-fun GQLFragmentDefinition.removeLocation() = copy(
+internal fun GQLFragmentDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     typeCondition = typeCondition.removeLocation(),
     selectionSet = selectionSet.removeLocation()
 )
 
-fun GQLSelectionSet.removeLocation(): GQLSelectionSet = copy(
+internal fun GQLSelectionSet.removeLocation(): GQLSelectionSet = copy(
     selections = selections.map { it.removeLocation() },
     sourceLocation = SourceLocation.UNKNOWN,
 )
 
-fun GQLArguments.removeLocation() = copy(
+internal fun GQLArguments.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     arguments =  arguments.map { it.removeLocation() }
 )
 
-fun GQLSelection.removeLocation(): GQLSelection = when(this) {
+internal fun GQLSelection.removeLocation(): GQLSelection = when(this) {
   is GQLField -> copy(
       sourceLocation = SourceLocation.UNKNOWN,
       arguments = arguments?.removeLocation(),
@@ -155,31 +155,31 @@ fun GQLSelection.removeLocation(): GQLSelection = when(this) {
   )
 }
 
-fun GQLEnumTypeExtension.removeLocation() = copy(
+internal fun GQLEnumTypeExtension.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
     enumValues = enumValues.map { it.removeLocation() },
 )
 
-fun GQLEnumValueDefinition.removeLocation() = copy(
+internal fun GQLEnumValueDefinition.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     directives = directives.map { it.removeLocation() },
 )
 
-fun GQLEnumValue.removeLocation() = copy(
+internal fun GQLEnumValue.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
 )
 
-fun GQLDirective.removeLocation() = copy(
+internal fun GQLDirective.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     arguments = arguments?.copy(arguments = arguments.arguments.map { it.removeLocation() })
 )
 
-fun GQLArgument.removeLocation() = copy(
+internal fun GQLArgument.removeLocation() = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     value = value.removeLocation()
 )
-fun GQLDirectiveDefinition.removeLocation(): GQLDirectiveDefinition = copy(
+internal fun GQLDirectiveDefinition.removeLocation(): GQLDirectiveDefinition = copy(
     sourceLocation = SourceLocation.UNKNOWN,
     arguments = arguments.map { it.removeLocation() },
 )
@@ -191,15 +191,15 @@ private fun GQLInputValueDefinition.removeLocation() = copy(
     defaultValue = defaultValue?.removeLocation(),
 )
 
-fun GQLType.removeLocation() = when(this) {
+internal fun GQLType.removeLocation() = when(this) {
   is GQLNonNullType -> copy(sourceLocation = SourceLocation.UNKNOWN)
   is GQLListType -> copy(sourceLocation = SourceLocation.UNKNOWN)
   is GQLNamedType -> removeLocation()
 }
 
-fun GQLNamedType.removeLocation() = copy(sourceLocation = SourceLocation.UNKNOWN)
+internal fun GQLNamedType.removeLocation() = copy(sourceLocation = SourceLocation.UNKNOWN)
 
-fun GQLValue.removeLocation() = when (this) {
+internal fun GQLValue.removeLocation() = when (this) {
   is GQLBooleanValue -> copy(sourceLocation = SourceLocation.UNKNOWN)
   is GQLEnumValue -> removeLocation()
   is GQLFloatValue -> copy(sourceLocation = SourceLocation.UNKNOWN)
