@@ -16,7 +16,6 @@ import kotlin.test.assertIs
 /**
  * A test that runs against https://github.com/apollographql/federated-subscriptions-poc
  */
-@Ignore
 class MultipartSubscriptionsRouterTest {
   private fun client(log: Boolean) = ApolloClient.Builder()
       .serverUrl("http://localhost:4040/")
@@ -62,7 +61,7 @@ class MultipartSubscriptionsRouterTest {
   }
 
   /**
-   * Run docker compose kill reviews to trigger an exception
+   * Run 'docker compose kill reviews' to trigger an exception
    */
   @Test
   fun reviewTest() = runTest {
