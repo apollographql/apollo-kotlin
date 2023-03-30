@@ -168,6 +168,9 @@ object SchemaDownloader {
           .addHttpHeader("x-api-key", key)
           .execute()
     }
+    check(!response.hasErrors()) {
+      "Cannot retrieve document from $endpoint: ${response.errors!!.joinToString { it.message }}\nCheck graph id and variant"
+    }
     val document = response.data?.graph?.variant?.latestPublication?.schema?.document
     check(document != null) {
       "Cannot retrieve document from $endpoint\nCheck graph id and variant"

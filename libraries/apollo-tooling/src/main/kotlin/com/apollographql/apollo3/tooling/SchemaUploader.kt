@@ -1,8 +1,11 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
-import com.apollographql.apollo3.tooling.SchemaDownloader.cast
-import kotlinx.serialization.json.Json
+import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.tooling.platformapi.PublishMonolithSchemaMutation
+import com.apollographql.apollo3.tooling.platformapi.PublishSubgraphSchemaMutation
+import kotlinx.coroutines.runBlocking
 
 @ApolloExperimental
 object SchemaUploader {
@@ -11,45 +14,87 @@ object SchemaUploader {
       key: String,
       graph: String?,
       variant: String = "current",
+      subgraph: String? = null,
+      revision: String? = null,
       headers: Map<String, String> = emptyMap(),
   ) {
-    val query = """
-    mutation UploadSchema(${'$'}graphID: ID!,  ${'$'}variant: String!, ${'$'}schemaDocument: String!) {
-      service(id: ${'$'}graphID) {
-        
-        uploadSchema(schemaDocument: ${'$'}schemaDocument, tag: ${'$'}variant) {
-          success
-          message
-        }
-      }
+    check(subgraph == null && revision == null || subgraph != null && revision != null) {
+      "subgraph and revision must be both null or both not null"
     }
-  """.trimIndent()
-    val graph2 = graph ?: key.getGraph() ?: error("graph not found")
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl("https://api.apollographql.com/graphql")
+        .build()
 
-    val variables = mapOf(
-        "graphID" to graph2,
-        "variant" to variant,
-        "schemaDocument" to sdl,
-    )
+    val graphID = graph ?: key.getGraph() ?: error("graph not found")
 
-    val response = SchemaHelper.executeQuery(
-        query,
-        variables,
-        "https://graphql.api.apollographql.com/api/graphql",
-        mapOf("x-api-key" to key) + headers
-    )
+    if (subgraph == null) {
+      publishMonolithSchema(apolloClient, graphID, variant, sdl, headers, key)
+    } else {
+      publishSubgraphSchema(apolloClient, graphID, variant, sdl, subgraph, revision, headers, key)
+    }
+  }
 
-    val responseString = response.body.use { it?.string() }
+  private fun publishMonolithSchema(
+      apolloClient: ApolloClient,
+      graphID: String,
+      variant: String,
+      sdl: String,
+      headers: Map<String, String>,
+      key: String,
+  ) {
+    val response = runBlocking {
+      apolloClient.mutation(
+          PublishMonolithSchemaMutation(
+              graphID = graphID,
+              variant = variant,
+              schemaDocument = sdl,
+          )
+      )
+          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+          .addHttpHeader("x-api-key", key)
+          .execute()
+    }
+    check(!response.hasErrors()) {
+      "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"
+    }
+    val code = response.data?.graph?.uploadSchema?.code
+    val message = response.data?.graph?.uploadSchema?.message
+    val success = response.data?.graph?.uploadSchema?.success
+    check(success == true) {
+      "Cannot upload schema (code: $code): $message"
+    }
+  }
 
-    val uploadSchema = responseString
-        ?.let { Json.parseToJsonElement(it) }
-        ?.toAny().cast<Map<String, *>>()
-        ?.get("data").cast<Map<String, *>>()
-        ?.get("service").cast<Map<String, *>>()
-        ?.get("uploadSchema").cast<Map<String, *>>()
-
-    check(uploadSchema?.get("success") == true) {
-      "Cannot upload schema: ${uploadSchema?.get("message")}"
+  private fun publishSubgraphSchema(
+      apolloClient: ApolloClient,
+      graphID: String,
+      variant: String,
+      sdl: String,
+      subgraph: String,
+      revision: String?,
+      headers: Map<String, String>,
+      key: String,
+  ) {
+    val response = runBlocking {
+      apolloClient.mutation(
+          PublishSubgraphSchemaMutation(
+              graphID = graphID,
+              variant = variant,
+              schemaDocument = sdl,
+              subgraph = subgraph,
+              revision = revision!!,
+          )
+      )
+          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+          .addHttpHeader("x-api-key", key)
+          .execute()
+    }
+    check(!response.hasErrors()) {
+      "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"
+    }
+    val errors = response.data?.graph?.publishSubgraph?.errors?.filterNotNull()?.joinToString("\n") { it.code + ": " + it.message }
+    check(errors.isNullOrEmpty()) {
+      "Cannot upload schema:\n$errors"
     }
   }
 }

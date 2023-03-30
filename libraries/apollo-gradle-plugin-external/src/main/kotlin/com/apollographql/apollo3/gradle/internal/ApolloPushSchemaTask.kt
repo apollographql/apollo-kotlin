@@ -13,7 +13,7 @@ import java.io.File
 abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Input
   @get:Optional
-  @get:Option(option = "schema", description = "schema to push as SDL")
+  @get:Option(option = "schema", description = "The schema to push as SDL")
   abstract val schema: Property<String>
 
   @get:Optional
@@ -31,6 +31,17 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
   @get:Option(option = "graphVariant", description = "The variant of the Apollo graph used to download the schema.")
   abstract val graphVariant: Property<String>
 
+  @get:Optional
+  @get:Input
+  @get:Option(option = "subgraph", description = "The subgraph name. Can be omitted if the graph is a legacy monograph.")
+  abstract val subgraph: Property<String>
+
+  @get:Optional
+  @get:Input
+  @get:Option(option = "revision", description = "The revision name. Can be omitted if the graph is a legacy monograph, must be provided otherwise.")
+  abstract val revision: Property<String>
+
+
   @get:Input
   abstract var projectRootDir: String
 
@@ -46,8 +57,10 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
     var graph = graph.orProperty("graph")
     val graphVariant = graphVariant.orProperty("graph-variant")
     val schema = schema.orNull
+    val subgraph = subgraph.orNull
+    val revision = revision.orNull
 
-    check (key != null) {
+    check(key != null) {
       "please define key"
     }
 
@@ -55,12 +68,16 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
       graph = key.split(":")[1]
     }
 
-    check (graph != null) {
+    check(graph != null) {
       "please define graph"
     }
 
-    check (schema != null) {
+    check(schema != null) {
       "please define schema"
+    }
+
+    check(subgraph == null && revision == null || subgraph != null && revision != null) {
+      "please define both subgraph and revision or neither"
     }
 
     // Files are relative to the root project. It is not possible in a consistent way to have them relative to the current
@@ -70,7 +87,9 @@ abstract class ApolloPushSchemaTask : DefaultTask() {
         graph = graph,
         variant = graphVariant ?: "current",
         sdl = File(projectRootDir).resolve(schema).readText(),
-        headers = extraHeaders
+        headers = extraHeaders,
+        subgraph = subgraph,
+        revision = revision,
     )
   }
 }
