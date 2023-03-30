@@ -720,7 +720,18 @@ class GQLSchemaExtension(
   override val children = directives + operationTypesDefinition
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend schema ")
+      if (directives.isNotEmpty()) {
+        directives.join(writer)
+        write(" ")
+      }
+      write("{\n")
+      indent()
+      operationTypesDefinition.join(writer, separator = "")
+      unindent()
+      write("}\n")
+    }
   }
 
   fun copy(
@@ -751,7 +762,19 @@ class GQLEnumTypeExtension(
   override val children: List<GQLNode> = directives + enumValues
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend enum $name")
+      if (directives.isNotEmpty()) {
+        write(" ")
+        directives.join(writer)
+      }
+      write(" ")
+      write("{\n")
+      indent()
+      enumValues.join(writer, separator = "\n")
+      unindent()
+      write("}\n")
+    }
   }
 
   fun copy(
@@ -785,7 +808,23 @@ class GQLObjectTypeExtension(
   override val children: List<GQLNode> = directives + fields
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend type $name")
+      if (implementsInterfaces.isNotEmpty()) {
+        write(" implements ")
+        write(implementsInterfaces.joinToString(" & "))
+      }
+      if (directives.isNotEmpty()) {
+        write(" ")
+        directives.join(writer)
+      }
+      write(" ")
+      write("{\n")
+      indent()
+      fields.join(writer, separator = "\n\n")
+      unindent()
+      write("\n}\n")
+    }
   }
 
   fun copy(
@@ -820,7 +859,19 @@ class GQLInputObjectTypeExtension(
   override val children: List<GQLNode> = directives + inputFields
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend input $name")
+      if (directives.isNotEmpty()) {
+        write(" ")
+        directives.join(writer)
+      }
+      write(" ")
+      write("{\n")
+      indent()
+      inputFields.join(writer, separator = "\n")
+      unindent()
+      write("}\n")
+    }
   }
 
   fun copy(
@@ -852,7 +903,14 @@ class GQLScalarTypeExtension(
   override val children = directives
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend scalar $name")
+      if (directives.isNotEmpty()) {
+        write(" ")
+        directives.join(writer)
+      }
+      write("\n")
+    }
   }
 
   fun copy(
@@ -883,7 +941,23 @@ class GQLInterfaceTypeExtension(
   override val children = fields
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend interface $name")
+      if (implementsInterfaces.isNotEmpty()) {
+        write(" implements ")
+        write(implementsInterfaces.joinToString(" & "))
+      }
+      if (directives.isNotEmpty()) {
+        write(" ")
+        directives.join(writer)
+      }
+      write(" ")
+      write("{\n")
+      indent()
+      fields.join(writer, separator = "\n\n")
+      unindent()
+      write("\n}\n")
+    }
   }
 
   fun copy(
@@ -917,7 +991,16 @@ class GQLUnionTypeExtension(
   override val children: List<GQLNode> = directives + memberTypes
 
   override fun writeInternal(writer: SDLWriter) {
-    TODO("Not yet implemented")
+    with(writer) {
+      write("extend union $name")
+      if (directives.isNotEmpty()) {
+        write(" ")
+        directives.join(writer)
+      }
+      write(" = ")
+      memberTypes.join(writer, separator = "|")
+      write("\n")
+    }
   }
 
   fun copy(
