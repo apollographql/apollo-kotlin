@@ -4,12 +4,9 @@ import com.apollographql.apollo3.ast.SDLWriter
 import com.apollographql.apollo3.ast.Schema
 import com.apollographql.apollo3.ast.internal.buffer
 import com.apollographql.apollo3.ast.parseAsGQLDocument
-import com.apollographql.apollo3.ast.parseAsGQLType
-import com.apollographql.apollo3.ast.removeLocation
 import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import okio.Buffer
-import org.junit.Ignore
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -110,11 +107,11 @@ class SDLWriterTest {
       
     """.trimIndent()
 
-    val expected = Buffer().writeUtf8(schemaString).parseAsGQLDocument().getOrThrow()
+    val expected = Buffer().writeUtf8(schemaString).parseAsGQLDocument().valueAssertNoErrors()
 
     val serialized = expected.toUtf8()
 
-    Buffer().writeUtf8(serialized).parseAsGQLDocument().getOrThrow()
+    Buffer().writeUtf8(serialized).parseAsGQLDocument().valueAssertNoErrors()
     // Enable when we have hashCode and equals on GQLNode
     //assertEquals(expected.removeLocation(), actual.removeLocation())
   }
