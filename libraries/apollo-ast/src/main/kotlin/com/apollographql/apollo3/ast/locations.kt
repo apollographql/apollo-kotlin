@@ -23,6 +23,7 @@ internal fun GQLDefinition.removeLocation(): GQLDefinition = when(this) {
   is GQLScalarTypeDefinition -> this@removeLocation.removeLocation()
   is GQLUnionTypeDefinition -> this@removeLocation.removeLocation()
   is GQLUnionTypeExtension -> this@removeLocation.removeLocation()
+  else -> error("Unknown GQLDefinition: ${this.javaClass.name} ")
 }
 
 internal fun GQLEnumTypeDefinition.removeLocation() = copy(
