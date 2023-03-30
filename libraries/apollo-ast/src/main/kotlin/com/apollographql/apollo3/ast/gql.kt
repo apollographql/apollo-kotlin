@@ -768,14 +768,12 @@ class GQLEnumTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      if (enumValues.isNotEmpty()) {
-        write(" ")
-        write("{\n")
-        indent()
-        enumValues.join(writer, separator = "\n")
-        unindent()
-        write("}\n")
-      }
+      write(" ")
+      write("{\n")
+      indent()
+      enumValues.join(writer, separator = "\n")
+      unindent()
+      write("}\n")
     }
   }
 
@@ -820,14 +818,12 @@ class GQLObjectTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      if (fields.isNotEmpty()) {
-        write(" ")
-        write("{\n")
-        indent()
-        fields.join(writer, separator = "\n\n")
-        unindent()
-        write("\n}\n")
-      }
+      write(" ")
+      write("{\n")
+      indent()
+      fields.join(writer, separator = "\n\n")
+      unindent()
+      write("\n}\n")
     }
   }
 
@@ -869,14 +865,12 @@ class GQLInputObjectTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      if (inputFields.isNotEmpty()) {
-        write(" ")
-        write("{\n")
-        indent()
-        inputFields.join(writer, separator = "\n")
-        unindent()
-        write("}\n")
-      }
+      write(" ")
+      write("{\n")
+      indent()
+      inputFields.join(writer, separator = "\n")
+      unindent()
+      write("}\n")
     }
   }
 
@@ -957,14 +951,12 @@ class GQLInterfaceTypeExtension(
         write(" ")
         directives.join(writer)
       }
-      if (fields.isNotEmpty()) {
-        write(" ")
-        write("{\n")
-        indent()
-        fields.join(writer, separator = "\n\n")
-        unindent()
-        write("\n}\n")
-      }
+      write(" ")
+      write("{\n")
+      indent()
+      fields.join(writer, separator = "\n\n")
+      unindent()
+      write("\n}\n")
     }
   }
 

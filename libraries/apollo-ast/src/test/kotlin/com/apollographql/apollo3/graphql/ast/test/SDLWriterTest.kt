@@ -54,8 +54,6 @@ class SDLWriterTest {
     assertEquals(writerBuffer.readUtf8(), schemaString)
   }
 
-  // Enable when we have hashCode and equals on GQLNode
-  @Ignore
   @Test
   fun typeExtensionsAreSerialized() {
     val schemaString = """
@@ -116,7 +114,8 @@ class SDLWriterTest {
 
     val serialized = expected.toUtf8()
 
-    val actual = Buffer().writeUtf8(serialized).parseAsGQLDocument().getOrThrow()
-    assertEquals(expected.removeLocation(), actual.removeLocation())
+    Buffer().writeUtf8(serialized).parseAsGQLDocument().getOrThrow()
+    // Enable when we have hashCode and equals on GQLNode
+    //assertEquals(expected.removeLocation(), actual.removeLocation())
   }
 }
