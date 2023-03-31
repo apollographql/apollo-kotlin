@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpRequest
 import com.apollographql.apollo3.api.http.HttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpResponse
+import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -129,7 +130,13 @@ private constructor(
               val name = reader.nextName()
 
               return@use when (name) {
-                "payload" -> Kind.PAYLOAD
+                "payload" -> {
+                  if (reader.peek() == JsonReader.Token.NULL) {
+                    Kind.OTHER
+                  } else {
+                    Kind.PAYLOAD
+                  }
+                }
                 else -> Kind.OTHER
               }
             }
@@ -140,12 +147,12 @@ private constructor(
               }
 
               Kind.PAYLOAD -> {
+                // {"payload":{"data":{"aReviewWasAdded":{"id":11,"body":"A new review for Apollo Studio"}}}}
                 val reader = part.jsonReader()
                 // advance the reader
                 reader.beginObject()
                 reader.nextName()
 
-                // Do nothing with "done", we just rely on the multipart closing boundary to close the stream gracefully
                 // TODO: make parseJsonResponse not close the jsonReader
                 operation.parseJsonResponse(
                     jsonReader = reader,
@@ -154,7 +161,8 @@ private constructor(
               }
 
               Kind.OTHER -> {
-                // We assume if there's something that is not a payload, it is an error
+                // We assume if there's something that is not a payload, it is an error.
+                // {"payload":null,"errors":[{"message":"cannot read message from websocket","extensions":{"code":"WEBSOCKET_MESSAGE_ERROR"}}]}
                 val response = part.jsonReader().readAny()
                 throw SubscriptionOperationException(operation.name(), response)
               }
