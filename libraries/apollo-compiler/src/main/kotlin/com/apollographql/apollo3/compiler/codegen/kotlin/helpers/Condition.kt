@@ -1,11 +1,11 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
-import com.apollographql.apollo3.api.BLabel
-import com.apollographql.apollo3.api.BPossibleTypes
-import com.apollographql.apollo3.api.BTerm
-import com.apollographql.apollo3.api.BVariable
-import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
+import com.apollographql.apollo3.compiler.ir.BLabel
+import com.apollographql.apollo3.compiler.ir.BPossibleTypes
+import com.apollographql.apollo3.compiler.ir.BTerm
+import com.apollographql.apollo3.compiler.ir.BVariable
+import com.apollographql.apollo3.compiler.ir.BooleanExpression
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.joinToCode
@@ -67,9 +67,7 @@ internal fun BooleanExpression<BTerm>.codeBlock(): CodeBlock {
               v.possibleTypes.map { CodeBlock.of("%S", it) }.joinToCode(",")
           )
         }
-        else -> error("")
       }
     }
-    else -> error("")
   }
 }

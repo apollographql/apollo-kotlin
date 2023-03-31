@@ -1,8 +1,5 @@
 package com.apollographql.apollo3.compiler.ir
 
-import com.apollographql.apollo3.api.BPossibleTypes
-import com.apollographql.apollo3.api.BTerm
-import com.apollographql.apollo3.api.BooleanExpression
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread

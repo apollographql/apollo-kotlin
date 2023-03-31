@@ -1,12 +1,5 @@
 package com.apollographql.apollo3.compiler.ir
 
-import com.apollographql.apollo3.api.BLabel
-import com.apollographql.apollo3.api.BPossibleTypes
-import com.apollographql.apollo3.api.BTerm
-import com.apollographql.apollo3.api.BVariable
-import com.apollographql.apollo3.api.BooleanExpression
-import com.apollographql.apollo3.api.and
-import com.apollographql.apollo3.api.firstElementOfType
 import com.apollographql.apollo3.ast.GQLField
 import com.apollographql.apollo3.ast.GQLFragmentDefinition
 import com.apollographql.apollo3.ast.GQLFragmentSpread
@@ -100,7 +93,6 @@ internal class OperationBasedModelGroupBuilder(
       val bVariable = this.value as? BVariable ?: error("Unexpected term type in toName")
       bVariable.name.capitalizeFirstLetter()
     }
-    else -> error("Unexpected boolean expression type in toName")
   }
 
   private fun InlineFragmentKey.toName(): String = buildString {

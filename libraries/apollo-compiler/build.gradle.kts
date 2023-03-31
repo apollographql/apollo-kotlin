@@ -12,9 +12,6 @@ apolloLibrary {
 
 dependencies {
   implementation(project(":apollo-ast"))
-  implementation(project(":apollo-api")) {
-    because("For BooleanExpression")
-  }
   api(golatac.lib("poet.kotlin")) {
     // We don't use any of the KotlinPoet kotlin-reflect features
     exclude(module = "kotlin-reflect")

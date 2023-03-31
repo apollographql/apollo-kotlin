@@ -2,6 +2,8 @@
 
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
@@ -12,20 +14,25 @@ import kotlin.reflect.KClass
  * other that may also contain possibleTypes
  */
 sealed class BooleanExpression<out T : Any> {
-  /**
-   * This is not super well defined but works well enough for our simple use cases
-   */
+  @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+  @ApolloDeprecatedSince(v4_0_0)
   abstract fun simplify(): BooleanExpression<T>
 
   object True : BooleanExpression<Nothing>() {
+    @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(v4_0_0)
     override fun simplify() = this
   }
 
   object False : BooleanExpression<Nothing>() {
+    @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(v4_0_0)
     override fun simplify() = this
   }
 
   data class Not<out T : Any>(val operand: BooleanExpression<T>) : BooleanExpression<T>() {
+    @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(v4_0_0)
     override fun simplify() = when (this.operand) {
       is True -> False
       is False -> True
@@ -42,6 +49,9 @@ sealed class BooleanExpression<out T : Any> {
       }
     }
 
+    @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(v4_0_0)
+    @Suppress("DEPRECATION_ERROR")
     override fun simplify() = operands.filter {
       it != False
     }.map { it.simplify() }
@@ -68,6 +78,9 @@ sealed class BooleanExpression<out T : Any> {
       }
     }
 
+    @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(v4_0_0)
+    @Suppress("DEPRECATION_ERROR")
     override fun simplify() = operands.filter {
       it != True
     }.map { it.simplify() }
@@ -86,11 +99,19 @@ sealed class BooleanExpression<out T : Any> {
   data class Element<out T : Any>(
       val value: T,
   ) : BooleanExpression<T>() {
+    @Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+    @ApolloDeprecatedSince(v4_0_0)
+    @Suppress("DEPRECATION_ERROR")
     override fun simplify() = this
   }
 }
 
+@Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 fun <T : Any> BooleanExpression<T>.or(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Or((other.toList() + this).toSet())
+
+@Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
 fun <T : Any> BooleanExpression<T>.and(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.And((other.toList() + this).toSet())
 
 fun <T : Any> or(vararg other: BooleanExpression<T>): BooleanExpression<T> = BooleanExpression.Or((other.toList()).toSet())
@@ -100,6 +121,9 @@ fun variable(name: String): BooleanExpression<BVariable> = BooleanExpression.Ele
 fun label(label: String? = null): BooleanExpression<BLabel> = BooleanExpression.Element(BLabel(label))
 fun possibleTypes(vararg typenames: String): BooleanExpression<BPossibleTypes> = BooleanExpression.Element(BPossibleTypes(typenames.toSet()))
 
+@Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
+@Suppress("DEPRECATION_ERROR")
 fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   return when (this) {
     BooleanExpression.True -> true
@@ -111,6 +135,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
   }
 }
 
+@Suppress("DEPRECATION_ERROR")
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>,
     typename: String?,
@@ -150,7 +175,9 @@ data class BPossibleTypes(val possibleTypes: Set<String>) : BTerm() {
   constructor(vararg types: String) : this(types.toSet())
 }
 
-
+@Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
+@Suppress("DEPRECATION_ERROR")
 fun <T : Any> BooleanExpression<T>.containsPossibleTypes(): Boolean {
   return when (this) {
     BooleanExpression.True -> false
@@ -162,6 +189,9 @@ fun <T : Any> BooleanExpression<T>.containsPossibleTypes(): Boolean {
   }
 }
 
+@Deprecated(message = "This was only used in internal API and shouldn't have been part of the public API. If you needed this, please open an issue.", level = DeprecationLevel.ERROR)
+@ApolloDeprecatedSince(v4_0_0)
+@Suppress("DEPRECATION_ERROR")
 fun <T : Any, U : Any> BooleanExpression<T>.firstElementOfType(type: KClass<U>): U? {
   return when (this) {
     BooleanExpression.True -> null
