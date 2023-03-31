@@ -19,10 +19,11 @@ Note: this plugin is still in early development and is not yet ready for product
 
 As time of writing, the plugin is supported by:
 
-* IntelliJ EAP (2023.1)
-* Android Studio Canary (Girafe)
+* IntelliJ 2022.2+
+* Android Studio Preview (Flamingo)
+* Android Studio Canary (Giraffe)
 
-Android Studio Sable (Electric Eel) is not supported
+Android Studio Stable (Electric Eel) is not supported
 
 <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > ⚙️ > <kbd>Manage Plugin
 Repositories</kbd> > <kbd>+</kbd> > <kbd>https://raw.githubusercontent.com/apollographql/apollo-kotlin/main/intellij-plugin/snapshots/plugins.xml</kbd>
