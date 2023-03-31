@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.ast.GQLDocument
 import com.apollographql.apollo3.ast.introspection.IntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.toGQLDocument
@@ -9,9 +11,14 @@ import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.parseAsGQLDocument
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
-import kotlinx.serialization.json.Json
+import com.apollographql.apollo3.network.okHttpClient
+import com.apollographql.apollo3.tooling.platformapi.DownloadSchemaQuery
+import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import java.io.File
+import com.apollographql.apollo3.tooling.graphql.draft.IntrospectionQuery as GraphQLDraftIntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.june2018.IntrospectionQuery as GraphQLJune2018IntrospectionQuery
+import com.apollographql.apollo3.tooling.graphql.october2021.IntrospectionQuery as GraphQLOctober2021IntrospectionQuery
 
 /**
  * @return the graph from a service key like "service:$graph:$token"
@@ -30,7 +37,8 @@ internal fun String.getGraph(): String? {
 object SchemaDownloader {
   enum class SpecVersion {
     June_2018,
-    October_2021
+    October_2021,
+    Draft,
   }
 
   /**
@@ -64,30 +72,35 @@ object SchemaDownloader {
     var gqlSchema: GQLDocument? = null
     when {
       endpoint != null -> {
-        introspectionSchemaJson = try {
-          downloadIntrospection(
-              endpoint = endpoint,
-              headers = headers,
-              insecure = insecure,
-              specVersion = SpecVersion.October_2021,
-          )
-        } catch (e: Exception) {
-          // Maybe the server doesn't support deprecated input fields / arguments, try without them
-          downloadIntrospection(
-              endpoint = endpoint,
-              headers = headers,
-              insecure = insecure,
-              specVersion = SpecVersion.June_2018,
-          )
+        var exception: Exception? = null
+        // Try the latest spec first
+        for (specVersion in SpecVersion.values().reversed()) {
+          try {
+            introspectionSchemaJson = downloadIntrospection(
+                endpoint = endpoint,
+                headers = headers,
+                insecure = insecure,
+                specVersion = specVersion,
+            )
+            // Validates the JSON schema
+            introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
+            exception = null
+            break
+          } catch (e: Exception) {
+            exception = e
+          }
         }
-        introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
+        if (introspectionSchemaJson == null) {
+          throw exception!!
+        }
       }
+
       else -> {
         check(key != null) {
           "Apollo: either endpoint (for introspection) or key (for registry) is required"
         }
         val graph2 = graph ?: key.getGraph()
-        check (graph2 != null) {
+        check(graph2 != null) {
           "Apollo: graph is required to download from the registry"
         }
 
@@ -125,16 +138,16 @@ object SchemaDownloader {
       insecure: Boolean,
       specVersion: SpecVersion,
   ): String {
-
-    val body = mapOf(
-        "query" to getIntrospectionQuery(specVersion),
-        "operationName" to "IntrospectionQuery"
+    return SchemaHelper.executeSchemaQuery(
+        query = when (specVersion) {
+          SpecVersion.June_2018 -> GraphQLJune2018IntrospectionQuery()
+          SpecVersion.October_2021 -> GraphQLOctober2021IntrospectionQuery()
+          SpecVersion.Draft -> GraphQLDraftIntrospectionQuery()
+        },
+        endpoint = endpoint,
+        headers = headers,
+        insecure = insecure,
     )
-    val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
-
-    return response.body.use { responseBody ->
-      responseBody!!.string()
-    }
   }
 
   fun downloadRegistry(
@@ -145,154 +158,22 @@ object SchemaDownloader {
       headers: Map<String, String>,
       insecure: Boolean,
   ): String {
-    val query = """
-    query DownloadSchema(${'$'}graphID: ID!, ${'$'}variant: String!) {
-      service(id: ${'$'}graphID) {
-        variant(name: ${'$'}variant) {
-          activeSchemaPublish {
-            schema {
-              document
-            }
-          }
-        }
-      }
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(endpoint)
+        .okHttpClient(SchemaHelper.newOkHttpClient(insecure))
+        .build()
+    val response = runBlocking {
+      apolloClient.query(DownloadSchemaQuery(graphID = graph, variant = variant))
+          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+          .addHttpHeader("x-api-key", key)
+          .execute()
     }
-  """.trimIndent()
-    val variables = mapOf("graphID" to graph, "variant" to variant)
-
-    val response = SchemaHelper.executeQuery(query, variables, endpoint, headers + mapOf("x-api-key" to key), insecure)
-
-    val responseString = response.body.use { it?.string() }
-
-    val document = responseString
-        ?.let { Json.parseToJsonElement(it) }
-        ?.toAny().cast<Map<String, *>>()
-        ?.get("data").cast<Map<String, *>>()
-        ?.get("service").cast<Map<String, *>>()
-        ?.get("variant").cast<Map<String, *>>()
-        ?.get("activeSchemaPublish").cast<Map<String, *>>()
-        ?.get("schema").cast<Map<String, *>>()
-        ?.get("document").cast<String>()
-
+    val document = response.data?.service?.variant?.activeSchemaPublish?.schema?.document
     check(document != null) {
-      "Cannot retrieve document from $responseString\nCheck graph id and variant"
+      "Cannot retrieve document from $endpoint\nCheck graph id and variant"
     }
     return document
   }
 
   inline fun <reified T> Any?.cast() = this as? T
-
-  fun getIntrospectionQuery(specVersion: SpecVersion): String {
-    val isRepeatable = when(specVersion) {
-      SpecVersion.October_2021 -> "isRepeatable"
-      else -> ""
-    }
-    val inputValueIncludeDeprecated = when(specVersion) {
-      SpecVersion.October_2021 -> "(includeDeprecated: true)"
-      else -> ""
-    }
-    val inputValueIsDeprecated = when(specVersion) {
-      SpecVersion.October_2021 -> "isDeprecated"
-      else -> ""
-    }
-    val inputValueDeprecationReason = when(specVersion) {
-      SpecVersion.October_2021 -> "deprecationReason"
-      else -> ""
-    }
-    return """
-      query IntrospectionQuery {
-        __schema {
-          queryType { name }
-          mutationType { name }
-          subscriptionType { name }
-          types {
-            ...FullType
-          }
-          directives {
-            name
-            description
-            locations
-            args$inputValueIncludeDeprecated {
-              ...InputValue
-            }
-            $isRepeatable
-          }
-        }
-      }
-  
-      fragment FullType on __Type {
-        kind
-        name
-        description
-        fields(includeDeprecated: true) {
-          name
-          description
-          args$inputValueIncludeDeprecated {
-            ...InputValue
-          }
-          type {
-            ...TypeRef
-          }
-          isDeprecated
-          deprecationReason
-        }
-        inputFields$inputValueIncludeDeprecated {
-          ...InputValue
-        }
-        interfaces {
-          ...TypeRef
-        }
-        enumValues(includeDeprecated: true) {
-          name
-          description
-          isDeprecated
-          deprecationReason
-        }
-        possibleTypes {
-          ...TypeRef
-        }
-      }
-  
-      fragment InputValue on __InputValue {
-        name
-        description
-        type { ...TypeRef }
-        defaultValue
-        $inputValueIsDeprecated
-        $inputValueDeprecationReason
-      }
-  
-      fragment TypeRef on __Type {
-        kind
-        name
-        ofType {
-          kind
-          name
-          ofType {
-            kind
-            name
-            ofType {
-              kind
-              name
-              ofType {
-                kind
-                name
-                ofType {
-                  kind
-                  name
-                  ofType {
-                    kind
-                    name
-                    ofType {
-                      kind
-                      name
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }""".trimIndent()
-  }
 }

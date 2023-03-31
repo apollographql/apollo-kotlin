@@ -1,4 +1,5 @@
 public final class com/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion : java/lang/Enum {
+	public static final field Draft Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 	public static final field June_2018 Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 	public static final field October_2021 Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;
 	public static fun valueOf (Ljava/lang/String;)Lcom/apollographql/apollo3/tooling/SchemaDownloader$SpecVersion;

@@ -1,11 +1,21 @@
 package com.apollographql.apollo3.tooling
 
+import com.apollographql.apollo3.api.ApolloRequest
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
+import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.api.json.jsonReader
+import com.apollographql.apollo3.api.parseJsonResponse
+import com.apollographql.apollo3.network.http.DefaultHttpEngine
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.internal.platform.Platform
+import okio.Buffer
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
@@ -16,19 +26,11 @@ import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
 
 internal object SchemaHelper {
-  private fun newOkHttpClient(insecure: Boolean): OkHttpClient {
+  internal fun newOkHttpClient(insecure: Boolean): OkHttpClient {
     val connectTimeoutSeconds = System.getProperty("okHttp.connectTimeout", "600").toLong()
     val readTimeoutSeconds = System.getProperty("okHttp.readTimeout", "600").toLong()
     val clientBuilder = OkHttpClient.Builder()
         .connectTimeout(connectTimeoutSeconds, TimeUnit.SECONDS)
-        .addInterceptor { chain ->
-          chain.request().newBuilder()
-              .build()
-              .let {
-                chain.proceed(it)
-              }
-
-        }
         .readTimeout(readTimeoutSeconds, TimeUnit.SECONDS)
 
     if (insecure) {
@@ -38,7 +40,38 @@ internal object SchemaHelper {
     return clientBuilder.build()
   }
 
-  internal fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
+  internal fun executeSchemaQuery(
+      query: Query<*>,
+      endpoint: String,
+      headers: Map<String, String>,
+      insecure: Boolean,
+  ): String {
+    val composer = DefaultHttpRequestComposer(endpoint)
+    val apolloRequest = ApolloRequest.Builder(query)
+        .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+        .build()
+    val httpRequest = composer.compose(apolloRequest)
+    val httpEngine = DefaultHttpEngine(newOkHttpClient(insecure))
+    val httpResponse = runBlocking { httpEngine.execute(httpRequest) }
+    val bodyStr = httpResponse.body?.use {
+      it.readUtf8()
+    }
+    check(httpResponse.statusCode in 200..299 && bodyStr != null) {
+      "Cannot get schema from $endpoint: ${httpResponse.statusCode}:\n${bodyStr ?: "(empty body)"}"
+    }
+    // Make sure the response is a valid schema
+    try {
+      query.parseJsonResponse(
+          jsonReader = Buffer().writeUtf8(bodyStr).jsonReader(),
+          customScalarAdapters = CustomScalarAdapters.Empty
+      )
+    } catch (e: Exception) {
+      throw Exception("Response from $endpoint could not be parsed as a valid schema. Body:\n$bodyStr", e)
+    }
+    return bodyStr
+  }
+
+  private fun executeQuery(map: Map<String, Any?>, url: String, headers: Map<String, String>, insecure: Boolean): Response {
     val body = map.toJsonElement().toString().toRequestBody("application/json".toMediaTypeOrNull())
     val request = Request.Builder()
         .post(body)
