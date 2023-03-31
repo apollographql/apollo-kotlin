@@ -9,25 +9,25 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
 
-class ApolloV2ToV3MigrationAction : AnAction() {
+class CompatToOperationBasedCodegenMigrationAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
     logd()
     val okCancelResult = Messages.showOkCancelDialog(
         e.project,
-        ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.message"),
-        ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.title"),
-        ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.ok"),
-        ApolloBundle.message("action.ApolloV2ToV3MigrationAction.confirmDialog.cancel"),
+        ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.message"),
+        ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.title"),
+        ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.ok"),
+        ApolloBundle.message("action.CompatToOperationBasedCodegenMigrationAction.confirmDialog.cancel"),
         Messages.getQuestionIcon()
     )
 
     if (okCancelResult == Messages.OK) {
-      ApolloV2ToV3MigrationProcessor(e.project ?: return).run()
+//      CompatToOperationBasedCodegenMigrationProcessor(e.project ?: return).run()
     }
   }
 
   override fun update(e: AnActionEvent) {
-    e.presentation.isEnabled = e.project?.apolloProjectService?.isApolloAndroid2Project == true
+    e.presentation.isEnabled = e.project?.apolloProjectService?.isApolloKotlin3Project == true
     e.presentation.isVisible = !ActionPlaces.isPopupPlace(e.place)
   }
 

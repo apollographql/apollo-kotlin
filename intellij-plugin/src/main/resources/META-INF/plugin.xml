@@ -65,12 +65,31 @@
   </applicationListeners>
 
   <actions>
-    <!-- Refactor / Migrate to Apollo Kotlin 3 -->
+    <!-- Refactor / Apollo -->
+    <!--suppress PluginXmlCapitalization -->
+    <group
+        id="ApolloRefactorActionGroup"
+        popup="true"
+        class="com.apollographql.ijplugin.refactoring.migration.ApolloRefactorActionGroup"
+    >
+      <add-to-group group-id="RefactoringMenu" anchor="last" />
+    </group>
+
+    <!-- Refactor / Apollo / Migrate to Apollo Kotlin 3 -->
     <action
         id="ApolloV2ToV3MigrationAction"
         class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction"
     >
-      <add-to-group group-id="RefactoringMenu" />
+      <add-to-group group-id="ApolloRefactorActionGroup" />
     </action>
+
+    <!-- Refactor / Apollo / Migrate to operationBased codegen -->
+    <action
+        id="CompatToOperationBasedCodegenMigrationAction"
+        class="com.apollographql.ijplugin.refactoring.migration.CompatToOperationBasedCodegenMigrationAction"
+    >
+      <add-to-group group-id="ApolloRefactorActionGroup" />
+    </action>
+
   </actions>
 </idea-plugin>
