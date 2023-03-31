@@ -15,7 +15,9 @@ import com.example.GetCatIncludeVariableWithDefaultQuery
 import com.example.GetDogSkipFalseQuery
 import com.example.GetDogSkipTrueQuery
 import com.example.GetDogSkipVariableQuery
+import com.example.GetQuery
 import com.example.SkipFragmentWithDefaultToFalseQuery
+import com.example.fragment.QueryFragment
 import com.example.type.buildCat
 import com.example.type.buildDog
 import com.example.type.buildQuery
@@ -192,6 +194,14 @@ class IncludeTest {
     val response = operation.parseData(data)
 
     assertNotNull(response.dataAssertNoErrors.animal!!.dogFragment)
+  }
+
+  @Test
+  fun includeInFragment(): Unit = runBlocking {
+    val operation = GetQuery()
+
+    operation.normalize(GetQuery.Data("Query", queryFragment = QueryFragment(null)), CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
+
   }
 
   @Test
