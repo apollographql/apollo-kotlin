@@ -62,7 +62,7 @@ class MultipartSubscriptionsRouterTest {
   }
 
   /**
-   * Run docker compose kill reviews to trigger an exception
+   * Run 'docker compose kill reviews' to trigger an exception
    */
   @Test
   fun reviewTest() = runTest {
