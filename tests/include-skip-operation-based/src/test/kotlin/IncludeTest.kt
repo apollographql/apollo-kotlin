@@ -1,17 +1,17 @@
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.GlobalBuilder
 import com.apollographql.apollo3.api.Operation
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
+<<<<<<< HEAD
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
 import com.apollographql.apollo3.cache.normalized.api.normalize
 import com.example.GetAnimalByIdWithDefaultValueQuery
+=======
+import com.apollographql.apollo3.api.GlobalBuilder
+>>>>>>> parent of a7eebea03 (Fix normalizing data when using `@include` or `@skip` with default values (#4700))
 import com.example.GetCatIncludeFalseQuery
 import com.example.GetCatIncludeTrueQuery
 import com.example.GetCatIncludeVariableQuery
-import com.example.GetCatIncludeVariableWithDefaultQuery
 import com.example.GetDogSkipFalseQuery
 import com.example.GetDogSkipTrueQuery
 import com.example.GetDogSkipVariableQuery
@@ -231,5 +231,4 @@ class IncludeTest {
     val records = operation.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator)
     assertTrue(records.containsKey("""animalById({"id":"0"})"""))
   }
-
 }

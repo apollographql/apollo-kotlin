@@ -5,7 +5,7 @@ type Query {
 }
 
 interface Animal {
-  species: String!
+  species: String
 }
 
 type Cat implements Animal {
