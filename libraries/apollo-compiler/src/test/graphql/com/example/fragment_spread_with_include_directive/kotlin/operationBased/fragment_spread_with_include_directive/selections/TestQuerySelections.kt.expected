@@ -48,13 +48,13 @@ public object TestQuerySelections {
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).condition(listOf(CompiledCondition("optionalWithDefaultTrue", true, true)))
+        ).condition(listOf(CompiledCondition("optionalWithDefaultTrue", true)))
         .selections(DroidDetailsSelections.__root)
         .build(),
         CompiledFragment.Builder(
           typeCondition = "Droid",
           possibleTypes = listOf("Droid")
-        ).condition(listOf(CompiledCondition("optionalWithDefaultTrue", false, true)))
+        ).condition(listOf(CompiledCondition("optionalWithDefaultTrue", false)))
         .selections(OtherDroidDetailsSelections.__root)
         .build()
       )
