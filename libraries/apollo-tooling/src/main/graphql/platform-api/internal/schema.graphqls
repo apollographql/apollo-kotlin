@@ -45,8 +45,6 @@ type Account {
 
   invoices: [Invoice!]!
 
-  invoicesV2: [InvoiceV2!]! @deprecated(reason: "Use `invoices`.")
-
   isOnExpiredTrial: Boolean!
 
   isOnTrial: Boolean!
@@ -1309,7 +1307,7 @@ type AccountMutation {
   internalID: String
 
   """
-   See Account type. Field is needed by extending subgraph.
+  See Account type. Field is needed by extending subgraph.
   """
   name: String
 
@@ -1320,7 +1318,7 @@ type AccountMutation {
   reactivateCurrentSubscription: Account
 
   """
-   See Account type. Field is needed by extending subgraph.
+  See Account type. Field is needed by extending subgraph.
   """
   seats: Seats
 
@@ -1328,11 +1326,6 @@ type AccountMutation {
   Apollo admins only: set the billing plan to an arbitrary plan effective immediately terminating any current paid plan.
   """
   setPlan(id: ID!): Void
-
-  """
-  Apollo admins only: set the billing plan to an arbitrary plan effective immediately terminating any current paid plan.
-  """
-  setPlanV2(id: ID!): Account @deprecated(reason: "Use `setPlan`.")
 
   """
   Start a new team subscription with the given billing period.
@@ -2887,6 +2880,8 @@ enum BillingPlanKind {
 
   ENTERPRISE_PILOT
 
+  ENTERPRISE_TRIAL
+
   ONE_FREE
 
   ONE_PAID
@@ -2914,6 +2909,8 @@ enum BillingPlanKindV2 {
   ENTERPRISE_PAID
 
   ENTERPRISE_PILOT
+
+  ENTERPRISE_TRIAL
 
   ONE_FREE
 
@@ -3396,7 +3393,7 @@ interface BuildCheckResult {
 
   """
   The build pipeline track of the build task, which indicates what gateway/router versions the
-   build pipeline is intended to support (and accordingly controls the version of code).
+  build pipeline is intended to support (and accordingly controls the version of code).
   """
   buildPipelineTrack: BuildPipelineTrack!
 
@@ -3427,7 +3424,7 @@ interface BuildCheckTask implements CheckWorkflowTask {
 
   """
   The build input change proposed for this check workflow. Note that for triggered downstream
-   workflows, this is not the upstream variant's proposed change, but the changes for the downstream
+  workflows, this is not the upstream variant's proposed change, but the changes for the downstream
   variant that are derived from the upstream workflow's results (e.g. the input supergraph schema).
   """
   proposedBuildInputChanges: ProposedBuildInputChanges!
@@ -3502,6 +3499,8 @@ enum BuildPipelineTrack {
   FED_2_1
 
   FED_2_3
+
+  FED_2_4
 }
 
 union BuildResult = BuildFailure|BuildSuccess
@@ -4224,9 +4223,9 @@ interface CheckWorkflowTask {
 
   """
   The status of this task. All tasks start with the PENDING status while initializing. If any
-   prerequisite task fails, then the task status becomes BLOCKED. Otherwise, if all prerequisite
-   tasks pass, then this task runs (still having the PENDING status). Once the task completes, the
-   task status will become either PASSED or FAILED.
+  prerequisite task fails, then the task status becomes BLOCKED. Otherwise, if all prerequisite
+  tasks pass, then this task runs (still having the PENDING status). Once the task completes, the
+  task status will become either PASSED or FAILED.
   """
   status: CheckWorkflowTaskStatus!
 
@@ -4465,7 +4464,7 @@ union ComposeAndFilterPreviewResult = ComposeAndFilterPreviewComposeFailure|Comp
 input ComposeAndFilterPreviewSubgraphChange {
   """
   The info being changed in the named subgraph. If null, indicates that the named
-   subgraph should be removed prior to composition.
+  subgraph should be removed prior to composition.
   """
   info: ComposeAndFilterPreviewSubgraphChangeInfo
 
@@ -4666,7 +4665,7 @@ type CompositionBuildInput {
 type CompositionBuildInputs {
   """
   The build pipeline track used for composition. Note this is also the build pipeline track used
-   for any triggered downstream check workflows as well.
+  for any triggered downstream check workflows as well.
   """
   buildPipelineTrack: BuildPipelineTrack!
 
@@ -5064,8 +5063,6 @@ input CreateRouterInput {
   routerConfig: String
 
   graphCompositionId: String
-
-  dryRun: Boolean
 }
 
 union CreateRouterResult = CreateRouterSuccess|InvalidInputErrors|InternalServerError
@@ -5785,7 +5782,7 @@ type ErrorStatsRecord {
 }
 
 """
- Input parameters for run explorer operation event.
+Input parameters for run explorer operation event.
 """
 enum EventEnum {
   CLICK_CHECK_LIST
@@ -6432,7 +6429,7 @@ interface FilterBuildCheckResult implements BuildCheckResult {
 type FilterBuildError implements BuildCheckError {
   """
   The step at which filtering failed. See https://www.apollographql.com/docs/studio/contracts/#contract-errors
-   for a list of existing steps.
+  for a list of existing steps.
   """
   failedStep: String!
 
@@ -6682,17 +6679,17 @@ type GraphApiKey implements ApiKey {
 
 type GraphCapabilities {
   """
-   False if this graph is a cloud supergraph.
+  False if this graph is a cloud supergraph.
   """
   canPublishMonograph: Boolean!
 
   """
-   Currently, graph URL is not updatable for cloud supergraphs.
+  Currently, graph URL is not updatable for cloud supergraphs.
   """
   canUpdateURL: Boolean!
 
   """
-   Minimum Federation Version track required for all variants of this graph.
+  Minimum Federation Version track required for all variants of this graph.
   """
   minimumBuildPipelineTrack: BuildPipelineTrack!
 }
@@ -9699,16 +9696,6 @@ type Query {
   billingAdmin: BillingAdminQuery
 
   """
-  Look up a plan by ID
-  """
-  billingPlan(id: ID): BillingPlanV2 @deprecated(reason: "Use `plan`.")
-
-  """
-  All available plans
-  """
-  billingPlans: [BillingPlanV2!]! @deprecated(reason: "Use `allBillingPlans`.")
-
-  """
   Escaped JSON string of the public key used for verifying entitlement JWTs
   """
   commercialRuntimePublicKey: String!
@@ -9717,11 +9704,6 @@ type Query {
   Look up a plan by ID
   """
   plan(id: ID): BillingPlan
-
-  """
-  The plan started by AccountMutation.startTeamSubscription
-  """
-  teamBillingPlan(billingPeriod: BillingPeriod!): BillingPlanV2! @deprecated(reason: "Use `teamPlan`.")
 
   """
   The plan started by AccountMutation.startTeamSubscription
@@ -11242,7 +11224,7 @@ type Service implements Identity {
   Provides details of the graph variant with the provided `name`, if a variant
   with that name exists for this graph. Otherwise, returns null.
 
-   For a list of _all_ variants associated with a graph, use `Graph.variants` instead.
+  For a list of _all_ variants associated with a graph, use `Graph.variants` instead.
   """
   variant(name: String!): GraphVariant
 
@@ -13749,6 +13731,8 @@ type TotalChangeSummaryCounts {
 }
 
 type Trace {
+  agentVersion: String
+
   cacheMaxAgeMs: Float
 
   cacheScope: CacheScope

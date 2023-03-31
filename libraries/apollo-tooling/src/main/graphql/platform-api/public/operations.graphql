@@ -1,0 +1,32 @@
+query DownloadSchema($graphID: ID!, $variant: String!) {
+  graph(id: $graphID) {
+    variant(name: $variant) {
+      latestPublication {
+        schema {
+          document
+        }
+      }
+    }
+  }
+}
+
+mutation PublishMonolithSchema($graphID: ID!, $variant: String!, $schemaDocument: String!) {
+  graph(id: $graphID) {
+    uploadSchema(tag: $variant, schemaDocument: $schemaDocument) {
+      code
+      message
+      success
+    }
+  }
+}
+
+mutation PublishSubgraphSchema($graphID: ID!, $variant: String!, $subgraph: String!, $schemaDocument: String!, $revision: String!) {
+  graph(id: $graphID) {
+    publishSubgraph(graphVariant: $variant, activePartialSchema: { sdl : $schemaDocument}, name: $subgraph, revision: $revision) {
+      errors {
+        code
+        message
+      }
+    }
+  }
+}

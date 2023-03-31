@@ -21,31 +21,52 @@ dependencies {
 }
 
 apollo {
+  // https://spec.graphql.org/June2018/#sec-Schema-Introspection
   service("graphql-june2018") {
     packageName.set("com.apollographql.apollo3.tooling.graphql.june2018")
     sourceFolder.set("graphql/june2018")
     generateAsInternal.set(true)
   }
+
+  // https://spec.graphql.org/October2021/#sec-Schema-Introspection.Schema-Introspection-Schema
   service("graphql-october2021") {
     packageName.set("com.apollographql.apollo3.tooling.graphql.october2021")
     sourceFolder.set("graphql/october2021")
     generateAsInternal.set(true)
   }
+
+  // https://spec.graphql.org/draft/#sec-Schema-Introspection.Schema-Introspection-Schema
   service("graphql-draft") {
     packageName.set("com.apollographql.apollo3.tooling.graphql.draft")
     sourceFolder.set("graphql/draft")
     generateAsInternal.set(true)
   }
-  service("platform-api") {
-    packageName.set("com.apollographql.apollo3.tooling.platformapi")
-    sourceFolder.set("platform-api")
+
+  // https://studio.apollographql.com/public/apollo-platform/variant/main/home
+  service("platform-api-public") {
+    packageName.set("com.apollographql.apollo3.tooling.platformapi.public")
+    sourceFolder.set("platform-api/public")
     generateAsInternal.set(true)
     mapScalarToKotlinString("GraphQLDocument")
-    introspection {
-      endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
-      schemaFile.set(file("src/main/graphql/platform-api/schema.graphqls"))
+    registry {
+      graph.set("apollo-platform")
+      graphVariant.set("main")
+      key.set("")
+      schemaFile.set(file("src/main/graphql/platform-api/public/schema.graphqls"))
     }
   }
+
+  // https://studio-staging.apollographql.com/graph/engine/variant/prod/home
+  service("platform-api-internal") {
+    packageName.set("com.apollographql.apollo3.tooling.platformapi.internal")
+    sourceFolder.set("platform-api/internal")
+    generateAsInternal.set(true)
+    introspection {
+      endpointUrl.set("https://graphql.api.apollographql.com/api/graphql")
+      schemaFile.set(file("src/main/graphql/platform-api/internal/schema.graphqls"))
+    }
+  }
+
 }
 
 // We're using project(":apollo-compiler") and the published "apollo-runtime" which do not have the same version
