@@ -29,6 +29,8 @@ import com.apollographql.apollo3.ast.transform
 import com.apollographql.apollo3.compiler.APOLLO_VERSION
 import com.apollographql.apollo3.compiler.OperationIdGenerator
 import com.apollographql.apollo3.compiler.operationoutput.OperationOutput
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.internal.RegisterOperationsMutation
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredClientIdentityInput
 import com.apollographql.apollo3.tooling.platformapi.internal.type.RegisteredOperationInput
@@ -240,30 +242,34 @@ object RegisterOperations {
   ) {
     val apolloClient = ApolloClient.Builder()
         .serverUrl("https://graphql.api.apollographql.com/api/graphql")
+        .httpExposeErrorBody(true)
         .build()
 
-    val response = runBlocking {
-      apolloClient.mutation(
-          RegisterOperationsMutation(
-              id = graphID,
-              clientIdentity = RegisteredClientIdentityInput(
-                  name = "apollo-kotlin",
-                  identifier = "apollo-kotlin",
-                  version = Optional.present(APOLLO_VERSION),
-              ),
-              operations = operationOutput.entries.map {
-                val document = it.value.source
-                RegisteredOperationInput(
-                    signature = document.safelistingHash(),
-                    document = Optional.present(document)
-                )
-              },
-              manifestVersion = 2,
-              graphVariant = Optional.present(graphVariant)
-          )
-      )
-          .addHttpHeader("x-api-key", key)
-          .execute()
+    val call = apolloClient.mutation(
+        RegisterOperationsMutation(
+            id = graphID,
+            clientIdentity = RegisteredClientIdentityInput(
+                name = "apollo-kotlin",
+                identifier = "apollo-kotlin",
+                version = Optional.present(APOLLO_VERSION),
+            ),
+            operations = operationOutput.entries.map {
+              val document = it.value.source
+              RegisteredOperationInput(
+                  signature = document.safelistingHash(),
+                  document = Optional.present(document)
+              )
+            },
+            manifestVersion = 2,
+            graphVariant = Optional.present(graphVariant)
+        )
+    )
+        .addHttpHeader("x-api-key", key)
+    val response = try {
+      runBlocking { call.execute() }
+    } catch (e: ApolloHttpException) {
+      val body = e.body?.use { it.readUtf8() } ?: ""
+      throw ApolloException("Cannot push operations: (code: ${e.statusCode})\n$body", e)
     }
     check(!response.hasErrors()) {
       "Cannot push operations: ${response.errors!!.joinToString { it.message }}"

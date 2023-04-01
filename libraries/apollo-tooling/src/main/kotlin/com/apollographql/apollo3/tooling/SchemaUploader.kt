@@ -3,6 +3,9 @@ package com.apollographql.apollo3.tooling
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.http.HttpHeader
+import com.apollographql.apollo3.compiler.APOLLO_VERSION
+import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.tooling.platformapi.public.PublishMonolithSchemaMutation
 import com.apollographql.apollo3.tooling.platformapi.public.PublishSubgraphSchemaMutation
 import kotlinx.coroutines.runBlocking
@@ -23,14 +26,34 @@ object SchemaUploader {
     }
     val apolloClient = ApolloClient.Builder()
         .serverUrl("https://api.apollographql.com/graphql")
+        .httpExposeErrorBody(true)
         .build()
 
     val graphID = graph ?: key.getGraph() ?: error("graph not found")
 
+    val allHeaders: Map<String, String> = mapOf(
+        "x-api-key" to key,
+        "apollographql-client-name" to "apollo-tooling",
+        "apollographql-client-version" to APOLLO_VERSION
+    ) + headers
     if (subgraph == null) {
-      publishMonolithSchema(apolloClient, graphID, variant, sdl, headers, key)
+      publishMonolithSchema(
+          apolloClient = apolloClient,
+          graphID = graphID,
+          variant = variant,
+          sdl = sdl,
+          headers = allHeaders
+      )
     } else {
-      publishSubgraphSchema(apolloClient, graphID, variant, sdl, subgraph, revision, headers, key)
+      publishSubgraphSchema(
+          apolloClient = apolloClient,
+          graphID = graphID,
+          variant = variant,
+          sdl = sdl,
+          subgraph = subgraph,
+          revision = revision,
+          headers = allHeaders
+      )
     }
   }
 
@@ -40,19 +63,20 @@ object SchemaUploader {
       variant: String,
       sdl: String,
       headers: Map<String, String>,
-      key: String,
   ) {
-    val response = runBlocking {
-      apolloClient.mutation(
-          PublishMonolithSchemaMutation(
-              graphID = graphID,
-              variant = variant,
-              schemaDocument = sdl,
-          )
-      )
-          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
-          .addHttpHeader("x-api-key", key)
-          .execute()
+    val call = apolloClient.mutation(
+        PublishMonolithSchemaMutation(
+            graphID = graphID,
+            variant = variant,
+            schemaDocument = sdl,
+        )
+    )
+        .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+    val response = try {
+      runBlocking { call.execute() }
+    } catch (e: ApolloHttpException) {
+      val body = e.body?.use { it.readUtf8() } ?: ""
+      throw ApolloException("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
     }
     check(!response.hasErrors()) {
       "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"
@@ -73,21 +97,22 @@ object SchemaUploader {
       subgraph: String,
       revision: String?,
       headers: Map<String, String>,
-      key: String,
   ) {
-    val response = runBlocking {
-      apolloClient.mutation(
-          PublishSubgraphSchemaMutation(
-              graphID = graphID,
-              variant = variant,
-              schemaDocument = sdl,
-              subgraph = subgraph,
-              revision = revision!!,
-          )
-      )
-          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
-          .addHttpHeader("x-api-key", key)
-          .execute()
+    val call = apolloClient.mutation(
+        PublishSubgraphSchemaMutation(
+            graphID = graphID,
+            variant = variant,
+            schemaDocument = sdl,
+            subgraph = subgraph,
+            revision = revision!!,
+        )
+    )
+        .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
+    val response = try {
+      runBlocking { call.execute() }
+    } catch (e: ApolloHttpException) {
+      val body = e.body?.use { it.readUtf8() } ?: ""
+      throw ApolloException("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
     }
     check(!response.hasErrors()) {
       "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"

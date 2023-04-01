@@ -20,7 +20,10 @@ internal class PublishSchemaCommand: CliktCommand() {
         key = key,
         graph = graph,
         variant = graphVariant,
-        sdl = File(schema).readText()
+        sdl = File(schema).readText(),
+        subgraph = subgraph,
+        revision = revision,
+        headers = mapOf("apollographql-client-name" to "apollo-cli")
     )
   }
 }
