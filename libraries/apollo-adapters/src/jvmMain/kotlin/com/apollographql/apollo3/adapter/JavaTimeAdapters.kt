@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
@@ -83,5 +84,23 @@ object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
 
   override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: OffsetDateTime) {
     writer.value(value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+  }
+}
+
+/**
+ * An [Adapter] that converts a time to/from [java.time.LocalTime]
+ *
+ * Examples:
+ * - "14:35:00"
+ *
+ * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
+ */
+object JavaLocalTimeAdapter : Adapter<LocalTime> {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalTime {
+    return LocalTime.parse(reader.nextString())
+  }
+
+  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalTime) {
+    writer.value(value.toString())
   }
 }
