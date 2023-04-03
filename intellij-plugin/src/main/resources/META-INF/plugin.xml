@@ -70,7 +70,7 @@
     <group
         id="ApolloRefactorActionGroup"
         popup="true"
-        class="com.apollographql.ijplugin.refactoring.migration.ApolloRefactorActionGroup"
+        class="com.apollographql.ijplugin.action.ApolloRefactorActionGroup"
     >
       <add-to-group group-id="RefactoringMenu" anchor="last" />
     </group>
@@ -78,7 +78,7 @@
     <!-- Refactor / Apollo / Migrate to Apollo Kotlin 3 -->
     <action
         id="ApolloV2ToV3MigrationAction"
-        class="com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationAction"
+        class="com.apollographql.ijplugin.action.ApolloV2ToV3MigrationAction"
     >
       <add-to-group group-id="ApolloRefactorActionGroup" />
     </action>
@@ -86,7 +86,7 @@
     <!-- Refactor / Apollo / Migrate to operationBased codegen -->
     <action
         id="CompatToOperationBasedCodegenMigrationAction"
-        class="com.apollographql.ijplugin.refactoring.migration.CompatToOperationBasedCodegenMigrationAction"
+        class="com.apollographql.ijplugin.action.CompatToOperationBasedCodegenMigrationAction"
     >
       <add-to-group group-id="ApolloRefactorActionGroup" />
     </action>

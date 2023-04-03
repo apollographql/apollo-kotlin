@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.refactoring.migration
+package com.apollographql.ijplugin.action
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService

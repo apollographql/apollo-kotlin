@@ -1,4 +1,4 @@
-package com.apollographql.ijplugin.refactoring.migration
+package com.apollographql.ijplugin.action
 
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
