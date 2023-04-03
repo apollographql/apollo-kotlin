@@ -2,7 +2,7 @@ package com.apollographql.ijplugin.refactoring.migration.compattooperationbased
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.refactoring.migration.ApolloMigrationRefactoringProcessor
-import com.apollographql.ijplugin.refactoring.migration.compattooperationbased.item.RemoveFragmentsField
+import com.apollographql.ijplugin.refactoring.migration.compattooperationbased.item.ReworkInlineFragmentFields
 import com.intellij.openapi.project.Project
 
 /**
@@ -14,6 +14,7 @@ class CompatToOperationBasedCodegenMigrationProcessor(project: Project) : Apollo
   override val noUsageMessage = ApolloBundle.message("CompatToOperationBasedCodegenMigrationProcessor.noUsage")
 
   override val migrationItems = listOf(
-      RemoveFragmentsField,
+//      RemoveFragmentsField,
+      ReworkInlineFragmentFields,
   )
 }
