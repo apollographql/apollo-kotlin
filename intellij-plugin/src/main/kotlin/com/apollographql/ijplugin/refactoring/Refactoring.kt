@@ -40,6 +40,10 @@ fun PsiElement.bindReferencesToElement(element: PsiElement): PsiElement? {
   return null
 }
 
+fun findReferences(psiElement: PsiElement, project: Project): Collection<PsiReference> {
+  return ReferencesSearch.search(psiElement, GlobalSearchScope.projectScope(project), false).toList()
+}
+
 fun findMethodReferences(
     project: Project,
     className: String,
@@ -77,10 +81,11 @@ fun findClassReferences(project: Project, className: String): Collection<PsiRefe
 
 fun findPackageReferences(project: Project, packageName: String): Collection<PsiReference> {
   val psiPackage = JavaPsiFacade.getInstance(project).findPackage(packageName) ?: return emptyList()
-  return ReferencesSearch.search(psiPackage, GlobalSearchScope.projectScope(project), false).toList()
+  return findReferences(psiPackage, project)
 }
 
 fun findInheritorsOfClass(project: Project, className: String): Collection<PsiClass> {
   val psiLookupClass = JavaPsiFacade.getInstance(project).findClass(className, GlobalSearchScope.allScope(project)) ?: return emptyList()
-  return ClassInheritorsSearch.search(psiLookupClass, GlobalSearchScope.projectScope(project), true).toList()
+  // Using allScope for the search so all inheritors are found even if some of them are not in the project
+  return ClassInheritorsSearch.search(psiLookupClass, GlobalSearchScope.allScope(project), true).toList()
 }
