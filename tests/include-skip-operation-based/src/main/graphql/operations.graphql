@@ -73,3 +73,11 @@ query GetAnimalByIdWithDefaultValue($id: ID = 0) {
     species
   }
 }
+
+query GetQuery($foo: Boolean = false) {
+  ...queryFragment
+}
+
+fragment queryFragment on Query {
+  field @include(if: $foo)
+}

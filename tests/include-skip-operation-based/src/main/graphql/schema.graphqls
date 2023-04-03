@@ -1,10 +1,11 @@
 type Query {
   animal: Animal
   animalById(id: ID!): Animal
+  field: Int!
 }
 
 interface Animal {
-  species: String!
+  species: String
 }
 
 type Cat implements Animal {

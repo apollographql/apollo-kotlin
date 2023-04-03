@@ -18,6 +18,7 @@ import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.mockserver.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
+import com.apollographql.apollo3.exception.CacheMissException
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
 import com.example.one.fragment.SectionFragment
@@ -29,6 +30,9 @@ import kotlinx.coroutines.runBlocking
 import okio.Buffer
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 internal object IdBasedCacheKeyResolver : CacheResolver, CacheKeyGenerator {
 
@@ -108,12 +112,18 @@ class NormalizationTest {
   }
 
   @Test
-  fun cacheKeyIsSameWithDifferentDefaultValues() = runBlocking {
+  fun cacheKeyIsDifferentWithDifferentDefaultValues() = runBlocking {
     val apolloStore = ApolloStore(MemoryCacheFactory())
     val data = GetUsersWithoutAdminsQuery.Data(emptyList())
     apolloStore.writeOperation(GetUsersWithoutAdminsQuery(), data)
-    val dataFromCache = apolloStore.readOperation(GetUsersWithAdminsQuery())
-    assertEquals(data.users.size, dataFromCache.users.size)
+
+    try {
+      val dataFromCache = apolloStore.readOperation(GetUsersWithAdminsQuery())
+      assertEquals(data.users.size, dataFromCache.users.size)
+      fail("an exception was expected")
+    } catch (e: CacheMissException) {
+      assertTrue(e.message?.contains("Object 'QUERY_ROOT' has no field named 'users({\"includeAdmins\":true})'") ?: false)
+    }
   }
 
   // See https://github.com/apollographql/apollo-kotlin/issues/4772
