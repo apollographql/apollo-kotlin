@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.action
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.refactoring.migration.compattooperationbased.CompatToOperationBasedCodegenMigrationProcessor
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -22,7 +23,7 @@ class CompatToOperationBasedCodegenMigrationAction : AnAction() {
     )
 
     if (okCancelResult == Messages.OK) {
-//      CompatToOperationBasedCodegenMigrationProcessor(e.project ?: return).run()
+      CompatToOperationBasedCodegenMigrationProcessor(e.project ?: return).run()
     }
   }
 
