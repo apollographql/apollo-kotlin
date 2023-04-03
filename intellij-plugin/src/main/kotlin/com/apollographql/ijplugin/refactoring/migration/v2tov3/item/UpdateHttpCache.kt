@@ -1,6 +1,9 @@
-package com.apollographql.ijplugin.refactoring.migration.item
+package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
 
 import com.apollographql.ijplugin.refactoring.findMethodReferences
+import com.apollographql.ijplugin.refactoring.migration.item.DeletesElements
+import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
+import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiMigration
