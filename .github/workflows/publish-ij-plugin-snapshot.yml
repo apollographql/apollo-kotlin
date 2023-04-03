@@ -25,6 +25,7 @@ jobs:
           ./scripts/increment-ij-plugin-snapshot.main.kts
         env:
           COM_APOLLOGRAPHQL_IJ_PLUGIN_SNAPSHOT: true
+          GH_TOKEN: ${{ github.token }}
 
       - name: Publish snapshot to Repsy
         run: ./gradlew --no-build-cache :intellij-plugin:publishAllPublicationsToRepsyIjPluginSnapshots
