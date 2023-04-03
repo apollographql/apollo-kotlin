@@ -65,7 +65,7 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun httpMethod(httpMethod: HttpMethod?): T
 
   /**
-   * Add HTTP headers to be sent with the request.
+   * Sets HTTP headers to be sent with the request.
    */
   fun httpHeaders(httpHeaders: List<HttpHeader>?): T
 

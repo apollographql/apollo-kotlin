@@ -1,5 +1,6 @@
 package com.example
 
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Executable
@@ -13,12 +14,17 @@ import com.apollographql.apollo3.cache.normalized.api.CacheResolver
 import com.apollographql.apollo3.cache.normalized.api.FieldPolicyCacheResolver
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.api.TypePolicyCacheKeyGenerator
+import com.apollographql.apollo3.cache.normalized.normalizedCache
+import com.apollographql.apollo3.mockserver.MockServer
+import com.apollographql.apollo3.mockserver.enqueue
+import com.apollographql.apollo3.testing.internal.runTest
 import com.apollographql.apollo3.exception.CacheMissException
 import com.example.one.Issue2818Query
 import com.example.one.Issue3672Query
 import com.example.one.fragment.SectionFragment
 import com.example.two.GetUsersWithAdminsQuery
 import com.example.two.GetUsersWithoutAdminsQuery
+import com.example.two.GetCountryQuery
 import com.example.two.NestedFragmentQuery
 import kotlinx.coroutines.runBlocking
 import okio.Buffer
@@ -118,5 +124,29 @@ class NormalizationTest {
     } catch (e: CacheMissException) {
       assertTrue(e.message?.contains("Object 'QUERY_ROOT' has no field named 'users({\"includeAdmins\":true})'") ?: false)
     }
+  }
+
+  // See https://github.com/apollographql/apollo-kotlin/issues/4772
+  fun issue4772() = runTest {
+    val mockserver = MockServer()
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockserver.url())
+        .normalizedCache(MemoryCacheFactory())
+        .build()
+
+    mockserver.enqueue("""
+      {
+        "data": {
+          "country": {
+            "name": "Foo"
+          }
+        }
+      }
+    """.trimIndent())
+    apolloClient.query(GetCountryQuery("foo")).execute().run {
+      check(data?.country?.name == "Foo")
+    }
+    apolloClient.close()
+    mockserver.stop()
   }
 }

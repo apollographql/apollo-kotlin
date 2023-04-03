@@ -4,6 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.Upload
 import com.apollographql.apollo3.api.http.internal.urlEncode
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -36,12 +37,18 @@ class DefaultHttpRequestComposer(
     val operation = apolloRequest.operation
     val customScalarAdapters = apolloRequest.executionContext[CustomScalarAdapters] ?: CustomScalarAdapters.Empty
 
-    val requestHeaders = listOf(
-        HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()),
-        HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name()),
-        HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE),
-    ) + (apolloRequest.httpHeaders ?: emptyList())
-
+    val requestHeaders = mutableListOf<HttpHeader>().apply {
+      add(HttpHeader(HEADER_APOLLO_OPERATION_ID, operation.id()))
+      add(HttpHeader(HEADER_APOLLO_OPERATION_NAME, operation.name()))
+      if (apolloRequest.operation is Subscription<*>) {
+        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_MULTIPART))
+      } else {
+        add(HttpHeader(HEADER_ACCEPT_NAME, HEADER_ACCEPT_VALUE_DEFER))
+      }
+      if (apolloRequest.httpHeaders != null) {
+        addAll(apolloRequest.httpHeaders)
+      }
+    }
     val sendApqExtensions = apolloRequest.sendApqExtensions ?: false
     val sendDocument = apolloRequest.sendDocument ?: true
 
@@ -84,7 +91,9 @@ class DefaultHttpRequestComposer(
     // TODO The deferSpec=20220824 part is a temporary measure so early backend implementations of the @defer directive
     // can recognize early client implementations and potentially reply in a compatible way.
     // This should be removed in later versions.
-    private const val HEADER_ACCEPT_VALUE = "multipart/mixed; deferSpec=20220824, application/json"
+    private const val HEADER_ACCEPT_VALUE_DEFER = "multipart/mixed; deferSpec=20220824, application/json"
+    private const val HEADER_ACCEPT_VALUE_MULTIPART = "multipart/mixed; boundary=\"graphql\"; subscriptionSpec=1.0, application/json"
+
 
     private fun <D : Operation.Data> buildGetUrl(
         serverUrl: String,

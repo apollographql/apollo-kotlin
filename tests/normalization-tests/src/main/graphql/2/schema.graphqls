@@ -2,6 +2,7 @@ type Query {
   viewer: Viewer!
   home: Home!
   users(includeAdmins: Boolean!): [User!]!
+  country(code: ID!): Country
 }
 
 type Viewer {
@@ -34,4 +35,9 @@ type User {
   id: String!
   name: String!
   email: String!
+}
+
+type Country {
+  code: ID!
+  name: String!
 }

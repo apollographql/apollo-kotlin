@@ -25,3 +25,11 @@ query GetUsersWithAdmins($includeAdmins: Boolean = true) {
     id
   }
 }
+
+query getCountry($code:ID!) {
+  #efredsver
+  country(code:$code) {
+    code @skip(if:true)
+    name
+  }
+}
