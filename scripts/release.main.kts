@@ -19,12 +19,15 @@ check(getCurrentVersion().endsWith("-SNAPSHOT")) {
 }
 
 check(args.size == 1) {
-  "tag.main.kts [version to tag]"
+  "release.main.kts [version to release]"
 }
 val versionToRelease = args[0]
 val nextSnapshot = getNextSnapshot(versionToRelease)
 
 val startBranch = runCommand("git", "symbolic-ref", "--short", "HEAD")
+check(startBranch == "main" || startBranch.startsWith("release-")) {
+  "You must be on the main branch or a release branch to make a release"
+}
 
 while (true) {
   println("Current version is '${getCurrentVersion()}'.")
