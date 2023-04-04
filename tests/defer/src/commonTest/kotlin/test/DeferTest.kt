@@ -93,7 +93,7 @@ class DeferTest {
     )
 
     mockServer.enqueueMultipart(jsonList)
-    val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -151,7 +151,7 @@ class DeferTest {
     )
 
     mockServer.enqueueMultipart(jsonList)
-    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -309,11 +309,11 @@ class DeferTest {
     )
 
     mockServer.enqueueMultipart(jsonWithEmptyPayload)
-    var actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    var actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
 
     mockServer.enqueueMultipart(jsonWithoutEmptyPayload)
-    actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    actualDataList = apolloClient.query(SimpleDeferQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 }

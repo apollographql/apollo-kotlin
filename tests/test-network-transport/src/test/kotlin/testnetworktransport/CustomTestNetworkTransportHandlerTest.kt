@@ -58,9 +58,9 @@ class CustomTestNetworkTransportHandlerTest {
     val actual0 = apolloClient.query(query).execute()
     val actual1 = apolloClient.query(query).execute()
     val actual2 = apolloClient.query(query).execute()
-    assertEquals("Droid 0", actual0.dataAssertNoErrors.hero.name)
-    assertEquals("Droid 1", actual1.dataAssertNoErrors.hero.name)
-    assertEquals("Droid 2", actual2.dataAssertNoErrors.hero.name)
+    assertEquals("Droid 0", actual0.dataOrThrow().hero.name)
+    assertEquals("Droid 1", actual1.dataOrThrow().hero.name)
+    assertEquals("Droid 2", actual2.dataOrThrow().hero.name)
   }
 
   @Test

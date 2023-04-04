@@ -114,7 +114,7 @@ class WebSocketErrorsTest {
       apolloClient.subscription(CountSubscription(2, 500))
           .toFlow()
           .map {
-            it.dataAssertNoErrors.count
+            it.dataOrThrow().count
           }
           .toList()
     }
@@ -140,7 +140,7 @@ class WebSocketErrorsTest {
     // Trigger an error
     val response = apolloClient.query(CloseSocketQuery()).execute()
 
-    assertEquals(response.dataAssertNoErrors.closeWebSocket, "Closed 1 session(s)")
+    assertEquals(response.dataOrThrow().closeWebSocket, "Closed 1 session(s)")
 
     /**
      * The subscription should be restarted and complete successfully the second time
@@ -180,7 +180,7 @@ class WebSocketErrorsTest {
     delay(1000)
     val response = apolloClient.query(CloseSocketQuery()).execute()
 
-    println(response.dataAssertNoErrors)
+    println(response.dataOrThrow())
   }
 
   @Test
@@ -205,7 +205,7 @@ class WebSocketErrorsTest {
     apolloClient.subscription(CountSubscription(2, 500))
         .toFlow()
         .map {
-          it.dataAssertNoErrors.count
+          it.dataOrThrow().count
         }
         .test {
           awaitItem()

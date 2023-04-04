@@ -59,7 +59,7 @@ public class ApolloWsTest {
     ApolloDisposable disposable = apolloClient.subscription(new CountSubscription(5, 100)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        actual.add(response.dataAssertNoErrors().count);
+        actual.add(response.dataOrThrow().count);
         latch.countDown();
       }
     });
@@ -77,7 +77,7 @@ public class ApolloWsTest {
   @Test
   public void simpleWithRx() {
     Rx3Apollo.flowable(apolloClient.subscription(new CountSubscription(5, 100)), BackpressureStrategy.BUFFER)
-        .map(response -> response.dataAssertNoErrors().count)
+        .map(response -> response.dataOrThrow().count)
         .test()
         .awaitDone(1, TimeUnit.SECONDS)
         .assertValueCount(5)
@@ -92,7 +92,7 @@ public class ApolloWsTest {
     apolloClient.subscription(new CountSubscription(4, 2000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        Integer count = response.dataAssertNoErrors().count;
+        Integer count = response.dataOrThrow().count;
         items.add(count * 2);
         if (count == 0) {
           sleep(500);
@@ -100,7 +100,7 @@ public class ApolloWsTest {
           apolloClient.subscription(new CountSubscription(4, 2000)).enqueue(new ApolloCallback<CountSubscription.Data>() {
             @Override
             public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-              items.add(response.dataAssertNoErrors().count * 2 + 1);
+              items.add(response.dataOrThrow().count * 2 + 1);
             }
           }).addListener(latch::countDown);
         }
@@ -174,8 +174,8 @@ public class ApolloWsTest {
     disposable[0] = apolloClient.subscription(new CountSubscription(50, 10)).enqueue(new ApolloCallback<CountSubscription.Data>() {
       @Override
       public void onResponse(@NotNull ApolloResponse<CountSubscription.Data> response) {
-        items.add(response.dataAssertNoErrors().count);
-        if (response.dataAssertNoErrors().count == 5) {
+        items.add(response.dataOrThrow().count);
+        if (response.dataOrThrow().count == 5) {
           disposable[0].dispose();
           latch.countDown();
         }
@@ -206,8 +206,8 @@ public class ApolloWsTest {
           failure[0] = response.exception;
           latch.countDown();
         } else {
-          items.add(response.dataAssertNoErrors().count);
-          if (response.dataAssertNoErrors().count == 5) {
+          items.add(response.dataOrThrow().count);
+          if (response.dataOrThrow().count == 5) {
             // Provoke a network error by closing the websocket
             apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
               @Override
@@ -254,11 +254,11 @@ public class ApolloWsTest {
           latch.countDown();
         } else {
           if (hasReopenOccurred.get()) {
-            itemsAfterReopen.add(response.dataAssertNoErrors().count);
+            itemsAfterReopen.add(response.dataOrThrow().count);
           } else {
-            itemsBeforeReopen.add(response.dataAssertNoErrors().count);
+            itemsBeforeReopen.add(response.dataOrThrow().count);
           }
-          if (response.dataAssertNoErrors().count == 5) {
+          if (response.dataOrThrow().count == 5) {
             // Provoke a network error by closing the websocket
             apolloClient.query(new CloseSocketQuery()).enqueue(new ApolloCallback<CloseSocketQuery.Data>() {
               @Override
@@ -313,8 +313,8 @@ public class ApolloWsTest {
           failure[0] = response.exception;
           latch.countDown();
         } else {
-          itemsBeforeReopen.add(response.dataAssertNoErrors().count);
-          if (response.dataAssertNoErrors().count == 5) {
+          itemsBeforeReopen.add(response.dataOrThrow().count);
+          if (response.dataOrThrow().count == 5) {
             // Provoke a network error by stopping the whole server
             sampleServer2.close();
           }
