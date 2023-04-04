@@ -8,7 +8,7 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 /**
- * Represents a GraphQL response. GraphQL responses can be be partial responses so it is valid to have both data != null and errors
+ * Represents a GraphQL response. GraphQL's responses can be partial responses, so it is valid to have both data != null and errors
  */
 class ApolloResponse<D : Operation.Data>
 private constructor(
@@ -38,7 +38,7 @@ private constructor(
      *
      * If no GraphQL error was raised, [errors] is null. Else it's a non-empty list of errors indicating where the error(s) happened.
      *
-     * Note that because GraphQL allows partial data, it is possible to have both [data] non null and [errors] non null.
+     * Note that because GraphQL allows partial data, it is possible to have both [data] non-null and [errors] non-null.
      *
      * See also [exception]
      */
@@ -47,8 +47,8 @@ private constructor(
 
     /**
      * An [ApolloException] if a valid GraphQL response wasn't received or `null` if a valid GraphQL response was received.
-     * For example, `exception` is non null if there is a network failure or cache miss.
-     * If `exception` is non null, [data] and [errors] will be null.
+     * For example, `exception` is non-null if there is a network failure or cache miss.
+     * If `exception` is non-null, [data] and [errors] will be null.
      *
      * See also [errors] for GraphQL errors returned by the server.
      */
@@ -160,7 +160,7 @@ private constructor(
     ): this(operation, requestUuid, data, errors, extensions, null)
 
     /**
-     * Constructs an error response
+     * Constructs an exception response
      */
     constructor(
         operation: Operation<D>,
@@ -193,7 +193,6 @@ private constructor(
     }
 
     fun build(): ApolloResponse<D> {
-      @Suppress("DEPRECATION")
       return ApolloResponse(
           operation = operation,
           requestUuid = requestUuid,
