@@ -8,7 +8,12 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
 /**
- * Represents a GraphQL response. GraphQL's responses can be partial responses, so it is valid to have both data != null and errors
+ * Represents a GraphQL response. GraphQL responses can be partial responses, so it is valid to have both data != null and exception != null
+ *
+ * Valid states are:
+ * - data != null && exception == null: complete data with no error
+ * - data == null && exception != null: no data, a network error or operation error happened
+ * - data != null && exception != null: partial data with field errors
  */
 class ApolloResponse<D : Operation.Data>
 private constructor(
@@ -23,9 +28,6 @@ private constructor(
 
     /**
      * Parsed response of GraphQL [operation] execution.
-     *
-     * If [data] is null, [exception] will be non-null to indicate what the error was but the opposite is not true
-     * as it is possible to have partial data and [exception] at the same time
      *
      * See also [exception]
      */
@@ -45,13 +47,6 @@ private constructor(
     @JvmField
     val errors: List<Error>?,
 
-    /**
-     * An [ApolloException] if a valid GraphQL response wasn't received or `null` if a valid GraphQL response was received.
-     * For example, `exception` is non-null if there is a network failure or cache miss.
-     * If `exception` is non-null, [data] and [errors] will be null.
-     *
-     * See also [errors] for GraphQL errors returned by the server.
-     */
     exception: ApolloException?,
 
     /**
@@ -83,6 +78,14 @@ private constructor(
     val isLast: Boolean,
 ) {
 
+  /**
+   * An [ApolloException] if a complete GraphQL response wasn't received, an instance of [ApolloGraphQLException] if GraphQL
+   * errors were return or another instance of [ApolloException] if a network, parsing, caching or other error happened.
+   *
+   * For example, `exception` is non-null if there is a network failure or cache miss.
+   *
+   * See also [data]
+   */
   @JvmField
   val exception: ApolloException?
 
@@ -128,7 +131,7 @@ private constructor(
   class Builder<D : Operation.Data> internal constructor(
       private val operation: Operation<D>,
       private var requestUuid: Uuid,
-      private val data: D?,
+      private var data: D?,
       private var errors: List<Error>?,
       private var extensions: Map<String, Any?>?,
       private var exception: ApolloException?
@@ -170,6 +173,10 @@ private constructor(
 
     fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext
+    }
+
+    fun data(data: D?) = apply {
+      this.data = data
     }
 
     fun errors(errors: List<Error>?) = apply {
