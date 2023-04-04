@@ -101,7 +101,7 @@ class DeferNormalizedCacheTest {
 
     // Cache is not empty, but NetworkOnly still goes to the server
     mockServer.enqueueMultipart(jsonList)
-    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val networkActual = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
     mockServer.takeRequest()
 
     val networkExpected = listOf(
@@ -372,8 +372,7 @@ class DeferNormalizedCacheTest {
                     emit(networkResponse as ApolloResponse<D>)
                   }
                   delay(10)
-                  emit(ApolloResponse.Builder(requestUuid = uuid, operation = query, data = null)
-                      .exception(ApolloNetworkException("Network error"))
+                  emit(ApolloResponse.Builder(requestUuid = uuid, operation = query, exception = ApolloNetworkException("Network error"))
                       .isLast(true)
                       .build() as ApolloResponse<D>)
                 }

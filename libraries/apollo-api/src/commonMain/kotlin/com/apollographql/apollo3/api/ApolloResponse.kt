@@ -23,7 +23,11 @@ private constructor(
 
     /**
      * Parsed response of GraphQL [operation] execution.
-     * Can be `null` in case if [operation] execution failed.
+     *
+     * If [data] is null, [exception] will be non-null to indicate what the error was but the opposite is not true
+     * as it is possible to have partial data and [exception] at the same time
+     *
+     * See also [exception]
      */
     @JvmField
     val data: D?,
@@ -36,7 +40,7 @@ private constructor(
      *
      * Note that because GraphQL allows partial data, it is possible to have both [data] non null and [errors] non null.
      *
-     * See also [exception] for exceptions happening before a valid GraphQL response could be received.
+     * See also [exception]
      */
     @JvmField
     val errors: List<Error>?,
@@ -48,8 +52,7 @@ private constructor(
      *
      * See also [errors] for GraphQL errors returned by the server.
      */
-    @JvmField
-    val exception: ApolloException?,
+    exception: ApolloException?,
 
     /**
      * Extensions of GraphQL protocol, arbitrary map of key [String] / value [Any] sent by server along with the response.
@@ -80,6 +83,18 @@ private constructor(
     val isLast: Boolean,
 ) {
 
+  @JvmField
+  val exception: ApolloException?
+
+  init {
+    this.exception = when  {
+      exception != null -> exception
+      !errors.isNullOrEmpty() -> ApolloGraphQLException(errors)
+      data == null -> DefaultApolloException("No data and no error was returned")
+      else -> null
+    }
+  }
+
   /**
    * A shorthand property to get a non-nullable `data` if handling partial data is **not** important
    *
@@ -87,6 +102,7 @@ private constructor(
    * to implement something like `ApolloResponse<D>.assertNoErrors(): ApolloResponse<D & Any>`
    */
   @get:JvmName("dataAssertNoErrors")
+  @Deprecated(message = "Use dataOrThrow instead", replaceWith = ReplaceWith("dataOrThrow()"))
   val dataAssertNoErrors: D
     get() {
       return when {
@@ -95,6 +111,11 @@ private constructor(
         else -> data ?: throw DefaultApolloException("The server did not return any data")
       }
     }
+
+  /**
+   * Return [data] if not null or throws [exception] else
+   */
+  fun dataOrThrow(): D = data ?: throw exception!!
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
@@ -136,7 +157,7 @@ private constructor(
         data: D?,
         errors: List<Error>?,
         extensions: Map<String, Any?>?,
-    ): this(operation, requestUuid, data, errors, extensions, errors?.takeIf { !it.isNullOrEmpty() }?.let { ApolloGraphQLException(it) })
+    ): this(operation, requestUuid, data, errors, extensions, null)
 
     /**
      * Constructs an error response
