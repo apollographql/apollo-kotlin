@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.network.NetworkTransport
 import com.apollographql.apollo3.testing.enqueueTestResponse
 import com.apollographql.apollo3.testing.internal.runTest
@@ -66,7 +67,7 @@ class CustomTestNetworkTransportHandlerTest {
   @Test
   fun registerAndQueueMethodsFail() = runTest(before = { setUp() }, after = { tearDown() }) {
     assertFailsWith(IllegalStateException::class) {
-      apolloClient.enqueueTestResponse(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), null).build())
+      apolloClient.enqueueTestResponse(ApolloResponse.Builder(GetHeroQuery("id"), uuid4(), DefaultApolloException()).build())
     }
     assertFailsWith(IllegalStateException::class) {
       apolloClient.registerTestResponse(GetHeroQuery("id"), null)
