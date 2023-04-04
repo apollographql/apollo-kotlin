@@ -65,7 +65,7 @@ internal class ApolloCacheInterceptor(
     if (request.doNotStore) {
       return
     }
-    if (response.exception != null) {
+    if (response.data == null) {
       return
     }
     if (response.hasErrors() && !request.storePartialResponses) {
