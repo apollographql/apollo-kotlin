@@ -129,16 +129,3 @@ val title = data.film?.title
 ```
 
 Note that the safe call is still required on `film` because this field has a nullable type in the GraphQL schema. There are ways to override this in codegen. For more details, learn about [the `@nonnull` directive](../advanced/nonnull).
-
-Another option is to call `ignorePartialData(true)`. This will force `ApolloResponse.data` to be null even if it wasn't in the response, whenever there are errors. This can also simplify error handling:
-
-```kotlin
-val data = apolloClient.query(query).ignorePartialData(true).execute().data
-if (data == null) {
-  // All network or GraphQL errors are handled here
-} else {
-  // No errors
-  val title = data.film?.title
-}
-```
-This can also be set globally with `ApolloClient.Builder.ignorePartialData(true)`.

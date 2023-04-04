@@ -29,10 +29,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var enableAutoPersistedQueries: Boolean? = null
     private set
-  override var canBeBatched: Boolean? = null
-    private set
-  override var ignorePartialData: Boolean? = null
-    private set
 
   /**
    * The HTTP headers to be sent with the request.
@@ -83,12 +79,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
   }
 
+  override var canBeBatched: Boolean? = null
+
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
     this.canBeBatched = canBeBatched
-  }
-
-  override fun ignorePartialData(ignorePartialData: Boolean?) = apply {
-    this.ignorePartialData = ignorePartialData
   }
 
   /**
@@ -111,7 +105,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .ignorePartialData(ignorePartialData)
   }
 
   /**
@@ -139,7 +132,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .ignorePartialData(ignorePartialData)
         .build()
     return apolloClient.executeAsFlow(request, ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true)
   }

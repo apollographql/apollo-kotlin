@@ -14,8 +14,11 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
+<<<<<<< HEAD
 	public final fun getIgnoreApolloClientHttpHeaders ()Ljava/lang/Boolean;
 	public fun getIgnorePartialData ()Ljava/lang/Boolean;
+=======
+>>>>>>> 25b14ab9d (Revert "Add ApolloClient.ignorePartialData (#4725)")
 	public final fun getOperation ()Lcom/apollographql/apollo3/api/Operation;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
@@ -23,19 +26,32 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public synthetic fun httpHeaders (Ljava/util/List;)Ljava/lang/Object;
 	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
+<<<<<<< HEAD
 	public final fun ignoreApolloClientHttpHeaders (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public fun ignorePartialData (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun ignorePartialData (Ljava/lang/Boolean;)Ljava/lang/Object;
+=======
+>>>>>>> 25b14ab9d (Revert "Add ApolloClient.ignorePartialData (#4725)")
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
+<<<<<<< HEAD
+=======
+	public fun setCanBeBatched (Ljava/lang/Boolean;)V
+	public fun setEnableAutoPersistedQueries (Ljava/lang/Boolean;)V
+	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
+	public fun setHttpHeaders (Ljava/util/List;)V
+	public fun setHttpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)V
+	public fun setSendApqExtensions (Ljava/lang/Boolean;)V
+	public fun setSendDocument (Ljava/lang/Boolean;)V
+>>>>>>> d28354991 (Revert "Add ApolloClient.ignorePartialData (#4725)")
 	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class com/apollographql/apollo3/ApolloClient : com/apollographql/apollo3/api/ExecutionOptions, java/io/Closeable {
 	public static final field Companion Lcom/apollographql/apollo3/ApolloClient$Companion;
-	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/apollographql/apollo3/network/NetworkTransport;Lcom/apollographql/apollo3/api/CustomScalarAdapters;Lcom/apollographql/apollo3/network/NetworkTransport;Ljava/util/List;Lcom/apollographql/apollo3/api/ExecutionContext;Lkotlinx/coroutines/CoroutineDispatcher;Lcom/apollographql/apollo3/api/http/HttpMethod;Ljava/util/List;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/apollographql/apollo3/ApolloClient$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun close ()V
 	public final fun executeAsFlow (Lcom/apollographql/apollo3/api/ApolloRequest;)Lkotlinx/coroutines/flow/Flow;
 	public fun getCanBeBatched ()Ljava/lang/Boolean;
@@ -44,7 +60,6 @@ public final class com/apollographql/apollo3/ApolloClient : com/apollographql/ap
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
-	public fun getIgnorePartialData ()Ljava/lang/Boolean;
 	public final fun getInterceptors ()Ljava/util/List;
 	public final fun getNetworkTransport ()Lcom/apollographql/apollo3/network/NetworkTransport;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
@@ -85,7 +100,6 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public fun getExecutionContext ()Lcom/apollographql/apollo3/api/ExecutionContext;
 	public fun getHttpHeaders ()Ljava/util/List;
 	public fun getHttpMethod ()Lcom/apollographql/apollo3/api/http/HttpMethod;
-	public fun getIgnorePartialData ()Ljava/lang/Boolean;
 	public final fun getInterceptors ()Ljava/util/List;
 	public fun getSendApqExtensions ()Ljava/lang/Boolean;
 	public fun getSendDocument ()Ljava/lang/Boolean;
@@ -101,8 +115,6 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun httpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)Ljava/lang/Object;
 	public final fun httpServerUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public fun ignorePartialData (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public synthetic fun ignorePartialData (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun interceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun networkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public fun sendApqExtensions (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
@@ -110,6 +122,16 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public final fun serverUrl (Ljava/lang/String;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+<<<<<<< HEAD
+=======
+	public fun setCanBeBatched (Ljava/lang/Boolean;)V
+	public fun setEnableAutoPersistedQueries (Ljava/lang/Boolean;)V
+	public fun setExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)V
+	public fun setHttpHeaders (Ljava/util/List;)V
+	public fun setHttpMethod (Lcom/apollographql/apollo3/api/http/HttpMethod;)V
+	public fun setSendApqExtensions (Ljava/lang/Boolean;)V
+	public fun setSendDocument (Ljava/lang/Boolean;)V
+>>>>>>> d28354991 (Revert "Add ApolloClient.ignorePartialData (#4725)")
 	public final fun subscriptionNetworkTransport (Lcom/apollographql/apollo3/network/NetworkTransport;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun useV3ExceptionHandling (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun webSocketEngine (Lcom/apollographql/apollo3/network/ws/WebSocketEngine;)Lcom/apollographql/apollo3/ApolloClient$Builder;

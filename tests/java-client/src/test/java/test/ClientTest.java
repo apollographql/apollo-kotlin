@@ -6,17 +6,14 @@ import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.mockserver.MockRequest;
 import com.apollographql.apollo3.mockserver.MockResponse;
 import com.apollographql.apollo3.mockserver.MockServer;
-import com.apollographql.apollo3.runtime.java.ApolloCall;
 import com.apollographql.apollo3.runtime.java.ApolloCallback;
 import com.apollographql.apollo3.runtime.java.ApolloClient;
 import com.apollographql.apollo3.runtime.java.ApolloDisposable;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptor;
 import com.apollographql.apollo3.runtime.java.interceptor.ApolloInterceptorChain;
 import com.apollographql.apollo3.runtime.java.network.http.HttpInterceptor;
-import com.apollographql.apollo3.rx3.java.Rx3Apollo;
 import com.google.common.truth.Truth;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
 import javatest.CreateCatMutation;
 import javatest.GetRandomQuery;
 import javatest.LocationQuery;
@@ -179,22 +176,4 @@ public class ClientTest {
      */
     Truth.assertThat(received[0]).isEqualTo(null);
   }
-
-  @Test
-  public void ignorePartialDataOnClient() {
-    apolloClient = new ApolloClient.Builder().serverUrl(mockServerUrl).ignorePartialData(true).build();
-    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}, \"errors\":  [{\"message\": \"Something went wrong\"}]}").build());
-    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = blockingQuery(apolloClient, GetRandomQuery.builder().build());
-    Truth.assertThat(queryResponse.data).isNull();
-  }
-
-  @Test
-  public void ignorePartialDataOnCall() {
-    mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"random\": 42}, \"errors\":  [{\"message\": \"Something went wrong\"}]}").build());
-    GetRandomQuery query = GetRandomQuery.builder().build();
-    ApolloCall<GetRandomQuery.Data> call = apolloClient.query(query).ignorePartialData(true);
-    @NonNull ApolloResponse<GetRandomQuery.Data> queryResponse = Rx3Apollo.single(call, BackpressureStrategy.BUFFER).blockingGet();
-    Truth.assertThat(queryResponse.data).isNull();
-  }
-
 }
