@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>OperationOutputConnection</title>
 <link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../../../styles/style.css" rel="Stylesheet">
 <link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -19,6 +27,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../../../images/apollo.svg">
 <link href="../../../../styles/style.css" rel="Stylesheet">
 <link href="../../../../styles/prism.css" rel="Stylesheet">
@@ -29,9 +38,12 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>3.8.1-SNAPSHOT
+    <div>4.0.0-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">jvm</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -41,59 +53,63 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo3.gradle.api/Service.OperationOutputConnection///PointingToDeclaration//1222267165">
-  <div class="breadcrumbs"><a href="../../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../../index.html">com.apollographql.apollo3.gradle.api</a><span class="delimiter">/</span><a href="../index.html">Service</a><span class="delimiter">/</span><a href="index.html">OperationOutputConnection</a></div>
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-gradle-plugin-external::com.apollographql.apollo3.gradle.api/Service.OperationOutputConnection///PointingToDeclaration//1222267165">
+  <div class="breadcrumbs"><a href="../../../index.html">apollo-gradle-plugin-external</a><span class="delimiter">/</span><a href="../../index.html">com.apollographql.apollo3.gradle.api</a><span class="delimiter">/</span><a href="../index.html">Service</a><span class="delimiter">/</span><span class="current">OperationOutputConnection</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Operation</span><wbr><span>Output</span><wbr><span><span>Connection</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">OperationOutputConnection</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>task<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>operationOutputFile<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.file/RegularFile///PointingToDeclaration/">RegularFile</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">OperationOutputConnection</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>task<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>operationOutputFile<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.file/RegularFile///PointingToDeclaration/">RegularFile</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
     <div class="tabs-section-body">
-      <h2 class="tabbedcontent">Constructors</h2>
-      <div class="table" data-togglable="Constructors"><a data-name="-1341102098%2FConstructors%2F1222267165" anchor-label="OperationOutputConnection" id="-1341102098%2FConstructors%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue TabbedContent">
-            <div class=""><span class="inline-flex">
-                <div><a href="-operation-output-connection.html"><span>Operation</span><wbr><span>Output</span><wbr><span><span>Connection</span></span></a></div>
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1341102098%2FConstructors%2F1222267165" anchor-label="OperationOutputConnection" id="-1341102098%2FConstructors%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-operation-output-connection.html"><span>Operation</span><wbr><span>Output</span><wbr><span><span>Connection</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1341102098%2FConstructors%2F1222267165"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-operation-output-connection.html"><span class="token function">OperationOutputConnection</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">task<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">operationOutputFile<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.file/RegularFile///PointingToDeclaration/">RegularFile</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">task<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">operationOutputFile<span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.file/RegularFile///PointingToDeclaration/">RegularFile</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="-1857397140%2FProperties%2F1222267165" anchor-label="operationOutputFile" id="-1857397140%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="operation-output-file.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>File</span></span></a></div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1857397140%2FProperties%2F1222267165" anchor-label="operationOutputFile" id="-1857397140%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-output-file.html"><span>operation</span><wbr><span>Output</span><wbr><span><span>File</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1857397140%2FProperties%2F1222267165"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><a data-name="-1857397140%2FProperties%2F1222267165" anchor-label="operationOutputFile" id="-1857397140%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="operation-output-file.html">operationOutputFile</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.file/RegularFile///PointingToDeclaration/">RegularFile</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1857397140%2FProperties%2F1222267165" anchor-label="operationOutputFile" id="-1857397140%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a><p class="paragraph">A json file containing a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="../../../../apollo-compiler/com.apollographql.apollo3.compiler.operationoutput/-operation-descriptor/index.html">com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor</a>&gt;</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="operation-output-file.html">operationOutputFile</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.provider/Provider///PointingToDeclaration/">Provider</span><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="org.gradle.api.file/RegularFile///PointingToDeclaration/">RegularFile</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">A json file containing a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="../../../../apollo-compiler/com.apollographql.apollo3.compiler.operationoutput/-operation-descriptor/index.html">com.apollographql.apollo3.compiler.operationoutput.OperationDescriptor</a>&gt;</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1676685605%2FProperties%2F1222267165" anchor-label="task" id="1676685605%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="task.html"><span><span>task</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-gradle-plugin-external:dokkaHtmlPartial/main" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="task.html"><span><span>task</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1676685605%2FProperties%2F1222267165"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><a data-name="1676685605%2FProperties%2F1222267165" anchor-label="task" id="1676685605%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="task.html">task</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1676685605%2FProperties%2F1222267165" anchor-label="task" id="1676685605%2FProperties%2F1222267165" data-filterable-set=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"></a><p class="paragraph">The task that produces operationOutput</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-gradle-plugin-external:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="task.html">task</a><span class="token operator">: </span><span data-unresolved-link="org.gradle.api.tasks/TaskProvider///PointingToDeclaration/">TaskProvider</span><span class="token operator">&lt;</span><span class="token keyword">out </span><span data-unresolved-link="org.gradle.api/Task///PointingToDeclaration/">Task</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">The task that produces operationOutput</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -107,6 +123,6 @@ if(savedDarkMode === true){
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

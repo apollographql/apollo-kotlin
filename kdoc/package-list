@@ -18,7 +18,6 @@ $dokka.location:com.apollographql.apollo3.mockserver/MockServer/url/#/PointingTo
 $dokka.location:com.apollographql.apollo3.network.http/DefaultHttpEngine/dispose/#/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/-default-http-engine/[jvm]dispose.html
 $dokka.location:com.apollographql.apollo3.network.http/DefaultHttpEngine/execute/#com.apollographql.apollo3.api.http.HttpRequest/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.http/-default-http-engine/[jvm]execute.html
 $dokka.location:com.apollographql.apollo3.network.ws/DefaultWebSocketEngine/open/#kotlin.String#kotlin.collections.List[com.apollographql.apollo3.api.http.HttpHeader]/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.ws/-default-web-socket-engine/[jvm]open.html
-$dokka.location:com.apollographql.apollo3.network.ws/DefaultWebSocketEngine/open/#kotlin.String#kotlin.collections.Map[kotlin.String,kotlin.String]/PointingToDeclaration/apollo-runtime/com.apollographql.apollo3.network.ws/-default-web-socket-engine/[jvm]open.html
 module:apollo-adapters
 com.apollographql.apollo3.adapter
 module:apollo-annotations
@@ -26,7 +25,6 @@ com.apollographql.apollo3.annotations
 module:apollo-api
 com.apollographql.apollo3.api
 com.apollographql.apollo3.api.http
-com.apollographql.apollo3.api.internal
 com.apollographql.apollo3.api.json
 com.apollographql.apollo3.api.test
 com.apollographql.apollo3.exception
@@ -47,11 +45,10 @@ com.apollographql.apollo3.compiler.codegen
 com.apollographql.apollo3.compiler.codegen.java
 com.apollographql.apollo3.compiler.codegen.java.adapter
 com.apollographql.apollo3.compiler.codegen.java.helpers
-com.apollographql.apollo3.compiler.codegen.kotlin
 com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 com.apollographql.apollo3.compiler.hooks
 com.apollographql.apollo3.compiler.hooks.internal
-com.apollographql.apollo3.compiler.introspection
+com.apollographql.apollo3.compiler.ir
 com.apollographql.apollo3.compiler.operationoutput
 module:apollo-gradle-plugin-external
 com.apollographql.apollo3.gradle.api
