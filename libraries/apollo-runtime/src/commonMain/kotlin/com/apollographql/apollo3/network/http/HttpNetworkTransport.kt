@@ -110,8 +110,7 @@ private constructor(
           cause = throwable
       )
     }
-    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = null)
-        .exception(apolloException)
+    return ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, exception = apolloException)
         .isLast(true)
         .build()
   }

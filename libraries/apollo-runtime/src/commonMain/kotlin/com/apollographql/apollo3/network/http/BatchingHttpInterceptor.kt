@@ -17,6 +17,7 @@ import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.writeArray
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.internal.CloseableSingleThreadDispatcher
 import com.apollographql.apollo3.mpp.currentTimeMillis
 import kotlinx.coroutines.CompletableDeferred
@@ -177,19 +178,19 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
             "HTTP error ${response.statusCode} while executing batched query"
         )
       }
-      val responseBody = response.body ?: throw ApolloException("null body when executing batched query")
+      val responseBody = response.body ?: throw DefaultApolloException("null body when executing batched query")
 
       // TODO: this is most likely going to transform BigNumbers into strings, not sure how much of an issue that is
       val list = AnyAdapter.fromJson(BufferedSourceJsonReader(responseBody), CustomScalarAdapters.Empty)
-      if (list !is List<*>) throw ApolloException("batched query response is not a list when executing batched query")
+      if (list !is List<*>) throw DefaultApolloException("batched query response is not a list when executing batched query")
 
       if (list.size != pending.size) {
-        throw ApolloException("batched query response count (${list.size}) does not match the requested queries (${pending.size})")
+        throw DefaultApolloException("batched query response count (${list.size}) does not match the requested queries (${pending.size})")
       }
 
       list.map {
         if (it == null) {
-          throw ApolloException("batched query response contains a null item")
+          throw DefaultApolloException("batched query response contains a null item")
         }
         (buildJsonByteString {
           AnyAdapter.toJson(this, CustomScalarAdapters.Empty, it)
@@ -198,7 +199,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
     } catch (e: Exception) {
       exception = when (e) {
         is ApolloException -> e
-        else -> ApolloException("batched query failed with exception", e)
+        else -> DefaultApolloException("batched query failed with exception", e)
       }
       null
     }

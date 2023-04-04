@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 
@@ -150,7 +151,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     return when (successResponses.size) {
       0 -> {
         when (exceptionResponses.size) {
-          0 -> throw ApolloException("The operation did not emit any item, check your interceptor chain")
+          0 -> throw DefaultApolloException("The operation did not emit any item, check your interceptor chain")
           1 -> exceptionResponses.first()
           else -> {
             val first = exceptionResponses.first()
@@ -168,7 +169,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
       }
 
       1 -> successResponses.first()
-      else -> throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
+      else -> throw DefaultApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
     }
   }
 }

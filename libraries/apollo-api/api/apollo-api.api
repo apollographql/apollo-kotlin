@@ -132,6 +132,8 @@ public final class com/apollographql/apollo3/api/ApolloResponse {
 
 public final class com/apollographql/apollo3/api/ApolloResponse$Builder {
 	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation$Data;)V
+	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/api/Operation$Data;Ljava/util/List;Ljava/util/Map;)V
+	public fun <init> (Lcom/apollographql/apollo3/api/Operation;Ljava/util/UUID;Lcom/apollographql/apollo3/exception/ApolloException;)V
 	public final fun addExecutionContext (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/ApolloResponse;
 	public final fun errors (Ljava/util/List;)Lcom/apollographql/apollo3/api/ApolloResponse$Builder;
@@ -1165,13 +1167,17 @@ public final class com/apollographql/apollo3/exception/ApolloCompositeException 
 	public fun <init> (Ljava/util/List;)V
 }
 
-public class com/apollographql/apollo3/exception/ApolloException : java/lang/RuntimeException {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+public abstract class com/apollographql/apollo3/exception/ApolloException : java/lang/RuntimeException {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/apollographql/apollo3/exception/ApolloExceptionHandlerKt {
+}
+
+public final class com/apollographql/apollo3/exception/ApolloGraphQLException : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> (Ljava/util/List;)V
+	public final fun getErrors ()Ljava/util/List;
 }
 
 public final class com/apollographql/apollo3/exception/ApolloHttpException : com/apollographql/apollo3/exception/ApolloException {
@@ -1214,6 +1220,12 @@ public final class com/apollographql/apollo3/exception/CacheMissException : com/
 }
 
 public final class com/apollographql/apollo3/exception/CacheMissException$Companion {
+}
+
+public final class com/apollographql/apollo3/exception/DefaultApolloException : com/apollographql/apollo3/exception/ApolloException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class com/apollographql/apollo3/exception/HttpCacheMissException : com/apollographql/apollo3/exception/ApolloException {

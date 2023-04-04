@@ -1,6 +1,8 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.ApolloGraphQLException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.benasher44.uuid.Uuid
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
@@ -89,32 +91,61 @@ private constructor(
     get() {
       return when {
         exception != null -> throw exception
-        hasErrors() -> throw ApolloException("The response has errors: $errors")
-        else -> data ?: throw ApolloException("The server did not return any data")
+        hasErrors() -> throw DefaultApolloException("The response has errors: $errors")
+        else -> data ?: throw DefaultApolloException("The server did not return any data")
       }
     }
 
   fun hasErrors(): Boolean = !errors.isNullOrEmpty()
 
   fun newBuilder(): Builder<D> {
-    return Builder(operation, requestUuid, data)
-        .errors(errors)
-        .exception(exception)
-        .extensions(extensions)
+    return Builder(operation, requestUuid, data, errors, extensions, exception)
         .addExecutionContext(executionContext)
         .isLast(isLast)
   }
 
-  class Builder<D : Operation.Data>(
+  class Builder<D : Operation.Data> internal constructor(
       private val operation: Operation<D>,
       private var requestUuid: Uuid,
       private val data: D?,
+      private var errors: List<Error>?,
+      private var extensions: Map<String, Any?>?,
+      private var exception: ApolloException?
   ) {
     private var executionContext: ExecutionContext = ExecutionContext.Empty
-    private var errors: List<Error>? = null
-    private var exception: ApolloException? = null
-    private var extensions: Map<String, Any?>? = null
     private var isLast = false
+
+    /**
+     * Constructs a successful response with a valid data, no errors nor extensions
+     */
+    constructor(
+        operation: Operation<D>,
+        requestUuid: Uuid,
+        data: D,
+    ): this(operation, requestUuid, data, null, null, null)
+
+    /**
+     * Constructs a response from data, errors and extensions
+     *
+     * If there are GraphQL errors, they will also be forwarded to [exception] so that the caller can do all the
+     * checking in a single place
+     */
+    constructor(
+        operation: Operation<D>,
+        requestUuid: Uuid,
+        data: D?,
+        errors: List<Error>?,
+        extensions: Map<String, Any?>?,
+    ): this(operation, requestUuid, data, errors, extensions, errors?.takeIf { !it.isNullOrEmpty() }?.let { ApolloGraphQLException(it) })
+
+    /**
+     * Constructs an error response
+     */
+    constructor(
+        operation: Operation<D>,
+        requestUuid: Uuid,
+        exception: ApolloException
+    ): this(operation, requestUuid, null, null, null, exception)
 
     fun addExecutionContext(executionContext: ExecutionContext) = apply {
       this.executionContext = this.executionContext + executionContext

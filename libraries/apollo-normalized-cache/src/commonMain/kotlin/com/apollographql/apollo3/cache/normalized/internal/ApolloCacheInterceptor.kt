@@ -22,6 +22,7 @@ import com.apollographql.apollo3.cache.normalized.storeReceiveDate
 import com.apollographql.apollo3.cache.normalized.writeToCacheAsynchronously
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.exception.apolloExceptionHandler
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
@@ -159,7 +160,7 @@ internal class ApolloCacheInterceptor(
       var previousResponse: ApolloResponse<D>? = null
       networkResponses.collect { response ->
         if (optimisticData != null && previousResponse != null) {
-          throw ApolloException("Apollo: optimistic updates can only be applied with one network response")
+          throw DefaultApolloException("Apollo: optimistic updates can only be applied with one network response")
         }
         previousResponse = response
         if (optimisticKeys == null) optimisticKeys = if (optimisticData != null) {
@@ -214,10 +215,9 @@ internal class ApolloCacheInterceptor(
       return ApolloResponse.Builder(
           requestUuid = request.requestUuid,
           operation = operation,
-          data = null,
+          exception = e,
       )
           .addExecutionContext(request.executionContext)
-          .exception(e)
           .cacheInfo(
               CacheInfo.Builder()
                   .cacheStartMillis(startMillis)
@@ -234,6 +234,8 @@ internal class ApolloCacheInterceptor(
         requestUuid = request.requestUuid,
         operation = operation,
         data = data,
+        errors = null,
+        extensions = null,
     ).addExecutionContext(request.executionContext)
         .cacheInfo(
             CacheInfo.Builder()

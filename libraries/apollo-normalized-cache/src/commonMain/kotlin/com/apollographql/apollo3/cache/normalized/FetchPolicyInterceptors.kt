@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.CacheMissException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
 import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import kotlinx.coroutines.flow.Flow
@@ -164,7 +165,7 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
         // If we haven't emitted anything, send a composite exception
         val first = exceptions.firstOrNull()
         val exception = if (first == null) {
-          ApolloException("No response emitted")
+          DefaultApolloException("No response emitted")
         } else {
           first.also { firstException ->
             exceptions.drop(1).forEach {
@@ -173,8 +174,7 @@ internal val FetchPolicyRouterInterceptor = object : ApolloInterceptor {
           }
         }
         emit(
-            ApolloResponse.Builder(request.operation, request.requestUuid, null)
-                .exception(exception)
+            ApolloResponse.Builder(request.operation, request.requestUuid, exception)
                 .build()
 
         )
