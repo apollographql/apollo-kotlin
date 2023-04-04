@@ -36,13 +36,13 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * The HTTP headers to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [replaceClientHttpHeaders]`(true)` to
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)` to
    * instead *replace* the ones set on [ApolloClient].
    */
   override var httpHeaders: List<HttpHeader>? = null
     private set
 
-  var replaceClientHttpHeaders: Boolean? = null
+  var ignoreApolloClientHttpHeaders: Boolean? = null
     private set
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
@@ -55,7 +55,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * Sets the HTTP headers to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [replaceClientHttpHeaders]`(true)` to
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)` to
    * instead *replace* the ones set on [ApolloClient].
    */
   override fun httpHeaders(httpHeaders: List<HttpHeader>?) = apply {
@@ -64,12 +64,10 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * Add an HTTP header to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [replaceClientHttpHeaders]`(true)` to
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)` to
    * instead *replace* the ones set on [ApolloClient].
    */
   override fun addHttpHeader(name: String, value: String) = apply {
-    // TODO uncomment for v3
-    // replaceClientHttpHeaders = false
     this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
   }
 
@@ -98,8 +96,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
    *
    * Default: false
    */
-  fun replaceClientHttpHeaders(replaceClientHttpHeaders: Boolean?) = apply {
-    this.replaceClientHttpHeaders = replaceClientHttpHeaders
+  fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
+    this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
   }
 
   fun copy(): ApolloCall<D> {
@@ -107,7 +105,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .addExecutionContext(executionContext)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
-        .replaceClientHttpHeaders(replaceClientHttpHeaders)
+        .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
@@ -142,7 +140,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .canBeBatched(canBeBatched)
         .ignorePartialData(ignorePartialData)
         .build()
-    return apolloClient.executeAsFlow(request, replaceClientHttpHeaders = replaceClientHttpHeaders == true)
+    return apolloClient.executeAsFlow(request, ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true)
   }
 
   /**

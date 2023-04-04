@@ -73,6 +73,8 @@ private constructor(
    * Creates a new [ApolloCall] that you can customize and/or execute.
    */
   fun <D : Query.Data> query(query: Query<D>): ApolloCall<D> {
+    this.httpHeaders.orEmpty().map { if (it.name == "key") HttpHeader("key", "value2") else it }
+
     return ApolloCall(this, query)
   }
 
@@ -117,7 +119,7 @@ private constructor(
 
   internal fun <D : Operation.Data> executeAsFlow(
       apolloRequest: ApolloRequest<D>,
-      replaceClientHttpHeaders: Boolean,
+      ignoreApolloClientHttpHeaders: Boolean,
   ): Flow<ApolloResponse<D>> {
     val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
 
@@ -127,7 +129,6 @@ private constructor(
         .addExecutionContext(executionContext)
         .addExecutionContext(apolloRequest.executionContext)
         .httpMethod(httpMethod)
-        .httpHeaders(httpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
@@ -137,14 +138,14 @@ private constructor(
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
           }
-          val requestHttpHeaders = apolloRequest.httpHeaders
-          if (requestHttpHeaders != null) {
-            if (replaceClientHttpHeaders) {
-              httpHeaders(requestHttpHeaders)
-            } else {
-              httpHeaders(httpHeaders.orEmpty() + requestHttpHeaders)
-            }
-          }
+          val requestHttpHeaders = apolloRequest.httpHeaders.orEmpty()
+          httpHeaders(
+              if (ignoreApolloClientHttpHeaders) {
+                requestHttpHeaders
+              } else {
+                this@ApolloClient.httpHeaders.orEmpty() + requestHttpHeaders
+              }
+          )
           if (apolloRequest.sendApqExtensions != null) {
             sendApqExtensions(apolloRequest.sendApqExtensions)
           }
