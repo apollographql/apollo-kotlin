@@ -104,11 +104,7 @@ private constructor(
   @Deprecated(message = "Use dataOrThrow instead", replaceWith = ReplaceWith("dataOrThrow()"))
   val dataAssertNoErrors: D
     get() {
-      return when {
-        exception != null -> throw exception
-        hasErrors() -> throw DefaultApolloException("The response has errors: $errors")
-        else -> data ?: throw DefaultApolloException("The server did not return any data")
-      }
+      return dataOrThrow()
     }
 
   /**
