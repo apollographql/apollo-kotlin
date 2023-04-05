@@ -22,7 +22,11 @@ description: From 3.x
 
 In v3, non-GraphQL errors like network errors, cache misses, and WebSocket protocol errors were surfaced by throwing exceptions in `ApolloCall.execute()` and in Flows (`ApolloCall.toFlow()`, `ApolloCall.watch()`). This was not ideal because it was a difference in how to handle GraphQL errors vs other errors. Moreover, throwing terminates a Flow and consumers would have to handle re-collection.
 
-In v4, a field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non null `exception` instead of throwing it. This allows consumers to handle different kinds of errors at the same place, and it avoids Flows from being terminated. 
+In v4, a field `ApolloResponse.exception` has been added and these errors are now surfaced by returning (for `execute()`) or emitting (for Flows) an `ApolloResponse` with a non null `exception` instead of throwing it. 
+
+In addition to this, GraphQL errors are also surfaced in an `ApolloGraphQLException` set on `exception` (`.errors` still exists for convenience).
+
+This allows consumers to handle different kinds of errors at the same place, and it avoids Flows from being terminated. 
 
 To ease the migration to v4, the v3 behavior can be restored by calling `ApolloClient.Builder.useV3ExceptionHandling(true)`.
 
@@ -32,6 +36,10 @@ try {
   val response = client.query(MyQuery()).execute()
   if (response.hasErrors()) {
     // Handle GraphQL errors
+  } else {
+    // No errors
+    val data = response.data
+    // ...
   }
 } catch (e: ApolloException) {
   // Handle network error
@@ -40,9 +48,18 @@ try {
 // With
 val response = client.query(MyQuery()).execute()
 if (response.exception != null) {
-  // Handle network error
-} else if (response.hasErrors()) {
-  // Handle GraphQL errors
+  when (response.exception) {
+    is ApolloGraphQLException -> {
+      // Handle GraphQL errors
+    }
+    else -> {
+      // Handle network error
+    }
+  }
+} else {
+  // No errors
+  val data = response.data
+  // ...
 }
 
 // Replace
@@ -57,9 +74,18 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 // With
 client.subscription(MySubscription()).toFlow().collect { response ->
   if (response.exception != null) {
-    // Handle network error
-  } else if (response.hasErrors()) {
-    // Handle GraphQL errors
+    when (response.exception) {
+      is ApolloGraphQLException -> {
+        // Handle GraphQL errors
+      }
+      else -> {
+        // Handle network error
+      }
+    }
+  } else {
+    // No errors
+    val data = response.data
+    // ...
   }
 }
 ```
@@ -85,4 +111,21 @@ If they are undesirable, ignore them by filtering them out:
 client.query(MyQuery()).watch().filter { it.exception == null }.collect { response ->
   // Handle responses
 }
+```
+
+## HTTP headers
+
+In v3, if HTTP headers were set on an `ApolloCall`, they would replace the ones set on `ApolloClient`. In v4 they are added instead by default. To replace them, call `ApolloCall.Builder.ignoreApolloClientHeaders(true)`.
+
+```kotlin
+// Replace
+val call = client.query(MyQuery())
+  .httpHeaders(listOf("key", "value"))
+  .execute()
+
+// With
+val call = client.query(MyQuery())
+  .httpHeaders(listOf("key", "value"))
+  .ignoreApolloClientHeaders(true)
+  .execute()
 ```
