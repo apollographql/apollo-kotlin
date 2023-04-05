@@ -157,6 +157,9 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
+          if (apolloRequest.useV3ExceptionHandling != null) {
+            useV3ExceptionHandling(apolloRequest.useV3ExceptionHandling)
+          }
         }
         .build()
 
