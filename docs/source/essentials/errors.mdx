@@ -144,9 +144,6 @@ extend type Query @nonnull(fields: "person")
 
 Alternatively, you can check for errors in an interceptor and force data to null whenever a GraphQL error happens: 
 
-
-If you don't want to handle partial responses, you can simplify your error handling logic. `ApolloResponse.dataAssertNoErrors` returns a non-nullable `data` and throws if there are any errors. This way, you can handle all errors in a single `catch {}` block:
-
 ```kotlin
 object ignorePartialDataInterceptor: ApolloInterceptor {
   override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
