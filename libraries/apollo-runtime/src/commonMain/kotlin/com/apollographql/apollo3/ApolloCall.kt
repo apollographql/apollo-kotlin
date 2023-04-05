@@ -33,10 +33,17 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var ignorePartialData: Boolean? = null
     private set
+
+  /**
+   * The HTTP headers to be sent with the request.
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
+   * to instead *ignore* the ones set on [ApolloClient].
+   */
   override var httpHeaders: List<HttpHeader>? = null
     private set
 
-  private var additionalHttpHeaders: List<HttpHeader>? = null
+  var ignoreApolloClientHttpHeaders: Boolean? = null
+    private set
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
@@ -46,25 +53,22 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.httpMethod = httpMethod
   }
 
-  private fun additionalHttpHeaders(additionalHttpHeaders: List<HttpHeader>?) = apply {
-    this.additionalHttpHeaders = additionalHttpHeaders
-  }
-
   /**
    * Sets the HTTP headers to be sent with the request.
-   * This method overrides any HTTP header previously set on [ApolloClient]
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
+   * to instead *ignore* the ones set on [ApolloClient].
    */
   override fun httpHeaders(httpHeaders: List<HttpHeader>?) = apply {
     this.httpHeaders = httpHeaders
   }
 
   /**
-   * Adds an HTTP header to be sent with the request.
-   * This HTTP header is added on top of any existing [ApolloClient] header. If you want to replace the
-   * headers, use [httpHeaders] instead.
+   * Add an HTTP header to be sent with the request.
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
+   * to instead *ignore* the ones set on [ApolloClient].
    */
   override fun addHttpHeader(name: String, value: String) = apply {
-    this.additionalHttpHeaders = (this.additionalHttpHeaders ?: emptyList()) + HttpHeader(name, value)
+    this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
   }
 
   override fun sendApqExtensions(sendApqExtensions: Boolean?) = apply {
@@ -87,12 +91,22 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.ignorePartialData = ignorePartialData
   }
 
+  /**
+   * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
+   * used. If set to false, both sets of headers will be concatenated and used.
+   *
+   * Default: false
+   */
+  fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
+    this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
+  }
+
   fun copy(): ApolloCall<D> {
     return ApolloCall(apolloClient, operation)
         .addExecutionContext(executionContext)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
-        .additionalHttpHeaders(additionalHttpHeaders)
+        .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
@@ -127,7 +141,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .canBeBatched(canBeBatched)
         .ignorePartialData(ignorePartialData)
         .build()
-    return apolloClient.executeAsFlow(request, additionalHttpHeaders)
+    return apolloClient.executeAsFlow(request, ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true)
   }
 
   /**
