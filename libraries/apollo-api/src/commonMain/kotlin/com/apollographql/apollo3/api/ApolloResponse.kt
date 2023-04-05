@@ -87,15 +87,11 @@ private constructor(
    * See also [data]
    */
   @JvmField
-  val exception: ApolloException?
-
-  init {
-    this.exception = when  {
-      exception != null -> exception
-      !errors.isNullOrEmpty() -> ApolloGraphQLException(errors)
-      data == null -> DefaultApolloException("No data and no error was returned")
-      else -> null
-    }
+  val exception: ApolloException? = when  {
+    exception != null -> exception
+    !errors.isNullOrEmpty() -> ApolloGraphQLException(errors)
+    data == null -> DefaultApolloException("No data and no error was returned")
+    else -> null
   }
 
   /**
