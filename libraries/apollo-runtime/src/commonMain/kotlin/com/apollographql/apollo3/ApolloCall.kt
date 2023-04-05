@@ -36,8 +36,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * The HTTP headers to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)` to
-   * instead *replace* the ones set on [ApolloClient].
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
+   * to instead *ignore* the ones set on [ApolloClient].
    */
   override var httpHeaders: List<HttpHeader>? = null
     private set
@@ -55,8 +55,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * Sets the HTTP headers to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)` to
-   * instead *replace* the ones set on [ApolloClient].
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
+   * to instead *ignore* the ones set on [ApolloClient].
    */
   override fun httpHeaders(httpHeaders: List<HttpHeader>?) = apply {
     this.httpHeaders = httpHeaders
@@ -64,8 +64,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
 
   /**
    * Add an HTTP header to be sent with the request.
-   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)` to
-   * instead *replace* the ones set on [ApolloClient].
+   * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
+   * to instead *ignore* the ones set on [ApolloClient].
    */
   override fun addHttpHeader(name: String, value: String) = apply {
     this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
@@ -92,7 +92,8 @@ class ApolloCall<D : Operation.Data> internal constructor(
   }
 
   /**
-   * Configures whether the HTTP headers set on this [ApolloCall] should replace the ones set on [ApolloClient], or be added on top of them.
+   * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
+   * used. If set to false, both sets of headers will be concatenated and used.
    *
    * Default: false
    */
