@@ -23,7 +23,8 @@ object ReworkInlineFragmentFields : MigrationItem() {
     val usageInfo = mutableListOf<MigrationItemUsageInfo>()
 
     val operationInheritors = findInheritorsOfClass(project, "com.apollographql.apollo3.api.Operation").filterIsInstance<KtLightClassBase>()
-    val allModels = operationInheritors.flatMap {
+    val fragmentDataInheritors = findInheritorsOfClass(project, "com.apollographql.apollo3.api.Fragment.Data").filterIsInstance<KtLightClassBase>()
+    val allModels = (operationInheritors + fragmentDataInheritors).flatMap {
       it.kotlinOrigin?.body?.declarations.orEmpty().filterIsInstance<KtClass>()
     }
     val inlineFragmentProperties = allModels.flatMap { model ->

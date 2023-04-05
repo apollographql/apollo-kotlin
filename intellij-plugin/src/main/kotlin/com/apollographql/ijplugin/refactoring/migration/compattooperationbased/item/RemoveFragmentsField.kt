@@ -16,7 +16,8 @@ import org.jetbrains.kotlin.psi.psiUtil.findPropertyByName
 object RemoveFragmentsField : MigrationItem() {
   override fun findUsages(project: Project, migration: PsiMigration, searchScope: GlobalSearchScope): List<MigrationItemUsageInfo> {
     val operationInheritors = findInheritorsOfClass(project, "com.apollographql.apollo3.api.Operation").filterIsInstance<KtLightClassBase>()
-    val allModels = operationInheritors.flatMap {
+    val fragmentDataInheritors = findInheritorsOfClass(project, "com.apollographql.apollo3.api.Fragment.Data").filterIsInstance<KtLightClassBase>()
+    val allModels = (operationInheritors + fragmentDataInheritors).flatMap {
       it.kotlinOrigin?.body?.declarations.orEmpty().filterIsInstance<KtClass>()
     }
     val fragmentsProperties = allModels.mapNotNull { model ->
