@@ -71,8 +71,6 @@ private constructor(
    * Creates a new [ApolloCall] that you can customize and/or execute.
    */
   fun <D : Query.Data> query(query: Query<D>): ApolloCall<D> {
-    this.httpHeaders.orEmpty().map { if (it.name == "key") HttpHeader("key", "value2") else it }
-
     return ApolloCall(this, query)
   }
 
@@ -112,7 +110,7 @@ private constructor(
    * finish. You can cancel the corresponding coroutine to terminate the [Flow] in this case.
    */
   fun <D : Operation.Data> executeAsFlow(apolloRequest: ApolloRequest<D>): Flow<ApolloResponse<D>> {
-    return executeAsFlow(apolloRequest, true)
+    return executeAsFlow(apolloRequest, false)
   }
 
   internal fun <D : Operation.Data> executeAsFlow(
