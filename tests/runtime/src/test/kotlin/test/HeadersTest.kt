@@ -6,10 +6,8 @@ import com.apollographql.apollo3.mockserver.MockServer
 import com.apollographql.apollo3.testing.enqueue
 import com.apollographql.apollo3.testing.internal.runTest
 import com.example.GetRandomQuery
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
 class HeadersTest {
 
@@ -17,7 +15,7 @@ class HeadersTest {
   private val data = GetRandomQuery.Data { }
 
   @Test
-  fun addHeader() = runTest {
+  fun addHeaderUsingAddHttpHeader() = runTest {
     val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -37,7 +35,7 @@ class HeadersTest {
   }
 
   @Test
-  fun replaceHeaders() = runTest {
+  fun addHeaderUsingHttpHeaders() = runTest {
     val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
@@ -45,11 +43,11 @@ class HeadersTest {
         .build()
 
     mockServer.enqueue(operation, data)
-    apolloClient.query(GetRandomQuery()).httpHeaders(emptyList()).execute()
+    apolloClient.query(GetRandomQuery()).httpHeaders(listOf(HttpHeader("requestKey", "requestValue"))).execute()
 
     mockServer.takeRequest().also {
-      assertEquals(null, it.headers.get("clientKey"))
-      assertEquals(null, it.headers.get("requestKey"))
+      assertEquals("clientValue", it.headers.get("clientKey"))
+      assertEquals("requestValue", it.headers.get("requestKey"))
     }
 
     apolloClient.close()
@@ -57,22 +55,58 @@ class HeadersTest {
   }
 
   @Test
-  fun addAndReplaceHeadersThrows() = runTest {
+  fun replaceHeadersUsingAddHttpHeader() = runTest {
     val mockServer = MockServer()
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
         .addHttpHeader("clientKey", "clientValue")
         .build()
 
-    try {
-      apolloClient.query(GetRandomQuery())
-          .httpHeaders(listOf(HttpHeader("requestKey", "requestValue")))
-          .addHttpHeader("requestKey", "requestValue")
-          .execute()
+    mockServer.enqueue(operation, data)
+    apolloClient.query(GetRandomQuery()).addHttpHeader("requestKey", "requestValue").ignoreApolloClientHttpHeaders(true).execute()
 
-      fail("an exception was expected")
-    } catch (e: Exception) {
-      assertTrue(e.message!!.contains("it is an error to call both .headers() and .addHeader()"))
+    mockServer.takeRequest().also {
+      assertEquals(null, it.headers.get("clientKey"))
+      assertEquals("requestValue", it.headers.get("requestKey"))
+    }
+
+    apolloClient.close()
+    mockServer.stop()
+  }
+
+  @Test
+  fun replaceHeadersUsingHttpHeaders() = runTest {
+    val mockServer = MockServer()
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .addHttpHeader("clientKey", "clientValue")
+        .build()
+
+    mockServer.enqueue(operation, data)
+    apolloClient.query(GetRandomQuery()).httpHeaders(listOf(HttpHeader("requestKey", "requestValue"))).ignoreApolloClientHttpHeaders(true).execute()
+
+    mockServer.takeRequest().also {
+      assertEquals(null, it.headers.get("clientKey"))
+      assertEquals("requestValue", it.headers.get("requestKey"))
+    }
+
+    apolloClient.close()
+    mockServer.stop()
+  }
+
+  @Test
+  fun replaceAllHeaders() = runTest {
+    val mockServer = MockServer()
+    val apolloClient = ApolloClient.Builder()
+        .serverUrl(mockServer.url())
+        .addHttpHeader("clientKey", "clientValue")
+        .build()
+
+    mockServer.enqueue(operation, data)
+    apolloClient.query(GetRandomQuery()).ignoreApolloClientHttpHeaders(true).execute()
+
+    mockServer.takeRequest().also {
+      assertEquals(null, it.headers.get("clientKey"))
     }
 
     apolloClient.close()
