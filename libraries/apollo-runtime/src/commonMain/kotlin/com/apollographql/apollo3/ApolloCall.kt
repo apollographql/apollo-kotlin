@@ -30,7 +30,9 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var enableAutoPersistedQueries: Boolean? = null
     private set
-
+  override var canBeBatched: Boolean? = null
+    private set
+  
   /**
    * The HTTP headers to be sent with the request.
    * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
@@ -79,8 +81,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?) = apply {
     this.enableAutoPersistedQueries = enableAutoPersistedQueries
   }
-
-  override var canBeBatched: Boolean? = null
 
   override fun canBeBatched(canBeBatched: Boolean?) = apply {
     this.canBeBatched = canBeBatched

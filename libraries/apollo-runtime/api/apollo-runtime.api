@@ -27,7 +27,6 @@ public final class com/apollographql/apollo3/ApolloCall : com/apollographql/apol
 	public synthetic fun sendApqExtensions (Ljava/lang/Boolean;)Ljava/lang/Object;
 	public fun sendDocument (Ljava/lang/Boolean;)Lcom/apollographql/apollo3/ApolloCall;
 	public synthetic fun sendDocument (Ljava/lang/Boolean;)Ljava/lang/Object;
-	public fun setCanBeBatched (Ljava/lang/Boolean;)V
 	public final fun toFlow ()Lkotlinx/coroutines/flow/Flow;
 }
 
