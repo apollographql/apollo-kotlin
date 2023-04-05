@@ -21,7 +21,6 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
-    override val ignorePartialData: Boolean?,
 
     @ApolloInternal
     val useV3ExceptionHandling: Boolean?,
@@ -41,7 +40,6 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .ignorePartialData(ignorePartialData)
         .useV3ExceptionHandling(useV3ExceptionHandling)
   }
 
@@ -98,13 +96,6 @@ private constructor(
       this.canBeBatched = canBeBatched
     }
 
-    override var ignorePartialData: Boolean? = null
-      private set
-
-    override fun ignorePartialData(ignorePartialData: Boolean?): Builder<D> = apply {
-      this.ignorePartialData = ignorePartialData
-    }
-
     private var useV3ExceptionHandling: Boolean? = null
 
     @ApolloInternal
@@ -136,7 +127,6 @@ private constructor(
           sendDocument = sendDocument,
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
-          ignorePartialData = ignorePartialData,
           useV3ExceptionHandling = useV3ExceptionHandling,
       )
     }

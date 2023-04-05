@@ -76,7 +76,7 @@ object SchemaUploader {
       runBlocking { call.execute() }
     } catch (e: ApolloHttpException) {
       val body = e.body?.use { it.readUtf8() } ?: ""
-      throw ApolloException("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
+      throw Exception("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
     }
     check(!response.hasErrors()) {
       "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"
@@ -112,7 +112,7 @@ object SchemaUploader {
       runBlocking { call.execute() }
     } catch (e: ApolloHttpException) {
       val body = e.body?.use { it.readUtf8() } ?: ""
-      throw ApolloException("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
+      throw Exception("Cannot upload schema: (code: ${e.statusCode})\n$body", e)
     }
     check(!response.hasErrors()) {
       "Cannot upload schema: ${response.errors!!.joinToString { it.message }}"

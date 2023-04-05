@@ -48,7 +48,7 @@ class NormalizationTest {
 
     val query = Issue3672Query()
 
-    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse).jsonReader(), CustomScalarAdapters.Empty).dataAssertNoErrors
+    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse).jsonReader(), CustomScalarAdapters.Empty).dataOrThrow()
     store.writeOperation(query, data1)
 
     val data2 = store.readOperation(query)
@@ -65,7 +65,7 @@ class NormalizationTest {
 
     val query = NestedFragmentQuery()
 
-    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse_list).jsonReader(), CustomScalarAdapters.Empty).dataAssertNoErrors
+    val data1 = query.parseJsonResponse(Buffer().writeUtf8(nestedResponse_list).jsonReader(), CustomScalarAdapters.Empty).dataOrThrow()
     store.writeOperation(query, data1)
 
     val data2 = store.readOperation(query)

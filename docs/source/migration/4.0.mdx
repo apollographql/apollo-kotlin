@@ -63,6 +63,7 @@ client.subscription(MySubscription()).toFlow().collect { response ->
   }
 }
 ```
+
 ### Exception folding when using the cache
 
 In v3, when using the normalized cache, you could set `emitCacheMisses` to `true` to emit cache misses instead of throwing.

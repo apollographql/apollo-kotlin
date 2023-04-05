@@ -42,7 +42,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("meeoooowwwww", response.dataAssertNoErrors.animal!!.onCat!!.meow)
+    assertEquals("meeoooowwwww", response.dataOrThrow().animal!!.onCat!!.meow)
   }
 
   @Test
@@ -57,7 +57,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.onCat)
+    assertEquals(null, response.dataOrThrow().animal!!.onCat)
   }
 
   @Test
@@ -72,7 +72,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("meeoooowwwww", response.dataAssertNoErrors.animal!!.onCat!!.meow)
+    assertEquals("meeoooowwwww", response.dataOrThrow().animal!!.onCat!!.meow)
   }
 
   @Test
@@ -87,7 +87,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.onCat)
+    assertEquals(null, response.dataOrThrow().animal!!.onCat)
   }
 
   @Test
@@ -102,7 +102,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.dogFragment)
+    assertEquals(null, response.dataOrThrow().animal!!.dogFragment)
   }
 
   @Test
@@ -117,7 +117,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("ouaf", response.dataAssertNoErrors.animal!!.dogFragment!!.barf)
+    assertEquals("ouaf", response.dataOrThrow().animal!!.dogFragment!!.barf)
   }
 
   @Test
@@ -132,7 +132,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals(null, response.dataAssertNoErrors.animal!!.dogFragment)
+    assertEquals(null, response.dataOrThrow().animal!!.dogFragment)
   }
 
   @Test
@@ -147,7 +147,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertEquals("ouaf", response.dataAssertNoErrors.animal!!.dogFragment!!.barf)
+    assertEquals("ouaf", response.dataOrThrow().animal!!.dogFragment!!.barf)
   }
 
   @Test
@@ -175,7 +175,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertNull(response.dataAssertNoErrors.animal!!.species)
+    assertNull(response.dataOrThrow().animal!!.species)
   }
 
   @Test
@@ -190,7 +190,7 @@ class IncludeTest {
 
     val response = operation.parseData(data)
 
-    assertNotNull(response.dataAssertNoErrors.animal!!.dogFragment)
+    assertNotNull(response.dataOrThrow().animal!!.dogFragment)
   }
 
   @Test

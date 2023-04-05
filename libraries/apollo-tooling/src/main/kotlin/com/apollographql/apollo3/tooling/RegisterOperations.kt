@@ -269,7 +269,7 @@ object RegisterOperations {
       runBlocking { call.execute() }
     } catch (e: ApolloHttpException) {
       val body = e.body?.use { it.readUtf8() } ?: ""
-      throw ApolloException("Cannot push operations: (code: ${e.statusCode})\n$body", e)
+      throw Exception("Cannot push operations: (code: ${e.statusCode})\n$body", e)
     }
     check(!response.hasErrors()) {
       "Cannot push operations: ${response.errors!!.joinToString { it.message }}"

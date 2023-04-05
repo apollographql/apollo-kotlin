@@ -70,18 +70,18 @@ public class ClientTest {
     ApolloResponse<GetRandomQuery.Data> queryResponse = Rx2Apollo.single(
         apolloClient.query(GetRandomQuery.builder().build())
     ).blockingGet();
-    Truth.assertThat(queryResponse.dataAssertNoErrors().random).isEqualTo(42);
+    Truth.assertThat(queryResponse.dataOrThrow().random).isEqualTo(42);
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"createAnimal\": {\"__typename\": \"Cat\", \"species\": \"cat\", \"habitat\": {\"temperature\": 10.5}}}}").build());
     ApolloResponse<CreateCatMutation.Data> mutationResponse = Rx2Apollo.single(
         apolloClient.mutation(CreateCatMutation.builder().build())
     ).blockingGet();
-    Truth.assertThat(mutationResponse.dataAssertNoErrors().createAnimal.catFragment.species).isEqualTo("cat");
+    Truth.assertThat(mutationResponse.dataOrThrow().createAnimal.catFragment.species).isEqualTo("cat");
 
     Disposable disposable = Rx2Apollo.flowable(
         apolloClient.subscription(AnimalCreatedSubscription.builder().build())
     ).subscribe(result -> {
-      String species = result.dataAssertNoErrors().animalCreated.catFragment.species;
+      String species = result.dataOrThrow().animalCreated.catFragment.species;
     });
   }
 

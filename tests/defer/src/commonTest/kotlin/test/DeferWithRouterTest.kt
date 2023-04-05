@@ -81,7 +81,7 @@ class DeferWithRouterTest {
         ),
     )
 
-    val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(WithFragmentSpreadsQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -117,7 +117,7 @@ class DeferWithRouterTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(WithInlineFragmentsQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -154,7 +154,7 @@ class DeferWithRouterTest {
         ),
     )
 
-    val actualDataList = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.mutation(WithFragmentSpreadsMutation()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -170,7 +170,7 @@ class DeferWithRouterTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(CanDisableDeferUsingIfArgumentQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(CanDisableDeferUsingIfArgumentQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -193,7 +193,7 @@ class DeferWithRouterTest {
             )
         )
     )
-    val actualDataList = apolloClient.query(DoesNotDisableDeferWithNullIfArgumentQuery(Optional.Absent)).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(DoesNotDisableDeferWithNullIfArgumentQuery(Optional.Absent)).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -217,7 +217,7 @@ class DeferWithRouterTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(CanDeferFragmentsOnTheTopLevelQueryFieldQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(CanDeferFragmentsOnTheTopLevelQueryFieldQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -238,7 +238,7 @@ class DeferWithRouterTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 
@@ -259,7 +259,7 @@ class DeferWithRouterTest {
             )
         ),
     )
-    val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataAssertNoErrors }
+    val actualDataList = apolloClient.query(CanDeferAFragmentThatIsAlsoNotDeferredNotDeferredFragmentIsFirstQuery()).toFlow().toList().map { it.dataOrThrow() }
     assertEquals(expectedDataList, actualDataList)
   }
 

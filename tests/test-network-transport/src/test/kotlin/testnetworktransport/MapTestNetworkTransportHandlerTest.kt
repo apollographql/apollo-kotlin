@@ -29,14 +29,18 @@ class MapTestNetworkTransportHandlerTest {
   @Test
   fun registerResponses() = runTest(before = { setUp() }, after = { tearDown() }) {
     val query1 = GetHeroQuery("001")
-    val testResponse1 = ApolloResponse.Builder(query1, uuid4(), null)
-        .errors(listOf(Error(
+    val testResponse1 = ApolloResponse.Builder(
+        operation = query1,
+        requestUuid = uuid4(),
+        data = null,
+        errors = listOf(Error(
             message = "There was an error",
             locations = listOf(Error.Location(line = 1, column = 2)),
             path = listOf("hero", "name"),
             extensions = null,
-            nonStandardFields = null))
-        ).build()
+            nonStandardFields = null)),
+        extensions = null
+    ).build()
 
     val query2 = GetHeroQuery("002")
     val query2TestData = GetHeroQuery.Data(

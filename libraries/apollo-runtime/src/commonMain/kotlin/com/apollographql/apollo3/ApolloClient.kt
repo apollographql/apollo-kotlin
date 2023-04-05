@@ -34,7 +34,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import okio.Closeable
 import kotlin.jvm.JvmOverloads
@@ -56,7 +55,6 @@ private constructor(
     override val sendDocument: Boolean?,
     override val enableAutoPersistedQueries: Boolean?,
     override val canBeBatched: Boolean?,
-    override val ignorePartialData: Boolean?,
     private val useV3ExceptionHandling: Boolean?,
     private val builder: Builder,
 ) : ExecutionOptions, Closeable {
@@ -133,7 +131,6 @@ private constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .useV3ExceptionHandling(useV3ExceptionHandling)
-        .ignorePartialData(ignorePartialData)
         .apply {
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
@@ -160,9 +157,6 @@ private constructor(
             // canBeBatched(apolloRequest.canBeBatched)
             addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.canBeBatched.toString())
           }
-          if (apolloRequest.ignorePartialData != null) {
-            ignorePartialData(apolloRequest.ignorePartialData)
-          }
           if (apolloRequest.useV3ExceptionHandling != null) {
             useV3ExceptionHandling(apolloRequest.useV3ExceptionHandling)
           }
@@ -171,28 +165,15 @@ private constructor(
 
     return DefaultInterceptorChain(interceptors + networkInterceptor, 0)
         .proceed(request)
-        .let { flow ->
+        .let {
           if (request.useV3ExceptionHandling == true) {
-            flow.onEach { response ->
+            it.onEach { response ->
               if (response.exception != null) {
                 throw response.exception!!
               }
             }
           } else {
-            flow
-          }
-        }
-        .let { flow ->
-          if (request.ignorePartialData == true) {
-            flow.map { response ->
-              if (response.data != null && response.hasErrors()) {
-                response.newBuilder().data(null).build()
-              } else {
-                response
-              }
-            }
-          } else {
-            flow
+            it
           }
         }
   }
@@ -283,13 +264,6 @@ private constructor(
     @Deprecated("Provided as a convenience to migrate from 3.x, will be removed in a future version", ReplaceWith(""))
     fun useV3ExceptionHandling(useV3ExceptionHandling: Boolean?): Builder = apply {
       this.useV3ExceptionHandling = useV3ExceptionHandling
-    }
-
-    override var ignorePartialData: Boolean? = null
-      private set
-
-    override fun ignorePartialData(ignorePartialData: Boolean?): Builder = apply {
-      this.ignorePartialData = ignorePartialData
     }
 
     /**
@@ -597,7 +571,6 @@ private constructor(
           enableAutoPersistedQueries = enableAutoPersistedQueries,
           canBeBatched = canBeBatched,
           useV3ExceptionHandling = useV3ExceptionHandling,
-          ignorePartialData = ignorePartialData,
 
           // Keep a reference to the Builder so we can keep track of `httpEngine` and other properties that 
           // are important to rebuild `networkTransport` (and potentially others)
@@ -619,7 +592,6 @@ private constructor(
           .enableAutoPersistedQueries(enableAutoPersistedQueries)
           .canBeBatched(canBeBatched)
           .useV3ExceptionHandling(useV3ExceptionHandling)
-          .ignorePartialData(ignorePartialData)
       _networkTransport?.let { builder.networkTransport(it) }
       httpServerUrl?.let { builder.httpServerUrl(it) }
       httpEngine?.let { builder.httpEngine(it) }

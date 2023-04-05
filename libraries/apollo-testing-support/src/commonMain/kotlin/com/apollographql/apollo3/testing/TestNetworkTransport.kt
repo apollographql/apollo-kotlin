@@ -35,9 +35,7 @@ class QueueTestNetworkTransport : NetworkTransport {
 
       val apolloResponse = when (response) {
         is TestResponse.NetworkError -> {
-          ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, data = null)
-              .exception(ApolloNetworkException("Network error queued in QueueTestNetworkTransport"))
-              .build()
+          ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, exception = ApolloNetworkException("Network error queued in QueueTestNetworkTransport")).build()
         }
 
         is TestResponse.Response -> {
@@ -75,9 +73,7 @@ class MapTestNetworkTransport : NetworkTransport {
         ?: error("No response registered for operation ${request.operation}")
     val apolloResponse = when (response) {
       is TestResponse.NetworkError -> {
-        ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, data = null)
-            .exception(ApolloNetworkException("Network error registered in MapTestNetworkTransport"))
-            .build()
+        ApolloResponse.Builder(operation = request.operation, requestUuid = request.requestUuid, exception = ApolloNetworkException("Network error registered in MapTestNetworkTransport")).build()
       }
 
       is TestResponse.Response -> {
@@ -117,9 +113,10 @@ fun <D : Operation.Data> ApolloClient.enqueueTestResponse(
     ApolloResponse.Builder(
         operation = operation,
         requestUuid = uuid4(),
-        data = data
+        data = data,
+        errors = errors,
+        extensions = null
     )
-        .errors(errors)
         .build()
 )
 
@@ -146,9 +143,10 @@ fun <D : Operation.Data> ApolloClient.registerTestResponse(
     ApolloResponse.Builder(
         operation = operation,
         requestUuid = uuid4(),
-        data = data
+        data = data,
+        errors = errors,
+        extensions = null
     )
-        .errors(errors)
         .build()
 )
 

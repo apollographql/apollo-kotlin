@@ -45,12 +45,6 @@ interface ExecutionOptions {
    */
   val canBeBatched: Boolean?
 
-  /**
-   * Whether to ignore partial data.
-   * Used by [com.apollographql.apollo3.ApolloClient]
-   */
-  val ignorePartialData: Boolean?
-
   companion object {
     /**
      * Used by [com.apollographql.apollo3.network.http.BatchingHttpInterceptor]
@@ -88,23 +82,4 @@ interface MutableExecutionOptions<T> : ExecutionOptions {
   fun enableAutoPersistedQueries(enableAutoPersistedQueries: Boolean?): T
 
   fun canBeBatched(canBeBatched: Boolean?): T
-
-  /**
-   * Configures whether partial data should be ignored.
-   *
-   * If true, responses with errors will always be surfaced with a null [ApolloResponse.data] even if the received data was not null.
-   * This can simplify error handling at the call site, if you don't care about partial data. E.g.:
-   *
-   * ```
-   * val response = apolloClient.query(query).ignorePartialData(true).execute()
-   * if (response.data == null) {
-   *   // There were network or GraphQL error(s)
-   * } else {
-   *   // No errors
-   * }
-   * ```
-   *
-   * Default: false
-   */
-  fun ignorePartialData(ignorePartialData: Boolean?): T
 }

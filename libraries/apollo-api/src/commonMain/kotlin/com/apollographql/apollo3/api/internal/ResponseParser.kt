@@ -19,7 +19,7 @@ internal object ResponseParser {
       jsonReader: JsonReader,
       operation: Operation<D>,
       customScalarAdapters: CustomScalarAdapters,
-  ): ApolloResponse<D>  {
+  ): ApolloResponse<D> {
     @Suppress("NAME_SHADOWING")
     return jsonReader.use { jsonReader ->
       jsonReader.beginObject()
@@ -39,9 +39,7 @@ internal object ResponseParser {
 
       jsonReader.endObject()
 
-      ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data).errors(errors)
-          .extensions(extensions)
-          .build()
+      ApolloResponse.Builder(requestUuid = uuid4(), operation = operation, data = data, errors = errors, extensions = extensions).build()
     }
   }
 
@@ -79,12 +77,15 @@ internal object ResponseParser {
         "locations" -> {
           locations = readErrorLocations()
         }
+
         "path" -> {
           path = readPath()
         }
+
         "extensions" -> {
           extensions = readAny() as? Map<String, Any?>?
         }
+
         else -> {
           if (nonStandardFields == null) nonStandardFields = mutableMapOf()
           nonStandardFields[name] = readAny()

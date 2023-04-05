@@ -2,20 +2,29 @@
 title: Error handling
 ---
 
-Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQL client), two high-level types of errors can occur:
 
-* **Network errors**: a GraphQL response wasn't received because an error occurred while communicating with your GraphQL server. This might be an SSL error, a socket error because your app is offline, or a 500 or any other HTTP error. When a network error occurs, no data is returned.
-* **GraphQL errors**: a GraphQL response _is_ received, and it contains a non-empty [`errors`](https://spec.graphql.org/draft/#sec-Errors) field. This means the server wasn't able to completely process the query. The response might include _partial_ data if the server was able to process _some_ of the query.
-
-
-## Network errors
-
-Network errors are surfaced in the `ApolloResponse.exception` field.
+You can use `response.data` to check if the server returned valid data:
 
 ```kotlin
-val response = apolloClient.query(query).execute()
-if (response.exception != null) {
-  // handle exception here
+val response = apolloClient.query(ExampleQuery()).execute()
+// Using 'data' to be able to do a smart cast below (KT-8819)
+val data = response.data
+
+when {
+  data != null -> {
+    // data can be smart cast to non-null here
+    println("The server returned data: $data")
+  }
+  else -> {
+    // an error happened, check response.exception for more details or just display a generic error 
+    when (response.exception) {
+      is ApolloGraphQLException -> // do something with exception.errors
+      is ApolloHttpException -> // do something with exception.statusCode
+      is ApolloNetworkException -> TODO()
+      is ApolloParseException -> TODO()
+      else -> // generic error
+    }
+  }
 }
 ```
 
@@ -23,30 +32,29 @@ This is also true when calling `toFlow()` (e.g. with [subscriptions](../essentia
 
 ```kotlin
 apolloClient.subscription(subscription).toFlow().collect { response ->
-  if (response.exception != null) {
-    // handle network errors
+  if (response.data != null) {
+    // handle data
+  } else {
+    // handle exceptions
   }
 }
 ```
 
-### Causes
+If you prefer throwing, you can use `dataOrThrow()` to get a non-null data:
 
-Possible causes of a network error include (but are not limited to):
+```kotlin
+val data = apolloClient.query(ExampleQuery()).execute().dataOrThrow()
+// data is non-null
+```
 
-* The app is offline or doesn't have access to the network.
-* A DNS error occurred, making it impossible to look up the host.
-* An SSL error occurred (e.g., the server certificate isn't trusted).
-* The connection was closed.
-* The server responded with a non-successful HTTP code.
-* The server didn't respond with valid JSON.
-* The response JSON doesn't satisfy the schema and cannot be parsed.
-* A request was specified as CacheOnly but the data wasn't cached.
+## Different types of errors
 
-Examine the exception for more detailed information about the actual error.
+Whenever you execute a GraphQL operation with Apollo Kotlin (or any other GraphQL client), two high-level types of errors can occur:
 
-## GraphQL errors
+* **Network errors**: a GraphQL response wasn't received because an error occurred while communicating with your GraphQL server. This might be an SSL error, a socket error because your app is offline, or a 500 or any other HTTP error. When a network error occurs, no data is returned.
+* **GraphQL errors**: a GraphQL response _is_ received, and it contains a non-empty [`errors`](https://spec.graphql.org/draft/#sec-Errors) field. This means the server wasn't able to completely process the query. The response might include _partial_ data if the server was able to process _some_ of the query.
 
-Because GraphQL errors might still contain data, they do _not_ throw. Instead, they return a `Response` with a `Response.errors` field indicating the errors that occurred.
+### GraphQL errors
 
 For example, the following query uses an invalid `id` to look up a `Person`:
 
@@ -90,55 +98,65 @@ The server will send the following response:
 
 Note that while there are errors, the query successfully returned the title of the film: `A New Hope`. In general, any error while executing an operation [bubbles up](https://spec.graphql.org/draft/#sec-Errors) to the next nullable field. In this case, `person` is nullable. In the worst case, `response.data` can be null if everything else is non-nullable.
 
-Apollo Kotlin gives you access to both the data and the errors in the `Response` class:
+When GraphQL errors happen, `ApolloResponse.exception` will be an instance of `ApolloGraphQLException` and you can use `exception.errors` to read the actual GraphQL errors.
 
-```kotlin
-val response = apolloClient.query(query).execute()
-if (response.exception != null) {
-  // Network error, not much to do
-  throw response.exception
-}
+### Network errors
 
-// It's possible to display the film title
-val title = response.data?.film?.title
-if (title != null) {
-  println(title)
-}
+Network errors are more varied and can have different causes (non-exhaustive list):
 
-// The person triggered an error
-val person = response.data?.person?.name
-if (person != null) {
-  // do something with response.errors
-}
-```
+* The app is offline or doesn't have access to the network.
+* A DNS error occurred, making it impossible to look up the host.
+* An SSL error occurred (e.g., the server certificate isn't trusted).
+* The connection was closed.
+* The server responded with a non-successful HTTP code.
+* The server didn't respond with valid JSON.
+* The response JSON doesn't satisfy the schema and cannot be parsed.
+* A request was specified as CacheOnly but the data wasn't cached.
+* More...
+
 
 ## Ignoring partial data
 
-If you don't want to handle partial responses, you can simplify your error handling logic. `ApolloResponse.dataAssertNoErrors` returns a non-nullable `data` and throws if there are any errors. This way, you can handle all errors in a single `catch {}` block:
+Because errors may happen on any field in your query, your UI code needs to handle any nullable field. In the example above, data.person will be `null`: 
 
-```kotlin
-val data = try {
-  apolloClient.query(query).execute().dataAssertNoErrors
-} catch (exception: ApolloException) {
-  // All network or GraphQL errors are handled here
-  throw exception
-}
-
-// No need for safe calls on data
-val title = data.film?.title
-```
-
-Note that the safe call is still required on `film` because this field has a nullable type in the GraphQL schema. There are ways to override this in codegen. For more details, learn about [the `@nonnull` directive](../advanced/nonnull).
-
-Another option is to call `ignorePartialData(true)`. This will force `ApolloResponse.data` to be null even if it wasn't in the response, whenever there are errors. This can also simplify error handling:
-
-```kotlin
-val data = apolloClient.query(query).ignorePartialData(true).execute().data
-if (data == null) {
-  // All network or GraphQL errors are handled here
-} else {
-  // No errors
-  val title = data.film?.title
+```graphql
+query FilmAndPersonQuery {
+  # wrong id here, null will be returned
+  person(id: "badId") {
+    name
+  }
 }
 ```
-This can also be set globally with `ApolloClient.Builder.ignorePartialData(true)`.
+
+Your UI code needs to check for null:
+
+```kotlin
+if (data.person != null) {
+  // display person
+}
+```
+
+If you prefer to catch these errors at parsing time, you can make `data.person` non-nullable using [the `@nonnull` directive](../advanced/nonnull):
+
+```graphql
+extend type Query @nonnull(fields: "person")
+```
+
+Alternatively, you can check for errors in an interceptor and force data to null whenever a GraphQL error happens: 
+
+```kotlin
+object ignorePartialDataInterceptor: ApolloInterceptor {
+  override fun <D : Operation.Data> intercept(request: ApolloRequest<D>, chain: ApolloInterceptorChain): Flow<ApolloResponse<D>> {
+    return chain.proceed(request).map {
+      if (it.exception is ApolloGraphQLException) {
+        // nullify data altogether
+        it.newBuilder().data(null).build()
+      } else {
+        it
+      }
+    }
+  }
+}
+```
+
+Note that the null check is still required on `person` because this field has a nullable type in the GraphQL schema.

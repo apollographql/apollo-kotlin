@@ -3,6 +3,7 @@ package com.apollographql.apollo3.exception
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.http.HttpHeader
 import okio.BufferedSource
 
@@ -11,7 +12,12 @@ import okio.BufferedSource
  *
  * This inherits from [RuntimeException]. Java callers will have to explicitly catch all [ApolloException]s.
  */
-open class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
+sealed class ApolloException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause)
+
+/**
+ * A generic exception when no additional context exists
+ */
+class DefaultApolloException(message: String? = null, cause: Throwable? = null): ApolloException(message, cause)
 
 /**
  * A network error happened: socket closed, DNS issue, TLS problem, etc...
@@ -89,6 +95,8 @@ class JsonDataException(message: String) : ApolloException(message)
  * The response could not be parsed either because of another issue than [JsonDataException] or [JsonEncodingException]
  */
 class ApolloParseException(message: String? = null, cause: Throwable? = null) : ApolloException(message = message, cause = cause)
+
+class ApolloGraphQLException(val errors: List<Error>): ApolloException("GraphQL error(s)")
 
 /**
  * An object/field was missing in the cache

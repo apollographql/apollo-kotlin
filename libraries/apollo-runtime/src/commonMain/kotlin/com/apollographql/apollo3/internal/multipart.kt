@@ -3,6 +3,7 @@ package com.apollographql.apollo3.internal
 import com.apollographql.apollo3.api.http.HttpResponse
 import com.apollographql.apollo3.api.http.valueOf
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
@@ -21,7 +22,7 @@ internal fun multipartBodyFlow(response: HttpResponse): Flow<BufferedSource> {
     multipartReader = MultipartReader(
         source = response.body!!,
         boundary = getBoundaryParameter(response.headers.valueOf("Content-Type"))
-            ?: throw ApolloException("Expected the Content-Type to have a boundary parameter")
+            ?: throw DefaultApolloException("Expected the Content-Type to have a boundary parameter")
     )
     while (true) {
       val part = multipartReader!!.nextPart() ?: break

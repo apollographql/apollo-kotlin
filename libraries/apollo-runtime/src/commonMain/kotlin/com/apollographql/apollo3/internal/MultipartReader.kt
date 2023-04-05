@@ -19,6 +19,7 @@ package com.apollographql.apollo3.internal
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import okio.Buffer
 import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8
@@ -110,7 +111,7 @@ class MultipartReader constructor(
       when (source.select(afterBoundaryOptions)) {
         0 -> {
           // "\r\n--<boundary>--": More parts, immediately followed by the closing delimiter.
-          if (partCount == 0) throw ApolloException("expected at least 1 part")
+          if (partCount == 0) throw DefaultApolloException("expected at least 1 part")
           noMoreParts = true
           return null
         }
@@ -123,8 +124,8 @@ class MultipartReader constructor(
 
         2 -> {
           // "--": No more parts.
-          if (whitespace) throw ApolloException("unexpected characters after boundary")
-          if (partCount == 0) throw ApolloException("expected at least 1 part")
+          if (whitespace) throw DefaultApolloException("unexpected characters after boundary")
+          if (partCount == 0) throw DefaultApolloException("expected at least 1 part")
           noMoreParts = true
           return null
         }
@@ -135,7 +136,7 @@ class MultipartReader constructor(
           continue@afterBoundaryLoop
         }
 
-        -1 -> throw ApolloException("unexpected characters after boundary")
+        -1 -> throw DefaultApolloException("unexpected characters after boundary")
       }
     }
 

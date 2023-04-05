@@ -8,6 +8,7 @@ import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.exception.ApolloException
+import com.apollographql.apollo3.exception.DefaultApolloException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 
@@ -31,9 +32,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     private set
   override var canBeBatched: Boolean? = null
     private set
-  override var ignorePartialData: Boolean? = null
-    private set
-
+  
   /**
    * The HTTP headers to be sent with the request.
    * By default, these are *added* on top of any HTTP header previously set on [ApolloClient]. Call [ignoreApolloClientHttpHeaders]`(true)`
@@ -87,10 +86,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.canBeBatched = canBeBatched
   }
 
-  override fun ignorePartialData(ignorePartialData: Boolean?) = apply {
-    this.ignorePartialData = ignorePartialData
-  }
-
   /**
    * If set to true, the HTTP headers set on [ApolloClient] will not be used for the call, only the ones set on this [ApolloCall] will be
    * used. If set to false, both sets of headers will be concatenated and used.
@@ -111,7 +106,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .ignorePartialData(ignorePartialData)
   }
 
   /**
@@ -139,7 +133,6 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
-        .ignorePartialData(ignorePartialData)
         .build()
     return apolloClient.executeAsFlow(request, ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == true)
   }
@@ -158,7 +151,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
     return when (successResponses.size) {
       0 -> {
         when (exceptionResponses.size) {
-          0 -> throw ApolloException("The operation did not emit any item, check your interceptor chain")
+          0 -> throw DefaultApolloException("The operation did not emit any item, check your interceptor chain")
           1 -> exceptionResponses.first()
           else -> {
             val first = exceptionResponses.first()
@@ -176,7 +169,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
       }
 
       1 -> successResponses.first()
-      else -> throw ApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
+      else -> throw DefaultApolloException("The operation returned multiple items, use .toFlow() instead of .execute()")
     }
   }
 }

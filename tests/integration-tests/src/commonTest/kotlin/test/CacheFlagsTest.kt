@@ -100,7 +100,7 @@ class CacheFlagsTest {
     val query = HeroNameQuery()
     apolloClient.enqueueTestResponse(query, partialResponseData, partialResponseErrors)
 
-    // this should not store the response
+    // this should store the response
     apolloClient.query(query).storePartialResponses(true).execute()
 
     val response = apolloClient.query(query).fetchPolicy(FetchPolicy.CacheOnly).execute()

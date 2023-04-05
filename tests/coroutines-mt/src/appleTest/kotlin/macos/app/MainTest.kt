@@ -28,7 +28,7 @@ class MainTest {
           .build()
           .query(GetRandomQuery())
           .execute()
-      check(response.dataAssertNoErrors.random == 42)
+      check(response.dataOrThrow().random == 42)
     }
   }
 
@@ -39,7 +39,7 @@ class MainTest {
     val client = ApolloClient.Builder().serverUrl(server.url()).normalizedCache(MemoryCacheFactory()).build()
     withContext(Dispatchers.Default) {
       val response = client.query(GetRandomQuery()).execute()
-      check(response.dataAssertNoErrors.random == 42)
+      check(response.dataOrThrow().random == 42)
     }
   }
 }

@@ -55,7 +55,6 @@ public class ApolloClient implements Closeable {
   private Boolean sendDocument;
   private Boolean enableAutoPersistedQueries;
   private Boolean canBeBatched;
-  private Boolean ignorePartialData;
 
   private ApolloClient(
       Executor executor,
@@ -68,8 +67,7 @@ public class ApolloClient implements Closeable {
       Boolean sendApqExtensions,
       Boolean sendDocument,
       Boolean enableAutoPersistedQueries,
-      Boolean canBeBatched,
-      Boolean ignorePartialData
+      Boolean canBeBatched
   ) {
     this.executor = executor;
     this.interceptors = interceptors;
@@ -80,7 +78,6 @@ public class ApolloClient implements Closeable {
     this.sendDocument = sendDocument;
     this.enableAutoPersistedQueries = enableAutoPersistedQueries;
     this.canBeBatched = canBeBatched;
-    this.ignorePartialData = ignorePartialData;
 
     networkInterceptor = new NetworkInterceptor(
         httpNetworkTransport,
@@ -108,8 +105,7 @@ public class ApolloClient implements Closeable {
         .httpHeaders(httpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
-        .enableAutoPersistedQueries(enableAutoPersistedQueries)
-        .ignorePartialData(ignorePartialData);
+        .enableAutoPersistedQueries(enableAutoPersistedQueries);
     if (apolloRequest.getHttpMethod() != null) {
       requestBuilder.httpMethod(apolloRequest.getHttpMethod());
     }
@@ -128,27 +124,10 @@ public class ApolloClient implements Closeable {
     if (apolloRequest.getCanBeBatched() != null) {
       requestBuilder.addHttpHeader(ExecutionOptions.CAN_BE_BATCHED, apolloRequest.getCanBeBatched().toString());
     }
-    if (apolloRequest.getIgnorePartialData() != null) {
-      requestBuilder.ignorePartialData(apolloRequest.getIgnorePartialData());
-    }
     DefaultApolloDisposable disposable = new DefaultApolloDisposable();
     ArrayList<ApolloInterceptor> interceptors = new ArrayList<>(this.interceptors);
     interceptors.add(networkInterceptor);
-
-    ApolloRequest<D> request = requestBuilder.build();
-    ApolloCallback<D> actualCallback;
-    if (request.getIgnorePartialData() == Boolean.TRUE) {
-      actualCallback = response -> {
-        if (response.hasErrors()) {
-          callback.onResponse(response.newBuilder().data(null).build());
-        } else {
-          callback.onResponse(response);
-        }
-      };
-    } else {
-      actualCallback = callback;
-    }
-    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(request, actualCallback));
+    executor.execute(() -> new DefaultInterceptorChain(interceptors, 0, disposable).proceed(requestBuilder.build(), callback));
     return disposable;
   }
 
@@ -205,7 +184,6 @@ public class ApolloClient implements Closeable {
     private Boolean sendDocument;
     private Boolean enableAutoPersistedQueries;
     private Boolean canBeBatched;
-    private Boolean ignorePartialData;
     private Boolean httpExposeErrorBody;
 
     public Builder() {
@@ -463,8 +441,7 @@ public class ApolloClient implements Closeable {
           sendApqExtensions,
           sendDocument,
           enableAutoPersistedQueries,
-          canBeBatched,
-          ignorePartialData
+          canBeBatched
       );
     }
 
@@ -545,10 +522,6 @@ public class ApolloClient implements Closeable {
       return canBeBatched;
     }
 
-    @Nullable @Override public Boolean getIgnorePartialData() {
-      return ignorePartialData;
-    }
-
     @Override public Builder addExecutionContext(@NotNull ExecutionContext executionContext) {
       this.executionContext = this.executionContext.plus(executionContext);
       return this;
@@ -587,11 +560,6 @@ public class ApolloClient implements Closeable {
 
     @Override public Builder canBeBatched(@Nullable Boolean canBeBatched) {
       this.canBeBatched = canBeBatched;
-      return this;
-    }
-
-    @Override public Builder ignorePartialData(@Nullable Boolean ignorePartialData) {
-      this.ignorePartialData = ignorePartialData;
       return this;
     }
   }
