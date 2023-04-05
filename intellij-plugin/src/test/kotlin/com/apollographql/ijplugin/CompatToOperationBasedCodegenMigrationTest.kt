@@ -51,6 +51,9 @@ class CompatToOperationBasedCodegenMigrationTest : LightJavaCodeInsightFixtureTe
   @Test
   fun testRemoveFragmentsField() = runMigration()
 
+  @Test
+  fun testReworkInlineFragmentFields() = runMigration()
+
   private fun runMigration(extension: String = "kt", fileNameInProject: String? = null) {
     val fileBaseName = getTestName(true)
     if (fileNameInProject != null) {
