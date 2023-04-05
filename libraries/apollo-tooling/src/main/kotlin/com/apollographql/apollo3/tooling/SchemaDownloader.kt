@@ -9,6 +9,7 @@ import com.apollographql.apollo3.ast.introspection.toGQLDocument
 import com.apollographql.apollo3.ast.introspection.toIntrospectionSchema
 import com.apollographql.apollo3.ast.introspection.writeTo
 import com.apollographql.apollo3.ast.parseAsGQLDocument
+import com.apollographql.apollo3.ast.toSchema
 import com.apollographql.apollo3.ast.toUtf8
 import com.apollographql.apollo3.ast.validateAsSchema
 import com.apollographql.apollo3.network.okHttpClient
@@ -69,7 +70,8 @@ object SchemaDownloader {
   ) {
     var introspectionSchemaJson: String? = null
     var introspectionSchema: IntrospectionSchema? = null
-    var gqlSchema: GQLDocument? = null
+    var sdlSchema: String? = null
+
     when {
       endpoint != null -> {
         var exception: Exception? = null
@@ -104,14 +106,14 @@ object SchemaDownloader {
           "Apollo: graph is required to download from the registry"
         }
 
-        gqlSchema = downloadRegistry(
+        sdlSchema = downloadRegistry(
             graph = graph2,
             key = key,
             variant = graphVariant,
             endpoint = registryUrl,
             headers = headers,
             insecure = insecure,
-        ).let { Buffer().writeUtf8(it) }.parseAsGQLDocument().getOrThrow()
+        )
       }
     }
 
@@ -119,16 +121,26 @@ object SchemaDownloader {
 
     if (schema.extension.lowercase() == "json") {
       if (introspectionSchema == null) {
-        introspectionSchema = gqlSchema!!.validateAsSchema().getOrThrow().toIntrospectionSchema()
-        introspectionSchema.writeTo(schema)
+        check(sdlSchema != null)
+        // Convert from SDL to JSON
+        Buffer().writeUtf8(sdlSchema)
+            .toSchema()
+            .toIntrospectionSchema()
+            .writeTo(schema)
       } else {
-        schema.writeText(introspectionSchemaJson!!)
+        check(introspectionSchemaJson != null)
+        // Copy Json verbatim
+        schema.writeText(introspectionSchemaJson)
       }
     } else {
-      if (gqlSchema == null) {
-        gqlSchema = introspectionSchema!!.toGQLDocument()
+      if (sdlSchema == null) {
+        check(introspectionSchema != null)
+        // Convert from JSON to SDL
+        schema.writeText(introspectionSchema.toGQLDocument().toUtf8(indent = "  "))
+      } else {
+        // Copy SDL verbatim
+        schema.writeText(sdlSchema)
       }
-      schema.writeText(gqlSchema.toUtf8(indent = "  "))
     }
   }
 
