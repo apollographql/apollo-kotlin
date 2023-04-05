@@ -176,8 +176,7 @@ object SchemaDownloader {
         .build()
     val response = runBlocking {
       apolloClient.query(DownloadSchemaQuery(graphID = graph, variant = variant))
-          .httpHeaders(headers.map { HttpHeader(it.key, it.value) })
-          .addHttpHeader("x-api-key", key)
+          .httpHeaders(headers.map { HttpHeader(it.key, it.value) } + HttpHeader("x-api-key", key))
           .execute()
     }
     check(!response.hasErrors()) {
