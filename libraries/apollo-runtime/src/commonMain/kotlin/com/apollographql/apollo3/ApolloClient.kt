@@ -22,7 +22,6 @@ import com.apollographql.apollo3.api.http.HttpMethod
 import com.apollographql.apollo3.api.internal.Version2CustomTypeAdapterToAdapter
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.interceptor.ApolloInterceptor
-import com.apollographql.apollo3.interceptor.ApolloInterceptorChain
 import com.apollographql.apollo3.interceptor.AutoPersistedQueryInterceptor
 import com.apollographql.apollo3.interceptor.DefaultInterceptorChain
 import com.apollographql.apollo3.interceptor.NetworkInterceptor
@@ -76,8 +75,6 @@ private constructor(
    * Creates a new [ApolloCall] that you can customize and/or execute.
    */
   fun <D : Query.Data> query(query: Query<D>): ApolloCall<D> {
-    this.httpHeaders.orEmpty().map { if (it.name == "key") HttpHeader("key", "value2") else it }
-
     return ApolloCall(this, query)
   }
 
@@ -159,18 +156,17 @@ private constructor(
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
+        .httpHeaders(
+            when {
+              apolloRequest.httpHeaders == null -> this@ApolloClient.httpHeaders
+              ignoreApolloClientHttpHeaders -> apolloRequest.httpHeaders
+              else -> this@ApolloClient.httpHeaders.orEmpty() + apolloRequest.httpHeaders!!
+            }
+        )
         .apply {
           if (apolloRequest.httpMethod != null) {
             httpMethod(apolloRequest.httpMethod)
           }
-          val requestHttpHeaders = apolloRequest.httpHeaders.orEmpty()
-          httpHeaders(
-              if (ignoreApolloClientHttpHeaders) {
-                requestHttpHeaders
-              } else {
-                this@ApolloClient.httpHeaders.orEmpty() + requestHttpHeaders
-              }
-          )
           if (apolloRequest.sendApqExtensions != null) {
             sendApqExtensions(apolloRequest.sendApqExtensions)
           }
