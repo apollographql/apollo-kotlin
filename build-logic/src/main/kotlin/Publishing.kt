@@ -162,10 +162,9 @@ private fun Project.configurePublishingInternal() {
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
            */
           withType(MavenPublication::class.java) {
-            artifact(javadocJarTaskProvider)
-            // Only add sources for the main publication
-            // XXX: is there a nicer way to do this?
+            // Only add sources and javadoc for the main publication
             if (!name.lowercase().contains("marker")) {
+              artifact(javadocJarTaskProvider)
               artifact(createJavaSourcesTask())
             }
           }
@@ -249,7 +248,6 @@ private fun Project.configurePublishingInternal() {
   }
 
   // See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
-
   val signingTasks = tasks.withType(Sign::class.java)
   tasks.withType(AbstractPublishToMaven::class.java).configureEach {
     this.dependsOn(signingTasks)

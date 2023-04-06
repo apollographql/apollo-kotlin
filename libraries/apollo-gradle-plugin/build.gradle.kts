@@ -1,8 +1,8 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-gradle-plugin")
-  id("apollo.library")
   id("com.gradle.plugin-publish")
+  id("apollo.library")
   id("com.gradleup.gr8")
 }
 
