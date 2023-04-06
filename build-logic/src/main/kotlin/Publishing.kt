@@ -1,3 +1,5 @@
+
+import com.android.build.api.dsl.LibraryExtension
 import com.android.build.gradle.BaseExtension
 import kotlinx.coroutines.runBlocking
 import net.mbonnin.vespene.lib.NexusStagingClient
@@ -6,6 +8,7 @@ import org.gradle.api.plugins.ExtraPropertiesExtension
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.signing.Sign
@@ -13,7 +16,6 @@ import org.gradle.plugins.signing.SigningExtension
 import org.jetbrains.dokka.gradle.AbstractDokkaTask
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import com.android.build.api.dsl.LibraryExtension
 
 fun Project.configurePublishing() {
   if (
@@ -233,6 +235,13 @@ private fun Project.configurePublishingInternal() {
         }
       }
     }
+  }
+
+  // See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
+
+  val signingTasks = tasks.withType(Sign::class.java)
+  tasks.withType(AbstractPublishToMaven::class.java).configureEach {
+    this.dependsOn(signingTasks)
   }
 
   extensions.configure(SigningExtension::class.java) {
