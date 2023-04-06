@@ -83,6 +83,9 @@ if (relocateJar) {
 
 
 gradlePlugin {
+  website.set("https://github.com/apollographql/apollo-kotlin")
+  vcsUrl.set("https://github.com/apollographql/apollo-kotlin")
+
   plugins {
     create("apolloGradlePlugin") {
       id = "com.apollographql.apollo3"
