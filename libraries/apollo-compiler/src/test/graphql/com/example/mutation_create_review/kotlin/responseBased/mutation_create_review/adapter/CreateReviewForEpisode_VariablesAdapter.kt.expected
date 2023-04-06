@@ -6,7 +6,7 @@
 package com.example.mutation_create_review.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -17,17 +17,17 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 internal object CreateReviewForEpisode_VariablesAdapter : Adapter<CreateReviewForEpisode> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
       CreateReviewForEpisode = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
+    scalarAdapters: ScalarAdapters,
     `value`: CreateReviewForEpisode,
   ): Unit {
     writer.name("ep")
-    Episode_ResponseAdapter.toJson(writer, customScalarAdapters, value.ep)
+    Episode_ResponseAdapter.toJson(writer, scalarAdapters, value.ep)
     writer.name("review")
-    ReviewInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.review)
+    ReviewInput_InputAdapter.obj().toJson(writer, scalarAdapters, value.review)
   }
 }

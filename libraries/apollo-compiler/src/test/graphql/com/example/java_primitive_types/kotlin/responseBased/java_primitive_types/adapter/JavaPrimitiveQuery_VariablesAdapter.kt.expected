@@ -6,10 +6,10 @@
 package com.example.java_primitive_types.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -21,34 +21,34 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 public object JavaPrimitiveQuery_VariablesAdapter : Adapter<JavaPrimitiveQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
       JavaPrimitiveQuery = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
+    scalarAdapters: ScalarAdapters,
     `value`: JavaPrimitiveQuery,
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.present().toJson(writer, customScalarAdapters, value.nullableInt)
+      NullableIntAdapter.present().toJson(writer, scalarAdapters, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+    IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.present().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
+      IntAdapter.present().toJson(writer, scalarAdapters, value.nonNullableIntWithDefault)
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")
-      MyInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
+      MyInput_InputAdapter.obj().nullable().present().toJson(writer, scalarAdapters,
           value.nullableInput)
     }
     writer.name("nonNullableInput")
-    MyInput_InputAdapter.obj().toJson(writer, customScalarAdapters, value.nonNullableInput)
+    MyInput_InputAdapter.obj().toJson(writer, scalarAdapters, value.nonNullableInput)
     if (value.nonNullableInputWithDefault is Optional.Present) {
       writer.name("nonNullableInputWithDefault")
-      MyInput_InputAdapter.obj().present().toJson(writer, customScalarAdapters,
+      MyInput_InputAdapter.obj().present().toJson(writer, scalarAdapters,
           value.nonNullableInputWithDefault)
     }
   }

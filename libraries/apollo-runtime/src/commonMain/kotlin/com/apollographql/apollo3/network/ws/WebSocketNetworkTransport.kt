@@ -2,7 +2,7 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
@@ -306,14 +306,14 @@ private constructor(
       when (response) {
         is OperationResponse -> {
           val responsePayload = response.payload
-          val requestCustomScalarAdapters = request.executionContext[CustomScalarAdapters]!!
-          val (payload, customScalarAdapters) = if (responsePayload.isDeferred()) {
-            deferredJsonMerger.merge(responsePayload) to requestCustomScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
+          val requestScalarAdapters = request.executionContext[ScalarAdapters]!!
+          val (payload, scalarAdapters) = if (responsePayload.isDeferred()) {
+            deferredJsonMerger.merge(responsePayload) to requestScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
           } else {
-            responsePayload to requestCustomScalarAdapters
+            responsePayload to requestScalarAdapters
           }
           val apolloResponse: ApolloResponse<D> = request.operation
-              .parseJsonResponse(payload.jsonReader(), customScalarAdapters)
+              .parseJsonResponse(payload.jsonReader(), scalarAdapters)
               .newBuilder()
               .requestUuid(request.requestUuid)
               .build()

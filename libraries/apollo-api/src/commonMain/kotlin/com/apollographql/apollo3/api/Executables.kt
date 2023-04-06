@@ -12,18 +12,18 @@ import kotlin.jvm.JvmName
 /**
  * Returns a map of the variables as they would be sent over the wire. Use this to construct your own HTTP requests
  */
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters): Executable.Variables {
-  return variables(customScalarAdapters, false)
+fun <D : Executable.Data> Executable<D>.variables(scalarAdapters: ScalarAdapters): Executable.Variables {
+  return variables(scalarAdapters, false)
 }
 
 /**
  * Returns the variables as they would be sent over the wire. Use this to construct your own HTTP requests
  */
-fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: CustomScalarAdapters): String {
+fun <D : Executable.Data> Executable<D>.variablesJson(scalarAdapters: ScalarAdapters): String {
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters)
+    serializeVariables(this, scalarAdapters)
     endObject()
   }
   return buffer.readUtf8()
@@ -45,23 +45,23 @@ fun <D : Executable.Data> Executable<D>.variablesJson(customScalarAdapters: Cust
  * - variables: {} => bit not set
  */
 @ApolloInternal
-fun <D : Executable.Data> Executable<D>.booleanVariables(customScalarAdapters: CustomScalarAdapters): Set<String> {
-  return variables(customScalarAdapters, true).valueMap.filter { it.value == false }.keys
+fun <D : Executable.Data> Executable<D>.booleanVariables(scalarAdapters: ScalarAdapters): Set<String> {
+  return variables(scalarAdapters, true).valueMap.filter { it.value == false }.keys
 }
 
 @Suppress("UNCHECKED_CAST")
 @ApolloInternal
-fun <D : Executable.Data> Executable<D>.variables(customScalarAdapters: CustomScalarAdapters, withDefaultBooleanValues: Boolean): Executable.Variables {
+fun <D : Executable.Data> Executable<D>.variables(scalarAdapters: ScalarAdapters, withDefaultBooleanValues: Boolean): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
-    serializeVariables(this, customScalarAdapters.let { if (withDefaultBooleanValues) it.serializeVariablesWithDefaultBooleanValues() else it })
+    serializeVariables(this, scalarAdapters.let { if (withDefaultBooleanValues) it.serializeVariablesWithDefaultBooleanValues() else it })
     endObject()
   }.root() as Map<String, Any?>
   return Executable.Variables(valueMap)
 }
 
 
-private fun CustomScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
+private fun ScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
     .adapterContext(
         adapterContext.newBuilder()
             .serializeVariablesWithDefaultBooleanValues(true)

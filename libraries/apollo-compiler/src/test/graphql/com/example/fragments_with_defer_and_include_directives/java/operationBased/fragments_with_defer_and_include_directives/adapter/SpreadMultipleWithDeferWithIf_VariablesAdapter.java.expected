@@ -7,7 +7,7 @@ package com.example.fragments_with_defer_and_include_directives.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf;
@@ -19,15 +19,15 @@ public enum SpreadMultipleWithDeferWithIf_VariablesAdapter implements Adapter<Sp
   INSTANCE;
 
   @Override
-  public SpreadMultipleWithDeferWithIf fromJson(JsonReader reader,
-      CustomScalarAdapters customScalarAdapters) throws IOException {
+  public SpreadMultipleWithDeferWithIf fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
       SpreadMultipleWithDeferWithIf value) throws IOException {
     writer.name("cond");
-    Adapters.BooleanAdapter.toJson(writer, customScalarAdapters, value.cond);
+    Adapters.BooleanAdapter.toJson(writer, scalarAdapters, value.cond);
   }
 }

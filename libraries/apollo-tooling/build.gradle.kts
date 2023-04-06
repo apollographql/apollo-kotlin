@@ -16,8 +16,8 @@ dependencies {
 
   testImplementation(golatac.lib("junit"))
   testImplementation(golatac.lib("truth"))
-  testImplementation(project(":apollo-mockserver"))
-  testImplementation(project(":apollo-testing-support"))
+  testImplementation(golatac.lib("apollo-mockserver-published"))
+  testImplementation(golatac.lib("apollo-testingsupport-published"))
 }
 
 apollo {

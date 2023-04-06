@@ -6,8 +6,8 @@
 package com.example.`companion`.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -22,13 +22,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("companion")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _companion: TestQuery.Companion_? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _companion = Companion.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _companion = Companion.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,24 +40,24 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("companion")
-      Companion.obj().nullable().toJson(writer, customScalarAdapters, value.`companion`)
+      Companion.obj().nullable().toJson(writer, scalarAdapters, value.`companion`)
     }
   }
 
   public object Companion : Adapter<TestQuery.Companion_> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Companion_ {
       var _foo: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = IntAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _foo = IntAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -69,11 +69,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Companion_,
     ): Unit {
       writer.name("foo")
-      IntAdapter.toJson(writer, customScalarAdapters, value.foo)
+      IntAdapter.toJson(writer, scalarAdapters, value.foo)
     }
   }
 }

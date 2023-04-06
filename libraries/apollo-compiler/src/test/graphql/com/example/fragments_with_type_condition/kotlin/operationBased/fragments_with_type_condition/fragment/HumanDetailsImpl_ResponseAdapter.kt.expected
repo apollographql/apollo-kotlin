@@ -6,8 +6,8 @@
 package com.example.fragments_with_type_condition.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,15 +21,15 @@ public object HumanDetailsImpl_ResponseAdapter {
       Adapter<com.example.fragments_with_type_condition.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.fragments_with_type_condition.fragment.HumanDetails {
       var _name: String? = null
       var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _height = NullableDoubleAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,14 +42,14 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.fragments_with_type_condition.fragment.HumanDetails,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("height")
-      NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+      NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height)
     }
   }
 }

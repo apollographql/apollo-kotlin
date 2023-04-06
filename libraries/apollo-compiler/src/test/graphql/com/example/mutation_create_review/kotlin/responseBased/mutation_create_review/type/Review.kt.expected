@@ -8,9 +8,9 @@ package com.example.mutation_create_review.type
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
@@ -28,18 +28,18 @@ internal class Review {
   public companion object : BuilderFactory<ReviewBuilder> {
     public val type: ObjectType = ObjectType.Builder(name = "Review").build()
 
-    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): ReviewBuilder =
-        ReviewBuilder(customScalarAdapters)
+    public override fun newBuilder(scalarAdapters: ScalarAdapters): ReviewBuilder =
+        ReviewBuilder(scalarAdapters)
   }
 }
 
 internal class ReviewBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder<ReviewMap>(customScalarAdapters) {
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder<ReviewMap>(scalarAdapters) {
   public var commentary: String? by BuilderProperty(com.example.MyStringAdapter().nullable())
 
   public var listOfListOfCustom: List<List<java.util.Date>>? by
-      BuilderProperty(customScalarAdapters.responseAdapterFor<java.util.Date>(Date.type).list().list().nullable())
+      BuilderProperty(scalarAdapters.responseAdapterFor<java.util.Date>(Date.type).list().list().nullable())
 
   public var listOfListOfEnum: List<List<Episode>>? by
       BuilderProperty(Episode_ResponseAdapter.list().list().nullable())
@@ -62,4 +62,4 @@ internal class ReviewMap(
 ) : Map<String, Any?> by __fields
 
 internal fun BuilderScope.buildReview(block: ReviewBuilder.() -> Unit): ReviewMap =
-    ReviewBuilder(customScalarAdapters).apply(block).build()
+    ReviewBuilder(scalarAdapters).apply(block).build()

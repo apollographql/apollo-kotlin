@@ -6,8 +6,8 @@
 package com.example.input_object_type.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -22,13 +22,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _createReview: TestQuery.Data.CreateReview? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,26 +40,26 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("createReview")
-      CreateReview.obj().nullable().toJson(writer, customScalarAdapters, value.createReview)
+      CreateReview.obj().nullable().toJson(writer, scalarAdapters, value.createReview)
     }
 
     private object CreateReview : Adapter<TestQuery.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _stars = IntAdapter.fromJson(reader, scalarAdapters)
             1 -> _commentary = com.example.MyStringAdapter().nullable().fromJson(reader,
-                customScalarAdapters)
+                scalarAdapters)
             else -> break
           }
         }
@@ -72,15 +72,14 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.CreateReview,
       ): Unit {
         writer.name("stars")
-        IntAdapter.toJson(writer, customScalarAdapters, value.stars)
+        IntAdapter.toJson(writer, scalarAdapters, value.stars)
 
         writer.name("commentary")
-        com.example.MyStringAdapter().nullable().toJson(writer, customScalarAdapters,
-            value.commentary)
+        com.example.MyStringAdapter().nullable().toJson(writer, scalarAdapters, value.commentary)
       }
     }
   }

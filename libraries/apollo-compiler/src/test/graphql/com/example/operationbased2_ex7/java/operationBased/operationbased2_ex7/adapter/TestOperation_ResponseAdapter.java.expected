@@ -12,9 +12,9 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.operationbased2_ex7.TestOperation;
@@ -32,14 +32,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public TestOperation.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestOperation.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestOperation.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,10 +50,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Data value)
+        throws IOException {
       writer.name("animal");
-      new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).toJson(writer, customScalarAdapters, value.animal);
+      new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).toJson(writer, scalarAdapters, value.animal);
     }
   }
 
@@ -63,20 +63,20 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Animal fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.Animal fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      TestOperation.OnAnimal _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestOperation.OnAnimal _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -87,12 +87,12 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Animal value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Animal value)
+        throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.toJson(writer, customScalarAdapters, value.onAnimal);
+      com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.toJson(writer, scalarAdapters, value.onAnimal);
     }
   }
 
@@ -102,31 +102,31 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
 
     @Override
-    public TestOperation.OnAnimal fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnAnimal fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
       String _species = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _species = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _species = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWarmBlooded _onWarmBlooded = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion","Cat","Panther")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion","Cat","Panther")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       TestOperation.OnPet _onPet = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat","Turtle")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat","Turtle")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_species, "species");
@@ -140,20 +140,20 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnAnimal value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("species");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.species);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.species);
 
       if (value.onWarmBlooded != null) {
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.toJson(writer, customScalarAdapters, value.onWarmBlooded);
+        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.toJson(writer, scalarAdapters, value.onWarmBlooded);
       }
 
       if (value.onPet != null) {
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.toJson(writer, customScalarAdapters, value.onPet);
+        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.toJson(writer, scalarAdapters, value.onPet);
       }
     }
   }
@@ -164,14 +164,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("temperature");
 
     @Override
-    public TestOperation.OnWarmBlooded fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnWarmBlooded fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
+        throws IOException {
       Integer _temperature = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -184,10 +184,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnWarmBlooded value) throws IOException {
       writer.name("temperature");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.temperature);
+      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.temperature);
     }
   }
 
@@ -197,14 +197,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestOperation.OnPet fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnPet fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -217,10 +217,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.OnPet value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.OnPet value)
+        throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

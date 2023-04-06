@@ -10,7 +10,7 @@ import okio.IOException
  */
 interface Fragment<D : Fragment.Data> : Executable<D> {
   @Throws(IOException::class)
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
+  override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters)
 
   override fun adapter(): Adapter<D>
 

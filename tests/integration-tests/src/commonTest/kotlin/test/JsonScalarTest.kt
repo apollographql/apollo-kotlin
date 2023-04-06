@@ -27,7 +27,7 @@ class JsonScalarTest {
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url())
         .store(store)
-        .addCustomScalarAdapter(Json.type, AnyAdapter)
+        .addScalarAdapter(Json.type, AnyAdapter)
         .build()
   }
 

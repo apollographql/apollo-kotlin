@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.exception.ApolloNetworkException
@@ -53,7 +53,7 @@ class NothingSubscription : Subscription<Nothing> {
     TODO("Not yet implemented")
   }
 
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters) {
+  override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters) {
     TODO("Not yet implemented")
   }
 

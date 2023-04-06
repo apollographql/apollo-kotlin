@@ -8,7 +8,7 @@ package com.example.named_fragment_with_variables.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.GetUser;
@@ -26,20 +26,20 @@ public class GetUser_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetUser.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public GetUser.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      QueryFragment _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      QueryFragment _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -50,12 +50,12 @@ public class GetUser_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetUser.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetUser.Data value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.toJson(writer, customScalarAdapters, value.queryFragment);
+      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE.toJson(writer, scalarAdapters, value.queryFragment);
     }
   }
 }

@@ -8,9 +8,9 @@ package com.example.root_query_fragment_with_nested_fragments.fragment;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       String __typename = null;
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero _hero = null;
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid _droid = null;
@@ -36,10 +36,10 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 2: _droid = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 3: _human = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 2: _droid = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 3: _human = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,20 +55,20 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment value) throws
         IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
 
       writer.name("droid");
-      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).toJson(writer, customScalarAdapters, value.droid);
+      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid>(Droid.INSTANCE, true)).toJson(writer, scalarAdapters, value.droid);
 
       writer.name("human");
-      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).toJson(writer, customScalarAdapters, value.human);
+      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human>(Human.INSTANCE, true)).toJson(writer, scalarAdapters, value.human);
     }
   }
 
@@ -79,19 +79,19 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      HeroFragment _heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      HeroFragment _heroFragment = com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -102,13 +102,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Hero value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.toJson(writer, customScalarAdapters, value.heroFragment);
+      com.example.root_query_fragment_with_nested_fragments.fragment.HeroFragmentImpl_ResponseAdapter.HeroFragment.INSTANCE.toJson(writer, scalarAdapters, value.heroFragment);
     }
   }
 
@@ -119,19 +119,19 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      DroidFragment _droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      DroidFragment _droidFragment = com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -142,13 +142,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Droid value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.toJson(writer, customScalarAdapters, value.droidFragment);
+      com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.toJson(writer, scalarAdapters, value.droidFragment);
     }
   }
 
@@ -159,19 +159,19 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman _onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman _onHuman = com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -182,13 +182,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.Human value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
+      com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
     }
   }
 
@@ -199,15 +199,15 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       String _name = null;
       String _homePlanet = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _homePlanet = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -221,14 +221,14 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragment.OnHuman value)
         throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("homePlanet");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.homePlanet);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.homePlanet);
     }
   }
 }

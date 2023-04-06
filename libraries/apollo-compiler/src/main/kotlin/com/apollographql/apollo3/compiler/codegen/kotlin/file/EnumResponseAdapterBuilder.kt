@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -48,7 +48,7 @@ internal class EnumResponseAdapterBuilder(
     val fromResponseFunSpec = FunSpec.builder(Identifier.fromJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -74,5 +74,5 @@ internal class EnumResponseAdapterBuilder(
 private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = KotlinSymbols.JsonWriter)
-    .addParameter(name = customScalarAdapters, type = KotlinSymbols.CustomScalarAdapters)
+    .addParameter(name = scalarAdapters, type = KotlinSymbols.ScalarAdapters)
     .addParameter(value, typeName)

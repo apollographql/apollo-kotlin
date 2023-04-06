@@ -8,7 +8,7 @@ package com.example.subscriptions
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -28,9 +28,8 @@ public data class TestSubscription(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    TestSubscription_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
+    TestSubscription_VariablesAdapter.toJson(writer, scalarAdapters, this)
   }
 
   public override fun adapter(): Adapter<Data> = TestSubscription_ResponseAdapter.Data.obj()

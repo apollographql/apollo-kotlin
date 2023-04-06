@@ -6,7 +6,7 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -26,13 +26,13 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
   public object Data : Adapter<InlineMultipleWithDeferWithIf.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         InlineMultipleWithDeferWithIf.Data {
       var _hero: InlineMultipleWithDeferWithIf.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -44,44 +44,44 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: InlineMultipleWithDeferWithIf.Data,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<InlineMultipleWithDeferWithIf.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           InlineMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
         val _onCharacter = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
-            customScalarAdapters)
+            scalarAdapters)
 
         var _onCharacterDeferF_second: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second? = null
-        if (label("f_second").evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
+        if (label("f_second").evaluate(scalarAdapters.adapterContext.variables(), null, scalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onCharacterDeferF_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_second.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         var _onCharacterDeferF_third: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third? = null
-        if (or(not(variable("cond")),label("f_third")).evaluate(customScalarAdapters.adapterContext.variables(), null, customScalarAdapters.adapterContext, __path)) {
+        if (or(not(variable("cond")),label("f_third")).evaluate(scalarAdapters.adapterContext.variables(), null, scalarAdapters.adapterContext, __path)) {
           reader.rewind()
           _onCharacterDeferF_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_third.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         return InlineMultipleWithDeferWithIf.Data.Hero(
@@ -94,37 +94,36 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: InlineMultipleWithDeferWithIf.Data.Hero,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
-            customScalarAdapters, value.onCharacter)
+            scalarAdapters, value.onCharacter)
 
         if (value.onCharacterDeferF_second != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_second.toJson(writer,
-              customScalarAdapters, value.onCharacterDeferF_second)
+              scalarAdapters, value.onCharacterDeferF_second)
         }
 
         if (value.onCharacterDeferF_third != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.Data.Hero.OnCharacterDeferF_third.toJson(writer,
-              customScalarAdapters, value.onCharacterDeferF_third)
+              scalarAdapters, value.onCharacterDeferF_third)
         }
       }
 
       private object OnCharacter : Adapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter {
           var _id: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -136,11 +135,11 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacter,
         ): Unit {
           writer.name("id")
-          StringAdapter.toJson(writer, customScalarAdapters, value.id)
+          StringAdapter.toJson(writer, scalarAdapters, value.id)
         }
       }
 
@@ -148,14 +147,13 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
           Adapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -167,11 +165,11 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_second,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
 
@@ -179,14 +177,13 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
           Adapter<InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -198,11 +195,11 @@ public object InlineMultipleWithDeferWithIf_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferWithIf.Data.Hero.OnCharacterDeferF_third,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
     }

@@ -6,9 +6,9 @@
 package com.example.java_primitive_types.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -24,7 +24,7 @@ public object JavaPrimitiveQuery_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
         "nullableMyType", "nonNullableMyType")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         JavaPrimitiveQuery.Data {
       var _nullableInt: Int? = null
       var _nonNullableInt: Int? = null
@@ -33,11 +33,10 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader,
-              customScalarAdapters)
-          3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, customScalarAdapters)
+          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
+          1 -> _nonNullableInt = IntAdapter.fromJson(reader, scalarAdapters)
+          2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader, scalarAdapters)
+          3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -52,34 +51,34 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: JavaPrimitiveQuery.Data,
     ): Unit {
       writer.name("nullableInt")
-      NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
+      NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
 
       writer.name("nonNullableInt")
-      IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+      IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
 
       writer.name("nullableMyType")
-      NullableMyType.obj().nullable().toJson(writer, customScalarAdapters, value.nullableMyType)
+      NullableMyType.obj().nullable().toJson(writer, scalarAdapters, value.nullableMyType)
 
       writer.name("nonNullableMyType")
-      NonNullableMyType.obj().toJson(writer, customScalarAdapters, value.nonNullableMyType)
+      NonNullableMyType.obj().toJson(writer, scalarAdapters, value.nonNullableMyType)
     }
 
     private object NullableMyType : Adapter<JavaPrimitiveQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           JavaPrimitiveQuery.Data.NullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -92,29 +91,29 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: JavaPrimitiveQuery.Data.NullableMyType,
       ): Unit {
         writer.name("nullableInt")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
+        NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+        IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
       }
     }
 
     private object NonNullableMyType : Adapter<JavaPrimitiveQuery.Data.NonNullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           JavaPrimitiveQuery.Data.NonNullableMyType {
         var _nullableInt: Int? = null
         var _nonNullableInt: Int? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _nonNullableInt = IntAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            1 -> _nonNullableInt = IntAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -127,14 +126,14 @@ public object JavaPrimitiveQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: JavaPrimitiveQuery.Data.NonNullableMyType,
       ): Unit {
         writer.name("nullableInt")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
+        NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
+        IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
       }
     }
   }

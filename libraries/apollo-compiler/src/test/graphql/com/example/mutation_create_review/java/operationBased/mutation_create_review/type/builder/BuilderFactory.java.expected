@@ -5,43 +5,43 @@
 //
 package com.example.mutation_create_review.type.builder;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import java.lang.String;
 
 public class BuilderFactory {
-  public static BuilderFactory DEFAULT = new BuilderFactory(CustomScalarAdapters.PassThrough);
+  public static BuilderFactory DEFAULT = new BuilderFactory(ScalarAdapters.PassThrough);
 
-  CustomScalarAdapters customScalarAdapters;
+  ScalarAdapters scalarAdapters;
 
-  public BuilderFactory(CustomScalarAdapters customScalarAdapters) {
-    this.customScalarAdapters = customScalarAdapters;
+  public BuilderFactory(ScalarAdapters scalarAdapters) {
+    this.scalarAdapters = scalarAdapters;
   }
 
   public MutationBuilder buildMutation() {
-    return new MutationBuilder(customScalarAdapters);
+    return new MutationBuilder(scalarAdapters);
   }
 
   public ReviewBuilder buildReview() {
-    return new ReviewBuilder(customScalarAdapters);
+    return new ReviewBuilder(scalarAdapters);
   }
 
   public DroidBuilder buildDroid() {
-    return new DroidBuilder(customScalarAdapters);
+    return new DroidBuilder(scalarAdapters);
   }
 
   public HumanBuilder buildHuman() {
-    return new HumanBuilder(customScalarAdapters);
+    return new HumanBuilder(scalarAdapters);
   }
 
   public StarshipBuilder buildStarship() {
-    return new StarshipBuilder(customScalarAdapters);
+    return new StarshipBuilder(scalarAdapters);
   }
 
   public OtherCharacterBuilder buildOtherCharacter(String __typename) {
-    return new OtherCharacterBuilder(__typename, customScalarAdapters);
+    return new OtherCharacterBuilder(__typename, scalarAdapters);
   }
 
   public OtherSearchResultBuilder buildOtherSearchResult(String __typename) {
-    return new OtherSearchResultBuilder(__typename, customScalarAdapters);
+    return new OtherSearchResultBuilder(__typename, scalarAdapters);
   }
 }

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.selections
@@ -31,14 +31,14 @@ internal fun serializeVariablesFunSpec(
     """.trimIndent())
   } else {
     CodeBlock.of(
-        "%L.$toJson($writer, $customScalarAdapters, this)",
+        "%L.$toJson($writer, $scalarAdapters, this)",
         CodeBlock.of("%T", adapterClassName)
     )
   }
   return FunSpec.builder(serializeVariables)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
-      .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+      .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
       .addCode(body)
       .build()
 }

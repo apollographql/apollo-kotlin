@@ -136,10 +136,10 @@ public class ClientTest {
   }
 
   @Test
-  public void customScalarAdapters() {
+  public void scalarAdapters() {
     apolloClient = new ApolloClient.Builder()
         .serverUrl(mockServerUrl)
-        .addCustomScalarAdapter(javatest.type.GeoPoint.type, new GeoPointAdapter())
+        .addScalarAdapter(javatest.type.GeoPoint.type, new GeoPointAdapter())
         .build();
 
     mockServer.enqueue(new MockResponse.Builder().body("{\"data\": {\"location\": {\"latitude\": 10.5, \"longitude\": 20.5}}}").build());

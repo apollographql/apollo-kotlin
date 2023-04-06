@@ -1,7 +1,7 @@
 package test
 
 import IdCacheKeyGenerator
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.parseJsonResponse
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -249,7 +249,7 @@ class NormalizerTest {
   companion object {
     internal fun <D : Operation.Data> records(operation: Operation<D>, name: String): Map<String, Record> {
       val response = operation.parseJsonResponse(testFixtureToJsonReader(name))
-      return operation.normalize(data = response.data!!, CustomScalarAdapters.Empty, cacheKeyGenerator = IdCacheKeyGenerator)
+      return operation.normalize(data = response.data!!, ScalarAdapters.Empty, cacheKeyGenerator = IdCacheKeyGenerator)
     }
 
     private const val TEST_FIELD_KEY_JEDI = "hero({\"episode\":\"JEDI\"})"

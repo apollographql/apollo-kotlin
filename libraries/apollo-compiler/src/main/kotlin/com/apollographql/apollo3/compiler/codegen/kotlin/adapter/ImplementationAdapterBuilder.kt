@@ -95,7 +95,7 @@ internal class ImplementationAdapterBuilder(
     return FunSpec.builder(Identifier.fromJson)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(Identifier.scalarAdapters, KotlinSymbols.ScalarAdapters)
         .apply {
           if (addTypenameArgument) {
             addParameter(
@@ -115,7 +115,7 @@ internal class ImplementationAdapterBuilder(
   private fun writeToResponseFunSpec(): FunSpec {
     return FunSpec.builder(Identifier.toJson)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
-        .addParameter(Identifier.customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(Identifier.scalarAdapters, KotlinSymbols.ScalarAdapters)
         .addParameter(Identifier.value, adaptedClassName)
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {

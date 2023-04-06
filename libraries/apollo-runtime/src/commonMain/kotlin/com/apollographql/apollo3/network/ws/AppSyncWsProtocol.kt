@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
@@ -52,7 +52,7 @@ class AppSyncWsProtocol(
 
   override fun <D : Operation.Data> startOperation(request: ApolloRequest<D>) {
     // AppSync encodes the data as a String
-    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request), CustomScalarAdapters.Empty, )
+    val data = NullableAnyAdapter.toJsonString(DefaultHttpRequestComposer.composePayload(request), ScalarAdapters.Empty, )
 
     sendMessageMapText(
         mapOf(

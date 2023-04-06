@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review.type.builder;
 
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectBuilderKt;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
 import java.lang.Integer;
@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 
 public class ReviewBuilder {
-  CustomScalarAdapters customScalarAdapters;
+  ScalarAdapters scalarAdapters;
 
   Map<String, Object> __fields = new HashMap<>();
 
-  public ReviewBuilder(CustomScalarAdapters customScalarAdapters) {
-    this.customScalarAdapters = customScalarAdapters;
+  public ReviewBuilder(ScalarAdapters scalarAdapters) {
+    this.scalarAdapters = scalarAdapters;
     __fields.put("__typename", "Review");
   }
 
@@ -34,7 +34,7 @@ public class ReviewBuilder {
   }
 
   public ReviewBuilder listOfListOfCustom(List<List<Date>> listOfListOfCustom) {
-    __fields.put("listOfListOfCustom", ObjectBuilderKt.adaptValue(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))), listOfListOfCustom));
+    __fields.put("listOfListOfCustom", ObjectBuilderKt.adaptValue(new ListAdapter<>(new ListAdapter<>((scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))), listOfListOfCustom));
     return this;
   }
 

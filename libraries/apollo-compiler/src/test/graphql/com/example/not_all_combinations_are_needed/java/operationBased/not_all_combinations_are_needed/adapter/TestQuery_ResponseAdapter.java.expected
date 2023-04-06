@@ -12,9 +12,9 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.not_all_combinations_are_needed.TestQuery;
@@ -32,14 +32,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("root");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestQuery.Root _root = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _root = new NullableAdapter<>(new ObjectAdapter<TestQuery.Root>(Root.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _root = new NullableAdapter<>(new ObjectAdapter<TestQuery.Root>(Root.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,10 +50,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
+        throws IOException {
       writer.name("root");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Root>(Root.INSTANCE, true)).toJson(writer, customScalarAdapters, value.root);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Root>(Root.INSTANCE, true)).toJson(writer, scalarAdapters, value.root);
     }
   }
 
@@ -63,23 +63,23 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Root fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Root fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnA _onA = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onA = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new TestQuery.Root(
@@ -89,13 +89,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Root value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Root value)
+        throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onA != null) {
-        com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.toJson(writer, customScalarAdapters, value.onA);
+        com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.toJson(writer, scalarAdapters, value.onA);
       }
     }
   }
@@ -106,25 +106,25 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "fieldA1");
 
     @Override
-    public TestQuery.OnA fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.OnA fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
       String _fieldA1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _fieldA1 = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnB _onB = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","SomeBC")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ABC","SomeBC")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onB = com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new TestQuery.OnA(
@@ -135,16 +135,16 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnA value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnA value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("fieldA1");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldA1);
 
       if (value.onB != null) {
-        com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.toJson(writer, customScalarAdapters, value.onB);
+        com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.toJson(writer, scalarAdapters, value.onB);
       }
     }
   }
@@ -155,20 +155,20 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.OnB fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.OnB fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      BFragment _bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      BFragment _bFragment = com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -179,12 +179,12 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnB value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnB value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.toJson(writer, customScalarAdapters, value.bFragment);
+      com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.INSTANCE.toJson(writer, scalarAdapters, value.bFragment);
     }
   }
 }

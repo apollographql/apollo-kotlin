@@ -6,7 +6,7 @@
 package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,22 +18,22 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails : Adapter<com.example.fragment_used_twice.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.fragment_used_twice.fragment.HumanDetails {
       var __typename: String? = null
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
       val _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
-          customScalarAdapters)
+          scalarAdapters)
 
       return com.example.fragment_used_twice.fragment.HumanDetails(
         __typename = __typename!!,
@@ -44,17 +44,17 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.fragment_used_twice.fragment.HumanDetails,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, scalarAdapters, value.name)
 
       com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer,
-          customScalarAdapters, value.characterDetails)
+          scalarAdapters, value.characterDetails)
     }
   }
 }

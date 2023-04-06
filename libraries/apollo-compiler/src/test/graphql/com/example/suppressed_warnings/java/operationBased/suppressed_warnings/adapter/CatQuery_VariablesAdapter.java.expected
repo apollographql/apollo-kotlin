@@ -7,10 +7,10 @@ package com.example.suppressed_warnings.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.CatQuery;
@@ -24,17 +24,16 @@ public enum CatQuery_VariablesAdapter implements Adapter<CatQuery> {
   INSTANCE;
 
   @Override
-  public CatQuery fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
-      IOException {
+  public CatQuery fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, CatQuery value)
-      throws IOException {
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, CatQuery value) throws
+      IOException {
     if (value.filter instanceof Optional.Present) {
       writer.name("filter");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).toJson(writer, customScalarAdapters, value.filter);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).toJson(writer, scalarAdapters, value.filter);
     }
   }
 }

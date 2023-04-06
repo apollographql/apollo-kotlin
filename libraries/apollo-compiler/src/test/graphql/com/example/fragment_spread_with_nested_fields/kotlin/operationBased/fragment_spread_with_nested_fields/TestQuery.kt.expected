@@ -8,8 +8,8 @@ package com.example.fragment_spread_with_nested_fields
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragment_spread_with_nested_fields.adapter.TestQuery_ResponseAdapter
@@ -32,8 +32,7 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 

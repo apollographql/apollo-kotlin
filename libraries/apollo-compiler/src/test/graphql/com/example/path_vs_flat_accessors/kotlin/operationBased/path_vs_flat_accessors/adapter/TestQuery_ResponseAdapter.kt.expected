@@ -6,8 +6,8 @@
 package com.example.path_vs_flat_accessors.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,13 +24,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("root")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _root: TestQuery.Data.Root? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _root = Root.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _root = Root.obj(true).nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,23 +42,23 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("root")
-      Root.obj(true).nullable().toJson(writer, customScalarAdapters, value.root)
+      Root.obj(true).nullable().toJson(writer, scalarAdapters, value.root)
     }
 
     private object Root : Adapter<TestQuery.Data.Root> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Root {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -68,17 +68,17 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onA: TestQuery.Data.Root.OnA? = null
-        if (possibleTypes("ABC","AC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ABC","AC").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onA = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         var _onB: TestQuery.Data.Root.OnB? = null
-        if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ABC","BC").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnB.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         return TestQuery.Data.Root(
@@ -90,33 +90,33 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Root,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.onA != null) {
           com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer,
-              customScalarAdapters, value.onA)
+              scalarAdapters, value.onA)
         }
 
         if (value.onB != null) {
           com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnB.toJson(writer,
-              customScalarAdapters, value.onB)
+              scalarAdapters, value.onB)
         }
       }
 
       private object OnA : Adapter<TestQuery.Data.Root.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            TestQuery.Data.Root.OnA {
           var __typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -126,10 +126,10 @@ public object TestQuery_ResponseAdapter {
           }
 
           var _onB: TestQuery.Data.Root.OnA.OnB? = null
-          if (possibleTypes("ABC","BC").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+          if (possibleTypes("ABC","BC").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
             reader.rewind()
             _onB = com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.fromJson(reader,
-                customScalarAdapters)
+                scalarAdapters)
           }
 
           return TestQuery.Data.Root.OnA(
@@ -140,28 +140,28 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Root.OnA,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           if (value.onB != null) {
             com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer,
-                customScalarAdapters, value.onB)
+                scalarAdapters, value.onB)
           }
         }
 
         private object OnB : Adapter<TestQuery.Data.Root.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnA.OnB {
+          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+              TestQuery.Data.Root.OnA.OnB {
             var _fieldB1: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -173,11 +173,11 @@ public object TestQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
+            scalarAdapters: ScalarAdapters,
             `value`: TestQuery.Data.Root.OnA.OnB,
           ): Unit {
             writer.name("fieldB1")
-            NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
+            NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB1)
           }
         }
       }
@@ -185,13 +185,13 @@ public object TestQuery_ResponseAdapter {
       private object OnB : Adapter<TestQuery.Data.Root.OnB> {
         public val RESPONSE_NAMES: List<String> = listOf("fieldB2")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Root.OnB {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            TestQuery.Data.Root.OnB {
           var _fieldB2: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _fieldB2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -203,11 +203,11 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Root.OnB,
         ): Unit {
           writer.name("fieldB2")
-          NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
+          NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB2)
         }
       }
     }

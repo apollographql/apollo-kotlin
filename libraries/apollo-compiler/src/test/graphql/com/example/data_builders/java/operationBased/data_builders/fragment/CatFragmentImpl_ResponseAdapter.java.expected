@@ -8,7 +8,7 @@ package com.example.data_builders.fragment;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -25,13 +25,13 @@ public class CatFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.data_builders.fragment.CatFragment fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       String _meow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _meow = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _meow = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,10 +44,10 @@ public class CatFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.data_builders.fragment.CatFragment value) throws IOException {
       writer.name("meow");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.meow);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.meow);
     }
   }
 }

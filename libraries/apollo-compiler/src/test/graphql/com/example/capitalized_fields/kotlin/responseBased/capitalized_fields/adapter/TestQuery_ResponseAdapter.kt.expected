@@ -6,8 +6,8 @@
 package com.example.capitalized_fields.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,13 +22,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _Horse: TestQuery.Horse? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Horse = Horse.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,18 +40,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("Horse")
-      Horse.obj().nullable().toJson(writer, customScalarAdapters, value.Horse)
+      Horse.obj().nullable().toJson(writer, scalarAdapters, value.Horse)
     }
   }
 
   public object Horse : Adapter<TestQuery.Horse> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey", "Cow")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Horse {
       var __typename: String? = null
       var _Donkey: String? = null
@@ -59,9 +59,9 @@ public object TestQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _Donkey = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _Donkey = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          2 -> _Cow = Cow.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -75,30 +75,30 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Horse,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("Donkey")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.Donkey)
+      NullableStringAdapter.toJson(writer, scalarAdapters, value.Donkey)
 
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.Cow)
+      Cow.obj().nullable().toJson(writer, scalarAdapters, value.Cow)
     }
   }
 
   public object Cow : Adapter<TestQuery.Cow> {
     public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Cow {
       var _Moo: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Moo = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _Moo = NullableStringAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -110,11 +110,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Cow,
     ): Unit {
       writer.name("Moo")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.Moo)
+      NullableStringAdapter.toJson(writer, scalarAdapters, value.Moo)
     }
   }
 }

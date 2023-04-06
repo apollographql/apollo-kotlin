@@ -6,7 +6,7 @@
 package com.example.recursive_selection.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,13 +22,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("tree")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _tree: TestQuery.Data.Tree? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _tree = Tree.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _tree = Tree.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,17 +40,17 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("tree")
-      Tree.obj().nullable().toJson(writer, customScalarAdapters, value.tree)
+      Tree.obj().nullable().toJson(writer, scalarAdapters, value.tree)
     }
 
     private object Tree : Adapter<TestQuery.Data.Tree> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "children", "parent")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Tree {
         var _name: String? = null
         var _children: List<TestQuery.Data.Tree.Child>? = null
@@ -58,9 +58,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _children = Child.obj().list().fromJson(reader, customScalarAdapters)
-            2 -> _parent = Parent.obj().nullable().fromJson(reader, customScalarAdapters)
+            0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _children = Child.obj().list().fromJson(reader, scalarAdapters)
+            2 -> _parent = Parent.obj().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -74,29 +74,29 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Tree,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("children")
-        Child.obj().list().toJson(writer, customScalarAdapters, value.children)
+        Child.obj().list().toJson(writer, scalarAdapters, value.children)
 
         writer.name("parent")
-        Parent.obj().nullable().toJson(writer, customScalarAdapters, value.parent)
+        Parent.obj().nullable().toJson(writer, scalarAdapters, value.parent)
       }
 
       private object Child : Adapter<TestQuery.Data.Tree.Child> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree.Child {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            TestQuery.Data.Tree.Child {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -108,24 +108,24 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Tree.Child,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
 
       private object Parent : Adapter<TestQuery.Data.Tree.Parent> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Tree.Parent {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            TestQuery.Data.Tree.Parent {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -137,11 +137,11 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Tree.Parent,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, customScalarAdapters, value.name)
+          StringAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
     }

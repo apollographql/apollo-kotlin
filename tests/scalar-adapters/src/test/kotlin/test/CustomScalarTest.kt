@@ -3,7 +3,7 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.writeObject
@@ -133,14 +133,14 @@ class CustomScalarTest {
     """.trimIndent())
 
     val customTypeAdapter = object : Adapter<Address> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Address {
+      override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Address {
         @Suppress("UNCHECKED_CAST")
-        val map = AnyAdapter.fromJson(reader, customScalarAdapters) as Map<String, Any?>
+        val map = AnyAdapter.fromJson(reader, scalarAdapters) as Map<String, Any?>
 
         return Address(map.get("street") as String, map.get("number") as Int)
       }
 
-      override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Address) {
+      override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Address) {
         writer.writeObject {
           name("street")
           value(value.street)
@@ -151,7 +151,7 @@ class CustomScalarTest {
     }
     val data = ApolloClient.Builder()
         .serverUrl(serverUrl = server.url())
-        .addCustomScalarAdapter(custom.scalars.type.Address.type, customTypeAdapter)
+        .addScalarAdapter(custom.scalars.type.Address.type, customTypeAdapter)
         .build()
         .query(AddressQuery())
         .execute()

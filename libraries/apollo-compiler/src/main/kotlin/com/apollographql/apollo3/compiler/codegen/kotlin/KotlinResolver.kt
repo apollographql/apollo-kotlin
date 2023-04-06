@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
 import com.apollographql.apollo3.compiler.codegen.ResolverEntry
@@ -256,7 +256,7 @@ internal class KotlinResolver(
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
-            "$customScalarAdapters.responseAdapterFor<%T>(%L)",
+            "$scalarAdapters.responseAdapterFor<%T>(%L)",
             target,
             resolveCompiledType(type.name)
         )
@@ -275,7 +275,7 @@ internal class KotlinResolver(
               CodeBlock.of("%M", KotlinSymbols.AnyAdapter)
             } else {
               CodeBlock.of(
-                  "$customScalarAdapters.responseAdapterFor<%T>(%L)",
+                  "$scalarAdapters.responseAdapterFor<%T>(%L)",
                   target,
                   resolveCompiledType(type.name)
               )
@@ -352,9 +352,9 @@ internal class KotlinResolver(
 
   fun resolveSchema(): ClassName = resolveAndAssert(ResolverKeyKind.Schema, "")
 
-  fun registerCustomScalarAdapters(className: ClassName) {
-    register(ResolverKeyKind.CustomScalarAdapters, "", className)
+  fun registerScalarAdapters(className: ClassName) {
+    register(ResolverKeyKind.ScalarAdapters, "", className)
   }
 
-  fun resolveCustomScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.CustomScalarAdapters, "")
+  fun resolveScalarAdapters(): ClassName = resolveAndAssert(ResolverKeyKind.ScalarAdapters, "")
 }

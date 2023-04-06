@@ -6,7 +6,7 @@
 package com.example.data_builders.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,13 +18,13 @@ public object HumanFragmentImpl_ResponseAdapter {
   public object HumanFragment : Adapter<com.example.data_builders.fragment.HumanFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.data_builders.fragment.HumanFragment {
       var _homePlanet: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _homePlanet = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _homePlanet = StringAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -36,11 +36,11 @@ public object HumanFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.data_builders.fragment.HumanFragment,
     ): Unit {
       writer.name("homePlanet")
-      StringAdapter.toJson(writer, customScalarAdapters, value.homePlanet)
+      StringAdapter.toJson(writer, scalarAdapters, value.homePlanet)
     }
   }
 }

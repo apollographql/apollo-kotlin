@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__fields
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -43,7 +43,7 @@ internal class InterfaceBuilderBuilder(
     return TypeSpec
         .classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
-        .addField(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+        .addField(JavaClassNames.ScalarAdapters, scalarAdapters)
         .addField(
             FieldSpec.builder(JavaClassNames.MapOfStringToObject, __fields)
                 .initializer(CodeBlock.of("new $T<>()", JavaClassNames.HashMap))
@@ -53,8 +53,8 @@ internal class InterfaceBuilderBuilder(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(JavaClassNames.String, __typename)
-                .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
-                .addStatement("this.$customScalarAdapters = $customScalarAdapters")
+                .addParameter(JavaClassNames.ScalarAdapters, scalarAdapters)
+                .addStatement("this.$scalarAdapters = $scalarAdapters")
                 .addStatement("$__fields.put(\"__typename\", __typename)")
                 .build()
         )

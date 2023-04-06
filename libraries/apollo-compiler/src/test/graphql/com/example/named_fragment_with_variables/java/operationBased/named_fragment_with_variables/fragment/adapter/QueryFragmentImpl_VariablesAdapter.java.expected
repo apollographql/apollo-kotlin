@@ -7,8 +7,8 @@ package com.example.named_fragment_with_variables.fragment.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl;
@@ -22,19 +22,19 @@ public enum QueryFragmentImpl_VariablesAdapter implements Adapter<QueryFragmentI
   INSTANCE;
 
   @Override
-  public QueryFragmentImpl fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public QueryFragmentImpl fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      QueryFragmentImpl value) throws IOException {
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, QueryFragmentImpl value)
+      throws IOException {
     writer.name("organizationId");
-    Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.organizationId);
+    Adapters.StringAdapter.toJson(writer, scalarAdapters, value.organizationId);
     writer.name("query");
-    new ObjectAdapter<UserQuery>(UserQuery_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.query);
+    new ObjectAdapter<UserQuery>(UserQuery_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.query);
     writer.name("size");
-    Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.size);
+    Adapters.IntAdapter.toJson(writer, scalarAdapters, value.size);
   }
 }

@@ -6,7 +6,7 @@
 package com.example.named_fragment_inside_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -22,14 +22,14 @@ public object CharacterAppearsInImpl_ResponseAdapter {
       Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn {
       var _appearsIn: List<Episode?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
           else -> break
         }
       }
@@ -41,12 +41,11 @@ public object CharacterAppearsInImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn,
     ): Unit {
       writer.name("appearsIn")
-      Episode_ResponseAdapter.nullable().list().toJson(writer, customScalarAdapters,
-          value.appearsIn)
+      Episode_ResponseAdapter.nullable().list().toJson(writer, scalarAdapters, value.appearsIn)
     }
   }
 }

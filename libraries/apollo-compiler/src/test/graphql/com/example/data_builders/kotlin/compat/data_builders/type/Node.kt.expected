@@ -6,7 +6,7 @@
 package com.example.data_builders.type
 
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectBuilder
 import kotlin.Any
@@ -21,8 +21,8 @@ public class Node {
 }
 
 public class OtherNodeBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder(scalarAdapters) {
   public var id: String by __fields
 
   public fun build(): OtherNodeMap = OtherNodeMap(__fields)
@@ -36,7 +36,7 @@ public class OtherNodeMap(
 
 public fun BuilderScope.buildOtherNode(__typename: String, block: OtherNodeBuilder.() -> Unit):
     OtherNodeMap {
-  val builder = OtherNodeBuilder(customScalarAdapters)
+  val builder = OtherNodeBuilder(scalarAdapters)
   builder.__typename = __typename
   builder.block()
   return builder.build()

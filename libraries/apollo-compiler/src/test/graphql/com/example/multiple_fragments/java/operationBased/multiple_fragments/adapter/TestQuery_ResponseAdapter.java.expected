@@ -8,9 +8,9 @@ package com.example.multiple_fragments.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.multiple_fragments.TestQuery;
@@ -28,14 +28,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("a");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestQuery.A _a = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _a = new NullableAdapter<>(new ObjectAdapter<TestQuery.A>(A.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _a = new NullableAdapter<>(new ObjectAdapter<TestQuery.A>(A.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,10 +46,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
+        throws IOException {
       writer.name("a");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.A>(A.INSTANCE, true)).toJson(writer, customScalarAdapters, value.a);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.A>(A.INSTANCE, true)).toJson(writer, scalarAdapters, value.a);
     }
   }
 
@@ -59,20 +59,20 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.A fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+    public TestQuery.A fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
         IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      AFragment _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      AFragment _aFragment = com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -83,12 +83,12 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.A value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.A value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.toJson(writer, customScalarAdapters, value.aFragment);
+      com.example.multiple_fragments.fragment.AFragmentImpl_ResponseAdapter.AFragment.INSTANCE.toJson(writer, scalarAdapters, value.aFragment);
     }
   }
 }

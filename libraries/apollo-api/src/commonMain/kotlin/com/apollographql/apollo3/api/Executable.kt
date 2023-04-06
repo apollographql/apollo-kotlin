@@ -21,7 +21,7 @@ interface Executable<D: Executable.Data> {
    * Serializes the variables of this operation to a json
    */
   @Throws(IOException::class)
-  fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
+  fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters)
 
   /**
    * A list of [CompiledSelection]. Used when reading from the cache and/or normalizing a model.

@@ -4,7 +4,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.Builder
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.block
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.factory
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -34,7 +34,7 @@ import com.squareup.kotlinpoet.TypeVariableName
  *       "Query",
  *       GlobalBuilder.buildQuery(block),
  *       resolver,
- *       __CustomScalarAdapters,
+ *       __ScalarAdapters,
  *     )
  *
  *  @param builderFactoryParameterRequired pass true for abstract (unions & interfaces) types
@@ -99,7 +99,7 @@ internal fun dataBuilderCtor(
               .add("%T.${Identifier.root},\n", selectionsClassName)
               .add("%S,\n", typename)
               .add("${Identifier.resolver},\n")
-              .add("%T,\n", context.resolver.resolveCustomScalarAdapters())
+              .add("%T,\n", context.resolver.resolveScalarAdapters())
               .unindent()
               .add(")\n")
               .build()
@@ -141,7 +141,7 @@ internal fun topLevelBuildFunSpec(
       .receiver(KotlinSymbols.BuilderScope)
       .addCode(
           CodeBlock.builder()
-              .add("return·%T(${customScalarAdapters}).apply($block)",builderClassName)
+              .add("return·%T(${scalarAdapters}).apply($block)",builderClassName)
               .apply {
                 if (requiresTypename) {
                   add(".apply·{·__typename·=·typename·}")
@@ -204,10 +204,10 @@ internal fun concreteBuilderTypeSpec(
   return TypeSpec
       .classBuilder(builderName)
       .superclass(KotlinSymbols.ObjectBuilder.parameterizedBy(ClassName(packageName, mapName)))
-      .addSuperclassConstructorParameter(CodeBlock.of(customScalarAdapters))
+      .addSuperclassConstructorParameter(CodeBlock.of(scalarAdapters))
       .primaryConstructor(
           FunSpec.constructorBuilder()
-              .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+              .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
               .build()
       )
       .addProperties(properties.map { it.toPropertySpec(context) })

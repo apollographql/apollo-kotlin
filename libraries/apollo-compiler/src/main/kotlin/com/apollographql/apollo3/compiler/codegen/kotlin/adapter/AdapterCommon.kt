@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -74,7 +74,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             regularProperties.mapIndexed { index, property ->
               CodeBlock.of(
-                  "%L·->·%N·=·%L.$fromJson($reader, $customScalarAdapters)",
+                  "%L·->·%N·=·%L.$fromJson($reader, $scalarAdapters)",
                   index,
                   context.layout.variableName(property.info.responseName),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering, context.jsExport)
@@ -134,7 +134,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M($customScalarAdapters.adapterContext.variables(),·$typenameLiteral,·$customScalarAdapters.adapterContext,·$pathLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M($scalarAdapters.adapterContext.variables(),·$typenameLiteral,·$scalarAdapters.adapterContext,·$pathLiteral))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)
@@ -144,7 +144,7 @@ internal fun readFromResponseCodeBlock(
         }
         .add(
             CodeBlock.of(
-                "%L·=·%L.$fromJson($reader, $customScalarAdapters)\n",
+                "%L·=·%L.$fromJson($reader, $scalarAdapters)\n",
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
@@ -220,7 +220,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering, context.jsExport)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",
+        "%L.${Identifier.toJson}($writer, $scalarAdapters, $value.%N)",
         adapterInitializer,
         propertyName,
     )
@@ -234,7 +234,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
       builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $customScalarAdapters, $value.%N)",
+        "%L.${Identifier.toJson}($writer, $scalarAdapters, $value.%N)",
         adapterInitializer,
         propertyName,
     )

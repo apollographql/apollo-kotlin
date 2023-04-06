@@ -4,7 +4,7 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
@@ -49,7 +49,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
 private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(fromJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-    .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+    .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -63,7 +63,7 @@ private fun List<NamedType>.writeToResponseFunSpec(
   return FunSpec.builder(toJson)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
-      .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+      .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
       .addParameter(value, adaptedTypeName)
       .addCode(writeToResponseCodeBlock(context, withDefaultBooleanValues))
       .build()

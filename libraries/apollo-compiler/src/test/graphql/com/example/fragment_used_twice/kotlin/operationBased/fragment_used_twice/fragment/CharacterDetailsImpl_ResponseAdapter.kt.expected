@@ -7,7 +7,7 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,15 +21,15 @@ public object CharacterDetailsImpl_ResponseAdapter {
       Adapter<com.example.fragment_used_twice.fragment.CharacterDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "birthDate")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.fragment_used_twice.fragment.CharacterDetails {
       var _name: String? = null
       var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _birthDate = AnyAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _birthDate = AnyAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,14 +42,14 @@ public object CharacterDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.fragment_used_twice.fragment.CharacterDetails,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("birthDate")
-      AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate)
+      AnyAdapter.toJson(writer, scalarAdapters, value.birthDate)
     }
   }
 }

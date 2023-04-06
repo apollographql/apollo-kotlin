@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api.internal
 
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,7 +18,7 @@ internal object ResponseParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
   ): ApolloResponse<D> {
     @Suppress("NAME_SHADOWING")
     return jsonReader.use { jsonReader ->
@@ -30,7 +30,7 @@ internal object ResponseParser {
       while (jsonReader.hasNext()) {
         @Suppress("UNCHECKED_CAST")
         when (jsonReader.nextName()) {
-          "data" -> data = operation.adapter().nullable().fromJson(jsonReader, customScalarAdapters)
+          "data" -> data = operation.adapter().nullable().fromJson(jsonReader, scalarAdapters)
           "errors" -> errors = jsonReader.readErrors()
           "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
           else -> jsonReader.skipValue()

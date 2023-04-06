@@ -6,9 +6,9 @@
 package com.example.simple_fragment_with_inline_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableDoubleAdapter
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -25,16 +25,15 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object Data : Adapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         HeroDetailsImpl.Data {
       var _name: String? = null
       var _friends: List<HeroDetailsImpl.Data.Friend?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
-              customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -47,42 +46,39 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: HeroDetailsImpl.Data,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("friends")
-      Friend.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.friends)
+      Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
     }
 
     private object Friend : Adapter<HeroDetailsImpl.Data.Friend> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           HeroDetailsImpl.Data.Friend {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanFriend.fromJson(reader, customScalarAdapters, __typename)
+          -> HumanFriend.fromJson(reader, scalarAdapters, __typename)
           "Droid",
-          -> DroidFriend.fromJson(reader, customScalarAdapters, __typename)
+          -> DroidFriend.fromJson(reader, scalarAdapters, __typename)
           else
-          -> OtherFriend.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherFriend.fromJson(reader, scalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: HeroDetailsImpl.Data.Friend,
       ): Unit {
         when(value) {
-          is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.toJson(writer, customScalarAdapters,
-              value)
-          is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.toJson(writer, customScalarAdapters,
-              value)
-          is HeroDetailsImpl.Data.OtherFriend -> OtherFriend.toJson(writer, customScalarAdapters,
-              value)
+          is HeroDetailsImpl.Data.HumanFriend -> HumanFriend.toJson(writer, scalarAdapters, value)
+          is HeroDetailsImpl.Data.DroidFriend -> DroidFriend.toJson(writer, scalarAdapters, value)
+          is HeroDetailsImpl.Data.OtherFriend -> OtherFriend.toJson(writer, scalarAdapters, value)
         }
       }
     }
@@ -92,7 +88,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): HeroDetailsImpl.Data.HumanFriend {
         var __typename: String? = typename
@@ -101,9 +97,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _height = NullableDoubleAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -117,17 +113,17 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: HeroDetailsImpl.Data.HumanFriend,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("height")
-        NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+        NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height)
       }
     }
 
@@ -136,7 +132,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): HeroDetailsImpl.Data.DroidFriend {
         var __typename: String? = typename
@@ -145,9 +141,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -161,17 +157,17 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: HeroDetailsImpl.Data.DroidFriend,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("primaryFunction")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
       }
     }
 
@@ -180,7 +176,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): HeroDetailsImpl.Data.OtherFriend {
         var __typename: String? = typename
@@ -188,8 +184,8 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -202,14 +198,14 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: HeroDetailsImpl.Data.OtherFriend,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
   }

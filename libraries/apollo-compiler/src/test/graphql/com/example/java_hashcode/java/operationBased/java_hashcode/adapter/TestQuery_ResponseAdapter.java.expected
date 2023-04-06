@@ -7,7 +7,7 @@ package com.example.java_hashcode.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_hashcode.TestQuery;
@@ -25,14 +25,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("h");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Integer _h = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _h = Adapters.NullableIntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _h = Adapters.NullableIntAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -43,10 +43,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
+        throws IOException {
       writer.name("h");
-      Adapters.NullableIntAdapter.toJson(writer, customScalarAdapters, value.h);
+      Adapters.NullableIntAdapter.toJson(writer, scalarAdapters, value.h);
     }
   }
 }

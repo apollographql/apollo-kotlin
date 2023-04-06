@@ -1,7 +1,7 @@
 package test;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import okio.Okio;
@@ -17,7 +17,7 @@ public class AdapterTest {
   public void nonNullString() throws IOException {
     String json = "\"test\"";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
-    String result = Adapters.StringAdapter.fromJson(jsonReader, CustomScalarAdapters.Empty);
+    String result = Adapters.StringAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
 
     assertThat(result).isEqualTo("test");
   }
@@ -26,7 +26,7 @@ public class AdapterTest {
   public void nullString() {
     String json = "null";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
-    String result = new NullableAdapter<>(Adapters.StringAdapter).fromJson(jsonReader, CustomScalarAdapters.Empty);
+    String result = new NullableAdapter<>(Adapters.StringAdapter).fromJson(jsonReader, ScalarAdapters.Empty);
     assertThat(result).isEqualTo(null);
   }
 
@@ -34,7 +34,7 @@ public class AdapterTest {
   public void nullString2() {
     String json = "null";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
-    String result = Adapters.NullableStringAdapter.fromJson(jsonReader, CustomScalarAdapters.Empty);
+    String result = Adapters.NullableStringAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
     assertThat(result).isEqualTo(null);
   }
 
@@ -46,7 +46,7 @@ public class AdapterTest {
     String json = "{ ";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
     try {
-      Adapters.NullableStringAdapter.fromJson(jsonReader, CustomScalarAdapters.Empty);
+      Adapters.NullableStringAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
       throw new IllegalStateException("a failure was expected");
     } catch (Exception e) {
       assertThat(e.getMessage()).contains("Expected a string but");

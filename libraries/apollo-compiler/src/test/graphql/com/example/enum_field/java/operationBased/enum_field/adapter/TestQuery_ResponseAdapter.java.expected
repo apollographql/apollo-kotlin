@@ -6,8 +6,8 @@
 package com.example.enum_field.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.TestQuery;
@@ -28,16 +28,16 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("gravity", "gravityAsEnum");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Gravity _gravity = null;
       GravityAsEnum _gravityAsEnum = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
-          case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 0: _gravity = new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
+          case 1: _gravityAsEnum = new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -49,13 +49,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
+        throws IOException {
       writer.name("gravity");
-      new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravity);
+      new NullableAdapter<>(Gravity_ResponseAdapter.INSTANCE).toJson(writer, scalarAdapters, value.gravity);
 
       writer.name("gravityAsEnum");
-      new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.gravityAsEnum);
+      new NullableAdapter<>(GravityAsEnum_ResponseAdapter.INSTANCE).toJson(writer, scalarAdapters, value.gravityAsEnum);
     }
   }
 }

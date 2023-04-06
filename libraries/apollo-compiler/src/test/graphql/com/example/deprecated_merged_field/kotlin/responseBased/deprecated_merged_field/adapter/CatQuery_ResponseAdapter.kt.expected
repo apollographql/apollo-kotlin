@@ -6,7 +6,7 @@
 package com.example.deprecated_merged_field.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,13 +22,13 @@ public object CatQuery_ResponseAdapter {
   public object Data : Adapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,34 +40,33 @@ public object CatQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: CatQuery.Data,
     ): Unit {
       writer.name("cat")
-      Cat.obj().nullable().toJson(writer, customScalarAdapters, value.cat)
+      Cat.obj().nullable().toJson(writer, scalarAdapters, value.cat)
     }
 
     private object Cat : Adapter<CatQuery.Data.Cat> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           CatQuery.Data.Cat {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
-          -> OtherAnimalCat.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherAnimalCat.fromJson(reader, scalarAdapters, __typename)
           else
-          -> OtherCat.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherCat.fromJson(reader, scalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: CatQuery.Data.Cat,
       ): Unit {
         when(value) {
-          is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.toJson(writer, customScalarAdapters,
-              value)
-          is CatQuery.Data.OtherCat -> OtherCat.toJson(writer, customScalarAdapters, value)
+          is CatQuery.Data.OtherAnimalCat -> OtherAnimalCat.toJson(writer, scalarAdapters, value)
+          is CatQuery.Data.OtherCat -> OtherCat.toJson(writer, scalarAdapters, value)
         }
       }
     }
@@ -77,14 +76,14 @@ public object CatQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): CatQuery.Data.OtherCat {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -96,11 +95,11 @@ public object CatQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: CatQuery.Data.OtherCat,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
 
@@ -109,7 +108,7 @@ public object CatQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): CatQuery.Data.OtherAnimalCat {
         var __typename: String? = typename
@@ -117,8 +116,8 @@ public object CatQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -131,14 +130,14 @@ public object CatQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: CatQuery.Data.OtherAnimalCat,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
   }

@@ -4,7 +4,7 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.integration.fullstack.LaunchDetailsByDateQuery
@@ -30,23 +30,23 @@ class ScalarAdapterTest {
   }
 
   private object MyDateAdapter : Adapter<MyDate> {
-    override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): MyDate {
+    override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): MyDate {
       val elements = reader.nextString()!!.split('-').map { it.toInt() }
       return MyDate(elements[0], elements[1], elements[2])
     }
 
-    override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: MyDate) {
+    override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: MyDate) {
       writer.value("${value.year}-${value.month}-${value.day}")
     }
   }
 
   @Test
-  fun regularCustomScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
+  fun regularScalarAdapter() = runTest(before = { setUp() }, after = { tearDown() }) {
     mockServer.enqueue(testFixtureToUtf8("LaunchDetailsByDateResponse.json"))
 
     val apolloClient = ApolloClient.Builder()
         .serverUrl(mockServer.url())
-        .addCustomScalarAdapter(Date.type, MyDateAdapter)
+        .addScalarAdapter(Date.type, MyDateAdapter)
         .build()
 
     val response = apolloClient.query(LaunchDetailsByDateQuery(MyDate(2001, 6, 23))).execute()

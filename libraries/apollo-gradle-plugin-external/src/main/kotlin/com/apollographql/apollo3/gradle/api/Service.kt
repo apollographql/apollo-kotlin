@@ -98,7 +98,7 @@ interface Service {
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type.
-   * The adapter must be configured at runtime via [com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter].
+   * The adapter must be configured at runtime via [com.apollographql.apollo3.ApolloClient.Builder.addScalarAdapter].
    *
    * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
    * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to
@@ -109,7 +109,7 @@ interface Service {
 
   /**
    * Map a GraphQL scalar type to the Java/Kotlin type and provided adapter expression.
-   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo3.ApolloClient.Builder.addCustomScalarAdapter].
+   * The adapter will be configured at compile time and you must not call [com.apollographql.apollo3.ApolloClient.Builder.addScalarAdapter].
    *
    * @param graphQLName: the name of the scalar to map as found in the GraphQL schema
    * @param targetName: the fully qualified Java or Kotlin name of the type the scalar is mapped to

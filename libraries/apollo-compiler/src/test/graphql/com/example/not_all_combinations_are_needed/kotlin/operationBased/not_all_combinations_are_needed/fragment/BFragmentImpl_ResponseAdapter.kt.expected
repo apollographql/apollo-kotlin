@@ -6,8 +6,8 @@
 package com.example.not_all_combinations_are_needed.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -19,13 +19,13 @@ public object BFragmentImpl_ResponseAdapter {
       {
     public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.not_all_combinations_are_needed.fragment.BFragment {
       var _fieldB1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _fieldB1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -37,11 +37,11 @@ public object BFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.not_all_combinations_are_needed.fragment.BFragment,
     ): Unit {
       writer.name("fieldB1")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
+      NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB1)
     }
   }
 }

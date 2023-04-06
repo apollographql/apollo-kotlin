@@ -6,8 +6,8 @@
 package com.example.multiple_fragments.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,13 +22,13 @@ public object AFragmentImpl_ResponseAdapter {
   public object Data : Adapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         AFragmentImpl.Data {
       var _node: AFragmentImpl.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,33 +40,33 @@ public object AFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: AFragmentImpl.Data,
     ): Unit {
       writer.name("node")
-      Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+      Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
     }
 
     private object Node : Adapter<AFragmentImpl.Data.Node> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           AFragmentImpl.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ANode",
-          -> ANodeNode.fromJson(reader, customScalarAdapters, __typename)
+          -> ANodeNode.fromJson(reader, scalarAdapters, __typename)
           else
-          -> OtherNode.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherNode.fromJson(reader, scalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: AFragmentImpl.Data.Node,
       ): Unit {
         when(value) {
-          is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, customScalarAdapters, value)
-          is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, customScalarAdapters, value)
+          is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, scalarAdapters, value)
+          is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, scalarAdapters, value)
         }
       }
     }
@@ -76,7 +76,7 @@ public object AFragmentImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): AFragmentImpl.Data.ANodeNode {
         var __typename: String? = typename
@@ -85,9 +85,9 @@ public object AFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _field1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _field2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _field1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _field2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -101,17 +101,17 @@ public object AFragmentImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: AFragmentImpl.Data.ANodeNode,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("field1")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.field1)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.field1)
 
         writer.name("field2")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.field2)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.field2)
       }
     }
 
@@ -120,14 +120,14 @@ public object AFragmentImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): AFragmentImpl.Data.OtherNode {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -139,11 +139,11 @@ public object AFragmentImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: AFragmentImpl.Data.OtherNode,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
   }

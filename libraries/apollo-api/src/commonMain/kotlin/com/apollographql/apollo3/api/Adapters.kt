@@ -23,20 +23,20 @@ import kotlin.jvm.JvmSuppressWildcards
  * In particular, [AnyAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
 class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): List<T> {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
-      list.add(wrappedAdapter.fromJson(reader, customScalarAdapters))
+      list.add(wrappedAdapter.fromJson(reader, scalarAdapters))
     }
     reader.endArray()
     return list
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: List<T>) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: List<T>) {
     writer.beginArray()
     value.forEach {
-      wrappedAdapter.toJson(writer, customScalarAdapters, it)
+      wrappedAdapter.toJson(writer, scalarAdapters, it)
     }
     writer.endArray()
   }
@@ -50,32 +50,32 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
     }
   }
 
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T? {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       null
     } else {
-      wrappedAdapter.fromJson(reader, customScalarAdapters)
+      wrappedAdapter.fromJson(reader, scalarAdapters)
     }
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T?) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T?) {
     if (value == null) {
       writer.nullValue()
     } else {
-      wrappedAdapter.toJson(writer, customScalarAdapters, value)
+      wrappedAdapter.toJson(writer, scalarAdapters, value)
     }
   }
 }
 
 @Deprecated("Use PresentAdapter instead")
 class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
-    return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.fromJson(reader, scalarAdapters))
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional.Present<T>) {
-    wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Optional.Present<T>) {
+    wrappedAdapter.toJson(writer, scalarAdapters, value.value)
   }
 }
 
@@ -85,12 +85,12 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
  * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
 class PresentAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional.Present<T> {
-    return Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.fromJson(reader, scalarAdapters))
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional.Present<T>) {
-    wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Optional.Present<T>) {
+    wrappedAdapter.toJson(writer, scalarAdapters, value.value)
   }
 }
 
@@ -100,18 +100,18 @@ class PresentAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Option
  * `null` is deserialized as [Optional.Absent].
  */
 class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Optional<T> {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       Optional.Absent
     } else {
-      Optional.Present(wrappedAdapter.fromJson(reader, customScalarAdapters))
+      Optional.Present(wrappedAdapter.fromJson(reader, scalarAdapters))
     }
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Optional<T>) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Optional<T>) {
     if (value is Optional.Present) {
-      wrappedAdapter.toJson(writer, customScalarAdapters, value.value)
+      wrappedAdapter.toJson(writer, scalarAdapters, value.value)
     } else {
       writer.nullValue()
     }
@@ -120,33 +120,33 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
 
 @JvmField
 val StringAdapter = object : Adapter<String> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): String {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): String {
     return reader.nextString()!!
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: String) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: String) {
     writer.value(value)
   }
 }
 
 @JvmField
 val IntAdapter = object : Adapter<Int> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Int {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Int {
     return reader.nextInt()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Int) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Int) {
     writer.value(value)
   }
 }
 
 @JvmField
 val DoubleAdapter = object : Adapter<Double> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Double {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Double {
     return reader.nextDouble()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Double) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Double) {
     writer.value(value)
   }
 }
@@ -157,11 +157,11 @@ val DoubleAdapter = object : Adapter<Double> {
  */
 @JvmField
 val FloatAdapter = object : Adapter<Float> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Float {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Float) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Float) {
     writer.value(value.toDouble())
   }
 }
@@ -174,22 +174,22 @@ val FloatAdapter = object : Adapter<Float> {
  */
 @JvmField
 val LongAdapter = object : Adapter<Long> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Long {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Long {
     return reader.nextLong()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Long) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Long) {
     writer.value(value)
   }
 }
 
 @JvmField
 val BooleanAdapter = object : Adapter<Boolean> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Boolean {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Boolean) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Boolean) {
     writer.value(value)
   }
 }
@@ -204,17 +204,17 @@ val AnyAdapter = object : Adapter<Any> {
     writer.writeAny(value)
   }
 
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Any {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Any {
     return fromJson(reader)
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Any) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Any) {
     toJson(writer, value)
   }
 }
 
 internal class PassThroughAdapter<T> : Adapter<T> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
     check(reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
     }
@@ -223,7 +223,7 @@ internal class PassThroughAdapter<T> : Adapter<T> {
     return reader.nextValue() as T
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T) {
     check(writer is MapJsonWriter) {
       "UnsafeAdapter only supports MapJsonWriter"
     }
@@ -234,11 +234,11 @@ internal class PassThroughAdapter<T> : Adapter<T> {
 
 @JvmField
 val UploadAdapter = object : Adapter<Upload> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Upload {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Upload {
     error("File Upload used in output position")
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Upload) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Upload) {
     writer.value(value)
   }
 }
@@ -283,26 +283,26 @@ class ObjectAdapter<T>(
     private val wrappedAdapter: Adapter<T>,
     private val buffered: Boolean,
 ) : Adapter<@JvmSuppressWildcards T> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
     val actualReader = if (buffered) {
       reader.buffer()
     } else {
       reader
     }
     actualReader.beginObject()
-    return wrappedAdapter.fromJson(actualReader, customScalarAdapters).also {
+    return wrappedAdapter.fromJson(actualReader, scalarAdapters).also {
       actualReader.endObject()
     }
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T) {
     if (buffered && writer !is MapJsonWriter) {
       /**
        * Convert to a Map first
        */
       val mapWriter = MapJsonWriter()
       mapWriter.beginObject()
-      wrappedAdapter.toJson(mapWriter, customScalarAdapters, value)
+      wrappedAdapter.toJson(mapWriter, scalarAdapters, value)
       mapWriter.endObject()
 
       /**
@@ -311,7 +311,7 @@ class ObjectAdapter<T>(
       writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()
-      wrappedAdapter.toJson(writer, customScalarAdapters, value)
+      wrappedAdapter.toJson(writer, scalarAdapters, value)
       writer.endObject()
     }
   }
@@ -378,8 +378,8 @@ fun <T> Adapter<T>.present() = PresentAdapter(this)
 @JvmOverloads
 fun <T> Adapter<T>.toJsonString(
     value: T,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
     indent: String? = null,
 ): String = buildJsonString(indent) {
-  this@toJsonString.toJson(this, customScalarAdapters, value)
+  this@toJsonString.toJson(this, scalarAdapters, value)
 }

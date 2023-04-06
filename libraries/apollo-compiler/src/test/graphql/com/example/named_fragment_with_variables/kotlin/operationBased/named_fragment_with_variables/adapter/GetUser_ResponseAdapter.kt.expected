@@ -6,7 +6,7 @@
 package com.example.named_fragment_with_variables.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,20 +19,19 @@ public object GetUser_ResponseAdapter {
   public object Data : Adapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetUser.Data {
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetUser.Data {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
       val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-          customScalarAdapters)
+          scalarAdapters)
 
       return GetUser.Data(
         __typename = __typename!!,
@@ -42,14 +41,14 @@ public object GetUser_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: GetUser.Data,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-          customScalarAdapters, value.queryFragment)
+          scalarAdapters, value.queryFragment)
     }
   }
 }
