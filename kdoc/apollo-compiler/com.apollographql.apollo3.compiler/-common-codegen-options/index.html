@@ -1,0 +1,293 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CommonCodegenOptions</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
+<link href="../../../images/apollo.svg">
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet"></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>apollo-kotlin</span>            </a>    </div>
+    <div>4.0.0-dev.2-SNAPSHOT
+    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-compiler:dokkaHtmlPartial/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="apollo-compiler::com.apollographql.apollo3.compiler/CommonCodegenOptions///PointingToDeclaration//1826250589">
+  <div class="breadcrumbs"><a href="../../index.html">apollo-compiler</a><span class="delimiter">/</span><a href="../index.html">com.apollographql.apollo3.compiler</a><span class="delimiter">/</span><span class="current">CommonCodegenOptions</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Common</span><wbr><span>Codegen</span><wbr><span><span>Options</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="../../../apollo-annotations/com.apollographql.apollo3.annotations/-apollo-experimental/index.html"><span class="token annotation builtin">ApolloExperimental</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">CommonCodegenOptions</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>codegenSchema<span class="token operator">: </span><a href="../-codegen-schema/index.html">CodegenSchema</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>ir<span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.ir/-ir-operations/index.html">IrOperations</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>irSchema<span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.ir/-ir-schema/index.html">IrSchema</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>operationOutput<span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.operationoutput/index.html#1381743924%2FClasslikes%2F1826250589">OperationOutput</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>incomingCodegenMetadata<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-codegen-metadata/index.html">CodegenMetadata</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>outputDir<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageNameGenerator<span class="token operator">: </span><a href="../-package-name-generator/index.html">PackageNameGenerator</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>useSemanticNaming<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateFragmentImplementations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateResponseFields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateQueryDocument<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generateSchema<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>generatedSchemaName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,FUNCTION,PROPERTY">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="657174316%2FConstructors%2F1826250589" anchor-label="CommonCodegenOptions" id="657174316%2FConstructors%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-common-codegen-options.html"><span>Common</span><wbr><span>Codegen</span><wbr><span><span>Options</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="657174316%2FConstructors%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">codegenSchema<span class="token operator">: </span><a href="../-codegen-schema/index.html">CodegenSchema</a><span class="token punctuation">, </span></span><span class="parameter ">ir<span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.ir/-ir-operations/index.html">IrOperations</a><span class="token punctuation">, </span></span><span class="parameter ">irSchema<span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.ir/-ir-schema/index.html">IrSchema</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">operationOutput<span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.operationoutput/index.html#1381743924%2FClasslikes%2F1826250589">OperationOutput</a><span class="token punctuation">, </span></span><span class="parameter ">incomingCodegenMetadata<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-codegen-metadata/index.html">CodegenMetadata</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">outputDir<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a><span class="token punctuation">, </span></span><span class="parameter ">packageNameGenerator<span class="token operator">: </span><a href="../-package-name-generator/index.html">PackageNameGenerator</a><span class="token punctuation">, </span></span><span class="parameter ">useSemanticNaming<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">generateFragmentImplementations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">generateResponseFields<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">generateQueryDocument<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">generateSchema<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">generatedSchemaName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1800664675%2FProperties%2F1826250589" anchor-label="codegenSchema" id="-1800664675%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="codegen-schema.html"><span>codegen</span><wbr><span><span>Schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1800664675%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="codegen-schema.html">codegenSchema</a><span class="token operator">: </span><a href="../-codegen-schema/index.html">CodegenSchema</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1068726662%2FProperties%2F1826250589" anchor-label="generatedSchemaName" id="1068726662%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="generated-schema-name.html"><span>generated</span><wbr><span>Schema</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1068726662%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="generated-schema-name.html">generatedSchemaName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Class name to use when generating the Schema class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="342245381%2FProperties%2F1826250589" anchor-label="generateFragmentImplementations" id="342245381%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="generate-fragment-implementations.html"><span>generate</span><wbr><span>Fragment</span><wbr><span><span>Implementations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="342245381%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="generate-fragment-implementations.html">generateFragmentImplementations</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether to generate the com.apollographql.apollo3.api.Fragment as well as response and variables adapters. If generateFragmentsAsInterfaces is true, this will also generate data classes for the fragments.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-710281197%2FProperties%2F1826250589" anchor-label="generateQueryDocument" id="-710281197%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="generate-query-document.html"><span>generate</span><wbr><span>Query</span><wbr><span><span>Document</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-710281197%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="generate-query-document.html">generateQueryDocument</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether to embed the query document in the com.apollographql.apollo3.api.Operations. By default this is true as it is needed to send the operations to the server. If performance is critical and you have a way to whitelist/read the document from another place, disable this.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-707653430%2FProperties%2F1826250589" anchor-label="generateResponseFields" id="-707653430%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="generate-response-fields.html"><span>generate</span><wbr><span>Response</span><wbr><span><span>Fields</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-707653430%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="generate-response-fields.html">generateResponseFields</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether to generate the compiled selections used to read/write from the normalized cache. Disable this option if you don't use the normalized cache to save some bytecode</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1462965661%2FProperties%2F1826250589" anchor-label="generateSchema" id="-1462965661%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="generate-schema.html"><span>generate</span><wbr><span><span>Schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1462965661%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="generate-schema.html">generateSchema</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether to generate the Schema class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2094676523%2FProperties%2F1826250589" anchor-label="incomingCodegenMetadata" id="-2094676523%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="incoming-codegen-metadata.html"><span>incoming</span><wbr><span>Codegen</span><wbr><span><span>Metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2094676523%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="incoming-codegen-metadata.html">incomingCodegenMetadata</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-codegen-metadata/index.html">CodegenMetadata</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="459985424%2FProperties%2F1826250589" anchor-label="ir" id="459985424%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ir.html"><span><span>ir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="459985424%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="ir.html">ir</a><span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.ir/-ir-operations/index.html">IrOperations</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-696372945%2FProperties%2F1826250589" anchor-label="irSchema" id="-696372945%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ir-schema.html"><span>ir</span><wbr><span><span>Schema</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-696372945%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="ir-schema.html">irSchema</a><span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.ir/-ir-schema/index.html">IrSchema</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1874017689%2FProperties%2F1826250589" anchor-label="operationOutput" id="1874017689%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="operation-output.html"><span>operation</span><wbr><span><span>Output</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1874017689%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="operation-output.html">operationOutput</a><span class="token operator">: </span><a href="../../com.apollographql.apollo3.compiler.operationoutput/index.html#1381743924%2FClasslikes%2F1826250589">OperationOutput</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2003079531%2FProperties%2F1826250589" anchor-label="outputDir" id="-2003079531%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="output-dir.html"><span>output</span><wbr><span><span>Dir</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2003079531%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="output-dir.html">outputDir</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/io/File.html">File</a></div><div class="brief "><p class="paragraph">The directory where to write the generated models</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1046694007%2FProperties%2F1826250589" anchor-label="packageNameGenerator" id="1046694007%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="package-name-generator.html"><span>package</span><wbr><span>Name</span><wbr><span><span>Generator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1046694007%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="package-name-generator.html">packageNameGenerator</a><span class="token operator">: </span><a href="../-package-name-generator/index.html">PackageNameGenerator</a></div><div class="brief "><p class="paragraph">The package name used for operations</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="261736236%2FProperties%2F1826250589" anchor-label="useSemanticNaming" id="261736236%2FProperties%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="use-semantic-naming.html"><span>use</span><wbr><span>Semantic</span><wbr><span><span>Naming</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="261736236%2FProperties%2F1826250589"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-compiler:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="use-semantic-naming.html">useSemanticNaming</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
+
