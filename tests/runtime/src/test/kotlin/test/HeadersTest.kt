@@ -78,4 +78,11 @@ class HeadersTest {
     apolloClient.close()
     mockServer.stop()
   }
+
+  @Test
+  fun addHeadersIsSurfacedInHeaders() = runTest {
+    val apolloClient = ApolloClient.Builder().serverUrl("").build()
+    val apolloCall = apolloClient.query(GetRandomQuery()).addHttpHeader("requestKey", "requestValue")
+    assertTrue(apolloCall.httpHeaders!!.any { it.name == "requestKey" && it.value == "requestValue" })
+  }
 }

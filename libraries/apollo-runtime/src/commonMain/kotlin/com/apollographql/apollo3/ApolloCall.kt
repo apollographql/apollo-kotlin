@@ -3,7 +3,6 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.ExecutionContext
-import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -26,7 +25,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
   override var enableAutoPersistedQueries: Boolean? = null
   override var httpHeaders: List<HttpHeader>? = null
 
-  private var additionalHttpHeaders: List<HttpHeader>? = null
+  private var ignoreApolloClientHttpHeaders: Boolean? = null
 
   override fun addExecutionContext(executionContext: ExecutionContext) = apply {
     this.executionContext = this.executionContext + executionContext
@@ -36,15 +35,14 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.httpMethod = httpMethod
   }
 
-  private fun additionalHttpHeaders(additionalHttpHeaders: List<HttpHeader>?) = apply {
-    this.additionalHttpHeaders = additionalHttpHeaders
-  }
-
   /**
    * Sets the HTTP headers to be sent with the request.
    * This method overrides any HTTP header previously set on [ApolloClient]
    */
   override fun httpHeaders(httpHeaders: List<HttpHeader>?) = apply {
+    check(ignoreApolloClientHttpHeaders == null) {
+      "Apollo: it is an error to call both .headers() and .addHeader() or .additionalHeaders() at the same time"
+    }
     this.httpHeaders = httpHeaders
   }
 
@@ -54,7 +52,11 @@ class ApolloCall<D : Operation.Data> internal constructor(
    * headers, use [httpHeaders] instead.
    */
   override fun addHttpHeader(name: String, value: String) = apply {
-    this.additionalHttpHeaders = (this.additionalHttpHeaders ?: emptyList()) + HttpHeader(name, value)
+    check(httpHeaders == null || ignoreApolloClientHttpHeaders == false) {
+      "Apollo: it is an error to call both .headers() and .addHeader() or .additionalHeaders() at the same time"
+    }
+    ignoreApolloClientHttpHeaders = false
+    this.httpHeaders = (this.httpHeaders ?: emptyList()) + HttpHeader(name, value)
   }
 
   override fun sendApqExtensions(sendApqExtensions: Boolean?) = apply {
@@ -75,12 +77,16 @@ class ApolloCall<D : Operation.Data> internal constructor(
     this.canBeBatched = canBeBatched
   }
 
+  private fun ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders: Boolean?) = apply {
+    this.ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders
+  }
+
   fun copy(): ApolloCall<D> {
     return ApolloCall(apolloClient, operation)
         .addExecutionContext(executionContext)
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
-        .additionalHttpHeaders(additionalHttpHeaders)
+        .ignoreApolloClientHttpHeaders(ignoreApolloClientHttpHeaders)
         .sendApqExtensions(sendApqExtensions)
         .sendDocument(sendDocument)
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
@@ -111,7 +117,7 @@ class ApolloCall<D : Operation.Data> internal constructor(
         .enableAutoPersistedQueries(enableAutoPersistedQueries)
         .canBeBatched(canBeBatched)
         .build()
-    return apolloClient.executeAsFlow(request, additionalHttpHeaders)
+    return apolloClient.executeAsFlow(request, ignoreApolloClientHttpHeaders = ignoreApolloClientHttpHeaders == null || ignoreApolloClientHttpHeaders == true)
   }
 
   /**
