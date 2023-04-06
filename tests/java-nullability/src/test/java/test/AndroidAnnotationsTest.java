@@ -2,7 +2,7 @@ package test;
 
 import annotations.android.MyQuery;
 import annotations.android.type.MyInput;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -30,7 +30,7 @@ public class AndroidAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, ScalarAdapters.Empty);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -66,7 +66,7 @@ public class AndroidAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, ScalarAdapters.Empty);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -92,7 +92,7 @@ public class AndroidAnnotationsTest {
         .build();
     MapJsonWriter mapJsonWriter = new MapJsonWriter();
     mapJsonWriter.beginObject();
-    query.serializeVariables(mapJsonWriter, CustomScalarAdapters.Empty);
+    query.serializeVariables(mapJsonWriter, ScalarAdapters.Empty);
     mapJsonWriter.endObject();
 
     Map<String, Object> expectedJsonMap = mapOf(
@@ -130,7 +130,7 @@ public class AndroidAnnotationsTest {
         "          }\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
+    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, ScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ null,
@@ -163,7 +163,7 @@ public class AndroidAnnotationsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, CustomScalarAdapters.Empty);
+    actualData = query.adapter().fromJson(jsonReader, ScalarAdapters.Empty);
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ 0,

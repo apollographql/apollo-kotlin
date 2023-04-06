@@ -6,8 +6,8 @@
 package com.example.decapitalized_fields.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -20,13 +20,13 @@ public object HorseFragmentImpl_ResponseAdapter {
   public object Data : Adapter<HorseFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         HorseFragmentImpl.Data {
       var _Cow: HorseFragmentImpl.Data.Cow? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Cow = Cow.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _Cow = Cow.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -38,23 +38,23 @@ public object HorseFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: HorseFragmentImpl.Data,
     ): Unit {
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, customScalarAdapters, value.cow)
+      Cow.obj().nullable().toJson(writer, scalarAdapters, value.cow)
     }
 
     private object Cow : Adapter<HorseFragmentImpl.Data.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           HorseFragmentImpl.Data.Cow {
         var _Moo: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _Moo = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _Moo = NullableStringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -66,11 +66,11 @@ public object HorseFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: HorseFragmentImpl.Data.Cow,
       ): Unit {
         writer.name("Moo")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.moo)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.moo)
       }
     }
   }

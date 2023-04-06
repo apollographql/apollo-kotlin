@@ -75,17 +75,17 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefa
   }
   builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.customScalarAdapters}, ${Identifier.value}.%N)",
+      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.scalarAdapters}, ${Identifier.value}.%N)",
       adapterInitializer,
       propertyName,
   )
   if (type.isOptional()) {
     builder.endControlFlow()
     if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
-      builder.beginControlFlow("else if (${Identifier.customScalarAdapters}.adapterContext.serializeVariablesWithDefaultBooleanValues)")
+      builder.beginControlFlow("else if (${Identifier.scalarAdapters}.adapterContext.serializeVariablesWithDefaultBooleanValues)")
       builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
       builder.addStatement(
-          "%M.${Identifier.toJson}(${Identifier.writer}, ${Identifier.customScalarAdapters}, %L)",
+          "%M.${Identifier.toJson}(${Identifier.writer}, ${Identifier.scalarAdapters}, %L)",
           KotlinSymbols.BooleanAdapter,
           defaultValue.value,
       )

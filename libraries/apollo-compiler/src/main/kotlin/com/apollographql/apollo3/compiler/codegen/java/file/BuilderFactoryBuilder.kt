@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -43,12 +43,12 @@ internal class BuilderFactoryBuilder(
     return TypeSpec
         .classBuilder(simpleName)
         .addModifiers(Modifier.PUBLIC)
-        .addField(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+        .addField(JavaClassNames.ScalarAdapters, scalarAdapters)
         .addMethod(
             MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
-                .addStatement("this.$customScalarAdapters = $customScalarAdapters")
+                .addParameter(JavaClassNames.ScalarAdapters, scalarAdapters)
+                .addStatement("this.$scalarAdapters = $scalarAdapters")
                 .build()
         )
         .addMethods(
@@ -70,7 +70,7 @@ internal class BuilderFactoryBuilder(
             FieldSpec.builder(ClassName.get(packageName, simpleName), "DEFAULT")
                 .addModifiers(Modifier.STATIC, Modifier.PUBLIC)
                 .initializer(
-                    CodeBlock.of("new $L($T.PassThrough)", simpleName, JavaClassNames.CustomScalarAdapters)
+                    CodeBlock.of("new $L($T.PassThrough)", simpleName, JavaClassNames.ScalarAdapters)
                 )
                 .build()
         )
@@ -82,7 +82,7 @@ internal class BuilderFactoryBuilder(
     return MethodSpec.methodBuilder(layout.buildFunName(name))
         .addModifiers(Modifier.PUBLIC)
         .returns(builderClassName)
-        .addStatement("return new $T($customScalarAdapters)", builderClassName)
+        .addStatement("return new $T($scalarAdapters)", builderClassName)
         .build()
   }
 
@@ -92,7 +92,7 @@ internal class BuilderFactoryBuilder(
         .addModifiers(Modifier.PUBLIC)
         .addParameter(JavaClassNames.String, Identifier.__typename)
         .returns(builderClassName)
-        .addStatement("return new $T(__typename, $customScalarAdapters)", builderClassName)
+        .addStatement("return new $T(__typename, $scalarAdapters)", builderClassName)
         .build()
   }
 }

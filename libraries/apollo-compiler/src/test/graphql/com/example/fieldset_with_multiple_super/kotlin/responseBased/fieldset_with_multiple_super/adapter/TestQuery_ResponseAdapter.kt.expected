@@ -6,8 +6,8 @@
 package com.example.fieldset_with_multiple_super.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,13 +23,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("c")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _c: TestQuery.Data.C? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _c = C.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _c = C.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -41,39 +41,39 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("c")
-      C.obj().nullable().toJson(writer, customScalarAdapters, value.c)
+      C.obj().nullable().toJson(writer, scalarAdapters, value.c)
     }
 
     private object C : Adapter<TestQuery.Data.C> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.C {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ABC",
-          -> ABC.fromJson(reader, customScalarAdapters, __typename)
+          -> ABC.fromJson(reader, scalarAdapters, __typename)
           "AC",
-          -> OtherAC.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherAC.fromJson(reader, scalarAdapters, __typename)
           "BC",
-          -> OtherBC.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherBC.fromJson(reader, scalarAdapters, __typename)
           else
-          -> OtherC.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherC.fromJson(reader, scalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.C,
       ): Unit {
         when(value) {
-          is TestQuery.Data.ABC -> ABC.toJson(writer, customScalarAdapters, value)
-          is TestQuery.Data.OtherAC -> OtherAC.toJson(writer, customScalarAdapters, value)
-          is TestQuery.Data.OtherBC -> OtherBC.toJson(writer, customScalarAdapters, value)
-          is TestQuery.Data.OtherC -> OtherC.toJson(writer, customScalarAdapters, value)
+          is TestQuery.Data.ABC -> ABC.toJson(writer, scalarAdapters, value)
+          is TestQuery.Data.OtherAC -> OtherAC.toJson(writer, scalarAdapters, value)
+          is TestQuery.Data.OtherBC -> OtherBC.toJson(writer, scalarAdapters, value)
+          is TestQuery.Data.OtherC -> OtherC.toJson(writer, scalarAdapters, value)
         }
       }
     }
@@ -84,7 +84,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestQuery.Data.ABC {
         var __typename: String? = typename
@@ -95,11 +95,11 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _fieldB1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            3 -> _fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-            4 -> _fieldA2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _fieldB1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            3 -> _fieldB2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            4 -> _fieldA2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -115,23 +115,23 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.ABC,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("fieldA1")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldA1)
 
         writer.name("fieldB1")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB1)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB1)
 
         writer.name("fieldB2")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB2)
 
         writer.name("fieldA2")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA2)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldA2)
       }
     }
 
@@ -140,14 +140,14 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherC {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -159,11 +159,11 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.OtherC,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
 
@@ -172,7 +172,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherAC {
         var __typename: String? = typename
@@ -180,8 +180,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -194,14 +194,14 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.OtherAC,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("fieldA1")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldA1)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldA1)
       }
     }
 
@@ -210,7 +210,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestQuery.Data.OtherBC {
         var __typename: String? = typename
@@ -218,8 +218,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _fieldB2 = NullableStringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _fieldB2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -232,14 +232,14 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.OtherBC,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("fieldB2")
-        NullableStringAdapter.toJson(writer, customScalarAdapters, value.fieldB2)
+        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB2)
       }
     }
   }

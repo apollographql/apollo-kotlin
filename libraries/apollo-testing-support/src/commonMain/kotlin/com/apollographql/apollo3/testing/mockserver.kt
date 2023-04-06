@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.testing
 
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.composeJsonResponse
 import com.apollographql.apollo3.api.json.buildJsonString
@@ -13,24 +13,24 @@ import com.apollographql.apollo3.mockserver.enqueue
 fun <D : Operation.Data> MockServer.enqueue(
     operation: Operation<D>,
     data: D,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
     delayMs: Long = 0
 ) {
   val json = buildJsonString {
-    operation.composeJsonResponse(jsonWriter = this, data = data, customScalarAdapters = customScalarAdapters)
+    operation.composeJsonResponse(jsonWriter = this, data = data, scalarAdapters = scalarAdapters)
   }
   enqueue(json, delayMs)
 }
 
 fun MockServer.enqueueData(
     data: Map<String, Any?>,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
     delayMs: Long = 0,
     statusCode: Int = 200
 ) {
 
   val response = buildJsonString {
-    AnyAdapter.toJson(this, customScalarAdapters, mapOf("data" to data))
+    AnyAdapter.toJson(this, scalarAdapters, mapOf("data" to data))
   }
 
   enqueue(MockResponse.Builder()
@@ -43,14 +43,14 @@ fun MockServer.enqueueData(
 
 fun MockServer.enqueueData(
     data: Operation.Data,
-    customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty,
+    scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
     delayMs: Long = 0,
     statusCode: Int = 200
 ) {
   val response = buildJsonString {
     beginObject()
     name("data")
-    data.toJson(this, customScalarAdapters)
+    data.toJson(this, scalarAdapters)
     endObject()
   }
   enqueue(MockResponse.Builder()

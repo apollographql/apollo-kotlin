@@ -6,7 +6,7 @@
 package com.example.data_builders.type
 
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.UnionType
 import kotlin.Any
@@ -21,8 +21,8 @@ public class Animal {
 }
 
 public class OtherAnimalBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder(scalarAdapters) {
   public fun build(): OtherAnimalMap = OtherAnimalMap(__fields)
 }
 
@@ -34,7 +34,7 @@ public class OtherAnimalMap(
 
 public fun BuilderScope.buildOtherAnimal(__typename: String, block: OtherAnimalBuilder.() -> Unit):
     OtherAnimalMap {
-  val builder = OtherAnimalBuilder(customScalarAdapters)
+  val builder = OtherAnimalBuilder(scalarAdapters)
   builder.__typename = __typename
   builder.block()
   return builder.build()

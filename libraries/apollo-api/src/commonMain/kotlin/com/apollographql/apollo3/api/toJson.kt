@@ -6,15 +6,15 @@ import com.apollographql.apollo3.api.json.buildJsonString
 /**
  *
  */
-expect fun Operation.Data.toJson(jsonWriter: JsonWriter, customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty)
+expect fun Operation.Data.toJson(jsonWriter: JsonWriter, scalarAdapters: ScalarAdapters = ScalarAdapters.Empty)
 
-fun Operation.Data.toJson(customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty): String = buildJsonString {
-  toJson(this, customScalarAdapters)
+fun Operation.Data.toJson(scalarAdapters: ScalarAdapters = ScalarAdapters.Empty): String = buildJsonString {
+  toJson(this, scalarAdapters)
 }
 
-fun Operation.Data.toResponseJson(customScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Empty): String = buildJsonString {
+fun Operation.Data.toResponseJson(scalarAdapters: ScalarAdapters = ScalarAdapters.Empty): String = buildJsonString {
   beginObject()
   name("data")
-  toJson(this, customScalarAdapters)
+  toJson(this, scalarAdapters)
   endObject()
 }

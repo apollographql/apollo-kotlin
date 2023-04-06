@@ -8,10 +8,10 @@ package com.example.nested_named_fragments.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_named_fragments.fragment.StarshipFragment;
@@ -29,13 +29,13 @@ public class AllStarships_ResponseAdapter {
 
     @Override
     public com.example.nested_named_fragments.AllStarships.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       com.example.nested_named_fragments.AllStarships.AllStarships1 _allStarships = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _allStarships = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _allStarships = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,10 +46,10 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.nested_named_fragments.AllStarships.Data value) throws IOException {
       writer.name("allStarships");
-      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).toJson(writer, customScalarAdapters, value.allStarships);
+      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.AllStarships1>(AllStarships.INSTANCE, false)).toJson(writer, scalarAdapters, value.allStarships);
     }
   }
 
@@ -60,13 +60,13 @@ public class AllStarships_ResponseAdapter {
 
     @Override
     public com.example.nested_named_fragments.AllStarships.AllStarships1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       List<com.example.nested_named_fragments.AllStarships.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -77,10 +77,10 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.nested_named_fragments.AllStarships.AllStarships1 value) throws IOException {
       writer.name("edges");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.edges);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Edge>(Edge.INSTANCE, false)))).toJson(writer, scalarAdapters, value.edges);
     }
   }
 
@@ -91,13 +91,13 @@ public class AllStarships_ResponseAdapter {
 
     @Override
     public com.example.nested_named_fragments.AllStarships.Edge fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       com.example.nested_named_fragments.AllStarships.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -108,10 +108,10 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.nested_named_fragments.AllStarships.Edge value) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).toJson(writer, customScalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.AllStarships.Node>(Node.INSTANCE, true)).toJson(writer, scalarAdapters, value.node);
     }
   }
 
@@ -122,19 +122,19 @@ public class AllStarships_ResponseAdapter {
 
     @Override
     public com.example.nested_named_fragments.AllStarships.Node fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      StarshipFragment _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.fromJson(reader, customScalarAdapters);
+      StarshipFragment _starshipFragment = com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -145,12 +145,12 @@ public class AllStarships_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.nested_named_fragments.AllStarships.Node value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
-      com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.toJson(writer, customScalarAdapters, value.starshipFragment);
+      com.example.nested_named_fragments.fragment.StarshipFragmentImpl_ResponseAdapter.StarshipFragment.INSTANCE.toJson(writer, scalarAdapters, value.starshipFragment);
     }
   }
 }

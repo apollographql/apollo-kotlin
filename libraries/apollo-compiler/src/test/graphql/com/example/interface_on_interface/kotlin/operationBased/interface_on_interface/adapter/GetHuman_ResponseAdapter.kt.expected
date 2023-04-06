@@ -6,8 +6,8 @@
 package com.example.interface_on_interface.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,15 +24,15 @@ public object GetHuman_ResponseAdapter {
   public object Data : Adapter<GetHuman.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         GetHuman.Data {
       var _human: GetHuman.Data.Human? = null
       var _node: GetHuman.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _human = Human.obj().fromJson(reader, customScalarAdapters)
-          1 -> _node = Node.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _human = Human.obj().fromJson(reader, scalarAdapters)
+          1 -> _node = Node.obj(true).fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -45,20 +45,20 @@ public object GetHuman_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: GetHuman.Data,
     ): Unit {
       writer.name("human")
-      Human.obj().toJson(writer, customScalarAdapters, value.human)
+      Human.obj().toJson(writer, scalarAdapters, value.human)
 
       writer.name("node")
-      Node.obj(true).toJson(writer, customScalarAdapters, value.node)
+      Node.obj(true).toJson(writer, scalarAdapters, value.node)
     }
 
     private object Human : Adapter<GetHuman.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           GetHuman.Data.Human {
         var _id: String? = null
         var _name: String? = null
@@ -66,9 +66,9 @@ public object GetHuman_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _height = DoubleAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -82,30 +82,30 @@ public object GetHuman_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: GetHuman.Data.Human,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+        DoubleAdapter.toJson(writer, scalarAdapters, value.height)
       }
     }
 
     private object Node : Adapter<GetHuman.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           GetHuman.Data.Node {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -115,10 +115,10 @@ public object GetHuman_ResponseAdapter {
         }
 
         var _onHuman: GetHuman.Data.Node.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         return GetHuman.Data.Node(
@@ -129,28 +129,28 @@ public object GetHuman_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: GetHuman.Data.Node,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.onHuman != null) {
           com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
+              scalarAdapters, value.onHuman)
         }
       }
 
       private object OnHuman : Adapter<GetHuman.Data.Node.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): GetHuman.Data.Node.OnHuman {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            GetHuman.Data.Node.OnHuman {
           var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = DoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _height = DoubleAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -162,11 +162,11 @@ public object GetHuman_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: GetHuman.Data.Node.OnHuman,
         ): Unit {
           writer.name("height")
-          DoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+          DoubleAdapter.toJson(writer, scalarAdapters, value.height)
         }
       }
     }

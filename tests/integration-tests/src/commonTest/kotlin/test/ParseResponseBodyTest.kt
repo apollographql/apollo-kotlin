@@ -2,7 +2,7 @@ package test
 
 import assertEquals2
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
@@ -143,7 +143,7 @@ class ParseResponseBodyTest {
 
     val response = AllFilmsQuery().parseJsonResponse(
         testFixtureToJsonReader("HttpCacheTestAllFilms.json"),
-        CustomScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
+        ScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
     )
     assertFalse(response.hasErrors())
     assertEquals(response.data!!.allFilms?.films?.size, 6)
@@ -197,7 +197,7 @@ class ParseResponseBodyTest {
   fun parseErrorOperationRawResponse() {
     val response = EpisodeHeroNameQuery(Episode.EMPIRE).parseJsonResponse(
         testFixtureToJsonReader("/ResponseErrorWithData.json"),
-        CustomScalarAdapters.Empty
+        ScalarAdapters.Empty
     )
     val data = response.data
     val errors = response.errors
@@ -241,7 +241,7 @@ class ParseResponseBodyTest {
 
     val dataString = query.adapter().toJsonString(data)
     assertEquals(
-        query.adapter().fromJson(Buffer().writeUtf8(dataString).jsonReader(), CustomScalarAdapters.Empty),
+        query.adapter().fromJson(Buffer().writeUtf8(dataString).jsonReader(), ScalarAdapters.Empty),
         data
     )
   }
@@ -253,7 +253,7 @@ class ParseResponseBodyTest {
     val query = GetJsonScalarQuery()
     assertEquals(
         data,
-        query.adapter().fromJson(MapJsonReader(mapOf("json" to dataMap)), CustomScalarAdapters.Empty)
+        query.adapter().fromJson(MapJsonReader(mapOf("json" to dataMap)), ScalarAdapters.Empty)
     )
   }
 
@@ -267,7 +267,7 @@ class ParseResponseBodyTest {
     val query = CharacterWithBirthDateQuery("1")
     try {
       val dataString = query.adapter().toJsonString(data)
-      query.adapter().fromJson(Buffer().writeUtf8(dataString).jsonReader(), CustomScalarAdapters.Empty)
+      query.adapter().fromJson(Buffer().writeUtf8(dataString).jsonReader(), ScalarAdapters.Empty)
       error("expected IllegalStateException")
     } catch (e: IllegalStateException) {
       assertTrue(e.message!!.contains("Can't map GraphQL type: `Date`"))

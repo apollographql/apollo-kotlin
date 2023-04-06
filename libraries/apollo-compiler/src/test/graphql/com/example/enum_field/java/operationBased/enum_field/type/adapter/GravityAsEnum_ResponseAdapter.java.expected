@@ -6,7 +6,7 @@
 package com.example.enum_field.type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.type.GravityAsEnum;
@@ -17,15 +17,15 @@ public enum GravityAsEnum_ResponseAdapter implements Adapter<GravityAsEnum> {
   INSTANCE;
 
   @Override
-  public GravityAsEnum fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public GravityAsEnum fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
       IOException {
     String rawValue = reader.nextString();
     return GravityAsEnum.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      GravityAsEnum value) throws IOException {
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GravityAsEnum value) throws
+      IOException {
     writer.value(value.rawValue);
   }
 }

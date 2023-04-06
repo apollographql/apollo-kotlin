@@ -7,7 +7,7 @@ package com.example.named_fragment_without_implementation.fragment;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -25,13 +25,13 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_without_implementation.fragment.HumanDetails fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -42,11 +42,11 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.named_fragment_without_implementation.fragment.HumanDetails value) throws
         IOException {
       writer.name("height");
-      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height);
+      Adapters.NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height);
     }
   }
 }

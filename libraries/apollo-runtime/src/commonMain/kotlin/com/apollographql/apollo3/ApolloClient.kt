@@ -3,7 +3,7 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.CustomScalarType
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ExecutionOptions
@@ -44,7 +44,7 @@ import kotlin.jvm.JvmOverloads
 class ApolloClient
 private constructor(
     val networkTransport: NetworkTransport,
-    val customScalarAdapters: CustomScalarAdapters,
+    val scalarAdapters: ScalarAdapters,
     val subscriptionNetworkTransport: NetworkTransport,
     val interceptors: List<ApolloInterceptor>,
     override val executionContext: ExecutionContext,
@@ -117,11 +117,11 @@ private constructor(
       apolloRequest: ApolloRequest<D>,
       ignoreApolloClientHttpHeaders: Boolean,
   ): Flow<ApolloResponse<D>> {
-    val executionContext = concurrencyInfo + customScalarAdapters + executionContext + apolloRequest.executionContext
+    val executionContext = concurrencyInfo + scalarAdapters + executionContext + apolloRequest.executionContext
 
     val request = ApolloRequest.Builder(apolloRequest.operation)
         .addExecutionContext(concurrencyInfo)
-        .addExecutionContext(customScalarAdapters)
+        .addExecutionContext(scalarAdapters)
         .addExecutionContext(executionContext)
         .addExecutionContext(apolloRequest.executionContext)
         .httpMethod(httpMethod)
@@ -182,7 +182,7 @@ private constructor(
   class Builder : MutableExecutionOptions<Builder> {
     private var _networkTransport: NetworkTransport? = null
     private var subscriptionNetworkTransport: NetworkTransport? = null
-    private val customScalarAdaptersBuilder = CustomScalarAdapters.Builder()
+    private val scalarAdaptersBuilder = ScalarAdapters.Builder()
     private val _interceptors: MutableList<ApolloInterceptor> = mutableListOf()
     val interceptors: List<ApolloInterceptor> = _interceptors
     private val httpInterceptors: MutableList<HttpInterceptor> = mutableListOf()
@@ -374,9 +374,9 @@ private constructor(
       this.subscriptionNetworkTransport = subscriptionNetworkTransport
     }
 
-    fun customScalarAdapters(customScalarAdapters: CustomScalarAdapters) = apply {
-      customScalarAdaptersBuilder.clear()
-      customScalarAdaptersBuilder.addAll(customScalarAdapters)
+    fun scalarAdapters(scalarAdapters: ScalarAdapters) = apply {
+      scalarAdaptersBuilder.clear()
+      scalarAdaptersBuilder.addAll(scalarAdapters)
     }
 
     /**
@@ -387,8 +387,8 @@ private constructor(
      * you can use `com.example.Date.type`
      * @param customScalarAdapter the [Adapter] to use for this custom scalar
      */
-    fun <T> addCustomScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
-      customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
+    fun <T> addScalarAdapter(customScalarType: CustomScalarType, customScalarAdapter: Adapter<T>) = apply {
+      scalarAdaptersBuilder.add(customScalarType, customScalarAdapter)
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
@@ -558,7 +558,7 @@ private constructor(
       return ApolloClient(
           networkTransport = networkTransport,
           subscriptionNetworkTransport = subscriptionNetworkTransport,
-          customScalarAdapters = customScalarAdaptersBuilder.build(),
+          scalarAdapters = scalarAdaptersBuilder.build(),
           interceptors = _interceptors,
           dispatcher = dispatcher,
           executionContext = executionContext,
@@ -579,7 +579,7 @@ private constructor(
     fun copy(): Builder {
       @Suppress("DEPRECATION")
       val builder = Builder()
-          .customScalarAdapters(customScalarAdaptersBuilder.build())
+          .scalarAdapters(scalarAdaptersBuilder.build())
           .interceptors(interceptors)
           .dispatcher(dispatcher)
           .executionContext(executionContext)

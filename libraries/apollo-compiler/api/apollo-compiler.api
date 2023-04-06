@@ -340,7 +340,6 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKey$Compan
 public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : java/lang/Enum {
 	public static final field BuilderFun Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field BuilderType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
-	public static final field CustomScalarAdapters Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Fragment Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field FragmentVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
@@ -351,6 +350,7 @@ public final class com/apollographql/apollo3/compiler/codegen/ResolverKeyKind : 
 	public static final field OperationSelections Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field OperationVariablesAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Pagination Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
+	public static final field ScalarAdapters Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field Schema Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaType Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;
 	public static final field SchemaTypeAdapter Lcom/apollographql/apollo3/compiler/codegen/ResolverKeyKind;

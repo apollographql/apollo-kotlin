@@ -23,11 +23,11 @@ interface Adapter<T> {
    * implementations may throw [com.apollographql.apollo3.exception.JsonEncodingException] or [com.apollographql.apollo3.exception.JsonDataException]
    * on unexpected incoming data
    *
-   * @param [customScalarAdapters] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
+   * @param [scalarAdapters] configured instance of GraphQL operation response adapters cache. A global empty instance will be used by default.
    *
    * Example:
    * ```
-   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
+   * override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Hero {
    *   var name: String? = null
    *   var homeworld: String? = null
    *
@@ -44,7 +44,7 @@ interface Adapter<T> {
    *
    * Alternatively, you can use the built-in [AnyAdapter] to simplify the parsing loop:
    * ```
-   * override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Hero {
+   * override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Hero {
    *   val map = AnyAdapter.fromJson(reader) as Map<String, String>
    *
    *   return Hero(map["name"]!!, map["homeworld"]!!)
@@ -52,14 +52,14 @@ interface Adapter<T> {
    * ```
    */
   @Throws(IOException::class)
-  fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): T
+  fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T
 
   /**
    * Serializes a Kotlin type into its equivalent Json representation.
    *
    * Example:
    * ```
-   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
+   * override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Hero) {
    *   writer.name("name")
    *   writer.value(value.name)
    *   writer.name("homeworld")
@@ -69,12 +69,12 @@ interface Adapter<T> {
    *
    * Alternatively, you can use the built-in [AnyAdapter]:
    * ```
-   * override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Hero) {
+   * override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Hero) {
    *   val map = mapOf("name" to value.name, "homeworld" to value.homeworld)
-   *   AnyAdapter.toJson(writer, customScalarAdapters, map)
+   *   AnyAdapter.toJson(writer, scalarAdapters, map)
    * }
    * ```
    */
   @Throws(IOException::class)
-  fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: T)
+  fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T)
 }

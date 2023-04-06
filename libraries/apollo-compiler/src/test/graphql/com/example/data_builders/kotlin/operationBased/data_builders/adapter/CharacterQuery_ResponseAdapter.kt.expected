@@ -6,7 +6,7 @@
 package com.example.data_builders.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,13 +24,13 @@ public object CharacterQuery_ResponseAdapter {
   public object Data : Adapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         CharacterQuery.Data {
       var _character: CharacterQuery.Data.Character? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _character = Character.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _character = Character.obj(true).fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,17 +42,17 @@ public object CharacterQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: CharacterQuery.Data,
     ): Unit {
       writer.name("character")
-      Character.obj(true).toJson(writer, customScalarAdapters, value.character)
+      Character.obj(true).toJson(writer, scalarAdapters, value.character)
     }
 
     private object Character : Adapter<CharacterQuery.Data.Character> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           CharacterQuery.Data.Character {
         var __typename: String? = null
         var _id: String? = null
@@ -60,9 +60,9 @@ public object CharacterQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -72,17 +72,17 @@ public object CharacterQuery_ResponseAdapter {
         }
 
         var _humanFragment: HumanFragment? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
           reader.rewind()
           _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         var _droidFragment: DroidFragment? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
           reader.rewind()
           _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
         }
 
         return CharacterQuery.Data.Character(
@@ -96,26 +96,26 @@ public object CharacterQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: CharacterQuery.Data.Character,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
 
         if (value.humanFragment != null) {
           com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer,
-              customScalarAdapters, value.humanFragment)
+              scalarAdapters, value.humanFragment)
         }
 
         if (value.droidFragment != null) {
           com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-              customScalarAdapters, value.droidFragment)
+              scalarAdapters, value.droidFragment)
         }
       }
     }

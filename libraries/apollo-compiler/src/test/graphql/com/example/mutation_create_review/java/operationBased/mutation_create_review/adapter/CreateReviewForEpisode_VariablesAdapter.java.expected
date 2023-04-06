@@ -6,8 +6,8 @@
 package com.example.mutation_create_review.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
@@ -22,17 +22,17 @@ public enum CreateReviewForEpisode_VariablesAdapter implements Adapter<CreateRev
   INSTANCE;
 
   @Override
-  public CreateReviewForEpisode fromJson(JsonReader reader,
-      CustomScalarAdapters customScalarAdapters) throws IOException {
+  public CreateReviewForEpisode fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      CreateReviewForEpisode value) throws IOException {
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, CreateReviewForEpisode value)
+      throws IOException {
     writer.name("ep");
-    Episode_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.ep);
+    Episode_ResponseAdapter.INSTANCE.toJson(writer, scalarAdapters, value.ep);
     writer.name("review");
-    new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.review);
+    new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.review);
   }
 }

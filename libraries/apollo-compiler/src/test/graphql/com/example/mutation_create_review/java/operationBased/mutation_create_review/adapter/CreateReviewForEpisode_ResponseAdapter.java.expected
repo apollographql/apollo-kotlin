@@ -8,10 +8,10 @@ package com.example.mutation_create_review.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.CreateReviewForEpisode;
@@ -32,14 +32,14 @@ public class CreateReviewForEpisode_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("createReview");
 
     @Override
-    public CreateReviewForEpisode.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public CreateReviewForEpisode.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
+        throws IOException {
       CreateReviewForEpisode.CreateReview _createReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,10 +50,10 @@ public class CreateReviewForEpisode_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         CreateReviewForEpisode.Data value) throws IOException {
       writer.name("createReview");
-      new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
+      new NullableAdapter<>(new ObjectAdapter<CreateReviewForEpisode.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, scalarAdapters, value.createReview);
     }
   }
 
@@ -64,7 +64,7 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisode.CreateReview fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       Integer _stars = null;
       String _commentary = null;
       List<List<String>> _listOfListOfString = null;
@@ -75,12 +75,12 @@ public class CreateReviewForEpisode_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
-          case 2: _listOfListOfString = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).fromJson(reader, customScalarAdapters); break;
-          case 3: _listOfListOfEnum = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).fromJson(reader, customScalarAdapters); break;
-          case 4: _listOfListOfCustom = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).fromJson(reader, customScalarAdapters); break;
-          case 5: _listOfListOfObject = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, scalarAdapters); break;
+          case 2: _listOfListOfString = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).fromJson(reader, scalarAdapters); break;
+          case 3: _listOfListOfEnum = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).fromJson(reader, scalarAdapters); break;
+          case 4: _listOfListOfCustom = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).fromJson(reader, scalarAdapters); break;
+          case 5: _listOfListOfObject = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -98,25 +98,25 @@ public class CreateReviewForEpisode_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         CreateReviewForEpisode.CreateReview value) throws IOException {
       writer.name("stars");
-      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
+      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.stars);
 
       writer.name("commentary");
-      new NullableAdapter<>(new com.example.MyStringAdapter()).toJson(writer, customScalarAdapters, value.commentary);
+      new NullableAdapter<>(new com.example.MyStringAdapter()).toJson(writer, scalarAdapters, value.commentary);
 
       writer.name("listOfListOfString");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, customScalarAdapters, value.listOfListOfString);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, scalarAdapters, value.listOfListOfString);
 
       writer.name("listOfListOfEnum");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).toJson(writer, customScalarAdapters, value.listOfListOfEnum);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE))).toJson(writer, scalarAdapters, value.listOfListOfEnum);
 
       writer.name("listOfListOfCustom");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((customScalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).toJson(writer, customScalarAdapters, value.listOfListOfCustom);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type))))).toJson(writer, scalarAdapters, value.listOfListOfCustom);
 
       writer.name("listOfListOfObject");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.listOfListOfObject);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<CreateReviewForEpisode.ListOfListOfObject>(ListOfListOfObject.INSTANCE, false)))).toJson(writer, scalarAdapters, value.listOfListOfObject);
     }
   }
 
@@ -127,13 +127,13 @@ public class CreateReviewForEpisode_ResponseAdapter {
 
     @Override
     public CreateReviewForEpisode.ListOfListOfObject fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = new com.example.MyStringAdapter().fromJson(reader, customScalarAdapters); break;
+          case 0: _name = new com.example.MyStringAdapter().fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -146,10 +146,10 @@ public class CreateReviewForEpisode_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         CreateReviewForEpisode.ListOfListOfObject value) throws IOException {
       writer.name("name");
-      new com.example.MyStringAdapter().toJson(writer, customScalarAdapters, value.name);
+      new com.example.MyStringAdapter().toJson(writer, scalarAdapters, value.name);
     }
   }
 }

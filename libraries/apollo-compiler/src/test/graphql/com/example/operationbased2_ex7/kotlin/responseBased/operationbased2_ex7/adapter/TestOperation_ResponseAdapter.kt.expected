@@ -6,8 +6,8 @@
 package com.example.operationbased2_ex7.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,13 +24,13 @@ public object TestOperation_ResponseAdapter {
   public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = Animal.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,44 +42,43 @@ public object TestOperation_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestOperation.Data,
     ): Unit {
       writer.name("animal")
-      Animal.obj().nullable().toJson(writer, customScalarAdapters, value.animal)
+      Animal.obj().nullable().toJson(writer, scalarAdapters, value.animal)
     }
 
     private object Animal : Adapter<TestOperation.Data.Animal> {
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestOperation.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
-          -> PetWarmBloodedAnimal.fromJson(reader, customScalarAdapters, __typename)
+          -> PetWarmBloodedAnimal.fromJson(reader, scalarAdapters, __typename)
           "Lion",
           "Panther",
-          -> OtherWarmBloodedAnimal.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherWarmBloodedAnimal.fromJson(reader, scalarAdapters, __typename)
           "Turtle",
-          -> OtherPetAnimal.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherPetAnimal.fromJson(reader, scalarAdapters, __typename)
           else
-          -> OtherAnimal.fromJson(reader, customScalarAdapters, __typename)
+          -> OtherAnimal.fromJson(reader, scalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.Animal,
       ): Unit {
         when(value) {
           is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer,
-              customScalarAdapters, value)
+              scalarAdapters, value)
           is TestOperation.Data.OtherWarmBloodedAnimal -> OtherWarmBloodedAnimal.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer,
-              customScalarAdapters, value)
-          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, customScalarAdapters,
+              scalarAdapters, value)
+          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer, scalarAdapters,
               value)
+          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, scalarAdapters, value)
         }
       }
     }
@@ -90,7 +89,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestOperation.Data.PetWarmBloodedAnimal {
         var __typename: String? = typename
@@ -100,10 +99,10 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
-            3 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _temperature = IntAdapter.fromJson(reader, scalarAdapters)
+            3 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -118,20 +117,20 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.PetWarmBloodedAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, customScalarAdapters, value.species)
+        StringAdapter.toJson(writer, scalarAdapters, value.species)
 
         writer.name("temperature")
-        IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
+        IntAdapter.toJson(writer, scalarAdapters, value.temperature)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
 
@@ -140,7 +139,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherAnimal {
         var __typename: String? = typename
@@ -148,8 +147,8 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -162,14 +161,14 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.OtherAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, customScalarAdapters, value.species)
+        StringAdapter.toJson(writer, scalarAdapters, value.species)
       }
     }
 
@@ -178,7 +177,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherWarmBloodedAnimal {
         var __typename: String? = typename
@@ -187,9 +186,9 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _temperature = IntAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -203,17 +202,17 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.OtherWarmBloodedAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, customScalarAdapters, value.species)
+        StringAdapter.toJson(writer, scalarAdapters, value.species)
 
         writer.name("temperature")
-        IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
+        IntAdapter.toJson(writer, scalarAdapters, value.temperature)
       }
     }
 
@@ -222,7 +221,7 @@ public object TestOperation_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherPetAnimal {
         var __typename: String? = typename
@@ -231,9 +230,9 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -247,17 +246,17 @@ public object TestOperation_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.OtherPetAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, customScalarAdapters, value.species)
+        StringAdapter.toJson(writer, scalarAdapters, value.species)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
   }

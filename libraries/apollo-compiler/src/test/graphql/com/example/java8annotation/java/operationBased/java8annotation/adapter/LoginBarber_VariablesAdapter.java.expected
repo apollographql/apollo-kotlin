@@ -6,8 +6,8 @@
 package com.example.java8annotation.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.LoginBarber;
@@ -21,15 +21,14 @@ public enum LoginBarber_VariablesAdapter implements Adapter<LoginBarber> {
   INSTANCE;
 
   @Override
-  public LoginBarber fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
-      IOException {
+  public LoginBarber fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      LoginBarber value) throws IOException {
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, LoginBarber value) throws
+      IOException {
     writer.name("input");
-    new ObjectAdapter<Login>(Login_InputAdapter.INSTANCE, false).toJson(writer, customScalarAdapters, value.input);
+    new ObjectAdapter<Login>(Login_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.input);
   }
 }

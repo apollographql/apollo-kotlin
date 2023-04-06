@@ -6,7 +6,7 @@
 package com.example.monomorphic.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,13 +20,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _cat: TestQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _cat = Cat.obj(true).fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -38,30 +38,30 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("cat")
-      Cat.obj(true).toJson(writer, customScalarAdapters, value.cat)
+      Cat.obj(true).toJson(writer, scalarAdapters, value.cat)
     }
 
     private object Cat : Adapter<TestQuery.Data.Cat> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Cat {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
         val _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.fromJson(reader,
-            customScalarAdapters)
+            scalarAdapters)
 
         return TestQuery.Data.Cat(
           __typename = __typename!!,
@@ -71,33 +71,33 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Cat,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.toJson(writer,
-            customScalarAdapters, value.onNode)
+            scalarAdapters, value.onNode)
       }
 
       private object OnNode : Adapter<TestQuery.Data.Cat.OnNode> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            TestQuery.Data.Cat.OnNode {
           var __typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
 
           reader.rewind()
           val _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
-              customScalarAdapters)
+              scalarAdapters)
 
           return TestQuery.Data.Cat.OnNode(
             __typename = __typename!!,
@@ -107,26 +107,26 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Cat.OnNode,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.toJson(writer,
-              customScalarAdapters, value.onAnimal)
+              scalarAdapters, value.onAnimal)
         }
 
         private object OnAnimal : Adapter<TestQuery.Data.Cat.OnNode.OnAnimal> {
           public val RESPONSE_NAMES: List<String> = listOf("species")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Cat.OnNode.OnAnimal {
+          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+              TestQuery.Data.Cat.OnNode.OnAnimal {
             var _species: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -138,11 +138,11 @@ public object TestQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
+            scalarAdapters: ScalarAdapters,
             `value`: TestQuery.Data.Cat.OnNode.OnAnimal,
           ): Unit {
             writer.name("species")
-            StringAdapter.toJson(writer, customScalarAdapters, value.species)
+            StringAdapter.toJson(writer, scalarAdapters, value.species)
           }
         }
       }

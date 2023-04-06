@@ -8,9 +8,9 @@ package com.example.deprecation
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.deprecation.adapter.TestQuery_ResponseAdapter
@@ -31,9 +31,8 @@ public data class TestQuery(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    TestQuery_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
+    TestQuery_VariablesAdapter.toJson(writer, scalarAdapters, this)
   }
 
   public override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()

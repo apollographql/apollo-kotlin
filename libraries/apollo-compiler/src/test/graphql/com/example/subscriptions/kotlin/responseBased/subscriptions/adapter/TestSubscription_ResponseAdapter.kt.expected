@@ -6,8 +6,8 @@
 package com.example.subscriptions.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,13 +23,13 @@ public object TestSubscription_ResponseAdapter {
   public object Data : Adapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _commentAdded = CommentAdded.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _commentAdded = CommentAdded.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -41,25 +41,25 @@ public object TestSubscription_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestSubscription.Data,
     ): Unit {
       writer.name("commentAdded")
-      CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
+      CommentAdded.obj().nullable().toJson(writer, scalarAdapters, value.commentAdded)
     }
 
     private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestSubscription.Data.CommentAdded {
         var _id: Int? = null
         var _content: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _content = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _id = IntAdapter.fromJson(reader, scalarAdapters)
+            1 -> _content = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -72,14 +72,14 @@ public object TestSubscription_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestSubscription.Data.CommentAdded,
       ): Unit {
         writer.name("id")
-        IntAdapter.toJson(writer, customScalarAdapters, value.id)
+        IntAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("content")
-        StringAdapter.toJson(writer, customScalarAdapters, value.content)
+        StringAdapter.toJson(writer, scalarAdapters, value.content)
       }
     }
   }

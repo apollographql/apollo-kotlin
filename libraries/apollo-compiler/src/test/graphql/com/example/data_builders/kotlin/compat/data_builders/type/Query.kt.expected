@@ -6,7 +6,7 @@
 package com.example.data_builders.type
 
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
 import kotlin.Any
@@ -21,8 +21,8 @@ public class Query {
 }
 
 public class QueryBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder(scalarAdapters) {
   public var animal: AnimalMap by __fields
 
   public var character: CharacterMap by __fields
@@ -37,7 +37,7 @@ public class QueryMap(
 ) : Map<String, Any?> by __fields
 
 public fun BuilderScope.buildQuery(block: QueryBuilder.() -> Unit): QueryMap {
-  val builder = QueryBuilder(customScalarAdapters)
+  val builder = QueryBuilder(scalarAdapters)
   builder.__typename = "Query"
   builder.block()
   return builder.build()

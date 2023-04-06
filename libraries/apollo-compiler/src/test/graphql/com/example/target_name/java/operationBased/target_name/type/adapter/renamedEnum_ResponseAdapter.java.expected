@@ -6,7 +6,7 @@
 package com.example.target_name.type.adapter;
 
 import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.type.renamedEnum;
@@ -17,15 +17,14 @@ public enum renamedEnum_ResponseAdapter implements Adapter<renamedEnum> {
   INSTANCE;
 
   @Override
-  public renamedEnum fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
-      IOException {
+  public renamedEnum fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
     String rawValue = reader.nextString();
     return renamedEnum.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-      renamedEnum value) throws IOException {
+  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, renamedEnum value) throws
+      IOException {
     writer.value(value.rawValue);
   }
 }

@@ -7,7 +7,7 @@ package com.example.inline_fragment_merge_fields.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,13 +24,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,18 +42,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, customScalarAdapters, value.hero)
+      Hero.obj().nullable().toJson(writer, scalarAdapters, value.hero)
     }
 
     private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection",
           "profileLink")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
@@ -62,10 +62,10 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-            2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
-            3 -> _profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
+            3 -> _profileLink = AnyAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -80,33 +80,32 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Hero,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("friendsConnection")
-        FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+        FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
 
         writer.name("profileLink")
-        AnyAdapter.toJson(writer, customScalarAdapters, value.profileLink)
+        AnyAdapter.toJson(writer, scalarAdapters, value.profileLink)
       }
 
       private object FriendsConnection : Adapter<TestQuery.Data.Hero.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.Hero.FriendsConnection {
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            TestQuery.Data.Hero.FriendsConnection {
           var _edges: List<TestQuery.Data.Hero.FriendsConnection.Edge?>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                  customScalarAdapters)
+              0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -118,24 +117,23 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Hero.FriendsConnection,
         ): Unit {
           writer.name("edges")
-          Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+          Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
         }
 
         private object Edge : Adapter<TestQuery.Data.Hero.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
               TestQuery.Data.Hero.FriendsConnection.Edge {
             var _node: TestQuery.Data.Hero.FriendsConnection.Edge.Node? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+                0 -> _node = Node.obj().nullable().fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -147,24 +145,23 @@ public object TestQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
+            scalarAdapters: ScalarAdapters,
             `value`: TestQuery.Data.Hero.FriendsConnection.Edge,
           ): Unit {
             writer.name("node")
-            Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+            Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
           }
 
           private object Node : Adapter<TestQuery.Data.Hero.FriendsConnection.Edge.Node> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
-            public override fun fromJson(reader: JsonReader,
-                customScalarAdapters: CustomScalarAdapters):
+            public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
                 TestQuery.Data.Hero.FriendsConnection.Edge.Node {
               var _name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                  0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
                   else -> break
                 }
               }
@@ -176,11 +173,11 @@ public object TestQuery_ResponseAdapter {
 
             public override fun toJson(
               writer: JsonWriter,
-              customScalarAdapters: CustomScalarAdapters,
+              scalarAdapters: ScalarAdapters,
               `value`: TestQuery.Data.Hero.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
-              StringAdapter.toJson(writer, customScalarAdapters, value.name)
+              StringAdapter.toJson(writer, scalarAdapters, value.name)
             }
           }
         }

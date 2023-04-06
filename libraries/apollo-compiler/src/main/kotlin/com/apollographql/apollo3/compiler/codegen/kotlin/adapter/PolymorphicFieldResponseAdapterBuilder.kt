@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -105,7 +105,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     return FunSpec.builder(fromJson)
         .returns(adaptedClassName)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -131,7 +131,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
         builder.addStatement("else")
       }
       builder.addStatement(
-          "-> %T.$fromJson($reader, $customScalarAdapters, $__typename)",
+          "-> %T.$fromJson($reader, $scalarAdapters, $__typename)",
           ClassName.from(path + model.modelName),
       )
     }
@@ -144,7 +144,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     return FunSpec.builder(toJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(writer, KotlinSymbols.JsonWriter)
-        .addParameter(customScalarAdapters, KotlinSymbols.CustomScalarAdapters)
+        .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
         .addParameter(value, adaptedClassName)
         .addCode(writeToResponseCodeBlock())
         .build()
@@ -156,7 +156,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     builder.beginControlFlow("when($value) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       builder.addStatement(
-          "is %T -> %T.$toJson($writer, $customScalarAdapters, $value)",
+          "is %T -> %T.$toJson($writer, $scalarAdapters, $value)",
           context.resolver.resolveModel(model.id),
           ClassName.from(path + model.modelName),
       )

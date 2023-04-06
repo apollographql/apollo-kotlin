@@ -6,7 +6,7 @@
 package com.example.root_query_fragment.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,20 +19,20 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
 
       reader.rewind()
       val _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-          customScalarAdapters)
+          scalarAdapters)
 
       return TestQuery.Data(
         __typename = __typename!!,
@@ -42,14 +42,14 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-          customScalarAdapters, value.queryFragment)
+          scalarAdapters, value.queryFragment)
     }
   }
 }

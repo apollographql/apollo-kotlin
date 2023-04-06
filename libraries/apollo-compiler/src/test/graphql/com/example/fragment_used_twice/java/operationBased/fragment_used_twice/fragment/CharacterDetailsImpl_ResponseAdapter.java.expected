@@ -8,7 +8,7 @@ package com.example.fragment_used_twice.fragment;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -26,15 +26,15 @@ public class CharacterDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_used_twice.fragment.CharacterDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       String _name = null;
       Object _birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _birthDate = Adapters.AnyAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -49,13 +49,13 @@ public class CharacterDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.fragment_used_twice.fragment.CharacterDetails value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("birthDate");
-      Adapters.AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate);
+      Adapters.AnyAdapter.toJson(writer, scalarAdapters, value.birthDate);
     }
   }
 }

@@ -8,9 +8,9 @@ package com.example.capitalized_fields.adapter;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.capitalized_fields.TestQuery;
@@ -27,14 +27,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Horse");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestQuery.Horse _Horse = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Horse = new NullableAdapter<>(new ObjectAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _Horse = new NullableAdapter<>(new ObjectAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,10 +45,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
+        throws IOException {
       writer.name("Horse");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).toJson(writer, customScalarAdapters, value.Horse);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).toJson(writer, scalarAdapters, value.Horse);
     }
   }
 
@@ -58,22 +58,22 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "Donkey");
 
     @Override
-    public TestQuery.Horse fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Horse fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
       String _Donkey = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _Donkey = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _Donkey = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      TestQuery.OnHorse _onHorse = com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.fromJson(reader, customScalarAdapters);
+      TestQuery.OnHorse _onHorse = com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.fromJson(reader, scalarAdapters);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -85,15 +85,15 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Horse value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Horse value)
+        throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("Donkey");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.Donkey);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.Donkey);
 
-      com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.toJson(writer, customScalarAdapters, value.onHorse);
+      com.example.capitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.toJson(writer, scalarAdapters, value.onHorse);
     }
   }
 
@@ -103,14 +103,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
     @Override
-    public TestQuery.OnHorse fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.OnHorse fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestQuery.Cow _Cow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Cow = new NullableAdapter<>(new ObjectAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _Cow = new NullableAdapter<>(new ObjectAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -121,10 +121,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.OnHorse value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnHorse value)
+        throws IOException {
       writer.name("Cow");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).toJson(writer, customScalarAdapters, value.Cow);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).toJson(writer, scalarAdapters, value.Cow);
     }
   }
 
@@ -134,14 +134,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
     @Override
-    public TestQuery.Cow fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Cow fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String _Moo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _Moo = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -152,10 +152,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Cow value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Cow value) throws
+        IOException {
       writer.name("Moo");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.Moo);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.Moo);
     }
   }
 }

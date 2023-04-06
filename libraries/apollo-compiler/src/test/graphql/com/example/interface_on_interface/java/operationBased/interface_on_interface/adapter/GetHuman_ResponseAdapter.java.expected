@@ -12,8 +12,8 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.interface_on_interface.GetHuman;
@@ -31,16 +31,16 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("human", "node");
 
     @Override
-    public GetHuman.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public GetHuman.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       GetHuman.Human _human = null;
       GetHuman.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _human = new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).fromJson(reader, customScalarAdapters); break;
-          case 1: _node = new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
+          case 0: _human = new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).fromJson(reader, scalarAdapters); break;
+          case 1: _node = new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,13 +55,13 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetHuman.Data value) throws
+        IOException {
       writer.name("human");
-      new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).toJson(writer, customScalarAdapters, value.human);
+      new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).toJson(writer, scalarAdapters, value.human);
 
       writer.name("node");
-      new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).toJson(writer, customScalarAdapters, value.node);
+      new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).toJson(writer, scalarAdapters, value.node);
     }
   }
 
@@ -71,8 +71,8 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "height");
 
     @Override
-    public GetHuman.Human fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public GetHuman.Human fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String _id = null;
       String _name = null;
       Double _height = null;
@@ -80,9 +80,9 @@ public class GetHuman_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 2: _height = Adapters.DoubleAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -99,16 +99,16 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.Human value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetHuman.Human value)
+        throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.id);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("height");
-      Adapters.DoubleAdapter.toJson(writer, customScalarAdapters, value.height);
+      Adapters.DoubleAdapter.toJson(writer, scalarAdapters, value.height);
     }
   }
 
@@ -118,23 +118,23 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetHuman.Node fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public GetHuman.Node fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetHuman.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new GetHuman.Node(
@@ -144,13 +144,13 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.Node value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetHuman.Node value) throws
+        IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onHuman != null) {
-        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
       }
     }
   }
@@ -161,14 +161,14 @@ public class GetHuman_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
     @Override
-    public GetHuman.OnHuman fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public GetHuman.OnHuman fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.DoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _height = Adapters.DoubleAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -181,10 +181,10 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        GetHuman.OnHuman value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetHuman.OnHuman value)
+        throws IOException {
       writer.name("height");
-      Adapters.DoubleAdapter.toJson(writer, customScalarAdapters, value.height);
+      Adapters.DoubleAdapter.toJson(writer, scalarAdapters, value.height);
     }
   }
 }

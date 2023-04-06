@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
@@ -29,14 +29,14 @@ internal fun serializeVariablesMethodSpec(
   val body = if (adapterClassName == null) {
     CodeBlock.of("// $emptyMessage\n")
   } else {
-    CodeBlock.of("$T.INSTANCE.$toJson($writer, $customScalarAdapters, this);\n", adapterClassName)
+    CodeBlock.of("$T.INSTANCE.$toJson($writer, $scalarAdapters, this);\n", adapterClassName)
   }
   return MethodSpec.methodBuilder(serializeVariables)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
-      .addParameter(JavaClassNames.CustomScalarAdapters, customScalarAdapters)
+      .addParameter(JavaClassNames.ScalarAdapters, scalarAdapters)
       .addCode(body)
       .build()
 }

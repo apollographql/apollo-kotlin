@@ -8,7 +8,7 @@ package com.example.fragments_with_defer_and_include_directives.fragment;
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -26,13 +26,13 @@ public class CharacterDetails3Impl_ResponseAdapter {
 
     @Override
     public com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
       Object _birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _birthDate = Adapters.AnyAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _birthDate = Adapters.AnyAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,11 +45,11 @@ public class CharacterDetails3Impl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 value)
         throws IOException {
       writer.name("birthDate");
-      Adapters.AnyAdapter.toJson(writer, customScalarAdapters, value.birthDate);
+      Adapters.AnyAdapter.toJson(writer, scalarAdapters, value.birthDate);
     }
   }
 }

@@ -1,7 +1,7 @@
 package test
 
 import codegen.models.InlineAndNamedFragmentQuery
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.testing.internal.runTest
 import okio.Buffer
@@ -20,7 +20,7 @@ class InlineAndNamedFragments {
       }
     """.trimIndent()
 
-    val data = InlineAndNamedFragmentQuery().adapter().fromJson(Buffer().apply { writeUtf8(dataString) }.jsonReader(), CustomScalarAdapters.Empty)
+    val data = InlineAndNamedFragmentQuery().adapter().fromJson(Buffer().apply { writeUtf8(dataString) }.jsonReader(), ScalarAdapters.Empty)
     assertTrue(data.hero?.onDroid?.primaryFunction == "translation")
   }
 }

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import java.time.Instant
@@ -23,12 +23,12 @@ import java.time.format.DateTimeFormatter
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object JavaInstantAdapter : Adapter<Instant> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): Instant {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Instant {
     // Instant.parse chokes on offset (kotlinx.datetime.Instant doesn't)
     return OffsetDateTime.parse(reader.nextString()!!).toInstant()
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: Instant) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Instant) {
     writer.value(value.toString())
   }
 }
@@ -42,11 +42,11 @@ object JavaInstantAdapter : Adapter<Instant> {
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object JavaLocalDateAdapter : Adapter<LocalDate> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDate {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): LocalDate {
     return LocalDate.parse(reader.nextString()!!)
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalDate) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: LocalDate) {
     writer.value(value.toString())
   }
 }
@@ -60,11 +60,11 @@ object JavaLocalDateAdapter : Adapter<LocalDate> {
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalDateTime {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): LocalDateTime {
     return LocalDateTime.parse(reader.nextString()!!)
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalDateTime) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: LocalDateTime) {
     writer.value(value.toString())
   }
 }
@@ -78,11 +78,11 @@ object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): OffsetDateTime {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): OffsetDateTime {
     return OffsetDateTime.parse(reader.nextString()!!)
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: OffsetDateTime) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: OffsetDateTime) {
     writer.value(value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
   }
 }
@@ -96,11 +96,11 @@ object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object JavaLocalTimeAdapter : Adapter<LocalTime> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters): LocalTime {
+  override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): LocalTime {
     return LocalTime.parse(reader.nextString())
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters, value: LocalTime) {
+  override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: LocalTime) {
     writer.value(value.toString())
   }
 }

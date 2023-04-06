@@ -32,7 +32,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   override fun adapter(): Adapter<D>
 
   @Throws(IOException::class)
-  override fun serializeVariables(writer: JsonWriter, customScalarAdapters: CustomScalarAdapters)
+  override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters)
 
   override fun rootField(): CompiledField
 

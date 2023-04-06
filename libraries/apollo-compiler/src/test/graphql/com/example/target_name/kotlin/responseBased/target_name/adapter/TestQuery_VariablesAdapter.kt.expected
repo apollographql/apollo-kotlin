@@ -6,9 +6,9 @@
 package com.example.target_name.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableAnyAdapter
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -21,27 +21,26 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      TestQuery = throw IllegalStateException("Input type used in output position")
+  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): TestQuery =
+      throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
+    scalarAdapters: ScalarAdapters,
     `value`: TestQuery,
   ): Unit {
     if (value.input is Optional.Present) {
       writer.name("input")
-      renamedInput_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
+      renamedInput_InputAdapter.obj().nullable().present().toJson(writer, scalarAdapters,
           value.input)
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
-      NullableAnyAdapter.present().toJson(writer, customScalarAdapters, value.scalar)
+      NullableAnyAdapter.present().toJson(writer, scalarAdapters, value.scalar)
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().present().toJson(writer, customScalarAdapters,
-          value.`enum`)
+      renamedEnum_ResponseAdapter.nullable().present().toJson(writer, scalarAdapters, value.`enum`)
     }
   }
 }

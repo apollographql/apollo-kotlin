@@ -14,9 +14,9 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BVariable;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude;
@@ -35,13 +35,13 @@ public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
 
     @Override
     public SpreadMultipleWithDeferAndInclude.Data fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       SpreadMultipleWithDeferAndInclude.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -52,10 +52,10 @@ public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         SpreadMultipleWithDeferAndInclude.Data value) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).toJson(writer, customScalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferAndInclude.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
     }
   }
 
@@ -66,23 +66,23 @@ public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
 
     @Override
     public SpreadMultipleWithDeferAndInclude.Hero fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+        ScalarAdapters scalarAdapters) throws IOException {
       String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond1")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond2"))),new BooleanExpression.Element<BTerm>(new BLabel("b_first")),new BooleanExpression.Element<BTerm>(new BLabel("b_second")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3"))),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4")))))), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond1")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond2"))),new BooleanExpression.Element<BTerm>(new BLabel("b_first")),new BooleanExpression.Element<BTerm>(new BLabel("b_second")),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_third")),new BooleanExpression.Element<BTerm>(new BVariable("cond3"))),new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BLabel("b_fourth")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond4")))))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), __path)) {
         reader.rewind();
-        _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, customScalarAdapters);
+        _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new SpreadMultipleWithDeferAndInclude.Hero(
@@ -92,13 +92,13 @@ public class SpreadMultipleWithDeferAndInclude_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         SpreadMultipleWithDeferAndInclude.Hero value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.droidDetails != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, customScalarAdapters, value.droidDetails);
+        com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, scalarAdapters, value.droidDetails);
       }
     }
   }

@@ -21,7 +21,7 @@ import data.builders.PutIntMutation
 import data.builders.SkipQuery
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
-import data.builders.type.__CustomScalarAdapters
+import data.builders.type.__ScalarAdapters
 import data.builders.schema.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
@@ -258,7 +258,7 @@ class DataBuilderTest {
 
   @Test
   fun fakeValuesCanBeReused() {
-    val cat = Builder(__CustomScalarAdapters).buildCat {
+    val cat = Builder(__ScalarAdapters).buildCat {
       id = "42"
       bestFriend = buildCat {
         id = "42"
@@ -285,7 +285,7 @@ class DataBuilderTest {
 
   @Test
   fun using__stableId() {
-    val productData = Builder(__CustomScalarAdapters).buildProduct {
+    val productData = Builder(__ScalarAdapters).buildProduct {
       this["__stableId"] = "42"
     }
 

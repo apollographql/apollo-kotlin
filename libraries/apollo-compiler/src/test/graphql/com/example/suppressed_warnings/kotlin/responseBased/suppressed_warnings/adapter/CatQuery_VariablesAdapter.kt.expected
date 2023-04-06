@@ -6,8 +6,8 @@
 package com.example.suppressed_warnings.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -19,18 +19,17 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 public object CatQuery_VariablesAdapter : Adapter<CatQuery> {
-  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-      CatQuery = throw IllegalStateException("Input type used in output position")
+  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): CatQuery = throw
+      IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    customScalarAdapters: CustomScalarAdapters,
+    scalarAdapters: ScalarAdapters,
     `value`: CatQuery,
   ): Unit {
     if (value.filter is Optional.Present) {
       writer.name("filter")
-      Filter_InputAdapter.obj().nullable().present().toJson(writer, customScalarAdapters,
-          value.filter)
+      Filter_InputAdapter.obj().nullable().present().toJson(writer, scalarAdapters, value.filter)
     }
   }
 }

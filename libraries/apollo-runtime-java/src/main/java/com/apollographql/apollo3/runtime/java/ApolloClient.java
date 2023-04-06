@@ -2,7 +2,7 @@ package com.apollographql.apollo3.runtime.java;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloRequest;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.CustomScalarType;
 import com.apollographql.apollo3.api.ExecutionContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
@@ -47,7 +47,7 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 public class ApolloClient implements Closeable {
   private Executor executor;
   private List<ApolloInterceptor> interceptors;
-  private CustomScalarAdapters customScalarAdapters;
+  private ScalarAdapters scalarAdapters;
   private NetworkInterceptor networkInterceptor;
   private HttpMethod httpMethod;
   private List<HttpHeader> httpHeaders;
@@ -61,7 +61,7 @@ public class ApolloClient implements Closeable {
       NetworkTransport httpNetworkTransport,
       NetworkTransport subscriptionNetworkTransport,
       List<ApolloInterceptor> interceptors,
-      CustomScalarAdapters customScalarAdapters,
+      ScalarAdapters scalarAdapters,
       HttpMethod httpMethod,
       List<HttpHeader> httpHeaders,
       Boolean sendApqExtensions,
@@ -71,7 +71,7 @@ public class ApolloClient implements Closeable {
   ) {
     this.executor = executor;
     this.interceptors = interceptors;
-    this.customScalarAdapters = customScalarAdapters;
+    this.scalarAdapters = scalarAdapters;
     this.httpMethod = httpMethod;
     this.httpHeaders = httpHeaders;
     this.sendApqExtensions = sendApqExtensions;
@@ -99,7 +99,7 @@ public class ApolloClient implements Closeable {
 
   public <D extends Operation.Data> ApolloDisposable execute(@NotNull ApolloRequest<D> apolloRequest, @NotNull ApolloCallback<D> callback) {
     ApolloRequest.Builder<D> requestBuilder = new ApolloRequest.Builder<>(apolloRequest.getOperation())
-        .addExecutionContext(customScalarAdapters)
+        .addExecutionContext(scalarAdapters)
         .addExecutionContext(apolloRequest.getExecutionContext())
         .httpMethod(httpMethod)
         .httpHeaders(httpHeaders)
@@ -150,8 +150,8 @@ public class ApolloClient implements Closeable {
     }
   }
 
-  public CustomScalarAdapters getCustomScalarAdapters() {
-    return customScalarAdapters;
+  public ScalarAdapters getScalarAdapters() {
+    return scalarAdapters;
   }
 
   public void close() {
@@ -176,7 +176,7 @@ public class ApolloClient implements Closeable {
     private List<HttpHeader> wsHeaders = new ArrayList<>();
     private WebSocketNetworkTransport.ReopenWhen wsReopenWhen;
     private Long wsIdleTimeoutMillis;
-    private final CustomScalarAdapters.Builder customScalarAdaptersBuilder = new CustomScalarAdapters.Builder();
+    private final ScalarAdapters.Builder scalarAdaptersBuilder = new ScalarAdapters.Builder();
     private ExecutionContext executionContext;
     private HttpMethod httpMethod;
     private final ArrayList<HttpHeader> httpHeaders = new ArrayList<>();
@@ -285,9 +285,9 @@ public class ApolloClient implements Closeable {
       return this;
     }
 
-    public Builder customScalarAdapters(@NotNull CustomScalarAdapters customScalarAdapters) {
-      this.customScalarAdaptersBuilder.clear();
-      this.customScalarAdaptersBuilder.addAll(customScalarAdapters);
+    public Builder scalarAdapters(@NotNull ScalarAdapters scalarAdapters) {
+      this.scalarAdaptersBuilder.clear();
+      this.scalarAdaptersBuilder.addAll(scalarAdapters);
       return this;
     }
 
@@ -298,8 +298,8 @@ public class ApolloClient implements Closeable {
      * property. For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
      * @param customScalarAdapter the {@link Adapter} to use for this custom scalar
      */
-    public <T> Builder addCustomScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
-      customScalarAdaptersBuilder.add(customScalarType, customScalarAdapter);
+    public <T> Builder addScalarAdapter(@NotNull CustomScalarType customScalarType, @NotNull Adapter<T> customScalarAdapter) {
+      scalarAdaptersBuilder.add(customScalarType, customScalarAdapter);
       return this;
     }
 
@@ -435,7 +435,7 @@ public class ApolloClient implements Closeable {
           networkTransport,
           subscriptionNetworkTransport,
           interceptors,
-          customScalarAdaptersBuilder.build(),
+          scalarAdaptersBuilder.build(),
           httpMethod,
           httpHeaders,
           sendApqExtensions,

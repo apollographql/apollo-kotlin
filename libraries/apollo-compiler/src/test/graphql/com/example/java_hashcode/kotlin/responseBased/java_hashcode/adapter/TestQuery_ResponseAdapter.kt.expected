@@ -6,8 +6,8 @@
 package com.example.java_hashcode.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.java_hashcode.TestQuery
@@ -20,13 +20,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("h")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         TestQuery.Data {
       var _h: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _h = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _h = NullableIntAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -38,11 +38,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("h")
-      NullableIntAdapter.toJson(writer, customScalarAdapters, value.h)
+      NullableIntAdapter.toJson(writer, scalarAdapters, value.h)
     }
   }
 }

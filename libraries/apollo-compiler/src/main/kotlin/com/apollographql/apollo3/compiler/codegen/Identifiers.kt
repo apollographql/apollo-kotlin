@@ -11,7 +11,7 @@ internal object Identifier {
   const val nullable = "nullable"
 
   const val type = "type"
-  const val customScalarAdapters = "customScalarAdapters"
+  const val scalarAdapters = "scalarAdapters"
   const val value = "value"
   const val reader = "reader"
   const val writer = "writer"

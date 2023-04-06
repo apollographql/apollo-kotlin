@@ -12,9 +12,9 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
@@ -33,8 +33,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("object", "interface", "union", "scalar", "enum");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestQuery.Object _object = null;
       TestQuery.Interface _interface = null;
       TestQuery.Union _union = null;
@@ -44,11 +44,11 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _object = new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 1: _interface = new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
-          case 2: _union = new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
-          case 3: _scalar = Adapters.NullableAnyAdapter.fromJson(reader, customScalarAdapters); break;
-          case 4: _enum = new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).fromJson(reader, customScalarAdapters); break;
+          case 0: _object = new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 1: _interface = new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 2: _union = new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 3: _scalar = Adapters.NullableAnyAdapter.fromJson(reader, scalarAdapters); break;
+          case 4: _enum = new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -63,22 +63,22 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
+        throws IOException {
       writer.name("object");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).toJson(writer, customScalarAdapters, value.object);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).toJson(writer, scalarAdapters, value.object);
 
       writer.name("interface");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).toJson(writer, customScalarAdapters, value.interface_);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).toJson(writer, scalarAdapters, value.interface_);
 
       writer.name("union");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).toJson(writer, customScalarAdapters, value.union);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).toJson(writer, scalarAdapters, value.union);
 
       writer.name("scalar");
-      Adapters.NullableAnyAdapter.toJson(writer, customScalarAdapters, value.scalar);
+      Adapters.NullableAnyAdapter.toJson(writer, scalarAdapters, value.scalar);
 
       writer.name("enum");
-      new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).toJson(writer, customScalarAdapters, value.enum_);
+      new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).toJson(writer, scalarAdapters, value.enum_);
     }
   }
 
@@ -88,14 +88,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.Object fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Object fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String _field = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -106,10 +106,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Object value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Object value)
+        throws IOException {
       writer.name("field");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.field);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.field);
     }
   }
 
@@ -119,14 +119,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.Interface fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.Interface fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String _field = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -137,10 +137,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Interface value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Interface value)
+        throws IOException {
       writer.name("field");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.field);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.field);
     }
   }
 
@@ -150,23 +150,23 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Union fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestQuery.Union fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnReservedObject _onReservedObject = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ReservedObject")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ReservedObject")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new TestQuery.Union(
@@ -176,13 +176,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestQuery.Union value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Union value)
+        throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onReservedObject != null) {
-        com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.toJson(writer, customScalarAdapters, value.onReservedObject);
+        com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.toJson(writer, scalarAdapters, value.onReservedObject);
       }
     }
   }
@@ -193,14 +193,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.OnReservedObject fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestQuery.OnReservedObject fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
+        throws IOException {
       String _field = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _field = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -211,10 +211,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestQuery.OnReservedObject value) throws IOException {
       writer.name("field");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.field);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.field);
     }
   }
 }

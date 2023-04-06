@@ -2,7 +2,7 @@ package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -75,13 +75,13 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext, withDefaul
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement("$L.${Identifier.toJson}($writer, $customScalarAdapters, $value.$propertyName)", adapterInitializer)
+  builder.addStatement("$L.${Identifier.toJson}($writer, $scalarAdapters, $value.$propertyName)", adapterInitializer)
   if (type.isOptional()) {
     builder.endControlFlow()
     if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
-      builder.beginControlFlow("else if ($customScalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues())")
+      builder.beginControlFlow("else if ($scalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues())")
       builder.addStatement("$writer.name($S)", graphQlName)
-      builder.addStatement("$L.${Identifier.toJson}($writer, $customScalarAdapters, $L)", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanAdapter"), defaultValue.value)
+      builder.addStatement("$L.${Identifier.toJson}($writer, $scalarAdapters, $L)", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanAdapter"), defaultValue.value)
       builder.endControlFlow()
     }
   }

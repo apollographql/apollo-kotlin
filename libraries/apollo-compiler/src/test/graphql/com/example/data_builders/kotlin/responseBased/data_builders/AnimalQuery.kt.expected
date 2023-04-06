@@ -8,10 +8,10 @@ package com.example.data_builders
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -21,7 +21,7 @@ import com.example.data_builders.fragment.DogFragment
 import com.example.data_builders.schema.__Schema
 import com.example.data_builders.selections.AnimalQuerySelections
 import com.example.data_builders.type.QueryBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
+import com.example.data_builders.type.__ScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -39,8 +39,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
     // This operation doesn't have any variable
   }
 
@@ -124,7 +123,7 @@ public class AnimalQuery() : Query<AnimalQuery.Data> {
       AnimalQuerySelections.__root,
       "Query",
       resolver,
-      __CustomScalarAdapters,
+      __ScalarAdapters,
     )
   }
 }

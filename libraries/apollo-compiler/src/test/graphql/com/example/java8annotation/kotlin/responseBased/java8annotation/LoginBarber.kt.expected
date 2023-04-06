@@ -8,8 +8,8 @@ package com.example.java8annotation
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Mutation
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.java8annotation.adapter.LoginBarber_ResponseAdapter
@@ -28,9 +28,8 @@ public data class LoginBarber(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
-    LoginBarber_VariablesAdapter.toJson(writer, customScalarAdapters, this)
+  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
+    LoginBarber_VariablesAdapter.toJson(writer, scalarAdapters, this)
   }
 
   public override fun adapter(): Adapter<Data> = LoginBarber_ResponseAdapter.Data.obj()

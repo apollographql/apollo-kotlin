@@ -7,7 +7,7 @@ package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,7 +23,7 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails : Adapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.named_fragment_delegate.fragment.HumanDetails {
       var _name: String? = null
       var _profileLink: Any? = null
@@ -31,9 +31,9 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _profileLink = AnyAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _profileLink = AnyAdapter.fromJson(reader, scalarAdapters)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -47,31 +47,30 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.named_fragment_delegate.fragment.HumanDetails,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("profileLink")
-      AnyAdapter.toJson(writer, customScalarAdapters, value.profileLink)
+      AnyAdapter.toJson(writer, scalarAdapters, value.profileLink)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+      FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
     }
 
     private object FriendsConnection :
         Adapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection {
         var _edges: List<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -83,11 +82,11 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
       private object Edge :
@@ -95,14 +94,13 @@ public object HumanDetailsImpl_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge {
           var _node: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj().nullable().fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -114,11 +112,11 @@ public object HumanDetailsImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
         private object Node :
@@ -126,14 +124,13 @@ public object HumanDetailsImpl_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
               com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -145,11 +142,11 @@ public object HumanDetailsImpl_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
+            scalarAdapters: ScalarAdapters,
             `value`: com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
+            StringAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }

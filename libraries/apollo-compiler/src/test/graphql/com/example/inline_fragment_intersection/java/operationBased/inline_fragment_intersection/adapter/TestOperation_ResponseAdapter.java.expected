@@ -12,9 +12,9 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.TestOperation;
@@ -35,14 +35,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
 
     @Override
-    public TestOperation.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
-        throws IOException {
+    public TestOperation.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       TestOperation.Random _random = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _random = new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).fromJson(reader, customScalarAdapters); break;
+          case 0: _random = new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,10 +55,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Data value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Data value)
+        throws IOException {
       writer.name("random");
-      new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).toJson(writer, customScalarAdapters, value.random);
+      new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).toJson(writer, scalarAdapters, value.random);
     }
   }
 
@@ -68,29 +68,29 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Random fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.Random fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnBeing _onBeing = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       TestOperation.OnWookie2 _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new TestOperation.Random(
@@ -101,17 +101,17 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Random value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Random value)
+        throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onBeing != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.toJson(writer, customScalarAdapters, value.onBeing);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.toJson(writer, scalarAdapters, value.onBeing);
       }
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.toJson(writer, customScalarAdapters, value.onWookie);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
       }
     }
   }
@@ -122,8 +122,8 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
 
     @Override
-    public TestOperation.OnBeing fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnBeing fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
       String _name = null;
       List<TestOperation.Friend> _friends = null;
@@ -131,18 +131,18 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 2: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -157,19 +157,19 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnBeing value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("friends");
-      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, scalarAdapters, value.friends);
 
       if (value.onHuman != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, customScalarAdapters, value.onHuman);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
       }
     }
   }
@@ -180,25 +180,25 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
-    public TestOperation.Friend fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.Friend fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWookie _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -211,16 +211,16 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        TestOperation.Friend value) throws IOException {
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Friend value)
+        throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.toJson(writer, customScalarAdapters, value.onWookie);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
       }
     }
   }
@@ -231,14 +231,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
     @Override
-    public TestOperation.OnWookie fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnWookie fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Double _lifeExpectancy = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -249,10 +249,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnWookie value) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy);
+      Adapters.NullableDoubleAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
     }
   }
 
@@ -262,16 +262,16 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("profilePictureUrl", "friends");
 
     @Override
-    public TestOperation.OnHuman fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnHuman fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String _profilePictureUrl = null;
       List<TestOperation.Friend1> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, customScalarAdapters); break;
+          case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -285,13 +285,13 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnHuman value) throws IOException {
       writer.name("profilePictureUrl");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.profilePictureUrl);
+      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.profilePictureUrl);
 
       writer.name("friends");
-      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, customScalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, scalarAdapters, value.friends);
     }
   }
 
@@ -301,25 +301,25 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "isFamous");
 
     @Override
-    public TestOperation.Friend1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.Friend1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       String __typename = null;
       Boolean _isFamous = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWookie1 _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), customScalarAdapters.getAdapterContext().variables(), __typename, customScalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.fromJson(reader, customScalarAdapters);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.fromJson(reader, scalarAdapters);
       }
 
       return new TestOperation.Friend1(
@@ -330,16 +330,16 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.Friend1 value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.__typename);
+      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("isFamous");
-      Adapters.NullableBooleanAdapter.toJson(writer, customScalarAdapters, value.isFamous);
+      Adapters.NullableBooleanAdapter.toJson(writer, scalarAdapters, value.isFamous);
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.toJson(writer, customScalarAdapters, value.onWookie);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
       }
     }
   }
@@ -350,14 +350,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race");
 
     @Override
-    public TestOperation.OnWookie1 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnWookie1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Race _race = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
+          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -370,10 +370,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnWookie1 value) throws IOException {
       writer.name("race");
-      Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
+      Race_ResponseAdapter.INSTANCE.toJson(writer, scalarAdapters, value.race);
     }
   }
 
@@ -383,16 +383,16 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race", "friends");
 
     @Override
-    public TestOperation.OnWookie2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.OnWookie2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Race _race = null;
       List<TestOperation.Friend2> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, customScalarAdapters); break;
-          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
+          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, scalarAdapters); break;
+          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -407,13 +407,13 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnWookie2 value) throws IOException {
       writer.name("race");
-      Race_ResponseAdapter.INSTANCE.toJson(writer, customScalarAdapters, value.race);
+      Race_ResponseAdapter.INSTANCE.toJson(writer, scalarAdapters, value.race);
 
       writer.name("friends");
-      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, customScalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, scalarAdapters, value.friends);
     }
   }
 
@@ -423,14 +423,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
     @Override
-    public TestOperation.Friend2 fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public TestOperation.Friend2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
+        IOException {
       Double _lifeExpectancy = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -441,10 +441,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.Friend2 value) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.lifeExpectancy);
+      Adapters.NullableDoubleAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
     }
   }
 }

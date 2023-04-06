@@ -1,7 +1,7 @@
 package test
 
 import codegen.models.HeroAndFriendsWithFragmentsQuery
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toJsonString
@@ -36,7 +36,7 @@ class AdapterBijectionTest {
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
     val json = operation.adapter().toJsonString(value = data)
-    val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }.jsonReader(), CustomScalarAdapters.Empty)
+    val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }.jsonReader(), ScalarAdapters.Empty)
 
     assertEquals(data, data2)
   }

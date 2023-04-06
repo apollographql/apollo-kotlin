@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.customScalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.evaluate
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
@@ -107,7 +107,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             regularProperties.mapIndexed { index, property ->
               CodeBlock.of(
-                  "case $L: $L = $L.$fromJson($reader, $customScalarAdapters); break;",
+                  "case $L: $L = $L.$fromJson($reader, $scalarAdapters); break;",
                   index,
                   context.layout.variableName(property.info.responseName),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
@@ -146,7 +146,7 @@ internal fun readFromResponseCodeBlock(
 
   val syntheticLoop = syntheticProperties.map { property ->
     val fromJsonCall = CodeBlock.of(
-        "$L.INSTANCE.$fromJson($reader, $customScalarAdapters)",
+        "$L.INSTANCE.$fromJson($reader, $scalarAdapters)",
         context.resolver.resolveModelAdapter(property.info.type.modelPath())
     )
     val resolvedType = context.resolver.resolveIrType(property.info.type).withoutAnnotations()
@@ -165,7 +165,7 @@ internal fun readFromResponseCodeBlock(
               "null"
             }
             beginControlFlow(
-                "if ($T.$evaluate($L, $customScalarAdapters.getAdapterContext().variables(), $__typename, $customScalarAdapters.getAdapterContext(), $pathLiteral))",
+                "if ($T.$evaluate($L, $scalarAdapters.getAdapterContext().variables(), $__typename, $scalarAdapters.getAdapterContext(), $pathLiteral))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )
@@ -256,7 +256,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
     builder.addStatement("${writer}.name($S)", info.responseName)
     builder.addStatement(
-        "$L.$toJson($writer, $customScalarAdapters, $value.$propertyName)",
+        "$L.$toJson($writer, $scalarAdapters, $value.$propertyName)",
         adapterInitializer
     )
   } else {
@@ -273,7 +273,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: JavaContext): CodeBlock
     }
     val fieldValue = CodeBlock.of("$value.$propertyName")
     builder.addStatement(
-        "$L.INSTANCE.$toJson($writer, $customScalarAdapters, $L)",
+        "$L.INSTANCE.$toJson($writer, $scalarAdapters, $L)",
         adapterInitializer,
         context.unwrapOptionalValue(fieldValue, resolvedType)
     )

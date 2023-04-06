@@ -7,10 +7,10 @@ package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -18,7 +18,7 @@ import com.example.simple_fragment.fragment.selections.HumanDetailsSelections
 import com.example.simple_fragment.schema.__Schema
 import com.example.simple_fragment.type.Human
 import com.example.simple_fragment.type.HumanBuilder
-import com.example.simple_fragment.type.__CustomScalarAdapters
+import com.example.simple_fragment.type.__ScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -32,8 +32,7 @@ internal class HumanDetailsImpl() : Fragment<HumanDetails> {
 
   public override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
@@ -56,7 +55,7 @@ internal class HumanDetailsImpl() : Fragment<HumanDetails> {
       HumanDetailsSelections.__root,
       "Human",
       resolver,
-      __CustomScalarAdapters,
+      __ScalarAdapters,
     )
   }
 }

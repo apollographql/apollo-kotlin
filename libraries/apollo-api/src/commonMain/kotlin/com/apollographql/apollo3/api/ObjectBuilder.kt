@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 
 @Suppress("PropertyName")
-abstract class ObjectBuilder<out T: Map<String, Any?>>(override val customScalarAdapters: CustomScalarAdapters): BuilderScope {
+abstract class ObjectBuilder<out T: Map<String, Any?>>(override val scalarAdapters: ScalarAdapters): BuilderScope {
   val __fields = mutableMapOf<String, Any?>()
 
   var __typename: String by __fields
@@ -17,23 +17,23 @@ abstract class ObjectBuilder<out T: Map<String, Any?>>(override val customScalar
 }
 
 interface BuilderScope {
-  val customScalarAdapters: CustomScalarAdapters
+  val scalarAdapters: ScalarAdapters
 }
 
 interface BuilderFactory<out T> {
-  fun newBuilder(customScalarAdapters: CustomScalarAdapters) : T
+  fun newBuilder(scalarAdapters: ScalarAdapters) : T
 }
 
-fun Builder(customScalarAdapters: CustomScalarAdapters): BuilderScope {
+fun Builder(scalarAdapters: ScalarAdapters): BuilderScope {
   return object : BuilderScope {
-    override val customScalarAdapters: CustomScalarAdapters
-      get() = customScalarAdapters
+    override val scalarAdapters: ScalarAdapters
+      get() = scalarAdapters
   }
 }
 
 val GlobalBuilder = object : BuilderScope {
-  override val customScalarAdapters: CustomScalarAdapters
-    get() = CustomScalarAdapters.PassThrough
+  override val scalarAdapters: ScalarAdapters
+    get() = ScalarAdapters.PassThrough
 }
 
 /**
@@ -45,19 +45,19 @@ class BuilderProperty<T>(val adapter: Adapter<T>) {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.fromJson(MapJsonReader(data), CustomScalarAdapters.Empty)
+    return adapter.fromJson(MapJsonReader(data), ScalarAdapters.Empty)
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {
     thisRef.__fields[property.name] = MapJsonWriter().apply {
-      adapter.toJson(this, CustomScalarAdapters.Empty, value)
+      adapter.toJson(this, ScalarAdapters.Empty, value)
     }.root()
   }
 }
 
 fun <T> adaptValue(adapter: Adapter<T>, value: T): Any? {
   return MapJsonWriter().apply {
-    adapter.toJson(this, CustomScalarAdapters.Empty, value)
+    adapter.toJson(this, ScalarAdapters.Empty, value)
   }.root()
 }
 

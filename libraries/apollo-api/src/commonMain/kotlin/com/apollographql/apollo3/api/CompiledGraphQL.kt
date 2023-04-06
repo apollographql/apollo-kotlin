@@ -164,7 +164,7 @@ sealed class CompiledNamedType(val name: String) : CompiledType() {
 /**
  * A GraphQL scalar type that is mapped to a Kotlin. This is named "Custom" for historical reasons
  * but is also used for builtin scalars
- * 
+ *
  * TODO v4: rename this to ScalarType
  */
 class CustomScalarType(

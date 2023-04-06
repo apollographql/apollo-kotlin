@@ -2,7 +2,7 @@ package test
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.ApolloCacheHeaders
 import com.apollographql.apollo3.cache.normalized.api.CacheHeaders
@@ -47,7 +47,7 @@ class ExpirationTest {
     val query = GetUserQuery()
     val data = GetUserQuery.Data(GetUserQuery.User("John", "john@doe.com"))
 
-    val records = query.normalize(data, CustomScalarAdapters.Empty, TypePolicyCacheKeyGenerator).values
+    val records = query.normalize(data, ScalarAdapters.Empty, TypePolicyCacheKeyGenerator).values
 
     client.apolloStore.accessCache {
       // store records in the past

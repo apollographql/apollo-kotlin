@@ -6,8 +6,8 @@
 package com.example.fragment_with_inline_fragment.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -26,7 +26,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.fragment_with_inline_fragment.fragment.HeroDetails {
       var __typename: String? = null
       var _name: String? = null
@@ -34,9 +34,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -46,17 +46,17 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       var _onDroid: com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid? = null
-      if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Droid").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
         reader.rewind()
         _onDroid = com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.fromJson(reader,
-            customScalarAdapters)
+            scalarAdapters)
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
         reader.rewind()
         _humanDetails = com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-            customScalarAdapters)
+            scalarAdapters)
       }
 
       return com.example.fragment_with_inline_fragment.fragment.HeroDetails(
@@ -70,26 +70,26 @@ public object HeroDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+      FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
 
       if (value.onDroid != null) {
         com.example.fragment_with_inline_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.OnDroid.toJson(writer,
-            customScalarAdapters, value.onDroid)
+            scalarAdapters, value.onDroid)
       }
 
       if (value.humanDetails != null) {
         com.example.fragment_with_inline_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-            customScalarAdapters, value.humanDetails)
+            scalarAdapters, value.humanDetails)
       }
     }
 
@@ -97,16 +97,15 @@ public object HeroDetailsImpl_ResponseAdapter {
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -119,14 +118,14 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
       private object Edge :
@@ -134,14 +133,13 @@ public object HeroDetailsImpl_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge {
           var _node: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj().nullable().fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -153,11 +151,11 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
+          scalarAdapters: ScalarAdapters,
           `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
         private object Node :
@@ -165,14 +163,13 @@ public object HeroDetailsImpl_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
               com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -184,11 +181,11 @@ public object HeroDetailsImpl_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
+            scalarAdapters: ScalarAdapters,
             `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
+            StringAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }
@@ -198,20 +195,20 @@ public object HeroDetailsImpl_ResponseAdapter {
         Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
 
         reader.rewind()
         val _droidDetails = com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-            customScalarAdapters)
+            scalarAdapters)
 
         return com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid(
           __typename = __typename!!,
@@ -221,14 +218,14 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
+        scalarAdapters: ScalarAdapters,
         `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-            customScalarAdapters, value.droidDetails)
+            scalarAdapters, value.droidDetails)
       }
     }
   }

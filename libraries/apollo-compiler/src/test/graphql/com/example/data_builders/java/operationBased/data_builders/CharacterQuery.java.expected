@@ -7,12 +7,12 @@ package com.example.data_builders;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.DefaultFakeResolver;
 import com.apollographql.apollo3.api.FakeResolver;
 import com.apollographql.apollo3.api.FakeResolverKt;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.data_builders.adapter.CharacterQuery_ResponseAdapter;
 import com.example.data_builders.fragment.DroidFragment;
@@ -114,8 +114,8 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
+      IOException {
     // This operation doesn't have any variable
   }
 
@@ -141,7 +141,7 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
       "Query",
       map,
       resolver,
-      __Schema.customScalarAdapters
+      __Schema.scalarAdapters
     );
   }
 
