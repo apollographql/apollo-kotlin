@@ -152,12 +152,22 @@ private fun Project.configurePublishingInternal() {
             }
           }
         }
-
+        plugins.hasPlugin("com.gradle.plugin-publish") -> {
+          /**
+           * com.gradle.plugin-publish creates all publications
+           */
+        }
         plugins.hasPlugin("java-gradle-plugin") -> {
           /**
            * java-gradle-plugin creates 2 publications (one marker and one regular) but without source/javadoc.
-           * the new publish plugin creates everything
            */
+          withType(MavenPublication::class.java) {
+            // Only add sources and javadoc for the main publication
+            if (!name.lowercase().contains("marker")) {
+              artifact(javadocJarTaskProvider)
+              artifact(createJavaSourcesTask())
+            }
+          }
         }
 
         extensions.findByName("android") != null -> {
@@ -238,7 +248,6 @@ private fun Project.configurePublishingInternal() {
   }
 
   // See https://youtrack.jetbrains.com/issue/KT-46466/Kotlin-MPP-publishing-Gradle-7-disables-optimizations-because-of-task-dependencies#focus=Comments-27-7102038.0-0
-
   val signingTasks = tasks.withType(Sign::class.java)
   tasks.withType(AbstractPublishToMaven::class.java).configureEach {
     this.dependsOn(signingTasks)
