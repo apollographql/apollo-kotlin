@@ -47,7 +47,11 @@ try {
 
 // With
 val response = client.query(MyQuery()).execute()
-if (response.exception != null) {
+val data = response.data
+if (data != null) {
+  // No errors
+  // ...
+} else {
   when (response.exception) {
     is ApolloGraphQLException -> {
       // Handle GraphQL errors
@@ -56,10 +60,6 @@ if (response.exception != null) {
       // Handle network error
     }
   }
-} else {
-  // No errors
-  val data = response.data
-  // ...
 }
 
 // Replace
@@ -73,7 +73,11 @@ client.subscription(MySubscription()).toFlow().collect { response ->
 
 // With
 client.subscription(MySubscription()).toFlow().collect { response ->
-  if (response.exception != null) {
+  val data = response.data
+  if (data != null) {
+    // No errors
+    // ...
+  } else {
     when (response.exception) {
       is ApolloGraphQLException -> {
         // Handle GraphQL errors
@@ -82,10 +86,6 @@ client.subscription(MySubscription()).toFlow().collect { response ->
         // Handle network error
       }
     }
-  } else {
-    // No errors
-    val data = response.data
-    // ...
   }
 }
 ```
