@@ -2,6 +2,7 @@ package com.apollographql.ijplugin.project
 
 import com.apollographql.ijplugin.codegen.ApolloCodegenService
 import com.apollographql.ijplugin.gradle.GradleToolingModelService
+import com.apollographql.ijplugin.settings.SettingsService
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
@@ -18,6 +19,7 @@ internal class ApolloProjectManagerListener : ProjectManagerListener {
       logd("isApolloKotlin3Project=" + project.apolloProjectService.isApolloKotlin3Project)
       project.service<ApolloCodegenService>()
       project.service<GradleToolingModelService>()
+      project.service<SettingsService>()
     }
   }
 }
