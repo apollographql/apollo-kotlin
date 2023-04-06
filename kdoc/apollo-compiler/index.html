@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>apollo-compiler</title>
 <link href="../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../scripts/sourceset_dependencies.js" async></script>
 <link href="../styles/style.css" rel="Stylesheet">
 <link href="../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -27,7 +19,6 @@
 <script type="text/javascript" src="../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../scripts/main.js" defer></script>
 <script type="text/javascript" src="../scripts/prism.js" async></script>
-<script type="text/javascript" src="../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../images/apollo.svg">
 <link href="../styles/style.css" rel="Stylesheet">
 <link href="../styles/prism.css" rel="Stylesheet">
@@ -38,12 +29,9 @@
     <div class="library-name">
 <a href="../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-dev.2-SNAPSHOT
+    <div>3.8.1-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
-        <div class="filter-section" id="filter-section">
-                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":apollo-compiler:dokkaHtmlPartial/main">jvm</button>
-        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -68,11 +56,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-124602452%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -86,11 +70,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2116217793%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -104,11 +84,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-380397389%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -122,11 +98,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-745307180%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -140,11 +112,21 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1159032950%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+<a data-name="-1390096622%2FPackages%2F1826250589" anchor-label="com.apollographql.apollo3.compiler.codegen.kotlin" id="-1390096622%2FPackages%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+    <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
+      <div>
+        <div class="main-subrow ">
+          <div class=""><span class="inline-flex">
+              <div><a href="com.apollographql.apollo3.compiler.codegen.kotlin/index.html">com.apollographql.apollo3.compiler.codegen.kotlin</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1390096622%2FPackages%2F1826250589"></span>
+                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+              </span></span></div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -158,11 +140,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1836386583%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -176,11 +154,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-365500946%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -194,29 +168,21 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-190688639%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
     </div>
-<a data-name="-1342301969%2FPackages%2F1826250589" anchor-label="com.apollographql.apollo3.compiler.ir" id="-1342301969%2FPackages%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
+<a data-name="-1454636487%2FPackages%2F1826250589" anchor-label="com.apollographql.apollo3.compiler.introspection" id="-1454636487%2FPackages%2F1826250589" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main"></a>
     <div class="table-row" data-filterable-current=":apollo-compiler:dokkaHtmlPartial/main" data-filterable-set=":apollo-compiler:dokkaHtmlPartial/main">
       <div>
         <div class="main-subrow ">
           <div class=""><span class="inline-flex">
-              <div><a href="com.apollographql.apollo3.compiler.ir/index.html">com.apollographql.apollo3.compiler.ir</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1342301969%2FPackages%2F1826250589"></span>
+              <div><a href="com.apollographql.apollo3.compiler.introspection/index.html">com.apollographql.apollo3.compiler.introspection</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1454636487%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -230,11 +196,7 @@
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1209544090%2FPackages%2F1826250589"></span>
                 <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
               </span></span></div>
-          <div class="pull-right">
-            <div class="platform-tags no-gutters">
-              <div class="platform-tag jvm-like">jvm</div>
-            </div>
-          </div>
+          <div class="pull-right"></div>
         </div>
         <div></div>
       </div>
@@ -246,6 +208,6 @@
       </div>
     </div>
 </div>
-</body>
-</html>
+
+</body></html>
 
