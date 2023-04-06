@@ -1,3 +1,5 @@
+import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
+
 rootProject.name = "apollo-kotlin"
 
 rootProject.projectDir
@@ -31,10 +33,9 @@ gradleEnterprise {
 
   buildScan {
     publishAlways()
+    this as BuildScanExtensionWithHiddenFeatures
+    publishIfAuthenticated()
     
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
     val isCiBuild = System.getenv("CI") != null
     isUploadInBackground = !isCiBuild
 

@@ -1,3 +1,5 @@
+import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
+
 rootProject.name = "apollo-tests"
 
 // Include all tests
@@ -37,8 +39,8 @@ gradleEnterprise {
   buildScan {
     publishAlways()
 
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
+    this as BuildScanExtensionWithHiddenFeatures
+    publishIfAuthenticated()
 
     val isCiBuild = System.getenv("CI") != null
     isUploadInBackground = !isCiBuild
