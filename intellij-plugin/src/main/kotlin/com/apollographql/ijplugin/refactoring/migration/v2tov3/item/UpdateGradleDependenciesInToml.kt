@@ -1,5 +1,7 @@
-package com.apollographql.ijplugin.refactoring.migration.item
+package com.apollographql.ijplugin.refactoring.migration.v2tov3.item
 
+import com.apollographql.ijplugin.refactoring.migration.item.MigrationItem
+import com.apollographql.ijplugin.refactoring.migration.item.MigrationItemUsageInfo
 import com.apollographql.ijplugin.util.findPsiFilesByName
 import com.apollographql.ijplugin.util.quoted
 import com.apollographql.ijplugin.util.unquoted

@@ -1,9 +1,11 @@
-package com.apollographql.ijplugin.refactoring.migration
+package com.apollographql.ijplugin.action
 
 import com.apollographql.ijplugin.ApolloBundle
 import com.apollographql.ijplugin.project.apolloProjectService
+import com.apollographql.ijplugin.refactoring.migration.v2tov3.ApolloV2ToV3MigrationProcessor
 import com.apollographql.ijplugin.util.logd
 import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
@@ -25,10 +27,10 @@ class ApolloV2ToV3MigrationAction : AnAction() {
     }
   }
 
-  override fun update(event: AnActionEvent) {
-    val presentation = event.presentation
-    val project = event.project
-    presentation.isEnabled = project?.apolloProjectService?.isApolloAndroid2Project == true
-    presentation.isVisible = !ActionPlaces.isPopupPlace(event.place)
+  override fun update(e: AnActionEvent) {
+    e.presentation.isEnabled = e.project?.apolloProjectService?.isApolloAndroid2Project == true
+    e.presentation.isVisible = !ActionPlaces.isPopupPlace(e.place)
   }
+
+  override fun getActionUpdateThread() = ActionUpdateThread.BGT
 }

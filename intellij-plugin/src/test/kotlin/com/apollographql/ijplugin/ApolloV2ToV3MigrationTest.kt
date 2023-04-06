@@ -1,6 +1,6 @@
 package com.apollographql.ijplugin
 
-import com.apollographql.ijplugin.refactoring.migration.ApolloV2ToV3MigrationProcessor
+import com.apollographql.ijplugin.refactoring.migration.v2tov3.ApolloV2ToV3MigrationProcessor
 import com.intellij.application.options.CodeStyle
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.ContentEntry
