@@ -30,6 +30,8 @@ plugins {
 apply(from = "./gradle/repositories.gradle.kts")
 
 gradleEnterprise {
+  server = "https://ge.apollographql.com"
+
   buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
