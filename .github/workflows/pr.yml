@@ -31,7 +31,9 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs
           ./gradlew --stop
-          ./gradlew ciTestsGradle --scan
+          ./gradlew ciTestsGradle
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -60,7 +62,9 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs --stacktrace
           ./gradlew --stop
-          ./gradlew ciTestsNoGradle --stacktrace --scan
+          ./gradlew ciTestsNoGradle --stacktrace
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -89,7 +93,9 @@ jobs:
           # 'Resolving NPM dependencies using yarn' returns 137
           ./gradlew compileKotlinJs
           ./gradlew --stop
-          ./gradlew -p tests ciBuild --scan
+          ./gradlew -p tests ciBuild
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -144,10 +150,12 @@ jobs:
           echo "::set-output name=pluginVerifierHomeDir::~/.pluginVerifier"
 
           ./gradlew :intellij-plugin:listProductsReleases # prepare list of IDEs for Plugin Verifier
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
       # Run tests
       - name: Run Tests
-        run: ./gradlew :intellij-plugin:check --scan
+        run: ./gradlew :intellij-plugin:check 
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result
