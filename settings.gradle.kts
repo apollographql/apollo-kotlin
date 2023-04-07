@@ -29,7 +29,7 @@ apply(from = "./gradle/repositories.gradle.kts")
 
 gradleEnterprise {
   server = "https://ge.apollographql.com"
-  allowUntrustedServer = true
+  allowUntrustedServer = false
 
   buildScan {
     publishAlways()
