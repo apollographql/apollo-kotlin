@@ -18,7 +18,7 @@ class ScalarAdapters private constructor(
 
   private val adaptersMap: Map<String, Adapter<*>> = scalarAdapters
 
-  fun <T : Any> responseAdapterFor(scalar: CustomScalarType): Adapter<T> {
+  fun <T : Any> responseAdapterFor(scalar: ScalarType): Adapter<T> {
     @Suppress("UNCHECKED_CAST")
     return when {
       adaptersMap[scalar.name] != null -> {
@@ -83,7 +83,7 @@ class ScalarAdapters private constructor(
     private var unsafe = false
 
     fun <T> add(
-        scalarType: CustomScalarType,
+        scalarType: ScalarType,
         scalarAdapter: Adapter<T>,
     ) = apply {
       adaptersMap[scalarType.name] = scalarAdapter

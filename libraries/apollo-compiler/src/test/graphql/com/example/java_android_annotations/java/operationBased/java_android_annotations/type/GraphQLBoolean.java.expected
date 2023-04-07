@@ -5,11 +5,11 @@
 //
 package com.example.java_android_annotations.type;
 
-import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo3.api.ScalarType;
 
 /**
  * The `Boolean` scalar type represents `true` or `false`.
  */
 public class GraphQLBoolean {
-  public static CustomScalarType type = new CustomScalarType("Boolean", "java.lang.Boolean");
+  public static ScalarType type = new ScalarType("Boolean", "java.lang.Boolean");
 }

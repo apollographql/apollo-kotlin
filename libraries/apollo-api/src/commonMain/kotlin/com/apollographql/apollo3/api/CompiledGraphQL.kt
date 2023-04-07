@@ -163,10 +163,8 @@ sealed class CompiledNamedType(val name: String) : CompiledType() {
 /**
  * A GraphQL scalar type that is mapped to a Kotlin. This is named "Custom" for historical reasons
  * but is also used for builtin scalars
- *
- * TODO v4: rename this to ScalarType
  */
-class CustomScalarType(
+class ScalarType(
     /**
      * GraphQL schema custom scalar type name (e.g. `ID`, `URL`, `DateTime` etc.)
      */
@@ -282,13 +280,6 @@ class InputObjectType(
 class EnumType(
     name: String,
     val values: List<String>
-) : CompiledNamedType(name)
-
-/**
- * TODO v4: remove (see also [CustomScalarType] above
- */
-class ScalarType(
-    name: String,
 ) : CompiledNamedType(name)
 
 

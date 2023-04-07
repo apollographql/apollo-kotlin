@@ -38,7 +38,7 @@ internal object JavaClassNames {
   val MutationData = ClassNames.MutationData.toJavaPoetClassName()
   val SubscriptionData = ClassNames.SubscriptionData.toJavaPoetClassName()
   val EnumType = ClassNames.EnumType.toJavaPoetClassName()
-  val CustomScalarType = ClassNames.CustomScalarType.toJavaPoetClassName()
+  val ScalarType = ClassNames.ScalarType.toJavaPoetClassName()
   val True = ClassNames.True.toJavaPoetClassName()
   val False = ClassNames.False.toJavaPoetClassName()
   val CompiledArgument = ClassNames.CompiledArgument.toJavaPoetClassName()

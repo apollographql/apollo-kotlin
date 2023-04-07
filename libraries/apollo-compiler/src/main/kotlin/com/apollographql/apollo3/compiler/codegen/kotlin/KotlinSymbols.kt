@@ -44,7 +44,7 @@ internal object KotlinSymbols {
   val MutationData = ClassNames.MutationData.toKotlinPoetClassName()
   val SubscriptionData = ClassNames.SubscriptionData.toKotlinPoetClassName()
   val EnumType = ClassNames.EnumType.toKotlinPoetClassName()
-  val CustomScalarType = ClassNames.CustomScalarType.toKotlinPoetClassName()
+  val ScalarType = ClassNames.ScalarType.toKotlinPoetClassName()
   val True = ClassNames.True.toKotlinPoetClassName()
   val False = ClassNames.False.toKotlinPoetClassName()
   val CompiledArgument = ClassNames.CompiledArgument.toKotlinPoetClassName()
