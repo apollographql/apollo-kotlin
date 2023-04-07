@@ -20,12 +20,16 @@ dependencies {
 }
 
 gradlePlugin {
+  website.set("https://github.com/apollographql/apollo-kotlin")
+  vcsUrl.set("https://github.com/apollographql/apollo-kotlin")
+
   plugins {
     create("apolloGradlePlugin") {
       id = "com.apollographql.apollo3.external"
       displayName = "Apollo Kotlin GraphQL client plugin."
       description = "Automatically generates typesafe java and kotlin models from your GraphQL files."
       implementationClass = "com.apollographql.apollo3.gradle.internal.ApolloPlugin"
+      tags.set(listOf("graphql", "apollo", "plugin"))
     }
   }
 }
