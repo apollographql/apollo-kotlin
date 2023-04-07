@@ -26,11 +26,6 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ulimit -c unlimited
-          # Workaround an issue where kotlinNpmInstall outputs
-          # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew compileKotlinJs
-          ./gradlew --stop
           ./gradlew ciTestsGradle
         env:
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
@@ -57,11 +52,6 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ulimit -c unlimited
-          # Workaround an issue where kotlinNpmInstall outputs
-          # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew compileKotlinJs --stacktrace
-          ./gradlew --stop
           ./gradlew ciTestsNoGradle --stacktrace
         env:
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
@@ -88,11 +78,6 @@ jobs:
           gradle-home-cache-cleanup: true
       - name: Build with Gradle
         run: |
-          ulimit -c unlimited
-          # Workaround an issue where kotlinNpmInstall outputs
-          # 'Resolving NPM dependencies using yarn' returns 137
-          ./gradlew compileKotlinJs
-          ./gradlew --stop
           ./gradlew -p tests ciBuild
         env:
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
