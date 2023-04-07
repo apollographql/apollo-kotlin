@@ -3,14 +3,14 @@ package com.apollographql.apollo3
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.ExecutionContext
 import com.apollographql.apollo3.api.ExecutionOptions
 import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.http.HttpMethod
@@ -380,15 +380,15 @@ private constructor(
     }
 
     /**
-     * Registers the given [customScalarAdapter]
+     * Registers the given [scalarAdapter]
      *
      * @param scalarType a generated [ScalarType]. Every GraphQL custom scalar has a
      * generated class with a static `type` property. For an example, for a `Date` custom scalar,
      * you can use `com.example.Date.type`
-     * @param customScalarAdapter the [Adapter] to use for this custom scalar
+     * @param scalarAdapter the [Adapter] to use for this custom scalar
      */
-    fun <T> addScalarAdapter(scalarType: ScalarType, customScalarAdapter: Adapter<T>) = apply {
-      scalarAdaptersBuilder.add(scalarType, customScalarAdapter)
+    fun <T> addScalarAdapter(scalarType: ScalarType, scalarAdapter: Adapter<T>) = apply {
+      scalarAdaptersBuilder.add(scalarType, scalarAdapter)
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {

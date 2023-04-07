@@ -10,14 +10,14 @@ import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.TypeSpec
 import javax.lang.model.element.Modifier
 
-internal class CustomScalarBuilder(
+internal class ScalarBuilder(
     private val context: JavaContext,
-    private val customScalar: IrScalar,
-    private val targetTypeName: String?
+    private val scalar: IrScalar,
+    private val targetTypeName: String?,
 ) : JavaClassBuilder {
   private val layout = context.layout
   private val packageName = layout.typePackageName()
-  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(customScalar.name))
+  private val simpleName = prefixBuiltinScalarNames(layout.compiledTypeName(scalar.name))
 
   private fun prefixBuiltinScalarNames(name: String): String {
     // Kotlin Multiplatform won't build with class names that clash with Kotlin types (String, Int, etc.).
@@ -29,13 +29,13 @@ internal class CustomScalarBuilder(
   }
 
   override fun prepare() {
-    context.resolver.registerSchemaType(customScalar.name, ClassName.get(packageName, simpleName))
+    context.resolver.registerSchemaType(scalar.name, ClassName.get(packageName, simpleName))
   }
 
   override fun build(): CodegenJavaFile {
     return CodegenJavaFile(
         packageName = packageName,
-        typeSpec = customScalar.typeSpec()
+        typeSpec = scalar.typeSpec()
     )
   }
 
