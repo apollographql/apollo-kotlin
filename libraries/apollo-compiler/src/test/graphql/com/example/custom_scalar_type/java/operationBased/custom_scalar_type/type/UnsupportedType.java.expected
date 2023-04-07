@@ -5,11 +5,11 @@
 //
 package com.example.custom_scalar_type.type;
 
-import com.apollographql.apollo3.api.CustomScalarType;
+import com.apollographql.apollo3.api.ScalarType;
 
 /**
  * UnsupportedType for testing
  */
 public class UnsupportedType {
-  public static CustomScalarType type = new CustomScalarType("UnsupportedType", "java.lang.Object");
+  public static ScalarType type = new ScalarType("UnsupportedType", "java.lang.Object");
 }

@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.CompiledListType
 import com.apollographql.apollo3.api.CompiledNamedType
 import com.apollographql.apollo3.api.CompiledNotNullType
 import com.apollographql.apollo3.api.CompiledType
-import com.apollographql.apollo3.api.CustomScalarType
+import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.EnumType
 import kotlin.native.concurrent.ThreadLocal
 
@@ -103,7 +103,7 @@ open class DefaultTestResolver : TestResolver {
           }
         }
       }
-      is CustomScalarType -> {
+      is ScalarType -> {
         when (compiledType.name) {
           "Int" -> resolveInt(path)
           "Float" -> resolveFloat(path)

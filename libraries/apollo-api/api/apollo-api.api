@@ -393,11 +393,6 @@ public final class com/apollographql/apollo3/api/CompiledVariable {
 	public final fun getName ()Ljava/lang/String;
 }
 
-public final class com/apollographql/apollo3/api/CustomScalarType : com/apollographql/apollo3/api/CompiledNamedType {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun getClassName ()Ljava/lang/String;
-}
-
 public class com/apollographql/apollo3/api/DefaultFakeResolver : com/apollographql/apollo3/api/FakeResolver {
 	public fun <init> (Ljava/util/List;)V
 	public fun resolveLeaf (Lcom/apollographql/apollo3/api/FakeResolverContext;)Ljava/lang/Object;
@@ -793,13 +788,13 @@ public final class com/apollographql/apollo3/api/ScalarAdapters : com/apollograp
 	public fun minusKey (Lcom/apollographql/apollo3/api/ExecutionContext$Key;)Lcom/apollographql/apollo3/api/ExecutionContext;
 	public final fun newBuilder ()Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
 	public fun plus (Lcom/apollographql/apollo3/api/ExecutionContext;)Lcom/apollographql/apollo3/api/ExecutionContext;
-	public final fun responseAdapterFor (Lcom/apollographql/apollo3/api/CustomScalarType;)Lcom/apollographql/apollo3/api/Adapter;
+	public final fun responseAdapterFor (Lcom/apollographql/apollo3/api/ScalarType;)Lcom/apollographql/apollo3/api/Adapter;
 }
 
 public final class com/apollographql/apollo3/api/ScalarAdapters$Builder {
 	public fun <init> ()V
 	public final fun adapterContext (Lcom/apollographql/apollo3/api/AdapterContext;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
-	public final fun add (Lcom/apollographql/apollo3/api/CustomScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
+	public final fun add (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
 	public final fun addAll (Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/apollographql/apollo3/api/ScalarAdapters$Builder;
 	public final fun build ()Lcom/apollographql/apollo3/api/ScalarAdapters;
 	public final fun clear ()V
@@ -809,7 +804,8 @@ public final class com/apollographql/apollo3/api/ScalarAdapters$Key : com/apollo
 }
 
 public final class com/apollographql/apollo3/api/ScalarType : com/apollographql/apollo3/api/CompiledNamedType {
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getClassName ()Ljava/lang/String;
 }
 
 public abstract interface class com/apollographql/apollo3/api/Subscription : com/apollographql/apollo3/api/Operation {
