@@ -135,12 +135,12 @@ jobs:
           echo "::set-output name=pluginVerifierHomeDir::~/.pluginVerifier"
 
           ./gradlew :intellij-plugin:listProductsReleases # prepare list of IDEs for Plugin Verifier
-        env:
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
       # Run tests
       - name: Run Tests
-        run: ./gradlew :intellij-plugin:check 
+        run: ./gradlew :intellij-plugin:check
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result
