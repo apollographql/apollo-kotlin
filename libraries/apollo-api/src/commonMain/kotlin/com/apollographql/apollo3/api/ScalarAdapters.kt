@@ -13,7 +13,7 @@ class ScalarAdapters private constructor(
     // Ideally it should be passed as its own parameter, but we're avoiding a breaking change.
     // See https://github.com/apollographql/apollo-kotlin/pull/3813
     val adapterContext: AdapterContext,
-    private val unsafe: Boolean
+    private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
   private val adaptersMap: Map<String, Adapter<*>> = scalarAdapters
@@ -30,27 +30,35 @@ class ScalarAdapters private constructor(
       scalar.className == "com.apollographql.apollo3.api.Upload" -> {
         UploadAdapter
       }
+
       scalar.className in listOf("kotlin.String", "java.lang.String") -> {
         StringAdapter
       }
+
       scalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
         BooleanAdapter
       }
+
       scalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
         IntAdapter
       }
+
       scalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
         DoubleAdapter
       }
+
       scalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
         LongAdapter
       }
+
       scalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
         FloatAdapter
       }
+
       scalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
         AnyAdapter
       }
+
       unsafe -> PassThroughAdapter()
       else -> error("Can't map GraphQL type: `${scalar.name}` to: `${scalar.className}`. Did you forget to add a ScalarAdapter?")
     } as Adapter<T>
@@ -84,9 +92,9 @@ class ScalarAdapters private constructor(
 
     fun <T> add(
         scalarType: ScalarType,
-        scalarAdapter: Adapter<T>,
+        scalarAdapter: ScalarAdapter<T>,
     ) = apply {
-      adaptersMap[scalarType.name] = scalarAdapter
+      adaptersMap[scalarType.name] = ScalarAdapterToApolloAdapter(scalarAdapter)
     }
 
     fun addAll(scalarAdapters: ScalarAdapters) = apply {

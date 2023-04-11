@@ -2,14 +2,15 @@ package com.apollographql.apollo3.runtime.java;
 
 import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloRequest;
-import com.apollographql.apollo3.api.ScalarAdapters;
-import com.apollographql.apollo3.api.ScalarType;
 import com.apollographql.apollo3.api.ExecutionContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
 import com.apollographql.apollo3.api.MutableExecutionOptions;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.Query;
+import com.apollographql.apollo3.api.ScalarAdapter;
+import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.ScalarType;
 import com.apollographql.apollo3.api.Subscription;
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer;
 import com.apollographql.apollo3.api.http.HttpHeader;
@@ -294,11 +295,11 @@ public class ApolloClient implements Closeable {
     /**
      * Registers the given customScalarAdapter.
      *
-     * @param scalarType a generated {@link ScalarType}. Every GraphQL custom scalar has a generated class with a static `type`
-     * property. For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
+     * @param scalarType a generated {@link ScalarType}. Every GraphQL custom scalar has a generated class with a static `type` property.
+     * For an example, for a `Date` custom scalar, you can use `com.example.Date.type`
      * @param customScalarAdapter the {@link Adapter} to use for this custom scalar
      */
-    public <T> Builder addScalarAdapter(@NotNull ScalarType scalarType, @NotNull Adapter<T> customScalarAdapter) {
+    public <T> Builder addScalarAdapter(@NotNull ScalarType scalarType, @NotNull ScalarAdapter<T> customScalarAdapter) {
       scalarAdaptersBuilder.add(scalarType, customScalarAdapter);
       return this;
     }

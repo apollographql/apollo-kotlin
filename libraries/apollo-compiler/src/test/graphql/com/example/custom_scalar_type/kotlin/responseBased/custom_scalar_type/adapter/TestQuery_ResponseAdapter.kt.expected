@@ -7,6 +7,7 @@ package com.example.custom_scalar_type.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -69,14 +70,17 @@ public object TestQuery_ResponseAdapter {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _id = scalarAdapters.responseAdapterFor<Long>(GraphQLID.type).fromJson(reader,
                 scalarAdapters)
-            1 -> _name = com.example.MyStringAdapter().fromJson(reader, scalarAdapters)
+            1 -> _name = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).fromJson(reader,
+                scalarAdapters)
             2 -> _birthDate = scalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).fromJson(reader,
                 scalarAdapters)
             3 -> _appearanceDates = scalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
                 scalarAdapters)
             4 -> _fieldWithUnsupportedType = AnyAdapter.fromJson(reader, scalarAdapters)
-            5 -> _profileLink = com.example.UrlAdapter.fromJson(reader, scalarAdapters)
-            6 -> _links = com.example.UrlAdapter.list().fromJson(reader, scalarAdapters)
+            5 -> _profileLink = ScalarAdapterToApolloAdapter(com.example.UrlAdapter).fromJson(reader,
+                scalarAdapters)
+            6 -> _links = ScalarAdapterToApolloAdapter(com.example.UrlAdapter).list().fromJson(reader,
+                scalarAdapters)
             else -> break
           }
         }
@@ -102,7 +106,8 @@ public object TestQuery_ResponseAdapter {
             value.id)
 
         writer.name("name")
-        com.example.MyStringAdapter().toJson(writer, scalarAdapters, value.name)
+        ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).toJson(writer, scalarAdapters,
+            value.name)
 
         writer.name("birthDate")
         scalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).toJson(writer,
@@ -116,10 +121,12 @@ public object TestQuery_ResponseAdapter {
         AnyAdapter.toJson(writer, scalarAdapters, value.fieldWithUnsupportedType)
 
         writer.name("profileLink")
-        com.example.UrlAdapter.toJson(writer, scalarAdapters, value.profileLink)
+        ScalarAdapterToApolloAdapter(com.example.UrlAdapter).toJson(writer, scalarAdapters,
+            value.profileLink)
 
         writer.name("links")
-        com.example.UrlAdapter.list().toJson(writer, scalarAdapters, value.links)
+        ScalarAdapterToApolloAdapter(com.example.UrlAdapter).list().toJson(writer, scalarAdapters,
+            value.links)
       }
     }
   }

@@ -2,11 +2,10 @@ package test;
 
 import com.apollographql.apollo3.ApolloCall;
 import com.apollographql.apollo3.ApolloClient;
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.ApolloResponse;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.Executable;
+import com.apollographql.apollo3.api.ScalarAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.apollographql.apollo3.cache.http.HttpCache;
@@ -161,8 +160,8 @@ public class ClientTest {
       }
     }
 
-    Adapter<GeoPoint> geoPointAdapter = new Adapter<GeoPoint>() {
-      @Override public GeoPoint fromJson(@NotNull JsonReader reader, @NotNull ScalarAdapters scalarAdapters) throws IOException {
+    ScalarAdapter<GeoPoint> geoPointAdapter = new ScalarAdapter<GeoPoint>() {
+      @Override public GeoPoint fromJson(@NotNull JsonReader reader) throws IOException {
         Double latitude = null;
         Double longitude = null;
         reader.beginObject();
@@ -183,7 +182,7 @@ public class ClientTest {
         throw new RuntimeException("Invalid GeoPoint");
       }
 
-      @Override public void toJson(@NotNull JsonWriter writer, @NotNull ScalarAdapters scalarAdapters, GeoPoint value) throws IOException {
+      @Override public void toJson(@NotNull JsonWriter writer, GeoPoint value) throws IOException {
         writer.beginObject();
         writer.name("latitude").value(value.latitude);
         writer.name("longitude").value(value.longitude);

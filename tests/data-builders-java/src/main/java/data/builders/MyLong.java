@@ -1,12 +1,9 @@
 package data.builders;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.ScalarAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class MyLong {
   public Long value;
@@ -15,8 +12,8 @@ public class MyLong {
     this.value = value;
   }
 
-  public static class MyLongAdapter implements Adapter<MyLong> {
-    @Override public MyLong fromJson(@NotNull JsonReader reader, @NotNull ScalarAdapters scalarAdapters)  {
+  public static class MyLongAdapter implements ScalarAdapter<MyLong> {
+    @Override public MyLong fromJson(@NotNull JsonReader reader) {
       try {
         return new MyLong(reader.nextLong());
       } catch (Exception e) {
@@ -24,7 +21,7 @@ public class MyLong {
       }
     }
 
-    @Override public void toJson(@NotNull JsonWriter writer, @NotNull ScalarAdapters scalarAdapters, MyLong value) {
+    @Override public void toJson(@NotNull JsonWriter writer, MyLong value) {
       try {
         writer.value(value.value);
       } catch (Exception e) {
@@ -35,5 +32,3 @@ public class MyLong {
     public static final MyLongAdapter INSTANCE = new MyLongAdapter();
   }
 }
-
-

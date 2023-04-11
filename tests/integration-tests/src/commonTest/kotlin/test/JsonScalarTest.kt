@@ -1,7 +1,7 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.AnyScalarAdapter
 import com.apollographql.apollo3.cache.normalized.ApolloStore
 import com.apollographql.apollo3.cache.normalized.FetchPolicy
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
@@ -27,7 +27,7 @@ class JsonScalarTest {
     mockServer = MockServer()
     apolloClient = ApolloClient.Builder().serverUrl(mockServer.url())
         .store(store)
-        .addScalarAdapter(Json.type, AnyAdapter)
+        .addScalarAdapter(Json.type, AnyScalarAdapter)
         .build()
   }
 

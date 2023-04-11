@@ -31,6 +31,7 @@ internal object KotlinSymbols {
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
   val Present = ClassNames.Present.toKotlinPoetClassName()
   val Adapter = ClassNames.Adapter.toKotlinPoetClassName()
+  val ScalarAdapterToApolloAdapter = ClassNames.ScalarAdapterToApolloAdapter.toKotlinPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toKotlinPoetClassName()
   val CompiledType = ClassNames.CompiledType.toKotlinPoetClassName()
   val CompiledNamedType = ClassNames.CompiledNamedType.toKotlinPoetClassName()

@@ -11,6 +11,7 @@ import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -77,12 +78,12 @@ public class TestQuery_ResponseAdapter {
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
           case 0: _id = (scalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).fromJson(reader, scalarAdapters); break;
-          case 1: _name = new com.example.MyStringAdapter().fromJson(reader, scalarAdapters); break;
+          case 1: _name = new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, scalarAdapters); break;
           case 2: _birthDate = (scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, scalarAdapters); break;
           case 3: _appearanceDates = new ListAdapter<>((scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, scalarAdapters); break;
           case 4: _fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, scalarAdapters); break;
-          case 5: _profileLink = com.example.UrlAdapter.INSTANCE.fromJson(reader, scalarAdapters); break;
-          case 6: _links = new ListAdapter<>(com.example.UrlAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
+          case 5: _profileLink = new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
+          case 6: _links = new ListAdapter<>(new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -113,7 +114,7 @@ public class TestQuery_ResponseAdapter {
       (scalarAdapters.<Long>responseAdapterFor(GraphQLID.type)).toJson(writer, scalarAdapters, value.id);
 
       writer.name("name");
-      new com.example.MyStringAdapter().toJson(writer, scalarAdapters, value.name);
+      new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()).toJson(writer, scalarAdapters, value.name);
 
       writer.name("birthDate");
       (scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).toJson(writer, scalarAdapters, value.birthDate);
@@ -125,10 +126,10 @@ public class TestQuery_ResponseAdapter {
       Adapters.AnyAdapter.toJson(writer, scalarAdapters, value.fieldWithUnsupportedType);
 
       writer.name("profileLink");
-      com.example.UrlAdapter.INSTANCE.toJson(writer, scalarAdapters, value.profileLink);
+      new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE).toJson(writer, scalarAdapters, value.profileLink);
 
       writer.name("links");
-      new ListAdapter<>(com.example.UrlAdapter.INSTANCE).toJson(writer, scalarAdapters, value.links);
+      new ListAdapter<>(new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.links);
     }
   }
 }

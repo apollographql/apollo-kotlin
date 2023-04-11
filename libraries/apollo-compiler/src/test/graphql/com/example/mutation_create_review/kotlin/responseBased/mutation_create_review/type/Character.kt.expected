@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.InterfaceType
 import com.apollographql.apollo3.api.ObjectBuilder
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
@@ -33,7 +34,8 @@ internal interface CharacterMap : Map<String, Any?>
 internal class OtherCharacterBuilder(
   scalarAdapters: ScalarAdapters,
 ) : ObjectBuilder<OtherCharacterMap>(scalarAdapters) {
-  public var name: String by BuilderProperty(com.example.MyStringAdapter())
+  public var name: String by
+      BuilderProperty(ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()))
 
   public override fun build(): OtherCharacterMap = OtherCharacterMap(__fields)
 }

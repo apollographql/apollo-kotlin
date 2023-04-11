@@ -7,6 +7,7 @@ package com.example.mutation_create_review.type.builder;
 
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectBuilderKt;
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.example.mutation_create_review.type.Episode;
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter;
@@ -29,7 +30,7 @@ public class ReviewBuilder {
   }
 
   public ReviewBuilder commentary(String commentary) {
-    __fields.put("commentary", ObjectBuilderKt.adaptValue(new com.example.MyStringAdapter(), commentary));
+    __fields.put("commentary", ObjectBuilderKt.adaptValue(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()), commentary));
     return this;
   }
 
@@ -49,7 +50,7 @@ public class ReviewBuilder {
   }
 
   public ReviewBuilder listOfListOfString(List<List<String>> listOfListOfString) {
-    __fields.put("listOfListOfString", ObjectBuilderKt.adaptValue(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter())), listOfListOfString));
+    __fields.put("listOfListOfString", ObjectBuilderKt.adaptValue(new ListAdapter<>(new ListAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))), listOfListOfString));
     return this;
   }
 
