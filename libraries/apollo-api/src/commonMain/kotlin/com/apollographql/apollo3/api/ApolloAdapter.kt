@@ -5,7 +5,7 @@ import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 
 /**
- * An [Adapter] is responsible for adapting Kotlin-generated GraphQL types to/from their Json representation.
+ * An [ApolloAdapter] is responsible for adapting Kotlin-generated GraphQL types to/from their Json representation.
  *
  * It is used to
  * - deserialize network responses
@@ -15,7 +15,7 @@ import okio.IOException
  *
  * This class is implemented by the generated code, it shouldn't be used directly.
  */
-interface Adapter<T> {
+interface ApolloAdapter<T> {
   /**
    * Deserializes the given Json to the expected Kotlin type.
    *
@@ -41,10 +41,10 @@ interface Adapter<T> {
    * }
    * ```
    *
-   * Alternatively, you can use the built-in [AnyAdapter] to simplify the parsing loop:
+   * Alternatively, you can use the built-in [AnyApolloAdapter] to simplify the parsing loop:
    * ```
    * override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Hero {
-   *   val map = AnyAdapter.fromJson(reader) as Map<String, String>
+   *   val map = AnyApolloAdapter.fromJson(reader) as Map<String, String>
    *
    *   return Hero(map["name"]!!, map["homeworld"]!!)
    * }
@@ -66,11 +66,11 @@ interface Adapter<T> {
    * }
    *```
    *
-   * Alternatively, you can use the built-in [AnyAdapter]:
+   * Alternatively, you can use the built-in [AnyApolloAdapter]:
    * ```
    * override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: Hero) {
    *   val map = mapOf("name" to value.name, "homeworld" to value.homeworld)
-   *   AnyAdapter.toJson(writer, scalarAdapters, map)
+   *   AnyApolloAdapter.toJson(writer, scalarAdapters, map)
    * }
    * ```
    */

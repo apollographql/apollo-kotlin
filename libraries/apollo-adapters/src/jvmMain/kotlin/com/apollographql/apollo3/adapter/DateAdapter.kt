@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.adapter
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -9,7 +8,7 @@ import java.time.OffsetDateTime
 import java.util.Date
 
 /**
- * An [Adapter] that converts an ISO 8601 String to/from a [java.util.Date]
+ * A [ScalarAdapter] that converts an ISO 8601 String to/from a [java.util.Date]
  * When writing, it discards the offset information.
  *
  * Examples:

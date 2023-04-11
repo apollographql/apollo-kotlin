@@ -2,13 +2,13 @@
 
 package com.apollographql.apollo3.api.java.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.BooleanApolloAdapter
+import com.apollographql.apollo3.api.DoubleApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.DoubleAdapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import java.util.Optional
@@ -16,7 +16,7 @@ import java.util.Optional
 /**
  * An adapter for Java's [Optional]. `null` is deserialized as [Optional.empty].
  */
-class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<T>> {
+class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<T>> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -39,16 +39,16 @@ class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Ada
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val JavaOptionalStringAdapter = JavaOptionalAdapter(StringAdapter)
+val JavaOptionalStringAdapter = JavaOptionalAdapter(StringApolloAdapter)
 
 @JvmField
-val JavaOptionalDoubleAdapter = JavaOptionalAdapter(DoubleAdapter)
+val JavaOptionalDoubleAdapter = JavaOptionalAdapter(DoubleApolloAdapter)
 
 @JvmField
-val JavaOptionalIntAdapter = JavaOptionalAdapter(IntAdapter)
+val JavaOptionalIntAdapter = JavaOptionalAdapter(IntApolloAdapter)
 
 @JvmField
-val JavaOptionalBooleanAdapter = JavaOptionalAdapter(BooleanAdapter)
+val JavaOptionalBooleanAdapter = JavaOptionalAdapter(BooleanApolloAdapter)
 
 @JvmField
-val JavaOptionalAnyAdapter = JavaOptionalAdapter(AnyAdapter)
+val JavaOptionalAnyAdapter = JavaOptionalAdapter(AnyApolloAdapter)

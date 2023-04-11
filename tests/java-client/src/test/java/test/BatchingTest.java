@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.apollographql.apollo3.api.Adapters.AnyAdapter;
+import static com.apollographql.apollo3.api.Adapters.AnyApolloAdapter;
 import static com.apollographql.apollo3.api.ExecutionOptions.CAN_BE_BATCHED;
 import static org.junit.Assert.fail;
 import static test.Utils.sleep;
@@ -94,7 +94,7 @@ public class BatchingTest {
     Truth.assertThat(items).containsExactly("83", "84");
 
     MockRequest request = mockServer.takeRequest();
-    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), ScalarAdapters.Empty);
+    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyApolloAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), ScalarAdapters.Empty);
 
     Truth.assertThat(requests).hasSize(2);
     Truth.assertThat(requests.get(0).get("operationName")).isEqualTo("GetLaunch");
@@ -235,7 +235,7 @@ public class BatchingTest {
     Truth.assertThat(items).containsExactly("83", "84");
 
     MockRequest request = mockServer.takeRequest();
-    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), ScalarAdapters.Empty);
+    List<Map<String, Object>> requests = (List<Map<String, Object>>) AnyApolloAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().write(request.getBody())), ScalarAdapters.Empty);
 
     Truth.assertThat(requests).hasSize(2);
     Truth.assertThat(requests.get(0).get("operationName")).isEqualTo("GetLaunch");

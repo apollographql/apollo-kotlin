@@ -3,13 +3,13 @@
 package com.apollographql.apollo3.api.java.adapter
 
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.BooleanApolloAdapter
+import com.apollographql.apollo3.api.DoubleApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.DoubleAdapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.google.common.base.Optional
@@ -17,7 +17,7 @@ import com.google.common.base.Optional
 /**
  * An adapter for Guava's [Optional]. `null` is deserialized as [Optional.absent].
  */
-class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<T>> {
+class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<T>> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -40,16 +40,16 @@ class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Ad
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val GuavaOptionalStringAdapter = GuavaOptionalAdapter(StringAdapter)
+val GuavaOptionalStringAdapter = GuavaOptionalAdapter(StringApolloAdapter)
 
 @JvmField
-val GuavaOptionalDoubleAdapter = GuavaOptionalAdapter(DoubleAdapter)
+val GuavaOptionalDoubleAdapter = GuavaOptionalAdapter(DoubleApolloAdapter)
 
 @JvmField
-val GuavaOptionalIntAdapter = GuavaOptionalAdapter(IntAdapter)
+val GuavaOptionalIntAdapter = GuavaOptionalAdapter(IntApolloAdapter)
 
 @JvmField
-val GuavaOptionalBooleanAdapter = GuavaOptionalAdapter(BooleanAdapter)
+val GuavaOptionalBooleanAdapter = GuavaOptionalAdapter(BooleanApolloAdapter)
 
 @JvmField
-val GuavaOptionalAnyAdapter = GuavaOptionalAdapter(AnyAdapter)
+val GuavaOptionalAnyAdapter = GuavaOptionalAdapter(AnyApolloAdapter)

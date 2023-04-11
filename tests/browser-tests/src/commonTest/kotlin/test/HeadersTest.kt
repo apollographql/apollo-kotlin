@@ -1,20 +1,17 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlinx.coroutines.flow.single
-import kotlin.test.fail
 
 class HeadersTest {
   @Test
@@ -49,7 +46,7 @@ class NothingSubscription : Subscription<Nothing> {
     return ""
   }
 
-  override fun adapter(): Adapter<Nothing> {
+  override fun adapter(): ApolloAdapter<Nothing> {
     TODO("Not yet implemented")
   }
 

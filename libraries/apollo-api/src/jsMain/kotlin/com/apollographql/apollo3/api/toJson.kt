@@ -11,7 +11,7 @@ actual fun Operation.Data.toJson(
     scalarAdapters: ScalarAdapters,
 ) {
   @Suppress("UNCHECKED_CAST")
-  val adapter = this::class.findAssociatedObject<ApolloAdaptableWith>() as Adapter<Any>
+  val adapter = this::class.findAssociatedObject<ApolloAdaptableWith>() as ApolloAdapter<Any>
 
   adapter.obj(false).toJson(jsonWriter, scalarAdapters, this)
 }

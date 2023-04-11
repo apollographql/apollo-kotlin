@@ -19,10 +19,10 @@ import data.builders.GetPartialQuery
 import data.builders.GetProductQuery
 import data.builders.PutIntMutation
 import data.builders.SkipQuery
+import data.builders.schema.__Schema
 import data.builders.type.CatBuilder
 import data.builders.type.Direction
 import data.builders.type.__ScalarAdapters
-import data.builders.schema.__Schema
 import data.builders.type.buildCat
 import data.builders.type.buildLion
 import data.builders.type.buildOtherAnimal
@@ -253,7 +253,7 @@ class DataBuilderTest {
 
     assertEquals(45L, data.long1?.value)
     assertEquals(46L, data.long2?.value)
-    assertEquals(47, data.long3) // AnyAdapter will try to fit the smallest possible number
+    assertEquals(47, data.long3) // AnyApolloAdapter will try to fit the smallest possible number
   }
 
   @Test
