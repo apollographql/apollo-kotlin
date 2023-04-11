@@ -24,7 +24,6 @@ fun incrementSnapshotVersion() {
 fun runCommand(vararg args: String): String {
   val builder = ProcessBuilder(*args)
       .redirectError(ProcessBuilder.Redirect.INHERIT)
-      .redirectOutput(ProcessBuilder.Redirect.INHERIT)
 
   val process = builder.start()
   val ret = process.waitFor()
@@ -38,7 +37,7 @@ fun runCommand(vararg args: String): String {
 }
 
 fun mergeAndWait(branchName: String) {
-  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto")
+  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto", "--delete-branch")
   println("Waiting for the PR to be merged...")
   while (true) {
     val state = runCommand("gh", "pr", "view", branchName, "--json", "state", "--jq", ".state")
