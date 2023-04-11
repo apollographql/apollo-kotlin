@@ -14,7 +14,6 @@ import okio.IOException
  * - deserialize records
  *
  * **Note**: [ScalarAdapter]s are called from multiple threads and implementations must be thread safe.
- * ```
  */
 interface ScalarAdapter<T> {
   /**
