@@ -61,7 +61,7 @@ public final class com/apollographql/apollo3/ApolloClient$Builder : com/apollogr
 	public final fun addHttpInterceptor (Lcom/apollographql/apollo3/network/http/HttpInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptor (Lcom/apollographql/apollo3/interceptor/ApolloInterceptor;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun addInterceptors (Ljava/util/List;)Lcom/apollographql/apollo3/ApolloClient$Builder;
-	public final fun addScalarAdapter (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/Adapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
+	public final fun addScalarAdapter (Lcom/apollographql/apollo3/api/ScalarType;Lcom/apollographql/apollo3/api/ScalarAdapter;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun autoPersistedQueries ()Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;
 	public final fun autoPersistedQueries (Lcom/apollographql/apollo3/api/http/HttpMethod;Lcom/apollographql/apollo3/api/http/HttpMethod;)Lcom/apollographql/apollo3/ApolloClient$Builder;

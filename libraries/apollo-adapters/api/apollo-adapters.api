@@ -1,92 +1,92 @@
-public final class com/apollographql/apollo3/adapter/BigDecimalAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/BigDecimalAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/BigDecimalAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/math/BigDecimal;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/math/BigDecimal;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/math/BigDecimal;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/math/BigDecimal;)V
 }
 
 public final class com/apollographql/apollo3/adapter/BigDecimalKt {
 	public static final fun toNumber (Ljava/math/BigDecimal;)Ljava/lang/Number;
 }
 
-public final class com/apollographql/apollo3/adapter/DateAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/DateAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/DateAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/util/Date;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/util/Date;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/util/Date;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/util/Date;)V
 }
 
-public final class com/apollographql/apollo3/adapter/JavaInstantAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/JavaInstantAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/JavaInstantAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/time/Instant;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/time/Instant;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/time/Instant;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/time/Instant;)V
 }
 
-public final class com/apollographql/apollo3/adapter/JavaLocalDateAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/JavaLocalDateAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/JavaLocalDateAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/time/LocalDate;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/time/LocalDate;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/time/LocalDate;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/time/LocalDate;)V
 }
 
-public final class com/apollographql/apollo3/adapter/JavaLocalDateTimeAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/JavaLocalDateTimeAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/JavaLocalDateTimeAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/time/LocalDateTime;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/time/LocalDateTime;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/time/LocalDateTime;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/time/LocalDateTime;)V
 }
 
-public final class com/apollographql/apollo3/adapter/JavaLocalTimeAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/JavaLocalTimeAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/JavaLocalTimeAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/time/LocalTime;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/time/LocalTime;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/time/LocalTime;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/time/LocalTime;)V
 }
 
-public final class com/apollographql/apollo3/adapter/JavaOffsetDateTimeAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/JavaOffsetDateTimeAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/JavaOffsetDateTimeAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/time/OffsetDateTime;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/time/OffsetDateTime;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/time/OffsetDateTime;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/time/OffsetDateTime;)V
 }
 
-public final class com/apollographql/apollo3/adapter/KotlinxInstantAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/KotlinxInstantAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/KotlinxInstantAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Lkotlinx/datetime/Instant;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Lkotlinx/datetime/Instant;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Lkotlinx/datetime/Instant;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlinx/datetime/Instant;)V
 }
 
-public final class com/apollographql/apollo3/adapter/KotlinxLocalDateAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/KotlinxLocalDateAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/KotlinxLocalDateAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Lkotlinx/datetime/LocalDate;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Lkotlinx/datetime/LocalDate;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Lkotlinx/datetime/LocalDate;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlinx/datetime/LocalDate;)V
 }
 
-public final class com/apollographql/apollo3/adapter/KotlinxLocalDateTimeAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/KotlinxLocalDateTimeAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/KotlinxLocalDateTimeAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Lkotlinx/datetime/LocalDateTime;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Lkotlinx/datetime/LocalDateTime;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Lkotlinx/datetime/LocalDateTime;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlinx/datetime/LocalDateTime;)V
 }
 
-public final class com/apollographql/apollo3/adapter/KotlinxLocalTimeAdapter : com/apollographql/apollo3/api/Adapter {
+public final class com/apollographql/apollo3/adapter/KotlinxLocalTimeAdapter : com/apollographql/apollo3/api/ScalarAdapter {
 	public static final field INSTANCE Lcom/apollographql/apollo3/adapter/KotlinxLocalTimeAdapter;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Lkotlinx/datetime/LocalTime;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Lkotlinx/datetime/LocalTime;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Lkotlinx/datetime/LocalTime;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lkotlinx/datetime/LocalTime;)V
 }
 
