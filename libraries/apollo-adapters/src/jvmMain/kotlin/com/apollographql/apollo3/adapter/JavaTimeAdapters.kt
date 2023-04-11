@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.adapter
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -13,7 +12,7 @@ import java.time.format.DateTimeFormatter
 
 
 /**
- * An [Adapter] that converts an ISO 8601 String to/from a [java.time.Instant]
+ * A [ScalarAdapter] that converts an ISO 8601 String to/from a [java.time.Instant]
  * When writing, it discards the offset information.
  *
  * Examples:
@@ -34,7 +33,7 @@ object JavaInstantAdapter : ScalarAdapter<Instant> {
 }
 
 /**
- * An [Adapter] that converts a date to/from [java.time.LocalDate]
+ * A [Adapter] that converts a date to/from [java.time.LocalDate]
  *
  * Examples:
  * - "2010-06-01"
@@ -52,7 +51,7 @@ object JavaLocalDateAdapter : ScalarAdapter<LocalDate> {
 }
 
 /**
- * An [Adapter] that converts a date and time to/from [java.time.LocalDateTime]
+ * A [Adapter] that converts a date and time to/from [java.time.LocalDateTime]
  *
  * Examples:
  * - "2010-06-01T22:19:44.475"
@@ -70,7 +69,7 @@ object JavaLocalDateTimeAdapter : ScalarAdapter<LocalDateTime> {
 }
 
 /**
- * An [Adapter] that converts a date and time to/from [java.time.OffsetDateTime]
+ * A [Adapter] that converts a date and time to/from [java.time.OffsetDateTime]
  *
  * Examples:
  * - "2010-06-01T22:19:44.475+01:00"
@@ -88,7 +87,7 @@ object JavaOffsetDateTimeAdapter : ScalarAdapter<OffsetDateTime> {
 }
 
 /**
- * An [Adapter] that converts a time to/from [java.time.LocalTime]
+ * A [Adapter] that converts a time to/from [java.time.LocalTime]
  *
  * Examples:
  * - "14:35:00"

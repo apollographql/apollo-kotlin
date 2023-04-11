@@ -275,6 +275,6 @@ public class DataBuilderTest {
 
     assertEquals(Long.valueOf(45L), data.long1.value);
     assertEquals(Long.valueOf(46L), data.long2.value);
-    assertEquals(47, data.long3); // AnyAdapter will try to fit the smallest possible number
+    assertEquals(47, data.long3); // AnyApolloAdapter will try to fit the smallest possible number
   }
 }

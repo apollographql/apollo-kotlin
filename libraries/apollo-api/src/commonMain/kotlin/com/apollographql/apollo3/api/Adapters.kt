@@ -16,13 +16,13 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
 
 /**
- * This file contains a list of [Adapter] for standard types
+ * This file contains a list of [ApolloAdapter] for standard types
  *
  * They are mostly used from the generated code but could be useful in any other situations that requires adapting from
  * GraphQL to Kotlin.
- * In particular, [AnyAdapter] can be used to read/write a Kotlin representation from/to Json.
+ * In particular, [AnyApolloAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
-class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@JvmSuppressWildcards T>> {
+class ListAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<List<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
@@ -42,7 +42,7 @@ class ListAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<List<@Jvm
   }
 }
 
-class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter<@JvmSuppressWildcards T?> {
+class NullableAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<@JvmSuppressWildcards T?> {
   init {
     check(wrappedAdapter !is NullableAdapter<*>) {
       "The adapter is already nullable"
@@ -68,7 +68,7 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: Adapter<T>) : Adapter
 }
 
 @Deprecated("Use PresentAdapter instead")
-class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
+class OptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.fromJson(reader, scalarAdapters))
   }
@@ -83,7 +83,7 @@ class OptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optio
  *
  * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
-class PresentAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional.Present<@JvmSuppressWildcards T>> {
+class PresentAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.fromJson(reader, scalarAdapters))
   }
@@ -98,7 +98,7 @@ class PresentAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Option
  * This adapter is used to handle nullable fields when they are represented as [Optional].
  * `null` is deserialized as [Optional.Absent].
  */
-class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter<Optional<@JvmSuppressWildcards T>> {
+class ApolloOptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<@JvmSuppressWildcards T>> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -118,7 +118,7 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: Adapter<T>) : Adapter
 }
 
 @JvmField
-val StringAdapter = object : Adapter<String> {
+val StringApolloAdapter = object : ApolloAdapter<String> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): String {
     return reader.nextString()!!
   }
@@ -129,7 +129,7 @@ val StringAdapter = object : Adapter<String> {
 }
 
 @JvmField
-val IntAdapter = object : Adapter<Int> {
+val IntApolloAdapter = object : ApolloAdapter<Int> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Int {
     return reader.nextInt()
   }
@@ -140,7 +140,7 @@ val IntAdapter = object : Adapter<Int> {
 }
 
 @JvmField
-val DoubleAdapter = object : Adapter<Double> {
+val DoubleApolloAdapter = object : ApolloAdapter<Double> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Double {
     return reader.nextDouble()
   }
@@ -151,11 +151,11 @@ val DoubleAdapter = object : Adapter<Double> {
 }
 
 /**
- * An [Adapter] that converts to/from a [Float]
+ * An [ApolloAdapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
 @JvmField
-val FloatAdapter = object : Adapter<Float> {
+val FloatApolloAdapter = object : ApolloAdapter<Float> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
@@ -166,13 +166,13 @@ val FloatAdapter = object : Adapter<Float> {
 }
 
 /**
- * An [Adapter] that converts to/from a [Long]
+ * An [ApolloAdapter] that converts to/from a [Long]
  * Longs are not part of the GraphQL spec but this can be used in custom scalars
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
 @JvmField
-val LongAdapter = object : Adapter<Long> {
+val LongApolloAdapter = object : ApolloAdapter<Long> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Long {
     return reader.nextLong()
   }
@@ -183,7 +183,7 @@ val LongAdapter = object : Adapter<Long> {
 }
 
 @JvmField
-val BooleanAdapter = object : Adapter<Boolean> {
+val BooleanApolloAdapter = object : ApolloAdapter<Boolean> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
@@ -194,7 +194,7 @@ val BooleanAdapter = object : Adapter<Boolean> {
 }
 
 @JvmField
-val AnyAdapter = object : Adapter<Any> {
+val AnyApolloAdapter = object : ApolloAdapter<Any> {
   fun fromJson(reader: JsonReader): Any {
     return reader.readAny()!!
   }
@@ -212,7 +212,7 @@ val AnyAdapter = object : Adapter<Any> {
   }
 }
 
-internal class PassThroughAdapter<T> : Adapter<T> {
+internal class PassThroughAdapter<T> : ApolloAdapter<T> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
     check(reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
@@ -231,7 +231,7 @@ internal class PassThroughAdapter<T> : Adapter<T> {
   }
 }
 
-class ScalarAdapterToApolloAdapter<T>(private val wrappedScalarAdapter: ScalarAdapter<T>) : Adapter<T> {
+class ScalarAdapterToApolloAdapter<T>(private val wrappedScalarAdapter: ScalarAdapter<T>) : ApolloAdapter<T> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
     return wrappedScalarAdapter.fromJson(reader)
   }
@@ -242,7 +242,7 @@ class ScalarAdapterToApolloAdapter<T>(private val wrappedScalarAdapter: ScalarAd
 }
 
 @JvmField
-val UploadAdapter = object : Adapter<Upload> {
+val UploadApolloAdapter = object : ApolloAdapter<Upload> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Upload {
     error("File Upload used in output position")
   }
@@ -256,37 +256,37 @@ val UploadAdapter = object : Adapter<Upload> {
  * Global instances of nullable adapters for built-in scalar types
  */
 @JvmField
-val NullableStringAdapter = StringAdapter.nullable()
+val NullableStringAdapter = StringApolloAdapter.nullable()
 
 @JvmField
-val NullableDoubleAdapter = DoubleAdapter.nullable()
+val NullableDoubleAdapter = DoubleApolloAdapter.nullable()
 
 @JvmField
-val NullableIntAdapter = IntAdapter.nullable()
+val NullableIntAdapter = IntApolloAdapter.nullable()
 
 @JvmField
-val NullableBooleanAdapter = BooleanAdapter.nullable()
+val NullableBooleanAdapter = BooleanApolloAdapter.nullable()
 
 @JvmField
-val NullableAnyAdapter = AnyAdapter.nullable()
+val NullableAnyAdapter = AnyApolloAdapter.nullable()
 
 /*
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val ApolloOptionalStringAdapter = ApolloOptionalAdapter(StringAdapter)
+val ApolloOptionalStringAdapter = ApolloOptionalAdapter(StringApolloAdapter)
 
 @JvmField
-val ApolloOptionalDoubleAdapter = ApolloOptionalAdapter(DoubleAdapter)
+val ApolloOptionalDoubleAdapter = ApolloOptionalAdapter(DoubleApolloAdapter)
 
 @JvmField
-val ApolloOptionalIntAdapter = ApolloOptionalAdapter(IntAdapter)
+val ApolloOptionalIntAdapter = ApolloOptionalAdapter(IntApolloAdapter)
 
 @JvmField
-val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanAdapter)
+val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanApolloAdapter)
 
 @JvmField
-val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyAdapter)
+val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyApolloAdapter)
 
 
 @JvmField
@@ -323,7 +323,7 @@ val DoubleScalarAdapter = object : ScalarAdapter<Double> {
 }
 
 /**
- * An [Adapter] that converts to/from a [Float]
+ * An [ApolloAdapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
 @JvmField
@@ -338,7 +338,7 @@ val FloatScalarAdapter = object : ScalarAdapter<Float> {
 }
 
 /**
- * An [Adapter] that converts to/from a [Long]
+ * An [ApolloAdapter] that converts to/from a [Long]
  * Longs are not part of the GraphQL spec but this can be used in custom scalars
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
@@ -388,9 +388,9 @@ val UploadScalarAdapter = object : ScalarAdapter<Upload> {
 }
 
 class ObjectAdapter<T>(
-    private val wrappedAdapter: Adapter<T>,
+    private val wrappedAdapter: ApolloAdapter<T>,
     private val buffered: Boolean,
-) : Adapter<@JvmSuppressWildcards T> {
+) : ApolloAdapter<@JvmSuppressWildcards T> {
   override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
     val actualReader = if (buffered) {
       reader.buffer()
@@ -426,25 +426,25 @@ class ObjectAdapter<T>(
 }
 
 @JvmName("-nullable")
-fun <T : Any> Adapter<T>.nullable() = NullableAdapter(this)
+fun <T : Any> ApolloAdapter<T>.nullable() = NullableAdapter(this)
 
 @JvmName("-list")
-fun <T> Adapter<T>.list() = ListAdapter(this)
+fun <T> ApolloAdapter<T>.list() = ListAdapter(this)
 
 @JvmName("-obj")
-fun <T> Adapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+fun <T> ApolloAdapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmName("-optional")
 @Deprecated("Use present instead", ReplaceWith("present()"))
-fun <T> Adapter<T>.optional() = PresentAdapter(this)
+fun <T> ApolloAdapter<T>.optional() = PresentAdapter(this)
 
 @JvmName("-present")
-fun <T> Adapter<T>.present() = PresentAdapter(this)
+fun <T> ApolloAdapter<T>.present() = PresentAdapter(this)
 
 
 @JvmName("-toJson")
 @JvmOverloads
-fun <T> Adapter<T>.toJsonString(
+fun <T> ApolloAdapter<T>.toJsonString(
     value: T,
     scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
     indent: String? = null,

@@ -4,10 +4,10 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
 /**
- * A wrapper around a Map<String, [Adapter]> used to retrieve scalar adapters at runtime
+ * A wrapper around a Map<String, [ApolloAdapter]> used to retrieve scalar adapters at runtime
  */
 class ScalarAdapters private constructor(
-    scalarAdapters: Map<String, Adapter<*>>,
+    scalarAdapters: Map<String, ApolloAdapter<*>>,
     // We piggyback ScalarAdapters to pass around a context which is used in the Adapters at parse time.
     // This is currently used for @skip/@include and @defer.
     // Ideally it should be passed as its own parameter, but we're avoiding a breaking change.
@@ -16,9 +16,9 @@ class ScalarAdapters private constructor(
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
-  private val adaptersMap: Map<String, Adapter<*>> = scalarAdapters
+  private val adaptersMap: Map<String, ApolloAdapter<*>> = scalarAdapters
 
-  fun <T : Any> responseAdapterFor(scalar: ScalarType): Adapter<T> {
+  fun <T : Any> responseAdapterFor(scalar: ScalarType): ApolloAdapter<T> {
     @Suppress("UNCHECKED_CAST")
     return when {
       adaptersMap[scalar.name] != null -> {
@@ -28,40 +28,40 @@ class ScalarAdapters private constructor(
        * Below are shortcuts to save the users a call to `registerScalarAdapter`
        */
       scalar.className == "com.apollographql.apollo3.api.Upload" -> {
-        UploadAdapter
+        UploadApolloAdapter
       }
 
       scalar.className in listOf("kotlin.String", "java.lang.String") -> {
-        StringAdapter
+        StringApolloAdapter
       }
 
       scalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
-        BooleanAdapter
+        BooleanApolloAdapter
       }
 
       scalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
-        IntAdapter
+        IntApolloAdapter
       }
 
       scalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
-        DoubleAdapter
+        DoubleApolloAdapter
       }
 
       scalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
-        LongAdapter
+        LongApolloAdapter
       }
 
       scalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
-        FloatAdapter
+        FloatApolloAdapter
       }
 
       scalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
-        AnyAdapter
+        AnyApolloAdapter
       }
 
       unsafe -> PassThroughAdapter()
       else -> error("Can't map GraphQL type: `${scalar.name}` to: `${scalar.className}`. Did you forget to add a ScalarAdapter?")
-    } as Adapter<T>
+    } as ApolloAdapter<T>
   }
 
   override val key: ExecutionContext.Key<*>
@@ -86,7 +86,7 @@ class ScalarAdapters private constructor(
   fun newBuilder() = Builder().addAll(this)
 
   class Builder {
-    private val adaptersMap: MutableMap<String, Adapter<*>> = mutableMapOf()
+    private val adaptersMap: MutableMap<String, ApolloAdapter<*>> = mutableMapOf()
     private var adapterContext: AdapterContext = AdapterContext.Builder().build()
     private var unsafe = false
 

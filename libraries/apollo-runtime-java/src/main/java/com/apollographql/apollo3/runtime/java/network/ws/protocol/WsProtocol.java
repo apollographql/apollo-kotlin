@@ -2,8 +2,8 @@ package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloRequest;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.Operation;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import com.apollographql.apollo3.runtime.java.network.ws.WebSocketConnection;
@@ -87,7 +87,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyAdapter.toJson(writer, ScalarAdapters.Empty, messageMap);
+      Adapters.AnyApolloAdapter.toJson(writer, ScalarAdapters.Empty, messageMap);
     } catch (IOException ignored) {
     }
     return buffer.readUtf8();
@@ -97,7 +97,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyAdapter.toJson(writer, ScalarAdapters.Empty, messageMap);
+      Adapters.AnyApolloAdapter.toJson(writer, ScalarAdapters.Empty, messageMap);
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
@@ -106,7 +106,7 @@ public abstract class WsProtocol {
   private static Map<String, Object> toMessageMap(String messageJson) {
     try {
       //noinspection unchecked
-      return (Map<String, Object>) Adapters.AnyAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), ScalarAdapters.Empty);
+      return (Map<String, Object>) Adapters.AnyApolloAdapter.fromJson(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), ScalarAdapters.Empty);
     } catch (Exception e) {
       return null;
     }
