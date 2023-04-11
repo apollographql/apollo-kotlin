@@ -1,10 +1,7 @@
-@file:Suppress("DEPRECATION")
-
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.integration.fullstack.LaunchDetailsByDateQuery
@@ -29,13 +26,13 @@ class ScalarAdapterTest {
     mockServer.stop()
   }
 
-  private object MyDateAdapter : Adapter<MyDate> {
-    override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): MyDate {
+  private object MyDateAdapter : ScalarAdapter<MyDate> {
+    override fun fromJson(reader: JsonReader): MyDate {
       val elements = reader.nextString()!!.split('-').map { it.toInt() }
       return MyDate(elements[0], elements[1], elements[2])
     }
 
-    override fun toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: MyDate) {
+    override fun toJson(writer: JsonWriter, value: MyDate) {
       writer.value("${value.year}-${value.month}-${value.day}")
     }
   }

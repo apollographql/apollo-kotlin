@@ -223,7 +223,10 @@ internal class KotlinResolver(
   private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
-        CodeBlock.of(adapterInitializer.expression)
+        CodeBlock.of("%T(%L)",
+            KotlinSymbols.ScalarAdapterToApolloAdapter,
+            adapterInitializer.expression
+        )
       }
 
       is RuntimeAdapterInitializer -> {

@@ -7,6 +7,7 @@ package com.example.mutation_create_review.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -67,9 +68,9 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _stars = IntAdapter.fromJson(reader, scalarAdapters)
-            1 -> _commentary = com.example.MyStringAdapter().nullable().fromJson(reader,
+            1 -> _commentary = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().fromJson(reader,
                 scalarAdapters)
-            2 -> _listOfListOfString = com.example.MyStringAdapter().list().list().nullable().fromJson(reader,
+            2 -> _listOfListOfString = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable().fromJson(reader,
                 scalarAdapters)
             3 -> _listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader,
                 scalarAdapters)
@@ -100,11 +101,12 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         IntAdapter.toJson(writer, scalarAdapters, value.stars)
 
         writer.name("commentary")
-        com.example.MyStringAdapter().nullable().toJson(writer, scalarAdapters, value.commentary)
+        ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().toJson(writer,
+            scalarAdapters, value.commentary)
 
         writer.name("listOfListOfString")
-        com.example.MyStringAdapter().list().list().nullable().toJson(writer, scalarAdapters,
-            value.listOfListOfString)
+        ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable().toJson(writer,
+            scalarAdapters, value.listOfListOfString)
 
         writer.name("listOfListOfEnum")
         Episode_ResponseAdapter.list().list().nullable().toJson(writer, scalarAdapters,
@@ -129,7 +131,8 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = com.example.MyStringAdapter().fromJson(reader, scalarAdapters)
+              0 -> _name = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).fromJson(reader,
+                  scalarAdapters)
               else -> break
             }
           }
@@ -145,7 +148,8 @@ internal object CreateReviewForEpisode_ResponseAdapter {
           `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject,
         ): Unit {
           writer.name("name")
-          com.example.MyStringAdapter().toJson(writer, scalarAdapters, value.name)
+          ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).toJson(writer, scalarAdapters,
+              value.name)
         }
       }
     }

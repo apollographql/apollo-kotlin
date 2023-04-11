@@ -12,6 +12,7 @@ import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -41,7 +42,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.commentary instanceof Optional.Present) {
       writer.name("commentary");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())).toJson(writer, scalarAdapters, value.commentary);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, scalarAdapters, value.commentary);
     }
     writer.name("favoriteColor");
     new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.favoriteColor);
@@ -75,10 +76,10 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.listOfString instanceof Optional.Present) {
       writer.name("listOfString");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())))).toJson(writer, scalarAdapters, value.listOfString);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))))).toJson(writer, scalarAdapters, value.listOfString);
     }
     writer.name("listOfStringNonOptional");
-    new ListAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())).toJson(writer, scalarAdapters, value.listOfStringNonOptional);
+    new ListAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, scalarAdapters, value.listOfStringNonOptional);
     if (value.listOfInputTypes instanceof Optional.Present) {
       writer.name("listOfInputTypes");
       new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, scalarAdapters, value.listOfInputTypes);
@@ -93,7 +94,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new com.example.MyStringAdapter())))).toJson(writer, scalarAdapters, value.listOfListOfString);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))))).toJson(writer, scalarAdapters, value.listOfListOfString);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
@@ -109,7 +110,7 @@ public enum ReviewInput_InputAdapter implements Adapter<ReviewInput> {
     }
     if (value.CapitalizedField instanceof Optional.Present) {
       writer.name("CapitalizedField");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new com.example.MyStringAdapter())).toJson(writer, scalarAdapters, value.CapitalizedField);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, scalarAdapters, value.CapitalizedField);
     }
     if (value.CapitalizedInt instanceof Optional.Present) {
       writer.name("CapitalizedInt");

@@ -7,6 +7,7 @@ package com.example.input_object_type.adapter
 
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -58,7 +59,7 @@ public object TestQuery_ResponseAdapter {
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
             0 -> _stars = IntAdapter.fromJson(reader, scalarAdapters)
-            1 -> _commentary = com.example.MyStringAdapter().nullable().fromJson(reader,
+            1 -> _commentary = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().fromJson(reader,
                 scalarAdapters)
             else -> break
           }
@@ -79,7 +80,8 @@ public object TestQuery_ResponseAdapter {
         IntAdapter.toJson(writer, scalarAdapters, value.stars)
 
         writer.name("commentary")
-        com.example.MyStringAdapter().nullable().toJson(writer, scalarAdapters, value.commentary)
+        ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().toJson(writer,
+            scalarAdapters, value.commentary)
       }
     }
   }

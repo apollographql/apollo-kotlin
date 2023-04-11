@@ -10,6 +10,7 @@ import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableBooleanAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -40,8 +41,8 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.commentary is Optional.Present) {
       writer.name("commentary")
-      com.example.MyStringAdapter().nullable().present().toJson(writer, scalarAdapters,
-          value.commentary)
+      ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().present().toJson(writer,
+          scalarAdapters, value.commentary)
     }
     writer.name("favoriteColor")
     ColorInput_InputAdapter.obj().toJson(writer, scalarAdapters, value.favoriteColor)
@@ -81,12 +82,12 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
-      com.example.MyStringAdapter().nullable().list().nullable().present().toJson(writer,
+      ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().list().nullable().present().toJson(writer,
           scalarAdapters, value.listOfString)
     }
     writer.name("listOfStringNonOptional")
-    com.example.MyStringAdapter().nullable().list().toJson(writer, scalarAdapters,
-        value.listOfStringNonOptional)
+    ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().list().toJson(writer,
+        scalarAdapters, value.listOfStringNonOptional)
     if (value.listOfInputTypes is Optional.Present) {
       writer.name("listOfInputTypes")
       ColorInput_InputAdapter.obj().nullable().list().nullable().present().toJson(writer,
@@ -102,7 +103,7 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.listOfListOfString is Optional.Present) {
       writer.name("listOfListOfString")
-      com.example.MyStringAdapter().list().list().nullable().present().toJson(writer,
+      ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable().present().toJson(writer,
           scalarAdapters, value.listOfListOfString)
     }
     if (value.listOfListOfEnum is Optional.Present) {
@@ -122,8 +123,8 @@ internal object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.CapitalizedField is Optional.Present) {
       writer.name("CapitalizedField")
-      com.example.MyStringAdapter().nullable().present().toJson(writer, scalarAdapters,
-          value.CapitalizedField)
+      ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().present().toJson(writer,
+          scalarAdapters, value.CapitalizedField)
     }
     if (value.CapitalizedInt is Optional.Present) {
       writer.name("CapitalizedInt")

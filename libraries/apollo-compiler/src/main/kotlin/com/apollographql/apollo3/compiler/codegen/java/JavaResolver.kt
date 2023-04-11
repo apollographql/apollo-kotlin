@@ -152,7 +152,7 @@ internal class JavaResolver(
   }
 
   /**
-   * Only keep the annotations that support TYPE_USE targets for use 
+   * Only keep the annotations that support TYPE_USE targets for use
    * in generics like `List<@NotNull String>` for an example
    */
   private fun TypeName.filterTypeUseAnnotations(): TypeName {
@@ -248,7 +248,11 @@ internal class JavaResolver(
   private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
-        CodeBlock.of(adapterInitializer.expression)
+        CodeBlock.of(
+            "new $T<>($L)",
+            JavaClassNames.ScalarAdapterToApolloAdapter,
+            CodeBlock.of(adapterInitializer.expression)
+        )
       }
 
       is RuntimeAdapterInitializer -> {

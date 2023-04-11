@@ -9,6 +9,7 @@ import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
+import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.Subscription
@@ -387,7 +388,7 @@ private constructor(
      * you can use `com.example.Date.type`
      * @param scalarAdapter the [Adapter] to use for this custom scalar
      */
-    fun <T> addScalarAdapter(scalarType: ScalarType, scalarAdapter: Adapter<T>) = apply {
+    fun <T> addScalarAdapter(scalarType: ScalarType, scalarAdapter: ScalarAdapter<T>) = apply {
       scalarAdaptersBuilder.add(scalarType, scalarAdapter)
     }
 

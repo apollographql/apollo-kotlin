@@ -6,6 +6,7 @@
 package com.example.mutation_create_review.type.builder;
 
 import com.apollographql.apollo3.api.ObjectBuilderKt;
+import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import java.lang.Object;
 import java.lang.String;
@@ -23,7 +24,7 @@ public class OtherCharacterBuilder {
   }
 
   public OtherCharacterBuilder name(String name) {
-    __fields.put("name", ObjectBuilderKt.adaptValue(new com.example.MyStringAdapter(), name));
+    __fields.put("name", ObjectBuilderKt.adaptValue(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()), name));
     return this;
   }
 
