@@ -24,7 +24,6 @@ fun incrementSnapshotVersion() {
 fun runCommand(vararg args: String): String {
   val builder = ProcessBuilder(*args)
       .redirectError(ProcessBuilder.Redirect.INHERIT)
-      .redirectOutput(ProcessBuilder.Redirect.INHERIT)
 
   val process = builder.start()
   val ret = process.waitFor()
