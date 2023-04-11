@@ -256,19 +256,19 @@ val UploadApolloAdapter = object : ApolloAdapter<Upload> {
  * Global instances of nullable adapters for built-in scalar types
  */
 @JvmField
-val NullableStringAdapter = StringApolloAdapter.nullable()
+val NullableStringApolloAdapter = StringApolloAdapter.nullable()
 
 @JvmField
-val NullableDoubleAdapter = DoubleApolloAdapter.nullable()
+val NullableDoubleApolloAdapter = DoubleApolloAdapter.nullable()
 
 @JvmField
-val NullableIntAdapter = IntApolloAdapter.nullable()
+val NullableIntApolloAdapter = IntApolloAdapter.nullable()
 
 @JvmField
-val NullableBooleanAdapter = BooleanApolloAdapter.nullable()
+val NullableBooleanApolloAdapter = BooleanApolloAdapter.nullable()
 
 @JvmField
-val NullableAnyAdapter = AnyApolloAdapter.nullable()
+val NullableAnyApolloAdapter = AnyApolloAdapter.nullable()
 
 /*
  * Global instances of optional adapters for built-in scalar types

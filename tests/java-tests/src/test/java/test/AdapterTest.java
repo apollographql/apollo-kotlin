@@ -34,7 +34,7 @@ public class AdapterTest {
   public void nullString2() {
     String json = "null";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
-    String result = Adapters.NullableStringAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
+    String result = Adapters.NullableStringApolloAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
     assertThat(result).isEqualTo(null);
   }
 
@@ -46,7 +46,7 @@ public class AdapterTest {
     String json = "{ ";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
     try {
-      Adapters.NullableStringAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
+      Adapters.NullableStringApolloAdapter.fromJson(jsonReader, ScalarAdapters.Empty);
       throw new IllegalStateException("a failure was expected");
     } catch (Exception e) {
       assertThat(e.getMessage()).contains("Expected a string but");
