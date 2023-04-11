@@ -112,7 +112,7 @@ class AppSyncWsProtocol(
         scope: CoroutineScope
     ): WsProtocol {
       return AppSyncWsProtocol(
-          authorization = authorization,
+          connectionPayload = connectionPayload,
           webSocketConnection = webSocketConnection,
           connectionAcknowledgeTimeoutMs = connectionAcknowledgeTimeoutMs,
           listener = listener
