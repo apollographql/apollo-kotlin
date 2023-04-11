@@ -208,7 +208,7 @@ fun setVersionInDocs(version: String, nextSnapshot: String) {
 }
 
 fun mergeAndWait(branchName: String) {
-  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto")
+  runCommand("gh", "pr", "merge", branchName, "--squash", "--auto", "--delete-branch")
   println("Waiting for the PR to be merged...")
   while (true) {
     val state = runCommand("gh", "pr", "view", branchName, "--json", "state", "--jq", ".state")

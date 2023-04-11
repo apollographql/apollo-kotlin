@@ -1,3 +1,5 @@
+import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
+
 rootProject.name = "apollo-tests"
 
 // Include all tests
@@ -23,19 +25,29 @@ pluginManagement {
 }
 
 plugins {
-  id("com.gradle.enterprise") version "3.12.4"
+  id("com.gradle.enterprise") version "3.12.6"
+  id("com.gradle.common-custom-user-data-gradle-plugin") version "1.10"
   id("org.gradle.toolchains.foojay-resolver-convention") version "0.4.0"
 }
 
 apply(from = "./gradle/repositories.gradle.kts")
 
 gradleEnterprise {
+  server = "https://ge.apollographql.com"
+  allowUntrustedServer = false
+
   buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
+    publishAlways()
+
+    this as BuildScanExtensionWithHiddenFeatures
+    publishIfAuthenticated()
 
     val isCiBuild = System.getenv("CI") != null
     isUploadInBackground = !isCiBuild
+
+    capture {
+      this.isTaskInputFiles = true
+    }
   }
 }
 
