@@ -22,6 +22,12 @@ class AppSyncWsProtocol(
     webSocketConnection: WebSocketConnection,
     listener: Listener,
 ) : WsProtocol(webSocketConnection, listener) {
+  constructor(
+      authorization: Map<String, Any?>,
+      connectionAcknowledgeTimeoutMs: Long,
+      webSocketConnection: WebSocketConnection,
+      listener: Listener
+  ) : this(connectionAcknowledgeTimeoutMs, { authorization }, webSocketConnection, listener)
     
   private var authorization: Map<String, Any?>? = null
 
