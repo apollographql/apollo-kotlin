@@ -103,6 +103,11 @@ class AppSyncWsProtocol(
       private val connectionAcknowledgeTimeoutMs: Long = 10_000,
       private val connectionPayload: suspend () -> Map<String, Any?>? = { null },
   ) : WsProtocol.Factory {
+    constructor(
+        authorization: Map<String, Any?>,
+        connectionAcknowledgeTimeoutMs: Long = 10_000,
+    ) : this(connectionAcknowledgeTimeoutMs, { authorization })
+        
     override val name: String
       get() = "graphql-ws"
 
