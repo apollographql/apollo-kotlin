@@ -13,8 +13,7 @@ import okio.IOException
  * - normalize models into records that can be stored in cache
  * - deserialize records
  *
- * **Note**: [Adapter]s are called from multiple threads and implementations must be thread safe.
- * ```
+ * This class is implemented by the generated code, it shouldn't be used directly.
  */
 interface Adapter<T> {
   /**
