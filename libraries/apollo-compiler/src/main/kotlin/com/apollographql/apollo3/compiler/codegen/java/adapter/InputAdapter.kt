@@ -5,7 +5,6 @@ package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -48,7 +47,7 @@ private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = Me
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-    .addParameter(JavaClassNames.ScalarAdapters, scalarAdapters)
+    .addParameter(JavaClassNames.DataDeserializeContext, Identifier.context)
     .returns(adaptedTypeName)
     .addCode("throw new $T($S);\n", JavaClassNames.IllegalStateException, "Input type used in output position")
     .build()
@@ -64,8 +63,8 @@ private fun List<NamedType>.writeToResponseMethodSpec(
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
-      .addParameter(JavaClassNames.ScalarAdapters, scalarAdapters)
       .addParameter(adaptedTypeName, value)
+      .addParameter(JavaClassNames.DataSerializeContext, Identifier.context)
       .addCode(writeToResponseCodeBlock(context, withDefaultBooleanValues))
       .build()
 }

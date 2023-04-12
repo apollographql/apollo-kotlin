@@ -4,7 +4,7 @@ import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 
 @Suppress("PropertyName")
-abstract class ObjectBuilder<out T: Map<String, Any?>>(override val scalarAdapters: ScalarAdapters): BuilderScope {
+abstract class ObjectBuilder<out T : Map<String, Any?>>(override val scalarAdapters: ScalarAdapters) : BuilderScope {
   val __fields = mutableMapOf<String, Any?>()
 
   var __typename: String by __fields
@@ -21,7 +21,7 @@ interface BuilderScope {
 }
 
 interface BuilderFactory<out T> {
-  fun newBuilder(scalarAdapters: ScalarAdapters) : T
+  fun newBuilder(scalarAdapters: ScalarAdapters): T
 }
 
 fun Builder(scalarAdapters: ScalarAdapters): BuilderScope {
@@ -45,7 +45,7 @@ class BuilderProperty<T>(val adapter: ApolloAdapter<T>) {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.fromJson(MapJsonReader(data), ScalarAdapters.Empty)
+    return adapter.fromJson(MapJsonReader(data), ApolloAdapter.DataDeserializeContext(scalarAdapters = ScalarAdapters.Empty, booleanFalseVariables = emptySet(), mergedDeferredFragmentIds = null))
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {
@@ -61,4 +61,4 @@ fun <T> adaptValue(adapter: ApolloAdapter<T>, value: T): Any? {
   }.root()
 }
 
-abstract class ObjectMap(__fields: Map<String, Any?>): Map<String, Any?> by __fields
+abstract class ObjectMap(__fields: Map<String, Any?>) : Map<String, Any?> by __fields

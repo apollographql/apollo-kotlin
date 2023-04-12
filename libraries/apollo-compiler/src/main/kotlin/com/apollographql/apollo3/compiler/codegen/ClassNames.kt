@@ -20,6 +20,8 @@ internal object ClassNames {
   val JsonReader = ResolverClassName(apolloApiJsonPackageName, "JsonReader")
   val JsonWriter = ResolverClassName(apolloApiJsonPackageName, "JsonWriter")
   val ScalarAdapters = ResolverClassName(apolloApiPackageName, "ScalarAdapters")
+  val DataSerializeContext = ResolverClassName(apolloApiPackageName, "ApolloAdapter", "DataSerializeContext")
+  val DataDeserializeContext = ResolverClassName(apolloApiPackageName, "ApolloAdapter", "DataDeserializeContext")
   val Input = ResolverClassName(apolloApiPackageName, "Input")
   val ScalarAdaptersBuilder = ResolverClassName(apolloApiPackageName, "ScalarAdapters", "Builder")
   val Optional = ResolverClassName(apolloApiPackageName, "Optional")

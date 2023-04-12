@@ -4,6 +4,7 @@ import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.JavaNullable
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -258,7 +259,7 @@ internal class JavaResolver(
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
-            "($scalarAdapters.<$T>responseAdapterFor($L))",
+            "(${Identifier.context}.$scalarAdapters.<$T>responseAdapterFor($L))",
             target,
             resolveCompiledType(type.name)
         )
@@ -277,7 +278,7 @@ internal class JavaResolver(
               adapterCodeBlock("AnyApolloAdapter")
             } else {
               CodeBlock.of(
-                  "($scalarAdapters.<$T>responseAdapterFor($L))",
+                  "(${Identifier.context}.$scalarAdapters.<$T>responseAdapterFor($L))",
                   target,
                   resolveCompiledType(type.name)
               )

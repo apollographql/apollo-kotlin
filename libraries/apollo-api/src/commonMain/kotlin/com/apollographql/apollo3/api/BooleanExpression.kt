@@ -4,6 +4,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
+import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 
@@ -139,7 +140,7 @@ fun <T : Any> BooleanExpression<T>.evaluate(block: (T) -> Boolean): Boolean {
 fun BooleanExpression<BTerm>.evaluate(
     variables: Set<String>,
     typename: String?,
-    adapterContext: AdapterContext,
+    context: DataDeserializeContext,
     path: List<Any>?,
 ): Boolean {
   // Remove "data" from the path
@@ -147,7 +148,7 @@ fun BooleanExpression<BTerm>.evaluate(
   return evaluate {
     when (it) {
       is BVariable -> !variables.contains(it.name)
-      is BLabel -> adapterContext.hasDeferredFragment(croppedPath!!, it.label)
+      is BLabel -> context.hasDeferredFragment(croppedPath!!, it.label)
       is BPossibleTypes -> it.possibleTypes.contains(typename)
     }
   }

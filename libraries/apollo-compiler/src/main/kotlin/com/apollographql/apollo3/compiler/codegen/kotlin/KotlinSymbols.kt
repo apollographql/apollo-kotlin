@@ -26,6 +26,8 @@ internal object KotlinSymbols {
   val JsonReader = ClassNames.JsonReader.toKotlinPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toKotlinPoetClassName()
   val ScalarAdapters = ClassNames.ScalarAdapters.toKotlinPoetClassName()
+  val DataSerializeContext = ClassNames.DataSerializeContext.toKotlinPoetClassName()
+  val DataDeserializeContext = ClassNames.DataDeserializeContext.toKotlinPoetClassName()
   val ScalarAdaptersBuilder = ClassNames.ScalarAdaptersBuilder.toKotlinPoetClassName()
   val Optional = ClassNames.Optional.toKotlinPoetClassName()
   val Absent = ClassNames.Absent.toKotlinPoetClassName()

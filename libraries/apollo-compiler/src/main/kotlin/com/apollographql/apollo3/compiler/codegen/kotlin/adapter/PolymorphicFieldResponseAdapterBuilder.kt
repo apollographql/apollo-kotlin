@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -105,7 +105,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     return FunSpec.builder(fromJson)
         .returns(adaptedClassName)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
+        .addParameter(Identifier.context, KotlinSymbols.DataDeserializeContext)
         .addModifiers(KModifier.OVERRIDE)
         .addCode(readFromResponseCodeBlock())
         .build()
@@ -131,7 +131,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
         builder.addStatement("else")
       }
       builder.addStatement(
-          "-> %T.$fromJson($reader, $scalarAdapters, $__typename)",
+          "-> %T.$fromJson($reader, ${Identifier.context}, $__typename)",
           ClassName.from(path + model.modelName),
       )
     }
@@ -144,8 +144,8 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     return FunSpec.builder(toJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(writer, KotlinSymbols.JsonWriter)
-        .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
         .addParameter(value, adaptedClassName)
+        .addParameter(Identifier.context, KotlinSymbols.DataSerializeContext)
         .addCode(writeToResponseCodeBlock())
         .build()
   }
@@ -156,7 +156,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
     builder.beginControlFlow("when($value) {")
     implementations.sortedByDescending { it.typeSet.size }.forEach { model ->
       builder.addStatement(
-          "is %T -> %T.$toJson($writer, $scalarAdapters, $value)",
+          "is %T -> %T.$toJson($writer, $value, ${Identifier.context})",
           context.resolver.resolveModel(model.id),
           ClassName.from(path + model.modelName),
       )

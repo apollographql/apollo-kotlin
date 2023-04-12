@@ -19,6 +19,8 @@ internal object JavaClassNames {
   val JsonReader = ClassNames.JsonReader.toJavaPoetClassName()
   val JsonWriter = ClassNames.JsonWriter.toJavaPoetClassName()
   val ScalarAdapters = ClassNames.ScalarAdapters.toJavaPoetClassName()
+  val DataSerializeContext = ClassNames.DataSerializeContext.toJavaPoetClassName()
+  val DataDeserializeContext = ClassNames.DataDeserializeContext.toJavaPoetClassName()
   val Input = ClassNames.Input.toJavaPoetClassName()
   val ScalarAdaptersBuilder = ClassNames.ScalarAdaptersBuilder.toJavaPoetClassName()
   val Optional = ClassNames.Optional.toJavaPoetClassName()
