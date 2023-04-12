@@ -37,7 +37,6 @@ internal class InputObjectAdapterBuilder(
         context,
         simpleName,
         context.resolver.resolveSchemaType(inputObject.name),
-        withDefaultBooleanValues = false,
     )
   }
 }

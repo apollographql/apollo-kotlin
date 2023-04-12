@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFileBuilder
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
-import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.inputAdapterTypeSpec
+import com.apollographql.apollo3.compiler.codegen.kotlin.adapter.variablesAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.kotlin.helpers.toNamedType
 import com.apollographql.apollo3.compiler.ir.IrFragmentDefinition
 import com.squareup.kotlinpoet.ClassName
@@ -33,11 +33,10 @@ internal class FragmentVariablesAdapterBuilder(
 
   private fun typeSpec(): TypeSpec {
     return fragment.variables.map { it.toNamedType() }
-        .inputAdapterTypeSpec(
+        .variablesAdapterTypeSpec(
             context = context,
             adapterName = simpleName,
             adaptedTypeName = context.resolver.resolveFragment(fragment.name),
-            withDefaultBooleanValues = true,
         )
   }
 }

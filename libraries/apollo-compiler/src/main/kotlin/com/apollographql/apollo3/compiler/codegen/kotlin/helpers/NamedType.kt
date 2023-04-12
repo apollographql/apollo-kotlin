@@ -1,16 +1,13 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.helpers
 
 import com.apollographql.apollo3.compiler.applyIf
-import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinSymbols
-import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.ir.IrVariable
 import com.apollographql.apollo3.compiler.ir.isOptional
-import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.ParameterSpec
 
 internal class NamedType(
@@ -57,42 +54,3 @@ internal fun IrVariable.toNamedType() = NamedType(
 )
 
 
-internal fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext, withDefaultBooleanValues: Boolean): CodeBlock {
-  val builder = CodeBlock.builder()
-  forEach {
-    builder.add(it.writeToResponseCodeBlock(context, withDefaultBooleanValues))
-  }
-  return builder.build()
-}
-
-internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefaultBooleanValues: Boolean): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type, false)
-  val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
-
-  if (type.isOptional()) {
-    builder.beginControlFlow("if (${Identifier.value}.%N is %T)", propertyName, KotlinSymbols.Present)
-  }
-  builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
-  builder.addStatement(
-      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.value}.%N, ${Identifier.context})",
-      adapterInitializer,
-      propertyName,
-  )
-  if (type.isOptional()) {
-    builder.endControlFlow()
-    if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
-      builder.beginControlFlow("else if (${Identifier.scalarAdapters}.adapterContext.serializeVariablesWithDefaultBooleanValues)")
-      builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
-      builder.addStatement(
-          "%M.${Identifier.toJson}(${Identifier.writer}, %L, ${Identifier.context})",
-          KotlinSymbols.BooleanApolloAdapter,
-          defaultValue.value,
-      )
-
-      builder.endControlFlow()
-    }
-  }
-
-  return builder.build()
-}

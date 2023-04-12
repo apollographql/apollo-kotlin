@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.java.file
 import com.apollographql.apollo3.compiler.codegen.java.CodegenJavaFile
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassBuilder
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.adapter.inputAdapterTypeSpec
+import com.apollographql.apollo3.compiler.codegen.java.adapter.variableAdapterTypeSpec
 import com.apollographql.apollo3.compiler.codegen.java.helpers.toNamedType
 import com.apollographql.apollo3.compiler.ir.IrOperation
 import com.squareup.javapoet.ClassName
@@ -31,11 +31,10 @@ internal class OperationVariablesAdapterBuilder(
 
   private fun typeSpec(): TypeSpec {
     return operation.variables.map { it.toNamedType() }
-        .inputAdapterTypeSpec(
+        .variableAdapterTypeSpec(
             context = context,
             adapterName = simpleName,
             adaptedTypeName = context.resolver.resolveOperation(operation.name),
-            withDefaultBooleanValues = true,
         )
   }
 }

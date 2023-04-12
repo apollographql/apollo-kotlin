@@ -3,10 +3,8 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinResolver
@@ -32,14 +30,14 @@ internal fun serializeVariablesFunSpec(
     """.trimIndent())
   } else {
     CodeBlock.of(
-        "%L.$toJson($writer, this, ${Identifier.context})",
+        "%L.$serializeVariables($writer, this, ${Identifier.context})",
         CodeBlock.of("%T", adapterClassName)
     )
   }
   return FunSpec.builder(serializeVariables)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
-      .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
+      .addParameter(Identifier.context, KotlinSymbols.SerializeVariablesContext)
       .addCode(body)
       .build()
 }

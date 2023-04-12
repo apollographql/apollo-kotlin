@@ -32,7 +32,7 @@ interface ApolloAdapter<T> {
       val scalarAdapters: ScalarAdapters,
 
       @JvmField
-      val booleanFalseVariables: Set<String>,
+      val falseBooleanVariables: Set<String>,
 
       @JvmField
       val mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>?,

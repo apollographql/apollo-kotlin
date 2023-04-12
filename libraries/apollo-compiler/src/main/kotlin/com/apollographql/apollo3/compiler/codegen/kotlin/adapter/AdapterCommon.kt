@@ -133,7 +133,7 @@ internal fun readFromResponseCodeBlock(
             } else {
               "null"
             }
-            beginControlFlow("if·(%L.%M(${Identifier.context}.booleanFalseVariables,·$typenameLiteral,·${Identifier.context},·$pathLiteral))", property.condition.codeBlock(), evaluate)
+            beginControlFlow("if·(%L.%M(${Identifier.context}.falseBooleanVariables,·$typenameLiteral,·${Identifier.context},·$pathLiteral))", property.condition.codeBlock(), evaluate)
             add("$reader.rewind()\n")
           } else {
             checkedProperties.add(property.info.responseName)

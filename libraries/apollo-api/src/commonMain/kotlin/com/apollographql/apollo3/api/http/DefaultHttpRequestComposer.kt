@@ -2,10 +2,11 @@ package com.apollographql.apollo3.api.http
 
 import com.apollographql.apollo3.annotations.ApolloInternal
 import com.apollographql.apollo3.api.ApolloRequest
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.Upload
+import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.http.internal.urlEncode
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.buildJsonByteString
@@ -123,7 +124,7 @@ class DefaultHttpRequestComposer(
         name("variables")
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, scalarAdapters)
+          operation.serializeVariables(this, SerializeVariablesContext(scalarAdapters = scalarAdapters, withDefaultBooleanValues = false))
         }
         uploads = uploadAwareWriter.collectedUploads()
 
@@ -165,7 +166,7 @@ class DefaultHttpRequestComposer(
       val variables = buildJsonString {
         val uploadAwareWriter = FileUploadAwareJsonWriter(this)
         uploadAwareWriter.writeObject {
-          operation.serializeVariables(this, scalarAdapters)
+          operation.serializeVariables(this, SerializeVariablesContext(scalarAdapters = scalarAdapters, withDefaultBooleanValues = false))
         }
         check(uploadAwareWriter.collectedUploads().isEmpty()) {
           "FileUpload and Http GET are not supported at the same time"

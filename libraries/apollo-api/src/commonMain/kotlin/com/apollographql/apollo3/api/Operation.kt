@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
 import kotlin.js.JsName
@@ -32,7 +33,7 @@ interface Operation<D : Operation.Data> : Executable<D> {
   override fun adapter(): ApolloAdapter<D>
 
   @Throws(IOException::class)
-  override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters)
+  override fun serializeVariables(writer: JsonWriter, context: SerializeVariablesContext)
 
   override fun rootField(): CompiledField
 

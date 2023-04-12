@@ -3,6 +3,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloInternal
+import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import okio.Buffer
@@ -23,7 +24,7 @@ fun <D : Executable.Data> Executable<D>.variablesJson(scalarAdapters: ScalarAdap
   val buffer = Buffer()
   BufferedSinkJsonWriter(buffer).apply {
     beginObject()
-    serializeVariables(this, scalarAdapters)
+    serializeVariables(this, SerializeVariablesContext(scalarAdapters = scalarAdapters, withDefaultBooleanValues = false))
     endObject()
   }
   return buffer.readUtf8()
@@ -54,17 +55,8 @@ fun <D : Executable.Data> Executable<D>.booleanVariables(scalarAdapters: ScalarA
 fun <D : Executable.Data> Executable<D>.variables(scalarAdapters: ScalarAdapters, withDefaultBooleanValues: Boolean): Executable.Variables {
   val valueMap = MapJsonWriter().apply {
     beginObject()
-    serializeVariables(this, scalarAdapters.let { if (withDefaultBooleanValues) it.serializeVariablesWithDefaultBooleanValues() else it })
+    serializeVariables(this, SerializeVariablesContext(scalarAdapters = scalarAdapters, withDefaultBooleanValues = withDefaultBooleanValues))
     endObject()
   }.root() as Map<String, Any?>
   return Executable.Variables(valueMap)
 }
-
-
-private fun ScalarAdapters.serializeVariablesWithDefaultBooleanValues() = newBuilder()
-    .adapterContext(
-        adapterContext.newBuilder()
-            .serializeVariablesWithDefaultBooleanValues(true)
-            .build()
-    )
-    .build()

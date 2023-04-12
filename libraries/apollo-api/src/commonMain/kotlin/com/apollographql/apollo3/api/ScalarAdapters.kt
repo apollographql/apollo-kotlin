@@ -8,11 +8,6 @@ import kotlin.jvm.JvmField
  */
 class ScalarAdapters private constructor(
     scalarAdapters: Map<String, ApolloAdapter<*>>,
-    // We piggyback ScalarAdapters to pass around a context which is used in the Adapters at parse time.
-    // This is currently used for @skip/@include and @defer.
-    // Ideally it should be passed as its own parameter, but we're avoiding a breaking change.
-    // See https://github.com/apollographql/apollo-kotlin/pull/3813
-    val adapterContext: AdapterContext,
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
@@ -87,7 +82,6 @@ class ScalarAdapters private constructor(
 
   class Builder {
     private val adaptersMap: MutableMap<String, ApolloAdapter<*>> = mutableMapOf()
-    private var adapterContext: AdapterContext = AdapterContext.Builder().build()
     private var unsafe = false
 
     fun <T> add(
@@ -110,10 +104,6 @@ class ScalarAdapters private constructor(
       adaptersMap.clear()
     }
 
-    fun build() = ScalarAdapters(adaptersMap, adapterContext, unsafe)
-
-    fun adapterContext(adapterContext: AdapterContext): Builder = apply {
-      this.adapterContext = adapterContext
-    }
+    fun build() = ScalarAdapters(adaptersMap, unsafe)
   }
 }

@@ -12,6 +12,7 @@ internal object Identifier {
 
   const val type = "type"
   const val context = "context"
+  const val serializeDataContext = "serializeDataContext"
   const val scalarAdapters = "scalarAdapters"
   const val value = "value"
   const val reader = "reader"
