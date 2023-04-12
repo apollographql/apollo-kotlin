@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.reserved_keywords.TestQuery;
@@ -32,16 +31,16 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("yield", "objects");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Yield _yield = null;
       List<TestQuery.Object> _objects = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _yield = new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
-          case 1: _objects = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).fromJson(reader, scalarAdapters); break;
+          case 0: _yield = new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).fromJson(reader, context); break;
+          case 1: _objects = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -53,13 +52,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("yield");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, scalarAdapters, value.yield);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Yield>(Yield.INSTANCE, false)).toJson(writer, value.yield, context);
 
       writer.name("objects");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).toJson(writer, scalarAdapters, value.objects);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, true)))).toJson(writer, value.objects, context);
     }
   }
 
@@ -69,16 +68,16 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("while", "it");
 
     @Override
-    public TestQuery.Yield fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Yield fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String _while = null;
       String _it = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _while = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _it = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _while = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _it = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -93,13 +92,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Yield value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Yield value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("while");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.while_);
+      Adapters.StringApolloAdapter.toJson(writer, value.while_, context);
 
       writer.name("it");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.it);
+      Adapters.StringApolloAdapter.toJson(writer, value.it, context);
     }
   }
 
@@ -109,23 +108,23 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Object fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Object fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnCharacter _onCharacter = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid","Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid","Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, scalarAdapters);
+        _onCharacter = com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.fromJson(reader, context);
       }
 
       return new TestQuery.Object(
@@ -135,13 +134,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Object value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Object value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.onCharacter != null) {
-        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, scalarAdapters, value.onCharacter);
+        com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, value.onCharacter, context);
       }
     }
   }
@@ -152,14 +151,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.OnCharacter fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnCharacter fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -172,10 +171,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestQuery.OnCharacter value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnCharacter value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
     }
   }
 }

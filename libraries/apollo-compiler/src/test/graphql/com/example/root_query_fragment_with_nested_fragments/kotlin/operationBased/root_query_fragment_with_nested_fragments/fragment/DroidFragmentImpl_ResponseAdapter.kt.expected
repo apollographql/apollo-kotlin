@@ -7,7 +7,6 @@ package com.example.root_query_fragment_with_nested_fragments.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,15 +19,15 @@ public object DroidFragmentImpl_ResponseAdapter {
       ApolloAdapter<com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragment {
       var _name: String? = null
       var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, context)
+          1 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -41,14 +40,14 @@ public object DroidFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.root_query_fragment_with_nested_fragments.fragment.DroidFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("name")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, value.name, context)
 
       writer.name("primaryFunction")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+      NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context)
     }
   }
 }

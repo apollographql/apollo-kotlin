@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_without_implementation.TestQuery;
@@ -33,14 +32,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -51,10 +50,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, context);
     }
   }
 
@@ -64,31 +63,31 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Hero fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _humanDetails = com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, context);
       }
 
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _droidDetails = com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -102,20 +101,20 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Hero value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Hero value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       if (value.humanDetails != null) {
-        com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, scalarAdapters, value.humanDetails);
+        com.example.named_fragment_without_implementation.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, value.humanDetails, context);
       }
 
       if (value.droidDetails != null) {
-        com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, scalarAdapters, value.droidDetails);
+        com.example.named_fragment_without_implementation.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, value.droidDetails, context);
       }
     }
   }

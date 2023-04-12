@@ -7,33 +7,26 @@ package com.example.fragments_with_defer_and_include_directives.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter implements ApolloAdapter<SpreadMultipleWithDeferAndInclude> {
+public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter implements VariablesAdapter<SpreadMultipleWithDeferAndInclude> {
   INSTANCE;
 
   @Override
-  public SpreadMultipleWithDeferAndInclude fromJson(JsonReader reader,
-      ScalarAdapters scalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-      SpreadMultipleWithDeferAndInclude value) throws IOException {
+  public void serializeVariables(JsonWriter writer, SpreadMultipleWithDeferAndInclude value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
     writer.name("cond1");
-    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond1);
+    Adapters.BooleanApolloAdapter.toJson(writer, value.cond1, serializeDataContext);
     writer.name("cond2");
-    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond2);
+    Adapters.BooleanApolloAdapter.toJson(writer, value.cond2, serializeDataContext);
     writer.name("cond3");
-    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond3);
+    Adapters.BooleanApolloAdapter.toJson(writer, value.cond3, serializeDataContext);
     writer.name("cond4");
-    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond4);
+    Adapters.BooleanApolloAdapter.toJson(writer, value.cond4, serializeDataContext);
   }
 }

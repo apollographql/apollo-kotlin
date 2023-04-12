@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -29,22 +28,22 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment.fragment.HeroDetails fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, context);
       }
 
       return new com.example.simple_fragment.fragment.HeroDetails(
@@ -54,13 +53,13 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.simple_fragment.fragment.HeroDetails value) throws IOException {
+    public void toJson(JsonWriter writer, com.example.simple_fragment.fragment.HeroDetails value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.humanDetails != null) {
-        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, scalarAdapters, value.humanDetails);
+        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, value.humanDetails, context);
       }
     }
   }

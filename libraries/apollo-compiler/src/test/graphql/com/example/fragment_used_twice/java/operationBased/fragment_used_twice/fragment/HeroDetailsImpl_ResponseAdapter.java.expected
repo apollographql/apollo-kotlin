@@ -8,7 +8,6 @@ package com.example.fragment_used_twice.fragment;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -25,21 +24,21 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_used_twice.fragment.HeroDetails fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      CharacterDetails _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, scalarAdapters);
+      CharacterDetails _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       Assertions.checkFieldNotMissing(_name, "name");
@@ -52,15 +51,16 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.fragment_used_twice.fragment.HeroDetails value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.fragment_used_twice.fragment.HeroDetails value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
-      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.toJson(writer, scalarAdapters, value.characterDetails);
+      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.toJson(writer, value.characterDetails, context);
     }
   }
 }

@@ -6,7 +6,6 @@
 package com.example.java8annotation.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,13 +19,13 @@ public object LoginBarber_ResponseAdapter {
   public object Data : ApolloAdapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         LoginBarber.Data {
       var _login: LoginBarber.Data.Login? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _login = Login.obj().fromJson(reader, scalarAdapters)
+          0 -> _login = Login.obj().fromJson(reader, context)
           else -> break
         }
       }
@@ -38,23 +37,23 @@ public object LoginBarber_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: LoginBarber.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("login")
-      Login.obj().toJson(writer, scalarAdapters, value.login)
+      Login.obj().toJson(writer, value.login, context)
     }
 
     private object Login : ApolloAdapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          LoginBarber.Data.Login {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): LoginBarber.Data.Login {
         var _response: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _response = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _response = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -66,11 +65,11 @@ public object LoginBarber_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: LoginBarber.Data.Login,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("response")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.response)
+        StringApolloAdapter.toJson(writer, value.response, context)
       }
     }
   }

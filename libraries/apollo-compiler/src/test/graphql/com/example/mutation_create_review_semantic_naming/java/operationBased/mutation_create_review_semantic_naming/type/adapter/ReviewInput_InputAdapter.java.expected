@@ -12,7 +12,6 @@ import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review_semantic_naming.type.ColorInput;
@@ -25,94 +24,95 @@ public enum ReviewInput_InputAdapter implements ApolloAdapter<ReviewInput> {
   INSTANCE;
 
   @Override
-  public ReviewInput fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+  public ReviewInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, ReviewInput value) throws
-      IOException {
+  public void toJson(JsonWriter writer, ReviewInput value,
+      ApolloAdapter.DataSerializeContext context) throws IOException {
     writer.name("stars");
-    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.stars);
+    Adapters.IntApolloAdapter.toJson(writer, value.stars, context);
     if (value.nullableIntFieldWithDefaultValue instanceof Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue");
-      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, scalarAdapters, value.nullableIntFieldWithDefaultValue);
+      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, value.nullableIntFieldWithDefaultValue, context);
     }
     if (value.commentary instanceof Optional.Present) {
       writer.name("commentary");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.commentary);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.commentary, context);
     }
     writer.name("favoriteColor");
-    new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.favoriteColor);
+    new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).toJson(writer, value.favoriteColor, context);
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.enumWithDefaultValue);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.enumWithDefaultValue, context);
     }
     if (value.nonNullableEnumWithDefaultValue instanceof Optional.Present) {
       writer.name("nonNullableEnumWithDefaultValue");
-      new ApolloOptionalAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, scalarAdapters, value.nonNullableEnumWithDefaultValue);
+      new ApolloOptionalAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, value.nonNullableEnumWithDefaultValue, context);
     }
     if (value.nullableEnum instanceof Optional.Present) {
       writer.name("nullableEnum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.nullableEnum);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.nullableEnum, context);
     }
     if (value.listOfCustomScalar instanceof Optional.Present) {
       writer.name("listOfCustomScalar");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableAnyApolloAdapter))).toJson(writer, scalarAdapters, value.listOfCustomScalar);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableAnyApolloAdapter))).toJson(writer, value.listOfCustomScalar, context);
     }
     if (value.customScalar instanceof Optional.Present) {
       writer.name("customScalar");
-      new ApolloOptionalAdapter<>(Adapters.NullableAnyApolloAdapter).toJson(writer, scalarAdapters, value.customScalar);
+      new ApolloOptionalAdapter<>(Adapters.NullableAnyApolloAdapter).toJson(writer, value.customScalar, context);
     }
     if (value.listOfEnums instanceof Optional.Present) {
       writer.name("listOfEnums");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, scalarAdapters, value.listOfEnums);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, value.listOfEnums, context);
     }
     if (value.listOfInt instanceof Optional.Present) {
       writer.name("listOfInt");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableIntApolloAdapter))).toJson(writer, scalarAdapters, value.listOfInt);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableIntApolloAdapter))).toJson(writer, value.listOfInt, context);
     }
     if (value.listOfString instanceof Optional.Present) {
       writer.name("listOfString");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableStringApolloAdapter))).toJson(writer, scalarAdapters, value.listOfString);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableStringApolloAdapter))).toJson(writer, value.listOfString, context);
     }
     writer.name("listOfStringNonOptional");
-    new ListAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.listOfStringNonOptional);
+    new ListAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.listOfStringNonOptional, context);
     if (value.listOfInputTypes instanceof Optional.Present) {
       writer.name("listOfInputTypes");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, scalarAdapters, value.listOfInputTypes);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, value.listOfInputTypes, context);
     }
     if (value.booleanWithDefaultValue instanceof Optional.Present) {
       writer.name("booleanWithDefaultValue");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, scalarAdapters, value.booleanWithDefaultValue);
+      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, value.booleanWithDefaultValue, context);
     }
     if (value.booleanNonOptional instanceof Optional.Present) {
       writer.name("booleanNonOptional");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, scalarAdapters, value.booleanNonOptional);
+      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, value.booleanNonOptional, context);
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)))).toJson(writer, scalarAdapters, value.listOfListOfString);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)))).toJson(writer, value.listOfListOfString, context);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, scalarAdapters, value.listOfListOfEnum);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, value.listOfListOfEnum, context);
     }
     if (value.listOfListOfCustom instanceof Optional.Present) {
       writer.name("listOfListOfCustom");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.AnyApolloAdapter)))).toJson(writer, scalarAdapters, value.listOfListOfCustom);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.AnyApolloAdapter)))).toJson(writer, value.listOfListOfCustom, context);
     }
     if (value.listOfListOfObject instanceof Optional.Present) {
       writer.name("listOfListOfObject");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, scalarAdapters, value.listOfListOfObject);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, value.listOfListOfObject, context);
     }
     if (value.CapitalizedField instanceof Optional.Present) {
       writer.name("CapitalizedField");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.CapitalizedField);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.CapitalizedField, context);
     }
     if (value.CapitalizedInt instanceof Optional.Present) {
       writer.name("CapitalizedInt");
-      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, scalarAdapters, value.CapitalizedInt);
+      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, value.CapitalizedInt, context);
     }
   }
 }

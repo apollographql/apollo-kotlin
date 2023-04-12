@@ -6,7 +6,6 @@
 package com.example.root_query_fragment.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,20 +18,20 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
 
       reader.rewind()
       val _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-          scalarAdapters)
+          context)
 
       return TestQuery.Data(
         __typename = __typename!!,
@@ -42,14 +41,14 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-          scalarAdapters, value.queryFragment)
+          value.queryFragment, context)
     }
   }
 }

@@ -8,7 +8,7 @@ package com.example.fragments_with_type_condition.fragment
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_type_condition.fragment.selections.DroidDetailsSelections
@@ -23,7 +23,8 @@ public class DroidDetailsImpl() : Fragment<DroidDetails> {
 
   public override fun hashCode(): Int = this::class.hashCode()
 
-  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
+  public override fun serializeVariables(writer: JsonWriter,
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This fragment doesn't have any variable
   }
 

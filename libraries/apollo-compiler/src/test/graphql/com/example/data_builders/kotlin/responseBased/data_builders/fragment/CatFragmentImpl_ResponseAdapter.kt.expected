@@ -6,7 +6,6 @@
 package com.example.data_builders.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,13 +17,13 @@ public object CatFragmentImpl_ResponseAdapter {
   public object Data : ApolloAdapter<CatFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("meow")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         CatFragmentImpl.Data {
       var _meow: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _meow = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _meow = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -36,11 +35,11 @@ public object CatFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: CatFragmentImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("meow")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.meow)
+      StringApolloAdapter.toJson(writer, value.meow, context)
     }
   }
 }

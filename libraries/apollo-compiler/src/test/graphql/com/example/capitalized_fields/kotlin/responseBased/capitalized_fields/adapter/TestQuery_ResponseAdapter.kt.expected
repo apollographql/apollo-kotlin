@@ -7,7 +7,6 @@ package com.example.capitalized_fields.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,13 +21,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _Horse: TestQuery.Horse? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _Horse = Horse.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -40,18 +39,18 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("Horse")
-      Horse.obj().nullable().toJson(writer, scalarAdapters, value.Horse)
+      Horse.obj().nullable().toJson(writer, value.Horse, context)
     }
   }
 
   public object Horse : ApolloAdapter<TestQuery.Horse> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey", "Cow")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Horse {
       var __typename: String? = null
       var _Donkey: String? = null
@@ -59,9 +58,9 @@ public object TestQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _Donkey = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-          2 -> _Cow = Cow.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          1 -> _Donkey = NullableStringApolloAdapter.fromJson(reader, context)
+          2 -> _Cow = Cow.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -75,30 +74,30 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Horse,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       writer.name("Donkey")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.Donkey)
+      NullableStringApolloAdapter.toJson(writer, value.Donkey, context)
 
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, scalarAdapters, value.Cow)
+      Cow.obj().nullable().toJson(writer, value.Cow, context)
     }
   }
 
   public object Cow : ApolloAdapter<TestQuery.Cow> {
     public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Cow {
       var _Moo: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Moo = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _Moo = NullableStringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -110,11 +109,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Cow,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("Moo")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.Moo)
+      NullableStringApolloAdapter.toJson(writer, value.Moo, context)
     }
   }
 }

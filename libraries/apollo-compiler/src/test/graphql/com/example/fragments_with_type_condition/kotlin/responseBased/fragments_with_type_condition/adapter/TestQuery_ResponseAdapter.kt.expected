@@ -8,7 +8,6 @@ package com.example.fragments_with_type_condition.adapter
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -25,15 +24,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _r2: TestQuery.Data.R2? = null
       var _luke: TestQuery.Data.Luke? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _r2 = R2.obj().nullable().fromJson(reader, scalarAdapters)
-          1 -> _luke = Luke.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _r2 = R2.obj().nullable().fromJson(reader, context)
+          1 -> _luke = Luke.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -46,39 +45,39 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("r2")
-      R2.obj().nullable().toJson(writer, scalarAdapters, value.r2)
+      R2.obj().nullable().toJson(writer, value.r2, context)
 
       writer.name("luke")
-      Luke.obj().nullable().toJson(writer, scalarAdapters, value.luke)
+      Luke.obj().nullable().toJson(writer, value.luke, context)
     }
 
     private object R2 : ApolloAdapter<TestQuery.Data.R2> {
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.R2 {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.R2 {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanR2.fromJson(reader, scalarAdapters, __typename)
+          -> HumanR2.fromJson(reader, context, __typename)
           "Droid",
-          -> DroidR2.fromJson(reader, scalarAdapters, __typename)
+          -> DroidR2.fromJson(reader, context, __typename)
           else
-          -> OtherR2.fromJson(reader, scalarAdapters, __typename)
+          -> OtherR2.fromJson(reader, context, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.R2,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         when(value) {
-          is TestQuery.Data.HumanR2 -> HumanR2.toJson(writer, scalarAdapters, value)
-          is TestQuery.Data.DroidR2 -> DroidR2.toJson(writer, scalarAdapters, value)
-          is TestQuery.Data.OtherR2 -> OtherR2.toJson(writer, scalarAdapters, value)
+          is TestQuery.Data.HumanR2 -> HumanR2.toJson(writer, value, context)
+          is TestQuery.Data.DroidR2 -> DroidR2.toJson(writer, value, context)
+          is TestQuery.Data.OtherR2 -> OtherR2.toJson(writer, value, context)
         }
       }
     }
@@ -88,7 +87,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.HumanR2 {
         var __typename: String? = typename
@@ -97,9 +96,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = StringApolloAdapter.fromJson(reader, context)
+            2 -> _height = NullableDoubleApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -113,17 +112,17 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.HumanR2,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("height")
-        NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+        NullableDoubleApolloAdapter.toJson(writer, value.height, context)
       }
     }
 
@@ -132,7 +131,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.DroidR2 {
         var __typename: String? = typename
@@ -141,9 +140,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = StringApolloAdapter.fromJson(reader, context)
+            2 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -157,17 +156,17 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.DroidR2,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("primaryFunction")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+        NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context)
       }
     }
 
@@ -176,14 +175,14 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.OtherR2 {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -195,37 +194,37 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.OtherR2,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
       }
     }
 
     private object Luke : ApolloAdapter<TestQuery.Data.Luke> {
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Luke {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Luke {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanLuke.fromJson(reader, scalarAdapters, __typename)
+          -> HumanLuke.fromJson(reader, context, __typename)
           "Droid",
-          -> DroidLuke.fromJson(reader, scalarAdapters, __typename)
+          -> DroidLuke.fromJson(reader, context, __typename)
           else
-          -> OtherLuke.fromJson(reader, scalarAdapters, __typename)
+          -> OtherLuke.fromJson(reader, context, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Luke,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         when(value) {
-          is TestQuery.Data.HumanLuke -> HumanLuke.toJson(writer, scalarAdapters, value)
-          is TestQuery.Data.DroidLuke -> DroidLuke.toJson(writer, scalarAdapters, value)
-          is TestQuery.Data.OtherLuke -> OtherLuke.toJson(writer, scalarAdapters, value)
+          is TestQuery.Data.HumanLuke -> HumanLuke.toJson(writer, value, context)
+          is TestQuery.Data.DroidLuke -> DroidLuke.toJson(writer, value, context)
+          is TestQuery.Data.OtherLuke -> OtherLuke.toJson(writer, value, context)
         }
       }
     }
@@ -235,7 +234,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.HumanLuke {
         var __typename: String? = typename
@@ -244,9 +243,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = StringApolloAdapter.fromJson(reader, context)
+            2 -> _height = NullableDoubleApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -260,17 +259,17 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.HumanLuke,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("height")
-        NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+        NullableDoubleApolloAdapter.toJson(writer, value.height, context)
       }
     }
 
@@ -279,7 +278,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.DroidLuke {
         var __typename: String? = typename
@@ -288,9 +287,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = StringApolloAdapter.fromJson(reader, context)
+            2 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -304,17 +303,17 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.DroidLuke,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("primaryFunction")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+        NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context)
       }
     }
 
@@ -323,14 +322,14 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.OtherLuke {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -342,11 +341,11 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.OtherLuke,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
       }
     }
   }

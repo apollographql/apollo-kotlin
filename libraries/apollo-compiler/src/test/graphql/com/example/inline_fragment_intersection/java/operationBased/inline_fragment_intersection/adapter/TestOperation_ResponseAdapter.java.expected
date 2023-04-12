@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_intersection.TestOperation;
@@ -35,14 +34,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
 
     @Override
-    public TestOperation.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Data fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       TestOperation.Random _random = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _random = new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).fromJson(reader, scalarAdapters); break;
+          case 0: _random = new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -55,10 +54,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("random");
-      new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).toJson(writer, scalarAdapters, value.random);
+      new ObjectAdapter<TestOperation.Random>(Random.INSTANCE, true).toJson(writer, value.random, context);
     }
   }
 
@@ -68,29 +67,29 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Random fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Random fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnBeing _onBeing = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human","Wookie")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.fromJson(reader, scalarAdapters);
+        _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.fromJson(reader, context);
       }
 
       TestOperation.OnWookie2 _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.fromJson(reader, scalarAdapters);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.fromJson(reader, context);
       }
 
       return new TestOperation.Random(
@@ -101,17 +100,17 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Random value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Random value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.onBeing != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.toJson(writer, scalarAdapters, value.onBeing);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.toJson(writer, value.onBeing, context);
       }
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie2.INSTANCE.toJson(writer, value.onWookie, context);
       }
     }
   }
@@ -122,8 +121,8 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
 
     @Override
-    public TestOperation.OnBeing fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.OnBeing fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       String _name = null;
       List<TestOperation.Friend> _friends = null;
@@ -131,18 +130,18 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 2: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, scalarAdapters);
+        _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -157,19 +156,19 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.OnBeing value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.OnBeing value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("friends");
-      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, scalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, value.friends, context);
 
       if (value.onHuman != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, value.onHuman, context);
       }
     }
   }
@@ -180,25 +179,25 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
 
     @Override
-    public TestOperation.Friend fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Friend fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWookie _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.fromJson(reader, scalarAdapters);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -211,16 +210,16 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Friend value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Friend value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.toJson(writer, value.onWookie, context);
       }
     }
   }
@@ -231,14 +230,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
     @Override
-    public TestOperation.OnWookie fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.OnWookie fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Double _lifeExpectancy = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -249,10 +248,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.OnWookie value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.OnWookie value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, value.lifeExpectancy, context);
     }
   }
 
@@ -262,16 +261,16 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("profilePictureUrl", "friends");
 
     @Override
-    public TestOperation.OnHuman fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.OnHuman fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _profilePictureUrl = null;
       List<TestOperation.Friend1> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _profilePictureUrl = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _profilePictureUrl = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -285,13 +284,13 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.OnHuman value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.OnHuman value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("profilePictureUrl");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.profilePictureUrl);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.profilePictureUrl, context);
 
       writer.name("friends");
-      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, scalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, value.friends, context);
     }
   }
 
@@ -301,25 +300,25 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "isFamous");
 
     @Override
-    public TestOperation.Friend1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Friend1 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       Boolean _isFamous = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _isFamous = Adapters.NullableBooleanApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _isFamous = Adapters.NullableBooleanApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestOperation.OnWookie1 _onWookie = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Wookie")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.fromJson(reader, scalarAdapters);
+        _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.fromJson(reader, context);
       }
 
       return new TestOperation.Friend1(
@@ -330,16 +329,16 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.Friend1 value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Friend1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("isFamous");
-      Adapters.NullableBooleanApolloAdapter.toJson(writer, scalarAdapters, value.isFamous);
+      Adapters.NullableBooleanApolloAdapter.toJson(writer, value.isFamous, context);
 
       if (value.onWookie != null) {
-        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
+        com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.toJson(writer, value.onWookie, context);
       }
     }
   }
@@ -350,14 +349,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race");
 
     @Override
-    public TestOperation.OnWookie1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.OnWookie1 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Race _race = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, scalarAdapters); break;
+          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -370,10 +369,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.OnWookie1 value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.OnWookie1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("race");
-      Race_ResponseAdapter.INSTANCE.toJson(writer, scalarAdapters, value.race);
+      Race_ResponseAdapter.INSTANCE.toJson(writer, value.race, context);
     }
   }
 
@@ -383,16 +382,16 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race", "friends");
 
     @Override
-    public TestOperation.OnWookie2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.OnWookie2 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Race _race = null;
       List<TestOperation.Friend2> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, scalarAdapters); break;
-          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _race = Race_ResponseAdapter.INSTANCE.fromJson(reader, context); break;
+          case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -407,13 +406,13 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.OnWookie2 value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.OnWookie2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("race");
-      Race_ResponseAdapter.INSTANCE.toJson(writer, scalarAdapters, value.race);
+      Race_ResponseAdapter.INSTANCE.toJson(writer, value.race, context);
 
       writer.name("friends");
-      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, scalarAdapters, value.friends);
+      new ListAdapter<>(new ObjectAdapter<TestOperation.Friend2>(Friend2.INSTANCE, false)).toJson(writer, value.friends, context);
     }
   }
 
@@ -423,14 +422,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
 
     @Override
-    public TestOperation.Friend2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Friend2 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Double _lifeExpectancy = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -441,10 +440,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestOperation.Friend2 value) throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Friend2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, value.lifeExpectancy, context);
     }
   }
 }

@@ -7,7 +7,6 @@ package com.example.fragments_same_type_condition.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -18,13 +17,13 @@ public object DroidDetails2Impl_ResponseAdapter {
   public object Data : ApolloAdapter<DroidDetails2Impl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         DroidDetails2Impl.Data {
       var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -36,11 +35,11 @@ public object DroidDetails2Impl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: DroidDetails2Impl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("primaryFunction")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+      NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context)
     }
   }
 }

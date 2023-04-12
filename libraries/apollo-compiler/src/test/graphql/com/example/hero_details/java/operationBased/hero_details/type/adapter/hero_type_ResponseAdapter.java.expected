@@ -6,7 +6,6 @@
 package com.example.hero_details.type.adapter;
 
 import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_details.type.Hero_type;
@@ -17,14 +16,15 @@ public enum Hero_type_ResponseAdapter implements ApolloAdapter<Hero_type> {
   INSTANCE;
 
   @Override
-  public Hero_type fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+  public Hero_type fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
+      IOException {
     String rawValue = reader.nextString();
     return Hero_type.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, Hero_type value) throws
-      IOException {
+  public void toJson(JsonWriter writer, Hero_type value, ApolloAdapter.DataSerializeContext context)
+      throws IOException {
     writer.value(value.rawValue);
   }
 }

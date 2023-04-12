@@ -7,7 +7,6 @@ package com.example.fragment_spread_with_include_directive.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableBooleanApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
@@ -32,15 +31,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero", "getBoolean")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
       var _getBoolean: Boolean? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
-          1 -> _getBoolean = NullableBooleanApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
+          1 -> _getBoolean = NullableBooleanApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -53,28 +52,28 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
 
       writer.name("getBoolean")
-      NullableBooleanApolloAdapter.toJson(writer, scalarAdapters, value.getBoolean)
+      NullableBooleanApolloAdapter.toJson(writer, value.getBoolean, context)
     }
 
     private object Hero : ApolloAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero {
         var __typename: String? = null
         var _id: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _id = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -84,31 +83,31 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _heroDetails: HeroDetails? = null
-        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(scalarAdapters.adapterContext.variables(), null, scalarAdapters.adapterContext, null)) {
+        if (and(variable("withDetails"),not(variable("skipHumanDetails"))).evaluate(context.falseBooleanVariables, null, context, null)) {
           reader.rewind()
           _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _humanDetails: HumanDetails? = null
-        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (and(possibleTypes("Human"),variable("withDetails")).evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue"))).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (and(possibleTypes("Droid"),not(variable("optionalWithDefaultTrue"))).evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _otherDroidDetails: OtherDroidDetails? = null
-        if (and(possibleTypes("Droid"),variable("optionalWithDefaultTrue")).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (and(possibleTypes("Droid"),variable("optionalWithDefaultTrue")).evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return TestQuery.Data.Hero(
@@ -123,33 +122,33 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         if (value.heroDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
-              scalarAdapters, value.heroDetails)
+              value.heroDetails, context)
         }
 
         if (value.humanDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              scalarAdapters, value.humanDetails)
+              value.humanDetails, context)
         }
 
         if (value.droidDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              scalarAdapters, value.droidDetails)
+              value.droidDetails, context)
         }
 
         if (value.otherDroidDetails != null) {
           com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.toJson(writer,
-              scalarAdapters, value.otherDroidDetails)
+              value.otherDroidDetails, context)
         }
       }
     }

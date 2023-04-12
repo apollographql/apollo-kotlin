@@ -7,7 +7,6 @@ package com.example.java_guava_optionals.type.adapter;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapter;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -21,22 +20,23 @@ public enum MyInput_InputAdapter implements ApolloAdapter<MyInput> {
   INSTANCE;
 
   @Override
-  public MyInput fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+  public MyInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, MyInput value) throws
-      IOException {
+  public void toJson(JsonWriter writer, MyInput value, ApolloAdapter.DataSerializeContext context)
+      throws IOException {
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter).toJson(writer, scalarAdapters, value.nullableInt);
+      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter).toJson(writer, value.nullableInt, context);
     }
     writer.name("nonNullableInt");
-    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+    Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new GuavaOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, scalarAdapters, value.nonNullableIntWithDefault);
+      new GuavaOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, value.nonNullableIntWithDefault, context);
     }
   }
 }

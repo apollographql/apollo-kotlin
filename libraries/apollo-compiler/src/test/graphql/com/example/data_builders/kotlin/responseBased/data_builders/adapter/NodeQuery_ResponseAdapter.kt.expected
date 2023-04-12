@@ -6,7 +6,6 @@
 package com.example.data_builders.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,13 +20,13 @@ public object NodeQuery_ResponseAdapter {
   public object Data : ApolloAdapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().fromJson(reader, scalarAdapters)
+          0 -> _node = Node.obj().fromJson(reader, context)
           else -> break
         }
       }
@@ -39,36 +38,36 @@ public object NodeQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: NodeQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("node")
-      Node.obj().toJson(writer, scalarAdapters, value.node)
+      Node.obj().toJson(writer, value.node, context)
     }
 
     private object Node : ApolloAdapter<NodeQuery.Data.Node> {
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          NodeQuery.Data.Node {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): NodeQuery.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Human",
-          -> HumanNode.fromJson(reader, scalarAdapters, __typename)
+          -> HumanNode.fromJson(reader, context, __typename)
           "Droid",
-          -> DroidNode.fromJson(reader, scalarAdapters, __typename)
+          -> DroidNode.fromJson(reader, context, __typename)
           else
-          -> OtherNode.fromJson(reader, scalarAdapters, __typename)
+          -> OtherNode.fromJson(reader, context, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: NodeQuery.Data.Node,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         when(value) {
-          is NodeQuery.Data.HumanNode -> HumanNode.toJson(writer, scalarAdapters, value)
-          is NodeQuery.Data.DroidNode -> DroidNode.toJson(writer, scalarAdapters, value)
-          is NodeQuery.Data.OtherNode -> OtherNode.toJson(writer, scalarAdapters, value)
+          is NodeQuery.Data.HumanNode -> HumanNode.toJson(writer, value, context)
+          is NodeQuery.Data.DroidNode -> DroidNode.toJson(writer, value, context)
+          is NodeQuery.Data.OtherNode -> OtherNode.toJson(writer, value, context)
         }
       }
     }
@@ -78,7 +77,7 @@ public object NodeQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): NodeQuery.Data.HumanNode {
         var __typename: String? = typename
@@ -87,9 +86,9 @@ public object NodeQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _homePlanet = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _id = StringApolloAdapter.fromJson(reader, context)
+            2 -> _homePlanet = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -103,17 +102,17 @@ public object NodeQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: NodeQuery.Data.HumanNode,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         writer.name("homePlanet")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.homePlanet)
+        StringApolloAdapter.toJson(writer, value.homePlanet, context)
       }
     }
 
@@ -122,7 +121,7 @@ public object NodeQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): NodeQuery.Data.DroidNode {
         var __typename: String? = typename
@@ -131,9 +130,9 @@ public object NodeQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _primaryFunction = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _id = StringApolloAdapter.fromJson(reader, context)
+            2 -> _primaryFunction = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -147,17 +146,17 @@ public object NodeQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: NodeQuery.Data.DroidNode,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         writer.name("primaryFunction")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+        StringApolloAdapter.toJson(writer, value.primaryFunction, context)
       }
     }
 
@@ -166,7 +165,7 @@ public object NodeQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): NodeQuery.Data.OtherNode {
         var __typename: String? = typename
@@ -174,8 +173,8 @@ public object NodeQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _id = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -188,14 +187,14 @@ public object NodeQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: NodeQuery.Data.OtherNode,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
       }
     }
   }

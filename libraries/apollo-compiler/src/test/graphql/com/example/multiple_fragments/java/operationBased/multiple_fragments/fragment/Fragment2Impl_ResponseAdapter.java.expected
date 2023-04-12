@@ -7,7 +7,6 @@ package com.example.multiple_fragments.fragment;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -24,13 +23,13 @@ public class Fragment2Impl_ResponseAdapter {
 
     @Override
     public com.example.multiple_fragments.fragment.Fragment2 fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _field2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field2 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _field2 = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -41,10 +40,10 @@ public class Fragment2Impl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.multiple_fragments.fragment.Fragment2 value) throws IOException {
+    public void toJson(JsonWriter writer, com.example.multiple_fragments.fragment.Fragment2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("field2");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.field2);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.field2, context);
     }
   }
 }

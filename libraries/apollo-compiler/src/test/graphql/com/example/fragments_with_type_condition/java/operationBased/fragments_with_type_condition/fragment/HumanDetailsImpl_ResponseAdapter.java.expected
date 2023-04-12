@@ -8,7 +8,6 @@ package com.example.fragments_with_type_condition.fragment;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -26,15 +25,15 @@ public class HumanDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragments_with_type_condition.fragment.HumanDetails fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -48,13 +47,14 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.fragments_with_type_condition.fragment.HumanDetails value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.fragments_with_type_condition.fragment.HumanDetails value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("height");
-      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, value.height, context);
     }
   }
 }

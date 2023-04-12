@@ -6,7 +6,6 @@
 package com.example.named_fragment_with_variables.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,14 +21,15 @@ public object GetUser_ResponseAdapter {
   public object Data : ApolloAdapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetUser.Data {
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+        GetUser.Data {
       var __typename: String? = null
       var _organization: GetUser.Data.Organization? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _organization = Organization.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          1 -> _organization = Organization.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -42,28 +42,28 @@ public object GetUser_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: GetUser.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       writer.name("organization")
-      Organization.obj().nullable().toJson(writer, scalarAdapters, value.organization)
+      Organization.obj().nullable().toJson(writer, value.organization, context)
     }
 
     private object Organization : ApolloAdapter<GetUser.Data.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          GetUser.Data.Organization {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): GetUser.Data.Organization {
         var _id: String? = null
         var _user: List<GetUser.Data.Organization.User>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _user = User.obj().list().fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, context)
+            1 -> _user = User.obj().list().fromJson(reader, context)
             else -> break
           }
         }
@@ -76,22 +76,22 @@ public object GetUser_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetUser.Data.Organization,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         writer.name("user")
-        User.obj().list().toJson(writer, scalarAdapters, value.user)
+        User.obj().list().toJson(writer, value.user, context)
       }
 
       private object User : ApolloAdapter<GetUser.Data.Organization.User> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName",
             "avatar")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            GetUser.Data.Organization.User {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): GetUser.Data.Organization.User {
           var __typename: String? = null
           var _firstName: String? = null
           var _lastName: String? = null
@@ -99,10 +99,10 @@ public object GetUser_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _firstName = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              2 -> _lastName = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              3 -> _avatar = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _firstName = StringApolloAdapter.fromJson(reader, context)
+              2 -> _lastName = StringApolloAdapter.fromJson(reader, context)
+              3 -> _avatar = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -117,20 +117,20 @@ public object GetUser_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetUser.Data.Organization.User,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("firstName")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.firstName)
+          StringApolloAdapter.toJson(writer, value.firstName, context)
 
           writer.name("lastName")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.lastName)
+          StringApolloAdapter.toJson(writer, value.lastName, context)
 
           writer.name("avatar")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.avatar)
+          StringApolloAdapter.toJson(writer, value.avatar, context)
         }
       }
     }

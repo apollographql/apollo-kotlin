@@ -6,7 +6,6 @@
 package com.example.named_fragment_delegate.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -25,13 +24,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -43,23 +42,23 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -69,17 +68,17 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (possibleTypes("Droid").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _droidDetails = com.example.named_fragment_delegate.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _humanDetails = com.example.named_fragment_delegate.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return TestQuery.Data.Hero(
@@ -91,20 +90,20 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.droidDetails != null) {
           com.example.named_fragment_delegate.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              scalarAdapters, value.droidDetails)
+              value.droidDetails, context)
         }
 
         if (value.humanDetails != null) {
           com.example.named_fragment_delegate.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-              scalarAdapters, value.humanDetails)
+              value.humanDetails, context)
         }
       }
     }

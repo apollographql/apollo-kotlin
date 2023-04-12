@@ -6,7 +6,6 @@
 package com.example.enums_as_sealed.type.adapter;
 
 import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enums_as_sealed.type.Enum;
@@ -17,14 +16,15 @@ public enum Enum_ResponseAdapter implements ApolloAdapter<Enum> {
   INSTANCE;
 
   @Override
-  public Enum fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+  public Enum fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
+      IOException {
     String rawValue = reader.nextString();
     return Enum.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, Enum value) throws
-      IOException {
+  public void toJson(JsonWriter writer, Enum value, ApolloAdapter.DataSerializeContext context)
+      throws IOException {
     writer.value(value.rawValue);
   }
 }

@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.companion.TestQuery;
@@ -28,14 +27,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("companion");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Companion _companion = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _companion = new NullableAdapter<>(new ObjectAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _companion = new NullableAdapter<>(new ObjectAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -46,10 +45,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("companion");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).toJson(writer, scalarAdapters, value.companion);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Companion>(Companion.INSTANCE, false)).toJson(writer, value.companion, context);
     }
   }
 
@@ -59,14 +58,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("foo");
 
     @Override
-    public TestQuery.Companion fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Companion fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Integer _foo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _foo = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _foo = Adapters.IntApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -79,10 +78,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Companion value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Companion value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("foo");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.foo);
+      Adapters.IntApolloAdapter.toJson(writer, value.foo, context);
     }
   }
 }

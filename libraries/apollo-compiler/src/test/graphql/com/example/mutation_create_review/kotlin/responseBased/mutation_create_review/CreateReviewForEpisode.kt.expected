@@ -11,7 +11,7 @@ import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Mutation
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -39,8 +39,9 @@ internal data class CreateReviewForEpisode(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
-    CreateReviewForEpisode_VariablesAdapter.toJson(writer, scalarAdapters, this)
+  public override fun serializeVariables(writer: JsonWriter,
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
+    CreateReviewForEpisode_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
   public override fun adapter(): ApolloAdapter<Data> =

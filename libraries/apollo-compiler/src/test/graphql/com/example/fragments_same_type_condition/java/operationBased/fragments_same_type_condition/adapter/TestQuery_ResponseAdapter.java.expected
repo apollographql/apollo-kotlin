@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_same_type_condition.TestQuery;
@@ -33,14 +32,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -51,10 +50,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, context);
     }
   }
 
@@ -64,29 +63,29 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Hero fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       DroidDetails1 _droidDetails1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails1 = com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.INSTANCE.fromJson(reader, scalarAdapters);
+        _droidDetails1 = com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.INSTANCE.fromJson(reader, context);
       }
 
       DroidDetails2 _droidDetails2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails2 = com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.INSTANCE.fromJson(reader, scalarAdapters);
+        _droidDetails2 = com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.INSTANCE.fromJson(reader, context);
       }
 
       return new TestQuery.Hero(
@@ -97,17 +96,17 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Hero value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Hero value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.droidDetails1 != null) {
-        com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.INSTANCE.toJson(writer, scalarAdapters, value.droidDetails1);
+        com.example.fragments_same_type_condition.fragment.DroidDetails1Impl_ResponseAdapter.DroidDetails1.INSTANCE.toJson(writer, value.droidDetails1, context);
       }
 
       if (value.droidDetails2 != null) {
-        com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.INSTANCE.toJson(writer, scalarAdapters, value.droidDetails2);
+        com.example.fragments_same_type_condition.fragment.DroidDetails2Impl_ResponseAdapter.DroidDetails2.INSTANCE.toJson(writer, value.droidDetails2, context);
       }
     }
   }

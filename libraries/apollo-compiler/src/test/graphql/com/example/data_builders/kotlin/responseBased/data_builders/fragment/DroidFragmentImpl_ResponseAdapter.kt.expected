@@ -6,7 +6,6 @@
 package com.example.data_builders.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,13 +17,13 @@ public object DroidFragmentImpl_ResponseAdapter {
   public object Data : ApolloAdapter<DroidFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         DroidFragmentImpl.Data {
       var _primaryFunction: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _primaryFunction = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _primaryFunction = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -36,11 +35,11 @@ public object DroidFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: DroidFragmentImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("primaryFunction")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+      StringApolloAdapter.toJson(writer, value.primaryFunction, context)
     }
   }
 }

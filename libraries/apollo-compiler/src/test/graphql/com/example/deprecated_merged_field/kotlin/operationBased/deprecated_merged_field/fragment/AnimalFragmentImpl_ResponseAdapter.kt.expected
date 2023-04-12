@@ -6,7 +6,6 @@
 package com.example.deprecated_merged_field.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -21,13 +20,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
       ApolloAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.deprecated_merged_field.fragment.AnimalFragment {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -37,17 +36,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
       }
 
       var _onCat: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat? = null
-      if (possibleTypes("Cat").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Cat").evaluate(context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind()
         _onCat = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.fromJson(reader,
-            scalarAdapters)
+            context)
       }
 
       var _onDog: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog? = null
-      if (possibleTypes("Dog").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Dog").evaluate(context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind()
         _onDog = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.fromJson(reader,
-            scalarAdapters)
+            context)
       }
 
       return com.example.deprecated_merged_field.fragment.AnimalFragment(
@@ -59,20 +58,20 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.deprecated_merged_field.fragment.AnimalFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       if (value.onCat != null) {
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnCat.toJson(writer,
-            scalarAdapters, value.onCat)
+            value.onCat, context)
       }
 
       if (value.onDog != null) {
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.OnDog.toJson(writer,
-            scalarAdapters, value.onDog)
+            value.onDog, context)
       }
     }
 
@@ -80,13 +79,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
         ApolloAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat {
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -98,11 +98,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
       }
     }
 
@@ -110,13 +110,14 @@ public object AnimalFragmentImpl_ResponseAdapter {
         ApolloAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog {
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -128,11 +129,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
       }
     }
   }

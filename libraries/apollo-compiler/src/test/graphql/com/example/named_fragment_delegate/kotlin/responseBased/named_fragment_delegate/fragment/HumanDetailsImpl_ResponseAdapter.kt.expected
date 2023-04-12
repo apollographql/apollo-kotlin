@@ -7,7 +7,6 @@ package com.example.named_fragment_delegate.fragment
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,7 +22,7 @@ public object HumanDetailsImpl_ResponseAdapter {
   public object Data : ApolloAdapter<HumanDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         HumanDetailsImpl.Data {
       var _name: String? = null
       var _profileLink: Any? = null
@@ -31,9 +30,9 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _profileLink = AnyApolloAdapter.fromJson(reader, scalarAdapters)
-          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, context)
+          1 -> _profileLink = AnyApolloAdapter.fromJson(reader, context)
+          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, context)
           else -> break
         }
       }
@@ -47,29 +46,29 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HumanDetailsImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("name")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, value.name, context)
 
       writer.name("profileLink")
-      AnyApolloAdapter.toJson(writer, scalarAdapters, value.profileLink)
+      AnyApolloAdapter.toJson(writer, value.profileLink, context)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
+      FriendsConnection.obj().toJson(writer, value.friendsConnection, context)
     }
 
     private object FriendsConnection : ApolloAdapter<HumanDetailsImpl.Data.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          HumanDetailsImpl.Data.FriendsConnection {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): HumanDetailsImpl.Data.FriendsConnection {
         var _edges: List<HumanDetailsImpl.Data.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, context)
             else -> break
           }
         }
@@ -81,23 +80,24 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: HumanDetailsImpl.Data.FriendsConnection,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().toJson(writer, value.edges, context)
       }
 
       private object Edge : ApolloAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             HumanDetailsImpl.Data.FriendsConnection.Edge {
           var _node: HumanDetailsImpl.Data.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, scalarAdapters)
+              0 -> _node = Node.obj().nullable().fromJson(reader, context)
               else -> break
             }
           }
@@ -109,23 +109,24 @@ public object HumanDetailsImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: HumanDetailsImpl.Data.FriendsConnection.Edge,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
+          Node.obj().nullable().toJson(writer, value.node, context)
         }
 
         private object Node : ApolloAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               HumanDetailsImpl.Data.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -137,11 +138,11 @@ public object HumanDetailsImpl_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: HumanDetailsImpl.Data.FriendsConnection.Edge.Node,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("name")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, value.name, context)
           }
         }
       }

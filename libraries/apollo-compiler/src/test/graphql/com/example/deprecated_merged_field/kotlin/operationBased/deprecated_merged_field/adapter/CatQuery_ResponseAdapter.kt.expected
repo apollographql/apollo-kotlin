@@ -6,7 +6,6 @@
 package com.example.deprecated_merged_field.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,13 +20,13 @@ public object CatQuery_ResponseAdapter {
   public object Data : ApolloAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         CatQuery.Data {
       var _cat: CatQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _cat = Cat.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -39,30 +38,30 @@ public object CatQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: CatQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("cat")
-      Cat.obj(true).nullable().toJson(writer, scalarAdapters, value.cat)
+      Cat.obj(true).nullable().toJson(writer, value.cat, context)
     }
 
     private object Cat : ApolloAdapter<CatQuery.Data.Cat> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          CatQuery.Data.Cat {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): CatQuery.Data.Cat {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
 
         reader.rewind()
         val _animalFragment = com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
-            scalarAdapters)
+            context)
 
         return CatQuery.Data.Cat(
           __typename = __typename!!,
@@ -72,14 +71,14 @@ public object CatQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: CatQuery.Data.Cat,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
-            scalarAdapters, value.animalFragment)
+            value.animalFragment, context)
       }
     }
   }

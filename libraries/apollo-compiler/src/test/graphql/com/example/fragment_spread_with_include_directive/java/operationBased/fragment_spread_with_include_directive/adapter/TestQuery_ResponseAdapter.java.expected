@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.TestQuery;
@@ -37,16 +36,16 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero", "getBoolean");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Hero _hero = null;
       Boolean _getBoolean = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
-          case 1: _getBoolean = Adapters.NullableBooleanApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).fromJson(reader, context); break;
+          case 1: _getBoolean = Adapters.NullableBooleanApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -58,13 +57,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, context);
 
       writer.name("getBoolean");
-      Adapters.NullableBooleanApolloAdapter.toJson(writer, scalarAdapters, value.getBoolean);
+      Adapters.NullableBooleanApolloAdapter.toJson(writer, value.getBoolean, context);
     }
   }
 
@@ -74,43 +73,43 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Hero fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String __typename = null;
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HeroDetails _heroDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails")))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("withDetails")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("skipHumanDetails")))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _heroDetails = com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, context);
       }
 
       HumanDetails _humanDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")),new BooleanExpression.Element<BTerm>(new BVariable("withDetails"))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _humanDetails = com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.fromJson(reader, context);
       }
 
       DroidDetails _droidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue")))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue")))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _droidDetails = com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.fromJson(reader, context);
       }
 
       OtherDroidDetails _otherDroidDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue"))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BVariable("optionalWithDefaultTrue"))), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _otherDroidDetails = com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_id, "id");
@@ -126,28 +125,28 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Hero value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Hero value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
 
       if (value.heroDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.toJson(writer, scalarAdapters, value.heroDetails);
+        com.example.fragment_spread_with_include_directive.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.toJson(writer, value.heroDetails, context);
       }
 
       if (value.humanDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, scalarAdapters, value.humanDetails);
+        com.example.fragment_spread_with_include_directive.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.INSTANCE.toJson(writer, value.humanDetails, context);
       }
 
       if (value.droidDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, scalarAdapters, value.droidDetails);
+        com.example.fragment_spread_with_include_directive.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.INSTANCE.toJson(writer, value.droidDetails, context);
       }
 
       if (value.otherDroidDetails != null) {
-        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.toJson(writer, scalarAdapters, value.otherDroidDetails);
+        com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE.toJson(writer, value.otherDroidDetails, context);
       }
     }
   }

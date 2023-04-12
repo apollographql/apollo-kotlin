@@ -7,7 +7,6 @@ package com.example.multiple_fragments.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -18,13 +17,13 @@ public object Fragment1Impl_ResponseAdapter {
   public object Data : ApolloAdapter<Fragment1Impl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("field1")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         Fragment1Impl.Data {
       var _field1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _field1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _field1 = NullableStringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -36,11 +35,11 @@ public object Fragment1Impl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: Fragment1Impl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("field1")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.field1)
+      NullableStringApolloAdapter.toJson(writer, value.field1, context)
     }
   }
 }

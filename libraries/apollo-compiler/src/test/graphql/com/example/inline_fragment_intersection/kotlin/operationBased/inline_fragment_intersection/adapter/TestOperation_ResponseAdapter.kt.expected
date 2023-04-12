@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableBooleanApolloAdapter
 import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -30,13 +29,13 @@ public object TestOperation_ResponseAdapter {
   public object Data : ApolloAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("random")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestOperation.Data {
       var _random: TestOperation.Data.Random? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _random = Random.obj(true).fromJson(reader, scalarAdapters)
+          0 -> _random = Random.obj(true).fromJson(reader, context)
           else -> break
         }
       }
@@ -48,23 +47,23 @@ public object TestOperation_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestOperation.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("random")
-      Random.obj(true).toJson(writer, scalarAdapters, value.random)
+      Random.obj(true).toJson(writer, value.random, context)
     }
 
     private object Random : ApolloAdapter<TestOperation.Data.Random> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestOperation.Data.Random {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestOperation.Data.Random {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -74,17 +73,17 @@ public object TestOperation_ResponseAdapter {
         }
 
         var _onBeing: TestOperation.Data.Random.OnBeing? = null
-        if (possibleTypes("Human","Wookie").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human","Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onBeing = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onWookie: TestOperation.Data.Random.OnWookie? = null
-        if (possibleTypes("Wookie").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return TestOperation.Data.Random(
@@ -96,37 +95,37 @@ public object TestOperation_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.Random,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.onBeing != null) {
           com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.toJson(writer,
-              scalarAdapters, value.onBeing)
+              value.onBeing, context)
         }
 
         if (value.onWookie != null) {
           com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnWookie.toJson(writer,
-              scalarAdapters, value.onWookie)
+              value.onWookie, context)
         }
       }
 
       private object OnBeing : ApolloAdapter<TestOperation.Data.Random.OnBeing> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestOperation.Data.Random.OnBeing {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestOperation.Data.Random.OnBeing {
           var __typename: String? = null
           var _name: String? = null
           var _friends: List<TestOperation.Data.Random.OnBeing.Friend>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              2 -> _friends = Friend.obj(true).list().fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _name = StringApolloAdapter.fromJson(reader, context)
+              2 -> _friends = Friend.obj(true).list().fromJson(reader, context)
               else -> break
             }
           }
@@ -136,10 +135,10 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onHuman: TestOperation.Data.Random.OnBeing.OnHuman? = null
-          if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
             _onHuman = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.fromJson(reader,
-                scalarAdapters)
+                context)
           }
 
           return TestOperation.Data.Random.OnBeing(
@@ -152,36 +151,37 @@ public object TestOperation_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestOperation.Data.Random.OnBeing,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("name")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, value.name, context)
 
           writer.name("friends")
-          Friend.obj(true).list().toJson(writer, scalarAdapters, value.friends)
+          Friend.obj(true).list().toJson(writer, value.friends, context)
 
           if (value.onHuman != null) {
             com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.toJson(writer,
-                scalarAdapters, value.onHuman)
+                value.onHuman, context)
           }
         }
 
         private object Friend : ApolloAdapter<TestOperation.Data.Random.OnBeing.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               TestOperation.Data.Random.OnBeing.Friend {
             var __typename: String? = null
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-                1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+                1 -> _name = StringApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -191,10 +191,10 @@ public object TestOperation_ResponseAdapter {
             }
 
             var _onWookie: TestOperation.Data.Random.OnBeing.Friend.OnWookie? = null
-            if (possibleTypes("Wookie").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+            if (possibleTypes("Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
               reader.rewind()
               _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.fromJson(reader,
-                  scalarAdapters)
+                  context)
             }
 
             return TestOperation.Data.Random.OnBeing.Friend(
@@ -206,18 +206,18 @@ public object TestOperation_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestOperation.Data.Random.OnBeing.Friend,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("__typename")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+            StringApolloAdapter.toJson(writer, value.__typename, context)
 
             writer.name("name")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, value.name, context)
 
             if (value.onWookie != null) {
               com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.Friend.OnWookie.toJson(writer,
-                  scalarAdapters, value.onWookie)
+                  value.onWookie, context)
             }
           }
 
@@ -225,14 +225,14 @@ public object TestOperation_ResponseAdapter {
               {
             public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-            public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            public override fun fromJson(reader: JsonReader,
+                context: ApolloAdapter.DataDeserializeContext):
                 TestOperation.Data.Random.OnBeing.Friend.OnWookie {
               var _lifeExpectancy: Double? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _lifeExpectancy = NullableDoubleApolloAdapter.fromJson(reader,
-                      scalarAdapters)
+                  0 -> _lifeExpectancy = NullableDoubleApolloAdapter.fromJson(reader, context)
                   else -> break
                 }
               }
@@ -244,11 +244,11 @@ public object TestOperation_ResponseAdapter {
 
             public override fun toJson(
               writer: JsonWriter,
-              scalarAdapters: ScalarAdapters,
               `value`: TestOperation.Data.Random.OnBeing.Friend.OnWookie,
+              context: ApolloAdapter.DataSerializeContext,
             ): Unit {
               writer.name("lifeExpectancy")
-              NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy)
+              NullableDoubleApolloAdapter.toJson(writer, value.lifeExpectancy, context)
             }
           }
         }
@@ -256,16 +256,16 @@ public object TestOperation_ResponseAdapter {
         private object OnHuman : ApolloAdapter<TestOperation.Data.Random.OnBeing.OnHuman> {
           public val RESPONSE_NAMES: List<String> = listOf("profilePictureUrl", "friends")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               TestOperation.Data.Random.OnBeing.OnHuman {
             var _profilePictureUrl: String? = null
             var _friends: List<TestOperation.Data.Random.OnBeing.OnHuman.Friend>? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _profilePictureUrl = NullableStringApolloAdapter.fromJson(reader,
-                    scalarAdapters)
-                1 -> _friends = Friend.obj(true).list().fromJson(reader, scalarAdapters)
+                0 -> _profilePictureUrl = NullableStringApolloAdapter.fromJson(reader, context)
+                1 -> _friends = Friend.obj(true).list().fromJson(reader, context)
                 else -> break
               }
             }
@@ -278,28 +278,29 @@ public object TestOperation_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestOperation.Data.Random.OnBeing.OnHuman,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("profilePictureUrl")
-            NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.profilePictureUrl)
+            NullableStringApolloAdapter.toJson(writer, value.profilePictureUrl, context)
 
             writer.name("friends")
-            Friend.obj(true).list().toJson(writer, scalarAdapters, value.friends)
+            Friend.obj(true).list().toJson(writer, value.friends, context)
           }
 
           private object Friend : ApolloAdapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "isFamous")
 
-            public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            public override fun fromJson(reader: JsonReader,
+                context: ApolloAdapter.DataDeserializeContext):
                 TestOperation.Data.Random.OnBeing.OnHuman.Friend {
               var __typename: String? = null
               var _isFamous: Boolean? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-                  1 -> _isFamous = NullableBooleanApolloAdapter.fromJson(reader, scalarAdapters)
+                  0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+                  1 -> _isFamous = NullableBooleanApolloAdapter.fromJson(reader, context)
                   else -> break
                 }
               }
@@ -309,10 +310,10 @@ public object TestOperation_ResponseAdapter {
               }
 
               var _onWookie: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie? = null
-              if (possibleTypes("Wookie").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+              if (possibleTypes("Wookie").evaluate(context.falseBooleanVariables, __typename, context, null)) {
                 reader.rewind()
                 _onWookie = com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.fromJson(reader,
-                    scalarAdapters)
+                    context)
               }
 
               return TestOperation.Data.Random.OnBeing.OnHuman.Friend(
@@ -324,18 +325,18 @@ public object TestOperation_ResponseAdapter {
 
             public override fun toJson(
               writer: JsonWriter,
-              scalarAdapters: ScalarAdapters,
               `value`: TestOperation.Data.Random.OnBeing.OnHuman.Friend,
+              context: ApolloAdapter.DataSerializeContext,
             ): Unit {
               writer.name("__typename")
-              StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+              StringApolloAdapter.toJson(writer, value.__typename, context)
 
               writer.name("isFamous")
-              NullableBooleanApolloAdapter.toJson(writer, scalarAdapters, value.isFamous)
+              NullableBooleanApolloAdapter.toJson(writer, value.isFamous, context)
 
               if (value.onWookie != null) {
                 com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.Data.Random.OnBeing.OnHuman.Friend.OnWookie.toJson(writer,
-                    scalarAdapters, value.onWookie)
+                    value.onWookie, context)
               }
             }
 
@@ -343,13 +344,14 @@ public object TestOperation_ResponseAdapter {
                 ApolloAdapter<TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie> {
               public val RESPONSE_NAMES: List<String> = listOf("race")
 
-              public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+              public override fun fromJson(reader: JsonReader,
+                  context: ApolloAdapter.DataDeserializeContext):
                   TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie {
                 var _race: Race? = null
 
                 while(true) {
                   when (reader.selectName(RESPONSE_NAMES)) {
-                    0 -> _race = Race_ResponseAdapter.fromJson(reader, scalarAdapters)
+                    0 -> _race = Race_ResponseAdapter.fromJson(reader, context)
                     else -> break
                   }
                 }
@@ -361,11 +363,11 @@ public object TestOperation_ResponseAdapter {
 
               public override fun toJson(
                 writer: JsonWriter,
-                scalarAdapters: ScalarAdapters,
                 `value`: TestOperation.Data.Random.OnBeing.OnHuman.Friend.OnWookie,
+                context: ApolloAdapter.DataSerializeContext,
               ): Unit {
                 writer.name("race")
-                Race_ResponseAdapter.toJson(writer, scalarAdapters, value.race)
+                Race_ResponseAdapter.toJson(writer, value.race, context)
               }
             }
           }
@@ -375,15 +377,15 @@ public object TestOperation_ResponseAdapter {
       private object OnWookie : ApolloAdapter<TestOperation.Data.Random.OnWookie> {
         public val RESPONSE_NAMES: List<String> = listOf("race", "friends")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestOperation.Data.Random.OnWookie {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestOperation.Data.Random.OnWookie {
           var _race: Race? = null
           var _friends: List<TestOperation.Data.Random.OnWookie.Friend>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _race = Race_ResponseAdapter.fromJson(reader, scalarAdapters)
-              1 -> _friends = Friend.obj().list().fromJson(reader, scalarAdapters)
+              0 -> _race = Race_ResponseAdapter.fromJson(reader, context)
+              1 -> _friends = Friend.obj().list().fromJson(reader, context)
               else -> break
             }
           }
@@ -396,26 +398,27 @@ public object TestOperation_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestOperation.Data.Random.OnWookie,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("race")
-          Race_ResponseAdapter.toJson(writer, scalarAdapters, value.race)
+          Race_ResponseAdapter.toJson(writer, value.race, context)
 
           writer.name("friends")
-          Friend.obj().list().toJson(writer, scalarAdapters, value.friends)
+          Friend.obj().list().toJson(writer, value.friends, context)
         }
 
         private object Friend : ApolloAdapter<TestOperation.Data.Random.OnWookie.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("lifeExpectancy")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               TestOperation.Data.Random.OnWookie.Friend {
             var _lifeExpectancy: Double? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _lifeExpectancy = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> _lifeExpectancy = NullableDoubleApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -427,11 +430,11 @@ public object TestOperation_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestOperation.Data.Random.OnWookie.Friend,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("lifeExpectancy")
-            NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy)
+            NullableDoubleApolloAdapter.toJson(writer, value.lifeExpectancy, context)
           }
         }
       }

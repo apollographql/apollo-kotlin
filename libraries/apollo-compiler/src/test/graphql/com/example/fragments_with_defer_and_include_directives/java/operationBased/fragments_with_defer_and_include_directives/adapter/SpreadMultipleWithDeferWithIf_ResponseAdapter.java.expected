@@ -16,7 +16,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf;
@@ -37,13 +36,13 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
 
     @Override
     public SpreadMultipleWithDeferWithIf.Data fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       SpreadMultipleWithDeferWithIf.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -54,10 +53,10 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        SpreadMultipleWithDeferWithIf.Data value) throws IOException {
+    public void toJson(JsonWriter writer, SpreadMultipleWithDeferWithIf.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, context);
     }
   }
 
@@ -68,35 +67,35 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
 
     @Override
     public SpreadMultipleWithDeferWithIf.Hero fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       CharacterDetails _characterDetails = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, scalarAdapters);
+        _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, context);
       }
 
       CharacterDetails2 _characterDetails2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("c_second"))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("c_second"))), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.fromJson(reader, scalarAdapters);
+        _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.fromJson(reader, context);
       }
 
       CharacterDetails3 _characterDetails3 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("c_third")))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("c_third")))), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.fromJson(reader, scalarAdapters);
+        _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.fromJson(reader, context);
       }
 
       return new SpreadMultipleWithDeferWithIf.Hero(
@@ -108,21 +107,21 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        SpreadMultipleWithDeferWithIf.Hero value) throws IOException {
+    public void toJson(JsonWriter writer, SpreadMultipleWithDeferWithIf.Hero value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.characterDetails != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.toJson(writer, scalarAdapters, value.characterDetails);
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.toJson(writer, value.characterDetails, context);
       }
 
       if (value.characterDetails2 != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.toJson(writer, scalarAdapters, value.characterDetails2);
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.toJson(writer, value.characterDetails2, context);
       }
 
       if (value.characterDetails3 != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.toJson(writer, scalarAdapters, value.characterDetails3);
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.toJson(writer, value.characterDetails3, context);
       }
     }
   }

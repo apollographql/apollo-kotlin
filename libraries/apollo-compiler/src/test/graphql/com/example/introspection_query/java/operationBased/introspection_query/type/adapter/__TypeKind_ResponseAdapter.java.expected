@@ -6,7 +6,6 @@
 package com.example.introspection_query.type.adapter;
 
 import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.introspection_query.type.__TypeKind;
@@ -17,14 +16,15 @@ public enum __TypeKind_ResponseAdapter implements ApolloAdapter<__TypeKind> {
   INSTANCE;
 
   @Override
-  public __TypeKind fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+  public __TypeKind fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
+      IOException {
     String rawValue = reader.nextString();
     return __TypeKind.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, __TypeKind value) throws
-      IOException {
+  public void toJson(JsonWriter writer, __TypeKind value,
+      ApolloAdapter.DataSerializeContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

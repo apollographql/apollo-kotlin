@@ -7,7 +7,6 @@ package com.example.interface_on_interface.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.DoubleApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,15 +23,15 @@ public object GetHuman_ResponseAdapter {
   public object Data : ApolloAdapter<GetHuman.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         GetHuman.Data {
       var _human: GetHuman.Data.Human? = null
       var _node: GetHuman.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _human = Human.obj().fromJson(reader, scalarAdapters)
-          1 -> _node = Node.obj(true).fromJson(reader, scalarAdapters)
+          0 -> _human = Human.obj().fromJson(reader, context)
+          1 -> _node = Node.obj(true).fromJson(reader, context)
           else -> break
         }
       }
@@ -45,30 +44,30 @@ public object GetHuman_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: GetHuman.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("human")
-      Human.obj().toJson(writer, scalarAdapters, value.human)
+      Human.obj().toJson(writer, value.human, context)
 
       writer.name("node")
-      Node.obj(true).toJson(writer, scalarAdapters, value.node)
+      Node.obj(true).toJson(writer, value.node, context)
     }
 
     private object Human : ApolloAdapter<GetHuman.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          GetHuman.Data.Human {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): GetHuman.Data.Human {
         var _id: String? = null
         var _name: String? = null
         var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _height = DoubleApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = StringApolloAdapter.fromJson(reader, context)
+            2 -> _height = DoubleApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -82,30 +81,30 @@ public object GetHuman_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetHuman.Data.Human,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("height")
-        DoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+        DoubleApolloAdapter.toJson(writer, value.height, context)
       }
     }
 
     private object Node : ApolloAdapter<GetHuman.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          GetHuman.Data.Node {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): GetHuman.Data.Node {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -115,10 +114,10 @@ public object GetHuman_ResponseAdapter {
         }
 
         var _onHuman: GetHuman.Data.Node.OnHuman? = null
-        if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return GetHuman.Data.Node(
@@ -129,28 +128,28 @@ public object GetHuman_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetHuman.Data.Node,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.onHuman != null) {
           com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.Data.Node.OnHuman.toJson(writer,
-              scalarAdapters, value.onHuman)
+              value.onHuman, context)
         }
       }
 
       private object OnHuman : ApolloAdapter<GetHuman.Data.Node.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            GetHuman.Data.Node.OnHuman {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): GetHuman.Data.Node.OnHuman {
           var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = DoubleApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _height = DoubleApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -162,11 +161,11 @@ public object GetHuman_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetHuman.Data.Node.OnHuman,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("height")
-          DoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+          DoubleApolloAdapter.toJson(writer, value.height, context)
         }
       }
     }

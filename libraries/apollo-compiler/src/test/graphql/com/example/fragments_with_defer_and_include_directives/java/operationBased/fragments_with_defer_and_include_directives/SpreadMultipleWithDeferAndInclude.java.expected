@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDeferAndInclude_ResponseAdapter;
 import com.example.fragments_with_defer_and_include_directives.adapter.SpreadMultipleWithDeferAndInclude_VariablesAdapter;
@@ -136,9 +136,9 @@ public class SpreadMultipleWithDeferAndInclude implements Query<SpreadMultipleWi
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
-    SpreadMultipleWithDeferAndInclude_VariablesAdapter.INSTANCE.toJson(writer, scalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    SpreadMultipleWithDeferAndInclude_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override

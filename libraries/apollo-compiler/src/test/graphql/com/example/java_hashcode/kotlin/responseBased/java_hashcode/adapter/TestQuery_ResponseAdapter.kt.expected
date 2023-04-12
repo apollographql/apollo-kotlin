@@ -7,7 +7,6 @@ package com.example.java_hashcode.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableIntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.java_hashcode.TestQuery
@@ -20,13 +19,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("h")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _h: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _h = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _h = NullableIntApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -38,11 +37,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("h")
-      NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.h)
+      NullableIntApolloAdapter.toJson(writer, value.h, context)
     }
   }
 }

@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
@@ -28,13 +27,13 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
 
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -45,11 +44,11 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer,
+        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV");
-      new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).toJson(writer, scalarAdapters, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV);
+      new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).toJson(writer, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV, context);
     }
   }
 
@@ -60,13 +59,13 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
 
     @Override
     public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -79,11 +78,11 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV value)
-        throws IOException {
+    public void toJson(JsonWriter writer,
+        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
+      Adapters.StringApolloAdapter.toJson(writer, value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, context);
     }
   }
 }

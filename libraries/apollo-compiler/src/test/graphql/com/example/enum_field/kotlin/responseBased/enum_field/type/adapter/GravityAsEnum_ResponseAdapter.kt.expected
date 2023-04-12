@@ -6,22 +6,22 @@
 package com.example.enum_field.type.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.enum_field.type.GravityAsEnum
 import kotlin.Unit
 
 public object GravityAsEnum_ResponseAdapter : ApolloAdapter<GravityAsEnum> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GravityAsEnum {
+  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+      GravityAsEnum {
     val rawValue = reader.nextString()!!
     return GravityAsEnum.safeValueOf(rawValue)
   }
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: GravityAsEnum,
+    context: ApolloAdapter.DataSerializeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

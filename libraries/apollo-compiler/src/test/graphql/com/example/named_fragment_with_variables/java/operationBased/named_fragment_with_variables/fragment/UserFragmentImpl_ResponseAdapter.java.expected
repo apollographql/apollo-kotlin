@@ -8,7 +8,6 @@ package com.example.named_fragment_with_variables.fragment;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class UserFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.UserFragment fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _firstName = null;
       String _lastName = null;
       String _avatar = null;
@@ -33,9 +32,9 @@ public class UserFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _firstName = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _lastName = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _avatar = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _firstName = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _lastName = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 2: _avatar = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -52,16 +51,17 @@ public class UserFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.named_fragment_with_variables.fragment.UserFragment value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.UserFragment value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("firstName");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.firstName);
+      Adapters.StringApolloAdapter.toJson(writer, value.firstName, context);
 
       writer.name("lastName");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.lastName);
+      Adapters.StringApolloAdapter.toJson(writer, value.lastName, context);
 
       writer.name("avatar");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.avatar);
+      Adapters.StringApolloAdapter.toJson(writer, value.avatar, context);
     }
   }
 }

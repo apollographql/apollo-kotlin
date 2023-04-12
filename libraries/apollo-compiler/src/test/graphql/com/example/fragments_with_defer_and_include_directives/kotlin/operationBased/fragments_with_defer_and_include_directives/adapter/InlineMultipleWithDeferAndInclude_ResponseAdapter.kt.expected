@@ -6,7 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
@@ -27,13 +26,13 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
   public object Data : ApolloAdapter<InlineMultipleWithDeferAndInclude.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         InlineMultipleWithDeferAndInclude.Data {
       var _hero: InlineMultipleWithDeferAndInclude.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -45,24 +44,25 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: InlineMultipleWithDeferAndInclude.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           InlineMultipleWithDeferAndInclude.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -72,45 +72,45 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
         }
 
         var _onDroidIfCond1: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1? = null
-        if (and(possibleTypes("Droid"),variable("cond1")).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),variable("cond1")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _onDroidIfCond1 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onDroidIfNotCond2: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2? = null
-        if (and(possibleTypes("Droid"),not(variable("cond2"))).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),not(variable("cond2"))).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _onDroidIfNotCond2 = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onDroidDeferE_first: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first? = null
-        if (and(possibleTypes("Droid"),label("e_first")).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("e_first")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _onDroidDeferE_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onDroidDeferE_second: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second? = null
-        if (and(possibleTypes("Droid"),label("e_second")).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("e_second")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _onDroidDeferE_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onDroidDeferE_third: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third? = null
-        if (and(possibleTypes("Droid"),and(label("e_third"),variable("cond3"))).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),and(label("e_third"),variable("cond3"))).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _onDroidDeferE_third = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onDroidDeferE_fourth: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth? = null
-        if (and(possibleTypes("Droid"),and(label("e_fourth"),not(variable("cond4")))).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),and(label("e_fourth"),not(variable("cond4")))).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _onDroidDeferE_fourth = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return InlineMultipleWithDeferAndInclude.Data.Hero(
@@ -126,40 +126,40 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: InlineMultipleWithDeferAndInclude.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.onDroidIfCond1 != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfCond1.toJson(writer,
-              scalarAdapters, value.onDroidIfCond1)
+              value.onDroidIfCond1, context)
         }
 
         if (value.onDroidIfNotCond2 != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidIfNotCond2.toJson(writer,
-              scalarAdapters, value.onDroidIfNotCond2)
+              value.onDroidIfNotCond2, context)
         }
 
         if (value.onDroidDeferE_first != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_first.toJson(writer,
-              scalarAdapters, value.onDroidDeferE_first)
+              value.onDroidDeferE_first, context)
         }
 
         if (value.onDroidDeferE_second != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_second.toJson(writer,
-              scalarAdapters, value.onDroidDeferE_second)
+              value.onDroidDeferE_second, context)
         }
 
         if (value.onDroidDeferE_third != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_third.toJson(writer,
-              scalarAdapters, value.onDroidDeferE_third)
+              value.onDroidDeferE_third, context)
         }
 
         if (value.onDroidDeferE_fourth != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.Data.Hero.OnDroidDeferE_fourth.toJson(writer,
-              scalarAdapters, value.onDroidDeferE_fourth)
+              value.onDroidDeferE_fourth, context)
         }
       }
 
@@ -167,13 +167,14 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1 {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _name = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -185,11 +186,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfCond1,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("name")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, value.name, context)
         }
       }
 
@@ -197,13 +198,14 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2 {
           var _id: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _id = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -215,11 +217,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidIfNotCond2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("id")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+          StringApolloAdapter.toJson(writer, value.id, context)
         }
       }
 
@@ -227,13 +229,14 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _name = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -245,11 +248,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_first,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("name")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, value.name, context)
         }
       }
 
@@ -257,13 +260,14 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second {
           var _id: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _id = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -275,11 +279,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_second,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("id")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+          StringApolloAdapter.toJson(writer, value.id, context)
         }
       }
 
@@ -287,13 +291,14 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _name = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -305,11 +310,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_third,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("name")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, value.name, context)
         }
       }
 
@@ -317,13 +322,14 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
           ApolloAdapter<InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth {
           var _id: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _id = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -335,11 +341,11 @@ public object InlineMultipleWithDeferAndInclude_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: InlineMultipleWithDeferAndInclude.Data.Hero.OnDroidDeferE_fourth,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("id")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+          StringApolloAdapter.toJson(writer, value.id, context)
         }
       }
     }

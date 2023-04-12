@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.antlr_tokens.TestQuery;
@@ -26,14 +25,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("typeWithGraphQLKeywords");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.TypeWithGraphQLKeywords _typeWithGraphQLKeywords = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _typeWithGraphQLKeywords = new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -44,10 +43,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("typeWithGraphQLKeywords");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).toJson(writer, scalarAdapters, value.typeWithGraphQLKeywords);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.TypeWithGraphQLKeywords>(TypeWithGraphQLKeywords.INSTANCE, false)).toJson(writer, value.typeWithGraphQLKeywords, context);
     }
   }
 
@@ -58,7 +57,7 @@ public class TestQuery_ResponseAdapter {
 
     @Override
     public TestQuery.TypeWithGraphQLKeywords fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _on = null;
       String _null = null;
       String _alias = null;
@@ -66,9 +65,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _on = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _null = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _alias = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _on = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 1: _null = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 2: _alias = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -81,16 +80,16 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestQuery.TypeWithGraphQLKeywords value) throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.TypeWithGraphQLKeywords value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("on");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.on);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.on, context);
 
       writer.name("null");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.null_);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.null_, context);
 
       writer.name("alias");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.alias);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.alias, context);
     }
   }
 }

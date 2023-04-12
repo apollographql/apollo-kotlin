@@ -6,7 +6,6 @@
 package com.example.named_fragment_inside_inline_fragment.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,12 +20,13 @@ public object GetHero_ResponseAdapter {
   public object Data : ApolloAdapter<GetHero.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetHero.Data {
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+        GetHero.Data {
       var _hero: GetHero.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -38,30 +38,30 @@ public object GetHero_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: GetHero.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<GetHero.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          GetHero.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): GetHero.Data.Hero {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
 
         reader.rewind()
         val _onCharacter = com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.fromJson(reader,
-            scalarAdapters)
+            context)
 
         return GetHero.Data.Hero(
           __typename = __typename!!,
@@ -71,37 +71,37 @@ public object GetHero_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetHero.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         com.example.named_fragment_inside_inline_fragment.adapter.GetHero_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
-            scalarAdapters, value.onCharacter)
+            value.onCharacter, context)
       }
 
       private object OnCharacter : ApolloAdapter<GetHero.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            GetHero.Data.Hero.OnCharacter {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): GetHero.Data.Hero.OnCharacter {
           var __typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
 
           reader.rewind()
           val _characterName = com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.fromJson(reader,
-              scalarAdapters)
+              context)
 
           reader.rewind()
           val _characterAppearsIn = com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.fromJson(reader,
-              scalarAdapters)
+              context)
 
           return GetHero.Data.Hero.OnCharacter(
             __typename = __typename!!,
@@ -112,17 +112,17 @@ public object GetHero_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetHero.Data.Hero.OnCharacter,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           com.example.named_fragment_inside_inline_fragment.fragment.CharacterNameImpl_ResponseAdapter.CharacterName.toJson(writer,
-              scalarAdapters, value.characterName)
+              value.characterName, context)
 
           com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsInImpl_ResponseAdapter.CharacterAppearsIn.toJson(writer,
-              scalarAdapters, value.characterAppearsIn)
+              value.characterAppearsIn, context)
         }
       }
     }

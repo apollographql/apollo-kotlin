@@ -9,7 +9,7 @@ import com.apollographql.apollo3.annotations.ApolloAdaptableWith
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.typename_always_first.adapter.TestQuery_ResponseAdapter
@@ -32,7 +32,8 @@ public class TestQuery() : Query<TestQuery.Data> {
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
+  public override fun serializeVariables(writer: JsonWriter,
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This operation doesn't have any variable
   }
 

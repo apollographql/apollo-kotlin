@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.InlineMultipleWithDefer;
@@ -32,14 +31,14 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public InlineMultipleWithDefer.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
-        throws IOException {
+    public InlineMultipleWithDefer.Data fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       InlineMultipleWithDefer.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDefer.Hero>(Hero.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -50,10 +49,10 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        InlineMultipleWithDefer.Data value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDefer.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDefer.Hero>(Hero.INSTANCE, true)).toJson(writer, scalarAdapters, value.hero);
+      new NullableAdapter<>(new ObjectAdapter<InlineMultipleWithDefer.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, context);
     }
   }
 
@@ -63,30 +62,30 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public InlineMultipleWithDefer.Hero fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
-        throws IOException {
+    public InlineMultipleWithDefer.Hero fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       InlineMultipleWithDefer.OnDroidDeferD_first _onDroidDeferD_first = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_first"))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_first"))), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.fromJson(reader, scalarAdapters);
+        _onDroidDeferD_first = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.fromJson(reader, context);
       }
 
       InlineMultipleWithDefer.OnDroidDeferD_second _onDroidDeferD_second = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_second"))), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), __path)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("d_second"))), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.fromJson(reader, scalarAdapters);
+        _onDroidDeferD_second = com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.fromJson(reader, context);
       }
 
       return new InlineMultipleWithDefer.Hero(
@@ -97,17 +96,17 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        InlineMultipleWithDefer.Hero value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDefer.Hero value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.onDroidDeferD_first != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.toJson(writer, scalarAdapters, value.onDroidDeferD_first);
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.toJson(writer, value.onDroidDeferD_first, context);
       }
 
       if (value.onDroidDeferD_second != null) {
-        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.toJson(writer, scalarAdapters, value.onDroidDeferD_second);
+        com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_second.INSTANCE.toJson(writer, value.onDroidDeferD_second, context);
       }
     }
   }
@@ -119,13 +118,13 @@ public class InlineMultipleWithDefer_ResponseAdapter {
 
     @Override
     public InlineMultipleWithDefer.OnDroidDeferD_first fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -138,10 +137,10 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        InlineMultipleWithDefer.OnDroidDeferD_first value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDefer.OnDroidDeferD_first value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
     }
   }
 
@@ -152,13 +151,13 @@ public class InlineMultipleWithDefer_ResponseAdapter {
 
     @Override
     public InlineMultipleWithDefer.OnDroidDeferD_second fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -171,10 +170,10 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        InlineMultipleWithDefer.OnDroidDeferD_second value) throws IOException {
+    public void toJson(JsonWriter writer, InlineMultipleWithDefer.OnDroidDeferD_second value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
     }
   }
 }

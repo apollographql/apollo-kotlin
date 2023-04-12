@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
@@ -28,14 +27,14 @@ public class TestSubscription_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("commentAdded");
 
     @Override
-    public TestSubscription.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestSubscription.Data fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       TestSubscription.CommentAdded _commentAdded = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _commentAdded = new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -46,10 +45,10 @@ public class TestSubscription_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestSubscription.Data value) throws IOException {
+    public void toJson(JsonWriter writer, TestSubscription.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("commentAdded");
-      new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, scalarAdapters, value.commentAdded);
+      new NullableAdapter<>(new ObjectAdapter<TestSubscription.CommentAdded>(CommentAdded.INSTANCE, false)).toJson(writer, value.commentAdded, context);
     }
   }
 
@@ -59,16 +58,16 @@ public class TestSubscription_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "content");
 
     @Override
-    public TestSubscription.CommentAdded fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
-        throws IOException {
+    public TestSubscription.CommentAdded fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Integer _id = null;
       String _content = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _content = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 1: _content = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -83,13 +82,13 @@ public class TestSubscription_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        TestSubscription.CommentAdded value) throws IOException {
+    public void toJson(JsonWriter writer, TestSubscription.CommentAdded value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("id");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.IntApolloAdapter.toJson(writer, value.id, context);
 
       writer.name("content");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.content);
+      Adapters.StringApolloAdapter.toJson(writer, value.content, context);
     }
   }
 }

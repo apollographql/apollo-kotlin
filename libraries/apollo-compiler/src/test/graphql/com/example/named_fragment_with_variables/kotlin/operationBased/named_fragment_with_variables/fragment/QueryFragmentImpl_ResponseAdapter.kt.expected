@@ -6,7 +6,6 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,13 +21,13 @@ public object QueryFragmentImpl_ResponseAdapter {
       ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("organization")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.named_fragment_with_variables.fragment.QueryFragment {
       var _organization: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _organization = Organization.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _organization = Organization.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -40,11 +39,11 @@ public object QueryFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.named_fragment_with_variables.fragment.QueryFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("organization")
-      Organization.obj().nullable().toJson(writer, scalarAdapters, value.organization)
+      Organization.obj().nullable().toJson(writer, value.organization, context)
     }
 
     private object Organization :
@@ -52,15 +51,16 @@ public object QueryFragmentImpl_ResponseAdapter {
         {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           com.example.named_fragment_with_variables.fragment.QueryFragment.Organization {
         var _id: String? = null
         var _user: List<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _user = User.obj(true).list().fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, context)
+            1 -> _user = User.obj(true).list().fromJson(reader, context)
             else -> break
           }
         }
@@ -73,14 +73,14 @@ public object QueryFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         writer.name("user")
-        User.obj(true).list().toJson(writer, scalarAdapters, value.user)
+        User.obj(true).list().toJson(writer, value.user, context)
       }
 
       private object User :
@@ -88,20 +88,21 @@ public object QueryFragmentImpl_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User {
           var __typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
 
           reader.rewind()
           val _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.fromJson(reader,
-              scalarAdapters)
+              context)
 
           return com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User(
             __typename = __typename!!,
@@ -111,14 +112,14 @@ public object QueryFragmentImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
-              scalarAdapters, value.userFragment)
+              value.userFragment, context)
         }
       }
     }

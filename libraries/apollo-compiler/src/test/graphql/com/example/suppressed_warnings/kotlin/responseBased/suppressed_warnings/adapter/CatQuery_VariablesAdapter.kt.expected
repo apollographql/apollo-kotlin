@@ -7,29 +7,26 @@ package com.example.suppressed_warnings.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
 import com.example.suppressed_warnings.CatQuery
 import com.example.suppressed_warnings.type.adapter.Filter_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object CatQuery_VariablesAdapter : ApolloAdapter<CatQuery> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): CatQuery = throw
-      IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object CatQuery_VariablesAdapter : VariablesAdapter<CatQuery> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: CatQuery,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     if (value.filter is Optional.Present) {
       writer.name("filter")
-      Filter_InputAdapter.obj().nullable().present().toJson(writer, scalarAdapters, value.filter)
+      Filter_InputAdapter.obj().nullable().present().toJson(writer, value.filter,
+          serializeDataContext)
     }
   }
 }

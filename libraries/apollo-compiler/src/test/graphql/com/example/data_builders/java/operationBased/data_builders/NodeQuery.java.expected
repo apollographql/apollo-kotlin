@@ -12,7 +12,7 @@ import com.apollographql.apollo3.api.FakeResolver;
 import com.apollographql.apollo3.api.FakeResolverKt;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.data_builders.adapter.NodeQuery_ResponseAdapter;
 import com.example.data_builders.fragment.DroidFragment;
@@ -113,8 +113,8 @@ public class NodeQuery implements Query<NodeQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
     // This operation doesn't have any variable
   }
 

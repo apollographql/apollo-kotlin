@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -31,13 +30,13 @@ public class AFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.multiple_fragments.fragment.AFragment fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       com.example.multiple_fragments.fragment.AFragment.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -48,10 +47,10 @@ public class AFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.multiple_fragments.fragment.AFragment value) throws IOException {
+    public void toJson(JsonWriter writer, com.example.multiple_fragments.fragment.AFragment value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, scalarAdapters, value.node);
+      new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, value.node, context);
     }
   }
 
@@ -62,28 +61,28 @@ public class AFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.multiple_fragments.fragment.AFragment.Node fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       Fragment1 _fragment1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.fromJson(reader, scalarAdapters);
+        _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.fromJson(reader, context);
       }
 
       Fragment2 _fragment2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.fromJson(reader, scalarAdapters);
+        _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.fromJson(reader, context);
       }
 
       return new com.example.multiple_fragments.fragment.AFragment.Node(
@@ -94,17 +93,18 @@ public class AFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.multiple_fragments.fragment.AFragment.Node value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.multiple_fragments.fragment.AFragment.Node value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.fragment1 != null) {
-        com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.toJson(writer, scalarAdapters, value.fragment1);
+        com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.toJson(writer, value.fragment1, context);
       }
 
       if (value.fragment2 != null) {
-        com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.toJson(writer, scalarAdapters, value.fragment2);
+        com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.toJson(writer, value.fragment2, context);
       }
     }
   }

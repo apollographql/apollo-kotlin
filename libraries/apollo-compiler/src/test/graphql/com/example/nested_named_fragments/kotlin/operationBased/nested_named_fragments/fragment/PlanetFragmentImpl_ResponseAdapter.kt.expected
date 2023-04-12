@@ -7,7 +7,6 @@ package com.example.nested_named_fragments.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -19,13 +18,13 @@ public object PlanetFragmentImpl_ResponseAdapter {
       ApolloAdapter<com.example.nested_named_fragments.fragment.PlanetFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.nested_named_fragments.fragment.PlanetFragment {
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = NullableStringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -37,11 +36,11 @@ public object PlanetFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.nested_named_fragments.fragment.PlanetFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("name")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.toJson(writer, value.name, context)
     }
   }
 }

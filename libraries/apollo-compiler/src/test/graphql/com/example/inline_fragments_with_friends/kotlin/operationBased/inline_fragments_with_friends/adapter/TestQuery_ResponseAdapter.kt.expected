@@ -8,7 +8,6 @@ package com.example.inline_fragments_with_friends.adapter
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -29,13 +28,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -47,25 +46,25 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero {
         var __typename: String? = null
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -75,17 +74,17 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onHuman: TestQuery.Data.Hero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onHuman = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _onDroid: TestQuery.Data.Hero.OnDroid? = null
-        if (possibleTypes("Droid").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onDroid = com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return TestQuery.Data.Hero(
@@ -98,39 +97,38 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         if (value.onHuman != null) {
           com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnHuman.toJson(writer,
-              scalarAdapters, value.onHuman)
+              value.onHuman, context)
         }
 
         if (value.onDroid != null) {
           com.example.inline_fragments_with_friends.adapter.TestQuery_ResponseAdapter.Data.Hero.OnDroid.toJson(writer,
-              scalarAdapters, value.onDroid)
+              value.onDroid, context)
         }
       }
 
       private object OnHuman : ApolloAdapter<TestQuery.Data.Hero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height", "friends")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.Hero.OnHuman {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero.OnHuman {
           var _height: Double? = null
           var _friends: List<TestQuery.Data.Hero.OnHuman.Friend?>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
-                  scalarAdapters)
+              0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, context)
+              1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, context)
               else -> break
             }
           }
@@ -143,27 +141,27 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Hero.OnHuman,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("height")
-          NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+          NullableDoubleApolloAdapter.toJson(writer, value.height, context)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
+          Friend.obj().nullable().list().nullable().toJson(writer, value.friends, context)
         }
 
         private object Friend : ApolloAdapter<TestQuery.Data.Hero.OnHuman.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-              TestQuery.Data.Hero.OnHuman.Friend {
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero.OnHuman.Friend {
             var _appearsIn: List<Episode?>? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
                 0 -> _appearsIn = Episode_ResponseAdapter.nullable().list().fromJson(reader,
-                    scalarAdapters)
+                    context)
                 else -> break
               }
             }
@@ -175,12 +173,11 @@ public object TestQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestQuery.Data.Hero.OnHuman.Friend,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("appearsIn")
-            Episode_ResponseAdapter.nullable().list().toJson(writer, scalarAdapters,
-                value.appearsIn)
+            Episode_ResponseAdapter.nullable().list().toJson(writer, value.appearsIn, context)
           }
         }
       }
@@ -188,16 +185,15 @@ public object TestQuery_ResponseAdapter {
       private object OnDroid : ApolloAdapter<TestQuery.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("primaryFunction", "friends")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.Hero.OnDroid {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero.OnDroid {
           var _primaryFunction: String? = null
           var _friends: List<TestQuery.Data.Hero.OnDroid.Friend?>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
-                  scalarAdapters)
+              0 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, context)
+              1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, context)
               else -> break
             }
           }
@@ -210,26 +206,26 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Hero.OnDroid,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("primaryFunction")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+          NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context)
 
           writer.name("friends")
-          Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
+          Friend.obj().nullable().list().nullable().toJson(writer, value.friends, context)
         }
 
         private object Friend : ApolloAdapter<TestQuery.Data.Hero.OnDroid.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("id")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-              TestQuery.Data.Hero.OnDroid.Friend {
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero.OnDroid.Friend {
             var _id: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> _id = StringApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -241,11 +237,11 @@ public object TestQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestQuery.Data.Hero.OnDroid.Friend,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("id")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+            StringApolloAdapter.toJson(writer, value.id, context)
           }
         }
       }

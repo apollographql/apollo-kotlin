@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -33,15 +32,15 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
       List<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -55,14 +54,14 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("friends");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).toJson(writer, scalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).toJson(writer, value.friends, context);
     }
   }
 
@@ -73,30 +72,30 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, scalarAdapters);
+        _onHuman = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, context);
       }
 
       com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid _onDroid = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, scalarAdapters);
+        _onDroid = com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -110,21 +109,21 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       if (value.onHuman != null) {
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, value.onHuman, context);
       }
 
       if (value.onDroid != null) {
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.toJson(writer, scalarAdapters, value.onDroid);
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnDroid.INSTANCE.toJson(writer, value.onDroid, context);
       }
     }
   }
@@ -136,13 +135,13 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -153,11 +152,11 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("height");
-      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, value.height, context);
     }
   }
 
@@ -168,13 +167,13 @@ public class HeroDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _primaryFunction = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -185,11 +184,11 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("primaryFunction");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context);
     }
   }
 }

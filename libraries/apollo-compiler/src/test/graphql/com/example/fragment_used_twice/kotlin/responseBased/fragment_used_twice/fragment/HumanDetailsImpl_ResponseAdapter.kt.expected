@@ -7,7 +7,6 @@ package com.example.fragment_used_twice.fragment
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,25 +18,25 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object Data : ApolloAdapter<HumanDetailsImpl.Data> {
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         HumanDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
-        -> CharacterData.fromJson(reader, scalarAdapters, __typename)
+        -> CharacterData.fromJson(reader, context, __typename)
         else
-        -> OtherData.fromJson(reader, scalarAdapters, __typename)
+        -> OtherData.fromJson(reader, context, __typename)
       }
     }
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HumanDetailsImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       when(value) {
-        is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, scalarAdapters, value)
-        is HumanDetailsImpl.OtherData -> OtherData.toJson(writer, scalarAdapters, value)
+        is HumanDetailsImpl.CharacterData -> CharacterData.toJson(writer, value, context)
+        is HumanDetailsImpl.OtherData -> OtherData.toJson(writer, value, context)
       }
     }
   }
@@ -47,7 +46,7 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      scalarAdapters: ScalarAdapters,
+      context: ApolloAdapter.DataDeserializeContext,
       typename: String,
     ): HumanDetailsImpl.CharacterData {
       var __typename: String? = typename
@@ -56,9 +55,9 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          2 -> _birthDate = AnyApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          1 -> _name = StringApolloAdapter.fromJson(reader, context)
+          2 -> _birthDate = AnyApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -72,17 +71,17 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HumanDetailsImpl.CharacterData,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       writer.name("name")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, value.name, context)
 
       writer.name("birthDate")
-      AnyApolloAdapter.toJson(writer, scalarAdapters, value.birthDate)
+      AnyApolloAdapter.toJson(writer, value.birthDate, context)
     }
   }
 
@@ -91,7 +90,7 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      scalarAdapters: ScalarAdapters,
+      context: ApolloAdapter.DataDeserializeContext,
       typename: String,
     ): HumanDetailsImpl.OtherData {
       var __typename: String? = typename
@@ -99,8 +98,8 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          1 -> _name = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -113,14 +112,14 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HumanDetailsImpl.OtherData,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       writer.name("name")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, value.name, context)
     }
   }
 }

@@ -7,7 +7,6 @@ package com.example.input_object_variable_and_argument.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,13 +22,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroWithReview")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _heroWithReview: TestQuery.Data.HeroWithReview? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _heroWithReview = HeroWithReview.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _heroWithReview = HeroWithReview.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -41,25 +40,25 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("heroWithReview")
-      HeroWithReview.obj().nullable().toJson(writer, scalarAdapters, value.heroWithReview)
+      HeroWithReview.obj().nullable().toJson(writer, value.heroWithReview, context)
     }
 
     private object HeroWithReview : ApolloAdapter<TestQuery.Data.HeroWithReview> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.HeroWithReview {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.HeroWithReview {
         var _name: String? = null
         var _height: Double? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, context)
+            1 -> _height = NullableDoubleApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -72,14 +71,14 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.HeroWithReview,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("height")
-        NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+        NullableDoubleApolloAdapter.toJson(writer, value.height, context)
       }
     }
   }

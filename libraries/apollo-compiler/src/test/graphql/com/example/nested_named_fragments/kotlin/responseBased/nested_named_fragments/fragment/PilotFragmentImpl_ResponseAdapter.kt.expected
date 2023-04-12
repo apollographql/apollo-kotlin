@@ -7,7 +7,6 @@ package com.example.nested_named_fragments.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,15 +20,15 @@ public object PilotFragmentImpl_ResponseAdapter {
   public object Data : ApolloAdapter<PilotFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "homeworld")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         PilotFragmentImpl.Data {
       var _name: String? = null
       var _homeworld: PilotFragmentImpl.Data.Homeworld? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _name = NullableStringApolloAdapter.fromJson(reader, context)
+          1 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -42,28 +41,28 @@ public object PilotFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: PilotFragmentImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("name")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.toJson(writer, value.name, context)
 
       writer.name("homeworld")
-      Homeworld.obj().nullable().toJson(writer, scalarAdapters, value.homeworld)
+      Homeworld.obj().nullable().toJson(writer, value.homeworld, context)
     }
 
     private object Homeworld : ApolloAdapter<PilotFragmentImpl.Data.Homeworld> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          PilotFragmentImpl.Data.Homeworld {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): PilotFragmentImpl.Data.Homeworld {
         var __typename: String? = null
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _name = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -76,14 +75,14 @@ public object PilotFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: PilotFragmentImpl.Data.Homeworld,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("name")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        NullableStringApolloAdapter.toJson(writer, value.name, context)
       }
     }
   }

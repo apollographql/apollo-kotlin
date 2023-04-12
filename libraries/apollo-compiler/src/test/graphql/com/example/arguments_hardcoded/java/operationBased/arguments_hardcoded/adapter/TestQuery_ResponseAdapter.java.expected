@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.arguments_hardcoded.TestQuery;
@@ -29,16 +28,16 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("reviews", "testNullableArguments");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       List<TestQuery.Review> _reviews = null;
       Integer _testNullableArguments = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, scalarAdapters); break;
-          case 1: _testNullableArguments = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, context); break;
+          case 1: _testNullableArguments = Adapters.IntApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -52,13 +51,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("reviews");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, scalarAdapters, value.reviews);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, value.reviews, context);
 
       writer.name("testNullableArguments");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.testNullableArguments);
+      Adapters.IntApolloAdapter.toJson(writer, value.testNullableArguments, context);
     }
   }
 
@@ -68,16 +67,16 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("stars", "commentary");
 
     @Override
-    public TestQuery.Review fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Review fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Integer _stars = null;
       String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _stars = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _commentary = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _stars = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 1: _commentary = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -91,13 +90,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Review value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Review value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("stars");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.stars);
+      Adapters.IntApolloAdapter.toJson(writer, value.stars, context);
 
       writer.name("commentary");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.commentary);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.commentary, context);
     }
   }
 }

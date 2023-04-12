@@ -6,7 +6,6 @@
 package com.example.named_fragment_with_variables.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,7 +17,7 @@ public object UserFragmentImpl_ResponseAdapter {
   public object Data : ApolloAdapter<UserFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("firstName", "lastName", "avatar")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         UserFragmentImpl.Data {
       var _firstName: String? = null
       var _lastName: String? = null
@@ -26,9 +25,9 @@ public object UserFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _firstName = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _lastName = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          2 -> _avatar = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _firstName = StringApolloAdapter.fromJson(reader, context)
+          1 -> _lastName = StringApolloAdapter.fromJson(reader, context)
+          2 -> _avatar = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -42,17 +41,17 @@ public object UserFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: UserFragmentImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("firstName")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.firstName)
+      StringApolloAdapter.toJson(writer, value.firstName, context)
 
       writer.name("lastName")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.lastName)
+      StringApolloAdapter.toJson(writer, value.lastName, context)
 
       writer.name("avatar")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.avatar)
+      StringApolloAdapter.toJson(writer, value.avatar, context)
     }
   }
 }

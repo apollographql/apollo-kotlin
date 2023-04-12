@@ -7,7 +7,6 @@ package com.example.operationbased2_ex7.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -25,13 +24,13 @@ public object TestOperation_ResponseAdapter {
   public object Data : ApolloAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -43,30 +42,30 @@ public object TestOperation_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestOperation.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("animal")
-      Animal.obj(true).nullable().toJson(writer, scalarAdapters, value.animal)
+      Animal.obj(true).nullable().toJson(writer, value.animal, context)
     }
 
     private object Animal : ApolloAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestOperation.Data.Animal {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestOperation.Data.Animal {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
 
         reader.rewind()
         val _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.fromJson(reader,
-            scalarAdapters)
+            context)
 
         return TestOperation.Data.Animal(
           __typename = __typename!!,
@@ -76,28 +75,28 @@ public object TestOperation_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestOperation.Data.Animal,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.toJson(writer,
-            scalarAdapters, value.onAnimal)
+            value.onAnimal, context)
       }
 
       private object OnAnimal : ApolloAdapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestOperation.Data.Animal.OnAnimal {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestOperation.Data.Animal.OnAnimal {
           var __typename: String? = null
           var _species: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _species = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -107,17 +106,17 @@ public object TestOperation_ResponseAdapter {
           }
 
           var _onWarmBlooded: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded? = null
-          if (possibleTypes("Lion","Cat","Panther").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Lion","Cat","Panther").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
             _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.fromJson(reader,
-                scalarAdapters)
+                context)
           }
 
           var _onPet: TestOperation.Data.Animal.OnAnimal.OnPet? = null
-          if (possibleTypes("Cat","Turtle").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+          if (possibleTypes("Cat","Turtle").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
             _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.fromJson(reader,
-                scalarAdapters)
+                context)
           }
 
           return TestOperation.Data.Animal.OnAnimal(
@@ -130,23 +129,23 @@ public object TestOperation_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestOperation.Data.Animal.OnAnimal,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("species")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
+          StringApolloAdapter.toJson(writer, value.species, context)
 
           if (value.onWarmBlooded != null) {
             com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.toJson(writer,
-                scalarAdapters, value.onWarmBlooded)
+                value.onWarmBlooded, context)
           }
 
           if (value.onPet != null) {
             com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnPet.toJson(writer,
-                scalarAdapters, value.onPet)
+                value.onPet, context)
           }
         }
 
@@ -154,13 +153,14 @@ public object TestOperation_ResponseAdapter {
             ApolloAdapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
           public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               TestOperation.Data.Animal.OnAnimal.OnWarmBlooded {
             var _temperature: Int? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _temperature = IntApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> _temperature = IntApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -172,24 +172,25 @@ public object TestOperation_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("temperature")
-            IntApolloAdapter.toJson(writer, scalarAdapters, value.temperature)
+            IntApolloAdapter.toJson(writer, value.temperature, context)
           }
         }
 
         private object OnPet : ApolloAdapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               TestOperation.Data.Animal.OnAnimal.OnPet {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -201,11 +202,11 @@ public object TestOperation_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestOperation.Data.Animal.OnAnimal.OnPet,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("name")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, value.name, context)
           }
         }
       }

@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.nested_field_with_multiple_fieldsets.TestQuery;
@@ -31,14 +30,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface1");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Iface1 _iface1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface1 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _iface1 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -49,10 +48,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("iface1");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, scalarAdapters, value.iface1);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface1>(Iface1.INSTANCE, true)).toJson(writer, value.iface1, context);
     }
   }
 
@@ -62,26 +61,26 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Iface1 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface1 _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, scalarAdapters);
+      TestQuery.OnIface1 _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.fromJson(reader, context);
 
       TestQuery.OnImpl1 _onImpl1 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl1")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, scalarAdapters);
+        _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.fromJson(reader, context);
       }
 
       return new TestQuery.Iface1(
@@ -92,15 +91,15 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Iface1 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Iface1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.toJson(writer, scalarAdapters, value.onIface1);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface1.INSTANCE.toJson(writer, value.onIface1, context);
 
       if (value.onImpl1 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.toJson(writer, scalarAdapters, value.onImpl1);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl1.INSTANCE.toJson(writer, value.onImpl1, context);
       }
     }
   }
@@ -111,14 +110,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnIface1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnIface1 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       TestQuery.Iface2 _iface2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -129,10 +128,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnIface1 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnIface1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("iface2");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, scalarAdapters, value.iface2);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface2>(Iface2.INSTANCE, true)).toJson(writer, value.iface2, context);
     }
   }
 
@@ -142,26 +141,26 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Iface2 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface2 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, scalarAdapters);
+      TestQuery.OnIface2 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.fromJson(reader, context);
 
       TestQuery.OnImpl2 _onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, scalarAdapters);
+        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.fromJson(reader, context);
       }
 
       return new TestQuery.Iface2(
@@ -172,15 +171,15 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Iface2 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Iface2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.toJson(writer, scalarAdapters, value.onIface2);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface2.INSTANCE.toJson(writer, value.onIface2, context);
 
       if (value.onImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.toJson(writer, scalarAdapters, value.onImpl2);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl2.INSTANCE.toJson(writer, value.onImpl2, context);
       }
     }
   }
@@ -191,14 +190,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar1");
 
     @Override
-    public TestQuery.OnIface2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnIface2 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _scalar1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar1 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _scalar1 = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -209,10 +208,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnIface2 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnIface2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("scalar1");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar1);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.scalar1, context);
     }
   }
 
@@ -222,14 +221,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar2");
 
     @Override
-    public TestQuery.OnImpl2 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnImpl2 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _scalar2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar2 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _scalar2 = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -240,10 +239,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnImpl2 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnImpl2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("scalar2");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar2);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.scalar2, context);
     }
   }
 
@@ -253,14 +252,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("iface2");
 
     @Override
-    public TestQuery.OnImpl1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnImpl1 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       TestQuery.Iface21 _iface2 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _iface2 = new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -271,10 +270,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnImpl1 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnImpl1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("iface2");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, scalarAdapters, value.iface2);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Iface21>(Iface21.INSTANCE, true)).toJson(writer, value.iface2, context);
     }
   }
 
@@ -284,26 +283,26 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Iface21 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Iface21 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       reader.rewind();
-      TestQuery.OnIface21 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, scalarAdapters);
+      TestQuery.OnIface21 _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.fromJson(reader, context);
 
       TestQuery.OnImpl21 _onImpl2 = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Impl2")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, scalarAdapters);
+        _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.fromJson(reader, context);
       }
 
       return new TestQuery.Iface21(
@@ -314,15 +313,15 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Iface21 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Iface21 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.toJson(writer, scalarAdapters, value.onIface2);
+      com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnIface21.INSTANCE.toJson(writer, value.onIface2, context);
 
       if (value.onImpl2 != null) {
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.toJson(writer, scalarAdapters, value.onImpl2);
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.OnImpl21.INSTANCE.toJson(writer, value.onImpl2, context);
       }
     }
   }
@@ -333,14 +332,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar3");
 
     @Override
-    public TestQuery.OnIface21 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnIface21 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _scalar3 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar3 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _scalar3 = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -351,10 +350,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnIface21 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnIface21 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("scalar3");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar3);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.scalar3, context);
     }
   }
 
@@ -364,14 +363,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("scalar4");
 
     @Override
-    public TestQuery.OnImpl21 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnImpl21 fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _scalar4 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _scalar4 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _scalar4 = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -382,10 +381,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnImpl21 value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnImpl21 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("scalar4");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar4);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.scalar4, context);
     }
   }
 }

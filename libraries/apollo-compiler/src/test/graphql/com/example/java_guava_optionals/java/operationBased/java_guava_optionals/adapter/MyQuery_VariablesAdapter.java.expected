@@ -8,48 +8,42 @@ package com.example.java_guava_optionals.adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapter;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_guava_optionals.MyQuery;
 import com.example.java_guava_optionals.type.MyInput;
 import com.example.java_guava_optionals.type.adapter.MyInput_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum MyQuery_VariablesAdapter implements ApolloAdapter<MyQuery> {
+public enum MyQuery_VariablesAdapter implements VariablesAdapter<MyQuery> {
   INSTANCE;
 
   @Override
-  public MyQuery fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, MyQuery value) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer, MyQuery value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter).toJson(writer, scalarAdapters, value.nullableInt);
+      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter).toJson(writer, value.nullableInt, serializeDataContext);
     }
     writer.name("nonNullableInt");
-    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+    Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, serializeDataContext);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new GuavaOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, scalarAdapters, value.nonNullableIntWithDefault);
+      new GuavaOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, value.nonNullableIntWithDefault, serializeDataContext);
     }
     if (value.nullableInput.isPresent()) {
       writer.name("nullableInput");
-      new GuavaOptionalAdapter<>(new GuavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, scalarAdapters, value.nullableInput);
+      new GuavaOptionalAdapter<>(new GuavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, value.nullableInput, serializeDataContext);
     }
     writer.name("nonNullableInput");
-    new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.nonNullableInput);
+    new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, value.nonNullableInput, serializeDataContext);
     if (value.nonNullableInputWithDefault.isPresent()) {
       writer.name("nonNullableInputWithDefault");
-      new GuavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, scalarAdapters, value.nonNullableInputWithDefault);
+      new GuavaOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, value.nonNullableInputWithDefault, serializeDataContext);
     }
   }
 }

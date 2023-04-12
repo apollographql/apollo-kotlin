@@ -7,23 +7,19 @@ package com.example.named_fragment_with_variables.fragment.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object UserFragmentImpl_VariablesAdapter : ApolloAdapter<UserFragmentImpl> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): UserFragmentImpl
-      = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object UserFragmentImpl_VariablesAdapter : VariablesAdapter<UserFragmentImpl> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: UserFragmentImpl,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     writer.name("size")
-    IntApolloAdapter.toJson(writer, scalarAdapters, value.size)
+    IntApolloAdapter.toJson(writer, value.size, serializeDataContext)
   }
 }

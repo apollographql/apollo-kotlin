@@ -9,7 +9,6 @@ import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
@@ -22,25 +21,25 @@ import kotlin.Unit
 @Suppress("DEPRECATION")
 @OptIn(ApolloRequiresOptIn::class)
 public object Filter_InputAdapter : ApolloAdapter<Filter> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Filter = throw
-      IllegalStateException("Input type used in output position")
+  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+      Filter = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: Filter,
+    context: ApolloAdapter.DataSerializeContext,
   ): Unit {
     if (value.name is Optional.Present) {
       writer.name("name")
-      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.present().toJson(writer, value.name, context)
     }
     if (value.deprecated is Optional.Present) {
       writer.name("deprecated")
-      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.deprecated)
+      NullableStringApolloAdapter.present().toJson(writer, value.deprecated, context)
     }
     if (value.experimental is Optional.Present) {
       writer.name("experimental")
-      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.experimental)
+      NullableStringApolloAdapter.present().toJson(writer, value.experimental, context)
     }
   }
 }

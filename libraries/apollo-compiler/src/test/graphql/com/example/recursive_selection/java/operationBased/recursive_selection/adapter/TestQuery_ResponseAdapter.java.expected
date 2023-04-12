@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.recursive_selection.TestQuery;
@@ -28,14 +27,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("tree");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Tree _tree = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _tree = new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _tree = new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -46,10 +45,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("tree");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).toJson(writer, scalarAdapters, value.tree);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Tree>(Tree.INSTANCE, false)).toJson(writer, value.tree, context);
     }
   }
 
@@ -59,8 +58,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "children", "parent");
 
     @Override
-    public TestQuery.Tree fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Tree fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String _name = null;
       List<TestQuery.Child> _children = null;
       TestQuery.Parent _parent = null;
@@ -68,9 +67,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _children = new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
-          case 2: _parent = new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _children = new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).fromJson(reader, context); break;
+          case 2: _parent = new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -86,16 +85,16 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Tree value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Tree value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("children");
-      new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).toJson(writer, scalarAdapters, value.children);
+      new ListAdapter<>(new ObjectAdapter<TestQuery.Child>(Child.INSTANCE, false)).toJson(writer, value.children, context);
 
       writer.name("parent");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).toJson(writer, scalarAdapters, value.parent);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Parent>(Parent.INSTANCE, false)).toJson(writer, value.parent, context);
     }
   }
 
@@ -105,14 +104,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Child fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Child fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -125,10 +124,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Child value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Child value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
     }
   }
 
@@ -138,14 +137,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestQuery.Parent fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Parent fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -158,10 +157,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Parent value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Parent value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
     }
   }
 }

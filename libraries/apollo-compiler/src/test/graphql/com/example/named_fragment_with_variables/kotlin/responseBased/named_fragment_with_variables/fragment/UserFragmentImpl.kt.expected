@@ -8,7 +8,7 @@ package com.example.named_fragment_with_variables.fragment
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_VariablesAdapter
@@ -21,8 +21,9 @@ import kotlin.Unit
 public data class UserFragmentImpl(
   public val size: Int,
 ) : Fragment<UserFragmentImpl.Data> {
-  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
-    UserFragmentImpl_VariablesAdapter.toJson(writer, scalarAdapters, this)
+  public override fun serializeVariables(writer: JsonWriter,
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
+    UserFragmentImpl_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
   public override fun adapter(): ApolloAdapter<Data> = UserFragmentImpl_ResponseAdapter.Data.obj()

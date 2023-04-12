@@ -7,7 +7,6 @@ package com.example.nested_named_fragments.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,7 +22,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
       ApolloAdapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.nested_named_fragments.fragment.StarshipFragment {
       var _id: String? = null
       var _name: String? = null
@@ -31,9 +30,9 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-          2 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _id = StringApolloAdapter.fromJson(reader, context)
+          1 -> _name = NullableStringApolloAdapter.fromJson(reader, context)
+          2 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -47,17 +46,17 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.nested_named_fragments.fragment.StarshipFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("id")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+      StringApolloAdapter.toJson(writer, value.id, context)
 
       writer.name("name")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.toJson(writer, value.name, context)
 
       writer.name("pilotConnection")
-      PilotConnection.obj().nullable().toJson(writer, scalarAdapters, value.pilotConnection)
+      PilotConnection.obj().nullable().toJson(writer, value.pilotConnection, context)
     }
 
     private object PilotConnection :
@@ -65,13 +64,14 @@ public object StarshipFragmentImpl_ResponseAdapter {
         {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection {
         var _edges: List<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
+            0 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, context)
             else -> break
           }
         }
@@ -83,11 +83,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().toJson(writer, value.edges, context)
       }
 
       private object Edge :
@@ -95,13 +95,14 @@ public object StarshipFragmentImpl_ResponseAdapter {
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge {
           var _node: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj(true).nullable().fromJson(reader, scalarAdapters)
+              0 -> _node = Node.obj(true).nullable().fromJson(reader, context)
               else -> break
             }
           }
@@ -113,11 +114,11 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("node")
-          Node.obj(true).nullable().toJson(writer, scalarAdapters, value.node)
+          Node.obj(true).nullable().toJson(writer, value.node, context)
         }
 
         private object Node :
@@ -125,20 +126,21 @@ public object StarshipFragmentImpl_ResponseAdapter {
             {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node {
             var __typename: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> __typename = StringApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
 
             reader.rewind()
             val _pilotFragment = com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.fromJson(reader,
-                scalarAdapters)
+                context)
 
             return com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node(
               __typename = __typename!!,
@@ -148,14 +150,14 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection.Edge.Node,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("__typename")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+            StringApolloAdapter.toJson(writer, value.__typename, context)
 
             com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.toJson(writer,
-                scalarAdapters, value.pilotFragment)
+                value.pilotFragment, context)
           }
         }
       }

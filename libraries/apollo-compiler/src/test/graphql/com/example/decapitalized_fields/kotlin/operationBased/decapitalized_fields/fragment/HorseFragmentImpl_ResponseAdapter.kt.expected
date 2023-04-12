@@ -7,7 +7,6 @@ package com.example.decapitalized_fields.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -21,13 +20,13 @@ public object HorseFragmentImpl_ResponseAdapter {
       ApolloAdapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.decapitalized_fields.fragment.HorseFragment {
       var _Cow: com.example.decapitalized_fields.fragment.HorseFragment.Cow? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Cow = Cow.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _Cow = Cow.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -39,24 +38,25 @@ public object HorseFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.decapitalized_fields.fragment.HorseFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("Cow")
-      Cow.obj().nullable().toJson(writer, scalarAdapters, value.cow)
+      Cow.obj().nullable().toJson(writer, value.cow, context)
     }
 
     private object Cow : ApolloAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>
         {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           com.example.decapitalized_fields.fragment.HorseFragment.Cow {
         var _Moo: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _Moo = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _Moo = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -68,11 +68,11 @@ public object HorseFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: com.example.decapitalized_fields.fragment.HorseFragment.Cow,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("Moo")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.moo)
+        NullableStringApolloAdapter.toJson(writer, value.moo, context)
       }
     }
   }

@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.union_fragment.TestQuery;
@@ -33,14 +32,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("search");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       List<TestQuery.Search> _search = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _search = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).fromJson(reader, scalarAdapters); break;
+          case 0: _search = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -51,10 +50,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("search");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).toJson(writer, scalarAdapters, value.search);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Search>(Search.INSTANCE, true)))).toJson(writer, value.search, context);
     }
   }
 
@@ -64,29 +63,29 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Search fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Search fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnStarship _onStarship = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.fromJson(reader, scalarAdapters);
+        _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.fromJson(reader, context);
       }
 
       Starship _starship = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Starship")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.fromJson(reader, scalarAdapters);
+        _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.fromJson(reader, context);
       }
 
       return new TestQuery.Search(
@@ -97,17 +96,17 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Search value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Search value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.onStarship != null) {
-        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.toJson(writer, scalarAdapters, value.onStarship);
+        com.example.union_fragment.adapter.TestQuery_ResponseAdapter.OnStarship.INSTANCE.toJson(writer, value.onStarship, context);
       }
 
       if (value.starship != null) {
-        com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.toJson(writer, scalarAdapters, value.starship);
+        com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.INSTANCE.toJson(writer, value.starship, context);
       }
     }
   }
@@ -118,14 +117,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
 
     @Override
-    public TestQuery.OnStarship fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnStarship fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -138,10 +137,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnStarship value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnStarship value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
     }
   }
 }

@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapter;
 import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -31,8 +30,8 @@ public class MyQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType", "nullableListOfNullableString", "nullableListOfNonNullableString");
 
     @Override
-    public MyQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public MyQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       Optional<Integer> _nullableInt = null;
       int _nonNullableInt = 0;
       Optional<MyQuery.NullableMyType> _nullableMyType = null;
@@ -43,12 +42,12 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _nullableMyType = new JavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
-          case 3: _nonNullableMyType = new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, scalarAdapters); break;
-          case 4: _nullableListOfNullableString = new JavaOptionalAdapter<>(new ListAdapter<>(JavaOptionalAdapters.JavaOptionalStringApolloAdapter)).fromJson(reader, scalarAdapters); break;
-          case 5: _nullableListOfNonNullableString = new JavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)).fromJson(reader, scalarAdapters); break;
+          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntApolloAdapter.fromJson(reader, context); break;
+          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 2: _nullableMyType = new JavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, context); break;
+          case 3: _nonNullableMyType = new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, context); break;
+          case 4: _nullableListOfNullableString = new JavaOptionalAdapter<>(new ListAdapter<>(JavaOptionalAdapters.JavaOptionalStringApolloAdapter)).fromJson(reader, context); break;
+          case 5: _nullableListOfNonNullableString = new JavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -67,25 +66,25 @@ public class MyQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, MyQuery.Data value) throws
-        IOException {
+    public void toJson(JsonWriter writer, MyQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("nullableInt");
-      JavaOptionalAdapters.JavaOptionalIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt);
+      JavaOptionalAdapters.JavaOptionalIntApolloAdapter.toJson(writer, value.nullableInt, context);
 
       writer.name("nonNullableInt");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+      Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
 
       writer.name("nullableMyType");
-      new JavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, scalarAdapters, value.nullableMyType);
+      new JavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, value.nullableMyType, context);
 
       writer.name("nonNullableMyType");
-      new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, scalarAdapters, value.nonNullableMyType);
+      new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, value.nonNullableMyType, context);
 
       writer.name("nullableListOfNullableString");
-      new JavaOptionalAdapter<>(new ListAdapter<>(JavaOptionalAdapters.JavaOptionalStringApolloAdapter)).toJson(writer, scalarAdapters, value.nullableListOfNullableString);
+      new JavaOptionalAdapter<>(new ListAdapter<>(JavaOptionalAdapters.JavaOptionalStringApolloAdapter)).toJson(writer, value.nullableListOfNullableString, context);
 
       writer.name("nullableListOfNonNullableString");
-      new JavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)).toJson(writer, scalarAdapters, value.nullableListOfNonNullableString);
+      new JavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)).toJson(writer, value.nullableListOfNonNullableString, context);
     }
   }
 
@@ -95,16 +94,16 @@ public class MyQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public MyQuery.NullableMyType fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public MyQuery.NullableMyType fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Optional<Integer> _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntApolloAdapter.fromJson(reader, context); break;
+          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -118,13 +117,13 @@ public class MyQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        MyQuery.NullableMyType value) throws IOException {
+    public void toJson(JsonWriter writer, MyQuery.NullableMyType value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("nullableInt");
-      JavaOptionalAdapters.JavaOptionalIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt);
+      JavaOptionalAdapters.JavaOptionalIntApolloAdapter.toJson(writer, value.nullableInt, context);
 
       writer.name("nonNullableInt");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+      Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
     }
   }
 
@@ -134,16 +133,16 @@ public class MyQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public MyQuery.NonNullableMyType fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
-        throws IOException {
+    public MyQuery.NonNullableMyType fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Optional<Integer> _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _nullableInt = JavaOptionalAdapters.JavaOptionalIntApolloAdapter.fromJson(reader, context); break;
+          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -157,13 +156,13 @@ public class MyQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        MyQuery.NonNullableMyType value) throws IOException {
+    public void toJson(JsonWriter writer, MyQuery.NonNullableMyType value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("nullableInt");
-      JavaOptionalAdapters.JavaOptionalIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt);
+      JavaOptionalAdapters.JavaOptionalIntApolloAdapter.toJson(writer, value.nullableInt, context);
 
       writer.name("nonNullableInt");
-      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+      Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
     }
   }
 }

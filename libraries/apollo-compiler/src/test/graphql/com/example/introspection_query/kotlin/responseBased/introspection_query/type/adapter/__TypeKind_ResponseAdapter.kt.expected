@@ -6,22 +6,22 @@
 package com.example.introspection_query.type.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.introspection_query.type.__TypeKind
 import kotlin.Unit
 
 public object __TypeKind_ResponseAdapter : ApolloAdapter<__TypeKind> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): __TypeKind {
+  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+      __TypeKind {
     val rawValue = reader.nextString()!!
     return __TypeKind.safeValueOf(rawValue)
   }
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: __TypeKind,
+    context: ApolloAdapter.DataSerializeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

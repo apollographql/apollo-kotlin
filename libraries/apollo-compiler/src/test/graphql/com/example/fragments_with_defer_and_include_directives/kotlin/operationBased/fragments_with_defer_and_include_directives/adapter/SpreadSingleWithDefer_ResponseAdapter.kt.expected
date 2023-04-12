@@ -6,7 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
@@ -26,13 +25,13 @@ public object SpreadSingleWithDefer_ResponseAdapter {
   public object Data : ApolloAdapter<SpreadSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         SpreadSingleWithDefer.Data {
       var _hero: SpreadSingleWithDefer.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -44,24 +43,24 @@ public object SpreadSingleWithDefer_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: SpreadSingleWithDefer.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          SpreadSingleWithDefer.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): SpreadSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -71,10 +70,10 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label()).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label()).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return SpreadSingleWithDefer.Data.Hero(
@@ -85,15 +84,15 @@ public object SpreadSingleWithDefer_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: SpreadSingleWithDefer.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.droidDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
-              scalarAdapters, value.droidDetails)
+              value.droidDetails, context)
         }
       }
     }
