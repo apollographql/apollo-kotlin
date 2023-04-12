@@ -65,16 +65,17 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 fun <D : Operation.Data> Operation<D>.parseJsonResponse(
     jsonReader: JsonReader,
     scalarAdapters: ScalarAdapters = ScalarAdapters.Empty,
+    mergedDeferredFragmentIds: Set<DeferredFragmentIdentifier>? = null,
 ): ApolloResponse<D> {
   val variables = booleanVariables(scalarAdapters)
   return ResponseParser.parse(
       jsonReader,
       this,
-      scalarAdapters.newBuilder()
-          .adapterContext(scalarAdapters.adapterContext.newBuilder()
-              .variables(variables)
-              .build())
-          .build()
+      ApolloAdapter.DataDeserializeContext(
+          scalarAdapters = scalarAdapters,
+          booleanFalseVariables = variables,
+          mergedDeferredFragmentIds = mergedDeferredFragmentIds,
+      )
   )
 }
 

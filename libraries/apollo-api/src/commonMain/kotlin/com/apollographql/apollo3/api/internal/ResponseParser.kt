@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api.internal
 
+import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.JsonReader
@@ -18,7 +18,7 @@ internal object ResponseParser {
   fun <D : Operation.Data> parse(
       jsonReader: JsonReader,
       operation: Operation<D>,
-      scalarAdapters: ScalarAdapters,
+      dataDeserializeContext: DataDeserializeContext,
   ): ApolloResponse<D> {
     @Suppress("NAME_SHADOWING")
     return jsonReader.use { jsonReader ->
@@ -30,7 +30,7 @@ internal object ResponseParser {
       while (jsonReader.hasNext()) {
         @Suppress("UNCHECKED_CAST")
         when (jsonReader.nextName()) {
-          "data" -> data = operation.adapter().nullable().fromJson(jsonReader, scalarAdapters)
+          "data" -> data = operation.adapter().nullable().fromJson(jsonReader, dataDeserializeContext)
           "errors" -> errors = jsonReader.readErrors()
           "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
           else -> jsonReader.skipValue()
@@ -47,7 +47,6 @@ internal object ResponseParser {
       payload: Map<String, Any?>,
   ) = MapJsonReader(payload).readError()
 
-  @Suppress("UNCHECKED_CAST")
   private fun JsonReader.readErrors(): List<Error> {
     if (peek() == JsonReader.Token.NULL) {
       nextNull()

@@ -2,7 +2,6 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.annotations.ApolloInternal
 import kotlin.jvm.JvmName
 
 class AdapterContext private constructor(
@@ -53,12 +52,3 @@ class AdapterContext private constructor(
     }
   }
 }
-
-@ApolloInternal
-fun ScalarAdapters.withDeferredFragmentIds(deferredFragmentIds: Set<DeferredFragmentIdentifier>) = newBuilder()
-    .adapterContext(
-        adapterContext.newBuilder()
-            .mergedDeferredFragmentIds(deferredFragmentIds)
-            .build()
-    )
-    .build()
