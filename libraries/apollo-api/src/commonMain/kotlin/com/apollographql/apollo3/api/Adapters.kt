@@ -274,19 +274,19 @@ val NullableAnyApolloAdapter = AnyApolloAdapter.nullable()
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val ApolloOptionalStringAdapter = ApolloOptionalAdapter(StringApolloAdapter)
+val ApolloOptionalStringApolloAdapter = ApolloOptionalAdapter(StringApolloAdapter)
 
 @JvmField
-val ApolloOptionalDoubleAdapter = ApolloOptionalAdapter(DoubleApolloAdapter)
+val ApolloOptionalDoubleApolloAdapter = ApolloOptionalAdapter(DoubleApolloAdapter)
 
 @JvmField
-val ApolloOptionalIntAdapter = ApolloOptionalAdapter(IntApolloAdapter)
+val ApolloOptionalIntApolloAdapter = ApolloOptionalAdapter(IntApolloAdapter)
 
 @JvmField
-val ApolloOptionalBooleanAdapter = ApolloOptionalAdapter(BooleanApolloAdapter)
+val ApolloOptionalBooleanApolloAdapter = ApolloOptionalAdapter(BooleanApolloAdapter)
 
 @JvmField
-val ApolloOptionalAnyAdapter = ApolloOptionalAdapter(AnyApolloAdapter)
+val ApolloOptionalAnyApolloAdapter = ApolloOptionalAdapter(AnyApolloAdapter)
 
 
 @JvmField

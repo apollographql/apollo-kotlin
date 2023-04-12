@@ -39,16 +39,16 @@ class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>)
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val JavaOptionalStringAdapter = JavaOptionalAdapter(StringApolloAdapter)
+val JavaOptionalStringApolloAdapter = JavaOptionalAdapter(StringApolloAdapter)
 
 @JvmField
-val JavaOptionalDoubleAdapter = JavaOptionalAdapter(DoubleApolloAdapter)
+val JavaOptionalDoubleApolloAdapter = JavaOptionalAdapter(DoubleApolloAdapter)
 
 @JvmField
-val JavaOptionalIntAdapter = JavaOptionalAdapter(IntApolloAdapter)
+val JavaOptionalIntApolloAdapter = JavaOptionalAdapter(IntApolloAdapter)
 
 @JvmField
-val JavaOptionalBooleanAdapter = JavaOptionalAdapter(BooleanApolloAdapter)
+val JavaOptionalBooleanApolloAdapter = JavaOptionalAdapter(BooleanApolloAdapter)
 
 @JvmField
-val JavaOptionalAnyAdapter = JavaOptionalAdapter(AnyApolloAdapter)
+val JavaOptionalAnyApolloAdapter = JavaOptionalAdapter(AnyApolloAdapter)

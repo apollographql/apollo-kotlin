@@ -40,16 +40,16 @@ class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val GuavaOptionalStringAdapter = GuavaOptionalAdapter(StringApolloAdapter)
+val GuavaOptionalStringApolloAdapter = GuavaOptionalAdapter(StringApolloAdapter)
 
 @JvmField
-val GuavaOptionalDoubleAdapter = GuavaOptionalAdapter(DoubleApolloAdapter)
+val GuavaOptionalDoubleApolloAdapter = GuavaOptionalAdapter(DoubleApolloAdapter)
 
 @JvmField
-val GuavaOptionalIntAdapter = GuavaOptionalAdapter(IntApolloAdapter)
+val GuavaOptionalIntApolloAdapter = GuavaOptionalAdapter(IntApolloAdapter)
 
 @JvmField
-val GuavaOptionalBooleanAdapter = GuavaOptionalAdapter(BooleanApolloAdapter)
+val GuavaOptionalBooleanApolloAdapter = GuavaOptionalAdapter(BooleanApolloAdapter)
 
 @JvmField
-val GuavaOptionalAnyAdapter = GuavaOptionalAdapter(AnyApolloAdapter)
+val GuavaOptionalAnyApolloAdapter = GuavaOptionalAdapter(AnyApolloAdapter)
