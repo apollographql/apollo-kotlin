@@ -1,21 +1,14 @@
 package com.apollographql.apollo3.compiler.codegen.java.helpers
 
 import com.apollographql.apollo3.compiler.JavaNullable
-import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
-import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
 import com.apollographql.apollo3.compiler.codegen.java.JavaContext
-import com.apollographql.apollo3.compiler.codegen.java.L
-import com.apollographql.apollo3.compiler.codegen.java.S
 import com.apollographql.apollo3.compiler.codegen.java.T
-import com.apollographql.apollo3.compiler.ir.IrBooleanValue
 import com.apollographql.apollo3.compiler.ir.IrInputField
 import com.apollographql.apollo3.compiler.ir.IrType
 import com.apollographql.apollo3.compiler.ir.IrValue
 import com.apollographql.apollo3.compiler.ir.IrVariable
-import com.apollographql.apollo3.compiler.ir.isOptional
 import com.squareup.javapoet.CodeBlock
 import com.squareup.javapoet.ParameterSpec
 
@@ -57,39 +50,7 @@ internal fun IrVariable.toNamedType() = NamedType(
     defaultValue = defaultValue,
 )
 
-
-internal fun List<NamedType>.writeToResponseCodeBlock(context: JavaContext, withDefaultBooleanValues: Boolean): CodeBlock {
-  val builder = CodeBlock.builder()
-  forEach {
-    builder.add(it.writeToResponseCodeBlock(context, withDefaultBooleanValues))
-  }
-  return builder.build()
-}
-
-internal fun NamedType.writeToResponseCodeBlock(context: JavaContext, withDefaultBooleanValues: Boolean): CodeBlock {
-  val adapterInitializer = context.resolver.adapterInitializer(type, false)
-  val builder = CodeBlock.builder()
-  val propertyName = context.layout.propertyName(graphQlName)
-
-  if (type.isOptional()) {
-    builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
-  }
-  builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement("$L.${Identifier.toJson}($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
-  if (type.isOptional()) {
-    builder.endControlFlow()
-    if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
-      builder.beginControlFlow("else if ($scalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues())")
-      builder.addStatement("$writer.name($S)", graphQlName)
-      builder.addStatement("$L.${Identifier.toJson}($writer, $L, ${Identifier.context})", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanApolloAdapter"), defaultValue.value)
-      builder.endControlFlow()
-    }
-  }
-
-  return builder.build()
-}
-
-private fun CodeBlock.Builder.beginOptionalControlFlow(propertyName: String, nullableFieldStyle: JavaNullable) {
+internal fun CodeBlock.Builder.beginOptionalControlFlow(propertyName: String, nullableFieldStyle: JavaNullable) {
   when (nullableFieldStyle) {
     JavaNullable.JAVA_OPTIONAL,
     JavaNullable.GUAVA_OPTIONAL,

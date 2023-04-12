@@ -187,7 +187,7 @@ class BatchingHttpInterceptor @JvmOverloads constructor(
           BufferedSourceJsonReader(responseBody),
           DataDeserializeContext(
               scalarAdapters = ScalarAdapters.Empty,
-              booleanFalseVariables = emptySet(),
+              falseBooleanVariables = emptySet(),
               mergedDeferredFragmentIds = null
           )
       )

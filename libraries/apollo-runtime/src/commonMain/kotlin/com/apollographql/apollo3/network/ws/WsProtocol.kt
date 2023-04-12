@@ -101,7 +101,7 @@ abstract class WsProtocol(
         BufferedSourceJsonReader(Buffer().writeUtf8(this)),
         DataDeserializeContext(
             scalarAdapters = ScalarAdapters.Empty,
-            booleanFalseVariables = emptySet(),
+            falseBooleanVariables = emptySet(),
             mergedDeferredFragmentIds = null
         )
     ) as? Map<String, Any?>

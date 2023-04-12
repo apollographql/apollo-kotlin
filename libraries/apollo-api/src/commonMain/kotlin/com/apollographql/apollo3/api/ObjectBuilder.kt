@@ -45,7 +45,7 @@ class BuilderProperty<T>(val adapter: ApolloAdapter<T>) {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.fromJson(MapJsonReader(data), ApolloAdapter.DataDeserializeContext(scalarAdapters = ScalarAdapters.Empty, booleanFalseVariables = emptySet(), mergedDeferredFragmentIds = null))
+    return adapter.fromJson(MapJsonReader(data), ApolloAdapter.DataDeserializeContext(scalarAdapters = ScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {

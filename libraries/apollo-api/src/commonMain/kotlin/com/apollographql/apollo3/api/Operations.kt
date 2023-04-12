@@ -3,6 +3,7 @@
 package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloExperimental
+import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext
 import com.apollographql.apollo3.api.internal.ResponseParser
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -37,7 +38,7 @@ fun <D : Operation.Data> Operation<D>.composeJsonRequest(
 
     name("variables")
     writeObject {
-      serializeVariables(this, scalarAdapters)
+      serializeVariables(this, SerializeVariablesContext(scalarAdapters, withDefaultBooleanValues = false))
     }
 
     name("query")
@@ -73,7 +74,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
       this,
       ApolloAdapter.DataDeserializeContext(
           scalarAdapters = scalarAdapters,
-          booleanFalseVariables = variables,
+          falseBooleanVariables = variables,
           mergedDeferredFragmentIds = mergedDeferredFragmentIds,
       )
   )

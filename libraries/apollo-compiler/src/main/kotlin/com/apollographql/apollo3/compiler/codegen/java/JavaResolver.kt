@@ -217,7 +217,7 @@ internal class JavaResolver(
       }
 
       is IrScalarType -> {
-        nonNullableScalarAdapterInitializer(type)
+        nonNullableScalarAdapterInitializer(type, "${Identifier.context}.$scalarAdapters")
       }
 
       is IrEnumType -> {
@@ -246,7 +246,7 @@ internal class JavaResolver(
     }
   }
 
-  private fun nonNullableScalarAdapterInitializer(type: IrScalarType): CodeBlock {
+  private fun nonNullableScalarAdapterInitializer(type: IrScalarType, scalarAdapters: String): CodeBlock {
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(
@@ -259,7 +259,7 @@ internal class JavaResolver(
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
-            "(${Identifier.context}.$scalarAdapters.<$T>responseAdapterFor($L))",
+            "($scalarAdapters.<$T>responseAdapterFor($L))",
             target,
             resolveCompiledType(type.name)
         )
@@ -278,7 +278,7 @@ internal class JavaResolver(
               adapterCodeBlock("AnyApolloAdapter")
             } else {
               CodeBlock.of(
-                  "(${Identifier.context}.$scalarAdapters.<$T>responseAdapterFor($L))",
+                  "($scalarAdapters.<$T>responseAdapterFor($L))",
                   target,
                   resolveCompiledType(type.name)
               )
@@ -393,7 +393,7 @@ internal class JavaResolver(
       is IrListType2 -> adapterInitializer2(type.ofType)?.listAdapter()
       is IrScalarType2 -> {
         if (scalarMapping.containsKey(type.name)) {
-          nonNullableScalarAdapterInitializer(IrScalarType(type.name))
+          nonNullableScalarAdapterInitializer(IrScalarType(type.name), scalarAdapters)
         } else {
           null
         }

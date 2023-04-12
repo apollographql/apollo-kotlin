@@ -336,7 +336,7 @@ fun <T> buildData(
 ): T {
   return adapter.obj(false).fromJson(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, scalarAdapters)),
-      ApolloAdapter.DataDeserializeContext(scalarAdapters = ScalarAdapters.PassThrough, booleanFalseVariables = emptySet(), mergedDeferredFragmentIds = null)
+      ApolloAdapter.DataDeserializeContext(scalarAdapters = ScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
   )
 }
 

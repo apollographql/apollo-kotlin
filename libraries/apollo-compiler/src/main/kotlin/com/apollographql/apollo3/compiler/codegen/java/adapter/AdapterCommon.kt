@@ -164,7 +164,7 @@ internal fun readFromResponseCodeBlock(
               "null"
             }
             beginControlFlow(
-                "if ($T.$evaluate($L, ${Identifier.context}.booleanFalseVariables, $__typename, ${Identifier.context}, $pathLiteral))",
+                "if ($T.$evaluate($L, ${Identifier.context}.falseBooleanVariables, $__typename, ${Identifier.context}, $pathLiteral))",
                 JavaClassNames.BooleanExpressions,
                 property.condition.codeBlock(),
             )
