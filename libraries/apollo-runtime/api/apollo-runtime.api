@@ -365,6 +365,8 @@ public abstract interface class com/apollographql/apollo3/network/http/TokenProv
 
 public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol : com/apollographql/apollo3/network/ws/WsProtocol {
 	public static final field Companion Lcom/apollographql/apollo3/network/ws/AppSyncWsProtocol$Companion;
+	public fun <init> (JLkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
+	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/util/Map;JLcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;)V
 	public fun connectionInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun handleServerMessage (Ljava/util/Map;)V
@@ -378,6 +380,9 @@ public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol$Compan
 }
 
 public final class com/apollographql/apollo3/network/ws/AppSyncWsProtocol$Factory : com/apollographql/apollo3/network/ws/WsProtocol$Factory {
+	public fun <init> ()V
+	public fun <init> (JLkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (JLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/util/Map;J)V
 	public synthetic fun <init> (Ljava/util/Map;JILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun create (Lcom/apollographql/apollo3/network/ws/WebSocketConnection;Lcom/apollographql/apollo3/network/ws/WsProtocol$Listener;Lkotlinx/coroutines/CoroutineScope;)Lcom/apollographql/apollo3/network/ws/WsProtocol;
