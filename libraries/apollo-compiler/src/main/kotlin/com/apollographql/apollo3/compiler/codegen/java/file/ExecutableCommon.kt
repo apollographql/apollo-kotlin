@@ -29,7 +29,7 @@ internal fun serializeVariablesMethodSpec(
   val body = if (adapterClassName == null) {
     CodeBlock.of("// $emptyMessage\n")
   } else {
-    CodeBlock.of("$T.INSTANCE.$toJson($writer, $scalarAdapters, this);\n", adapterClassName)
+    CodeBlock.of("$T.INSTANCE.$toJson($writer, this, ${Identifier.context});\n", adapterClassName)
   }
   return MethodSpec.methodBuilder(serializeVariables)
       .addModifiers(Modifier.PUBLIC)

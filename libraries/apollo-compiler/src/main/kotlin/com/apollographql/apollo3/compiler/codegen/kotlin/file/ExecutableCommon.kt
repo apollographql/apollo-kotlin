@@ -32,7 +32,7 @@ internal fun serializeVariablesFunSpec(
     """.trimIndent())
   } else {
     CodeBlock.of(
-        "%L.$toJson($writer, $scalarAdapters, this)",
+        "%L.$toJson($writer, this, ${Identifier.context})",
         CodeBlock.of("%T", adapterClassName)
     )
   }

@@ -69,7 +69,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
         .returns(adaptedClassName)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-        .addParameter(JavaClassNames.ScalarAdapters, Identifier.scalarAdapters)
+        .addParameter(JavaClassNames.DataDeserializeContext, Identifier.context)
         .addAnnotation(JavaClassNames.Override)
         .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
@@ -81,8 +81,8 @@ internal class MonomorphicFieldResponseAdapterBuilder(
         .addAnnotation(JavaClassNames.Override)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonWriter, Identifier.writer)
-        .addParameter(JavaClassNames.ScalarAdapters, Identifier.scalarAdapters)
         .addParameter(adaptedClassName, Identifier.value)
+        .addParameter(JavaClassNames.DataSerializeContext, Identifier.context)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()
   }

@@ -75,7 +75,7 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefa
   }
   builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.scalarAdapters}, ${Identifier.value}.%N)",
+      "%L.${Identifier.toJson}(${Identifier.writer}, ${Identifier.value}.%N, ${Identifier.context})",
       adapterInitializer,
       propertyName,
   )
@@ -85,7 +85,7 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefa
       builder.beginControlFlow("else if (${Identifier.scalarAdapters}.adapterContext.serializeVariablesWithDefaultBooleanValues)")
       builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
       builder.addStatement(
-          "%M.${Identifier.toJson}(${Identifier.writer}, ${Identifier.scalarAdapters}, %L)",
+          "%M.${Identifier.toJson}(${Identifier.writer}, %L, ${Identifier.context})",
           KotlinSymbols.BooleanApolloAdapter,
           defaultValue.value,
       )

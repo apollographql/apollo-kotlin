@@ -3,6 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin
 import com.apollographql.apollo3.compiler.ExpressionAdapterInitializer
 import com.apollographql.apollo3.compiler.RuntimeAdapterInitializer
 import com.apollographql.apollo3.compiler.ScalarInfo
+import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.type
 import com.apollographql.apollo3.compiler.codegen.ResolverClassName
@@ -232,7 +233,7 @@ internal class KotlinResolver(
       is RuntimeAdapterInitializer -> {
         val target = resolveScalarTarget(type.name)
         CodeBlock.of(
-            "$scalarAdapters.responseAdapterFor<%T>(%L)",
+            "${Identifier.context}.$scalarAdapters.responseAdapterFor<%T>(%L)",
             target,
             resolveCompiledType(type.name)
         )
@@ -251,7 +252,7 @@ internal class KotlinResolver(
               CodeBlock.of("%M", KotlinSymbols.AnyApolloAdapter)
             } else {
               CodeBlock.of(
-                  "$scalarAdapters.responseAdapterFor<%T>(%L)",
+                  "${Identifier.context}.$scalarAdapters.responseAdapterFor<%T>(%L)",
                   target,
                   resolveCompiledType(type.name)
               )

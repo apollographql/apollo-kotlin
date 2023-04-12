@@ -3,7 +3,6 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -48,7 +47,7 @@ internal class EnumResponseAdapterBuilder(
     val fromResponseFunSpec = FunSpec.builder(Identifier.fromJson)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(scalarAdapters, KotlinSymbols.ScalarAdapters)
+        .addParameter(Identifier.context, KotlinSymbols.DataDeserializeContext)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -74,5 +73,5 @@ internal class EnumResponseAdapterBuilder(
 private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = KotlinSymbols.JsonWriter)
-    .addParameter(name = scalarAdapters, type = KotlinSymbols.ScalarAdapters)
     .addParameter(value, typeName)
+    .addParameter(Identifier.context, KotlinSymbols.DataSerializeContext)

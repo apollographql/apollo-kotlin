@@ -83,7 +83,6 @@ private fun collect(selections: List<CompiledSelection>, typename: String): List
 }
 
 
-
 private fun collectAndMerge(selections: List<CompiledSelection>, typename: String): List<CompiledField> {
   /**
    * This doesn't check the condition and will therefore overfetch
@@ -275,6 +274,7 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
         val index = context.path.indexOfLast { it is String }
         context.path.subList(index, context.path.size).joinToString(separator = "") { it.toPathComponent() }
       }
+
       "ID" -> context.id.hashCode().absoluteValue.toString()
       else -> {
         val type = enumTypes.find { it.name == name } ?: error("Don't know how to instantiate leaf $name")
@@ -336,11 +336,11 @@ fun <T> buildData(
 ): T {
   return adapter.obj(false).fromJson(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, scalarAdapters)),
-      ScalarAdapters.PassThrough
+      ApolloAdapter.DataDeserializeContext(scalarAdapters = ScalarAdapters.PassThrough, booleanFalseVariables = emptySet(), mergedDeferredFragmentIds = null)
   )
 }
 
-fun <T, Builder: ObjectBuilder<*>> buildData(
+fun <T, Builder : ObjectBuilder<*>> buildData(
     builderFactory: BuilderFactory<Builder>,
     block: (Builder.() -> Unit),
     adapter: ApolloAdapter<T>,

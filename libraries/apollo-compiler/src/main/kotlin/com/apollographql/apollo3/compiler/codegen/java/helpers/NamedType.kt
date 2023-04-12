@@ -75,13 +75,13 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext, withDefaul
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement("$L.${Identifier.toJson}($writer, $scalarAdapters, $value.$propertyName)", adapterInitializer)
+  builder.addStatement("$L.${Identifier.toJson}($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
   if (type.isOptional()) {
     builder.endControlFlow()
     if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
       builder.beginControlFlow("else if ($scalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues())")
       builder.addStatement("$writer.name($S)", graphQlName)
-      builder.addStatement("$L.${Identifier.toJson}($writer, $scalarAdapters, $L)", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanApolloAdapter"), defaultValue.value)
+      builder.addStatement("$L.${Identifier.toJson}($writer, $L, ${Identifier.context})", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanApolloAdapter"), defaultValue.value)
       builder.endControlFlow()
     }
   }
