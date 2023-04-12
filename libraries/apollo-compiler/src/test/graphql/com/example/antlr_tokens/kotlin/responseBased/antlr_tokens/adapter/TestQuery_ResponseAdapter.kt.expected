@@ -7,7 +7,6 @@ package com.example.antlr_tokens.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -21,14 +20,14 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
           0 -> _typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
-              scalarAdapters)
+              context)
           else -> break
         }
       }
@@ -40,28 +39,28 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("typeWithGraphQLKeywords")
-      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, scalarAdapters,
-          value.typeWithGraphQLKeywords)
+      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, value.typeWithGraphQLKeywords,
+          context)
     }
 
     private object TypeWithGraphQLKeywords : ApolloAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.TypeWithGraphQLKeywords {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.TypeWithGraphQLKeywords {
         var _on: String? = null
         var _null: String? = null
         var _alias: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _on = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _null = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-            2 -> _alias = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _on = NullableStringApolloAdapter.fromJson(reader, context)
+            1 -> _null = NullableStringApolloAdapter.fromJson(reader, context)
+            2 -> _alias = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -75,17 +74,17 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.TypeWithGraphQLKeywords,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("on")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.on)
+        NullableStringApolloAdapter.toJson(writer, value.on, context)
 
         writer.name("null")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`null`)
+        NullableStringApolloAdapter.toJson(writer, value.`null`, context)
 
         writer.name("alias")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.alias)
+        NullableStringApolloAdapter.toJson(writer, value.alias, context)
       }
     }
   }

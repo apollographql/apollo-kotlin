@@ -6,7 +6,6 @@
 package com.example.simple_union.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,13 +17,13 @@ public object DogFragmentImpl_ResponseAdapter {
   public object DogFragment : ApolloAdapter<com.example.simple_union.fragment.DogFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("woof")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.simple_union.fragment.DogFragment {
       var _woof: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _woof = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _woof = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -36,11 +35,11 @@ public object DogFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.simple_union.fragment.DogFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("woof")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.woof)
+      StringApolloAdapter.toJson(writer, value.woof, context)
     }
   }
 }

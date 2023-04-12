@@ -8,33 +8,26 @@ package com.example.named_fragment_with_variables.fragment.adapter;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.QueryFragmentImpl;
 import com.example.named_fragment_with_variables.type.UserQuery;
 import com.example.named_fragment_with_variables.type.adapter.UserQuery_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum QueryFragmentImpl_VariablesAdapter implements ApolloAdapter<QueryFragmentImpl> {
+public enum QueryFragmentImpl_VariablesAdapter implements VariablesAdapter<QueryFragmentImpl> {
   INSTANCE;
 
   @Override
-  public QueryFragmentImpl fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-      IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, QueryFragmentImpl value)
-      throws IOException {
+  public void serializeVariables(JsonWriter writer, QueryFragmentImpl value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
     writer.name("organizationId");
-    Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.organizationId);
+    Adapters.StringApolloAdapter.toJson(writer, value.organizationId, serializeDataContext);
     writer.name("query");
-    new ObjectAdapter<UserQuery>(UserQuery_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.query);
+    new ObjectAdapter<UserQuery>(UserQuery_InputAdapter.INSTANCE, false).toJson(writer, value.query, serializeDataContext);
     writer.name("size");
-    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.size);
+    Adapters.IntApolloAdapter.toJson(writer, value.size, serializeDataContext);
   }
 }

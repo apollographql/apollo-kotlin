@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter;
 import com.example.inline_fragment_type_coercion.selections.TestQuerySelections;
@@ -99,8 +99,8 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
     // This operation doesn't have any variable
   }
 

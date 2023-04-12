@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.LoginBarber;
@@ -26,14 +25,14 @@ public class LoginBarber_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("login");
 
     @Override
-    public LoginBarber.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public LoginBarber.Data fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       LoginBarber.Login _login = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _login = new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).fromJson(reader, scalarAdapters); break;
+          case 0: _login = new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -46,10 +45,10 @@ public class LoginBarber_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, LoginBarber.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, LoginBarber.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("login");
-      new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).toJson(writer, scalarAdapters, value.login);
+      new ObjectAdapter<LoginBarber.Login>(Login.INSTANCE, false).toJson(writer, value.login, context);
     }
   }
 
@@ -59,14 +58,14 @@ public class LoginBarber_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("response");
 
     @Override
-    public LoginBarber.Login fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public LoginBarber.Login fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _response = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _response = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _response = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -79,10 +78,10 @@ public class LoginBarber_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, LoginBarber.Login value)
-        throws IOException {
+    public void toJson(JsonWriter writer, LoginBarber.Login value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("response");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.response);
+      Adapters.StringApolloAdapter.toJson(writer, value.response, context);
     }
   }
 }

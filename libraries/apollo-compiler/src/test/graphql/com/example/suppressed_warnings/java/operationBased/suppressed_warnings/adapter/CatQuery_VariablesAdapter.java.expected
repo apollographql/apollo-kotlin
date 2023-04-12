@@ -10,30 +10,24 @@ import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.CatQuery;
 import com.example.suppressed_warnings.type.Filter;
 import com.example.suppressed_warnings.type.adapter.Filter_InputAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum CatQuery_VariablesAdapter implements ApolloAdapter<CatQuery> {
+public enum CatQuery_VariablesAdapter implements VariablesAdapter<CatQuery> {
   INSTANCE;
 
   @Override
-  public CatQuery fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, CatQuery value) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer, CatQuery value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
     if (value.filter instanceof Optional.Present) {
       writer.name("filter");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).toJson(writer, scalarAdapters, value.filter);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).toJson(writer, value.filter, serializeDataContext);
     }
   }
 }

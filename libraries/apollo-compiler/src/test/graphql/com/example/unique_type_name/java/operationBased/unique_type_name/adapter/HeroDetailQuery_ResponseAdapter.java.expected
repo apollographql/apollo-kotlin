@@ -15,7 +15,6 @@ import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.unique_type_name.fragment.HeroDetails;
@@ -36,13 +35,13 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Data fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 _heroDetailQuery = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _heroDetailQuery = new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _heroDetailQuery = new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -53,10 +52,10 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Data value) throws IOException {
+    public void toJson(JsonWriter writer, com.example.unique_type_name.HeroDetailQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("heroDetailQuery");
-      new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).toJson(writer, scalarAdapters, value.heroDetailQuery);
+      new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1>(HeroDetailQuery.INSTANCE, true)).toJson(writer, value.heroDetailQuery, context);
     }
   }
 
@@ -67,7 +66,7 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       String _name = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend> _friends = null;
@@ -75,18 +74,18 @@ public class HeroDetailQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 2: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       com.example.unique_type_name.HeroDetailQuery.OnHuman _onHuman = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, scalarAdapters);
+        _onHuman = com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_name, "name");
@@ -100,19 +99,20 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.HeroDetailQuery.HeroDetailQuery1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("friends");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).toJson(writer, scalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend>(Friend.INSTANCE, false)))).toJson(writer, value.friends, context);
 
       if (value.onHuman != null) {
-        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
+        com.example.unique_type_name.adapter.HeroDetailQuery_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, value.onHuman, context);
       }
     }
   }
@@ -124,13 +124,13 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -143,10 +143,10 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Friend value) throws IOException {
+    public void toJson(JsonWriter writer, com.example.unique_type_name.HeroDetailQuery.Friend value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
     }
   }
 
@@ -157,15 +157,15 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.OnHuman fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       Double _height = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend1> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).fromJson(reader, scalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, context); break;
+          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -177,13 +177,14 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.OnHuman value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.HeroDetailQuery.OnHuman value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("height");
-      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, value.height, context);
 
       writer.name("friends");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).toJson(writer, scalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend1>(Friend1.INSTANCE, false)))).toJson(writer, value.friends, context);
     }
   }
 
@@ -194,15 +195,15 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend1 fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       List<Episode> _appearsIn = null;
       List<com.example.unique_type_name.HeroDetailQuery.Friend2> _friends = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, scalarAdapters); break;
-          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).fromJson(reader, scalarAdapters); break;
+          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, context); break;
+          case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -216,13 +217,14 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Friend1 value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.HeroDetailQuery.Friend1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("appearsIn");
-      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.appearsIn);
+      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.appearsIn, context);
 
       writer.name("friends");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).toJson(writer, scalarAdapters, value.friends);
+      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.HeroDetailQuery.Friend2>(Friend2.INSTANCE, true)))).toJson(writer, value.friends, context);
     }
   }
 
@@ -233,19 +235,19 @@ public class HeroDetailQuery_ResponseAdapter {
 
     @Override
     public com.example.unique_type_name.HeroDetailQuery.Friend2 fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      HeroDetails _heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, scalarAdapters);
+      HeroDetails _heroDetails = com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.fromJson(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -256,12 +258,13 @@ public class HeroDetailQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.unique_type_name.HeroDetailQuery.Friend2 value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.unique_type_name.HeroDetailQuery.Friend2 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.toJson(writer, scalarAdapters, value.heroDetails);
+      com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE.toJson(writer, value.heroDetails, context);
     }
   }
 }

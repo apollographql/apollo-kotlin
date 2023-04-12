@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.type.renamedInput;
@@ -21,17 +20,17 @@ public enum renamedInput_InputAdapter implements ApolloAdapter<renamedInput> {
   INSTANCE;
 
   @Override
-  public renamedInput fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-      IOException {
+  public renamedInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, renamedInput value) throws
-      IOException {
+  public void toJson(JsonWriter writer, renamedInput value,
+      ApolloAdapter.DataSerializeContext context) throws IOException {
     if (value.field instanceof Optional.Present) {
       writer.name("field");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.field);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.field, context);
     }
   }
 }

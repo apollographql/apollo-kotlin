@@ -7,7 +7,6 @@ package com.example.case_sensitive_enum.adapter;
 
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.case_sensitive_enum.TestQuery;
@@ -26,14 +25,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("enum");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       Enum _enum = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _enum = new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
+          case 0: _enum = new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -44,10 +43,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("enum");
-      new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).toJson(writer, scalarAdapters, value.enum_);
+      new NullableAdapter<>(Enum_ResponseAdapter.INSTANCE).toJson(writer, value.enum_, context);
     }
   }
 }

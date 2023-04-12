@@ -8,7 +8,6 @@ package com.example.target_name.type.adapter
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
@@ -17,17 +16,17 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 public object renamedInput_InputAdapter : ApolloAdapter<renamedInput> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): renamedInput =
-      throw IllegalStateException("Input type used in output position")
+  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+      renamedInput = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: renamedInput,
+    context: ApolloAdapter.DataSerializeContext,
   ): Unit {
     if (value.`field` is Optional.Present) {
       writer.name("field")
-      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.`field`)
+      NullableStringApolloAdapter.present().toJson(writer, value.`field`, context)
     }
   }
 }

@@ -7,7 +7,6 @@ package com.example.fragments_with_defer_and_include_directives.fragment
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.Any
@@ -21,13 +20,13 @@ public object CharacterDetails3Impl_ResponseAdapter {
       {
     public val RESPONSE_NAMES: List<String> = listOf("birthDate")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
       var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _birthDate = AnyApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _birthDate = AnyApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -39,11 +38,11 @@ public object CharacterDetails3Impl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("birthDate")
-      AnyApolloAdapter.toJson(writer, scalarAdapters, value.birthDate)
+      AnyApolloAdapter.toJson(writer, value.birthDate, context)
     }
   }
 }

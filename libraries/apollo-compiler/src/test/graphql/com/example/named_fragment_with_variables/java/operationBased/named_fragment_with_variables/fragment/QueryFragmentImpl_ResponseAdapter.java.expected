@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -28,13 +27,13 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       com.example.named_fragment_with_variables.fragment.QueryFragment.Organization _organization = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _organization = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -45,10 +44,11 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.QueryFragment value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("organization");
-      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, scalarAdapters, value.organization);
+      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>(Organization.INSTANCE, false)).toJson(writer, value.organization, context);
     }
   }
 
@@ -59,15 +59,15 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.Organization fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _id = null;
       List<com.example.named_fragment_with_variables.fragment.QueryFragment.User> _user = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -82,14 +82,14 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
 
       writer.name("user");
-      new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, scalarAdapters, value.user);
+      new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, value.user, context);
     }
   }
 
@@ -100,19 +100,19 @@ public class QueryFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_with_variables.fragment.QueryFragment.User fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, scalarAdapters);
+      UserFragment _userFragment = com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.fromJson(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -123,13 +123,13 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.named_fragment_with_variables.fragment.QueryFragment.User value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.named_fragment_with_variables.fragment.QueryFragment.User value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.toJson(writer, scalarAdapters, value.userFragment);
+      com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.toJson(writer, value.userFragment, context);
     }
   }
 }

@@ -6,7 +6,6 @@
 package com.example.union_fragment.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -25,14 +24,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _search: List<TestQuery.Data.Search?>? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj(true).nullable().list().nullable().fromJson(reader,
-              scalarAdapters)
+          0 -> _search = Search.obj(true).nullable().list().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -44,23 +42,23 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("search")
-      Search.obj(true).nullable().list().nullable().toJson(writer, scalarAdapters, value.search)
+      Search.obj(true).nullable().list().nullable().toJson(writer, value.search, context)
     }
 
     private object Search : ApolloAdapter<TestQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Search {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Search {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -70,17 +68,17 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onStarship: TestQuery.Data.Search.OnStarship? = null
-        if (possibleTypes("Starship").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Starship").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onStarship = com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _starship: Starship? = null
-        if (possibleTypes("Starship").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Starship").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _starship = com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return TestQuery.Data.Search(
@@ -92,33 +90,33 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Search,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.onStarship != null) {
           com.example.union_fragment.adapter.TestQuery_ResponseAdapter.Data.Search.OnStarship.toJson(writer,
-              scalarAdapters, value.onStarship)
+              value.onStarship, context)
         }
 
         if (value.starship != null) {
           com.example.union_fragment.fragment.StarshipImpl_ResponseAdapter.Starship.toJson(writer,
-              scalarAdapters, value.starship)
+              value.starship, context)
         }
       }
 
       private object OnStarship : ApolloAdapter<TestQuery.Data.Search.OnStarship> {
         public val RESPONSE_NAMES: List<String> = listOf("id")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.Search.OnStarship {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Search.OnStarship {
           var _id: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _id = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -130,11 +128,11 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Search.OnStarship,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("id")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+          StringApolloAdapter.toJson(writer, value.id, context)
         }
       }
     }

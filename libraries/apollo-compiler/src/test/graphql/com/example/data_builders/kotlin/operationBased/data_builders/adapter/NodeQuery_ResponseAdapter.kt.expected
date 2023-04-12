@@ -6,7 +6,6 @@
 package com.example.data_builders.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,13 +23,13 @@ public object NodeQuery_ResponseAdapter {
   public object Data : ApolloAdapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj(true).fromJson(reader, scalarAdapters)
+          0 -> _node = Node.obj(true).fromJson(reader, context)
           else -> break
         }
       }
@@ -42,25 +41,25 @@ public object NodeQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: NodeQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("node")
-      Node.obj(true).toJson(writer, scalarAdapters, value.node)
+      Node.obj(true).toJson(writer, value.node, context)
     }
 
     private object Node : ApolloAdapter<NodeQuery.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          NodeQuery.Data.Node {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): NodeQuery.Data.Node {
         var __typename: String? = null
         var _id: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _id = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -70,17 +69,17 @@ public object NodeQuery_ResponseAdapter {
         }
 
         var _humanFragment: HumanFragment? = null
-        if (possibleTypes("Human").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _droidFragment: DroidFragment? = null
-        if (possibleTypes("Droid").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return NodeQuery.Data.Node(
@@ -93,23 +92,23 @@ public object NodeQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: NodeQuery.Data.Node,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("id")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, value.id, context)
 
         if (value.humanFragment != null) {
           com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer,
-              scalarAdapters, value.humanFragment)
+              value.humanFragment, context)
         }
 
         if (value.droidFragment != null) {
           com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-              scalarAdapters, value.droidFragment)
+              value.droidFragment, context)
         }
       }
     }

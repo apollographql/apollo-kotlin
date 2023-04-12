@@ -9,47 +9,44 @@ import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.NullableIntApolloAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.obj
 import com.apollographql.apollo3.api.present
 import com.example.java_java_optionals.MyQuery
 import com.example.java_java_optionals.type.adapter.MyInput_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object MyQuery_VariablesAdapter : ApolloAdapter<MyQuery> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): MyQuery = throw
-      IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object MyQuery_VariablesAdapter : VariablesAdapter<MyQuery> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: MyQuery,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntApolloAdapter.present().toJson(writer, scalarAdapters, value.nullableInt)
+      NullableIntApolloAdapter.present().toJson(writer, value.nullableInt, serializeDataContext)
     }
     writer.name("nonNullableInt")
-    IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
+    IntApolloAdapter.toJson(writer, value.nonNullableInt, serializeDataContext)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntApolloAdapter.present().toJson(writer, scalarAdapters, value.nonNullableIntWithDefault)
+      IntApolloAdapter.present().toJson(writer, value.nonNullableIntWithDefault,
+          serializeDataContext)
     }
     if (value.nullableInput is Optional.Present) {
       writer.name("nullableInput")
-      MyInput_InputAdapter.obj().nullable().present().toJson(writer, scalarAdapters,
-          value.nullableInput)
+      MyInput_InputAdapter.obj().nullable().present().toJson(writer, value.nullableInput,
+          serializeDataContext)
     }
     writer.name("nonNullableInput")
-    MyInput_InputAdapter.obj().toJson(writer, scalarAdapters, value.nonNullableInput)
+    MyInput_InputAdapter.obj().toJson(writer, value.nonNullableInput, serializeDataContext)
     if (value.nonNullableInputWithDefault is Optional.Present) {
       writer.name("nonNullableInputWithDefault")
-      MyInput_InputAdapter.obj().present().toJson(writer, scalarAdapters,
-          value.nonNullableInputWithDefault)
+      MyInput_InputAdapter.obj().present().toJson(writer, value.nonNullableInputWithDefault,
+          serializeDataContext)
     }
   }
 }

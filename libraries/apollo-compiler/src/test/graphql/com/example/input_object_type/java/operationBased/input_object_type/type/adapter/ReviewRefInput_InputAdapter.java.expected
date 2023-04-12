@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.input_object_type.type.ReviewInput;
@@ -23,17 +22,17 @@ public enum ReviewRefInput_InputAdapter implements ApolloAdapter<ReviewRefInput>
   INSTANCE;
 
   @Override
-  public ReviewRefInput fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-      IOException {
+  public ReviewRefInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, ReviewRefInput value) throws
-      IOException {
+  public void toJson(JsonWriter writer, ReviewRefInput value,
+      ApolloAdapter.DataSerializeContext context) throws IOException {
     if (value.reviewInput instanceof Optional.Present) {
       writer.name("reviewInput");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).toJson(writer, scalarAdapters, value.reviewInput);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewInput>(ReviewInput_InputAdapter.INSTANCE, false))).toJson(writer, value.reviewInput, context);
     }
   }
 }

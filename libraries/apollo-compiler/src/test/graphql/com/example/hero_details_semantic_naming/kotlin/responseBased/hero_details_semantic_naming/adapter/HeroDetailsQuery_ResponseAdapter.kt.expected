@@ -7,7 +7,6 @@ package com.example.hero_details_semantic_naming.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableIntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,13 +23,13 @@ public object HeroDetailsQuery_ResponseAdapter {
   public object Data : ApolloAdapter<HeroDetailsQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         HeroDetailsQuery.Data {
       var _hero: HeroDetailsQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -42,25 +41,25 @@ public object HeroDetailsQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HeroDetailsQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj().nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj().nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<HeroDetailsQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          HeroDetailsQuery.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): HeroDetailsQuery.Data.Hero {
         var _name: String? = null
         var _friendsConnection: HeroDetailsQuery.Data.Hero.FriendsConnection? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, context)
+            1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, context)
             else -> break
           }
         }
@@ -73,29 +72,30 @@ public object HeroDetailsQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: HeroDetailsQuery.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("name")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, value.name, context)
 
         writer.name("friendsConnection")
-        FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
+        FriendsConnection.obj().toJson(writer, value.friendsConnection, context)
       }
 
       private object FriendsConnection : ApolloAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection>
           {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             HeroDetailsQuery.Data.Hero.FriendsConnection {
           var _totalCount: Int? = null
           var _edges: List<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge?>? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
+              0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, context)
+              1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, context)
               else -> break
             }
           }
@@ -108,26 +108,27 @@ public object HeroDetailsQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: HeroDetailsQuery.Data.Hero.FriendsConnection,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("totalCount")
-          NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
+          NullableIntApolloAdapter.toJson(writer, value.totalCount, context)
 
           writer.name("edges")
-          Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
+          Edge.obj().nullable().list().nullable().toJson(writer, value.edges, context)
         }
 
         private object Edge : ApolloAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext):
               HeroDetailsQuery.Data.Hero.FriendsConnection.Edge {
             var _node: HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _node = Node.obj().nullable().fromJson(reader, scalarAdapters)
+                0 -> _node = Node.obj().nullable().fromJson(reader, context)
                 else -> break
               }
             }
@@ -139,24 +140,25 @@ public object HeroDetailsQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: HeroDetailsQuery.Data.Hero.FriendsConnection.Edge,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("node")
-            Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
+            Node.obj().nullable().toJson(writer, value.node, context)
           }
 
           private object Node :
               ApolloAdapter<HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
-            public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+            public override fun fromJson(reader: JsonReader,
+                context: ApolloAdapter.DataDeserializeContext):
                 HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node {
               var _name: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                  0 -> _name = StringApolloAdapter.fromJson(reader, context)
                   else -> break
                 }
               }
@@ -168,11 +170,11 @@ public object HeroDetailsQuery_ResponseAdapter {
 
             public override fun toJson(
               writer: JsonWriter,
-              scalarAdapters: ScalarAdapters,
               `value`: HeroDetailsQuery.Data.Hero.FriendsConnection.Edge.Node,
+              context: ApolloAdapter.DataSerializeContext,
             ): Unit {
               writer.name("name")
-              StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+              StringApolloAdapter.toJson(writer, value.name, context)
             }
           }
         }

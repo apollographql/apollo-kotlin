@@ -8,7 +8,6 @@ package com.example.target_name.adapter
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableAnyApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -29,7 +28,7 @@ public object TestQuery_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> = listOf("object", "interface", "union", "scalar",
         "enum")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _object: TestQuery.Data.Object? = null
       var _interface: TestQuery.Data.Interface? = null
@@ -39,11 +38,11 @@ public object TestQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _object = Object.obj().nullable().fromJson(reader, scalarAdapters)
-          1 -> _interface = Interface.obj().nullable().fromJson(reader, scalarAdapters)
-          2 -> _union = Union.obj(true).nullable().fromJson(reader, scalarAdapters)
-          3 -> _scalar = NullableAnyApolloAdapter.fromJson(reader, scalarAdapters)
-          4 -> _enum = renamedEnum_ResponseAdapter.nullable().fromJson(reader, scalarAdapters)
+          0 -> _object = Object.obj().nullable().fromJson(reader, context)
+          1 -> _interface = Interface.obj().nullable().fromJson(reader, context)
+          2 -> _union = Union.obj(true).nullable().fromJson(reader, context)
+          3 -> _scalar = NullableAnyApolloAdapter.fromJson(reader, context)
+          4 -> _enum = renamedEnum_ResponseAdapter.nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -59,35 +58,35 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("object")
-      Object.obj().nullable().toJson(writer, scalarAdapters, value.`object`)
+      Object.obj().nullable().toJson(writer, value.`object`, context)
 
       writer.name("interface")
-      Interface.obj().nullable().toJson(writer, scalarAdapters, value.`interface`)
+      Interface.obj().nullable().toJson(writer, value.`interface`, context)
 
       writer.name("union")
-      Union.obj(true).nullable().toJson(writer, scalarAdapters, value.union)
+      Union.obj(true).nullable().toJson(writer, value.union, context)
 
       writer.name("scalar")
-      NullableAnyApolloAdapter.toJson(writer, scalarAdapters, value.scalar)
+      NullableAnyApolloAdapter.toJson(writer, value.scalar, context)
 
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().toJson(writer, scalarAdapters, value.`enum`)
+      renamedEnum_ResponseAdapter.nullable().toJson(writer, value.`enum`, context)
     }
 
     private object Object : ApolloAdapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Object {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Object {
         var _field: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _field = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _field = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -99,24 +98,24 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Object,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("field")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`field`)
+        NullableStringApolloAdapter.toJson(writer, value.`field`, context)
       }
     }
 
     private object Interface : ApolloAdapter<TestQuery.Data.Interface> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Interface {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Interface {
         var _field: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _field = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _field = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -128,24 +127,24 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Interface,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("field")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`field`)
+        NullableStringApolloAdapter.toJson(writer, value.`field`, context)
       }
     }
 
     private object Union : ApolloAdapter<TestQuery.Data.Union> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Union {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Union {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -155,10 +154,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onReservedObject: TestQuery.Data.Union.OnReservedObject? = null
-        if (possibleTypes("ReservedObject").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ReservedObject").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return TestQuery.Data.Union(
@@ -169,28 +168,28 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Union,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.onReservedObject != null) {
           com.example.target_name.adapter.TestQuery_ResponseAdapter.Data.Union.OnReservedObject.toJson(writer,
-              scalarAdapters, value.onReservedObject)
+              value.onReservedObject, context)
         }
       }
 
       private object OnReservedObject : ApolloAdapter<TestQuery.Data.Union.OnReservedObject> {
         public val RESPONSE_NAMES: List<String> = listOf("field")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.Union.OnReservedObject {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Union.OnReservedObject {
           var _field: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _field = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _field = NullableStringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -202,11 +201,11 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Union.OnReservedObject,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("field")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`field`)
+          NullableStringApolloAdapter.toJson(writer, value.`field`, context)
         }
       }
     }

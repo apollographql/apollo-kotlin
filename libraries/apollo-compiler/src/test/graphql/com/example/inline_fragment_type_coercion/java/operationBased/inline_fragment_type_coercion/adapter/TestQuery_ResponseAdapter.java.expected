@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.inline_fragment_type_coercion.TestQuery;
@@ -31,14 +30,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("foo");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Foo _foo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _foo = new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _foo = new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -49,10 +48,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("foo");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).toJson(writer, scalarAdapters, value.foo);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Foo>(Foo.INSTANCE, true)).toJson(writer, value.foo, context);
     }
   }
 
@@ -62,25 +61,25 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "foo");
 
     @Override
-    public TestQuery.Foo fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Foo fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String __typename = null;
       String _foo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _foo = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _foo = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       TestQuery.OnBar _onBar = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("BarObject","FooBar")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("BarObject","FooBar")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.fromJson(reader, scalarAdapters);
+        _onBar = com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_foo, "foo");
@@ -93,16 +92,16 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Foo value) throws
-        IOException {
+    public void toJson(JsonWriter writer, TestQuery.Foo value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("foo");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.foo);
+      Adapters.StringApolloAdapter.toJson(writer, value.foo, context);
 
       if (value.onBar != null) {
-        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.toJson(writer, scalarAdapters, value.onBar);
+        com.example.inline_fragment_type_coercion.adapter.TestQuery_ResponseAdapter.OnBar.INSTANCE.toJson(writer, value.onBar, context);
       }
     }
   }
@@ -113,14 +112,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("bar");
 
     @Override
-    public TestQuery.OnBar fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.OnBar fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String _bar = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _bar = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _bar = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -133,10 +132,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnBar value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.OnBar value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("bar");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.bar);
+      Adapters.StringApolloAdapter.toJson(writer, value.bar, context);
     }
   }
 }

@@ -6,7 +6,6 @@
 package com.example.simple_union.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -25,13 +24,13 @@ public object AnimalQuery_ResponseAdapter {
   public object Data : ApolloAdapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         AnimalQuery.Data {
       var _animal: AnimalQuery.Data.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -43,23 +42,23 @@ public object AnimalQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: AnimalQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("animal")
-      Animal.obj(true).nullable().toJson(writer, scalarAdapters, value.animal)
+      Animal.obj(true).nullable().toJson(writer, value.animal, context)
     }
 
     private object Animal : ApolloAdapter<AnimalQuery.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          AnimalQuery.Data.Animal {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): AnimalQuery.Data.Animal {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -69,17 +68,17 @@ public object AnimalQuery_ResponseAdapter {
         }
 
         var _catFragment: CatFragment? = null
-        if (possibleTypes("Cat").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Cat").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _dogFragment: DogFragment? = null
-        if (possibleTypes("Dog").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Dog").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return AnimalQuery.Data.Animal(
@@ -91,20 +90,20 @@ public object AnimalQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: AnimalQuery.Data.Animal,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.catFragment != null) {
           com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer,
-              scalarAdapters, value.catFragment)
+              value.catFragment, context)
         }
 
         if (value.dogFragment != null) {
           com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.toJson(writer,
-              scalarAdapters, value.dogFragment)
+              value.dogFragment, context)
         }
       }
     }

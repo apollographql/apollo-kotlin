@@ -6,28 +6,24 @@
 package com.example.mutation_create_review.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.mutation_create_review.CreateReviewForEpisode
 import com.example.mutation_create_review.type.adapter.Episode_ResponseAdapter
 import com.example.mutation_create_review.type.adapter.ReviewInput_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-internal object CreateReviewForEpisode_VariablesAdapter : ApolloAdapter<CreateReviewForEpisode> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-      CreateReviewForEpisode = throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+internal object CreateReviewForEpisode_VariablesAdapter : VariablesAdapter<CreateReviewForEpisode> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: CreateReviewForEpisode,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     writer.name("ep")
-    Episode_ResponseAdapter.toJson(writer, scalarAdapters, value.ep)
+    Episode_ResponseAdapter.toJson(writer, value.ep, serializeDataContext)
     writer.name("review")
-    ReviewInput_InputAdapter.obj().toJson(writer, scalarAdapters, value.review)
+    ReviewInput_InputAdapter.obj().toJson(writer, value.review, serializeDataContext)
   }
 }

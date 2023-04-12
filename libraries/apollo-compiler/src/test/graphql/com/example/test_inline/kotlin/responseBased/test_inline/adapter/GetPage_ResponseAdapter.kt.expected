@@ -6,7 +6,6 @@
 package com.example.test_inline.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,12 +21,13 @@ public object GetPage_ResponseAdapter {
   public object Data : ApolloAdapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetPage.Data {
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+        GetPage.Data {
       var _collection: GetPage.Data.Collection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _collection = Collection.obj().fromJson(reader, scalarAdapters)
+          0 -> _collection = Collection.obj().fromJson(reader, context)
           else -> break
         }
       }
@@ -39,34 +39,34 @@ public object GetPage_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: GetPage.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("collection")
-      Collection.obj().toJson(writer, scalarAdapters, value.collection)
+      Collection.obj().toJson(writer, value.collection, context)
     }
 
     private object Collection : ApolloAdapter<GetPage.Data.Collection> {
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          GetPage.Data.Collection {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): GetPage.Data.Collection {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ParticularCollection",
-          -> ParticularCollectionCollection.fromJson(reader, scalarAdapters, __typename)
+          -> ParticularCollectionCollection.fromJson(reader, context, __typename)
           else
-          -> OtherCollection.fromJson(reader, scalarAdapters, __typename)
+          -> OtherCollection.fromJson(reader, context, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetPage.Data.Collection,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         when(value) {
           is GetPage.Data.ParticularCollectionCollection ->
-              ParticularCollectionCollection.toJson(writer, scalarAdapters, value)
-          is GetPage.Data.OtherCollection -> OtherCollection.toJson(writer, scalarAdapters, value)
+              ParticularCollectionCollection.toJson(writer, value, context)
+          is GetPage.Data.OtherCollection -> OtherCollection.toJson(writer, value, context)
         }
       }
     }
@@ -76,7 +76,7 @@ public object GetPage_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): GetPage.Data.ParticularCollectionCollection {
         var __typename: String? = typename
@@ -84,8 +84,8 @@ public object GetPage_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _items = Item.obj().list().fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _items = Item.obj().list().fromJson(reader, context)
             else -> break
           }
         }
@@ -98,38 +98,39 @@ public object GetPage_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetPage.Data.ParticularCollectionCollection,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("items")
-        Item.obj().list().toJson(writer, scalarAdapters, value.items)
+        Item.obj().list().toJson(writer, value.items, context)
       }
 
       private object Item : ApolloAdapter<GetPage.Data.ParticularCollectionCollection.Item> {
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext):
             GetPage.Data.ParticularCollectionCollection.Item {
           val __typename = reader.readTypename()
           return when(__typename) {
             "ParticularItem",
-            -> ParticularItemItem.fromJson(reader, scalarAdapters, __typename)
+            -> ParticularItemItem.fromJson(reader, context, __typename)
             else
-            -> OtherItem.fromJson(reader, scalarAdapters, __typename)
+            -> OtherItem.fromJson(reader, context, __typename)
           }
         }
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetPage.Data.ParticularCollectionCollection.Item,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           when(value) {
             is GetPage.Data.ParticularCollectionCollection.ParticularItemItem ->
-                ParticularItemItem.toJson(writer, scalarAdapters, value)
+                ParticularItemItem.toJson(writer, value, context)
             is GetPage.Data.ParticularCollectionCollection.OtherItem -> OtherItem.toJson(writer,
-                scalarAdapters, value)
+                value, context)
           }
         }
       }
@@ -139,7 +140,7 @@ public object GetPage_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          scalarAdapters: ScalarAdapters,
+          context: ApolloAdapter.DataDeserializeContext,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.ParticularItemItem {
           var _title: String? = null
@@ -148,9 +149,9 @@ public object GetPage_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              2 -> _image = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _title = StringApolloAdapter.fromJson(reader, context)
+              1 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              2 -> _image = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -164,17 +165,17 @@ public object GetPage_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetPage.Data.ParticularCollectionCollection.ParticularItemItem,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("title")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.title)
+          StringApolloAdapter.toJson(writer, value.title, context)
 
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("image")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.image)
+          StringApolloAdapter.toJson(writer, value.image, context)
         }
       }
 
@@ -183,7 +184,7 @@ public object GetPage_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          scalarAdapters: ScalarAdapters,
+          context: ApolloAdapter.DataDeserializeContext,
           typename: String,
         ): GetPage.Data.ParticularCollectionCollection.OtherItem {
           var _title: String? = null
@@ -191,8 +192,8 @@ public object GetPage_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _title = StringApolloAdapter.fromJson(reader, context)
+              1 -> __typename = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -205,14 +206,14 @@ public object GetPage_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetPage.Data.ParticularCollectionCollection.OtherItem,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("title")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.title)
+          StringApolloAdapter.toJson(writer, value.title, context)
 
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
         }
       }
     }
@@ -222,7 +223,7 @@ public object GetPage_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): GetPage.Data.OtherCollection {
         var __typename: String? = typename
@@ -230,8 +231,8 @@ public object GetPage_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _items = Item.obj().list().fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _items = Item.obj().list().fromJson(reader, context)
             else -> break
           }
         }
@@ -244,26 +245,26 @@ public object GetPage_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: GetPage.Data.OtherCollection,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("items")
-        Item.obj().list().toJson(writer, scalarAdapters, value.items)
+        Item.obj().list().toJson(writer, value.items, context)
       }
 
       private object Item : ApolloAdapter<GetPage.Data.OtherCollection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            GetPage.Data.OtherCollection.Item {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): GetPage.Data.OtherCollection.Item {
           var _title: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> _title = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -275,11 +276,11 @@ public object GetPage_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: GetPage.Data.OtherCollection.Item,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("title")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.title)
+          StringApolloAdapter.toJson(writer, value.title, context)
         }
       }
     }

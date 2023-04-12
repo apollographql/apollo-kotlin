@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_union.adapter.AnimalQuery_ResponseAdapter;
 import com.example.simple_union.fragment.CatFragment;
@@ -107,8 +107,8 @@ public class AnimalQuery implements Query<AnimalQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
     // This operation doesn't have any variable
   }
 

@@ -11,39 +11,33 @@ import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
 import com.example.target_name.type.adapter.renamedEnum_ResponseAdapter;
 import com.example.target_name.type.adapter.renamedInput_InputAdapter;
 import com.example.target_name.type.renamedInput;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements ApolloAdapter<TestQuery> {
+public enum TestQuery_VariablesAdapter implements VariablesAdapter<TestQuery> {
   INSTANCE;
 
   @Override
-  public TestQuery fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery value) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer, TestQuery value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
     if (value.input instanceof Optional.Present) {
       writer.name("input");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<renamedInput>(renamedInput_InputAdapter.INSTANCE, false))).toJson(writer, scalarAdapters, value.input);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<renamedInput>(renamedInput_InputAdapter.INSTANCE, false))).toJson(writer, value.input, serializeDataContext);
     }
     if (value.scalar instanceof Optional.Present) {
       writer.name("scalar");
-      new ApolloOptionalAdapter<>(Adapters.NullableAnyApolloAdapter).toJson(writer, scalarAdapters, value.scalar);
+      new ApolloOptionalAdapter<>(Adapters.NullableAnyApolloAdapter).toJson(writer, value.scalar, serializeDataContext);
     }
     if (value.enum_ instanceof Optional.Present) {
       writer.name("enum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.enum_);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE)).toJson(writer, value.enum_, serializeDataContext);
     }
   }
 }

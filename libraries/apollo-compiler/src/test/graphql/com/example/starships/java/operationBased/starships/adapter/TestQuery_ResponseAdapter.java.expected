@@ -11,7 +11,6 @@ import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.starships.TestQuery;
@@ -29,14 +28,14 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("starship");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       TestQuery.Starship _starship = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _starship = new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: _starship = new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -47,10 +46,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("starship");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).toJson(writer, scalarAdapters, value.starship);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.Starship>(Starship.INSTANCE, false)).toJson(writer, value.starship, context);
     }
   }
 
@@ -60,8 +59,8 @@ public class TestQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "coordinates");
 
     @Override
-    public TestQuery.Starship fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestQuery.Starship fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _id = null;
       String _name = null;
       List<List<Double>> _coordinates = null;
@@ -69,9 +68,9 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _coordinates = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.DoubleApolloAdapter))).fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 2: _coordinates = new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.DoubleApolloAdapter))).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -87,16 +86,16 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Starship value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestQuery.Starship value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("coordinates");
-      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.DoubleApolloAdapter))).toJson(writer, scalarAdapters, value.coordinates);
+      new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Adapters.DoubleApolloAdapter))).toJson(writer, value.coordinates, context);
     }
   }
 }

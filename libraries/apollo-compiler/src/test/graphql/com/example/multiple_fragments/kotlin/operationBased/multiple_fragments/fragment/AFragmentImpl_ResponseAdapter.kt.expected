@@ -6,7 +6,6 @@
 package com.example.multiple_fragments.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -22,13 +21,13 @@ public object AFragmentImpl_ResponseAdapter {
   public object AFragment : ApolloAdapter<com.example.multiple_fragments.fragment.AFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.multiple_fragments.fragment.AFragment {
       var _node: com.example.multiple_fragments.fragment.AFragment.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _node = Node.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -40,23 +39,24 @@ public object AFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.multiple_fragments.fragment.AFragment,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("node")
-      Node.obj(true).nullable().toJson(writer, scalarAdapters, value.node)
+      Node.obj(true).nullable().toJson(writer, value.node, context)
     }
 
     private object Node : ApolloAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext):
           com.example.multiple_fragments.fragment.AFragment.Node {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -66,17 +66,17 @@ public object AFragmentImpl_ResponseAdapter {
         }
 
         var _fragment1: Fragment1? = null
-        if (possibleTypes("ANode").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ANode").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _fragment2: Fragment2? = null
-        if (possibleTypes("ANode").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("ANode").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
           _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return com.example.multiple_fragments.fragment.AFragment.Node(
@@ -88,20 +88,20 @@ public object AFragmentImpl_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: com.example.multiple_fragments.fragment.AFragment.Node,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.fragment1 != null) {
           com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer,
-              scalarAdapters, value.fragment1)
+              value.fragment1, context)
         }
 
         if (value.fragment2 != null) {
           com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.toJson(writer,
-              scalarAdapters, value.fragment2)
+              value.fragment2, context)
         }
       }
     }

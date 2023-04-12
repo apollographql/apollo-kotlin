@@ -6,22 +6,22 @@
 package com.example.inline_fragment_intersection.type.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.inline_fragment_intersection.type.Race
 import kotlin.Unit
 
 public object Race_ResponseAdapter : ApolloAdapter<Race> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Race {
+  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+      Race {
     val rawValue = reader.nextString()!!
     return Race.safeValueOf(rawValue)
   }
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: Race,
+    context: ApolloAdapter.DataSerializeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.test_inline.GetPage;
@@ -31,14 +30,14 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("collection");
 
     @Override
-    public GetPage.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public GetPage.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       GetPage.Collection _collection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _collection = new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, scalarAdapters); break;
+          case 0: _collection = new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -51,10 +50,10 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Data value) throws
-        IOException {
+    public void toJson(JsonWriter writer, GetPage.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("collection");
-      new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).toJson(writer, scalarAdapters, value.collection);
+      new ObjectAdapter<GetPage.Collection>(Collection.INSTANCE, true).toJson(writer, value.collection, context);
     }
   }
 
@@ -64,25 +63,25 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "items");
 
     @Override
-    public GetPage.Collection fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public GetPage.Collection fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
       List<GetPage.Item> _items = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularCollection _onParticularCollection = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularCollection")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, scalarAdapters);
+        _onParticularCollection = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_items, "items");
@@ -95,16 +94,16 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Collection value)
-        throws IOException {
+    public void toJson(JsonWriter writer, GetPage.Collection value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("items");
-      new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, scalarAdapters, value.items);
+      new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, value.items, context);
 
       if (value.onParticularCollection != null) {
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.toJson(writer, scalarAdapters, value.onParticularCollection);
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularCollection.INSTANCE.toJson(writer, value.onParticularCollection, context);
       }
     }
   }
@@ -115,14 +114,14 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
 
     @Override
-    public GetPage.Item fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public GetPage.Item fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String _title = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _title = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _title = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -135,10 +134,10 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Item value) throws
-        IOException {
+    public void toJson(JsonWriter writer, GetPage.Item value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("title");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.title);
+      Adapters.StringApolloAdapter.toJson(writer, value.title, context);
     }
   }
 
@@ -148,14 +147,14 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("items");
 
     @Override
-    public GetPage.OnParticularCollection fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
-        throws IOException {
+    public GetPage.OnParticularCollection fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       List<GetPage.Item1> _items = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -168,10 +167,10 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        GetPage.OnParticularCollection value) throws IOException {
+    public void toJson(JsonWriter writer, GetPage.OnParticularCollection value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("items");
-      new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, scalarAdapters, value.items);
+      new ListAdapter<>(new ObjectAdapter<GetPage.Item1>(Item1.INSTANCE, true)).toJson(writer, value.items, context);
     }
   }
 
@@ -181,23 +180,23 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetPage.Item1 fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public GetPage.Item1 fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       GetPage.OnParticularItem _onParticularItem = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ParticularItem")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, scalarAdapters);
+        _onParticularItem = com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.fromJson(reader, context);
       }
 
       return new GetPage.Item1(
@@ -207,13 +206,13 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Item1 value) throws
-        IOException {
+    public void toJson(JsonWriter writer, GetPage.Item1 value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       if (value.onParticularItem != null) {
-        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.toJson(writer, scalarAdapters, value.onParticularItem);
+        com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.toJson(writer, value.onParticularItem, context);
       }
     }
   }
@@ -224,14 +223,14 @@ public class GetPage_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("image");
 
     @Override
-    public GetPage.OnParticularItem fromJson(JsonReader reader, ScalarAdapters scalarAdapters)
-        throws IOException {
+    public GetPage.OnParticularItem fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _image = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _image = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _image = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -244,10 +243,10 @@ public class GetPage_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        GetPage.OnParticularItem value) throws IOException {
+    public void toJson(JsonWriter writer, GetPage.OnParticularItem value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("image");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.image);
+      Adapters.StringApolloAdapter.toJson(writer, value.image, context);
     }
   }
 }

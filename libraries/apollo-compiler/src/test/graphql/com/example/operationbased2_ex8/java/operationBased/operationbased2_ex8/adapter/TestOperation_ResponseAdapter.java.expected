@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.operationbased2_ex8.TestOperation;
@@ -28,14 +27,14 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public TestOperation.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Data fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       TestOperation.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -46,10 +45,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("animal");
-      new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).toJson(writer, scalarAdapters, value.animal);
+      new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).toJson(writer, value.animal, context);
     }
   }
 
@@ -59,20 +58,20 @@ public class TestOperation_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Animal fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public TestOperation.Animal fromJson(JsonReader reader,
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      AnimalFragment _animalFragment = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, scalarAdapters);
+      AnimalFragment _animalFragment = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.fromJson(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -83,12 +82,12 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Animal value)
-        throws IOException {
+    public void toJson(JsonWriter writer, TestOperation.Animal value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, scalarAdapters, value.animalFragment);
+      com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.INSTANCE.toJson(writer, value.animalFragment, context);
     }
   }
 }

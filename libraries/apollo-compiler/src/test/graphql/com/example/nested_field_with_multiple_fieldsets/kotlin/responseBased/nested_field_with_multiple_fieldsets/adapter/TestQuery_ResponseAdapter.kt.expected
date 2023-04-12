@@ -7,7 +7,6 @@ package com.example.nested_field_with_multiple_fieldsets.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,13 +22,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _iface1 = Iface1.obj().nullable().fromJson(reader, scalarAdapters)
+          0 -> _iface1 = Iface1.obj().nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -41,33 +40,33 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("iface1")
-      Iface1.obj().nullable().toJson(writer, scalarAdapters, value.iface1)
+      Iface1.obj().nullable().toJson(writer, value.iface1, context)
     }
 
     private object Iface1 : ApolloAdapter<TestQuery.Data.Iface1> {
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Iface1 {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Iface1 {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Impl1",
-          -> Impl1Iface1.fromJson(reader, scalarAdapters, __typename)
+          -> Impl1Iface1.fromJson(reader, context, __typename)
           else
-          -> OtherIface1.fromJson(reader, scalarAdapters, __typename)
+          -> OtherIface1.fromJson(reader, context, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Iface1,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         when(value) {
-          is TestQuery.Data.Impl1Iface1 -> Impl1Iface1.toJson(writer, scalarAdapters, value)
-          is TestQuery.Data.OtherIface1 -> OtherIface1.toJson(writer, scalarAdapters, value)
+          is TestQuery.Data.Impl1Iface1 -> Impl1Iface1.toJson(writer, value, context)
+          is TestQuery.Data.OtherIface1 -> OtherIface1.toJson(writer, value, context)
         }
       }
     }
@@ -77,7 +76,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.Impl1Iface1 {
         var __typename: String? = typename
@@ -85,8 +84,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, context)
             else -> break
           }
         }
@@ -99,38 +98,36 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Impl1Iface1,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("iface2")
-        Iface2.obj().nullable().toJson(writer, scalarAdapters, value.iface2)
+        Iface2.obj().nullable().toJson(writer, value.iface2, context)
       }
 
       private object Iface2 : ApolloAdapter<TestQuery.Data.Impl1Iface1.Iface2> {
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.Impl1Iface1.Iface2 {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Impl1Iface1.Iface2 {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Impl2",
-            -> Impl2Iface2.fromJson(reader, scalarAdapters, __typename)
+            -> Impl2Iface2.fromJson(reader, context, __typename)
             else
-            -> OtherIface2.fromJson(reader, scalarAdapters, __typename)
+            -> OtherIface2.fromJson(reader, context, __typename)
           }
         }
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Impl1Iface1.Iface2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           when(value) {
-            is TestQuery.Data.Impl1Iface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, scalarAdapters,
-                value)
-            is TestQuery.Data.Impl1Iface1.OtherIface2 -> OtherIface2.toJson(writer, scalarAdapters,
-                value)
+            is TestQuery.Data.Impl1Iface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, value, context)
+            is TestQuery.Data.Impl1Iface1.OtherIface2 -> OtherIface2.toJson(writer, value, context)
           }
         }
       }
@@ -141,7 +138,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          scalarAdapters: ScalarAdapters,
+          context: ApolloAdapter.DataDeserializeContext,
           typename: String,
         ): TestQuery.Data.Impl1Iface1.Impl2Iface2 {
           var __typename: String? = typename
@@ -152,11 +149,11 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-              2 -> _scalar2 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-              3 -> _scalar3 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-              4 -> _scalar4 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, context)
+              2 -> _scalar2 = NullableStringApolloAdapter.fromJson(reader, context)
+              3 -> _scalar3 = NullableStringApolloAdapter.fromJson(reader, context)
+              4 -> _scalar4 = NullableStringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -172,23 +169,23 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Impl1Iface1.Impl2Iface2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("scalar1")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar1)
+          NullableStringApolloAdapter.toJson(writer, value.scalar1, context)
 
           writer.name("scalar2")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar2)
+          NullableStringApolloAdapter.toJson(writer, value.scalar2, context)
 
           writer.name("scalar3")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar3)
+          NullableStringApolloAdapter.toJson(writer, value.scalar3, context)
 
           writer.name("scalar4")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar4)
+          NullableStringApolloAdapter.toJson(writer, value.scalar4, context)
         }
       }
 
@@ -197,7 +194,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          scalarAdapters: ScalarAdapters,
+          context: ApolloAdapter.DataDeserializeContext,
           typename: String,
         ): TestQuery.Data.Impl1Iface1.OtherIface2 {
           var __typename: String? = typename
@@ -206,9 +203,9 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-              2 -> _scalar3 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, context)
+              2 -> _scalar3 = NullableStringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -222,17 +219,17 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Impl1Iface1.OtherIface2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("scalar1")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar1)
+          NullableStringApolloAdapter.toJson(writer, value.scalar1, context)
 
           writer.name("scalar3")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar3)
+          NullableStringApolloAdapter.toJson(writer, value.scalar3, context)
         }
       }
     }
@@ -242,7 +239,7 @@ public object TestQuery_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        context: ApolloAdapter.DataDeserializeContext,
         typename: String,
       ): TestQuery.Data.OtherIface1 {
         var __typename: String? = typename
@@ -250,8 +247,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            1 -> _iface2 = Iface2.obj().nullable().fromJson(reader, context)
             else -> break
           }
         }
@@ -264,38 +261,36 @@ public object TestQuery_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.OtherIface1,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         writer.name("iface2")
-        Iface2.obj().nullable().toJson(writer, scalarAdapters, value.iface2)
+        Iface2.obj().nullable().toJson(writer, value.iface2, context)
       }
 
       private object Iface2 : ApolloAdapter<TestQuery.Data.OtherIface1.Iface2> {
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.OtherIface1.Iface2 {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.OtherIface1.Iface2 {
           val __typename = reader.readTypename()
           return when(__typename) {
             "Impl2",
-            -> Impl2Iface2.fromJson(reader, scalarAdapters, __typename)
+            -> Impl2Iface2.fromJson(reader, context, __typename)
             else
-            -> OtherIface2.fromJson(reader, scalarAdapters, __typename)
+            -> OtherIface2.fromJson(reader, context, __typename)
           }
         }
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.OtherIface1.Iface2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           when(value) {
-            is TestQuery.Data.OtherIface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, scalarAdapters,
-                value)
-            is TestQuery.Data.OtherIface1.OtherIface2 -> OtherIface2.toJson(writer, scalarAdapters,
-                value)
+            is TestQuery.Data.OtherIface1.Impl2Iface2 -> Impl2Iface2.toJson(writer, value, context)
+            is TestQuery.Data.OtherIface1.OtherIface2 -> OtherIface2.toJson(writer, value, context)
           }
         }
       }
@@ -305,7 +300,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          scalarAdapters: ScalarAdapters,
+          context: ApolloAdapter.DataDeserializeContext,
           typename: String,
         ): TestQuery.Data.OtherIface1.Impl2Iface2 {
           var __typename: String? = typename
@@ -314,9 +309,9 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
-              2 -> _scalar2 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, context)
+              2 -> _scalar2 = NullableStringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -330,17 +325,17 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.OtherIface1.Impl2Iface2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("scalar1")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar1)
+          NullableStringApolloAdapter.toJson(writer, value.scalar1, context)
 
           writer.name("scalar2")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar2)
+          NullableStringApolloAdapter.toJson(writer, value.scalar2, context)
         }
       }
 
@@ -349,7 +344,7 @@ public object TestQuery_ResponseAdapter {
 
         public fun fromJson(
           reader: JsonReader,
-          scalarAdapters: ScalarAdapters,
+          context: ApolloAdapter.DataDeserializeContext,
           typename: String,
         ): TestQuery.Data.OtherIface1.OtherIface2 {
           var __typename: String? = typename
@@ -357,8 +352,8 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+              1 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
@@ -371,14 +366,14 @@ public object TestQuery_ResponseAdapter {
 
         public fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.OtherIface1.OtherIface2,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           writer.name("scalar1")
-          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.scalar1)
+          NullableStringApolloAdapter.toJson(writer, value.scalar1, context)
         }
       }
     }

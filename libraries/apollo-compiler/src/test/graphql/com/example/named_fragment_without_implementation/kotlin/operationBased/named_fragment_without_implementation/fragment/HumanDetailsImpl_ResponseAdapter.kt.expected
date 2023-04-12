@@ -7,7 +7,6 @@ package com.example.named_fragment_without_implementation.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.Double
@@ -20,13 +19,13 @@ public object HumanDetailsImpl_ResponseAdapter {
       ApolloAdapter<com.example.named_fragment_without_implementation.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("height")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.named_fragment_without_implementation.fragment.HumanDetails {
       var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -38,11 +37,11 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.named_fragment_without_implementation.fragment.HumanDetails,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("height")
-      NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+      NullableDoubleApolloAdapter.toJson(writer, value.height, context)
     }
   }
 }

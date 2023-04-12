@@ -8,8 +8,8 @@ package com.example.subscriptions;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.Subscription;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.adapter.TestSubscription_ResponseAdapter;
 import com.example.subscriptions.adapter.TestSubscription_VariablesAdapter;
@@ -104,9 +104,9 @@ public class TestSubscription implements Subscription<TestSubscription.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
-    TestSubscription_VariablesAdapter.INSTANCE.toJson(writer, scalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    TestSubscription_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override

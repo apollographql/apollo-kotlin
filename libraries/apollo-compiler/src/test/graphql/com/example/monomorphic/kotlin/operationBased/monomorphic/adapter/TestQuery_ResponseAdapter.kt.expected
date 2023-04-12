@@ -6,7 +6,6 @@
 package com.example.monomorphic.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,13 +19,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _cat: TestQuery.Data.Cat? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _cat = Cat.obj(true).fromJson(reader, scalarAdapters)
+          0 -> _cat = Cat.obj(true).fromJson(reader, context)
           else -> break
         }
       }
@@ -38,30 +37,30 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("cat")
-      Cat.obj(true).toJson(writer, scalarAdapters, value.cat)
+      Cat.obj(true).toJson(writer, value.cat, context)
     }
 
     private object Cat : ApolloAdapter<TestQuery.Data.Cat> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Cat {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Cat {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
 
         reader.rewind()
         val _onNode = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.fromJson(reader,
-            scalarAdapters)
+            context)
 
         return TestQuery.Data.Cat(
           __typename = __typename!!,
@@ -71,33 +70,33 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Cat,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.toJson(writer,
-            scalarAdapters, value.onNode)
+            value.onNode, context)
       }
 
       private object OnNode : ApolloAdapter<TestQuery.Data.Cat.OnNode> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-        public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-            TestQuery.Data.Cat.OnNode {
+        public override fun fromJson(reader: JsonReader,
+            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Cat.OnNode {
           var __typename: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
               else -> break
             }
           }
 
           reader.rewind()
           val _onAnimal = com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.fromJson(reader,
-              scalarAdapters)
+              context)
 
           return TestQuery.Data.Cat.OnNode(
             __typename = __typename!!,
@@ -107,26 +106,26 @@ public object TestQuery_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
           `value`: TestQuery.Data.Cat.OnNode,
+          context: ApolloAdapter.DataSerializeContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, value.__typename, context)
 
           com.example.monomorphic.adapter.TestQuery_ResponseAdapter.Data.Cat.OnNode.OnAnimal.toJson(writer,
-              scalarAdapters, value.onAnimal)
+              value.onAnimal, context)
         }
 
         private object OnAnimal : ApolloAdapter<TestQuery.Data.Cat.OnNode.OnAnimal> {
           public val RESPONSE_NAMES: List<String> = listOf("species")
 
-          public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-              TestQuery.Data.Cat.OnNode.OnAnimal {
+          public override fun fromJson(reader: JsonReader,
+              context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Cat.OnNode.OnAnimal {
             var _species: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                0 -> _species = StringApolloAdapter.fromJson(reader, context)
                 else -> break
               }
             }
@@ -138,11 +137,11 @@ public object TestQuery_ResponseAdapter {
 
           public override fun toJson(
             writer: JsonWriter,
-            scalarAdapters: ScalarAdapters,
             `value`: TestQuery.Data.Cat.OnNode.OnAnimal,
+            context: ApolloAdapter.DataSerializeContext,
           ): Unit {
             writer.name("species")
-            StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
+            StringApolloAdapter.toJson(writer, value.species, context)
           }
         }
       }

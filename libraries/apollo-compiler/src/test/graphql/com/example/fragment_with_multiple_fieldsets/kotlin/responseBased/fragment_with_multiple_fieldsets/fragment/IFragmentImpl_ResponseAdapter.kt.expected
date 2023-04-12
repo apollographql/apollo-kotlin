@@ -7,7 +7,6 @@ package com.example.fragment_with_multiple_fieldsets.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,25 +17,25 @@ import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
   public object Data : ApolloAdapter<IFragmentImpl.Data> {
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         IFragmentImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "A",
-        -> AData.fromJson(reader, scalarAdapters, __typename)
+        -> AData.fromJson(reader, context, __typename)
         else
-        -> OtherData.fromJson(reader, scalarAdapters, __typename)
+        -> OtherData.fromJson(reader, context, __typename)
       }
     }
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: IFragmentImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       when(value) {
-        is IFragmentImpl.AData -> AData.toJson(writer, scalarAdapters, value)
-        is IFragmentImpl.OtherData -> OtherData.toJson(writer, scalarAdapters, value)
+        is IFragmentImpl.AData -> AData.toJson(writer, value, context)
+        is IFragmentImpl.OtherData -> OtherData.toJson(writer, value, context)
       }
     }
   }
@@ -46,7 +45,7 @@ public object IFragmentImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      scalarAdapters: ScalarAdapters,
+      context: ApolloAdapter.DataDeserializeContext,
       typename: String,
     ): IFragmentImpl.AData {
       var __typename: String? = typename
@@ -54,8 +53,8 @@ public object IFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _fieldA = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          1 -> _fieldA = NullableStringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -68,14 +67,14 @@ public object IFragmentImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: IFragmentImpl.AData,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       writer.name("fieldA")
-      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldA)
+      NullableStringApolloAdapter.toJson(writer, value.fieldA, context)
     }
   }
 
@@ -84,14 +83,14 @@ public object IFragmentImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      scalarAdapters: ScalarAdapters,
+      context: ApolloAdapter.DataDeserializeContext,
       typename: String,
     ): IFragmentImpl.OtherData {
       var __typename: String? = typename
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -103,11 +102,11 @@ public object IFragmentImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: IFragmentImpl.OtherData,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
     }
   }
 }

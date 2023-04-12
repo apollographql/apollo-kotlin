@@ -6,7 +6,6 @@
 package com.example.enums_as_sealed.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -21,13 +20,13 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("enum")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _enum: Enum? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _enum = Enum_ResponseAdapter.nullable().fromJson(reader, scalarAdapters)
+          0 -> _enum = Enum_ResponseAdapter.nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -39,11 +38,11 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("enum")
-      Enum_ResponseAdapter.nullable().toJson(writer, scalarAdapters, value.`enum`)
+      Enum_ResponseAdapter.nullable().toJson(writer, value.`enum`, context)
     }
   }
 }

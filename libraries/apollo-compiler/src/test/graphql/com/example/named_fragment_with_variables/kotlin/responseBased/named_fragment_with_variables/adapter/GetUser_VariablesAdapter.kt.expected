@@ -7,30 +7,26 @@ package com.example.named_fragment_with_variables.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.named_fragment_with_variables.GetUser
 import com.example.named_fragment_with_variables.type.adapter.UserQuery_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object GetUser_VariablesAdapter : ApolloAdapter<GetUser> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetUser = throw
-      IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object GetUser_VariablesAdapter : VariablesAdapter<GetUser> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: GetUser,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     writer.name("organizationId")
-    StringApolloAdapter.toJson(writer, scalarAdapters, value.organizationId)
+    StringApolloAdapter.toJson(writer, value.organizationId, serializeDataContext)
     writer.name("query")
-    UserQuery_InputAdapter.obj().toJson(writer, scalarAdapters, value.query)
+    UserQuery_InputAdapter.obj().toJson(writer, value.query, serializeDataContext)
     writer.name("size")
-    IntApolloAdapter.toJson(writer, scalarAdapters, value.size)
+    IntApolloAdapter.toJson(writer, value.size, serializeDataContext)
   }
 }

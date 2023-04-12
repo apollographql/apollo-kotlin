@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.java_apollo_optionals.adapter.MyQuery_ResponseAdapter
@@ -36,8 +36,9 @@ public data class MyQuery(
 
   public override fun name(): String = OPERATION_NAME
 
-  public override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters): Unit {
-    MyQuery_VariablesAdapter.toJson(writer, scalarAdapters, this)
+  public override fun serializeVariables(writer: JsonWriter,
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
+    MyQuery_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
   public override fun adapter(): ApolloAdapter<Data> = MyQuery_ResponseAdapter.Data.obj()

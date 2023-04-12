@@ -8,7 +8,6 @@ package com.example.arguments_hardcoded.adapter
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -24,15 +23,15 @@ public object TestQuery_ResponseAdapter {
   public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("reviews", "testNullableArguments")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         TestQuery.Data {
       var _reviews: List<TestQuery.Data.Review?>? = null
       var _testNullableArguments: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _reviews = Review.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
-          1 -> _testNullableArguments = IntApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _reviews = Review.obj().nullable().list().nullable().fromJson(reader, context)
+          1 -> _testNullableArguments = IntApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -45,28 +44,28 @@ public object TestQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: TestQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("reviews")
-      Review.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.reviews)
+      Review.obj().nullable().list().nullable().toJson(writer, value.reviews, context)
 
       writer.name("testNullableArguments")
-      IntApolloAdapter.toJson(writer, scalarAdapters, value.testNullableArguments)
+      IntApolloAdapter.toJson(writer, value.testNullableArguments, context)
     }
 
     private object Review : ApolloAdapter<TestQuery.Data.Review> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          TestQuery.Data.Review {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Review {
         var _stars: Int? = null
         var _commentary: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntApolloAdapter.fromJson(reader, scalarAdapters)
-            1 -> _commentary = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _stars = IntApolloAdapter.fromJson(reader, context)
+            1 -> _commentary = NullableStringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -79,14 +78,14 @@ public object TestQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: TestQuery.Data.Review,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("stars")
-        IntApolloAdapter.toJson(writer, scalarAdapters, value.stars)
+        IntApolloAdapter.toJson(writer, value.stars, context)
 
         writer.name("commentary")
-        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.commentary)
+        NullableStringApolloAdapter.toJson(writer, value.commentary, context)
       }
     }
   }

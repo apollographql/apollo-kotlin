@@ -10,7 +10,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -27,15 +26,15 @@ public class PilotFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.nested_named_fragments.fragment.PilotFragment fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
       com.example.nested_named_fragments.fragment.PilotFragment.Homeworld _homeworld = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _homeworld = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 1: _homeworld = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -47,13 +46,14 @@ public class PilotFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.nested_named_fragments.fragment.PilotFragment value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.nested_named_fragments.fragment.PilotFragment value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.NullableStringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("homeworld");
-      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).toJson(writer, scalarAdapters, value.homeworld);
+      new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.PilotFragment.Homeworld>(Homeworld.INSTANCE, true)).toJson(writer, value.homeworld, context);
     }
   }
 
@@ -64,19 +64,19 @@ public class PilotFragmentImpl_ResponseAdapter {
 
     @Override
     public com.example.nested_named_fragments.fragment.PilotFragment.Homeworld fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      PlanetFragment _planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.fromJson(reader, scalarAdapters);
+      PlanetFragment _planetFragment = com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.fromJson(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -87,13 +87,13 @@ public class PilotFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.nested_named_fragments.fragment.PilotFragment.Homeworld value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.nested_named_fragments.fragment.PilotFragment.Homeworld value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
-      com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.toJson(writer, scalarAdapters, value.planetFragment);
+      com.example.nested_named_fragments.fragment.PlanetFragmentImpl_ResponseAdapter.PlanetFragment.INSTANCE.toJson(writer, value.planetFragment, context);
     }
   }
 }

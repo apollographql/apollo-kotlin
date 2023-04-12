@@ -6,7 +6,6 @@
 package com.example.simple_fragment.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,25 +16,25 @@ import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
   public object Data : ApolloAdapter<HeroDetailsImpl.Data> {
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         HeroDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
-        -> HumanData.fromJson(reader, scalarAdapters, __typename)
+        -> HumanData.fromJson(reader, context, __typename)
         else
-        -> OtherData.fromJson(reader, scalarAdapters, __typename)
+        -> OtherData.fromJson(reader, context, __typename)
       }
     }
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HeroDetailsImpl.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       when(value) {
-        is HeroDetailsImpl.HumanData -> HumanData.toJson(writer, scalarAdapters, value)
-        is HeroDetailsImpl.OtherData -> OtherData.toJson(writer, scalarAdapters, value)
+        is HeroDetailsImpl.HumanData -> HumanData.toJson(writer, value, context)
+        is HeroDetailsImpl.OtherData -> OtherData.toJson(writer, value, context)
       }
     }
   }
@@ -45,7 +44,7 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      scalarAdapters: ScalarAdapters,
+      context: ApolloAdapter.DataDeserializeContext,
       typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
@@ -53,8 +52,8 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          1 -> _name = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -67,14 +66,14 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HeroDetailsImpl.HumanData,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
 
       writer.name("name")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, value.name, context)
     }
   }
 
@@ -83,14 +82,14 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public fun fromJson(
       reader: JsonReader,
-      scalarAdapters: ScalarAdapters,
+      context: ApolloAdapter.DataDeserializeContext,
       typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -102,11 +101,11 @@ internal object HeroDetailsImpl_ResponseAdapter {
 
     public fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: HeroDetailsImpl.OtherData,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, value.__typename, context)
     }
   }
 }

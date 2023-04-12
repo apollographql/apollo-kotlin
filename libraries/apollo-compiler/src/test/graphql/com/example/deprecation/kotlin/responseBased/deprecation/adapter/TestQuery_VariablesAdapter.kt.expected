@@ -7,28 +7,25 @@ package com.example.deprecation.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.Optional
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
 import com.apollographql.apollo3.api.present
 import com.example.deprecation.TestQuery
 import com.example.deprecation.type.adapter.Episode_ResponseAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : ApolloAdapter<TestQuery> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): TestQuery =
-      throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: TestQuery,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, scalarAdapters, value.episode)
+      Episode_ResponseAdapter.nullable().present().toJson(writer, value.episode,
+          serializeDataContext)
     }
   }
 }

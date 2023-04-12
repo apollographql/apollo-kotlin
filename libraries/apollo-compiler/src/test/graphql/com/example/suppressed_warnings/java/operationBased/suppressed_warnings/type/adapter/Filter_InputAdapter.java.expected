@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.type.Filter;
@@ -23,24 +22,25 @@ public enum Filter_InputAdapter implements ApolloAdapter<Filter> {
   INSTANCE;
 
   @Override
-  public Filter fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+  public Filter fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
+      IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, Filter value) throws
-      IOException {
+  public void toJson(JsonWriter writer, Filter value, ApolloAdapter.DataSerializeContext context)
+      throws IOException {
     if (value.name instanceof Optional.Present) {
       writer.name("name");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.name);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.name, context);
     }
     if (value.deprecated instanceof Optional.Present) {
       writer.name("deprecated");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.deprecated);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.deprecated, context);
     }
     if (value.experimental instanceof Optional.Present) {
       writer.name("experimental");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.experimental);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.experimental, context);
     }
   }
 }

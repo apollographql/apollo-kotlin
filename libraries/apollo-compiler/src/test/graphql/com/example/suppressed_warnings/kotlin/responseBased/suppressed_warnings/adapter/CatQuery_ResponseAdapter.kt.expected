@@ -7,7 +7,6 @@ package com.example.suppressed_warnings.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -24,15 +23,15 @@ public object CatQuery_ResponseAdapter {
   public object Data : ApolloAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search", "direction")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         CatQuery.Data {
       var _search: CatQuery.Data.Search? = null
       var _direction: Direction? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _search = Search.obj().nullable().fromJson(reader, scalarAdapters)
-          1 -> _direction = Direction_ResponseAdapter.nullable().fromJson(reader, scalarAdapters)
+          0 -> _search = Search.obj().nullable().fromJson(reader, context)
+          1 -> _direction = Direction_ResponseAdapter.nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -45,26 +44,26 @@ public object CatQuery_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: CatQuery.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("search")
-      Search.obj().nullable().toJson(writer, scalarAdapters, value.search)
+      Search.obj().nullable().toJson(writer, value.search, context)
 
       writer.name("direction")
-      Direction_ResponseAdapter.nullable().toJson(writer, scalarAdapters, value.direction)
+      Direction_ResponseAdapter.nullable().toJson(writer, value.direction, context)
     }
 
     private object Search : ApolloAdapter<CatQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("mustaches")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          CatQuery.Data.Search {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): CatQuery.Data.Search {
         var _mustaches: Int? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _mustaches = IntApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> _mustaches = IntApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -76,11 +75,11 @@ public object CatQuery_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: CatQuery.Data.Search,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("mustaches")
-        IntApolloAdapter.toJson(writer, scalarAdapters, value.mustaches)
+        IntApolloAdapter.toJson(writer, value.mustaches, context)
       }
     }
   }

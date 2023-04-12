@@ -9,7 +9,7 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.adapter.QueryFragmentImpl_VariablesAdapter;
 import com.example.named_fragment_with_variables.fragment.selections.QueryFragmentSelections;
@@ -83,9 +83,9 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
-    QueryFragmentImpl_VariablesAdapter.INSTANCE.toJson(writer, scalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    QueryFragmentImpl_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override

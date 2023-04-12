@@ -6,25 +6,21 @@
 package com.example.java8annotation.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.json.JsonReader
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.java8annotation.LoginBarber
 import com.example.java8annotation.type.adapter.Login_InputAdapter
-import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object LoginBarber_VariablesAdapter : ApolloAdapter<LoginBarber> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): LoginBarber =
-      throw IllegalStateException("Input type used in output position")
-
-  public override fun toJson(
+public object LoginBarber_VariablesAdapter : VariablesAdapter<LoginBarber> {
+  public override fun serializeVariables(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: LoginBarber,
+    context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
+    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
     writer.name("input")
-    Login_InputAdapter.obj().toJson(writer, scalarAdapters, value.input)
+    Login_InputAdapter.obj().toJson(writer, value.input, serializeDataContext)
   }
 }

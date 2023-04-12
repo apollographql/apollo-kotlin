@@ -6,7 +6,6 @@
 package com.example.fragments_with_defer_and_include_directives.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
@@ -31,13 +30,13 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
   public object Data : ApolloAdapter<SpreadMultipleWithDeferWithIf.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         SpreadMultipleWithDeferWithIf.Data {
       var _hero: SpreadMultipleWithDeferWithIf.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, scalarAdapters)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
           else -> break
         }
       }
@@ -49,24 +48,24 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: SpreadMultipleWithDeferWithIf.Data,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
+      Hero.obj(true).nullable().toJson(writer, value.hero, context)
     }
 
     private object Hero : ApolloAdapter<SpreadMultipleWithDeferWithIf.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
-          SpreadMultipleWithDeferWithIf.Data.Hero {
+      public override fun fromJson(reader: JsonReader,
+          context: ApolloAdapter.DataDeserializeContext): SpreadMultipleWithDeferWithIf.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
             else -> break
           }
         }
@@ -76,24 +75,24 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
         }
 
         var _characterDetails: CharacterDetails? = null
-        if (possibleTypes("Droid").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _characterDetails2: CharacterDetails2? = null
-        if (and(possibleTypes("Droid"),label("c_second")).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),label("c_second")).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         var _characterDetails3: CharacterDetails3? = null
-        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third"))).evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, __path)) {
+        if (and(possibleTypes("Droid"),or(not(variable("cond")),label("c_third"))).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
           reader.rewind()
           _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.fromJson(reader,
-              scalarAdapters)
+              context)
         }
 
         return SpreadMultipleWithDeferWithIf.Data.Hero(
@@ -106,25 +105,25 @@ public object SpreadMultipleWithDeferWithIf_ResponseAdapter {
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
         `value`: SpreadMultipleWithDeferWithIf.Data.Hero,
+        context: ApolloAdapter.DataSerializeContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, value.__typename, context)
 
         if (value.characterDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer,
-              scalarAdapters, value.characterDetails)
+              value.characterDetails, context)
         }
 
         if (value.characterDetails2 != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.toJson(writer,
-              scalarAdapters, value.characterDetails2)
+              value.characterDetails2, context)
         }
 
         if (value.characterDetails3 != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.toJson(writer,
-              scalarAdapters, value.characterDetails3)
+              value.characterDetails3, context)
         }
       }
     }

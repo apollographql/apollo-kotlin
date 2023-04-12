@@ -10,7 +10,7 @@ import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.suppressed_warnings.adapter.CatQuery_ResponseAdapter;
 import com.example.suppressed_warnings.adapter.CatQuery_VariablesAdapter;
@@ -107,9 +107,9 @@ public class CatQuery implements Query<CatQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, ScalarAdapters scalarAdapters) throws
-      IOException {
-    CatQuery_VariablesAdapter.INSTANCE.toJson(writer, scalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    CatQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override

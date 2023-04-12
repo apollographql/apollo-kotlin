@@ -6,22 +6,22 @@
 package com.example.union_inline_fragments.type.adapter
 
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.union_inline_fragments.type.Episode
 import kotlin.Unit
 
 public object Episode_ResponseAdapter : ApolloAdapter<Episode> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Episode {
+  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+      Episode {
     val rawValue = reader.nextString()!!
     return Episode.safeValueOf(rawValue)
   }
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
     `value`: Episode,
+    context: ApolloAdapter.DataSerializeContext,
   ): Unit {
     writer.value(value.rawValue)
   }

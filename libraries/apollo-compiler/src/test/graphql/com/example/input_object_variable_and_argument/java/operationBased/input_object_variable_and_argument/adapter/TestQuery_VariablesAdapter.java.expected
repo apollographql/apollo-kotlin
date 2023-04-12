@@ -10,33 +10,27 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapters;
-import com.apollographql.apollo3.api.json.JsonReader;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.input_object_variable_and_argument.TestQuery;
 import com.example.input_object_variable_and_argument.type.adapter.Episode_ResponseAdapter;
 import java.io.IOException;
-import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements ApolloAdapter<TestQuery> {
+public enum TestQuery_VariablesAdapter implements VariablesAdapter<TestQuery> {
   INSTANCE;
 
   @Override
-  public TestQuery fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
-    throw new IllegalStateException("Input type used in output position");
-  }
-
-  @Override
-  public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery value) throws
-      IOException {
+  public void serializeVariables(JsonWriter writer, TestQuery value,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
     if (value.episode instanceof Optional.Present) {
       writer.name("episode");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.episode);
+      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.episode, serializeDataContext);
     }
     writer.name("stars");
-    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.stars);
+    Adapters.IntApolloAdapter.toJson(writer, value.stars, serializeDataContext);
     writer.name("greenValue");
-    Adapters.DoubleApolloAdapter.toJson(writer, scalarAdapters, value.greenValue);
+    Adapters.DoubleApolloAdapter.toJson(writer, value.greenValue, serializeDataContext);
   }
 }

@@ -9,7 +9,6 @@ import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.type.Episode;
@@ -28,13 +27,13 @@ public class CharacterAppearsInImpl_ResponseAdapter {
 
     @Override
     public com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn fromJson(
-        JsonReader reader, ScalarAdapters scalarAdapters) throws IOException {
+        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
       List<Episode> _appearsIn = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, scalarAdapters); break;
+          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -47,11 +46,11 @@ public class CharacterAppearsInImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value) throws
-        IOException {
+    public void toJson(JsonWriter writer,
+        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("appearsIn");
-      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, scalarAdapters, value.appearsIn);
+      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.appearsIn, context);
     }
   }
 }

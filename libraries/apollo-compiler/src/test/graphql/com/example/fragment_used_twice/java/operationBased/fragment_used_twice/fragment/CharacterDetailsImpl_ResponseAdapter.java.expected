@@ -8,7 +8,6 @@ package com.example.fragment_used_twice.fragment;
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -26,15 +25,15 @@ public class CharacterDetailsImpl_ResponseAdapter {
 
     @Override
     public com.example.fragment_used_twice.fragment.CharacterDetails fromJson(JsonReader reader,
-        ScalarAdapters scalarAdapters) throws IOException {
+        ApolloAdapter.DataDeserializeContext context) throws IOException {
       String _name = null;
       Object _birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _birthDate = Adapters.AnyApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _birthDate = Adapters.AnyApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -49,13 +48,14 @@ public class CharacterDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
-        com.example.fragment_used_twice.fragment.CharacterDetails value) throws IOException {
+    public void toJson(JsonWriter writer,
+        com.example.fragment_used_twice.fragment.CharacterDetails value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
 
       writer.name("birthDate");
-      Adapters.AnyApolloAdapter.toJson(writer, scalarAdapters, value.birthDate);
+      Adapters.AnyApolloAdapter.toJson(writer, value.birthDate, context);
     }
   }
 }

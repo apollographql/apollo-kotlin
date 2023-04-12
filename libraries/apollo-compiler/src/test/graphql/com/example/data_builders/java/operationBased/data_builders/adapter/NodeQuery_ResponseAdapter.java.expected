@@ -13,7 +13,6 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
 import com.apollographql.apollo3.api.ObjectAdapter;
-import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.data_builders.NodeQuery;
@@ -32,14 +31,14 @@ public class NodeQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public NodeQuery.Data fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public NodeQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       NodeQuery.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new ObjectAdapter<NodeQuery.Node>(Node.INSTANCE, true).fromJson(reader, scalarAdapters); break;
+          case 0: _node = new ObjectAdapter<NodeQuery.Node>(Node.INSTANCE, true).fromJson(reader, context); break;
           default: break loop;
         }
       }
@@ -52,10 +51,10 @@ public class NodeQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, NodeQuery.Data value)
-        throws IOException {
+    public void toJson(JsonWriter writer, NodeQuery.Data value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("node");
-      new ObjectAdapter<NodeQuery.Node>(Node.INSTANCE, true).toJson(writer, scalarAdapters, value.node);
+      new ObjectAdapter<NodeQuery.Node>(Node.INSTANCE, true).toJson(writer, value.node, context);
     }
   }
 
@@ -65,31 +64,31 @@ public class NodeQuery_ResponseAdapter {
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
 
     @Override
-    public NodeQuery.Node fromJson(JsonReader reader, ScalarAdapters scalarAdapters) throws
-        IOException {
+    public NodeQuery.Node fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+        throws IOException {
       String __typename = null;
       String _id = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 1: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
           default: break loop;
         }
       }
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
       HumanFragment _humanFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE.fromJson(reader, scalarAdapters);
+        _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE.fromJson(reader, context);
       }
 
       DroidFragment _droidFragment = null;
-      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), scalarAdapters.getAdapterContext().variables(), __typename, scalarAdapters.getAdapterContext(), null)) {
+      if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, scalarAdapters);
+        _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.fromJson(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_id, "id");
@@ -103,20 +102,20 @@ public class NodeQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, NodeQuery.Node value)
-        throws IOException {
+    public void toJson(JsonWriter writer, NodeQuery.Node value,
+        ApolloAdapter.DataSerializeContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
 
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
 
       if (value.humanFragment != null) {
-        com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE.toJson(writer, scalarAdapters, value.humanFragment);
+        com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE.toJson(writer, value.humanFragment, context);
       }
 
       if (value.droidFragment != null) {
-        com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.toJson(writer, scalarAdapters, value.droidFragment);
+        com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.INSTANCE.toJson(writer, value.droidFragment, context);
       }
     }
   }

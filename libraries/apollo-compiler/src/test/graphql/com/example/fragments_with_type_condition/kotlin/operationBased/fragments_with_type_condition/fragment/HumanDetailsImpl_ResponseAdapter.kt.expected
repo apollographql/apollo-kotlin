@@ -7,7 +7,6 @@ package com.example.fragments_with_type_condition.fragment
 
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,15 +20,15 @@ public object HumanDetailsImpl_ResponseAdapter {
       ApolloAdapter<com.example.fragments_with_type_condition.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "height")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
         com.example.fragments_with_type_condition.fragment.HumanDetails {
       var _name: String? = null
       var _height: Double? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
-          1 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, context)
+          1 -> _height = NullableDoubleApolloAdapter.fromJson(reader, context)
           else -> break
         }
       }
@@ -42,14 +41,14 @@ public object HumanDetailsImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
       `value`: com.example.fragments_with_type_condition.fragment.HumanDetails,
+      context: ApolloAdapter.DataSerializeContext,
     ): Unit {
       writer.name("name")
-      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, value.name, context)
 
       writer.name("height")
-      NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
+      NullableDoubleApolloAdapter.toJson(writer, value.height, context)
     }
   }
 }
