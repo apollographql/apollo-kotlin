@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UserFragmentImpl_ResponseAdapter {
-  public enum UserFragment implements Adapter<com.example.named_fragment_with_variables.fragment.UserFragment> {
+  public enum UserFragment implements ApolloAdapter<com.example.named_fragment_with_variables.fragment.UserFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("firstName", "lastName", "avatar");
@@ -33,9 +33,9 @@ public class UserFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _firstName = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _lastName = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 2: _avatar = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _firstName = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _lastName = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 2: _avatar = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -55,13 +55,13 @@ public class UserFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.named_fragment_with_variables.fragment.UserFragment value) throws IOException {
       writer.name("firstName");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.firstName);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.firstName);
 
       writer.name("lastName");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.lastName);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.lastName);
 
       writer.name("avatar");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.avatar);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.avatar);
     }
   }
 }

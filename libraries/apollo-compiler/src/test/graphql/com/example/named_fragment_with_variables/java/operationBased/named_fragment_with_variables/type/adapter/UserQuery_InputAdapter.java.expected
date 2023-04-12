@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum UserQuery_InputAdapter implements Adapter<UserQuery> {
+public enum UserQuery_InputAdapter implements ApolloAdapter<UserQuery> {
   INSTANCE;
 
   @Override
@@ -29,10 +29,10 @@ public enum UserQuery_InputAdapter implements Adapter<UserQuery> {
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, UserQuery value) throws
       IOException {
     writer.name("name");
-    Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+    Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     if (value.isAdmin instanceof Optional.Present) {
       writer.name("isAdmin");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanAdapter).toJson(writer, scalarAdapters, value.isAdmin);
+      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, scalarAdapters, value.isAdmin);
     }
   }
 }

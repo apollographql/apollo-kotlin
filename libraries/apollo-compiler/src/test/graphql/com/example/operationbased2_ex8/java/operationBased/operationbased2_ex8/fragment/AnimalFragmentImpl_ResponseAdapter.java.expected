@@ -5,8 +5,8 @@
 //
 package com.example.operationbased2_ex8.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalFragmentImpl_ResponseAdapter {
-  public enum AnimalFragment implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
+  public enum AnimalFragment implements ApolloAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("species", "parent");
@@ -38,7 +38,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _species = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _species = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _parent = new ObjectAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -57,14 +57,14 @@ public class AnimalFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.operationbased2_ex8.fragment.AnimalFragment value) throws IOException {
       writer.name("species");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.species);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.species);
 
       writer.name("parent");
       new ObjectAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>(Parent.INSTANCE, true).toJson(writer, scalarAdapters, value.parent);
     }
   }
 
-  public enum Parent implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
+  public enum Parent implements ApolloAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
@@ -78,8 +78,8 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _species = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _species = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -111,10 +111,10 @@ public class AnimalFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.operationbased2_ex8.fragment.AnimalFragment.Parent value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("species");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.species);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.species);
 
       if (value.onLion != null) {
         com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.OnLion.INSTANCE.toJson(writer, scalarAdapters, value.onLion);
@@ -126,7 +126,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
   }
 
-  public enum OnLion implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion> {
+  public enum OnLion implements ApolloAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("temperature");
@@ -139,7 +139,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _temperature = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -155,11 +155,11 @@ public class AnimalFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.operationbased2_ex8.fragment.AnimalFragment.OnLion value) throws IOException {
       writer.name("temperature");
-      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.temperature);
+      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.temperature);
     }
   }
 
-  public enum OnCat implements Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat> {
+  public enum OnCat implements ApolloAdapter<com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -172,7 +172,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -188,7 +188,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.operationbased2_ex8.fragment.AnimalFragment.OnCat value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

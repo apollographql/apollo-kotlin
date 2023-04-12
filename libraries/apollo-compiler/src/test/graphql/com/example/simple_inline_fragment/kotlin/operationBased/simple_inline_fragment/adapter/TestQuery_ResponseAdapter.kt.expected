@@ -5,11 +5,11 @@
 //
 package com.example.simple_inline_fragment.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,7 +23,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -51,7 +51,7 @@ public object TestQuery_ResponseAdapter {
       Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
     }
 
-    private object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : ApolloAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -60,7 +60,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -101,7 +101,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Hero,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.toJson(writer,
             scalarAdapters, value.onCharacter)
@@ -117,7 +117,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter> {
+      private object OnCharacter : ApolloAdapter<TestQuery.Data.Hero.OnCharacter> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -127,8 +127,8 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -150,16 +150,16 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Hero.OnCharacter,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("id")
-          StringAdapter.toJson(writer, scalarAdapters, value.id)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
           com.example.simple_inline_fragment.adapter.TestQuery_ResponseAdapter.Data.Hero.OnCharacter.OnCharacter.toJson(writer,
               scalarAdapters, value.onCharacter)
         }
 
-        private object OnCharacter : Adapter<TestQuery.Data.Hero.OnCharacter.OnCharacter> {
+        private object OnCharacter : ApolloAdapter<TestQuery.Data.Hero.OnCharacter.OnCharacter> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -168,7 +168,7 @@ public object TestQuery_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -184,12 +184,12 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.Hero.OnCharacter.OnCharacter,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }
 
-      private object OnHuman : Adapter<TestQuery.Data.Hero.OnHuman> {
+      private object OnHuman : ApolloAdapter<TestQuery.Data.Hero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -198,7 +198,7 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = NullableDoubleAdapter.fromJson(reader, scalarAdapters)
+              0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -214,11 +214,11 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Hero.OnHuman,
         ): Unit {
           writer.name("height")
-          NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height)
+          NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
         }
       }
 
-      private object OnDroid : Adapter<TestQuery.Data.Hero.OnDroid> {
+      private object OnDroid : ApolloAdapter<TestQuery.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -227,7 +227,7 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
+              0 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -243,7 +243,7 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Hero.OnDroid,
         ): Unit {
           writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
         }
       }
     }

@@ -5,9 +5,9 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,7 +19,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AFragmentImpl_ResponseAdapter {
-  public object AFragment : Adapter<com.example.multiple_fragments.fragment.AFragment> {
+  public object AFragment : ApolloAdapter<com.example.multiple_fragments.fragment.AFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -47,7 +47,7 @@ public object AFragmentImpl_ResponseAdapter {
       Node.obj(true).nullable().toJson(writer, scalarAdapters, value.node)
     }
 
-    private object Node : Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
+    private object Node : ApolloAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -56,7 +56,7 @@ public object AFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -92,7 +92,7 @@ public object AFragmentImpl_ResponseAdapter {
         `value`: com.example.multiple_fragments.fragment.AFragment.Node,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.fragment1 != null) {
           com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.toJson(writer,

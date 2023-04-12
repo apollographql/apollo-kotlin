@@ -6,7 +6,7 @@
 package com.example.named_fragment_with_variables
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -38,7 +38,7 @@ public data class GetUser(
     GetUser_VariablesAdapter.toJson(writer, scalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> = GetUser_ResponseAdapter.Data.obj()
+  public override fun adapter(): ApolloAdapter<Data> = GetUser_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

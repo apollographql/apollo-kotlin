@@ -5,10 +5,10 @@
 //
 package com.example.path_vs_flat_accessors.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("root")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -48,7 +48,7 @@ public object TestQuery_ResponseAdapter {
       Root.obj().nullable().toJson(writer, scalarAdapters, value.root)
     }
 
-    private object Root : Adapter<TestQuery.Data.Root> {
+    private object Root : ApolloAdapter<TestQuery.Data.Root> {
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Root {
         val __typename = reader.readTypename()
@@ -92,9 +92,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _fieldB1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
-            2 -> _fieldB2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _fieldB1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            2 -> _fieldB2 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -112,13 +112,13 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.ABRoot,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("fieldB1")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB1)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldB1)
 
         writer.name("fieldB2")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB2)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldB2)
       }
     }
 
@@ -134,7 +134,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -150,7 +150,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.OtherRoot,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
 
@@ -166,7 +166,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -182,7 +182,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.OtherARoot,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
 
@@ -199,8 +199,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _fieldB2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _fieldB2 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -217,10 +217,10 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.OtherBRoot,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("fieldB2")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB2)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldB2)
       }
     }
   }

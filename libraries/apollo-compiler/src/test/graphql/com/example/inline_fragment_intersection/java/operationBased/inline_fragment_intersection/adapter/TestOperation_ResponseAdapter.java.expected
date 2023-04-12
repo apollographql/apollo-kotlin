@@ -5,8 +5,8 @@
 //
 package com.example.inline_fragment_intersection.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestOperation_ResponseAdapter {
-  public enum Data implements Adapter<TestOperation.Data> {
+  public enum Data implements ApolloAdapter<TestOperation.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("random");
@@ -62,7 +62,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum Random implements Adapter<TestOperation.Random> {
+  public enum Random implements ApolloAdapter<TestOperation.Random> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -75,7 +75,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -104,7 +104,7 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Random value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onBeing != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnBeing.INSTANCE.toJson(writer, scalarAdapters, value.onBeing);
@@ -116,7 +116,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum OnBeing implements Adapter<TestOperation.OnBeing> {
+  public enum OnBeing implements ApolloAdapter<TestOperation.OnBeing> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name", "friends");
@@ -131,8 +131,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 2: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -160,10 +160,10 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnBeing value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("friends");
       new ListAdapter<>(new ObjectAdapter<TestOperation.Friend>(Friend.INSTANCE, true)).toJson(writer, scalarAdapters, value.friends);
@@ -174,7 +174,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum Friend implements Adapter<TestOperation.Friend> {
+  public enum Friend implements ApolloAdapter<TestOperation.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
@@ -188,8 +188,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -214,10 +214,10 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Friend value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       if (value.onWookie != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
@@ -225,7 +225,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum OnWookie implements Adapter<TestOperation.OnWookie> {
+  public enum OnWookie implements ApolloAdapter<TestOperation.OnWookie> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
@@ -238,7 +238,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -252,11 +252,11 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnWookie value) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
     }
   }
 
-  public enum OnHuman implements Adapter<TestOperation.OnHuman> {
+  public enum OnHuman implements ApolloAdapter<TestOperation.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("profilePictureUrl", "friends");
@@ -270,7 +270,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _profilePictureUrl = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _profilePictureUrl = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _friends = new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -288,14 +288,14 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnHuman value) throws IOException {
       writer.name("profilePictureUrl");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.profilePictureUrl);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.profilePictureUrl);
 
       writer.name("friends");
       new ListAdapter<>(new ObjectAdapter<TestOperation.Friend1>(Friend1.INSTANCE, true)).toJson(writer, scalarAdapters, value.friends);
     }
   }
 
-  public enum Friend1 implements Adapter<TestOperation.Friend1> {
+  public enum Friend1 implements ApolloAdapter<TestOperation.Friend1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "isFamous");
@@ -309,8 +309,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _isFamous = Adapters.NullableBooleanAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _isFamous = Adapters.NullableBooleanApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -333,10 +333,10 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.Friend1 value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("isFamous");
-      Adapters.NullableBooleanAdapter.toJson(writer, scalarAdapters, value.isFamous);
+      Adapters.NullableBooleanApolloAdapter.toJson(writer, scalarAdapters, value.isFamous);
 
       if (value.onWookie != null) {
         com.example.inline_fragment_intersection.adapter.TestOperation_ResponseAdapter.OnWookie1.INSTANCE.toJson(writer, scalarAdapters, value.onWookie);
@@ -344,7 +344,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum OnWookie1 implements Adapter<TestOperation.OnWookie1> {
+  public enum OnWookie1 implements ApolloAdapter<TestOperation.OnWookie1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race");
@@ -377,7 +377,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum OnWookie2 implements Adapter<TestOperation.OnWookie2> {
+  public enum OnWookie2 implements ApolloAdapter<TestOperation.OnWookie2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("race", "friends");
@@ -417,7 +417,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum Friend2 implements Adapter<TestOperation.Friend2> {
+  public enum Friend2 implements ApolloAdapter<TestOperation.Friend2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("lifeExpectancy");
@@ -430,7 +430,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _lifeExpectancy = Adapters.NullableDoubleAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _lifeExpectancy = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -444,7 +444,7 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.Friend2 value) throws IOException {
       writer.name("lifeExpectancy");
-      Adapters.NullableDoubleAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.lifeExpectancy);
     }
   }
 }

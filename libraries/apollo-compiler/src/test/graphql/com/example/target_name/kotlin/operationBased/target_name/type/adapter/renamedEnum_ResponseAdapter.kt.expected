@@ -5,14 +5,14 @@
 //
 package com.example.target_name.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.target_name.type.renamedEnum
 import kotlin.Unit
 
-public object renamedEnum_ResponseAdapter : Adapter<renamedEnum> {
+public object renamedEnum_ResponseAdapter : ApolloAdapter<renamedEnum> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): renamedEnum {
     val rawValue = reader.nextString()!!
     return renamedEnum.safeValueOf(rawValue)

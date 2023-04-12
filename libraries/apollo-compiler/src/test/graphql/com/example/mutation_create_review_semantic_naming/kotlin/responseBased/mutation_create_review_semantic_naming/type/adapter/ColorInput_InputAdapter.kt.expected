@@ -5,10 +5,10 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.DoubleAdapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.DoubleApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
+import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -20,7 +20,7 @@ import com.example.mutation_create_review_semantic_naming.type.ColorInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object ColorInput_InputAdapter : Adapter<ColorInput> {
+public object ColorInput_InputAdapter : ApolloAdapter<ColorInput> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): ColorInput =
       throw IllegalStateException("Input type used in output position")
 
@@ -31,15 +31,15 @@ public object ColorInput_InputAdapter : Adapter<ColorInput> {
   ): Unit {
     if (value.red is Optional.Present) {
       writer.name("red")
-      IntAdapter.present().toJson(writer, scalarAdapters, value.red)
+      IntApolloAdapter.present().toJson(writer, scalarAdapters, value.red)
     }
     if (value.green is Optional.Present) {
       writer.name("green")
-      NullableDoubleAdapter.present().toJson(writer, scalarAdapters, value.green)
+      NullableDoubleApolloAdapter.present().toJson(writer, scalarAdapters, value.green)
     }
     if (value.blue is Optional.Present) {
       writer.name("blue")
-      DoubleAdapter.present().toJson(writer, scalarAdapters, value.blue)
+      DoubleApolloAdapter.present().toJson(writer, scalarAdapters, value.blue)
     }
     if (value.enumWithDefaultValue is Optional.Present) {
       writer.name("enumWithDefaultValue")

@@ -5,7 +5,7 @@
 //
 package com.example.input_object_type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
+public enum TestQuery_VariablesAdapter implements ApolloAdapter<TestQuery> {
   INSTANCE;
 
   @Override

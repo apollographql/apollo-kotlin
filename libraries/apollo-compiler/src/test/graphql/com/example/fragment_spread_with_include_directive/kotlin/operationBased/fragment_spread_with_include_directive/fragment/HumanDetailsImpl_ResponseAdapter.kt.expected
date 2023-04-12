@@ -5,8 +5,8 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails :
-      Adapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
+      ApolloAdapter<com.example.fragment_spread_with_include_directive.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("homePlanet")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -25,7 +25,7 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _homePlanet = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _homePlanet = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -41,7 +41,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       `value`: com.example.fragment_spread_with_include_directive.fragment.HumanDetails,
     ): Unit {
       writer.name("homePlanet")
-      NullableStringAdapter.toJson(writer, scalarAdapters, value.homePlanet)
+      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.homePlanet)
     }
   }
 }

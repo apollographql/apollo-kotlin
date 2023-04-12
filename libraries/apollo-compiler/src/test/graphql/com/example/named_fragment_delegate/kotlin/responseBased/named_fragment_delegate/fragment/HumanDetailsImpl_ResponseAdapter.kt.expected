@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
-  public object Data : Adapter<HumanDetailsImpl.Data> {
+  public object Data : ApolloAdapter<HumanDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "profileLink", "friendsConnection")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -31,8 +31,8 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _profileLink = AnyAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _profileLink = AnyApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -51,16 +51,16 @@ public object HumanDetailsImpl_ResponseAdapter {
       `value`: HumanDetailsImpl.Data,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("profileLink")
-      AnyAdapter.toJson(writer, scalarAdapters, value.profileLink)
+      AnyApolloAdapter.toJson(writer, scalarAdapters, value.profileLink)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
     }
 
-    private object FriendsConnection : Adapter<HumanDetailsImpl.Data.FriendsConnection> {
+    private object FriendsConnection : ApolloAdapter<HumanDetailsImpl.Data.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -88,7 +88,7 @@ public object HumanDetailsImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
-      private object Edge : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
+      private object Edge : ApolloAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -116,7 +116,7 @@ public object HumanDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
-        private object Node : Adapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
+        private object Node : ApolloAdapter<HumanDetailsImpl.Data.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -125,7 +125,7 @@ public object HumanDetailsImpl_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -141,7 +141,7 @@ public object HumanDetailsImpl_ResponseAdapter {
             `value`: HumanDetailsImpl.Data.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }

@@ -5,14 +5,14 @@
 //
 package com.example.enum_field.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.enum_field.type.GravityAsEnum
 import kotlin.Unit
 
-public object GravityAsEnum_ResponseAdapter : Adapter<GravityAsEnum> {
+public object GravityAsEnum_ResponseAdapter : ApolloAdapter<GravityAsEnum> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GravityAsEnum {
     val rawValue = reader.nextString()!!
     return GravityAsEnum.safeValueOf(rawValue)

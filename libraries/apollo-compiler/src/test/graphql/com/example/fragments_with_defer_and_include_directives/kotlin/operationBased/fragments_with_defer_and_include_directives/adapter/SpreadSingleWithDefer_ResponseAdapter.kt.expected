@@ -5,9 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -23,7 +23,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadSingleWithDefer_ResponseAdapter {
-  public object Data : Adapter<SpreadSingleWithDefer.Data> {
+  public object Data : ApolloAdapter<SpreadSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -51,7 +51,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
       Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
     }
 
-    private object Hero : Adapter<SpreadSingleWithDefer.Data.Hero> {
+    private object Hero : ApolloAdapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -61,7 +61,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -89,7 +89,7 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         `value`: SpreadSingleWithDefer.Data.Hero,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.droidDetails != null) {
           com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,

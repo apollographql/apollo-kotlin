@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -17,7 +17,7 @@ import com.example.mutation_create_review.type.ReviewRefInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-internal object ReviewRefInput_InputAdapter : Adapter<ReviewRefInput> {
+internal object ReviewRefInput_InputAdapter : ApolloAdapter<ReviewRefInput> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): ReviewRefInput =
       throw IllegalStateException("Input type used in output position")
 

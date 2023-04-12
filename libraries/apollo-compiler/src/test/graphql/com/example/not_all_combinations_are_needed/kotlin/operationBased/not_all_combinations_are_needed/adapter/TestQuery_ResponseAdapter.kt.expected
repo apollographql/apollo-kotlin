@@ -5,10 +5,10 @@
 //
 package com.example.not_all_combinations_are_needed.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("root")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -49,7 +49,7 @@ public object TestQuery_ResponseAdapter {
       Root.obj(true).nullable().toJson(writer, scalarAdapters, value.root)
     }
 
-    private object Root : Adapter<TestQuery.Data.Root> {
+    private object Root : ApolloAdapter<TestQuery.Data.Root> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -58,7 +58,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -86,7 +86,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Root,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.onA != null) {
           com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.toJson(writer,
@@ -94,7 +94,7 @@ public object TestQuery_ResponseAdapter {
         }
       }
 
-      private object OnA : Adapter<TestQuery.Data.Root.OnA> {
+      private object OnA : ApolloAdapter<TestQuery.Data.Root.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -104,8 +104,8 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _fieldA1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _fieldA1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -134,10 +134,10 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Root.OnA,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("fieldA1")
-          NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldA1)
+          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldA1)
 
           if (value.onB != null) {
             com.example.not_all_combinations_are_needed.adapter.TestQuery_ResponseAdapter.Data.Root.OnA.OnB.toJson(writer,
@@ -145,7 +145,7 @@ public object TestQuery_ResponseAdapter {
           }
         }
 
-        private object OnB : Adapter<TestQuery.Data.Root.OnA.OnB> {
+        private object OnB : ApolloAdapter<TestQuery.Data.Root.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -154,7 +154,7 @@ public object TestQuery_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -175,7 +175,7 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.Root.OnA.OnB,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
             com.example.not_all_combinations_are_needed.fragment.BFragmentImpl_ResponseAdapter.BFragment.toJson(writer,
                 scalarAdapters, value.bFragment)

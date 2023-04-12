@@ -5,10 +5,10 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,8 +18,8 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object IFragmentImpl_ResponseAdapter {
-  public object IFragment : Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment>
-      {
+  public object IFragment :
+      ApolloAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -28,7 +28,7 @@ public object IFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -56,7 +56,7 @@ public object IFragmentImpl_ResponseAdapter {
       `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       if (value.onA != null) {
         com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.IFragment.OnA.toJson(writer,
@@ -65,7 +65,7 @@ public object IFragmentImpl_ResponseAdapter {
     }
 
     private object OnA :
-        Adapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
+        ApolloAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
       public val RESPONSE_NAMES: List<String> = listOf("fieldA")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -74,7 +74,7 @@ public object IFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _fieldA = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _fieldA = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -90,7 +90,7 @@ public object IFragmentImpl_ResponseAdapter {
         `value`: com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA,
       ): Unit {
         writer.name("fieldA")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldA)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldA)
       }
     }
   }

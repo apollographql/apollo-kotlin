@@ -5,8 +5,8 @@
 //
 package com.example.path_vs_flat_accessors.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements ApolloAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("root");
@@ -56,7 +56,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum Root implements Adapter<TestQuery.Root> {
+  public enum Root implements ApolloAdapter<TestQuery.Root> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -69,7 +69,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -98,7 +98,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Root value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onA != null) {
         com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.OnA.INSTANCE.toJson(writer, scalarAdapters, value.onA);
@@ -110,7 +110,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum OnA implements Adapter<TestQuery.OnA> {
+  public enum OnA implements ApolloAdapter<TestQuery.OnA> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -123,7 +123,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -145,7 +145,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnA value) throws
         IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onB != null) {
         com.example.path_vs_flat_accessors.adapter.TestQuery_ResponseAdapter.OnB.INSTANCE.toJson(writer, scalarAdapters, value.onB);
@@ -153,7 +153,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum OnB implements Adapter<TestQuery.OnB> {
+  public enum OnB implements ApolloAdapter<TestQuery.OnB> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldB1");
@@ -166,7 +166,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _fieldB1 = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _fieldB1 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -180,11 +180,11 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnB value) throws
         IOException {
       writer.name("fieldB1");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB1);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldB1);
     }
   }
 
-  public enum OnB1 implements Adapter<TestQuery.OnB1> {
+  public enum OnB1 implements ApolloAdapter<TestQuery.OnB1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldB2");
@@ -197,7 +197,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _fieldB2 = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _fieldB2 = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -211,7 +211,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.OnB1 value)
         throws IOException {
       writer.name("fieldB2");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.fieldB2);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.fieldB2);
     }
   }
 }

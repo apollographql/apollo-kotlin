@@ -5,8 +5,8 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
+public enum ColorInput_InputAdapter implements ApolloAdapter<ColorInput> {
   INSTANCE;
 
   @Override
@@ -33,15 +33,15 @@ public enum ColorInput_InputAdapter implements Adapter<ColorInput> {
       IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
-      new ApolloOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, scalarAdapters, value.red);
+      new ApolloOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, scalarAdapters, value.red);
     }
     if (value.green instanceof Optional.Present) {
       writer.name("green");
-      new ApolloOptionalAdapter<>(Adapters.NullableDoubleAdapter).toJson(writer, scalarAdapters, value.green);
+      new ApolloOptionalAdapter<>(Adapters.NullableDoubleApolloAdapter).toJson(writer, scalarAdapters, value.green);
     }
     if (value.blue instanceof Optional.Present) {
       writer.name("blue");
-      new ApolloOptionalAdapter<>(Adapters.DoubleAdapter).toJson(writer, scalarAdapters, value.blue);
+      new ApolloOptionalAdapter<>(Adapters.DoubleApolloAdapter).toJson(writer, scalarAdapters, value.blue);
     }
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");

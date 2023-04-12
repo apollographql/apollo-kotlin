@@ -5,8 +5,8 @@
 //
 package com.example.deprecated_merged_field.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalFragmentImpl_ResponseAdapter {
-  public enum AnimalFragment implements Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
+  public enum AnimalFragment implements ApolloAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -35,7 +35,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -64,7 +64,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.deprecated_merged_field.fragment.AnimalFragment value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onCat != null) {
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.OnCat.INSTANCE.toJson(writer, scalarAdapters, value.onCat);
@@ -76,7 +76,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
     }
   }
 
-  public enum OnCat implements Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
+  public enum OnCat implements ApolloAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -89,7 +89,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -106,11 +106,11 @@ public class AnimalFragmentImpl_ResponseAdapter {
         com.example.deprecated_merged_field.fragment.AnimalFragment.OnCat value) throws
         IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 
-  public enum OnDog implements Adapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
+  public enum OnDog implements ApolloAdapter<com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -123,7 +123,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -140,7 +140,7 @@ public class AnimalFragmentImpl_ResponseAdapter {
         com.example.deprecated_merged_field.fragment.AnimalFragment.OnDog value) throws
         IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

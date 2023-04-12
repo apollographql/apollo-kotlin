@@ -5,7 +5,7 @@
 //
 package com.example.input_object_type.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum ReviewRefInput_InputAdapter implements Adapter<ReviewRefInput> {
+public enum ReviewRefInput_InputAdapter implements ApolloAdapter<ReviewRefInput> {
   INSTANCE;
 
   @Override

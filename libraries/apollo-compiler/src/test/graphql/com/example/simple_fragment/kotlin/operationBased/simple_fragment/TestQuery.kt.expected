@@ -6,7 +6,7 @@
 package com.example.simple_fragment
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
@@ -47,7 +47,7 @@ internal class TestQuery() : Query<TestQuery.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): ApolloAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

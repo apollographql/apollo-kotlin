@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -27,7 +27,7 @@ public class CharacterDetails3Impl() : Fragment<CharacterDetails3> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<CharacterDetails3> =
+  public override fun adapter(): ApolloAdapter<CharacterDetails3> =
       CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

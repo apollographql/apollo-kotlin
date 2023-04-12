@@ -5,9 +5,9 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 public object OtherDroidDetailsImpl_ResponseAdapter {
   public object OtherDroidDetails :
-      Adapter<com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails> {
+      ApolloAdapter<com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("id")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -25,7 +25,7 @@ public object OtherDroidDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -41,7 +41,7 @@ public object OtherDroidDetailsImpl_ResponseAdapter {
       `value`: com.example.fragment_spread_with_include_directive.fragment.OtherDroidDetails,
     ): Unit {
       writer.name("id")
-      StringAdapter.toJson(writer, scalarAdapters, value.id)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
     }
   }
 }

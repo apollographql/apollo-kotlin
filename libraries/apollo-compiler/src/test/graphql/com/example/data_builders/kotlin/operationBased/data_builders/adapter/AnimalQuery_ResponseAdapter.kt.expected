@@ -5,9 +5,9 @@
 //
 package com.example.data_builders.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalQuery_ResponseAdapter {
-  public object Data : Adapter<AnimalQuery.Data> {
+  public object Data : ApolloAdapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -49,7 +49,7 @@ public object AnimalQuery_ResponseAdapter {
       Animal.obj(true).toJson(writer, scalarAdapters, value.animal)
     }
 
-    private object Animal : Adapter<AnimalQuery.Data.Animal> {
+    private object Animal : ApolloAdapter<AnimalQuery.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -58,7 +58,7 @@ public object AnimalQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -94,7 +94,7 @@ public object AnimalQuery_ResponseAdapter {
         `value`: AnimalQuery.Data.Animal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.catFragment != null) {
           com.example.data_builders.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.toJson(writer,

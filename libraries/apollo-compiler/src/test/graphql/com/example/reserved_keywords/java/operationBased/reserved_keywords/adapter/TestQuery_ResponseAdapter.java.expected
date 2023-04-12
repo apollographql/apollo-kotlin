@@ -5,8 +5,8 @@
 //
 package com.example.reserved_keywords.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements ApolloAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("yield", "objects");
@@ -63,7 +63,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum Yield implements Adapter<TestQuery.Yield> {
+  public enum Yield implements ApolloAdapter<TestQuery.Yield> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("while", "it");
@@ -77,8 +77,8 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _while = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _it = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _while = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _it = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -96,14 +96,14 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Yield value)
         throws IOException {
       writer.name("while");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.while_);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.while_);
 
       writer.name("it");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.it);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.it);
     }
   }
 
-  public enum Object implements Adapter<TestQuery.Object> {
+  public enum Object implements ApolloAdapter<TestQuery.Object> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -116,7 +116,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -138,7 +138,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Object value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onCharacter != null) {
         com.example.reserved_keywords.adapter.TestQuery_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, scalarAdapters, value.onCharacter);
@@ -146,7 +146,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum OnCharacter implements Adapter<TestQuery.OnCharacter> {
+  public enum OnCharacter implements ApolloAdapter<TestQuery.OnCharacter> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -159,7 +159,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -175,7 +175,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestQuery.OnCharacter value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

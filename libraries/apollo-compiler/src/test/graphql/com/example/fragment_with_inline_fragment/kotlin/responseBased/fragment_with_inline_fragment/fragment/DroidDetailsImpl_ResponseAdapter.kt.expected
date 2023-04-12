@@ -5,10 +5,10 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -16,7 +16,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
-  public object Data : Adapter<DroidDetailsImpl.Data> {
+  public object Data : ApolloAdapter<DroidDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -26,8 +26,8 @@ public object DroidDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -44,10 +44,10 @@ public object DroidDetailsImpl_ResponseAdapter {
       `value`: DroidDetailsImpl.Data,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
     }
   }
 }

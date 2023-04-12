@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
 import com.apollographql.apollo3.api.BTerm;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InlineMultipleWithDeferWithIf_ResponseAdapter {
-  public enum Data implements Adapter<InlineMultipleWithDeferWithIf.Data> {
+  public enum Data implements ApolloAdapter<InlineMultipleWithDeferWithIf.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
@@ -57,7 +57,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
   }
 
-  public enum Hero implements Adapter<InlineMultipleWithDeferWithIf.Hero> {
+  public enum Hero implements ApolloAdapter<InlineMultipleWithDeferWithIf.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -71,7 +71,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -105,7 +105,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferWithIf.Hero value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferWithIf_ResponseAdapter.OnCharacter.INSTANCE.toJson(writer, scalarAdapters, value.onCharacter);
 
@@ -119,7 +119,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     }
   }
 
-  public enum OnCharacter implements Adapter<InlineMultipleWithDeferWithIf.OnCharacter> {
+  public enum OnCharacter implements ApolloAdapter<InlineMultipleWithDeferWithIf.OnCharacter> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
@@ -132,7 +132,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -148,11 +148,11 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferWithIf.OnCharacter value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
     }
   }
 
-  public enum OnCharacterDeferF_second implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_second> {
+  public enum OnCharacterDeferF_second implements ApolloAdapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -165,7 +165,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -181,11 +181,11 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferWithIf.OnCharacterDeferF_second value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 
-  public enum OnCharacterDeferF_third implements Adapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_third> {
+  public enum OnCharacterDeferF_third implements ApolloAdapter<InlineMultipleWithDeferWithIf.OnCharacterDeferF_third> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -198,7 +198,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -214,7 +214,7 @@ public class InlineMultipleWithDeferWithIf_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferWithIf.OnCharacterDeferF_third value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

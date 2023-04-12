@@ -6,7 +6,7 @@
 package com.example.operationbased2_ex8
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -36,7 +36,7 @@ public class TestOperation() : Query<TestOperation.Data> {
     // This operation doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> = TestOperation_ResponseAdapter.Data.obj()
+  public override fun adapter(): ApolloAdapter<Data> = TestOperation_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

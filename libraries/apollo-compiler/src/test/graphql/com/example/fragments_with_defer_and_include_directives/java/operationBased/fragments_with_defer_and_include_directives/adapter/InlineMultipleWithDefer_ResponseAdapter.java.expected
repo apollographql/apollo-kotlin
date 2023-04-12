@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
 import com.apollographql.apollo3.api.BPossibleTypes;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InlineMultipleWithDefer_ResponseAdapter {
-  public enum Data implements Adapter<InlineMultipleWithDefer.Data> {
+  public enum Data implements ApolloAdapter<InlineMultipleWithDefer.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
@@ -57,7 +57,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     }
   }
 
-  public enum Hero implements Adapter<InlineMultipleWithDefer.Hero> {
+  public enum Hero implements ApolloAdapter<InlineMultipleWithDefer.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -71,7 +71,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -100,7 +100,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDefer.Hero value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onDroidDeferD_first != null) {
         com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDefer_ResponseAdapter.OnDroidDeferD_first.INSTANCE.toJson(writer, scalarAdapters, value.onDroidDeferD_first);
@@ -112,7 +112,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     }
   }
 
-  public enum OnDroidDeferD_first implements Adapter<InlineMultipleWithDefer.OnDroidDeferD_first> {
+  public enum OnDroidDeferD_first implements ApolloAdapter<InlineMultipleWithDefer.OnDroidDeferD_first> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -125,7 +125,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -141,11 +141,11 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDefer.OnDroidDeferD_first value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidDeferD_second implements Adapter<InlineMultipleWithDefer.OnDroidDeferD_second> {
+  public enum OnDroidDeferD_second implements ApolloAdapter<InlineMultipleWithDefer.OnDroidDeferD_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
@@ -158,7 +158,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -174,7 +174,7 @@ public class InlineMultipleWithDefer_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDefer.OnDroidDeferD_second value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
     }
   }
 }

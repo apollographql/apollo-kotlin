@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,7 +18,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterAppearsInImpl_ResponseAdapter {
-  public object Data : Adapter<CharacterAppearsInImpl.Data> {
+  public object Data : ApolloAdapter<CharacterAppearsInImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("appearsIn")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):

@@ -5,9 +5,9 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.root_query_fragment_with_nested_fragments.TestQuery
@@ -16,7 +16,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -25,7 +25,7 @@ public object TestQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -46,7 +46,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       com.example.root_query_fragment_with_nested_fragments.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
           scalarAdapters, value.queryFragment)

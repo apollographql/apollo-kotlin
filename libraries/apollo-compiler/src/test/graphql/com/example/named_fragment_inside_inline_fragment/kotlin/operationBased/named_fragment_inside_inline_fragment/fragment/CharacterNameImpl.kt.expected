@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -27,7 +27,7 @@ public class CharacterNameImpl() : Fragment<CharacterName> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<CharacterName> =
+  public override fun adapter(): ApolloAdapter<CharacterName> =
       CharacterNameImpl_ResponseAdapter.CharacterName.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

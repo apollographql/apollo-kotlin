@@ -5,7 +5,7 @@
 //
 package com.example.java8annotation.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum LoginBarber_VariablesAdapter implements Adapter<LoginBarber> {
+public enum LoginBarber_VariablesAdapter implements ApolloAdapter<LoginBarber> {
   INSTANCE;
 
   @Override

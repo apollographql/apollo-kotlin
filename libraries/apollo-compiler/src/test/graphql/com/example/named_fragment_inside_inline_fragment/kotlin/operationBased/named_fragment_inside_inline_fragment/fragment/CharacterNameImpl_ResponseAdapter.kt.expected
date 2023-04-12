@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -16,7 +16,7 @@ import kotlin.collections.List
 
 public object CharacterNameImpl_ResponseAdapter {
   public object CharacterName :
-      Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterName> {
+      ApolloAdapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterName> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -25,7 +25,7 @@ public object CharacterNameImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -41,7 +41,7 @@ public object CharacterNameImpl_ResponseAdapter {
       `value`: com.example.named_fragment_inside_inline_fragment.fragment.CharacterName,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
     }
   }
 }

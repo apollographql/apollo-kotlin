@@ -5,8 +5,8 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
-  public enum HeroDetails implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
+  public enum HeroDetails implements ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friends");
@@ -40,7 +40,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -59,14 +59,14 @@ public class HeroDetailsImpl_ResponseAdapter {
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails value) throws
         IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("friends");
       new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>(Friend.INSTANCE, true)))).toJson(writer, scalarAdapters, value.friends);
     }
   }
 
-  public enum Friend implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
+  public enum Friend implements ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "name");
@@ -80,8 +80,8 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -114,10 +114,10 @@ public class HeroDetailsImpl_ResponseAdapter {
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend value) throws
         IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       if (value.onHuman != null) {
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, scalarAdapters, value.onHuman);
@@ -129,7 +129,7 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
   }
 
-  public enum OnHuman implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman> {
+  public enum OnHuman implements ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
@@ -142,7 +142,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.NullableDoubleAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _height = Adapters.NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -157,11 +157,11 @@ public class HeroDetailsImpl_ResponseAdapter {
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnHuman value) throws
         IOException {
       writer.name("height");
-      Adapters.NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height);
+      Adapters.NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height);
     }
   }
 
-  public enum OnDroid implements Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid> {
+  public enum OnDroid implements ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
@@ -174,7 +174,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _primaryFunction = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -189,7 +189,7 @@ public class HeroDetailsImpl_ResponseAdapter {
         com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.OnDroid value) throws
         IOException {
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
     }
   }
 }

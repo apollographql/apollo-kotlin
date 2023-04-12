@@ -5,7 +5,7 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class OtherDroidDetailsImpl implements Fragment<OtherDroidDetails> {
   }
 
   @Override
-  public Adapter<OtherDroidDetails> adapter() {
+  public ApolloAdapter<OtherDroidDetails> adapter() {
     return new ObjectAdapter<OtherDroidDetails>(OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE, false);
   }
 

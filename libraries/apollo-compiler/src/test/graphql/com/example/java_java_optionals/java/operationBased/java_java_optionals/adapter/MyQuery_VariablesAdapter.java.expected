@@ -5,8 +5,8 @@
 //
 package com.example.java_java_optionals.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.java.adapter.JavaOptionalAdapter;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum MyQuery_VariablesAdapter implements Adapter<MyQuery> {
+public enum MyQuery_VariablesAdapter implements ApolloAdapter<MyQuery> {
   INSTANCE;
 
   @Override
@@ -33,13 +33,13 @@ public enum MyQuery_VariablesAdapter implements Adapter<MyQuery> {
       IOException {
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new JavaOptionalAdapter<>(JavaOptionalAdapters.JavaOptionalIntAdapter).toJson(writer, scalarAdapters, value.nullableInt);
+      new JavaOptionalAdapter<>(JavaOptionalAdapters.JavaOptionalIntApolloAdapter).toJson(writer, scalarAdapters, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    Adapters.IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new JavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, scalarAdapters, value.nonNullableIntWithDefault);
+      new JavaOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, scalarAdapters, value.nonNullableIntWithDefault);
     }
     if (value.nullableInput.isPresent()) {
       writer.name("nullableInput");

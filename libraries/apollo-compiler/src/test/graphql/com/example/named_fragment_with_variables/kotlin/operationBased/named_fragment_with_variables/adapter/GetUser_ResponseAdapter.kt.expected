@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_with_variables.GetUser
@@ -16,7 +16,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetUser_ResponseAdapter {
-  public object Data : Adapter<GetUser.Data> {
+  public object Data : ApolloAdapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetUser.Data {
@@ -24,7 +24,7 @@ public object GetUser_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -45,7 +45,7 @@ public object GetUser_ResponseAdapter {
       `value`: GetUser.Data,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
           scalarAdapters, value.queryFragment)

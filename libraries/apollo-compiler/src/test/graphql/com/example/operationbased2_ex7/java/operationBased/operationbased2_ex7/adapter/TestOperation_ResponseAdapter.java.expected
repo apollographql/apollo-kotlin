@@ -5,8 +5,8 @@
 //
 package com.example.operationbased2_ex7.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestOperation_ResponseAdapter {
-  public enum Data implements Adapter<TestOperation.Data> {
+  public enum Data implements ApolloAdapter<TestOperation.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
@@ -57,7 +57,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum Animal implements Adapter<TestOperation.Animal> {
+  public enum Animal implements ApolloAdapter<TestOperation.Animal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -70,7 +70,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -90,13 +90,13 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.Animal value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.toJson(writer, scalarAdapters, value.onAnimal);
     }
   }
 
-  public enum OnAnimal implements Adapter<TestOperation.OnAnimal> {
+  public enum OnAnimal implements ApolloAdapter<TestOperation.OnAnimal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
@@ -110,8 +110,8 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _species = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _species = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -143,10 +143,10 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnAnimal value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("species");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.species);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.species);
 
       if (value.onWarmBlooded != null) {
         com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.toJson(writer, scalarAdapters, value.onWarmBlooded);
@@ -158,7 +158,7 @@ public class TestOperation_ResponseAdapter {
     }
   }
 
-  public enum OnWarmBlooded implements Adapter<TestOperation.OnWarmBlooded> {
+  public enum OnWarmBlooded implements ApolloAdapter<TestOperation.OnWarmBlooded> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("temperature");
@@ -171,7 +171,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _temperature = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -187,11 +187,11 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestOperation.OnWarmBlooded value) throws IOException {
       writer.name("temperature");
-      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.temperature);
+      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.temperature);
     }
   }
 
-  public enum OnPet implements Adapter<TestOperation.OnPet> {
+  public enum OnPet implements ApolloAdapter<TestOperation.OnPet> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -204,7 +204,7 @@ public class TestOperation_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -220,7 +220,7 @@ public class TestOperation_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestOperation.OnPet value)
         throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.data_builders.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NodeQuery_ResponseAdapter {
-  public enum Data implements Adapter<NodeQuery.Data> {
+  public enum Data implements ApolloAdapter<NodeQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
@@ -59,7 +59,7 @@ public class NodeQuery_ResponseAdapter {
     }
   }
 
-  public enum Node implements Adapter<NodeQuery.Node> {
+  public enum Node implements ApolloAdapter<NodeQuery.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "id");
@@ -73,8 +73,8 @@ public class NodeQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -106,10 +106,10 @@ public class NodeQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, NodeQuery.Node value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
 
       if (value.humanFragment != null) {
         com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE.toJson(writer, scalarAdapters, value.humanFragment);

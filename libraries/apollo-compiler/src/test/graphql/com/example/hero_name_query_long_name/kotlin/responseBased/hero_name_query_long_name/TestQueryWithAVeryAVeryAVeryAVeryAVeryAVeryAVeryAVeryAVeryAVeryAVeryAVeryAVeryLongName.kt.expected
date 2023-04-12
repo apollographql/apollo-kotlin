@@ -6,7 +6,7 @@
 package com.example.hero_name_query_long_name
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -39,7 +39,7 @@ public data class
         scalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> =
+  public override fun adapter(): ApolloAdapter<Data> =
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

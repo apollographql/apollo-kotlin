@@ -5,8 +5,8 @@
 //
 package com.example.suppressed_warnings.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CatQuery_ResponseAdapter {
-  public object Data : Adapter<CatQuery.Data> {
+  public object Data : ApolloAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search", "direction")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -55,7 +55,7 @@ public object CatQuery_ResponseAdapter {
       Direction_ResponseAdapter.nullable().toJson(writer, scalarAdapters, value.direction)
     }
 
-    private object Search : Adapter<CatQuery.Data.Search> {
+    private object Search : ApolloAdapter<CatQuery.Data.Search> {
       public val RESPONSE_NAMES: List<String> = listOf("mustaches")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -64,7 +64,7 @@ public object CatQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _mustaches = IntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _mustaches = IntApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -80,7 +80,7 @@ public object CatQuery_ResponseAdapter {
         `value`: CatQuery.Data.Search,
       ): Unit {
         writer.name("mustaches")
-        IntAdapter.toJson(writer, scalarAdapters, value.mustaches)
+        IntApolloAdapter.toJson(writer, scalarAdapters, value.mustaches)
       }
     }
   }

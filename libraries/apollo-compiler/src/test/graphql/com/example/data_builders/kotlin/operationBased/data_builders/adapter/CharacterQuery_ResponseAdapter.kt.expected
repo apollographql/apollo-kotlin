@@ -5,9 +5,9 @@
 //
 package com.example.data_builders.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CharacterQuery_ResponseAdapter {
-  public object Data : Adapter<CharacterQuery.Data> {
+  public object Data : ApolloAdapter<CharacterQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -49,7 +49,7 @@ public object CharacterQuery_ResponseAdapter {
       Character.obj(true).toJson(writer, scalarAdapters, value.character)
     }
 
-    private object Character : Adapter<CharacterQuery.Data.Character> {
+    private object Character : ApolloAdapter<CharacterQuery.Data.Character> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id", "name")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -60,9 +60,9 @@ public object CharacterQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            2 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -100,13 +100,13 @@ public object CharacterQuery_ResponseAdapter {
         `value`: CharacterQuery.Data.Character,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         if (value.humanFragment != null) {
           com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer,

@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,7 +19,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetUser_ResponseAdapter {
-  public object Data : Adapter<GetUser.Data> {
+  public object Data : ApolloAdapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "organization")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetUser.Data {
@@ -28,7 +28,7 @@ public object GetUser_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
           1 -> _organization = Organization.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -46,13 +46,13 @@ public object GetUser_ResponseAdapter {
       `value`: GetUser.Data,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("organization")
       Organization.obj().nullable().toJson(writer, scalarAdapters, value.organization)
     }
 
-    private object Organization : Adapter<GetUser.Data.Organization> {
+    private object Organization : ApolloAdapter<GetUser.Data.Organization> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -62,7 +62,7 @@ public object GetUser_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _user = User.obj().list().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -80,13 +80,13 @@ public object GetUser_ResponseAdapter {
         `value`: GetUser.Data.Organization,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("user")
         User.obj().list().toJson(writer, scalarAdapters, value.user)
       }
 
-      private object User : Adapter<GetUser.Data.Organization.User> {
+      private object User : ApolloAdapter<GetUser.Data.Organization.User> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstName", "lastName",
             "avatar")
 
@@ -99,10 +99,10 @@ public object GetUser_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _firstName = StringAdapter.fromJson(reader, scalarAdapters)
-              2 -> _lastName = StringAdapter.fromJson(reader, scalarAdapters)
-              3 -> _avatar = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _firstName = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              2 -> _lastName = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              3 -> _avatar = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -121,16 +121,16 @@ public object GetUser_ResponseAdapter {
           `value`: GetUser.Data.Organization.User,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("firstName")
-          StringAdapter.toJson(writer, scalarAdapters, value.firstName)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.firstName)
 
           writer.name("lastName")
-          StringAdapter.toJson(writer, scalarAdapters, value.lastName)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.lastName)
 
           writer.name("avatar")
-          StringAdapter.toJson(writer, scalarAdapters, value.avatar)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.avatar)
         }
       }
     }

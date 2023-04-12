@@ -5,8 +5,8 @@
 //
 package com.example.fragment_with_inline_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements Adapter<com.example.fragment_with_inline_fragment.fragment.DroidDetails> {
+  public enum DroidDetails implements ApolloAdapter<com.example.fragment_with_inline_fragment.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "primaryFunction");
@@ -32,8 +32,8 @@ public class DroidDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _primaryFunction = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -50,10 +50,10 @@ public class DroidDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.fragment_with_inline_fragment.fragment.DroidDetails value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
     }
   }
 }

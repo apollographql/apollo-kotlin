@@ -5,7 +5,7 @@
 //
 package com.example.hero_details;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -113,7 +113,7 @@ public class HeroDetails implements Query<HeroDetails.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(HeroDetails_ResponseAdapter.Data.INSTANCE, false);
   }
 

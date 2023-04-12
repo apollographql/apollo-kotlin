@@ -5,7 +5,7 @@
 //
 package com.example.nested_named_fragments;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -134,7 +134,7 @@ public class AllStarships implements Query<AllStarships.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(AllStarships_ResponseAdapter.Data.INSTANCE, false);
   }
 

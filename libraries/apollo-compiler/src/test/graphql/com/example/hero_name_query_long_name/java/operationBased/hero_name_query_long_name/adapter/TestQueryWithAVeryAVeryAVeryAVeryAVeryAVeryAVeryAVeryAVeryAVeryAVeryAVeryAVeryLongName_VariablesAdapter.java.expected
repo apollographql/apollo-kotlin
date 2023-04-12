@@ -5,7 +5,7 @@
 //
 package com.example.hero_name_query_long_name.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.Optional;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter implements Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> {
+public enum TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_VariablesAdapter implements ApolloAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName> {
   INSTANCE;
 
   @Override

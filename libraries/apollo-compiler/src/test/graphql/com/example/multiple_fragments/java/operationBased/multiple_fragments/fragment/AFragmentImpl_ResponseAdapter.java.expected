@@ -5,8 +5,8 @@
 //
 package com.example.multiple_fragments.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AFragmentImpl_ResponseAdapter {
-  public enum AFragment implements Adapter<com.example.multiple_fragments.fragment.AFragment> {
+  public enum AFragment implements ApolloAdapter<com.example.multiple_fragments.fragment.AFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
@@ -55,7 +55,7 @@ public class AFragmentImpl_ResponseAdapter {
     }
   }
 
-  public enum Node implements Adapter<com.example.multiple_fragments.fragment.AFragment.Node> {
+  public enum Node implements ApolloAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -68,7 +68,7 @@ public class AFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -97,7 +97,7 @@ public class AFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.multiple_fragments.fragment.AFragment.Node value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.fragment1 != null) {
         com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.toJson(writer, scalarAdapters, value.fragment1);

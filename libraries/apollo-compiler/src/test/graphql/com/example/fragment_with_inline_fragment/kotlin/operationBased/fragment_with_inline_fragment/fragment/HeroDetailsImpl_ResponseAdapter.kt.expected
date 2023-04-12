@@ -5,10 +5,10 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableIntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,7 +23,7 @@ import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails :
-      Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails> {
+      ApolloAdapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -34,8 +34,8 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -74,10 +74,10 @@ public object HeroDetailsImpl_ResponseAdapter {
       `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
@@ -94,7 +94,8 @@ public object HeroDetailsImpl_ResponseAdapter {
     }
 
     private object FriendsConnection :
-        Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection> {
+        ApolloAdapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection>
+        {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -104,7 +105,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -122,14 +123,14 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
+        NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
       private object Edge :
-          Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge>
+          ApolloAdapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge>
           {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
@@ -159,7 +160,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         }
 
         private object Node :
-            Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node>
+            ApolloAdapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node>
             {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
@@ -169,7 +170,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -185,14 +186,14 @@ public object HeroDetailsImpl_ResponseAdapter {
             `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }
     }
 
     private object OnDroid :
-        Adapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid> {
+        ApolloAdapter<com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -201,7 +202,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -222,7 +223,7 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: com.example.fragment_with_inline_fragment.fragment.HeroDetails.OnDroid,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.fragment_with_inline_fragment.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
             scalarAdapters, value.droidDetails)

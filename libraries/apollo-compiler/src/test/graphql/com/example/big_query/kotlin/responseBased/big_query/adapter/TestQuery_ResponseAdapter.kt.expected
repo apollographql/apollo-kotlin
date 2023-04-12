@@ -5,9 +5,9 @@
 //
 package com.example.big_query.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -18,7 +18,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("character")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -46,7 +46,7 @@ public object TestQuery_ResponseAdapter {
       Character.obj().nullable().toJson(writer, scalarAdapters, value.character)
     }
 
-    private object Character : Adapter<TestQuery.Data.Character> {
+    private object Character : ApolloAdapter<TestQuery.Data.Character> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -55,7 +55,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -71,7 +71,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Character,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
   }

@@ -5,12 +5,12 @@
 //
 package com.example.java_apollo_optionals.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableIntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
+import com.apollographql.apollo3.api.NullableIntApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -23,7 +23,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object MyQuery_ResponseAdapter {
-  public object Data : Adapter<MyQuery.Data> {
+  public object Data : ApolloAdapter<MyQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt",
         "nullableMyType", "nonNullableMyType", "nullableListOfNullableString",
         "nullableListOfNonNullableString")
@@ -38,13 +38,13 @@ public object MyQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
-          1 -> _nonNullableInt = IntAdapter.fromJson(reader, scalarAdapters)
+          0 -> _nullableInt = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _nonNullableInt = IntApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _nullableMyType = NullableMyType.obj().nullable().fromJson(reader, scalarAdapters)
           3 -> _nonNullableMyType = NonNullableMyType.obj().fromJson(reader, scalarAdapters)
-          4 -> _nullableListOfNullableString = NullableStringAdapter.list().nullable().fromJson(reader,
+          4 -> _nullableListOfNullableString = NullableStringApolloAdapter.list().nullable().fromJson(reader,
               scalarAdapters)
-          5 -> _nullableListOfNonNullableString = StringAdapter.list().nullable().fromJson(reader,
+          5 -> _nullableListOfNonNullableString = StringApolloAdapter.list().nullable().fromJson(reader,
               scalarAdapters)
           else -> break
         }
@@ -66,10 +66,10 @@ public object MyQuery_ResponseAdapter {
       `value`: MyQuery.Data,
     ): Unit {
       writer.name("nullableInt")
-      NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
+      NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt)
 
       writer.name("nonNullableInt")
-      IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
+      IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
 
       writer.name("nullableMyType")
       NullableMyType.obj().nullable().toJson(writer, scalarAdapters, value.nullableMyType)
@@ -78,15 +78,15 @@ public object MyQuery_ResponseAdapter {
       NonNullableMyType.obj().toJson(writer, scalarAdapters, value.nonNullableMyType)
 
       writer.name("nullableListOfNullableString")
-      NullableStringAdapter.list().nullable().toJson(writer, scalarAdapters,
+      NullableStringApolloAdapter.list().nullable().toJson(writer, scalarAdapters,
           value.nullableListOfNullableString)
 
       writer.name("nullableListOfNonNullableString")
-      StringAdapter.list().nullable().toJson(writer, scalarAdapters,
+      StringApolloAdapter.list().nullable().toJson(writer, scalarAdapters,
           value.nullableListOfNonNullableString)
     }
 
-    private object NullableMyType : Adapter<MyQuery.Data.NullableMyType> {
+    private object NullableMyType : ApolloAdapter<MyQuery.Data.NullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -96,8 +96,8 @@ public object MyQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
-            1 -> _nonNullableInt = IntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _nullableInt = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _nonNullableInt = IntApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -114,14 +114,14 @@ public object MyQuery_ResponseAdapter {
         `value`: MyQuery.Data.NullableMyType,
       ): Unit {
         writer.name("nullableInt")
-        NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
+        NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
+        IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
       }
     }
 
-    private object NonNullableMyType : Adapter<MyQuery.Data.NonNullableMyType> {
+    private object NonNullableMyType : ApolloAdapter<MyQuery.Data.NonNullableMyType> {
       public val RESPONSE_NAMES: List<String> = listOf("nullableInt", "nonNullableInt")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -131,8 +131,8 @@ public object MyQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
-            1 -> _nonNullableInt = IntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _nullableInt = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _nonNullableInt = IntApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -149,10 +149,10 @@ public object MyQuery_ResponseAdapter {
         `value`: MyQuery.Data.NonNullableMyType,
       ): Unit {
         writer.name("nullableInt")
-        NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
+        NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt)
 
         writer.name("nonNullableInt")
-        IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
+        IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
       }
     }
   }

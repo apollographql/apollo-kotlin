@@ -5,8 +5,8 @@
 //
 package com.example.antlr_tokens.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
+public enum TestQuery_VariablesAdapter implements ApolloAdapter<TestQuery> {
   INSTANCE;
 
   @Override
@@ -30,7 +30,7 @@ public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
       IOException {
     if (value.operation instanceof Optional.Present) {
       writer.name("operation");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, scalarAdapters, value.operation);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.operation);
     }
   }
 }

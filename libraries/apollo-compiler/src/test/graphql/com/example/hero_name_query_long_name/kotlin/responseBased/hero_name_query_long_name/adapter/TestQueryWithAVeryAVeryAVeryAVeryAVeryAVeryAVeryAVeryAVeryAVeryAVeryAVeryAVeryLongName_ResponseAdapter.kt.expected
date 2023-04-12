@@ -5,9 +5,9 @@
 //
 package com.example.hero_name_query_long_name.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -21,7 +21,7 @@ public object
     TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter
     {
   public object Data :
-      Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
+      ApolloAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data>
       {
     public val RESPONSE_NAMES: List<String> = listOf("heroAVeryAVeryAVeryAVeryAVeryAVeryAV")
 
@@ -53,7 +53,7 @@ public object
     }
 
     private object HeroAVeryAVeryAVeryAVeryAVeryAVeryAV :
-        Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
+        ApolloAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>
         {
       public val RESPONSE_NAMES: List<String> =
           listOf("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
@@ -64,7 +64,7 @@ public object
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = StringAdapter.fromJson(reader,
+            0 -> _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = StringApolloAdapter.fromJson(reader,
                 scalarAdapters)
             else -> break
           }
@@ -81,7 +81,7 @@ public object
         `value`: TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV,
       ): Unit {
         writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName")
-        StringAdapter.toJson(writer, scalarAdapters,
+        StringApolloAdapter.toJson(writer, scalarAdapters,
             value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName)
       }
     }

@@ -5,7 +5,7 @@
 //
 package com.example.case_sensitive_enum.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -13,7 +13,7 @@ import com.example.case_sensitive_enum.type.Enum;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Enum_ResponseAdapter implements Adapter<Enum> {
+public enum Enum_ResponseAdapter implements ApolloAdapter<Enum> {
   INSTANCE;
 
   @Override

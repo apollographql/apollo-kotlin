@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter implements Adapter<SpreadMultipleWithDeferAndInclude> {
+public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter implements ApolloAdapter<SpreadMultipleWithDeferAndInclude> {
   INSTANCE;
 
   @Override
@@ -28,12 +28,12 @@ public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter implements Adapte
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
       SpreadMultipleWithDeferAndInclude value) throws IOException {
     writer.name("cond1");
-    Adapters.BooleanAdapter.toJson(writer, scalarAdapters, value.cond1);
+    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond1);
     writer.name("cond2");
-    Adapters.BooleanAdapter.toJson(writer, scalarAdapters, value.cond2);
+    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond2);
     writer.name("cond3");
-    Adapters.BooleanAdapter.toJson(writer, scalarAdapters, value.cond3);
+    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond3);
     writer.name("cond4");
-    Adapters.BooleanAdapter.toJson(writer, scalarAdapters, value.cond4);
+    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond4);
   }
 }

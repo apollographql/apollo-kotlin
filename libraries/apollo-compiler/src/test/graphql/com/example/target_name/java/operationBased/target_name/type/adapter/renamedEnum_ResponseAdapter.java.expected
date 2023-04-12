@@ -5,7 +5,7 @@
 //
 package com.example.target_name.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -13,7 +13,7 @@ import com.example.target_name.type.renamedEnum;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum renamedEnum_ResponseAdapter implements Adapter<renamedEnum> {
+public enum renamedEnum_ResponseAdapter implements ApolloAdapter<renamedEnum> {
   INSTANCE;
 
   @Override

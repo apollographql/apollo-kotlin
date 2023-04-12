@@ -5,7 +5,7 @@
 //
 package com.example.fragments_same_type_condition.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class DroidDetails1Impl implements Fragment<DroidDetails1> {
   }
 
   @Override
-  public Adapter<DroidDetails1> adapter() {
+  public ApolloAdapter<DroidDetails1> adapter() {
     return new ObjectAdapter<DroidDetails1>(DroidDetails1Impl_ResponseAdapter.DroidDetails1.INSTANCE, false);
   }
 

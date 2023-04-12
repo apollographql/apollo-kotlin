@@ -5,8 +5,8 @@
 //
 package com.example.custom_scalar_type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,7 +24,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -52,7 +52,7 @@ public object TestQuery_ResponseAdapter {
       Hero.obj().nullable().toJson(writer, scalarAdapters, value.hero)
     }
 
-    private object Hero : Adapter<TestQuery.Data.Hero> {
+    private object Hero : ApolloAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "birthDate", "appearanceDates",
           "fieldWithUnsupportedType", "profileLink", "links")
 
@@ -76,7 +76,7 @@ public object TestQuery_ResponseAdapter {
                 scalarAdapters)
             3 -> _appearanceDates = scalarAdapters.responseAdapterFor<Date>(com.example.custom_scalar_type.type.Date.type).list().fromJson(reader,
                 scalarAdapters)
-            4 -> _fieldWithUnsupportedType = AnyAdapter.fromJson(reader, scalarAdapters)
+            4 -> _fieldWithUnsupportedType = AnyApolloAdapter.fromJson(reader, scalarAdapters)
             5 -> _profileLink = ScalarAdapterToApolloAdapter(com.example.UrlAdapter).fromJson(reader,
                 scalarAdapters)
             6 -> _links = ScalarAdapterToApolloAdapter(com.example.UrlAdapter).list().fromJson(reader,
@@ -118,7 +118,7 @@ public object TestQuery_ResponseAdapter {
             scalarAdapters, value.appearanceDates)
 
         writer.name("fieldWithUnsupportedType")
-        AnyAdapter.toJson(writer, scalarAdapters, value.fieldWithUnsupportedType)
+        AnyApolloAdapter.toJson(writer, scalarAdapters, value.fieldWithUnsupportedType)
 
         writer.name("profileLink")
         ScalarAdapterToApolloAdapter(com.example.UrlAdapter).toJson(writer, scalarAdapters,

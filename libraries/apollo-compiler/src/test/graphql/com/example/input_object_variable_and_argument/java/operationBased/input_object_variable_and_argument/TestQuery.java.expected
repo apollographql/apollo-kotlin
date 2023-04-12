@@ -5,7 +5,7 @@
 //
 package com.example.input_object_variable_and_argument;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
@@ -138,7 +138,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 

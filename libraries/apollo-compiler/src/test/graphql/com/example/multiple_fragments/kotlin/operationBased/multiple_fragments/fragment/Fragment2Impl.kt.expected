@@ -5,7 +5,7 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -27,7 +27,8 @@ public class Fragment2Impl() : Fragment<Fragment2> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Fragment2> = Fragment2Impl_ResponseAdapter.Fragment2.obj()
+  public override fun adapter(): ApolloAdapter<Fragment2> =
+      Fragment2Impl_ResponseAdapter.Fragment2.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

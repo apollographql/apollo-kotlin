@@ -5,10 +5,10 @@
 //
 package com.example.two_heroes_with_friends.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableIntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("r2", "luke")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -55,7 +55,7 @@ public object TestQuery_ResponseAdapter {
       Luke.obj().nullable().toJson(writer, scalarAdapters, value.luke)
     }
 
-    private object R2 : Adapter<TestQuery.Data.R2> {
+    private object R2 : ApolloAdapter<TestQuery.Data.R2> {
       public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -65,7 +65,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -83,13 +83,13 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.R2,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("friendsConnection")
         FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
       }
 
-      private object FriendsConnection : Adapter<TestQuery.Data.R2.FriendsConnection> {
+      private object FriendsConnection : ApolloAdapter<TestQuery.Data.R2.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -99,7 +99,7 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+              0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
               1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
               else -> break
             }
@@ -117,13 +117,13 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.R2.FriendsConnection,
         ): Unit {
           writer.name("totalCount")
-          NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
+          NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
           writer.name("edges")
           Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
         }
 
-        private object Edge : Adapter<TestQuery.Data.R2.FriendsConnection.Edge> {
+        private object Edge : ApolloAdapter<TestQuery.Data.R2.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -151,7 +151,7 @@ public object TestQuery_ResponseAdapter {
             Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
           }
 
-          private object Node : Adapter<TestQuery.Data.R2.FriendsConnection.Edge.Node> {
+          private object Node : ApolloAdapter<TestQuery.Data.R2.FriendsConnection.Edge.Node> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
             public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -160,7 +160,7 @@ public object TestQuery_ResponseAdapter {
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                  0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                   else -> break
                 }
               }
@@ -176,14 +176,14 @@ public object TestQuery_ResponseAdapter {
               `value`: TestQuery.Data.R2.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
-              StringAdapter.toJson(writer, scalarAdapters, value.name)
+              StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
             }
           }
         }
       }
     }
 
-    private object Luke : Adapter<TestQuery.Data.Luke> {
+    private object Luke : ApolloAdapter<TestQuery.Data.Luke> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "friendsConnection")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -194,8 +194,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -214,16 +214,16 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Luke,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("friendsConnection")
         FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
       }
 
-      private object FriendsConnection : Adapter<TestQuery.Data.Luke.FriendsConnection> {
+      private object FriendsConnection : ApolloAdapter<TestQuery.Data.Luke.FriendsConnection> {
         public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -233,7 +233,7 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+              0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
               1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
               else -> break
             }
@@ -251,13 +251,13 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.Luke.FriendsConnection,
         ): Unit {
           writer.name("totalCount")
-          NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
+          NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
           writer.name("edges")
           Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
         }
 
-        private object Edge : Adapter<TestQuery.Data.Luke.FriendsConnection.Edge> {
+        private object Edge : ApolloAdapter<TestQuery.Data.Luke.FriendsConnection.Edge> {
           public val RESPONSE_NAMES: List<String> = listOf("node")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -285,7 +285,7 @@ public object TestQuery_ResponseAdapter {
             Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
           }
 
-          private object Node : Adapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node> {
+          private object Node : ApolloAdapter<TestQuery.Data.Luke.FriendsConnection.Edge.Node> {
             public val RESPONSE_NAMES: List<String> = listOf("name")
 
             public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -294,7 +294,7 @@ public object TestQuery_ResponseAdapter {
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                  0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                   else -> break
                 }
               }
@@ -310,7 +310,7 @@ public object TestQuery_ResponseAdapter {
               `value`: TestQuery.Data.Luke.FriendsConnection.Edge.Node,
             ): Unit {
               writer.name("name")
-              StringAdapter.toJson(writer, scalarAdapters, value.name)
+              StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
             }
           }
         }

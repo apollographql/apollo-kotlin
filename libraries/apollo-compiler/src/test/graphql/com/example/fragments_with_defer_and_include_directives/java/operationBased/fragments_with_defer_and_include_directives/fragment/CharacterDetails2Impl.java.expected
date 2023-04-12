@@ -5,7 +5,7 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class CharacterDetails2Impl implements Fragment<CharacterDetails2> {
   }
 
   @Override
-  public Adapter<CharacterDetails2> adapter() {
+  public ApolloAdapter<CharacterDetails2> adapter() {
     return new ObjectAdapter<CharacterDetails2>(CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE, false);
   }
 
