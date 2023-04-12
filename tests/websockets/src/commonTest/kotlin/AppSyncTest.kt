@@ -46,20 +46,24 @@ class AppSyncTest {
     val apiKey = TODO("changeMe")
     val host = "6l5lltvi6fgmrpx5abfxrtq6wu.appsync-api.eu-west-3.amazonaws.com"
 
-    val authorization = mapOf(
-        "host" to host,
-        "x-api-key" to apiKey
-    )
+    fun generateAuth(): Map<String, String?> {
+        val authorization = mapOf(
+            "host" to host,
+            "x-api-key" to apiKey
+        )
+        return authorization
+    }
+
     val url = AppSyncWsProtocol.buildUrl(
         baseUrl = "https://6l5lltvi6fgmrpx5abfxrtq6wu.appsync-realtime-api.eu-west-3.amazonaws.com/",
-        authorization = authorization
+        authorization = generateAuth()
     )
     val apolloClient = ApolloClient.Builder().networkTransport(
         networkTransport = WebSocketNetworkTransport.Builder().serverUrl(
             serverUrl = url,
         ).protocol(
             protocolFactory = AppSyncWsProtocol.Factory(
-                authorization = authorization
+                connectionPayload = { generateAuth() }
             )
         ).build()
     ).build()
