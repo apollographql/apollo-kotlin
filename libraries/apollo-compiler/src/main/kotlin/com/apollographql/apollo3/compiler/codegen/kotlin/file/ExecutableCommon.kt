@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.selections
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
@@ -52,7 +52,7 @@ internal fun adapterFunSpec(
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.Adapter.parameterizedBy(resolver.resolveIrType(type)))
+      .returns(KotlinSymbols.ApolloAdapter.parameterizedBy(resolver.resolveIrType(type)))
       .addCode(
           CodeBlock.of(
               "return·%L",

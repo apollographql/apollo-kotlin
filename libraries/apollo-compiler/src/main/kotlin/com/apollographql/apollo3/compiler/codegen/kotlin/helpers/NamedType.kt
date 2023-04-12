@@ -86,7 +86,7 @@ internal fun NamedType.writeToResponseCodeBlock(context: KotlinContext, withDefa
       builder.addStatement("${Identifier.writer}.name(%S)", graphQlName)
       builder.addStatement(
           "%M.${Identifier.toJson}(${Identifier.writer}, ${Identifier.scalarAdapters}, %L)",
-          KotlinSymbols.BooleanAdapter,
+          KotlinSymbols.BooleanApolloAdapter,
           defaultValue.value,
       )
 

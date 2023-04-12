@@ -30,7 +30,7 @@ internal object KotlinSymbols {
   val Optional = ClassNames.Optional.toKotlinPoetClassName()
   val Absent = ClassNames.Absent.toKotlinPoetClassName()
   val Present = ClassNames.Present.toKotlinPoetClassName()
-  val Adapter = ClassNames.Adapter.toKotlinPoetClassName()
+  val ApolloAdapter = ClassNames.ApolloAdapter.toKotlinPoetClassName()
   val ScalarAdapterToApolloAdapter = ClassNames.ScalarAdapterToApolloAdapter.toKotlinPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toKotlinPoetClassName()
   val CompiledType = ClassNames.CompiledType.toKotlinPoetClassName()
@@ -88,16 +88,16 @@ internal object KotlinSymbols {
   /**
    * Adapters
    */
-  val AnyAdapter = MemberName(apolloApiPackageName, "AnyAdapter")
-  val BooleanAdapter = MemberName(apolloApiPackageName, "BooleanAdapter")
-  val DoubleAdapter = MemberName(apolloApiPackageName, "DoubleAdapter")
-  val IntAdapter = MemberName(apolloApiPackageName, "IntAdapter")
-  val StringAdapter = MemberName(apolloApiPackageName, "StringAdapter")
-  val NullableAnyAdapter = MemberName(apolloApiPackageName, "NullableAnyAdapter")
-  val NullableBooleanAdapter = MemberName(apolloApiPackageName, "NullableBooleanAdapter")
-  val NullableDoubleAdapter = MemberName(apolloApiPackageName, "NullableDoubleAdapter")
-  val NullableIntAdapter = MemberName(apolloApiPackageName, "NullableIntAdapter")
-  val NullableStringAdapter = MemberName(apolloApiPackageName, "NullableStringAdapter")
+  val AnyApolloAdapter = MemberName(apolloApiPackageName, "AnyApolloAdapter")
+  val BooleanApolloAdapter = MemberName(apolloApiPackageName, "BooleanApolloAdapter")
+  val DoubleApolloAdapter = MemberName(apolloApiPackageName, "DoubleApolloAdapter")
+  val IntApolloAdapter = MemberName(apolloApiPackageName, "IntApolloAdapter")
+  val StringApolloAdapter = MemberName(apolloApiPackageName, "StringApolloAdapter")
+  val NullableAnyApolloAdapter = MemberName(apolloApiPackageName, "NullableAnyApolloAdapter")
+  val NullableBooleanApolloAdapter = MemberName(apolloApiPackageName, "NullableBooleanApolloAdapter")
+  val NullableDoubleApolloAdapter = MemberName(apolloApiPackageName, "NullableDoubleApolloAdapter")
+  val NullableIntApolloAdapter = MemberName(apolloApiPackageName, "NullableIntApolloAdapter")
+  val NullableStringApolloAdapter = MemberName(apolloApiPackageName, "NullableStringApolloAdapter")
 
 
   val BuilderScope = ClassName(apolloApiPackageName, "BuilderScope")

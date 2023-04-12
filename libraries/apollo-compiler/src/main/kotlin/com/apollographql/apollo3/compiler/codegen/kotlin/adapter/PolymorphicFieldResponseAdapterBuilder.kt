@@ -2,9 +2,9 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.applyIf
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -90,7 +90,7 @@ internal class PolymorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.objectBuilder(adapterName)
         .addSuperinterface(
-            KotlinSymbols.Adapter.parameterizedBy(adaptedClassName)
+            KotlinSymbols.ApolloAdapter.parameterizedBy(adaptedClassName)
         )
         .applyIf(!public) {
           addModifiers(KModifier.PRIVATE)

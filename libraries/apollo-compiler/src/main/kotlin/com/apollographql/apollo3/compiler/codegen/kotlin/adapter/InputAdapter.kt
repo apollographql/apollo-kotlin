@@ -4,8 +4,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -29,7 +29,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     withDefaultBooleanValues: Boolean,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
-      .addSuperinterface(KotlinSymbols.Adapter.parameterizedBy(adaptedTypeName))
+      .addSuperinterface(KotlinSymbols.ApolloAdapter.parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
       .addFunction(writeToResponseFunSpec(context, adaptedTypeName, withDefaultBooleanValues))
       .apply {

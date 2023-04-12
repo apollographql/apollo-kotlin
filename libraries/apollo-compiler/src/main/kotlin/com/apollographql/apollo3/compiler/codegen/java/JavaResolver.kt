@@ -187,7 +187,7 @@ internal class JavaResolver(
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Int")
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Double")
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-          adapterCodeBlock("NullableAnyAdapter")
+          adapterCodeBlock("NullableAnyApolloAdapter")
         }
 
         else -> {
@@ -266,15 +266,15 @@ internal class JavaResolver(
 
       else -> {
         when (type.name) {
-          "Boolean" -> adapterCodeBlock("BooleanAdapter")
-          "ID" -> adapterCodeBlock("StringAdapter")
-          "String" -> adapterCodeBlock("StringAdapter")
-          "Int" -> adapterCodeBlock("IntAdapter")
-          "Float" -> adapterCodeBlock("DoubleAdapter")
+          "Boolean" -> adapterCodeBlock("BooleanApolloAdapter")
+          "ID" -> adapterCodeBlock("StringApolloAdapter")
+          "String" -> adapterCodeBlock("StringApolloAdapter")
+          "Int" -> adapterCodeBlock("IntApolloAdapter")
+          "Float" -> adapterCodeBlock("DoubleApolloAdapter")
           else -> {
             val target = resolveScalarTarget(type.name)
             if (target == null) {
-              adapterCodeBlock("AnyAdapter")
+              adapterCodeBlock("AnyApolloAdapter")
             } else {
               CodeBlock.of(
                   "($scalarAdapters.<$T>responseAdapterFor($L))",
@@ -315,12 +315,12 @@ internal class JavaResolver(
       }
 
       else -> {
-        // Ex: Adapters.NullableStringAdapter
+        // Ex: Adapters.NullableStringApolloAdapter
         className = JavaClassNames.Adapters
         adapterNamePrefix = "Nullable"
       }
     }
-    val adapterName = "$adapterNamePrefix${typeName}Adapter"
+    val adapterName = "$adapterNamePrefix${typeName}ApolloAdapter"
     return CodeBlock.of("$T.$L", className, adapterName)
   }
 
