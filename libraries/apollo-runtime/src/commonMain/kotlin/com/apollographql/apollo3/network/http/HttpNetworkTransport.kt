@@ -2,8 +2,8 @@ package com.apollographql.apollo3.network.http
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.http.DefaultHttpRequestComposer
 import com.apollographql.apollo3.api.http.HttpHeader
@@ -14,7 +14,6 @@ import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.json.readAny
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloHttpException
 import com.apollographql.apollo3.exception.ApolloParseException
@@ -142,7 +141,8 @@ private constructor(
     val response = try {
       operation.parseJsonResponse(
           jsonReader = httpResponse.body!!.jsonReader(),
-          scalarAdapters = scalarAdapters
+          scalarAdapters = scalarAdapters,
+          mergedDeferredFragmentIds = null,
       )
     } catch (e: Exception) {
       errorResponse(operation, e)
@@ -177,6 +177,7 @@ private constructor(
                     Kind.PAYLOAD
                   }
                 }
+
                 else -> Kind.OTHER
               }
             }
@@ -196,7 +197,8 @@ private constructor(
                 // TODO: make parseJsonResponse not close the jsonReader
                 operation.parseJsonResponse(
                     jsonReader = reader,
-                    scalarAdapters = scalarAdapters
+                    scalarAdapters = scalarAdapters,
+                    mergedDeferredFragmentIds = null,
                 )
               }
 
@@ -220,7 +222,8 @@ private constructor(
             } else {
               operation.parseJsonResponse(
                   jsonReader = merged.jsonReader(),
-                  scalarAdapters = scalarAdapters.withDeferredFragmentIds(deferredFragmentIds)
+                  scalarAdapters = scalarAdapters,
+                  mergedDeferredFragmentIds = deferredFragmentIds,
               ).newBuilder().isLast(isLast).build()
             }
           }

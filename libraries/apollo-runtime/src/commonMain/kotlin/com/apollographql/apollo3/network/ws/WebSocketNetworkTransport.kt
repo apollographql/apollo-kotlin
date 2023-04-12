@@ -2,12 +2,11 @@ package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Operation
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.http.HttpHeader
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.parseJsonResponse
-import com.apollographql.apollo3.api.withDeferredFragmentIds
 import com.apollographql.apollo3.exception.ApolloException
 import com.apollographql.apollo3.exception.ApolloNetworkException
 import com.apollographql.apollo3.exception.SubscriptionOperationException
@@ -293,13 +292,13 @@ private constructor(
         is OperationResponse -> {
           val responsePayload = response.payload
           val requestScalarAdapters = request.executionContext[ScalarAdapters]!!
-          val (payload, scalarAdapters) = if (responsePayload.isDeferred()) {
-            deferredJsonMerger.merge(responsePayload) to requestScalarAdapters.withDeferredFragmentIds(deferredJsonMerger.mergedFragmentIds)
+          val (payload, mergedFragmentIds) = if (responsePayload.isDeferred()) {
+            deferredJsonMerger.merge(responsePayload) to deferredJsonMerger.mergedFragmentIds
           } else {
-            responsePayload to requestScalarAdapters
+            responsePayload to null
           }
           val apolloResponse: ApolloResponse<D> = request.operation
-              .parseJsonResponse(payload.jsonReader(), scalarAdapters)
+              .parseJsonResponse(jsonReader = payload.jsonReader(), scalarAdapters = requestScalarAdapters, mergedDeferredFragmentIds = mergedFragmentIds)
               .newBuilder()
               .requestUuid(request.requestUuid)
               .build()
@@ -327,8 +326,8 @@ private constructor(
       request: ApolloRequest<D>,
       apolloException: ApolloException,
   ) = ApolloResponse.Builder(requestUuid = request.requestUuid, operation = request.operation, exception = apolloException)
-          .isLast(true)
-          .build()
+      .isLast(true)
+      .build()
 
   override fun dispose() {
     messages.trySend(Dispose)
