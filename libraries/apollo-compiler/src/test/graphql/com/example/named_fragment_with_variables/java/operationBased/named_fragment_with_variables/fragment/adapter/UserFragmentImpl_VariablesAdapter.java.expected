@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum UserFragmentImpl_VariablesAdapter implements Adapter<UserFragmentImpl> {
+public enum UserFragmentImpl_VariablesAdapter implements ApolloAdapter<UserFragmentImpl> {
   INSTANCE;
 
   @Override
@@ -28,6 +28,6 @@ public enum UserFragmentImpl_VariablesAdapter implements Adapter<UserFragmentImp
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, UserFragmentImpl value)
       throws IOException {
     writer.name("size");
-    Adapters.IntAdapter.toJson(writer, scalarAdapters, value.size);
+    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.size);
   }
 }

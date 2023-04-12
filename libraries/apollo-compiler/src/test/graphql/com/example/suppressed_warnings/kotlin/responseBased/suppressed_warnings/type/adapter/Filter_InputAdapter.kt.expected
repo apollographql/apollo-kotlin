@@ -6,8 +6,8 @@
 package com.example.suppressed_warnings.type.adapter
 
 import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -21,7 +21,7 @@ import kotlin.Unit
 
 @Suppress("DEPRECATION")
 @OptIn(ApolloRequiresOptIn::class)
-public object Filter_InputAdapter : Adapter<Filter> {
+public object Filter_InputAdapter : ApolloAdapter<Filter> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): Filter = throw
       IllegalStateException("Input type used in output position")
 
@@ -32,15 +32,15 @@ public object Filter_InputAdapter : Adapter<Filter> {
   ): Unit {
     if (value.name is Optional.Present) {
       writer.name("name")
-      NullableStringAdapter.present().toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.name)
     }
     if (value.deprecated is Optional.Present) {
       writer.name("deprecated")
-      NullableStringAdapter.present().toJson(writer, scalarAdapters, value.deprecated)
+      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.deprecated)
     }
     if (value.experimental is Optional.Present) {
       writer.name("experimental")
-      NullableStringAdapter.present().toJson(writer, scalarAdapters, value.experimental)
+      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.experimental)
     }
   }
 }

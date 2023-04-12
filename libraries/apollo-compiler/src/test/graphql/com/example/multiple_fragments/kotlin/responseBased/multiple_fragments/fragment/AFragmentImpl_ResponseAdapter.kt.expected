@@ -5,10 +5,10 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -19,7 +19,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<AFragmentImpl.Data> {
+  public object Data : ApolloAdapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -47,7 +47,7 @@ public object AFragmentImpl_ResponseAdapter {
       Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
     }
 
-    private object Node : Adapter<AFragmentImpl.Data.Node> {
+    private object Node : ApolloAdapter<AFragmentImpl.Data.Node> {
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           AFragmentImpl.Data.Node {
         val __typename = reader.readTypename()
@@ -85,9 +85,9 @@ public object AFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _field1 = NullableStringAdapter.fromJson(reader, scalarAdapters)
-            2 -> _field2 = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _field1 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            2 -> _field2 = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -105,13 +105,13 @@ public object AFragmentImpl_ResponseAdapter {
         `value`: AFragmentImpl.Data.ANodeNode,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("field1")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.field1)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.field1)
 
         writer.name("field2")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.field2)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.field2)
       }
     }
 
@@ -127,7 +127,7 @@ public object AFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -143,7 +143,7 @@ public object AFragmentImpl_ResponseAdapter {
         `value`: AFragmentImpl.Data.OtherNode,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
   }

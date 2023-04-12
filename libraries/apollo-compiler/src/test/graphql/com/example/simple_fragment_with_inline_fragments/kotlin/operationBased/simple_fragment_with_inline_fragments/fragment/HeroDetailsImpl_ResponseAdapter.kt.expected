@@ -5,11 +5,11 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,7 +24,7 @@ import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
   public object HeroDetails :
-      Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
+      ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friends")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -34,7 +34,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
           1 -> _friends = Friend.obj(true).nullable().list().nullable().fromJson(reader,
               scalarAdapters)
           else -> break
@@ -53,14 +53,15 @@ public object HeroDetailsImpl_ResponseAdapter {
       `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("friends")
       Friend.obj(true).nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
     }
 
     private object Friend :
-        Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend> {
+        ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend>
+        {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -70,8 +71,8 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -108,10 +109,10 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         if (value.onHuman != null) {
           com.example.simple_fragment_with_inline_fragments.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.Friend.OnHuman.toJson(writer,
@@ -125,7 +126,7 @@ public object HeroDetailsImpl_ResponseAdapter {
       }
 
       private object OnHuman :
-          Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman>
+          ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman>
           {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
@@ -135,7 +136,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = NullableDoubleAdapter.fromJson(reader, scalarAdapters)
+              0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -151,12 +152,12 @@ public object HeroDetailsImpl_ResponseAdapter {
           `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnHuman,
         ): Unit {
           writer.name("height")
-          NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height)
+          NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
         }
       }
 
       private object OnDroid :
-          Adapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid>
+          ApolloAdapter<com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid>
           {
         public val RESPONSE_NAMES: List<String> = listOf("primaryFunction")
 
@@ -166,7 +167,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
+              0 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -182,7 +183,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           `value`: com.example.simple_fragment_with_inline_fragments.fragment.HeroDetails.Friend.OnDroid,
         ): Unit {
           writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
         }
       }
     }

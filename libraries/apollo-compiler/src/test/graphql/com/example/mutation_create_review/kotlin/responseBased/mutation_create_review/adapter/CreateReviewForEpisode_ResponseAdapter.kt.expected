@@ -5,8 +5,8 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -24,7 +24,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object CreateReviewForEpisode_ResponseAdapter {
-  public object Data : Adapter<CreateReviewForEpisode.Data> {
+  public object Data : ApolloAdapter<CreateReviewForEpisode.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -52,7 +52,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       CreateReview.obj().nullable().toJson(writer, scalarAdapters, value.createReview)
     }
 
-    private object CreateReview : Adapter<CreateReviewForEpisode.Data.CreateReview> {
+    private object CreateReview : ApolloAdapter<CreateReviewForEpisode.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
           "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
 
@@ -67,7 +67,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _stars = IntApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _commentary = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().fromJson(reader,
                 scalarAdapters)
             2 -> _listOfListOfString = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable().fromJson(reader,
@@ -98,7 +98,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         `value`: CreateReviewForEpisode.Data.CreateReview,
       ): Unit {
         writer.name("stars")
-        IntAdapter.toJson(writer, scalarAdapters, value.stars)
+        IntApolloAdapter.toJson(writer, scalarAdapters, value.stars)
 
         writer.name("commentary")
         ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().toJson(writer,
@@ -122,7 +122,7 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       }
 
       private object ListOfListOfObject :
-          Adapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
+          ApolloAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):

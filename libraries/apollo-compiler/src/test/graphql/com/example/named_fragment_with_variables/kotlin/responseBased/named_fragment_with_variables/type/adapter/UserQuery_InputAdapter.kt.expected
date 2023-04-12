@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_with_variables.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableBooleanAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableBooleanApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.present
@@ -17,7 +17,7 @@ import com.example.named_fragment_with_variables.type.UserQuery
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object UserQuery_InputAdapter : Adapter<UserQuery> {
+public object UserQuery_InputAdapter : ApolloAdapter<UserQuery> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): UserQuery =
       throw IllegalStateException("Input type used in output position")
 
@@ -27,10 +27,10 @@ public object UserQuery_InputAdapter : Adapter<UserQuery> {
     `value`: UserQuery,
   ): Unit {
     writer.name("name")
-    StringAdapter.toJson(writer, scalarAdapters, value.name)
+    StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
     if (value.isAdmin is Optional.Present) {
       writer.name("isAdmin")
-      NullableBooleanAdapter.present().toJson(writer, scalarAdapters, value.isAdmin)
+      NullableBooleanApolloAdapter.present().toJson(writer, scalarAdapters, value.isAdmin)
     }
   }
 }

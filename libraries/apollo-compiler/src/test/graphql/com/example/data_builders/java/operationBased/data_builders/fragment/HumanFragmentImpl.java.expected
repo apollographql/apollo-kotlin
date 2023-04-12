@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class HumanFragmentImpl implements Fragment<HumanFragment> {
   }
 
   @Override
-  public Adapter<HumanFragment> adapter() {
+  public ApolloAdapter<HumanFragment> adapter() {
     return new ObjectAdapter<HumanFragment>(HumanFragmentImpl_ResponseAdapter.HumanFragment.INSTANCE, false);
   }
 

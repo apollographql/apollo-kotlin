@@ -5,8 +5,8 @@
 //
 package com.example.suppressed_warnings.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ApolloOptionalAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
@@ -19,7 +19,7 @@ import java.lang.Override;
 import java.lang.SuppressWarnings;
 
 @SuppressWarnings("deprecation")
-public enum Filter_InputAdapter implements Adapter<Filter> {
+public enum Filter_InputAdapter implements ApolloAdapter<Filter> {
   INSTANCE;
 
   @Override
@@ -32,15 +32,15 @@ public enum Filter_InputAdapter implements Adapter<Filter> {
       IOException {
     if (value.name instanceof Optional.Present) {
       writer.name("name");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, scalarAdapters, value.name);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.name);
     }
     if (value.deprecated instanceof Optional.Present) {
       writer.name("deprecated");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, scalarAdapters, value.deprecated);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.deprecated);
     }
     if (value.experimental instanceof Optional.Present) {
       writer.name("experimental");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringAdapter).toJson(writer, scalarAdapters, value.experimental);
+      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, scalarAdapters, value.experimental);
     }
   }
 }

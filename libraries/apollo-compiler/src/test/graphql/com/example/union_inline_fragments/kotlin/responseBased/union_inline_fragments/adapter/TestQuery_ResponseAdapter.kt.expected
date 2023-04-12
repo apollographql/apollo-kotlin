@@ -5,10 +5,10 @@
 //
 package com.example.union_inline_fragments.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -23,7 +23,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("search")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -51,7 +51,7 @@ public object TestQuery_ResponseAdapter {
       Search.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.search)
     }
 
-    private object Search : Adapter<TestQuery.Data.Search> {
+    private object Search : ApolloAdapter<TestQuery.Data.Search> {
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Search {
         val __typename = reader.readTypename()
@@ -94,9 +94,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
-            2 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            2 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                 scalarAdapters)
             else -> break
@@ -117,19 +117,19 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.CharacterSearch,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("id")
-        StringAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("friends")
         Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
       }
 
-      private object Friend : Adapter<TestQuery.Data.CharacterSearch.Friend> {
+      private object Friend : ApolloAdapter<TestQuery.Data.CharacterSearch.Friend> {
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             TestQuery.Data.CharacterSearch.Friend {
           val __typename = reader.readTypename()
@@ -175,9 +175,9 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-              2 -> _homePlanet = NullableStringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              2 -> _homePlanet = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
               3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                   scalarAdapters)
               else -> break
@@ -198,19 +198,19 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.CharacterSearch.HumanFriend,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
           writer.name("homePlanet")
-          NullableStringAdapter.toJson(writer, scalarAdapters, value.homePlanet)
+          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.homePlanet)
 
           writer.name("friends")
           Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
         }
 
-        private object Friend : Adapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend> {
+        private object Friend : ApolloAdapter<TestQuery.Data.CharacterSearch.HumanFriend.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "firstAppearsIn")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -220,7 +220,7 @@ public object TestQuery_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 1 -> _firstAppearsIn = Episode_ResponseAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
@@ -238,7 +238,7 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.CharacterSearch.HumanFriend.Friend,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
             writer.name("firstAppearsIn")
             Episode_ResponseAdapter.toJson(writer, scalarAdapters, value.firstAppearsIn)
@@ -262,9 +262,9 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-              2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              2 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
               3 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                   scalarAdapters)
               else -> break
@@ -285,19 +285,19 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.CharacterSearch.DroidFriend,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
           writer.name("primaryFunction")
-          NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+          NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
 
           writer.name("friends")
           Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
         }
 
-        private object Friend : Adapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend> {
+        private object Friend : ApolloAdapter<TestQuery.Data.CharacterSearch.DroidFriend.Friend> {
           public val RESPONSE_NAMES: List<String> = listOf("id")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -306,7 +306,7 @@ public object TestQuery_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -322,7 +322,7 @@ public object TestQuery_ResponseAdapter {
             `value`: TestQuery.Data.CharacterSearch.DroidFriend.Friend,
           ): Unit {
             writer.name("id")
-            StringAdapter.toJson(writer, scalarAdapters, value.id)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
           }
         }
       }
@@ -340,8 +340,8 @@ public object TestQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -358,10 +358,10 @@ public object TestQuery_ResponseAdapter {
           `value`: TestQuery.Data.CharacterSearch.OtherFriend,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
     }
@@ -379,8 +379,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -397,10 +397,10 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.StarshipSearch,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
 
@@ -416,7 +416,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -432,7 +432,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.OtherSearch,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
   }

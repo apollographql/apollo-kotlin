@@ -5,10 +5,10 @@
 //
 package com.example.unique_type_name.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -25,7 +25,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailQuery_ResponseAdapter {
-  public object Data : Adapter<HeroDetailQuery.Data> {
+  public object Data : ApolloAdapter<HeroDetailQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("heroDetailQuery")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -55,7 +55,7 @@ public object HeroDetailQuery_ResponseAdapter {
     }
 
     private object HeroDetailQuery :
-        Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
+        ApolloAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friends")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -66,8 +66,8 @@ public object HeroDetailQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                 scalarAdapters)
             else -> break
@@ -99,10 +99,10 @@ public object HeroDetailQuery_ResponseAdapter {
         `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("friends")
         Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
@@ -114,7 +114,7 @@ public object HeroDetailQuery_ResponseAdapter {
       }
 
       private object Friend :
-          Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend> {
+          ApolloAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -123,7 +123,7 @@ public object HeroDetailQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -139,12 +139,12 @@ public object HeroDetailQuery_ResponseAdapter {
           `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.Friend,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
 
       private object OnHuman :
-          Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman> {
+          ApolloAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height", "friends")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -154,7 +154,7 @@ public object HeroDetailQuery_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = NullableDoubleAdapter.fromJson(reader, scalarAdapters)
+              0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
               1 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader,
                   scalarAdapters)
               else -> break
@@ -173,14 +173,14 @@ public object HeroDetailQuery_ResponseAdapter {
           `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman,
         ): Unit {
           writer.name("height")
-          NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height)
+          NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
 
           writer.name("friends")
           Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
         }
 
         private object Friend :
-            Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend>
+            ApolloAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend>
             {
           public val RESPONSE_NAMES: List<String> = listOf("appearsIn", "friends")
 
@@ -220,7 +220,7 @@ public object HeroDetailQuery_ResponseAdapter {
           }
 
           private object Friend :
-              Adapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend>
+              ApolloAdapter<com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend>
               {
             public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
@@ -230,7 +230,7 @@ public object HeroDetailQuery_ResponseAdapter {
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+                  0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
                   else -> break
                 }
               }
@@ -251,7 +251,7 @@ public object HeroDetailQuery_ResponseAdapter {
               `value`: com.example.unique_type_name.HeroDetailQuery.Data.HeroDetailQuery.OnHuman.Friend.Friend,
             ): Unit {
               writer.name("__typename")
-              StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+              StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
               com.example.unique_type_name.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
                   scalarAdapters, value.heroDetails)

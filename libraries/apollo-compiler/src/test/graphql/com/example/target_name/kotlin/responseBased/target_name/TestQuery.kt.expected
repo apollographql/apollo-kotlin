@@ -6,7 +6,7 @@
 package com.example.target_name
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
@@ -37,7 +37,7 @@ public data class TestQuery(
     TestQuery_VariablesAdapter.toJson(writer, scalarAdapters, this)
   }
 
-  public override fun adapter(): Adapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): ApolloAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

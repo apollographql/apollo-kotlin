@@ -5,7 +5,7 @@
 //
 package com.example.deprecation.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -13,7 +13,7 @@ import com.example.deprecation.type.Episode;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Episode_ResponseAdapter implements Adapter<Episode> {
+public enum Episode_ResponseAdapter implements ApolloAdapter<Episode> {
   INSTANCE;
 
   @Override

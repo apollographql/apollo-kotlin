@@ -5,8 +5,8 @@
 //
 package com.example.starships.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
+public enum TestQuery_VariablesAdapter implements ApolloAdapter<TestQuery> {
   INSTANCE;
 
   @Override
@@ -27,6 +27,6 @@ public enum TestQuery_VariablesAdapter implements Adapter<TestQuery> {
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery value) throws
       IOException {
     writer.name("id");
-    Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+    Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
   }
 }

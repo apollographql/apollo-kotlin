@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.DefaultFakeResolver;
 import com.apollographql.apollo3.api.FakeResolver;
@@ -132,7 +132,7 @@ public class CreateReviewForEpisode implements Mutation<CreateReviewForEpisode.D
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(CreateReviewForEpisode_ResponseAdapter.Data.INSTANCE, false);
   }
 

@@ -5,8 +5,8 @@
 //
 package com.example.java_guava_optionals.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MyQuery_ResponseAdapter {
-  public enum Data implements Adapter<MyQuery.Data> {
+  public enum Data implements ApolloAdapter<MyQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType", "nullableListOfNullableString", "nullableListOfNonNullableString");
@@ -43,12 +43,12 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 2: _nullableMyType = new GuavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           case 3: _nonNullableMyType = new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, scalarAdapters); break;
-          case 4: _nullableListOfNullableString = new GuavaOptionalAdapter<>(new ListAdapter<>(GuavaOptionalAdapters.GuavaOptionalStringAdapter)).fromJson(reader, scalarAdapters); break;
-          case 5: _nullableListOfNonNullableString = new GuavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).fromJson(reader, scalarAdapters); break;
+          case 4: _nullableListOfNullableString = new GuavaOptionalAdapter<>(new ListAdapter<>(GuavaOptionalAdapters.GuavaOptionalStringApolloAdapter)).fromJson(reader, scalarAdapters); break;
+          case 5: _nullableListOfNonNullableString = new GuavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -70,10 +70,10 @@ public class MyQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, MyQuery.Data value) throws
         IOException {
       writer.name("nullableInt");
-      GuavaOptionalAdapters.GuavaOptionalIntAdapter.toJson(writer, scalarAdapters, value.nullableInt);
+      GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
 
       writer.name("nullableMyType");
       new GuavaOptionalAdapter<>(new ObjectAdapter<MyQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, scalarAdapters, value.nullableMyType);
@@ -82,14 +82,14 @@ public class MyQuery_ResponseAdapter {
       new ObjectAdapter<MyQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, scalarAdapters, value.nonNullableMyType);
 
       writer.name("nullableListOfNullableString");
-      new GuavaOptionalAdapter<>(new ListAdapter<>(GuavaOptionalAdapters.GuavaOptionalStringAdapter)).toJson(writer, scalarAdapters, value.nullableListOfNullableString);
+      new GuavaOptionalAdapter<>(new ListAdapter<>(GuavaOptionalAdapters.GuavaOptionalStringApolloAdapter)).toJson(writer, scalarAdapters, value.nullableListOfNullableString);
 
       writer.name("nullableListOfNonNullableString");
-      new GuavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringAdapter)).toJson(writer, scalarAdapters, value.nullableListOfNonNullableString);
+      new GuavaOptionalAdapter<>(new ListAdapter<>(Adapters.StringApolloAdapter)).toJson(writer, scalarAdapters, value.nullableListOfNonNullableString);
     }
   }
 
-  public enum NullableMyType implements Adapter<MyQuery.NullableMyType> {
+  public enum NullableMyType implements ApolloAdapter<MyQuery.NullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
@@ -103,8 +103,8 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -121,14 +121,14 @@ public class MyQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         MyQuery.NullableMyType value) throws IOException {
       writer.name("nullableInt");
-      GuavaOptionalAdapters.GuavaOptionalIntAdapter.toJson(writer, scalarAdapters, value.nullableInt);
+      GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
     }
   }
 
-  public enum NonNullableMyType implements Adapter<MyQuery.NonNullableMyType> {
+  public enum NonNullableMyType implements ApolloAdapter<MyQuery.NonNullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
@@ -142,8 +142,8 @@ public class MyQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _nonNullableInt = Adapters.IntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _nullableInt = GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -160,10 +160,10 @@ public class MyQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         MyQuery.NonNullableMyType value) throws IOException {
       writer.name("nullableInt");
-      GuavaOptionalAdapters.GuavaOptionalIntAdapter.toJson(writer, scalarAdapters, value.nullableInt);
+      GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter.toJson(writer, scalarAdapters, value.nullableInt);
 
       writer.name("nonNullableInt");
-      Adapters.IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+      Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.java_guava_optionals.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapter;
 import com.apollographql.apollo3.api.java.adapter.GuavaOptionalAdapters;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum MyInput_InputAdapter implements Adapter<MyInput> {
+public enum MyInput_InputAdapter implements ApolloAdapter<MyInput> {
   INSTANCE;
 
   @Override
@@ -30,13 +30,13 @@ public enum MyInput_InputAdapter implements Adapter<MyInput> {
       IOException {
     if (value.nullableInt.isPresent()) {
       writer.name("nullableInt");
-      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntAdapter).toJson(writer, scalarAdapters, value.nullableInt);
+      new GuavaOptionalAdapter<>(GuavaOptionalAdapters.GuavaOptionalIntApolloAdapter).toJson(writer, scalarAdapters, value.nullableInt);
     }
     writer.name("nonNullableInt");
-    Adapters.IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
+    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.nonNullableInt);
     if (value.nonNullableIntWithDefault.isPresent()) {
       writer.name("nonNullableIntWithDefault");
-      new GuavaOptionalAdapter<>(Adapters.IntAdapter).toJson(writer, scalarAdapters, value.nonNullableIntWithDefault);
+      new GuavaOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, scalarAdapters, value.nonNullableIntWithDefault);
     }
   }
 }

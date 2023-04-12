@@ -5,8 +5,8 @@
 //
 package com.example.custom_scalar_type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements ApolloAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
@@ -58,7 +58,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum Hero implements Adapter<TestQuery.Hero> {
+  public enum Hero implements ApolloAdapter<TestQuery.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "birthDate", "appearanceDates", "fieldWithUnsupportedType", "profileLink", "links");
@@ -81,7 +81,7 @@ public class TestQuery_ResponseAdapter {
           case 1: _name = new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, scalarAdapters); break;
           case 2: _birthDate = (scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type)).fromJson(reader, scalarAdapters); break;
           case 3: _appearanceDates = new ListAdapter<>((scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).fromJson(reader, scalarAdapters); break;
-          case 4: _fieldWithUnsupportedType = Adapters.AnyAdapter.fromJson(reader, scalarAdapters); break;
+          case 4: _fieldWithUnsupportedType = Adapters.AnyApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 5: _profileLink = new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE).fromJson(reader, scalarAdapters); break;
           case 6: _links = new ListAdapter<>(new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE)).fromJson(reader, scalarAdapters); break;
           default: break loop;
@@ -123,7 +123,7 @@ public class TestQuery_ResponseAdapter {
       new ListAdapter<>((scalarAdapters.<Date>responseAdapterFor(com.example.custom_scalar_type.type.Date.type))).toJson(writer, scalarAdapters, value.appearanceDates);
 
       writer.name("fieldWithUnsupportedType");
-      Adapters.AnyAdapter.toJson(writer, scalarAdapters, value.fieldWithUnsupportedType);
+      Adapters.AnyApolloAdapter.toJson(writer, scalarAdapters, value.fieldWithUnsupportedType);
 
       writer.name("profileLink");
       new ScalarAdapterToApolloAdapter<>(com.example.UrlAdapter.INSTANCE).toJson(writer, scalarAdapters, value.profileLink);

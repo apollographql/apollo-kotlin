@@ -5,8 +5,8 @@
 //
 package com.example.nested_named_fragments.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PlanetFragmentImpl_ResponseAdapter {
-  public enum PlanetFragment implements Adapter<com.example.nested_named_fragments.fragment.PlanetFragment> {
+  public enum PlanetFragment implements ApolloAdapter<com.example.nested_named_fragments.fragment.PlanetFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -30,7 +30,7 @@ public class PlanetFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,7 +44,7 @@ public class PlanetFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.nested_named_fragments.fragment.PlanetFragment value) throws IOException {
       writer.name("name");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

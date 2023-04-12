@@ -5,10 +5,10 @@
 //
 package com.example.named_fragment_delegate.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,7 +19,8 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object DroidDetailsImpl_ResponseAdapter {
-  public object DroidDetails : Adapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
+  public object DroidDetails :
+      ApolloAdapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "primaryFunction", "friends")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -30,8 +31,8 @@ public object DroidDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _friends = Friend.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -50,17 +51,17 @@ public object DroidDetailsImpl_ResponseAdapter {
       `value`: com.example.named_fragment_delegate.fragment.DroidDetails,
     ): Unit {
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
 
       writer.name("friends")
       Friend.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.friends)
     }
 
     private object Friend :
-        Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
+        ApolloAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
       public val RESPONSE_NAMES: List<String> = listOf("name")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -69,7 +70,7 @@ public object DroidDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -85,7 +86,7 @@ public object DroidDetailsImpl_ResponseAdapter {
         `value`: com.example.named_fragment_delegate.fragment.DroidDetails.Friend,
       ): Unit {
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
       }
     }
   }

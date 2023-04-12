@@ -5,9 +5,9 @@
 //
 package com.example.hero_with_review.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -48,7 +48,7 @@ public object TestQuery_ResponseAdapter {
       CreateReview.obj().nullable().toJson(writer, scalarAdapters, value.createReview)
     }
 
-    private object CreateReview : Adapter<TestQuery.Data.CreateReview> {
+    private object CreateReview : ApolloAdapter<TestQuery.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -58,8 +58,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntAdapter.fromJson(reader, scalarAdapters)
-            1 -> _commentary = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _stars = IntApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _commentary = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -76,10 +76,10 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.CreateReview,
       ): Unit {
         writer.name("stars")
-        IntAdapter.toJson(writer, scalarAdapters, value.stars)
+        IntApolloAdapter.toJson(writer, scalarAdapters, value.stars)
 
         writer.name("commentary")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.commentary)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.commentary)
       }
     }
   }

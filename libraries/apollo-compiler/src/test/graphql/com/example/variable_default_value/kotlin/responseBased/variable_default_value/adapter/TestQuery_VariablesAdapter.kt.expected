@@ -5,7 +5,7 @@
 //
 package com.example.variable_default_value.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -16,7 +16,7 @@ import com.example.variable_default_value.type.adapter.Episode_ResponseAdapter
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object TestQuery_VariablesAdapter : Adapter<TestQuery> {
+public object TestQuery_VariablesAdapter : ApolloAdapter<TestQuery> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): TestQuery =
       throw IllegalStateException("Input type used in output position")
 

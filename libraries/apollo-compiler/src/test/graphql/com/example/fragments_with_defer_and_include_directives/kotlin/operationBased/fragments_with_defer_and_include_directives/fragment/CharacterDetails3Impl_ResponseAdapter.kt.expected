@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.AnyAdapter
+import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,7 +17,8 @@ import kotlin.collections.List
 
 public object CharacterDetails3Impl_ResponseAdapter {
   public object CharacterDetails3 :
-      Adapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3> {
+      ApolloAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3>
+      {
     public val RESPONSE_NAMES: List<String> = listOf("birthDate")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -26,7 +27,7 @@ public object CharacterDetails3Impl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _birthDate = AnyAdapter.fromJson(reader, scalarAdapters)
+          0 -> _birthDate = AnyApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,7 +43,7 @@ public object CharacterDetails3Impl_ResponseAdapter {
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3,
     ): Unit {
       writer.name("birthDate")
-      AnyAdapter.toJson(writer, scalarAdapters, value.birthDate)
+      AnyApolloAdapter.toJson(writer, scalarAdapters, value.birthDate)
     }
   }
 }

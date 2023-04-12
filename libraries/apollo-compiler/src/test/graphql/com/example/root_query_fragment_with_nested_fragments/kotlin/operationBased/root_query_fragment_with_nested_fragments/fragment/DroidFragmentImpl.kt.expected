@@ -5,7 +5,7 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -27,7 +27,7 @@ public class DroidFragmentImpl() : Fragment<DroidFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DroidFragment> =
+  public override fun adapter(): ApolloAdapter<DroidFragment> =
       DroidFragmentImpl_ResponseAdapter.DroidFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

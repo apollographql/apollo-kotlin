@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.BooleanAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.BooleanApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -15,7 +15,7 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 public object SpreadMultipleWithDeferAndInclude_VariablesAdapter :
-    Adapter<SpreadMultipleWithDeferAndInclude> {
+    ApolloAdapter<SpreadMultipleWithDeferAndInclude> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
       SpreadMultipleWithDeferAndInclude = throw
       IllegalStateException("Input type used in output position")
@@ -26,12 +26,12 @@ public object SpreadMultipleWithDeferAndInclude_VariablesAdapter :
     `value`: SpreadMultipleWithDeferAndInclude,
   ): Unit {
     writer.name("cond1")
-    BooleanAdapter.toJson(writer, scalarAdapters, value.cond1)
+    BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond1)
     writer.name("cond2")
-    BooleanAdapter.toJson(writer, scalarAdapters, value.cond2)
+    BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond2)
     writer.name("cond3")
-    BooleanAdapter.toJson(writer, scalarAdapters, value.cond3)
+    BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond3)
     writer.name("cond4")
-    BooleanAdapter.toJson(writer, scalarAdapters, value.cond4)
+    BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond4)
   }
 }

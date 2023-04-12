@@ -5,11 +5,11 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableIntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableIntApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -22,7 +22,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object Data : Adapter<HeroDetailsImpl.Data> {
+  public object Data : ApolloAdapter<HeroDetailsImpl.Data> {
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         HeroDetailsImpl.Data {
       val __typename = reader.readTypename()
@@ -63,8 +63,8 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -83,16 +83,16 @@ public object HeroDetailsImpl_ResponseAdapter {
       `value`: HeroDetailsImpl.HumanData,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
     }
 
-    private object FriendsConnection : Adapter<HeroDetailsImpl.HumanData.FriendsConnection> {
+    private object FriendsConnection : ApolloAdapter<HeroDetailsImpl.HumanData.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -102,7 +102,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -120,13 +120,13 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: HeroDetailsImpl.HumanData.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
+        NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
-      private object Edge : Adapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge> {
+      private object Edge : ApolloAdapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -154,7 +154,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
-        private object Node : Adapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node> {
+        private object Node : ApolloAdapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -163,7 +163,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -179,7 +179,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }
@@ -202,9 +202,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-          2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          2 -> _primaryFunction = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
           3 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -224,19 +224,19 @@ public object HeroDetailsImpl_ResponseAdapter {
       `value`: HeroDetailsImpl.DroidData,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
+      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
     }
 
-    private object FriendsConnection : Adapter<HeroDetailsImpl.DroidData.FriendsConnection> {
+    private object FriendsConnection : ApolloAdapter<HeroDetailsImpl.DroidData.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -246,7 +246,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -264,13 +264,13 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: HeroDetailsImpl.DroidData.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
+        NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
-      private object Edge : Adapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge> {
+      private object Edge : ApolloAdapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -298,7 +298,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
-        private object Node : Adapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node> {
+        private object Node : ApolloAdapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -307,7 +307,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -323,7 +323,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }
@@ -344,8 +344,8 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -364,16 +364,16 @@ public object HeroDetailsImpl_ResponseAdapter {
       `value`: HeroDetailsImpl.OtherData,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("friendsConnection")
       FriendsConnection.obj().toJson(writer, scalarAdapters, value.friendsConnection)
     }
 
-    private object FriendsConnection : Adapter<HeroDetailsImpl.OtherData.FriendsConnection> {
+    private object FriendsConnection : ApolloAdapter<HeroDetailsImpl.OtherData.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -383,7 +383,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, scalarAdapters)
+            0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -401,13 +401,13 @@ public object HeroDetailsImpl_ResponseAdapter {
         `value`: HeroDetailsImpl.OtherData.FriendsConnection,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount)
+        NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount)
 
         writer.name("edges")
         Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
-      private object Edge : Adapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge> {
+      private object Edge : ApolloAdapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -435,7 +435,7 @@ public object HeroDetailsImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
-        private object Node : Adapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node> {
+        private object Node : ApolloAdapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -444,7 +444,7 @@ public object HeroDetailsImpl_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -460,7 +460,7 @@ public object HeroDetailsImpl_ResponseAdapter {
             `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }

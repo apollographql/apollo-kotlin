@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -119,7 +119,7 @@ public class CreateReviewForEpisodeMutation implements Mutation<CreateReviewForE
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(CreateReviewForEpisodeMutation_ResponseAdapter.Data.INSTANCE, false);
   }
 

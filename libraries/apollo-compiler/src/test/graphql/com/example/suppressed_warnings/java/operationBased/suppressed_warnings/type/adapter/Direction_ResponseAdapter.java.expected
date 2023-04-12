@@ -5,7 +5,7 @@
 //
 package com.example.suppressed_warnings.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -13,7 +13,7 @@ import com.example.suppressed_warnings.type.Direction;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Direction_ResponseAdapter implements Adapter<Direction> {
+public enum Direction_ResponseAdapter implements ApolloAdapter<Direction> {
   INSTANCE;
 
   @Override

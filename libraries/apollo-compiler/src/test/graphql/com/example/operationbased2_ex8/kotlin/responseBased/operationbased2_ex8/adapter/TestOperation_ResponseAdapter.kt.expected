@@ -5,10 +5,10 @@
 //
 package com.example.operationbased2_ex8.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -21,7 +21,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : Adapter<TestOperation.Data> {
+  public object Data : ApolloAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -49,7 +49,7 @@ public object TestOperation_ResponseAdapter {
       Animal.obj().nullable().toJson(writer, scalarAdapters, value.animal)
     }
 
-    private object Animal : Adapter<TestOperation.Data.Animal> {
+    private object Animal : ApolloAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "parent")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -60,8 +60,8 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
             2 -> _parent = Parent.obj().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -80,16 +80,16 @@ public object TestOperation_ResponseAdapter {
         `value`: TestOperation.Data.Animal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, scalarAdapters, value.species)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
 
         writer.name("parent")
         Parent.obj().toJson(writer, scalarAdapters, value.parent)
       }
 
-      private object Parent : Adapter<TestOperation.Data.Animal.Parent> {
+      private object Parent : ApolloAdapter<TestOperation.Data.Animal.Parent> {
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
             TestOperation.Data.Animal.Parent {
           val __typename = reader.readTypename()
@@ -133,9 +133,9 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
-              2 -> _temperature = IntAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              2 -> _temperature = IntApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -153,13 +153,13 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.Animal.LionParent,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("species")
-          StringAdapter.toJson(writer, scalarAdapters, value.species)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
 
           writer.name("temperature")
-          IntAdapter.toJson(writer, scalarAdapters, value.temperature)
+          IntApolloAdapter.toJson(writer, scalarAdapters, value.temperature)
         }
       }
 
@@ -177,9 +177,9 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
-              2 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              2 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -197,13 +197,13 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.Animal.CatParent,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("species")
-          StringAdapter.toJson(writer, scalarAdapters, value.species)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
 
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
 
@@ -220,8 +220,8 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -238,10 +238,10 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.Animal.OtherParent,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("species")
-          StringAdapter.toJson(writer, scalarAdapters, value.species)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
         }
       }
     }

@@ -5,9 +5,9 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -15,7 +15,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object HumanDetailsImpl_ResponseAdapter {
-  public object Data : Adapter<HumanDetailsImpl.Data> {
+  public object Data : ApolloAdapter<HumanDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -25,8 +25,8 @@ internal object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -43,10 +43,10 @@ internal object HumanDetailsImpl_ResponseAdapter {
       `value`: HumanDetailsImpl.Data,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
       writer.name("name")
-      StringAdapter.toJson(writer, scalarAdapters, value.name)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
     }
   }
 }

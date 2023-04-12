@@ -5,7 +5,7 @@
 //
 package com.example.data_builders;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.DefaultFakeResolver;
 import com.apollographql.apollo3.api.FakeResolver;
@@ -120,7 +120,7 @@ public class CharacterQuery implements Query<CharacterQuery.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(CharacterQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 

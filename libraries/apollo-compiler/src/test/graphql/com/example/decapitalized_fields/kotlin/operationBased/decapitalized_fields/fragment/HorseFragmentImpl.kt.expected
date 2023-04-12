@@ -5,7 +5,7 @@
 //
 package com.example.decapitalized_fields.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -27,7 +27,7 @@ public class HorseFragmentImpl() : Fragment<HorseFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<HorseFragment> =
+  public override fun adapter(): ApolloAdapter<HorseFragment> =
       HorseFragmentImpl_ResponseAdapter.HorseFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

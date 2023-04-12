@@ -5,8 +5,8 @@
 //
 package com.example.antlr_tokens.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -18,7 +18,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -48,7 +48,7 @@ public object TestQuery_ResponseAdapter {
           value.typeWithGraphQLKeywords)
     }
 
-    private object TypeWithGraphQLKeywords : Adapter<TestQuery.Data.TypeWithGraphQLKeywords> {
+    private object TypeWithGraphQLKeywords : ApolloAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -59,9 +59,9 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _on = NullableStringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _null = NullableStringAdapter.fromJson(reader, scalarAdapters)
-            2 -> _alias = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _on = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _null = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
+            2 -> _alias = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -79,13 +79,13 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.TypeWithGraphQLKeywords,
       ): Unit {
         writer.name("on")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.on)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.on)
 
         writer.name("null")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.`null`)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`null`)
 
         writer.name("alias")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.alias)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.alias)
       }
     }
   }

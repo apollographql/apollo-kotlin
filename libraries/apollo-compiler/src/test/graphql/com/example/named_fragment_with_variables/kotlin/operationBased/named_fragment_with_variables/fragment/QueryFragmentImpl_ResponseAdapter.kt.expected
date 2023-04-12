@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,7 +19,7 @@ import kotlin.collections.List
 
 public object QueryFragmentImpl_ResponseAdapter {
   public object QueryFragment :
-      Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+      ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("organization")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -48,7 +48,8 @@ public object QueryFragmentImpl_ResponseAdapter {
     }
 
     private object Organization :
-        Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
+        ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization>
+        {
       public val RESPONSE_NAMES: List<String> = listOf("id", "user")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -58,7 +59,7 @@ public object QueryFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _user = User.obj(true).list().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -76,14 +77,14 @@ public object QueryFragmentImpl_ResponseAdapter {
         `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("user")
         User.obj(true).list().toJson(writer, scalarAdapters, value.user)
       }
 
       private object User :
-          Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
+          ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User>
           {
         public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
@@ -93,7 +94,7 @@ public object QueryFragmentImpl_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -114,7 +115,7 @@ public object QueryFragmentImpl_ResponseAdapter {
           `value`: com.example.named_fragment_with_variables.fragment.QueryFragment.Organization.User,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.toJson(writer,
               scalarAdapters, value.userFragment)

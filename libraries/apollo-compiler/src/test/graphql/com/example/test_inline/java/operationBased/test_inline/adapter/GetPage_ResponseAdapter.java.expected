@@ -5,8 +5,8 @@
 //
 package com.example.test_inline.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetPage_ResponseAdapter {
-  public enum Data implements Adapter<GetPage.Data> {
+  public enum Data implements ApolloAdapter<GetPage.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("collection");
@@ -58,7 +58,7 @@ public class GetPage_ResponseAdapter {
     }
   }
 
-  public enum Collection implements Adapter<GetPage.Collection> {
+  public enum Collection implements ApolloAdapter<GetPage.Collection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "items");
@@ -72,7 +72,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _items = new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -98,7 +98,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Collection value)
         throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       writer.name("items");
       new ListAdapter<>(new ObjectAdapter<GetPage.Item>(Item.INSTANCE, false)).toJson(writer, scalarAdapters, value.items);
@@ -109,7 +109,7 @@ public class GetPage_ResponseAdapter {
     }
   }
 
-  public enum Item implements Adapter<GetPage.Item> {
+  public enum Item implements ApolloAdapter<GetPage.Item> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("title");
@@ -122,7 +122,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _title = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _title = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -138,11 +138,11 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Item value) throws
         IOException {
       writer.name("title");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.title);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.title);
     }
   }
 
-  public enum OnParticularCollection implements Adapter<GetPage.OnParticularCollection> {
+  public enum OnParticularCollection implements ApolloAdapter<GetPage.OnParticularCollection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("items");
@@ -175,7 +175,7 @@ public class GetPage_ResponseAdapter {
     }
   }
 
-  public enum Item1 implements Adapter<GetPage.Item1> {
+  public enum Item1 implements ApolloAdapter<GetPage.Item1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -188,7 +188,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -210,7 +210,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetPage.Item1 value) throws
         IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onParticularItem != null) {
         com.example.test_inline.adapter.GetPage_ResponseAdapter.OnParticularItem.INSTANCE.toJson(writer, scalarAdapters, value.onParticularItem);
@@ -218,7 +218,7 @@ public class GetPage_ResponseAdapter {
     }
   }
 
-  public enum OnParticularItem implements Adapter<GetPage.OnParticularItem> {
+  public enum OnParticularItem implements ApolloAdapter<GetPage.OnParticularItem> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("image");
@@ -231,7 +231,7 @@ public class GetPage_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _image = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _image = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -247,7 +247,7 @@ public class GetPage_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         GetPage.OnParticularItem value) throws IOException {
       writer.name("image");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.image);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.image);
     }
   }
 }

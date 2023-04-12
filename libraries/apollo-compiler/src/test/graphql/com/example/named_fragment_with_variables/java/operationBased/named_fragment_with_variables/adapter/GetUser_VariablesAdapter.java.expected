@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum GetUser_VariablesAdapter implements Adapter<GetUser> {
+public enum GetUser_VariablesAdapter implements ApolloAdapter<GetUser> {
   INSTANCE;
 
   @Override
@@ -30,10 +30,10 @@ public enum GetUser_VariablesAdapter implements Adapter<GetUser> {
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, GetUser value) throws
       IOException {
     writer.name("organizationId");
-    Adapters.StringAdapter.toJson(writer, scalarAdapters, value.organizationId);
+    Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.organizationId);
     writer.name("query");
     new ObjectAdapter<UserQuery>(UserQuery_InputAdapter.INSTANCE, false).toJson(writer, scalarAdapters, value.query);
     writer.name("size");
-    Adapters.IntAdapter.toJson(writer, scalarAdapters, value.size);
+    Adapters.IntApolloAdapter.toJson(writer, scalarAdapters, value.size);
   }
 }

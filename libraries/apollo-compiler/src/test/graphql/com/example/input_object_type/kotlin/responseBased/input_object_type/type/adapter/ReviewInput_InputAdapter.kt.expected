@@ -5,10 +5,10 @@
 //
 package com.example.input_object_type.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.NullableBooleanAdapter
-import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
+import com.apollographql.apollo3.api.NullableBooleanApolloAdapter
+import com.apollographql.apollo3.api.NullableIntApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -23,7 +23,7 @@ import java.util.Date
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
+public object ReviewInput_InputAdapter : ApolloAdapter<ReviewInput> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): ReviewInput =
       throw IllegalStateException("Input type used in output position")
 
@@ -33,10 +33,10 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     `value`: ReviewInput,
   ): Unit {
     writer.name("stars")
-    IntAdapter.toJson(writer, scalarAdapters, value.stars)
+    IntApolloAdapter.toJson(writer, scalarAdapters, value.stars)
     if (value.nullableIntFieldWithDefaultValue is Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue")
-      NullableIntAdapter.present().toJson(writer, scalarAdapters,
+      NullableIntApolloAdapter.present().toJson(writer, scalarAdapters,
           value.nullableIntFieldWithDefaultValue)
     }
     if (value.commentary is Optional.Present) {
@@ -78,7 +78,8 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.listOfInt is Optional.Present) {
       writer.name("listOfInt")
-      NullableIntAdapter.list().nullable().present().toJson(writer, scalarAdapters, value.listOfInt)
+      NullableIntApolloAdapter.list().nullable().present().toJson(writer, scalarAdapters,
+          value.listOfInt)
     }
     if (value.listOfString is Optional.Present) {
       writer.name("listOfString")
@@ -95,11 +96,13 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.booleanWithDefaultValue is Optional.Present) {
       writer.name("booleanWithDefaultValue")
-      NullableBooleanAdapter.present().toJson(writer, scalarAdapters, value.booleanWithDefaultValue)
+      NullableBooleanApolloAdapter.present().toJson(writer, scalarAdapters,
+          value.booleanWithDefaultValue)
     }
     if (value.booleanNonOptional is Optional.Present) {
       writer.name("booleanNonOptional")
-      NullableBooleanAdapter.present().toJson(writer, scalarAdapters, value.booleanNonOptional)
+      NullableBooleanApolloAdapter.present().toJson(writer, scalarAdapters,
+          value.booleanNonOptional)
     }
     if (value.listOfListOfString is Optional.Present) {
       writer.name("listOfListOfString")
@@ -128,7 +131,7 @@ public object ReviewInput_InputAdapter : Adapter<ReviewInput> {
     }
     if (value.CapitalizedInt is Optional.Present) {
       writer.name("CapitalizedInt")
-      NullableIntAdapter.present().toJson(writer, scalarAdapters, value.CapitalizedInt)
+      NullableIntApolloAdapter.present().toJson(writer, scalarAdapters, value.CapitalizedInt)
     }
   }
 }

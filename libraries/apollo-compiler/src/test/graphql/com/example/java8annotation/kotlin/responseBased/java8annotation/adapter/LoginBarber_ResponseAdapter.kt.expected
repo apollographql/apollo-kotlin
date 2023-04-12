@@ -5,9 +5,9 @@
 //
 package com.example.java8annotation.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -17,7 +17,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object LoginBarber_ResponseAdapter {
-  public object Data : Adapter<LoginBarber.Data> {
+  public object Data : ApolloAdapter<LoginBarber.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("login")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -45,7 +45,7 @@ public object LoginBarber_ResponseAdapter {
       Login.obj().toJson(writer, scalarAdapters, value.login)
     }
 
-    private object Login : Adapter<LoginBarber.Data.Login> {
+    private object Login : ApolloAdapter<LoginBarber.Data.Login> {
       public val RESPONSE_NAMES: List<String> = listOf("response")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -54,7 +54,7 @@ public object LoginBarber_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _response = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _response = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -70,7 +70,7 @@ public object LoginBarber_ResponseAdapter {
         `value`: LoginBarber.Data.Login,
       ): Unit {
         writer.name("response")
-        StringAdapter.toJson(writer, scalarAdapters, value.response)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.response)
       }
     }
   }

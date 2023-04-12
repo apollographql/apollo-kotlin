@@ -5,7 +5,7 @@
 //
 package com.example.not_all_combinations_are_needed.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class BFragmentImpl implements Fragment<BFragment> {
   }
 
   @Override
-  public Adapter<BFragment> adapter() {
+  public ApolloAdapter<BFragment> adapter() {
     return new ObjectAdapter<BFragment>(BFragmentImpl_ResponseAdapter.BFragment.INSTANCE, false);
   }
 

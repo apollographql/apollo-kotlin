@@ -5,9 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -22,7 +22,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object InlineSingleWithDefer_ResponseAdapter {
-  public object Data : Adapter<InlineSingleWithDefer.Data> {
+  public object Data : ApolloAdapter<InlineSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -50,7 +50,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
       Hero.obj(true).nullable().toJson(writer, scalarAdapters, value.hero)
     }
 
-    private object Hero : Adapter<InlineSingleWithDefer.Data.Hero> {
+    private object Hero : ApolloAdapter<InlineSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -60,7 +60,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -88,7 +88,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         `value`: InlineSingleWithDefer.Data.Hero,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         if (value.onDroid != null) {
           com.example.fragments_with_defer_and_include_directives.adapter.InlineSingleWithDefer_ResponseAdapter.Data.Hero.OnDroid.toJson(writer,
@@ -96,7 +96,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
         }
       }
 
-      private object OnDroid : Adapter<InlineSingleWithDefer.Data.Hero.OnDroid> {
+      private object OnDroid : ApolloAdapter<InlineSingleWithDefer.Data.Hero.OnDroid> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -105,7 +105,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -121,7 +121,7 @@ public object InlineSingleWithDefer_ResponseAdapter {
           `value`: InlineSingleWithDefer.Data.Hero.OnDroid,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
         }
       }
     }

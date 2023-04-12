@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -89,7 +89,7 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
   }
 
   @Override
-  public Adapter<QueryFragment> adapter() {
+  public ApolloAdapter<QueryFragment> adapter() {
     return new ObjectAdapter<QueryFragment>(QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE, false);
   }
 

@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum InlineMultipleWithDeferWithIf_VariablesAdapter implements Adapter<InlineMultipleWithDeferWithIf> {
+public enum InlineMultipleWithDeferWithIf_VariablesAdapter implements ApolloAdapter<InlineMultipleWithDeferWithIf> {
   INSTANCE;
 
   @Override
@@ -28,6 +28,6 @@ public enum InlineMultipleWithDeferWithIf_VariablesAdapter implements Adapter<In
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
       InlineMultipleWithDeferWithIf value) throws IOException {
     writer.name("cond");
-    Adapters.BooleanAdapter.toJson(writer, scalarAdapters, value.cond);
+    Adapters.BooleanApolloAdapter.toJson(writer, scalarAdapters, value.cond);
   }
 }

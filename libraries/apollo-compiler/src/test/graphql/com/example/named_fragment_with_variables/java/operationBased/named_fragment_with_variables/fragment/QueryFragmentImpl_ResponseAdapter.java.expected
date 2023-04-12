@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryFragmentImpl_ResponseAdapter {
-  public enum QueryFragment implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
+  public enum QueryFragment implements ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("organization");
@@ -52,7 +52,7 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
   }
 
-  public enum Organization implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
+  public enum Organization implements ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.Organization> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "user");
@@ -66,7 +66,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _user = new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -86,14 +86,14 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.named_fragment_with_variables.fragment.QueryFragment.Organization value) throws
         IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
 
       writer.name("user");
       new ListAdapter<>(new ObjectAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User>(User.INSTANCE, true)).toJson(writer, scalarAdapters, value.user);
     }
   }
 
-  public enum User implements Adapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User> {
+  public enum User implements ApolloAdapter<com.example.named_fragment_with_variables.fragment.QueryFragment.User> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -106,7 +106,7 @@ public class QueryFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -127,7 +127,7 @@ public class QueryFragmentImpl_ResponseAdapter {
         com.example.named_fragment_with_variables.fragment.QueryFragment.User value) throws
         IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       com.example.named_fragment_with_variables.fragment.UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE.toJson(writer, scalarAdapters, value.userFragment);
     }

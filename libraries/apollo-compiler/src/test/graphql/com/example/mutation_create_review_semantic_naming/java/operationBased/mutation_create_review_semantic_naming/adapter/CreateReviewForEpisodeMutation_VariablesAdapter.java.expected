@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review_semantic_naming.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum CreateReviewForEpisodeMutation_VariablesAdapter implements Adapter<CreateReviewForEpisodeMutation> {
+public enum CreateReviewForEpisodeMutation_VariablesAdapter implements ApolloAdapter<CreateReviewForEpisodeMutation> {
   INSTANCE;
 
   @Override

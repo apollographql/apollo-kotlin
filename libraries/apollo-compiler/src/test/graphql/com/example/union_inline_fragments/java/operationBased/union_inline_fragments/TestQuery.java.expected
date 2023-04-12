@@ -5,7 +5,7 @@
 //
 package com.example.union_inline_fragments;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -131,7 +131,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 

@@ -5,14 +5,14 @@
 //
 package com.example.introspection_query.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.introspection_query.type.__TypeKind
 import kotlin.Unit
 
-public object __TypeKind_ResponseAdapter : Adapter<__TypeKind> {
+public object __TypeKind_ResponseAdapter : ApolloAdapter<__TypeKind> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): __TypeKind {
     val rawValue = reader.nextString()!!
     return __TypeKind.safeValueOf(rawValue)

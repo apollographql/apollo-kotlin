@@ -5,8 +5,8 @@
 //
 package com.example.field_with_include_directive.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements Adapter<TestQuery.Data> {
+  public enum Data implements ApolloAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
@@ -52,7 +52,7 @@ public class TestQuery_ResponseAdapter {
     }
   }
 
-  public enum Hero implements Adapter<TestQuery.Hero> {
+  public enum Hero implements ApolloAdapter<TestQuery.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
@@ -66,7 +66,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _friendsConnection = new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -82,14 +82,14 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, TestQuery.Hero value)
         throws IOException {
       writer.name("name");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("friendsConnection");
       new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).toJson(writer, scalarAdapters, value.friendsConnection);
     }
   }
 
-  public enum FriendsConnection implements Adapter<TestQuery.FriendsConnection> {
+  public enum FriendsConnection implements ApolloAdapter<TestQuery.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount");
@@ -102,7 +102,7 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -116,7 +116,7 @@ public class TestQuery_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         TestQuery.FriendsConnection value) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount);
+      Adapters.NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount);
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements Adapter<com.example.fragment_spread_with_include_directive.fragment.DroidDetails> {
+  public enum DroidDetails implements ApolloAdapter<com.example.fragment_spread_with_include_directive.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
@@ -30,7 +30,7 @@ public class DroidDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _primaryFunction = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -45,7 +45,7 @@ public class DroidDetailsImpl_ResponseAdapter {
         com.example.fragment_spread_with_include_directive.fragment.DroidDetails value) throws
         IOException {
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.primaryFunction);
     }
   }
 }

@@ -5,7 +5,7 @@
 //
 package com.example.two_heroes_with_friends;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -123,7 +123,7 @@ public class TestQuery implements Query<TestQuery.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(TestQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 

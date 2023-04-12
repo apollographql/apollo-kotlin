@@ -5,9 +5,9 @@
 //
 package com.example.simple_union.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -19,7 +19,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AnimalQuery_ResponseAdapter {
-  public object Data : Adapter<AnimalQuery.Data> {
+  public object Data : ApolloAdapter<AnimalQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -47,7 +47,7 @@ public object AnimalQuery_ResponseAdapter {
       Animal.obj().nullable().toJson(writer, scalarAdapters, value.animal)
     }
 
-    private object Animal : Adapter<AnimalQuery.Data.Animal> {
+    private object Animal : ApolloAdapter<AnimalQuery.Data.Animal> {
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           AnimalQuery.Data.Animal {
         val __typename = reader.readTypename()
@@ -87,8 +87,8 @@ public object AnimalQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _meow = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _meow = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -105,10 +105,10 @@ public object AnimalQuery_ResponseAdapter {
         `value`: AnimalQuery.Data.CatAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("meow")
-        StringAdapter.toJson(writer, scalarAdapters, value.meow)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.meow)
       }
     }
 
@@ -125,8 +125,8 @@ public object AnimalQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _woof = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _woof = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -143,10 +143,10 @@ public object AnimalQuery_ResponseAdapter {
         `value`: AnimalQuery.Data.DogAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("woof")
-        StringAdapter.toJson(writer, scalarAdapters, value.woof)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.woof)
       }
     }
 
@@ -162,7 +162,7 @@ public object AnimalQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -178,7 +178,7 @@ public object AnimalQuery_ResponseAdapter {
         `value`: AnimalQuery.Data.OtherAnimal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
   }

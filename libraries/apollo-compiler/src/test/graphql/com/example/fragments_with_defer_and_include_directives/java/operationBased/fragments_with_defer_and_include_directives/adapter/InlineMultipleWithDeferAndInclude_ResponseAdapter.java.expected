@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
 import com.apollographql.apollo3.api.BPossibleTypes;
@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
-  public enum Data implements Adapter<InlineMultipleWithDeferAndInclude.Data> {
+  public enum Data implements ApolloAdapter<InlineMultipleWithDeferAndInclude.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
@@ -58,7 +58,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     }
   }
 
-  public enum Hero implements Adapter<InlineMultipleWithDeferAndInclude.Hero> {
+  public enum Hero implements ApolloAdapter<InlineMultipleWithDeferAndInclude.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -72,7 +72,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -129,7 +129,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.Hero value) throws IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       if (value.onDroidIfCond1 != null) {
         com.example.fragments_with_defer_and_include_directives.adapter.InlineMultipleWithDeferAndInclude_ResponseAdapter.OnDroidIfCond1.INSTANCE.toJson(writer, scalarAdapters, value.onDroidIfCond1);
@@ -157,7 +157,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     }
   }
 
-  public enum OnDroidIfCond1 implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidIfCond1> {
+  public enum OnDroidIfCond1 implements ApolloAdapter<InlineMultipleWithDeferAndInclude.OnDroidIfCond1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -170,7 +170,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -186,11 +186,11 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.OnDroidIfCond1 value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidIfNotCond2 implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidIfNotCond2> {
+  public enum OnDroidIfNotCond2 implements ApolloAdapter<InlineMultipleWithDeferAndInclude.OnDroidIfNotCond2> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
@@ -203,7 +203,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -219,11 +219,11 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.OnDroidIfNotCond2 value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
     }
   }
 
-  public enum OnDroidDeferE_first implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_first> {
+  public enum OnDroidDeferE_first implements ApolloAdapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_first> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -236,7 +236,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -252,11 +252,11 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.OnDroidDeferE_first value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidDeferE_second implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_second> {
+  public enum OnDroidDeferE_second implements ApolloAdapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_second> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
@@ -269,7 +269,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -285,11 +285,11 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.OnDroidDeferE_second value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
     }
   }
 
-  public enum OnDroidDeferE_third implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_third> {
+  public enum OnDroidDeferE_third implements ApolloAdapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_third> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -302,7 +302,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -318,11 +318,11 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.OnDroidDeferE_third value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 
-  public enum OnDroidDeferE_fourth implements Adapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth> {
+  public enum OnDroidDeferE_fourth implements ApolloAdapter<InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id");
@@ -335,7 +335,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -351,7 +351,7 @@ public class InlineMultipleWithDeferAndInclude_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         InlineMultipleWithDeferAndInclude.OnDroidDeferE_fourth value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
     }
   }
 }

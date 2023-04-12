@@ -5,8 +5,8 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -15,7 +15,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object PlanetFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<PlanetFragmentImpl.Data> {
+  public object Data : ApolloAdapter<PlanetFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -24,7 +24,7 @@ public object PlanetFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,7 +40,7 @@ public object PlanetFragmentImpl_ResponseAdapter {
       `value`: PlanetFragmentImpl.Data,
     ): Unit {
       writer.name("name")
-      NullableStringAdapter.toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
     }
   }
 }

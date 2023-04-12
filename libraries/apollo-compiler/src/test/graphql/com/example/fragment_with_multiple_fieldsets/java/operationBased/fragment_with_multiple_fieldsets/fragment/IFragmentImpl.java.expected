@@ -5,7 +5,7 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class IFragmentImpl implements Fragment<IFragment> {
   }
 
   @Override
-  public Adapter<IFragment> adapter() {
+  public ApolloAdapter<IFragment> adapter() {
     return new ObjectAdapter<IFragment>(IFragmentImpl_ResponseAdapter.IFragment.INSTANCE, true);
   }
 

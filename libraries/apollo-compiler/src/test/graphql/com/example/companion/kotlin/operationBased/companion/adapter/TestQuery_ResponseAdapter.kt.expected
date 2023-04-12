@@ -5,8 +5,8 @@
 //
 package com.example.`companion`.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,7 +19,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("companion")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -48,7 +48,7 @@ public object TestQuery_ResponseAdapter {
     }
   }
 
-  public object Companion : Adapter<TestQuery.Companion_> {
+  public object Companion : ApolloAdapter<TestQuery.Companion_> {
     public val RESPONSE_NAMES: List<String> = listOf("foo")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -57,7 +57,7 @@ public object TestQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _foo = IntAdapter.fromJson(reader, scalarAdapters)
+          0 -> _foo = IntApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -73,7 +73,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Companion_,
     ): Unit {
       writer.name("foo")
-      IntAdapter.toJson(writer, scalarAdapters, value.foo)
+      IntApolloAdapter.toJson(writer, scalarAdapters, value.foo)
     }
   }
 }

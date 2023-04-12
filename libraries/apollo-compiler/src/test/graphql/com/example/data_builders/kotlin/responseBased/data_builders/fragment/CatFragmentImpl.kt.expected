@@ -5,7 +5,7 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
@@ -34,7 +34,7 @@ public class CatFragmentImpl() : Fragment<CatFragmentImpl.Data> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<Data> = CatFragmentImpl_ResponseAdapter.Data.obj()
+  public override fun adapter(): ApolloAdapter<Data> = CatFragmentImpl_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

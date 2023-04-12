@@ -5,8 +5,8 @@
 //
 package com.example.unique_type_name.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetailsImpl_ResponseAdapter {
-  public enum HeroDetails implements Adapter<com.example.unique_type_name.fragment.HeroDetails> {
+  public enum HeroDetails implements ApolloAdapter<com.example.unique_type_name.fragment.HeroDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
@@ -36,7 +36,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _friendsConnection = new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -55,14 +55,14 @@ public class HeroDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.unique_type_name.fragment.HeroDetails value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("friendsConnection");
       new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, scalarAdapters, value.friendsConnection);
     }
   }
 
-  public enum FriendsConnection implements Adapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
+  public enum FriendsConnection implements ApolloAdapter<com.example.unique_type_name.fragment.HeroDetails.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
@@ -76,7 +76,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _totalCount = Adapters.NullableIntApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -93,14 +93,14 @@ public class HeroDetailsImpl_ResponseAdapter {
         com.example.unique_type_name.fragment.HeroDetails.FriendsConnection value) throws
         IOException {
       writer.name("totalCount");
-      Adapters.NullableIntAdapter.toJson(writer, scalarAdapters, value.totalCount);
+      Adapters.NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.totalCount);
 
       writer.name("edges");
       new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, scalarAdapters, value.edges);
     }
   }
 
-  public enum Edge implements Adapter<com.example.unique_type_name.fragment.HeroDetails.Edge> {
+  public enum Edge implements ApolloAdapter<com.example.unique_type_name.fragment.HeroDetails.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
@@ -131,7 +131,7 @@ public class HeroDetailsImpl_ResponseAdapter {
     }
   }
 
-  public enum Node implements Adapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
+  public enum Node implements ApolloAdapter<com.example.unique_type_name.fragment.HeroDetails.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
@@ -144,7 +144,7 @@ public class HeroDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -160,7 +160,7 @@ public class HeroDetailsImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.unique_type_name.fragment.HeroDetails.Node value) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.name);
     }
   }
 }

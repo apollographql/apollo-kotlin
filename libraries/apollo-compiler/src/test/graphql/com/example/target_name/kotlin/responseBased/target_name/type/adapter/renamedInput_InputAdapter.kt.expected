@@ -5,8 +5,8 @@
 //
 package com.example.target_name.type.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
@@ -16,7 +16,7 @@ import com.example.target_name.type.renamedInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object renamedInput_InputAdapter : Adapter<renamedInput> {
+public object renamedInput_InputAdapter : ApolloAdapter<renamedInput> {
   public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): renamedInput =
       throw IllegalStateException("Input type used in output position")
 
@@ -27,7 +27,7 @@ public object renamedInput_InputAdapter : Adapter<renamedInput> {
   ): Unit {
     if (value.`field` is Optional.Present) {
       writer.name("field")
-      NullableStringAdapter.present().toJson(writer, scalarAdapters, value.`field`)
+      NullableStringApolloAdapter.present().toJson(writer, scalarAdapters, value.`field`)
     }
   }
 }

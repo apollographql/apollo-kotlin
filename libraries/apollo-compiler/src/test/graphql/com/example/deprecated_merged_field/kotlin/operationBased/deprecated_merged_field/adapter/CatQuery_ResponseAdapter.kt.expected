@@ -5,9 +5,9 @@
 //
 package com.example.deprecated_merged_field.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -18,7 +18,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CatQuery_ResponseAdapter {
-  public object Data : Adapter<CatQuery.Data> {
+  public object Data : ApolloAdapter<CatQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("cat")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -46,7 +46,7 @@ public object CatQuery_ResponseAdapter {
       Cat.obj(true).nullable().toJson(writer, scalarAdapters, value.cat)
     }
 
-    private object Cat : Adapter<CatQuery.Data.Cat> {
+    private object Cat : ApolloAdapter<CatQuery.Data.Cat> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -55,7 +55,7 @@ public object CatQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -76,7 +76,7 @@ public object CatQuery_ResponseAdapter {
         `value`: CatQuery.Data.Cat,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.deprecated_merged_field.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
             scalarAdapters, value.animalFragment)

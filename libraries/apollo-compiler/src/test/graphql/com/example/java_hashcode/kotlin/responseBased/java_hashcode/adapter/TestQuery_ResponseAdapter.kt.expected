@@ -5,8 +5,8 @@
 //
 package com.example.java_hashcode.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableIntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableIntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,7 +17,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("h")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -26,7 +26,7 @@ public object TestQuery_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _h = NullableIntAdapter.fromJson(reader, scalarAdapters)
+          0 -> _h = NullableIntApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,7 +42,7 @@ public object TestQuery_ResponseAdapter {
       `value`: TestQuery.Data,
     ): Unit {
       writer.name("h")
-      NullableIntAdapter.toJson(writer, scalarAdapters, value.h)
+      NullableIntApolloAdapter.toJson(writer, scalarAdapters, value.h)
     }
   }
 }

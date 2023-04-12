@@ -5,8 +5,8 @@
 //
 package com.example.java8annotation.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum Login_InputAdapter implements Adapter<Login> {
+public enum Login_InputAdapter implements ApolloAdapter<Login> {
   INSTANCE;
 
   @Override
@@ -27,6 +27,6 @@ public enum Login_InputAdapter implements Adapter<Login> {
   public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters, Login value) throws
       IOException {
     writer.name("email");
-    Adapters.StringAdapter.toJson(writer, scalarAdapters, value.email);
+    Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.email);
   }
 }

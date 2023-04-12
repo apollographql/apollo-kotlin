@@ -5,8 +5,8 @@
 //
 package com.example.decapitalized_fields.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,7 +17,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HorseFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<HorseFragmentImpl.Data> {
+  public object Data : ApolloAdapter<HorseFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Cow")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -45,7 +45,7 @@ public object HorseFragmentImpl_ResponseAdapter {
       Cow.obj().nullable().toJson(writer, scalarAdapters, value.cow)
     }
 
-    private object Cow : Adapter<HorseFragmentImpl.Data.Cow> {
+    private object Cow : ApolloAdapter<HorseFragmentImpl.Data.Cow> {
       public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -54,7 +54,7 @@ public object HorseFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _Moo = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _Moo = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -70,7 +70,7 @@ public object HorseFragmentImpl_ResponseAdapter {
         `value`: HorseFragmentImpl.Data.Cow,
       ): Unit {
         writer.name("Moo")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.moo)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.moo)
       }
     }
   }

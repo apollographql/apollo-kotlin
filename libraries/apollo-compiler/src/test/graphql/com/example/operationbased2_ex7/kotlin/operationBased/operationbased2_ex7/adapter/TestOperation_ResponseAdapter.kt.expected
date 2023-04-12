@@ -5,10 +5,10 @@
 //
 package com.example.operationbased2_ex7.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -22,7 +22,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : Adapter<TestOperation.Data> {
+  public object Data : ApolloAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -50,7 +50,7 @@ public object TestOperation_ResponseAdapter {
       Animal.obj(true).nullable().toJson(writer, scalarAdapters, value.animal)
     }
 
-    private object Animal : Adapter<TestOperation.Data.Animal> {
+    private object Animal : ApolloAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -59,7 +59,7 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -80,13 +80,13 @@ public object TestOperation_ResponseAdapter {
         `value`: TestOperation.Data.Animal,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.toJson(writer,
             scalarAdapters, value.onAnimal)
       }
 
-      private object OnAnimal : Adapter<TestOperation.Data.Animal.OnAnimal> {
+      private object OnAnimal : ApolloAdapter<TestOperation.Data.Animal.OnAnimal> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -96,8 +96,8 @@ public object TestOperation_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-              1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+              1 -> _species = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -134,10 +134,10 @@ public object TestOperation_ResponseAdapter {
           `value`: TestOperation.Data.Animal.OnAnimal,
         ): Unit {
           writer.name("__typename")
-          StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
           writer.name("species")
-          StringAdapter.toJson(writer, scalarAdapters, value.species)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.species)
 
           if (value.onWarmBlooded != null) {
             com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.Data.Animal.OnAnimal.OnWarmBlooded.toJson(writer,
@@ -150,7 +150,8 @@ public object TestOperation_ResponseAdapter {
           }
         }
 
-        private object OnWarmBlooded : Adapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
+        private object OnWarmBlooded :
+            ApolloAdapter<TestOperation.Data.Animal.OnAnimal.OnWarmBlooded> {
           public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -159,7 +160,7 @@ public object TestOperation_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _temperature = IntAdapter.fromJson(reader, scalarAdapters)
+                0 -> _temperature = IntApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -175,11 +176,11 @@ public object TestOperation_ResponseAdapter {
             `value`: TestOperation.Data.Animal.OnAnimal.OnWarmBlooded,
           ): Unit {
             writer.name("temperature")
-            IntAdapter.toJson(writer, scalarAdapters, value.temperature)
+            IntApolloAdapter.toJson(writer, scalarAdapters, value.temperature)
           }
         }
 
-        private object OnPet : Adapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
+        private object OnPet : ApolloAdapter<TestOperation.Data.Animal.OnAnimal.OnPet> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -188,7 +189,7 @@ public object TestOperation_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -204,7 +205,7 @@ public object TestOperation_ResponseAdapter {
             `value`: TestOperation.Data.Animal.OnAnimal.OnPet,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, scalarAdapters, value.name)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
           }
         }
       }

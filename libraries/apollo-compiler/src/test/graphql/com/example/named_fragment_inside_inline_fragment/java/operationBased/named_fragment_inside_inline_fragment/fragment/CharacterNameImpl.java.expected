@@ -5,7 +5,7 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -66,7 +66,7 @@ public class CharacterNameImpl implements Fragment<CharacterName> {
   }
 
   @Override
-  public Adapter<CharacterName> adapter() {
+  public ApolloAdapter<CharacterName> adapter() {
     return new ObjectAdapter<CharacterName>(CharacterNameImpl_ResponseAdapter.CharacterName.INSTANCE, false);
   }
 

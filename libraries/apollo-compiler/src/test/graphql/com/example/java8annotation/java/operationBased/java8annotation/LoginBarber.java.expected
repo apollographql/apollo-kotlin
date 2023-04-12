@@ -5,7 +5,7 @@
 //
 package com.example.java8annotation;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Mutation;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -110,7 +110,7 @@ public class LoginBarber implements Mutation<LoginBarber.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(LoginBarber_ResponseAdapter.Data.INSTANCE, false);
   }
 

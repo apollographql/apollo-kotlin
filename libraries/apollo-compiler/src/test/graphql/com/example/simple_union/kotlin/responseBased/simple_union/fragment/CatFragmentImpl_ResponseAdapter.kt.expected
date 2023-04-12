@@ -5,9 +5,9 @@
 //
 package com.example.simple_union.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -15,7 +15,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object CatFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<CatFragmentImpl.Data> {
+  public object Data : ApolloAdapter<CatFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("meow")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -24,7 +24,7 @@ public object CatFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _meow = StringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _meow = StringApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -40,7 +40,7 @@ public object CatFragmentImpl_ResponseAdapter {
       `value`: CatFragmentImpl.Data,
     ): Unit {
       writer.name("meow")
-      StringAdapter.toJson(writer, scalarAdapters, value.meow)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.meow)
     }
   }
 }

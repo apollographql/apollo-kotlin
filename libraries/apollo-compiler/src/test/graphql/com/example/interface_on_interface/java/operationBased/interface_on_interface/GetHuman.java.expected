@@ -5,7 +5,7 @@
 //
 package com.example.interface_on_interface;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Query;
@@ -110,7 +110,7 @@ public class GetHuman implements Query<GetHuman.Data> {
   }
 
   @Override
-  public Adapter<Data> adapter() {
+  public ApolloAdapter<Data> adapter() {
     return new ObjectAdapter<Data>(GetHuman_ResponseAdapter.Data.INSTANCE, false);
   }
 

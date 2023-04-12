@@ -5,8 +5,8 @@
 //
 package com.example.data_builders.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DogFragmentImpl_ResponseAdapter {
-  public enum DogFragment implements Adapter<com.example.data_builders.fragment.DogFragment> {
+  public enum DogFragment implements ApolloAdapter<com.example.data_builders.fragment.DogFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("woof");
@@ -31,7 +31,7 @@ public class DogFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _woof = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _woof = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -47,7 +47,7 @@ public class DogFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.data_builders.fragment.DogFragment value) throws IOException {
       writer.name("woof");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.woof);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.woof);
     }
   }
 }

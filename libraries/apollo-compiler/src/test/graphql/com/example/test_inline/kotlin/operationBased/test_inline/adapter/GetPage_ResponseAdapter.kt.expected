@@ -5,9 +5,9 @@
 //
 package com.example.test_inline.adapter
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetPage_ResponseAdapter {
-  public object Data : Adapter<GetPage.Data> {
+  public object Data : ApolloAdapter<GetPage.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("collection")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): GetPage.Data {
@@ -47,7 +47,7 @@ public object GetPage_ResponseAdapter {
       Collection.obj(true).toJson(writer, scalarAdapters, value.collection)
     }
 
-    private object Collection : Adapter<GetPage.Data.Collection> {
+    private object Collection : ApolloAdapter<GetPage.Data.Collection> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "items")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -57,7 +57,7 @@ public object GetPage_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             1 -> _items = Item.obj().list().fromJson(reader, scalarAdapters)
             else -> break
           }
@@ -87,7 +87,7 @@ public object GetPage_ResponseAdapter {
         `value`: GetPage.Data.Collection,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("items")
         Item.obj().list().toJson(writer, scalarAdapters, value.items)
@@ -98,7 +98,7 @@ public object GetPage_ResponseAdapter {
         }
       }
 
-      private object Item : Adapter<GetPage.Data.Collection.Item> {
+      private object Item : ApolloAdapter<GetPage.Data.Collection.Item> {
         public val RESPONSE_NAMES: List<String> = listOf("title")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -107,7 +107,7 @@ public object GetPage_ResponseAdapter {
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _title = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> _title = StringApolloAdapter.fromJson(reader, scalarAdapters)
               else -> break
             }
           }
@@ -123,12 +123,12 @@ public object GetPage_ResponseAdapter {
           `value`: GetPage.Data.Collection.Item,
         ): Unit {
           writer.name("title")
-          StringAdapter.toJson(writer, scalarAdapters, value.title)
+          StringApolloAdapter.toJson(writer, scalarAdapters, value.title)
         }
       }
 
       private object OnParticularCollection :
-          Adapter<GetPage.Data.Collection.OnParticularCollection> {
+          ApolloAdapter<GetPage.Data.Collection.OnParticularCollection> {
         public val RESPONSE_NAMES: List<String> = listOf("items")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -156,7 +156,7 @@ public object GetPage_ResponseAdapter {
           Item.obj(true).list().toJson(writer, scalarAdapters, value.items)
         }
 
-        private object Item : Adapter<GetPage.Data.Collection.OnParticularCollection.Item> {
+        private object Item : ApolloAdapter<GetPage.Data.Collection.OnParticularCollection.Item> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -165,7 +165,7 @@ public object GetPage_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+                0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
                 else -> break
               }
             }
@@ -193,7 +193,7 @@ public object GetPage_ResponseAdapter {
             `value`: GetPage.Data.Collection.OnParticularCollection.Item,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
             if (value.onParticularItem != null) {
               com.example.test_inline.adapter.GetPage_ResponseAdapter.Data.Collection.OnParticularCollection.Item.OnParticularItem.toJson(writer,
@@ -202,7 +202,7 @@ public object GetPage_ResponseAdapter {
           }
 
           private object OnParticularItem :
-              Adapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem> {
+              ApolloAdapter<GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem> {
             public val RESPONSE_NAMES: List<String> = listOf("image")
 
             public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -211,7 +211,7 @@ public object GetPage_ResponseAdapter {
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _image = StringAdapter.fromJson(reader, scalarAdapters)
+                  0 -> _image = StringApolloAdapter.fromJson(reader, scalarAdapters)
                   else -> break
                 }
               }
@@ -227,7 +227,7 @@ public object GetPage_ResponseAdapter {
               `value`: GetPage.Data.Collection.OnParticularCollection.Item.OnParticularItem,
             ): Unit {
               writer.name("image")
-              StringAdapter.toJson(writer, scalarAdapters, value.image)
+              StringApolloAdapter.toJson(writer, scalarAdapters, value.image)
             }
           }
         }

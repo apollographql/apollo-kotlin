@@ -5,7 +5,7 @@
 //
 package com.example.not_all_combinations_are_needed.fragment
 
-import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -27,7 +27,8 @@ public class BFragmentImpl() : Fragment<BFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<BFragment> = BFragmentImpl_ResponseAdapter.BFragment.obj()
+  public override fun adapter(): ApolloAdapter<BFragment> =
+      BFragmentImpl_ResponseAdapter.BFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

@@ -5,10 +5,10 @@
 //
 package com.example.subscriptions.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestSubscription_ResponseAdapter {
-  public object Data : Adapter<TestSubscription.Data> {
+  public object Data : ApolloAdapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -48,7 +48,7 @@ public object TestSubscription_ResponseAdapter {
       CommentAdded.obj().nullable().toJson(writer, scalarAdapters, value.commentAdded)
     }
 
-    private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
+    private object CommentAdded : ApolloAdapter<TestSubscription.Data.CommentAdded> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -58,8 +58,8 @@ public object TestSubscription_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = IntAdapter.fromJson(reader, scalarAdapters)
-            1 -> _content = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _id = IntApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _content = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -76,10 +76,10 @@ public object TestSubscription_ResponseAdapter {
         `value`: TestSubscription.Data.CommentAdded,
       ): Unit {
         writer.name("id")
-        IntAdapter.toJson(writer, scalarAdapters, value.id)
+        IntApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("content")
-        StringAdapter.toJson(writer, scalarAdapters, value.content)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.content)
       }
     }
   }

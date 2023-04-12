@@ -5,7 +5,7 @@
 //
 package com.example.union_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
 import com.apollographql.apollo3.api.Fragment;
 import com.apollographql.apollo3.api.ObjectAdapter;
@@ -65,7 +65,7 @@ public class StarshipImpl implements Fragment<Starship> {
   }
 
   @Override
-  public Adapter<Starship> adapter() {
+  public ApolloAdapter<Starship> adapter() {
     return new ObjectAdapter<Starship>(StarshipImpl_ResponseAdapter.Starship.INSTANCE, false);
   }
 

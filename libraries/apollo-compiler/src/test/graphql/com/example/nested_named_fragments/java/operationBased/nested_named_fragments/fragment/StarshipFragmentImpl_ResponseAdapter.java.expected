@@ -5,8 +5,8 @@
 //
 package com.example.nested_named_fragments.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.ListAdapter;
 import com.apollographql.apollo3.api.NullableAdapter;
@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StarshipFragmentImpl_ResponseAdapter {
-  public enum StarshipFragment implements Adapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
+  public enum StarshipFragment implements ApolloAdapter<com.example.nested_named_fragments.fragment.StarshipFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "pilotConnection");
@@ -36,8 +36,8 @@ public class StarshipFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
-          case 1: _name = Adapters.NullableStringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
+          case 1: _name = Adapters.NullableStringApolloAdapter.fromJson(reader, scalarAdapters); break;
           case 2: _pilotConnection = new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>(PilotConnection.INSTANCE, false)).fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
@@ -56,17 +56,17 @@ public class StarshipFragmentImpl_ResponseAdapter {
     public void toJson(JsonWriter writer, ScalarAdapters scalarAdapters,
         com.example.nested_named_fragments.fragment.StarshipFragment value) throws IOException {
       writer.name("id");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.id);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.id);
 
       writer.name("name");
-      Adapters.NullableStringAdapter.toJson(writer, scalarAdapters, value.name);
+      Adapters.NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name);
 
       writer.name("pilotConnection");
       new NullableAdapter<>(new ObjectAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection>(PilotConnection.INSTANCE, false)).toJson(writer, scalarAdapters, value.pilotConnection);
     }
   }
 
-  public enum PilotConnection implements Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
+  public enum PilotConnection implements ApolloAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.PilotConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
@@ -98,7 +98,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
     }
   }
 
-  public enum Edge implements Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Edge> {
+  public enum Edge implements ApolloAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
@@ -130,7 +130,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
     }
   }
 
-  public enum Node implements Adapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node> {
+  public enum Node implements ApolloAdapter<com.example.nested_named_fragments.fragment.StarshipFragment.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
@@ -143,7 +143,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringAdapter.fromJson(reader, scalarAdapters); break;
+          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, scalarAdapters); break;
           default: break loop;
         }
       }
@@ -164,7 +164,7 @@ public class StarshipFragmentImpl_ResponseAdapter {
         com.example.nested_named_fragments.fragment.StarshipFragment.Node value) throws
         IOException {
       writer.name("__typename");
-      Adapters.StringAdapter.toJson(writer, scalarAdapters, value.__typename);
+      Adapters.StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename);
 
       com.example.nested_named_fragments.fragment.PilotFragmentImpl_ResponseAdapter.PilotFragment.INSTANCE.toJson(writer, scalarAdapters, value.pilotFragment);
     }

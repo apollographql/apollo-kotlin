@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_without_implementation.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableDoubleAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableDoubleApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,7 +17,7 @@ import kotlin.collections.List
 
 public object HumanDetailsImpl_ResponseAdapter {
   public object HumanDetails :
-      Adapter<com.example.named_fragment_without_implementation.fragment.HumanDetails> {
+      ApolloAdapter<com.example.named_fragment_without_implementation.fragment.HumanDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("height")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -26,7 +26,7 @@ public object HumanDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _height = NullableDoubleAdapter.fromJson(reader, scalarAdapters)
+          0 -> _height = NullableDoubleApolloAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -42,7 +42,7 @@ public object HumanDetailsImpl_ResponseAdapter {
       `value`: com.example.named_fragment_without_implementation.fragment.HumanDetails,
     ): Unit {
       writer.name("height")
-      NullableDoubleAdapter.toJson(writer, scalarAdapters, value.height)
+      NullableDoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
     }
   }
 }

@@ -5,10 +5,10 @@
 //
 package com.example.nested_named_fragments.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,7 +19,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object StarshipFragmentImpl_ResponseAdapter {
-  public object Data : Adapter<StarshipFragmentImpl.Data> {
+  public object Data : ApolloAdapter<StarshipFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("id", "name", "pilotConnection")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -30,8 +30,8 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _name = NullableStringAdapter.fromJson(reader, scalarAdapters)
+          0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+          1 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
           2 -> _pilotConnection = PilotConnection.obj().nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -50,16 +50,16 @@ public object StarshipFragmentImpl_ResponseAdapter {
       `value`: StarshipFragmentImpl.Data,
     ): Unit {
       writer.name("id")
-      StringAdapter.toJson(writer, scalarAdapters, value.id)
+      StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
       writer.name("name")
-      NullableStringAdapter.toJson(writer, scalarAdapters, value.name)
+      NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
       writer.name("pilotConnection")
       PilotConnection.obj().nullable().toJson(writer, scalarAdapters, value.pilotConnection)
     }
 
-    private object PilotConnection : Adapter<StarshipFragmentImpl.Data.PilotConnection> {
+    private object PilotConnection : ApolloAdapter<StarshipFragmentImpl.Data.PilotConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("edges")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -87,7 +87,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
         Edge.obj().nullable().list().nullable().toJson(writer, scalarAdapters, value.edges)
       }
 
-      private object Edge : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
+      private object Edge : ApolloAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
         public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -115,7 +115,7 @@ public object StarshipFragmentImpl_ResponseAdapter {
           Node.obj().nullable().toJson(writer, scalarAdapters, value.node)
         }
 
-        private object Node : Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
+        private object Node : ApolloAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "homeworld")
 
           public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -126,8 +126,8 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-                1 -> _name = NullableStringAdapter.fromJson(reader, scalarAdapters)
+                0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                1 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
                 2 -> _homeworld = Homeworld.obj().nullable().fromJson(reader, scalarAdapters)
                 else -> break
               }
@@ -146,17 +146,17 @@ public object StarshipFragmentImpl_ResponseAdapter {
             `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node,
           ): Unit {
             writer.name("__typename")
-            StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+            StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
             writer.name("name")
-            NullableStringAdapter.toJson(writer, scalarAdapters, value.name)
+            NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
             writer.name("homeworld")
             Homeworld.obj().nullable().toJson(writer, scalarAdapters, value.homeworld)
           }
 
           private object Homeworld :
-              Adapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {
+              ApolloAdapter<StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld> {
             public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
             public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -166,8 +166,8 @@ public object StarshipFragmentImpl_ResponseAdapter {
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-                  1 -> _name = NullableStringAdapter.fromJson(reader, scalarAdapters)
+                  0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+                  1 -> _name = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
                   else -> break
                 }
               }
@@ -184,10 +184,10 @@ public object StarshipFragmentImpl_ResponseAdapter {
               `value`: StarshipFragmentImpl.Data.PilotConnection.Edge.Node.Homeworld,
             ): Unit {
               writer.name("__typename")
-              StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+              StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
               writer.name("name")
-              NullableStringAdapter.toJson(writer, scalarAdapters, value.name)
+              NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.name)
             }
           }
         }

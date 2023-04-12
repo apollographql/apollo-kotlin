@@ -5,11 +5,11 @@
 //
 package com.example.target_name.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.NullableAnyAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.NullableAnyApolloAdapter
+import com.apollographql.apollo3.api.NullableStringApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -24,7 +24,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : ApolloAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("object", "interface", "union", "scalar",
         "enum")
 
@@ -41,7 +41,7 @@ public object TestQuery_ResponseAdapter {
           0 -> _object = Object.obj().nullable().fromJson(reader, scalarAdapters)
           1 -> _interface = Interface.obj().nullable().fromJson(reader, scalarAdapters)
           2 -> _union = Union.obj().nullable().fromJson(reader, scalarAdapters)
-          3 -> _scalar = NullableAnyAdapter.fromJson(reader, scalarAdapters)
+          3 -> _scalar = NullableAnyApolloAdapter.fromJson(reader, scalarAdapters)
           4 -> _enum = renamedEnum_ResponseAdapter.nullable().fromJson(reader, scalarAdapters)
           else -> break
         }
@@ -71,13 +71,13 @@ public object TestQuery_ResponseAdapter {
       Union.obj().nullable().toJson(writer, scalarAdapters, value.union)
 
       writer.name("scalar")
-      NullableAnyAdapter.toJson(writer, scalarAdapters, value.scalar)
+      NullableAnyApolloAdapter.toJson(writer, scalarAdapters, value.scalar)
 
       writer.name("enum")
       renamedEnum_ResponseAdapter.nullable().toJson(writer, scalarAdapters, value.`enum`)
     }
 
-    private object Object : Adapter<TestQuery.Data.Object> {
+    private object Object : ApolloAdapter<TestQuery.Data.Object> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -86,7 +86,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _field = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _field = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -102,11 +102,11 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Object,
       ): Unit {
         writer.name("field")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.`field`)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`field`)
       }
     }
 
-    private object Interface : Adapter<TestQuery.Data.Interface> {
+    private object Interface : ApolloAdapter<TestQuery.Data.Interface> {
       public val RESPONSE_NAMES: List<String> = listOf("field")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -115,7 +115,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _field = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> _field = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -131,11 +131,11 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.Interface,
       ): Unit {
         writer.name("field")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.`field`)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`field`)
       }
     }
 
-    private object Union : Adapter<TestQuery.Data.Union> {
+    private object Union : ApolloAdapter<TestQuery.Data.Union> {
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           TestQuery.Data.Union {
         val __typename = reader.readTypename()
@@ -173,8 +173,8 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _field = NullableStringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _field = NullableStringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -191,10 +191,10 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.ReservedObjectUnion,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("field")
-        NullableStringAdapter.toJson(writer, scalarAdapters, value.`field`)
+        NullableStringApolloAdapter.toJson(writer, scalarAdapters, value.`field`)
       }
     }
 
@@ -210,7 +210,7 @@ public object TestQuery_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -226,7 +226,7 @@ public object TestQuery_ResponseAdapter {
         `value`: TestQuery.Data.OtherUnion,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
   }

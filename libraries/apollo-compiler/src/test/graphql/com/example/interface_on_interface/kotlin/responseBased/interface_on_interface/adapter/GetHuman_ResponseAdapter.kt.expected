@@ -5,10 +5,10 @@
 //
 package com.example.interface_on_interface.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.DoubleAdapter
+import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.DoubleApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.StringApolloAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -20,7 +20,7 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetHuman_ResponseAdapter {
-  public object Data : Adapter<GetHuman.Data> {
+  public object Data : ApolloAdapter<GetHuman.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("human", "node")
 
     public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -54,7 +54,7 @@ public object GetHuman_ResponseAdapter {
       Node.obj().toJson(writer, scalarAdapters, value.node)
     }
 
-    private object Human : Adapter<GetHuman.Data.Human> {
+    private object Human : ApolloAdapter<GetHuman.Data.Human> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "name", "height")
 
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
@@ -65,9 +65,9 @@ public object GetHuman_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
-            2 -> _height = DoubleAdapter.fromJson(reader, scalarAdapters)
+            0 -> _id = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _name = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            2 -> _height = DoubleApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -85,17 +85,17 @@ public object GetHuman_ResponseAdapter {
         `value`: GetHuman.Data.Human,
       ): Unit {
         writer.name("id")
-        StringAdapter.toJson(writer, scalarAdapters, value.id)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.id)
 
         writer.name("name")
-        StringAdapter.toJson(writer, scalarAdapters, value.name)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.name)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, scalarAdapters, value.height)
+        DoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
       }
     }
 
-    private object Node : Adapter<GetHuman.Data.Node> {
+    private object Node : ApolloAdapter<GetHuman.Data.Node> {
       public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
           GetHuman.Data.Node {
         val __typename = reader.readTypename()
@@ -132,8 +132,8 @@ public object GetHuman_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _height = DoubleAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
+            1 -> _height = DoubleApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -150,10 +150,10 @@ public object GetHuman_ResponseAdapter {
         `value`: GetHuman.Data.HumanNode,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
 
         writer.name("height")
-        DoubleAdapter.toJson(writer, scalarAdapters, value.height)
+        DoubleApolloAdapter.toJson(writer, scalarAdapters, value.height)
       }
     }
 
@@ -169,7 +169,7 @@ public object GetHuman_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringApolloAdapter.fromJson(reader, scalarAdapters)
             else -> break
           }
         }
@@ -185,7 +185,7 @@ public object GetHuman_ResponseAdapter {
         `value`: GetHuman.Data.OtherNode,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringApolloAdapter.toJson(writer, scalarAdapters, value.__typename)
       }
     }
   }
