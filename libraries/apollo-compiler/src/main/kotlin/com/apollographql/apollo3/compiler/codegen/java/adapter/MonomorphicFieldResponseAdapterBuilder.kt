@@ -45,7 +45,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.enumBuilder(adapterName)
         .addSuperinterface(
-            ParameterizedTypeName.get(JavaClassNames.Adapter, context.resolver.resolveModel(model.id))
+            ParameterizedTypeName.get(JavaClassNames.ApolloAdapter, context.resolver.resolveModel(model.id))
         )
         .apply {
           addModifiers(if (public) Modifier.PUBLIC else Modifier.PRIVATE)

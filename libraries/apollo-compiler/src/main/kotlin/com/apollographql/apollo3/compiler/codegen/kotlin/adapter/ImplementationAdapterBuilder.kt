@@ -77,7 +77,7 @@ internal class ImplementationAdapterBuilder(
         .apply {
           if (!addTypenameArgument) {
             addSuperinterface(
-                KotlinSymbols.Adapter.parameterizedBy(
+                KotlinSymbols.ApolloAdapter.parameterizedBy(
                     context.resolver.resolveModel(model.id)
                 )
             )

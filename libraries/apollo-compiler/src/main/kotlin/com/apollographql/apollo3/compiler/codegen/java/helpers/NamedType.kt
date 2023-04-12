@@ -81,7 +81,7 @@ internal fun NamedType.writeToResponseCodeBlock(context: JavaContext, withDefaul
     if (withDefaultBooleanValues && defaultValue is IrBooleanValue) {
       builder.beginControlFlow("else if ($scalarAdapters.getAdapterContext().getSerializeVariablesWithDefaultBooleanValues())")
       builder.addStatement("$writer.name($S)", graphQlName)
-      builder.addStatement("$L.${Identifier.toJson}($writer, $scalarAdapters, $L)", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanAdapter"), defaultValue.value)
+      builder.addStatement("$L.${Identifier.toJson}($writer, $scalarAdapters, $L)", CodeBlock.of("$T.$L", JavaClassNames.Adapters, "BooleanApolloAdapter"), defaultValue.value)
       builder.endControlFlow()
     }
   }

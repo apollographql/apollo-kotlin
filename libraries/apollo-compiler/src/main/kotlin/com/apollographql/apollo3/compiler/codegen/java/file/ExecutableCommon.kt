@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.compiler.codegen.java.file
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.root
 import com.apollographql.apollo3.compiler.codegen.Identifier.rootField
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -49,7 +49,7 @@ internal fun adapterMethodSpec(
   return MethodSpec.methodBuilder(Identifier.adapter)
       .addModifiers(Modifier.PUBLIC)
       .addAnnotation(JavaClassNames.Override)
-      .returns(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
+      .returns(ParameterizedTypeName.get(JavaClassNames.ApolloAdapter, adaptedTypeName))
       .addCode(
           "return $L;\n",
           resolver.adapterInitializer(property.info.type, property.requiresBuffering)

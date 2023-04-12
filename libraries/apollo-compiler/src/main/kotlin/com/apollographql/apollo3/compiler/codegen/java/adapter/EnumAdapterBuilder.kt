@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.rawValue
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -67,7 +67,7 @@ internal class EnumResponseAdapterBuilder(
     return TypeSpec.enumBuilder(layout.enumResponseAdapterName(name))
         .addModifiers(Modifier.PUBLIC)
         .addEnumConstant("INSTANCE")
-        .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
+        .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.ApolloAdapter, adaptedTypeName))
         .addMethod(fromResponseMethodSpec)
         .addMethod(toResponseMethodSpec)
         .build()

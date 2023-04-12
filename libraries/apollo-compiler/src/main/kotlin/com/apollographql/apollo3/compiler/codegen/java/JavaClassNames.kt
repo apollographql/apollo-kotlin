@@ -24,7 +24,7 @@ internal object JavaClassNames {
   val Optional = ClassNames.Optional.toJavaPoetClassName()
   val Absent = ClassNames.Absent.toJavaPoetClassName()
   val Present = ClassNames.Present.toJavaPoetClassName()
-  val Adapter = ClassNames.Adapter.toJavaPoetClassName()
+  val ApolloAdapter = ClassNames.ApolloAdapter.toJavaPoetClassName()
   val ScalarAdapterToApolloAdapter = ClassNames.ScalarAdapterToApolloAdapter.toJavaPoetClassName()
   val CompiledSelection = ClassNames.CompiledSelection.toJavaPoetClassName()
   val CompiledType = ClassNames.CompiledType.toJavaPoetClassName()

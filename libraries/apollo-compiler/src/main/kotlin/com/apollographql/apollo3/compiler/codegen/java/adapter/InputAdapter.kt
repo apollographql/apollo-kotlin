@@ -4,8 +4,8 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
 import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
@@ -32,7 +32,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
-      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.Adapter, adaptedTypeName))
+      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.ApolloAdapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
       .addMethod(writeToResponseMethodSpec(context, adaptedTypeName, withDefaultBooleanValues))
       .apply {
