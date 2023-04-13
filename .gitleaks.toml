@@ -1,0 +1,18 @@
+
+[[ rules ]]
+    id = "high-entropy-base64"
+    [ rules.allowlist ]
+        commits = [
+            "3f7083f676edf920931f06b053f4a062802a9e54",
+            
+        ]
+
+[[ rules ]]
+    id = "generic-api-key"
+    [ rules.allowlist ]
+        commits = [
+            "11ac2f0ca2b914f50ba4cc182855637a4e55168c",
+            "77b4034e08e0981cabb8aa75310f85e3334a9622",
+            "06acab79ca711901cf22fb1dcf431f35145caedd",
+            
+        ]
