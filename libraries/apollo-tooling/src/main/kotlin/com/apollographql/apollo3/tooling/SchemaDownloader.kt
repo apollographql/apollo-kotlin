@@ -64,23 +64,24 @@ object SchemaDownloader {
     var gqlSchema: GQLDocument? = null
     when {
       endpoint != null -> {
-        introspectionSchemaJson = try {
-          downloadIntrospection(
+        try {
+          introspectionSchemaJson = downloadIntrospection(
               endpoint = endpoint,
               headers = headers,
               insecure = insecure,
               specVersion = SpecVersion.October_2021,
           )
+          introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
         } catch (e: Exception) {
           // Maybe the server doesn't support deprecated input fields / arguments, try without them
-          downloadIntrospection(
+          introspectionSchemaJson = downloadIntrospection(
               endpoint = endpoint,
               headers = headers,
               insecure = insecure,
               specVersion = SpecVersion.June_2018,
           )
+          introspectionSchema = introspectionSchemaJson.toIntrospectionSchema()
         }
-        introspectionSchema = introspectionSchemaJson!!.toIntrospectionSchema()
       }
       else -> {
         check(key != null) {
@@ -119,22 +120,21 @@ object SchemaDownloader {
     }
   }
 
+  /**
+   * throws if an HTTP or network error happens
+   */
   fun downloadIntrospection(
       endpoint: String,
       headers: Map<String, String>,
       insecure: Boolean,
       specVersion: SpecVersion,
   ): String {
-
     val body = mapOf(
         "query" to getIntrospectionQuery(specVersion),
         "operationName" to "IntrospectionQuery"
     )
-    val response = SchemaHelper.executeQuery(body, endpoint, headers, insecure)
 
-    return response.body.use { responseBody ->
-      responseBody!!.string()
-    }
+    return SchemaHelper.executeQuery(body, endpoint, headers, insecure).body!!.string()
   }
 
   fun downloadRegistry(
@@ -162,7 +162,7 @@ object SchemaDownloader {
 
     val response = SchemaHelper.executeQuery(query, variables, endpoint, headers + mapOf("x-api-key" to key), insecure)
 
-    val responseString = response.body.use { it?.string() }
+    val responseString = response.body?.string()
 
     val document = responseString
         ?.fromJson<Map<String, *>>()
