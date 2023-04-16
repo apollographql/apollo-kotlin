@@ -5,10 +5,10 @@ public class com/apollographql/apollo3/api/java/Assertions {
 
 public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter : com/apollographql/apollo3/api/ApolloAdapter {
 	public fun <init> (Lcom/apollographql/apollo3/api/ApolloAdapter;)V
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Lcom/google/common/base/Optional;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Lcom/google/common/base/Optional;)V
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Lcom/google/common/base/Optional;
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Ljava/lang/Object;
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/google/common/base/Optional;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
 }
 
 public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapters {
@@ -21,10 +21,10 @@ public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapt
 
 public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter : com/apollographql/apollo3/api/ApolloAdapter {
 	public fun <init> (Lcom/apollographql/apollo3/api/ApolloAdapter;)V
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/util/Optional;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/util/Optional;)V
+	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Ljava/lang/Object;
+	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Ljava/util/Optional;
+	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
+	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/util/Optional;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
 }
 
 public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalAdapters {
