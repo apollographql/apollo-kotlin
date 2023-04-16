@@ -1,6 +1,7 @@
 package test
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext
 import com.apollographql.apollo3.api.LongApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.MapJsonWriter
@@ -12,7 +13,7 @@ class JsonTest {
   @Test
   fun longAdapterWritesNumbers() {
     val json = buildJsonString {
-      LongApolloAdapter.toJson(this, ScalarAdapters.Empty, Long.MAX_VALUE)
+      LongApolloAdapter.toJson(this, Long.MAX_VALUE, DataSerializeContext(ScalarAdapters.Empty))
     }
     assertEquals("9223372036854775807", json)
   }
@@ -23,7 +24,7 @@ class JsonTest {
     mapWriter.value(Long.MAX_VALUE)
 
     val json = buildJsonString {
-      AnyApolloAdapter.toJson(this, ScalarAdapters.Empty, mapWriter.root()!!)
+      AnyApolloAdapter.toJson(this, mapWriter.root()!!, DataSerializeContext(ScalarAdapters.Empty))
     }
     assertEquals("9223372036854775807", json)
   }
