@@ -5,7 +5,7 @@
 [![Join the community](https://img.shields.io/discourse/status?label=Join%20the%20community&server=https%3A%2F%2Fcommunity.apollographql.com)](http://community.apollographql.com/new-topic?category=Help&tags=mobile,client)
 [![Slack](https://img.shields.io/static/v1?label=kotlinlang&message=apollo-android&color=15a2f5&logo=slack)](https://app.slack.com/client/T09229ZC6/C01A6KM1SBZ)
 [![Discord](https://img.shields.io/discord/1022972389463687228.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square)](https://discord.com/invite/graphos)
-[![CI](https://img.shields.io/github/actions/workflow/status/apollographql/apollo-kotlin/ci.yml?branch=main)](https://github.com/apollographql/apollo-kotlin/actions/workflows/ci.yml?query=branch%3Amain)
+[![CI](https://img.shields.io/github/actions/workflow/status/apollographql/apollo-kotlin/push.yml?branch=main)](https://github.com/apollographql/apollo-kotlin/actions/workflows/push.yml?query=branch%3Amain)
 [![Maven Central](https://img.shields.io/maven-central/v/com.apollographql.apollo3/apollo-api)](https://repo1.maven.org/maven2/com/apollographql/apollo3/)
 [![Gradle Plugin](https://img.shields.io/gradle-plugin-portal/v/com.apollographql.apollo3)](https://plugins.gradle.org/plugin/com.apollographql.apollo3)
 [![OSS Snapshots](https://img.shields.io/nexus/s/com.apollographql.apollo3/apollo-api?server=https%3A%2F%2Fs01.oss.sonatype.org&label=oss-snapshots)](https://s01.oss.sonatype.org/content/repositories/snapshots/com/apollographql/apollo3/)
