@@ -1,14 +1,8 @@
 {
-  "gradle": {
-    "fileMatch": [
-      ".*settings\\.gradle\\.kts$"
-    ]
-  },
-  "ignorePaths": [
-    "**/build.gradle.kts",
-    "**/libraries.toml",
-    ".github/**",
-    "benchmark/**"
+  "enabledManagers": ["gradle"],
+  "includePaths": [
+    "settings.gradle.kts",
+    "tests/settings.gradle.kts"
   ],
   "timeout": 600,
   "extends": ["config:base"]
