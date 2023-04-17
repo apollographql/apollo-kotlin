@@ -6,7 +6,9 @@
   },
   "ignorePaths": [
     "**/build.gradle.kts",
-    "**/libraries.toml"
+    "**/libraries.toml",
+    ".github/**",
+    "benchmark/**"
   ],
   "timeout": 600,
   "extends": ["config:base"]
