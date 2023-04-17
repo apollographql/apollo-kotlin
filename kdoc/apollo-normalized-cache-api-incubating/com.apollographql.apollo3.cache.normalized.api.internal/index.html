@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.apollographql.apollo3.cache.normalized.api.internal</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -19,6 +27,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../images/apollo.svg">
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
@@ -29,9 +38,12 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>3.8.1-SNAPSHOT
+    <div>4.0.0-dev.3-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">common</button>
+        </div>
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
         <div id="searchBar"></div>
     </div>
@@ -41,56 +53,58 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="apollo-normalized-cache-api-incubating::com.apollographql.apollo3.cache.normalized.api.internal////PointingToDeclaration//-310638535">
-  <div class="breadcrumbs"><a href="../index.html">apollo-normalized-cache-api-incubating</a><span class="delimiter">/</span><a href="index.html">com.apollographql.apollo3.cache.normalized.api.internal</a></div>
+<div class="main-content" data-page-type="package" id="content" pageids="apollo-normalized-cache-api-incubating::com.apollographql.apollo3.cache.normalized.api.internal////PointingToDeclaration//-310638535">
+  <div class="breadcrumbs"><a href="../index.html">apollo-normalized-cache-api-incubating</a><span class="delimiter">/</span><span class="current">com.apollographql.apollo3.cache.normalized.api.internal</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>apollographql.</span><wbr><span>apollo3.</span><wbr><span>cache.</span><wbr><span>normalized.</span><wbr><span>api.</span><wbr><span>internal</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="-75283597%2FClasslikes%2F-310638535" anchor-label="BlobRecordSerializer" id="-75283597%2FClasslikes%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-blob-record-serializer/index.html"><span>Blob</span><wbr><span>Record</span><wbr><span><span>Serializer</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-75283597%2FClasslikes%2F-310638535" anchor-label="BlobRecordSerializer" id="-75283597%2FClasslikes%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-blob-record-serializer/index.html"><span>Blob</span><wbr><span>Record</span><wbr><span><span>Serializer</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-75283597%2FClasslikes%2F-310638535"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-blob-record-serializer/index.html">BlobRecordSerializer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">A serializer that serializes/deserializes a <a href="../com.apollographql.apollo3.cache.normalized.api/-record/index.html">Record</a> to a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a></p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-blob-record-serializer/index.html">BlobRecordSerializer</a></div><div class="brief "><p class="paragraph">A serializer that serializes/deserializes a <a href="../com.apollographql.apollo3.cache.normalized.api/-record/index.html">Record</a> to a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-byte-array/index.html">ByteArray</a></p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="2109650568%2FClasslikes%2F-310638535" anchor-label="JsonRecordSerializer" id="2109650568%2FClasslikes%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-json-record-serializer/index.html"><span>Json</span><wbr><span>Record</span><wbr><span><span>Serializer</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-json-record-serializer/index.html"><span>Json</span><wbr><span>Record</span><wbr><span><span>Serializer</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2109650568%2FClasslikes%2F-310638535"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-json-record-serializer/index.html">JsonRecordSerializer</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An adapter used to serialize and deserialize Record fields. Record object types will be serialized to <a href="../com.apollographql.apollo3.cache.normalized.api/-cache-key/index.html">CacheKey</a>.</p></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-json-record-serializer/index.html">JsonRecordSerializer</a></div><div class="brief "><p class="paragraph">An adapter used to serialize and deserialize Record fields. Record object types will be serialized to <a href="../com.apollographql.apollo3.cache.normalized.api/-cache-key/index.html">CacheKey</a>.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="2114248122%2FClasslikes%2F-310638535" anchor-label="OptimisticCache" id="2114248122%2FClasslikes%2F-310638535" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-optimistic-cache/index.html"><span>Optimistic</span><wbr><span><span>Cache</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-optimistic-cache/index.html"><span>Optimistic</span><wbr><span><span>Cache</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2114248122%2FClasslikes%2F-310638535"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-optimistic-cache/index.html">OptimisticCache</a> : <a href="../com.apollographql.apollo3.cache.normalized.api/-normalized-cache/index.html">NormalizedCache</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-api-incubating:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-optimistic-cache/index.html">OptimisticCache</a> : <a href="../com.apollographql.apollo3.cache.normalized.api/-normalized-cache/index.html">NormalizedCache</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -104,6 +118,6 @@ if(savedDarkMode === true){
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 

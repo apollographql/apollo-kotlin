@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.apollographql.apollo3</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -19,6 +27,7 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../images/apollo.svg">
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
@@ -29,7 +38,7 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>3.8.1-SNAPSHOT
+    <div>4.0.0-dev.3-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -44,98 +53,92 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageids="apollo-runtime::com.apollographql.apollo3////PointingToDeclaration//-1314432391">
-  <div class="breadcrumbs"><a href="../index.html">apollo-runtime</a><span class="delimiter">/</span><a href="index.html">com.apollographql.apollo3</a></div>
+<div class="main-content" data-page-type="package" id="content" pageids="apollo-runtime::com.apollographql.apollo3////PointingToDeclaration//-1314432391">
+  <div class="breadcrumbs"><a href="../index.html">apollo-runtime</a><span class="delimiter">/</span><span class="current">com.apollographql.apollo3</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>apollographql.</span><wbr><span>apollo3</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="PROPERTY,EXTENSION_PROPERTY">Properties</button></div>
     <div class="tabs-section-body">
-      <h2 class="">Types</h2>
-      <div class="table" data-togglable="Types"><a data-name="1511306680%2FClasslikes%2F-1314432391" anchor-label="ApolloCall" id="1511306680%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-apollo-call/index.html"><span>Apollo</span><wbr><span><span>Call</span></span></a></div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1511306680%2FClasslikes%2F-1314432391" anchor-label="ApolloCall" id="1511306680%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-apollo-call/index.html"><span>Apollo</span><wbr><span><span>Call</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1511306680%2FClasslikes%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-call/index.html">ApolloCall</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-apollo-call/index.html">D</a><span class="token operator"> : </span><a href="../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt;</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-apollo-call/index.html">ApolloCall</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-apollo-call/index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An <a href="-apollo-call/index.html">ApolloCall</a> is a thin class that builds a <a href="../../apollo-api/com.apollographql.apollo3.api/-apollo-request/index.html">ApolloRequest</a> and calls <a href="-apollo-client/index.html">ApolloClient</a>.execute() with it. <a href="-apollo-call/index.html">ApolloCall</a> is mutable and designed to allow chaining calls.</p></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-call/index.html">ApolloCall</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-apollo-call/index.html">D</a><span class="token operator"> : </span><a href="../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt;</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-mutable-execution-options/index.html">MutableExecutionOptions</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-apollo-call/index.html">ApolloCall</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-apollo-call/index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">An <a href="-apollo-call/index.html">ApolloCall</a> is a thin class that builds a <a href="../../apollo-api/com.apollographql.apollo3.api/-apollo-request/index.html">ApolloRequest</a> and calls <a href="-apollo-client/index.html">ApolloClient</a>.execute() with it. <a href="-apollo-call/index.html">ApolloCall</a> is mutable and designed to allow chaining calls.</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1712212907%2FClasslikes%2F-1314432391" anchor-label="ApolloClient" id="1712212907%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-apollo-client/index.html"><span>Apollo</span><wbr><span><span>Client</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-apollo-client/index.html"><span>Apollo</span><wbr><span><span>Client</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1712212907%2FClasslikes%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-client/index.html">ApolloClient</a> : <a href="../../apollo-api/com.apollographql.apollo3.api/-execution-options/index.html">ExecutionOptions</a>, <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">The main entry point for the Apollo runtime. An <a href="-apollo-client/index.html">ApolloClient</a> is responsible for executing queries, mutations and subscriptions</p></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-client/index.html">ApolloClient</a> : <a href="../../apollo-api/com.apollographql.apollo3.api/-execution-options/index.html">ExecutionOptions</a>, <span data-unresolved-link="okio/Closeable///PointingToDeclaration/">Closeable</span></div><div class="brief "><p class="paragraph">The main entry point for the Apollo runtime. An <a href="-apollo-client/index.html">ApolloClient</a> is responsible for executing queries, mutations and subscriptions</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="-1355156045%2FClasslikes%2F-1314432391" anchor-label="AutoPersistedQueryInfo" id="-1355156045%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-auto-persisted-query-info/index.html"><span>Auto</span><wbr><span>Persisted</span><wbr><span>Query</span><wbr><span><span>Info</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-auto-persisted-query-info/index.html"><span>Auto</span><wbr><span>Persisted</span><wbr><span>Query</span><wbr><span><span>Info</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1355156045%2FClasslikes%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-auto-persisted-query-info/index.html">AutoPersistedQueryInfo</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>hit<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-execution-context/-element/index.html">ExecutionContext.Element</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Information about auto persisted queries</p></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-auto-persisted-query-info/index.html">AutoPersistedQueryInfo</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>hit<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-execution-context/-element/index.html">ExecutionContext.Element</a></div><div class="brief "><p class="paragraph">Information about auto persisted queries</p></div></div></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 <a data-name="1873427516%2FClasslikes%2F-1314432391" anchor-label="ConcurrencyInfo" id="1873427516%2FClasslikes%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="-concurrency-info/index.html"><span>Concurrency</span><wbr><span><span>Info</span></span></a></div>
+          <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-concurrency-info/index.html"><span>Concurrency</span><wbr><span><span>Info</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1873427516%2FClasslikes%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-concurrency-info/index.html">ConcurrencyInfo</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>dispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>coroutineScope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span></span></span><span class="token punctuation">)</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-execution-context/-element/index.html">ExecutionContext.Element</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-concurrency-info/index.html">ConcurrencyInfo</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>dispatcher<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineDispatcher///PointingToDeclaration/">CoroutineDispatcher</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>coroutineScope<span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines/CoroutineScope///PointingToDeclaration/">CoroutineScope</span></span></span><span class="token punctuation">)</span> : <a href="../../apollo-api/com.apollographql.apollo3.api/-execution-context/-element/index.html">ExecutionContext.Element</a></div></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="1594009397%2FProperties%2F-1314432391" anchor-label="autoPersistedQueryInfo" id="1594009397%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
-        <div class="table-row" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="auto-persisted-query-info.html"><span>auto</span><wbr><span>Persisted</span><wbr><span>Query</span><wbr><span><span>Info</span></span></a></div>
+      <div data-togglable="EXTENSION_PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1594009397%2FProperties%2F-1314432391" anchor-label="autoPersistedQueryInfo" id="1594009397%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="auto-persisted-query-info.html"><span>auto</span><wbr><span>Persisted</span><wbr><span>Query</span><wbr><span><span>Info</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1594009397%2FProperties%2F-1314432391"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
-                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-runtime:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-runtime:dokkaHtmlPartial/commonMain">common</button></div>
-<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><a data-name="1594009397%2FProperties%2F-1314432391" anchor-label="autoPersistedQueryInfo" id="1594009397%2FProperties%2F-1314432391" data-filterable-set=":apollo-runtime:dokkaHtmlPartial/commonMain"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="auto-persisted-query-info.html">D</a><span class="token operator"> : </span><a href="../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt; </span><a href="../../apollo-api/com.apollographql.apollo3.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="auto-persisted-query-info.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="auto-persisted-query-info.html">autoPersistedQueryInfo</a><span class="token operator">: </span><a href="-auto-persisted-query-info/index.html">AutoPersistedQueryInfo</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-runtime:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="auto-persisted-query-info.html">D</a><span class="token operator"> : </span><a href="../../apollo-api/com.apollographql.apollo3.api/-operation/-data/index.html">Operation.Data</a><span class="token operator">&gt; </span><a href="../../apollo-api/com.apollographql.apollo3.api/-apollo-response/index.html">ApolloResponse</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="auto-persisted-query-info.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="auto-persisted-query-info.html">autoPersistedQueryInfo</a><span class="token operator">: </span><a href="-auto-persisted-query-info/index.html">AutoPersistedQueryInfo</a><span class="token operator">?</span></div></div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -149,6 +152,6 @@ if(savedDarkMode === true){
       </div>
     </div>
 </div>
-
-</body></html>
+</body>
+</html>
 
