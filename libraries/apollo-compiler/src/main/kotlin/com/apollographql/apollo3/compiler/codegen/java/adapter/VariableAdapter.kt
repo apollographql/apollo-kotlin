@@ -1,3 +1,6 @@
+/*
+ * Generates ResponseAdapters for variables
+ */
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier

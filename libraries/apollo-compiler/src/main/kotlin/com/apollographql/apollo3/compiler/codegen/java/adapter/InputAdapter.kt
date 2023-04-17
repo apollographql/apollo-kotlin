@@ -1,5 +1,5 @@
 /*
- * Generates ResponseAdapters for variables/input
+ * Generates ResponseAdapters for input
  */
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
