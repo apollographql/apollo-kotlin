@@ -3,5 +3,6 @@
     ".*settings\\.gradle\\.kts$"
   ],
   "timeout": 600,
-  "versioning": "gradle"
+  "versioning": "gradle",
+  "extends": ["config:base"]
 }
