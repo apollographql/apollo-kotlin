@@ -4,18 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.apollographql.apollo3.cache.normalized.sql</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
-        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-        if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    } else {
-        const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
-        }
-    }
-    </script>
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -27,7 +19,6 @@
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script>
 <link href="../../images/apollo.svg">
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/prism.css" rel="Stylesheet">
@@ -38,7 +29,7 @@
     <div class="library-name">
 <a href="../../index.html">
 <span>apollo-kotlin</span>            </a>    </div>
-    <div>4.0.0-dev.3-SNAPSHOT
+    <div>3.8.1-SNAPSHOT
     </div>
     <div class="pull-right d-flex">
         <div class="filter-section" id="filter-section">
@@ -56,62 +47,62 @@
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" data-page-type="package" id="content" pageids="apollo-normalized-cache-sqlite::com.apollographql.apollo3.cache.normalized.sql////PointingToDeclaration//525146106">
-  <div class="breadcrumbs"><a href="../index.html">apollo-normalized-cache-sqlite</a><span class="delimiter">/</span><span class="current">com.apollographql.apollo3.cache.normalized.sql</span></div>
+<div class="main-content" id="content" pageids="apollo-normalized-cache-sqlite::com.apollographql.apollo3.cache.normalized.sql////PointingToDeclaration//525146106">
+  <div class="breadcrumbs"><a href="../index.html">apollo-normalized-cache-sqlite</a><span class="delimiter">/</span><a href="index.html">com.apollographql.apollo3.cache.normalized.sql</a></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+    <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>apollographql.</span><wbr><span>apollo3.</span><wbr><span>cache.</span><wbr><span>normalized.</span><wbr><span>sql</span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
-        <div class="table"><a data-name="574569311%2FClasslikes%2F1890449590" anchor-label="ApolloInitializer" id="574569311%2FClasslikes%2F1890449590" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-apollo-initializer/index.html"><span>Apollo</span><wbr><span><span>Initializer</span></span></a></div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="574569311%2FClasslikes%2F1890449590" anchor-label="ApolloInitializer" id="574569311%2FClasslikes%2F1890449590" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain"></a>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-apollo-initializer/index.html"><span>Apollo</span><wbr><span><span>Initializer</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="574569311%2FClasslikes%2F1890449590"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain">android</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-initializer/index.html">ApolloInitializer</a> : <a href="https://developer.android.com/reference/kotlin/androidx/startup/Initializer.html">Initializer</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt; </span></div></div>                  </div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-apollo-initializer/index.html">ApolloInitializer</a> : <a href="https://developer.android.com/reference/kotlin/androidx/startup/Initializer.html">Initializer</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
+        </div>
 <a data-name="-727036557%2FClasslikes%2F-1867430748" anchor-label="SqlNormalizedCache" id="-727036557%2FClasslikes%2F-1867430748" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-sql-normalized-cache/index.html"><span>Sql</span><wbr><span>Normalized</span><wbr><span><span>Cache</span></span></a></div>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-sql-normalized-cache/index.html"><span>Sql</span><wbr><span>Normalized</span><wbr><span><span>Cache</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-727036557%2FClasslikes%2F-1867430748"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-sql-normalized-cache/index.html">SqlNormalizedCache</a> : <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache/index.html">NormalizedCache</a></div></div></div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-sql-normalized-cache/index.html">SqlNormalizedCache</a> : <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache/index.html">NormalizedCache</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
+        </div>
 <a data-name="-914930939%2FClasslikes%2F-1249603862" anchor-label="SqlNormalizedCacheFactory" id="-914930939%2FClasslikes%2F-1249603862" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain :apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain"></a>
-          <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain :apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain :apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-sql-normalized-cache-factory/index.html"><span>Sql</span><wbr><span>Normalized</span><wbr><span>Cache</span><wbr><span><span>Factory</span></span></a></div>
+        <div class="table-row" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain :apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain :apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-sql-normalized-cache-factory/index.html"><span>Sql</span><wbr><span>Normalized</span><wbr><span>Cache</span><wbr><span><span>Factory</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-914930939%2FClasslikes%2F-1249603862"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain">jvm</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">class </span><a href="-sql-normalized-cache-factory/index.html">SqlNormalizedCacheFactory</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span><span class="token string">"apollo.db"</span></span></span><span class="token punctuation">)</span> : <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a></div><div class="brief "><p class="paragraph">Creates a new <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a> that uses a persistent cache based on Sqlite</p></div></div><div class="content sourceset-dependent-content" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="-sql-normalized-cache-factory/index.html">SqlNormalizedCacheFactory</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a></div></div>                  </div>
-                </div>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain" data-active="" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark jvm-like" data-filterable-current=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain" data-filterable-set=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain" data-toggle=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain">jvm</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">class </span><a href="-sql-normalized-cache-factory/index.html">SqlNormalizedCacheFactory</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span><span class="token string">"apollo.db"</span></span></span><span class="token punctuation">)</span> : <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Creates a new <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a> that uses a persistent cache based on Sqlite</p></div></div><div class="content sourceset-depenent-content" data-togglable=":apollo-normalized-cache-sqlite:dokkaHtmlPartial/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="-sql-normalized-cache-factory/index.html">SqlNormalizedCacheFactory</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="../../apollo-normalized-cache-api/com.apollographql.apollo3.cache.normalized.api/-normalized-cache-factory/index.html">NormalizedCacheFactory</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
               </div>
             </div>
           </div>
@@ -125,6 +116,6 @@
       </div>
     </div>
 </div>
-</body>
-</html>
+
+</body></html>
 
