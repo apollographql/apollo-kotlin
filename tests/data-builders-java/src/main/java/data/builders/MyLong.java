@@ -1,6 +1,6 @@
 package data.builders;
 
-import com.apollographql.apollo3.api.ScalarAdapter;
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ public class MyLong {
     this.value = value;
   }
 
-  public static class MyLongAdapter implements ScalarAdapter<MyLong> {
+  public static class MyLongAdapter implements Adapter<MyLong> {
     @Override public MyLong fromJson(@NotNull JsonReader reader) {
       try {
         return new MyLong(reader.nextLong());
