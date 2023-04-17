@@ -1,7 +1,7 @@
 {
-  "dependencyDashboard": true,
-  "packageFiles": ["docs/package.json"],
-  "extends": [
-    "apollo-docs"
-  ]
+  "fileMatch": [
+    ".*settings\\.gradle\\.kts$"
+  ],
+  "timeout": 600,
+  "versioning": "gradle"
 }
