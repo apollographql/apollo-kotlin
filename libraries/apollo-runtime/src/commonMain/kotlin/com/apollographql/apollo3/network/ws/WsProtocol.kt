@@ -1,10 +1,10 @@
 package com.apollographql.apollo3.network.ws
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
-import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonByteString
 import com.apollographql.apollo3.api.json.buildJsonString
@@ -99,11 +99,7 @@ abstract class WsProtocol(
   protected fun String.toMessageMap(): Map<String, Any?>? = try {
     AnyApolloAdapter.fromJson(
         BufferedSourceJsonReader(Buffer().writeUtf8(this)),
-        DataDeserializeContext(
-            scalarAdapters = ScalarAdapters.Empty,
-            falseBooleanVariables = emptySet(),
-            mergedDeferredFragmentIds = null
-        )
+        ScalarAdapters.Empty
     ) as? Map<String, Any?>
   } catch (e: Exception) {
     null
