@@ -1,5 +1,7 @@
 package com.apollographql.apollo3.api
 
+import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext
+import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
@@ -48,5 +50,9 @@ interface ApolloAdapter<T> {
 }
 
 fun <T> ApolloAdapter<T>.toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T) {
-  toJson(writer, value, ApolloAdapter.DataSerializeContext(scalarAdapters))
+  toJson(writer, value, DataSerializeContext(scalarAdapters))
+}
+
+fun <T> ApolloAdapter<T>.fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
+  return fromJson(reader, DataDeserializeContext(scalarAdapters = scalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
 }

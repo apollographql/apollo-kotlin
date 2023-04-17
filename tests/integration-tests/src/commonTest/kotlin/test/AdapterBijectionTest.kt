@@ -1,9 +1,11 @@
 package test
 
 import com.apollographql.apollo3.adapter.KotlinxLocalDateAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.jsonReader
 import com.apollographql.apollo3.api.toJsonString
 import com.apollographql.apollo3.integration.httpcache.type.Date
@@ -147,7 +149,7 @@ class AdapterBijectionTest {
 
   private fun <D : Operation.Data> bijection(operation: Operation<D>, data: D) {
     val scalarAdapters = ScalarAdapters.Builder().add(Date.type, KotlinxLocalDateAdapter).build()
-    val json = operation.adapter().toJsonString(value = data, scalarAdapters = scalarAdapters)
+    val json = operation.adapter().toJsonString(value = data, ApolloAdapter.DataSerializeContext(scalarAdapters = scalarAdapters))
     val data2 = operation.adapter().fromJson(Buffer().apply { writeUtf8(json) }.jsonReader(), scalarAdapters)
 
     assertEquals(data, data2)

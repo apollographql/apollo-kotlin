@@ -1,5 +1,6 @@
 package test;
 
+import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;
 import com.google.common.truth.Truth;
@@ -17,7 +18,7 @@ public class OperationTest {
     GetRandomQuery.Data data = GetRandomQuery.Data.builder().random(42).build();
 
     Buffer buffer = new Buffer();
-    query.adapter().toJson(new BufferedSinkJsonWriter(buffer), ScalarAdapters.Empty, data);
+    query.adapter().toJson(new BufferedSinkJsonWriter(buffer), data, new ApolloAdapter.DataSerializeContext(ScalarAdapters.Empty));
     String json = buffer.readUtf8();
 
     // We don't want to test indentation here so we replace whitespace

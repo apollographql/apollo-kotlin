@@ -3,8 +3,10 @@ package test.fake_subscription_engine
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.AnyApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader
 import com.apollographql.apollo3.api.json.buildJsonString
+import com.apollographql.apollo3.api.toJson
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import com.apollographql.apollo3.testing.internal.runTest
 import fake_subscription_engine.RandomSubscription
