@@ -3,8 +3,8 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.Subscription
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.network.ws.WebSocketNetworkTransport
 import kotlinx.coroutines.flow.single
@@ -50,7 +50,7 @@ class NothingSubscription : Subscription<Nothing> {
     TODO("Not yet implemented")
   }
 
-  override fun serializeVariables(writer: JsonWriter, scalarAdapters: ScalarAdapters) {
+  override fun serializeVariables(writer: JsonWriter, context: VariablesAdapter.SerializeVariablesContext) {
     TODO("Not yet implemented")
   }
 
