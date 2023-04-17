@@ -233,13 +233,13 @@ internal class PassThroughAdapter<T> : ApolloAdapter<T> {
   }
 }
 
-class ScalarAdapterToApolloAdapter<T>(private val wrappedScalarAdapter: ScalarAdapter<T>) : ApolloAdapter<T> {
+class ScalarAdapterToApolloAdapter<T>(private val wrappedAdapter: Adapter<T>) : ApolloAdapter<T> {
   override fun fromJson(reader: JsonReader, context: DataDeserializeContext): T {
-    return wrappedScalarAdapter.fromJson(reader)
+    return wrappedAdapter.fromJson(reader)
   }
 
   override fun toJson(writer: JsonWriter, value: T, context: DataSerializeContext) {
-    wrappedScalarAdapter.toJson(writer, value)
+    wrappedAdapter.toJson(writer, value)
   }
 }
 
@@ -292,7 +292,7 @@ val ApolloOptionalAnyApolloAdapter = ApolloOptionalAdapter(AnyApolloAdapter)
 
 
 @JvmField
-val StringScalarAdapter = object : ScalarAdapter<String> {
+val StringAdapter = object : Adapter<String> {
   override fun fromJson(reader: JsonReader): String {
     return reader.nextString()!!
   }
@@ -303,7 +303,7 @@ val StringScalarAdapter = object : ScalarAdapter<String> {
 }
 
 @JvmField
-val IntScalarAdapter = object : ScalarAdapter<Int> {
+val IntAdapter = object : Adapter<Int> {
   override fun fromJson(reader: JsonReader): Int {
     return reader.nextInt()
   }
@@ -314,7 +314,7 @@ val IntScalarAdapter = object : ScalarAdapter<Int> {
 }
 
 @JvmField
-val DoubleScalarAdapter = object : ScalarAdapter<Double> {
+val DoubleAdapter = object : Adapter<Double> {
   override fun fromJson(reader: JsonReader): Double {
     return reader.nextDouble()
   }
@@ -329,7 +329,7 @@ val DoubleScalarAdapter = object : ScalarAdapter<Double> {
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
 @JvmField
-val FloatScalarAdapter = object : ScalarAdapter<Float> {
+val FloatAdapter = object : Adapter<Float> {
   override fun fromJson(reader: JsonReader): Float {
     return reader.nextDouble().toFloat()
   }
@@ -346,7 +346,7 @@ val FloatScalarAdapter = object : ScalarAdapter<Float> {
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
 @JvmField
-val LongScalarAdapter = object : ScalarAdapter<Long> {
+val LongAdapter = object : Adapter<Long> {
   override fun fromJson(reader: JsonReader): Long {
     return reader.nextLong()
   }
@@ -357,7 +357,7 @@ val LongScalarAdapter = object : ScalarAdapter<Long> {
 }
 
 @JvmField
-val BooleanScalarAdapter = object : ScalarAdapter<Boolean> {
+val BooleanAdapter = object : Adapter<Boolean> {
   override fun fromJson(reader: JsonReader): Boolean {
     return reader.nextBoolean()
   }
@@ -368,7 +368,7 @@ val BooleanScalarAdapter = object : ScalarAdapter<Boolean> {
 }
 
 @JvmField
-val AnyScalarAdapter = object : ScalarAdapter<Any> {
+val AnyAdapter = object : Adapter<Any> {
   override fun fromJson(reader: JsonReader): Any {
     return reader.readAny()!!
   }
@@ -379,7 +379,7 @@ val AnyScalarAdapter = object : ScalarAdapter<Any> {
 }
 
 @JvmField
-val UploadScalarAdapter = object : ScalarAdapter<Upload> {
+val UploadAdapter = object : Adapter<Upload> {
   override fun fromJson(reader: JsonReader): Upload {
     error("File Upload used in output position")
   }
@@ -496,7 +496,7 @@ fun <T> ApolloAdapter<T>.toJsonString(
 
 @JvmName("-toJson")
 @JvmOverloads
-fun <T> ScalarAdapter<T>.toJsonString(
+fun <T> Adapter<T>.toJsonString(
     value: T,
     indent: String? = null,
 ): String = buildJsonString(indent) {

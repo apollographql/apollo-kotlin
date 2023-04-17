@@ -1,10 +1,10 @@
 package com.example
 
-import com.apollographql.apollo3.api.ScalarAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 
-object UrlAdapter : ScalarAdapter<String> {
+object UrlAdapter : Adapter<String> {
   override fun fromJson(reader: JsonReader): String {
     return reader.nextString()!!
   }

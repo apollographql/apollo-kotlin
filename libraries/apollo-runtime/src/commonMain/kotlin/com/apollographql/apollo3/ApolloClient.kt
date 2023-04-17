@@ -1,5 +1,6 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -9,7 +10,6 @@ import com.apollographql.apollo3.api.MutableExecutionOptions
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.Query
-import com.apollographql.apollo3.api.ScalarAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ScalarType
 import com.apollographql.apollo3.api.Subscription
@@ -392,15 +392,15 @@ private constructor(
     }
 
     /**
-     * Registers the given [scalarAdapter]
+     * Registers the given [adapter]
      *
      * @param scalarType a generated [ScalarType]. Every GraphQL custom scalar has a
      * generated class with a static `type` property. For an example, for a `Date` custom scalar,
      * you can use `com.example.Date.type`
-     * @param scalarAdapter the [ApolloAdapter] to use for this custom scalar
+     * @param adapter the [ApolloAdapter] to use for this custom scalar
      */
-    fun <T> addScalarAdapter(scalarType: ScalarType, scalarAdapter: ScalarAdapter<T>) = apply {
-      scalarAdaptersBuilder.add(scalarType, scalarAdapter)
+    fun <T> addScalarAdapter(scalarType: ScalarType, adapter: Adapter<T>) = apply {
+      scalarAdaptersBuilder.add(scalarType, adapter)
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {

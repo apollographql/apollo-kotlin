@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.adapter
 
-import com.apollographql.apollo3.api.ScalarAdapter
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import java.time.Instant
@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 
 
 /**
- * A [ScalarAdapter] that converts an ISO 8601 String to/from a [java.time.Instant]
+ * An [Adapter] that converts an ISO 8601 String to/from a [java.time.Instant]
  * When writing, it discards the offset information.
  *
  * Examples:
@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object JavaInstantAdapter : ScalarAdapter<Instant> {
+object JavaInstantAdapter : Adapter<Instant> {
   override fun fromJson(reader: JsonReader): Instant {
     // Instant.parse chokes on offset (kotlinx.datetime.Instant doesn't)
     return OffsetDateTime.parse(reader.nextString()!!).toInstant()
@@ -33,14 +33,14 @@ object JavaInstantAdapter : ScalarAdapter<Instant> {
 }
 
 /**
- * A [Adapter] that converts a date to/from [java.time.LocalDate]
+ * An [Adapter] that converts a date to/from [java.time.LocalDate]
  *
  * Examples:
  * - "2010-06-01"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object JavaLocalDateAdapter : ScalarAdapter<LocalDate> {
+object JavaLocalDateAdapter : Adapter<LocalDate> {
   override fun fromJson(reader: JsonReader): LocalDate {
     return LocalDate.parse(reader.nextString()!!)
   }
@@ -51,14 +51,14 @@ object JavaLocalDateAdapter : ScalarAdapter<LocalDate> {
 }
 
 /**
- * A [Adapter] that converts a date and time to/from [java.time.LocalDateTime]
+ * An [Adapter] that converts a date and time to/from [java.time.LocalDateTime]
  *
  * Examples:
  * - "2010-06-01T22:19:44.475"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object JavaLocalDateTimeAdapter : ScalarAdapter<LocalDateTime> {
+object JavaLocalDateTimeAdapter : Adapter<LocalDateTime> {
   override fun fromJson(reader: JsonReader): LocalDateTime {
     return LocalDateTime.parse(reader.nextString()!!)
   }
@@ -69,14 +69,14 @@ object JavaLocalDateTimeAdapter : ScalarAdapter<LocalDateTime> {
 }
 
 /**
- * A [Adapter] that converts a date and time to/from [java.time.OffsetDateTime]
+ * An [Adapter] that converts a date and time to/from [java.time.OffsetDateTime]
  *
  * Examples:
  * - "2010-06-01T22:19:44.475+01:00"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object JavaOffsetDateTimeAdapter : ScalarAdapter<OffsetDateTime> {
+object JavaOffsetDateTimeAdapter : Adapter<OffsetDateTime> {
   override fun fromJson(reader: JsonReader): OffsetDateTime {
     return OffsetDateTime.parse(reader.nextString()!!)
   }
@@ -87,14 +87,14 @@ object JavaOffsetDateTimeAdapter : ScalarAdapter<OffsetDateTime> {
 }
 
 /**
- * A [Adapter] that converts a time to/from [java.time.LocalTime]
+ * An [Adapter] that converts a time to/from [java.time.LocalTime]
  *
  * Examples:
  * - "14:35:00"
  *
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
-object JavaLocalTimeAdapter : ScalarAdapter<LocalTime> {
+object JavaLocalTimeAdapter : Adapter<LocalTime> {
   override fun fromJson(reader: JsonReader): LocalTime {
     return LocalTime.parse(reader.nextString())
   }
