@@ -152,7 +152,7 @@ jobs:
 
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache
-        uses: actions/cache@58c146cc91c5b9e778e71775dfe9bf1442ad9a12 #v3.2.3
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ steps.properties.outputs.pluginVerifierHomeDir }}/ides
           key: plugin-verifier-${{ hashFiles('intellij-plugin/build/listProductsReleases.txt') }}
