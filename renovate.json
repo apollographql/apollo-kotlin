@@ -1,8 +1,9 @@
 {
-  "fileMatch": [
-    ".*settings\\.gradle\\.kts$"
-  ],
+  "gradle": {
+    "fileMatch": [
+      ".*settings\\.gradle\\.kts$"
+    ]
+  },
   "timeout": 600,
-  "versioning": "gradle",
   "extends": ["config:base"]
 }
