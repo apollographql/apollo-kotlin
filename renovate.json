@@ -4,6 +4,10 @@
       ".*settings\\.gradle\\.kts$"
     ]
   },
+  "ignorePaths": [
+    ".*build\\.gradle\\.kts$",
+    ".*libraries\\.toml$"
+  ],
   "timeout": 600,
   "extends": ["config:base"]
 }
