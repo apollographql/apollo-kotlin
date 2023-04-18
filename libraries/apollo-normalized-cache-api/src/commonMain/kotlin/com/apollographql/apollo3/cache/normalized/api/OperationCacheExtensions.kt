@@ -1,11 +1,10 @@
 package com.apollographql.apollo3.cache.normalized.api
 
-import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ScalarAdapters
-import com.apollographql.apollo3.api.booleanVariables
+import com.apollographql.apollo3.api.fromJson
 import com.apollographql.apollo3.api.json.MapJsonReader
 import com.apollographql.apollo3.api.json.MapJsonWriter
 import com.apollographql.apollo3.api.toJson
@@ -81,14 +80,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
   val reader = MapJsonReader(
       root = map,
   )
-  return adapter().deserializeData(
-      reader,
-      DataAdapter.DeserializeDataContext(
-          scalarAdapters = scalarAdapters,
-          falseBooleanVariables = booleanVariables(scalarAdapters),
-          mergedDeferredFragmentIds = null,
-      )
-  )
+  return adapter().fromJson(reader, scalarAdapters)
 }
 
 fun Collection<Record>?.dependentKeys(): Set<String> {
