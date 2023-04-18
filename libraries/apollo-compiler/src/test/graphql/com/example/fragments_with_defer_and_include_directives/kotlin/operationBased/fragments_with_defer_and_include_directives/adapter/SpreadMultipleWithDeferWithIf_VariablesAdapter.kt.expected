@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.BooleanApolloAdapter
+import com.apollographql.apollo3.api.BooleanDataAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf
@@ -19,8 +19,8 @@ public object SpreadMultipleWithDeferWithIf_VariablesAdapter :
     `value`: SpreadMultipleWithDeferWithIf,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("cond")
-    BooleanApolloAdapter.toJson(writer, value.cond, serializeDataContext)
+    BooleanDataAdapter.serializeData(writer, value.cond, serializeDataContext)
   }
 }

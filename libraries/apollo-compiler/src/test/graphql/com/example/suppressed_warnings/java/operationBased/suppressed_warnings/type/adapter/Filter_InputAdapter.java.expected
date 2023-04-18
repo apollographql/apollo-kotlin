@@ -5,9 +5,9 @@
 //
 package com.example.suppressed_warnings.type.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -18,29 +18,29 @@ import java.lang.Override;
 import java.lang.SuppressWarnings;
 
 @SuppressWarnings("deprecation")
-public enum Filter_InputAdapter implements ApolloAdapter<Filter> {
+public enum Filter_InputAdapter implements DataAdapter<Filter> {
   INSTANCE;
 
   @Override
-  public Filter fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
-      IOException {
+  public Filter deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, Filter value, ApolloAdapter.DataSerializeContext context)
-      throws IOException {
+  public void serializeData(JsonWriter writer, Filter value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     if (value.name instanceof Optional.Present) {
       writer.name("name");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.name, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableStringDataAdapter).serializeData(writer, value.name, context);
     }
     if (value.deprecated instanceof Optional.Present) {
       writer.name("deprecated");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.deprecated, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableStringDataAdapter).serializeData(writer, value.deprecated, context);
     }
     if (value.experimental instanceof Optional.Present) {
       writer.name("experimental");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.experimental, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableStringDataAdapter).serializeData(writer, value.experimental, context);
     }
   }
 }

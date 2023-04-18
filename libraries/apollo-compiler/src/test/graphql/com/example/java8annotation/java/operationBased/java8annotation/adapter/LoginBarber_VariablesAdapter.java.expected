@@ -5,8 +5,8 @@
 //
 package com.example.java8annotation.adapter;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java8annotation.LoginBarber;
@@ -21,8 +21,8 @@ public enum LoginBarber_VariablesAdapter implements VariablesAdapter<LoginBarber
   @Override
   public void serializeVariables(JsonWriter writer, LoginBarber value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     writer.name("input");
-    new ObjectAdapter<Login>(Login_InputAdapter.INSTANCE, false).toJson(writer, value.input, serializeDataContext);
+    new ObjectDataAdapter<Login>(Login_InputAdapter.INSTANCE, false).serializeData(writer, value.input, serializeDataContext);
   }
 }

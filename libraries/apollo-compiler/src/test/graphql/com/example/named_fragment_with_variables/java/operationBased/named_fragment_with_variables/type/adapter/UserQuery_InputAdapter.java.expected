@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_with_variables.type.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -16,23 +16,23 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum UserQuery_InputAdapter implements ApolloAdapter<UserQuery> {
+public enum UserQuery_InputAdapter implements DataAdapter<UserQuery> {
   INSTANCE;
 
   @Override
-  public UserQuery fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
-      IOException {
+  public UserQuery deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, UserQuery value, ApolloAdapter.DataSerializeContext context)
-      throws IOException {
+  public void serializeData(JsonWriter writer, UserQuery value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     writer.name("name");
-    Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+    DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     if (value.isAdmin instanceof Optional.Present) {
       writer.name("isAdmin");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, value.isAdmin, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableBooleanDataAdapter).serializeData(writer, value.isAdmin, context);
     }
   }
 }

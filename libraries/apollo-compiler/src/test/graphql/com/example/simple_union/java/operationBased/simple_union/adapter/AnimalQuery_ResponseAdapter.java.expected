@@ -5,15 +5,15 @@
 //
 package com.example.simple_union.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_union.AnimalQuery;
@@ -26,20 +26,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AnimalQuery_ResponseAdapter {
-  public enum Data implements ApolloAdapter<AnimalQuery.Data> {
+  public enum Data implements DataAdapter<AnimalQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public AnimalQuery.Data fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public AnimalQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       AnimalQuery.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).fromJson(reader, context); break;
+          case 0: _animal = new NullableDataAdapter<>(new ObjectDataAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -50,27 +50,27 @@ public class AnimalQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, AnimalQuery.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, AnimalQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("animal");
-      new NullableAdapter<>(new ObjectAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).toJson(writer, value.animal, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<AnimalQuery.Animal>(Animal.INSTANCE, true)).serializeData(writer, value.animal, context);
     }
   }
 
-  public enum Animal implements ApolloAdapter<AnimalQuery.Animal> {
+  public enum Animal implements DataAdapter<AnimalQuery.Animal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public AnimalQuery.Animal fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public AnimalQuery.Animal deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -79,13 +79,13 @@ public class AnimalQuery_ResponseAdapter {
       CatFragment _catFragment = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.fromJson(reader, context);
+        _catFragment = com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.deserializeData(reader, context);
       }
 
       DogFragment _dogFragment = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Dog")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.fromJson(reader, context);
+        _dogFragment = com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.deserializeData(reader, context);
       }
 
       return new AnimalQuery.Animal(
@@ -96,17 +96,17 @@ public class AnimalQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, AnimalQuery.Animal value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, AnimalQuery.Animal value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.catFragment != null) {
-        com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.toJson(writer, value.catFragment, context);
+        com.example.simple_union.fragment.CatFragmentImpl_ResponseAdapter.CatFragment.INSTANCE.serializeData(writer, value.catFragment, context);
       }
 
       if (value.dogFragment != null) {
-        com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.toJson(writer, value.dogFragment, context);
+        com.example.simple_union.fragment.DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE.serializeData(writer, value.dogFragment, context);
       }
     }
   }

@@ -3,7 +3,7 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.file
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.safeValueOf
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.CgFile
@@ -44,10 +44,10 @@ internal class EnumResponseAdapterBuilder(
 
   private fun IrEnum.typeSpec(): TypeSpec {
     val adaptedTypeName = context.resolver.resolveSchemaType(enum.name)
-    val fromResponseFunSpec = FunSpec.builder(Identifier.fromJson)
+    val fromResponseFunSpec = FunSpec.builder(Identifier.deserializeData)
         .addModifiers(KModifier.OVERRIDE)
         .addParameter(reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.context, KotlinSymbols.DataDeserializeContext)
+        .addParameter(Identifier.context, KotlinSymbols.DeserializeDataContext)
         .returns(adaptedTypeName)
         .addCode(
             CodeBlock.builder()
@@ -63,15 +63,15 @@ internal class EnumResponseAdapterBuilder(
 
     return TypeSpec
         .objectBuilder(layout.enumResponseAdapterName(name))
-        .addSuperinterface(KotlinSymbols.ApolloAdapter.parameterizedBy(adaptedTypeName))
+        .addSuperinterface(KotlinSymbols.DataAdapter.parameterizedBy(adaptedTypeName))
         .addFunction(fromResponseFunSpec)
         .addFunction(toResponseFunSpec)
         .build()
   }
 }
 
-private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(toJson)
+private fun toResponseFunSpecBuilder(typeName: TypeName) = FunSpec.builder(serializeData)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(name = writer, type = KotlinSymbols.JsonWriter)
     .addParameter(value, typeName)
-    .addParameter(Identifier.context, KotlinSymbols.DataSerializeContext)
+    .addParameter(Identifier.context, KotlinSymbols.SerializeDataContext)

@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferAndInclude;
@@ -19,14 +19,14 @@ public enum SpreadMultipleWithDeferAndInclude_VariablesAdapter implements Variab
   @Override
   public void serializeVariables(JsonWriter writer, SpreadMultipleWithDeferAndInclude value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     writer.name("cond1");
-    Adapters.BooleanApolloAdapter.toJson(writer, value.cond1, serializeDataContext);
+    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond1, serializeDataContext);
     writer.name("cond2");
-    Adapters.BooleanApolloAdapter.toJson(writer, value.cond2, serializeDataContext);
+    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond2, serializeDataContext);
     writer.name("cond3");
-    Adapters.BooleanApolloAdapter.toJson(writer, value.cond3, serializeDataContext);
+    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond3, serializeDataContext);
     writer.name("cond4");
-    Adapters.BooleanApolloAdapter.toJson(writer, value.cond4, serializeDataContext);
+    DataAdapters.BooleanDataAdapter.serializeData(writer, value.cond4, serializeDataContext);
   }
 }

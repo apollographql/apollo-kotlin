@@ -6,8 +6,8 @@
 package com.example.mutation_create_review_semantic_naming
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Mutation
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -36,7 +36,7 @@ public data class CreateReviewForEpisodeMutation(
     CreateReviewForEpisodeMutation_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
-  public override fun adapter(): ApolloAdapter<Data> =
+  public override fun adapter(): DataAdapter<Data> =
       CreateReviewForEpisodeMutation_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

@@ -5,8 +5,8 @@
 //
 package com.example.not_all_combinations_are_needed.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -15,16 +15,17 @@ import kotlin.collections.List
 
 public object BFragmentImpl_ResponseAdapter {
   public object BFragment :
-      ApolloAdapter<com.example.not_all_combinations_are_needed.fragment.BFragment> {
+      DataAdapter<com.example.not_all_combinations_are_needed.fragment.BFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext):
         com.example.not_all_combinations_are_needed.fragment.BFragment {
       var _fieldB1: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _fieldB1 = NullableStringApolloAdapter.fromJson(reader, context)
+          0 -> _fieldB1 = NullableStringDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
@@ -34,13 +35,13 @@ public object BFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: com.example.not_all_combinations_are_needed.fragment.BFragment,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("fieldB1")
-      NullableStringApolloAdapter.toJson(writer, value.fieldB1, context)
+      NullableStringDataAdapter.serializeData(writer, value.fieldB1, context)
     }
   }
 }

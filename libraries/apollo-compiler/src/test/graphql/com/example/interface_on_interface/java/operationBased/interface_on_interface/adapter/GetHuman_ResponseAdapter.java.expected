@@ -5,14 +5,14 @@
 //
 package com.example.interface_on_interface.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.interface_on_interface.GetHuman;
@@ -24,22 +24,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GetHuman_ResponseAdapter {
-  public enum Data implements ApolloAdapter<GetHuman.Data> {
+  public enum Data implements DataAdapter<GetHuman.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("human", "node");
 
     @Override
-    public GetHuman.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public GetHuman.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       GetHuman.Human _human = null;
       GetHuman.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _human = new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).fromJson(reader, context); break;
-          case 1: _node = new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).fromJson(reader, context); break;
+          case 0: _human = new ObjectDataAdapter<GetHuman.Human>(Human.INSTANCE, false).deserializeData(reader, context); break;
+          case 1: _node = new ObjectDataAdapter<GetHuman.Node>(Node.INSTANCE, true).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -54,24 +54,24 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHuman.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, GetHuman.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("human");
-      new ObjectAdapter<GetHuman.Human>(Human.INSTANCE, false).toJson(writer, value.human, context);
+      new ObjectDataAdapter<GetHuman.Human>(Human.INSTANCE, false).serializeData(writer, value.human, context);
 
       writer.name("node");
-      new ObjectAdapter<GetHuman.Node>(Node.INSTANCE, true).toJson(writer, value.node, context);
+      new ObjectDataAdapter<GetHuman.Node>(Node.INSTANCE, true).serializeData(writer, value.node, context);
     }
   }
 
-  public enum Human implements ApolloAdapter<GetHuman.Human> {
+  public enum Human implements DataAdapter<GetHuman.Human> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("id", "name", "height");
 
     @Override
-    public GetHuman.Human fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public GetHuman.Human deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _id = null;
       String _name = null;
       Double _height = null;
@@ -79,9 +79,9 @@ public class GetHuman_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _id = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 2: _height = Adapters.DoubleApolloAdapter.fromJson(reader, context); break;
+          case 0: _id = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 2: _height = DataAdapters.DoubleDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -98,33 +98,33 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHuman.Human value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, GetHuman.Human value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("id");
-      Adapters.StringApolloAdapter.toJson(writer, value.id, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.id, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("height");
-      Adapters.DoubleApolloAdapter.toJson(writer, value.height, context);
+      DataAdapters.DoubleDataAdapter.serializeData(writer, value.height, context);
     }
   }
 
-  public enum Node implements ApolloAdapter<GetHuman.Node> {
+  public enum Node implements DataAdapter<GetHuman.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public GetHuman.Node fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public GetHuman.Node deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -133,7 +133,7 @@ public class GetHuman_ResponseAdapter {
       GetHuman.OnHuman _onHuman = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Human")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.fromJson(reader, context);
+        _onHuman = com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.deserializeData(reader, context);
       }
 
       return new GetHuman.Node(
@@ -143,31 +143,31 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHuman.Node value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, GetHuman.Node value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.onHuman != null) {
-        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.toJson(writer, value.onHuman, context);
+        com.example.interface_on_interface.adapter.GetHuman_ResponseAdapter.OnHuman.INSTANCE.serializeData(writer, value.onHuman, context);
       }
     }
   }
 
-  public enum OnHuman implements ApolloAdapter<GetHuman.OnHuman> {
+  public enum OnHuman implements DataAdapter<GetHuman.OnHuman> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("height");
 
     @Override
-    public GetHuman.OnHuman fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public GetHuman.OnHuman deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Double _height = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _height = Adapters.DoubleApolloAdapter.fromJson(reader, context); break;
+          case 0: _height = DataAdapters.DoubleDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -180,10 +180,10 @@ public class GetHuman_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, GetHuman.OnHuman value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, GetHuman.OnHuman value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("height");
-      Adapters.DoubleApolloAdapter.toJson(writer, value.height, context);
+      DataAdapters.DoubleDataAdapter.serializeData(writer, value.height, context);
     }
   }
 }

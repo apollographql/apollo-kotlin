@@ -5,9 +5,9 @@
 //
 package com.example.fieldset_with_multiple_super.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("c")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _c: TestQuery.Data.C? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _c = C.obj(true).nullable().fromJson(reader, context)
+          0 -> _c = C.obj(true).nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -39,25 +39,25 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("c")
-      C.obj(true).nullable().toJson(writer, value.c, context)
+      C.obj(true).nullable().serializeData(writer, value.c, context)
     }
 
-    private object C : ApolloAdapter<TestQuery.Data.C> {
+    private object C : DataAdapter<TestQuery.Data.C> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.C {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.C {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -69,14 +69,14 @@ public object TestQuery_ResponseAdapter {
         var _onA: TestQuery.Data.C.OnA? = null
         if (possibleTypes("ABC","AC").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.fromJson(reader,
+          _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.deserializeData(reader,
               context)
         }
 
         var _onB: TestQuery.Data.C.OnB? = null
         if (possibleTypes("ABC","BC").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.fromJson(reader,
+          _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.deserializeData(reader,
               context)
         }
 
@@ -87,37 +87,37 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.C,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, value.__typename, context)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         if (value.onA != null) {
-          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.toJson(writer,
+          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.serializeData(writer,
               value.onA, context)
         }
 
         if (value.onB != null) {
-          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.toJson(writer,
+          com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.serializeData(writer,
               value.onB, context)
         }
       }
 
-      private object OnA : ApolloAdapter<TestQuery.Data.C.OnA> {
+      private object OnA : DataAdapter<TestQuery.Data.C.OnA> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldA1")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.C.OnA {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.C.OnA {
           var __typename: String? = null
           var _fieldA1: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
-              1 -> _fieldA1 = NullableStringApolloAdapter.fromJson(reader, context)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _fieldA1 = NullableStringDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -129,7 +129,7 @@ public object TestQuery_ResponseAdapter {
           var _onB: TestQuery.Data.C.OnA.OnB? = null
           if (possibleTypes("ABC","BC").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
-            _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.fromJson(reader,
+            _onB = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.deserializeData(reader,
                 context)
           }
 
@@ -140,33 +140,33 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.C.OnA,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, value.__typename, context)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("fieldA1")
-          NullableStringApolloAdapter.toJson(writer, value.fieldA1, context)
+          NullableStringDataAdapter.serializeData(writer, value.fieldA1, context)
 
           if (value.onB != null) {
-            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.toJson(writer,
+            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnA.OnB.serializeData(writer,
                 value.onB, context)
           }
         }
 
-        private object OnB : ApolloAdapter<TestQuery.Data.C.OnA.OnB> {
+        private object OnB : DataAdapter<TestQuery.Data.C.OnA.OnB> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldB1")
 
-          public override fun fromJson(reader: JsonReader,
-              context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.C.OnA.OnB {
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext): TestQuery.Data.C.OnA.OnB {
             var _fieldB1: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _fieldB1 = NullableStringApolloAdapter.fromJson(reader, context)
+                0 -> _fieldB1 = NullableStringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -176,29 +176,29 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
             `value`: TestQuery.Data.C.OnA.OnB,
-            context: ApolloAdapter.DataSerializeContext,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("fieldB1")
-            NullableStringApolloAdapter.toJson(writer, value.fieldB1, context)
+            NullableStringDataAdapter.serializeData(writer, value.fieldB1, context)
           }
         }
       }
 
-      private object OnB : ApolloAdapter<TestQuery.Data.C.OnB> {
+      private object OnB : DataAdapter<TestQuery.Data.C.OnB> {
         public val RESPONSE_NAMES: List<String> = listOf("__typename", "fieldB2")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.C.OnB {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.C.OnB {
           var __typename: String? = null
           var _fieldB2: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> __typename = StringApolloAdapter.fromJson(reader, context)
-              1 -> _fieldB2 = NullableStringApolloAdapter.fromJson(reader, context)
+              0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+              1 -> _fieldB2 = NullableStringDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -210,7 +210,7 @@ public object TestQuery_ResponseAdapter {
           var _onA: TestQuery.Data.C.OnB.OnA? = null
           if (possibleTypes("ABC","AC").evaluate(context.falseBooleanVariables, __typename, context, null)) {
             reader.rewind()
-            _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.fromJson(reader,
+            _onA = com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.deserializeData(reader,
                 context)
           }
 
@@ -221,33 +221,33 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.C.OnB,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("__typename")
-          StringApolloAdapter.toJson(writer, value.__typename, context)
+          StringDataAdapter.serializeData(writer, value.__typename, context)
 
           writer.name("fieldB2")
-          NullableStringApolloAdapter.toJson(writer, value.fieldB2, context)
+          NullableStringDataAdapter.serializeData(writer, value.fieldB2, context)
 
           if (value.onA != null) {
-            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.toJson(writer,
+            com.example.fieldset_with_multiple_super.adapter.TestQuery_ResponseAdapter.Data.C.OnB.OnA.serializeData(writer,
                 value.onA, context)
           }
         }
 
-        private object OnA : ApolloAdapter<TestQuery.Data.C.OnB.OnA> {
+        private object OnA : DataAdapter<TestQuery.Data.C.OnB.OnA> {
           public val RESPONSE_NAMES: List<String> = listOf("fieldA2")
 
-          public override fun fromJson(reader: JsonReader,
-              context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.C.OnB.OnA {
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext): TestQuery.Data.C.OnB.OnA {
             var _fieldA2: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _fieldA2 = NullableStringApolloAdapter.fromJson(reader, context)
+                0 -> _fieldA2 = NullableStringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -257,13 +257,13 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
             `value`: TestQuery.Data.C.OnB.OnA,
-            context: ApolloAdapter.DataSerializeContext,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("fieldA2")
-            NullableStringApolloAdapter.toJson(writer, value.fieldA2, context)
+            NullableStringDataAdapter.serializeData(writer, value.fieldA2, context)
           }
         }
       }

@@ -5,11 +5,11 @@
 //
 package com.example.java_primitive_types.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_primitive_types.JavaPrimitiveQuery;
@@ -21,14 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JavaPrimitiveQuery_ResponseAdapter {
-  public enum Data implements ApolloAdapter<JavaPrimitiveQuery.Data> {
+  public enum Data implements DataAdapter<JavaPrimitiveQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt", "nullableMyType", "nonNullableMyType");
 
     @Override
-    public JavaPrimitiveQuery.Data fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public JavaPrimitiveQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
       JavaPrimitiveQuery.NullableMyType _nullableMyType = null;
@@ -37,10 +37,10 @@ public class JavaPrimitiveQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.NullableIntApolloAdapter.fromJson(reader, context); break;
-          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, context); break;
-          case 2: _nullableMyType = new NullableAdapter<>(new ObjectAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).fromJson(reader, context); break;
-          case 3: _nonNullableMyType = new ObjectAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).fromJson(reader, context); break;
+          case 0: _nullableInt = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 2: _nullableMyType = new NullableDataAdapter<>(new ObjectDataAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).deserializeData(reader, context); break;
+          case 3: _nonNullableMyType = new ObjectDataAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -57,38 +57,38 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, JavaPrimitiveQuery.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, JavaPrimitiveQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.NullableIntApolloAdapter.toJson(writer, value.nullableInt, context);
+      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.nullableInt, context);
 
       writer.name("nonNullableInt");
-      Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
+      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
 
       writer.name("nullableMyType");
-      new NullableAdapter<>(new ObjectAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).toJson(writer, value.nullableMyType, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<JavaPrimitiveQuery.NullableMyType>(NullableMyType.INSTANCE, false)).serializeData(writer, value.nullableMyType, context);
 
       writer.name("nonNullableMyType");
-      new ObjectAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).toJson(writer, value.nonNullableMyType, context);
+      new ObjectDataAdapter<JavaPrimitiveQuery.NonNullableMyType>(NonNullableMyType.INSTANCE, false).serializeData(writer, value.nonNullableMyType, context);
     }
   }
 
-  public enum NullableMyType implements ApolloAdapter<JavaPrimitiveQuery.NullableMyType> {
+  public enum NullableMyType implements DataAdapter<JavaPrimitiveQuery.NullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public JavaPrimitiveQuery.NullableMyType fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public JavaPrimitiveQuery.NullableMyType deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.NullableIntApolloAdapter.fromJson(reader, context); break;
-          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 0: _nullableInt = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -102,32 +102,32 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, JavaPrimitiveQuery.NullableMyType value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, JavaPrimitiveQuery.NullableMyType value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.NullableIntApolloAdapter.toJson(writer, value.nullableInt, context);
+      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.nullableInt, context);
 
       writer.name("nonNullableInt");
-      Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
+      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
     }
   }
 
-  public enum NonNullableMyType implements ApolloAdapter<JavaPrimitiveQuery.NonNullableMyType> {
+  public enum NonNullableMyType implements DataAdapter<JavaPrimitiveQuery.NonNullableMyType> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nullableInt", "nonNullableInt");
 
     @Override
-    public JavaPrimitiveQuery.NonNullableMyType fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public JavaPrimitiveQuery.NonNullableMyType deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _nullableInt = null;
       int _nonNullableInt = 0;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nullableInt = Adapters.NullableIntApolloAdapter.fromJson(reader, context); break;
-          case 1: _nonNullableInt = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 0: _nullableInt = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 1: _nonNullableInt = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -141,13 +141,13 @@ public class JavaPrimitiveQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, JavaPrimitiveQuery.NonNullableMyType value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, JavaPrimitiveQuery.NonNullableMyType value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("nullableInt");
-      Adapters.NullableIntApolloAdapter.toJson(writer, value.nullableInt, context);
+      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.nullableInt, context);
 
       writer.name("nonNullableInt");
-      Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, context);
+      DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, context);
     }
   }
 }

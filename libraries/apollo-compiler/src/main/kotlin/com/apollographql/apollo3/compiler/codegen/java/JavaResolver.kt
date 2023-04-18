@@ -51,16 +51,16 @@ internal class JavaResolver(
   }
 
   private val optionalAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
-    else -> JavaClassNames.ApolloOptionalAdapter
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalDataAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalDataAdapter
+    else -> JavaClassNames.ApolloOptionalDataAdapter
   }
 
   private val optionalOrNullableAdapterClassName: ClassName = when (nullableFieldStyle) {
-    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalAdapter
-    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalAdapter
-    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalAdapter
-    else -> JavaClassNames.NullableAdapter
+    JavaNullable.APOLLO_OPTIONAL -> JavaClassNames.ApolloOptionalDataAdapter
+    JavaNullable.JAVA_OPTIONAL -> JavaClassNames.JavaOptionalDataAdapter
+    JavaNullable.GUAVA_OPTIONAL -> JavaClassNames.GuavaOptionalDataAdapter
+    else -> JavaClassNames.NullableDataAdapter
   }
 
   private val wrapNullableFieldsInOptional = nullableFieldStyle in setOf(
@@ -188,7 +188,7 @@ internal class JavaResolver(
         type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Int")
         type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> scalarAdapterCodeBlock("Double")
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-          adapterCodeBlock("NullableAnyApolloAdapter")
+          adapterCodeBlock("NullableAnyDataAdapter")
         }
 
         else -> {
@@ -251,7 +251,7 @@ internal class JavaResolver(
       is ExpressionAdapterInitializer -> {
         CodeBlock.of(
             "new $T<>($L)",
-            JavaClassNames.ScalarAdapterToApolloAdapter,
+            JavaClassNames.AdapterToDataAdapter,
             CodeBlock.of(adapterInitializer.expression)
         )
       }
@@ -267,15 +267,15 @@ internal class JavaResolver(
 
       else -> {
         when (type.name) {
-          "Boolean" -> adapterCodeBlock("BooleanApolloAdapter")
-          "ID" -> adapterCodeBlock("StringApolloAdapter")
-          "String" -> adapterCodeBlock("StringApolloAdapter")
-          "Int" -> adapterCodeBlock("IntApolloAdapter")
-          "Float" -> adapterCodeBlock("DoubleApolloAdapter")
+          "Boolean" -> adapterCodeBlock("BooleanDataAdapter")
+          "ID" -> adapterCodeBlock("StringDataAdapter")
+          "String" -> adapterCodeBlock("StringDataAdapter")
+          "Int" -> adapterCodeBlock("IntDataAdapter")
+          "Float" -> adapterCodeBlock("DoubleDataAdapter")
           else -> {
             val target = resolveScalarTarget(type.name)
             if (target == null) {
-              adapterCodeBlock("AnyApolloAdapter")
+              adapterCodeBlock("AnyDataAdapter")
             } else {
               CodeBlock.of(
                   "($scalarAdapters.<$T>responseAdapterFor($L))",
@@ -292,36 +292,36 @@ internal class JavaResolver(
   /**
    * Nullable adapters are @JvmField properties
    */
-  private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.Adapters, name)
+  private fun adapterCodeBlock(name: String) = CodeBlock.of("$T.$L", JavaClassNames.DataAdapters, name)
   private fun scalarAdapterCodeBlock(typeName: String): CodeBlock {
     val className: ClassName
     val adapterNamePrefix: String
     when (nullableFieldStyle) {
       JavaNullable.APOLLO_OPTIONAL -> {
-        // Ex: Adapters.ApolloOptionalStringAdapter
-        className = JavaClassNames.Adapters
+        // Ex: DataAdapters.ApolloOptionalStringAdapter
+        className = JavaClassNames.DataAdapters
         adapterNamePrefix = "ApolloOptional"
       }
 
       JavaNullable.JAVA_OPTIONAL -> {
-        // Ex: JavaOptionalAdapters.JavaOptionalStringAdapter
-        className = JavaClassNames.JavaOptionalAdapters
+        // Ex: JavaOptionalDataAdapters.JavaOptionalStringDataAdapter
+        className = JavaClassNames.JavaOptionalDataAdapters
         adapterNamePrefix = "JavaOptional"
       }
 
       JavaNullable.GUAVA_OPTIONAL -> {
-        // Ex: GuavaOptionalAdapters.GuavaOptionalStringAdapter
-        className = JavaClassNames.GuavaOptionalAdapters
+        // Ex: GuavaOptionalDataAdapters.GuavaOptionalStringDataAdapter
+        className = JavaClassNames.GuavaOptionalDataAdapters
         adapterNamePrefix = "GuavaOptional"
       }
 
       else -> {
-        // Ex: Adapters.NullableStringApolloAdapter
-        className = JavaClassNames.Adapters
+        // Ex: DataAdapters.NullableStringDataAdapter
+        className = JavaClassNames.DataAdapters
         adapterNamePrefix = "Nullable"
       }
     }
-    val adapterName = "$adapterNamePrefix${typeName}ApolloAdapter"
+    val adapterName = "$adapterNamePrefix${typeName}DataAdapter"
     return CodeBlock.of("$T.$L", className, adapterName)
   }
 
@@ -408,7 +408,7 @@ internal class JavaResolver(
   }
 
   private fun CodeBlock.listAdapter(): CodeBlock {
-    return CodeBlock.of("new $T<>($L)", JavaClassNames.ListAdapter, this)
+    return CodeBlock.of("new $T<>($L)", JavaClassNames.ListDataAdapter, this)
   }
 
   fun registerSchema(className: ClassName) = register(ResolverKeyKind.Schema, "", className)

@@ -5,10 +5,10 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragment_spread_with_include_directive.fragment.selections.OtherDroidDetailsSelections;
@@ -66,8 +66,8 @@ public class OtherDroidDetailsImpl implements Fragment<OtherDroidDetails> {
   }
 
   @Override
-  public ApolloAdapter<OtherDroidDetails> adapter() {
-    return new ObjectAdapter<OtherDroidDetails>(OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE, false);
+  public DataAdapter<OtherDroidDetails> adapter() {
+    return new ObjectDataAdapter<OtherDroidDetails>(OtherDroidDetailsImpl_ResponseAdapter.OtherDroidDetails.INSTANCE, false);
   }
 
   @Override

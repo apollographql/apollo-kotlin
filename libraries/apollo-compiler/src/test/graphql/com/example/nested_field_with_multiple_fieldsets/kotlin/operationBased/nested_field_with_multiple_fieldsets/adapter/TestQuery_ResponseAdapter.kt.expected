@@ -5,9 +5,9 @@
 //
 package com.example.nested_field_with_multiple_fieldsets.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("iface1")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _iface1: TestQuery.Data.Iface1? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _iface1 = Iface1.obj(true).nullable().fromJson(reader, context)
+          0 -> _iface1 = Iface1.obj(true).nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -39,25 +39,25 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("iface1")
-      Iface1.obj(true).nullable().toJson(writer, value.iface1, context)
+      Iface1.obj(true).nullable().serializeData(writer, value.iface1, context)
     }
 
-    private object Iface1 : ApolloAdapter<TestQuery.Data.Iface1> {
+    private object Iface1 : DataAdapter<TestQuery.Data.Iface1> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Iface1 {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Iface1 {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -67,13 +67,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.fromJson(reader,
+        val _onIface1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.deserializeData(reader,
             context)
 
         var _onImpl1: TestQuery.Data.Iface1.OnImpl1? = null
         if (possibleTypes("Impl1").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.fromJson(reader,
+          _onImpl1 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.deserializeData(reader,
               context)
         }
 
@@ -84,33 +84,33 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.Iface1,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, value.__typename, context)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
-        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.toJson(writer,
+        com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.serializeData(writer,
             value.onIface1, context)
 
         if (value.onImpl1 != null) {
-          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.toJson(writer,
+          com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.serializeData(writer,
               value.onImpl1, context)
         }
       }
 
-      private object OnIface1 : ApolloAdapter<TestQuery.Data.Iface1.OnIface1> {
+      private object OnIface1 : DataAdapter<TestQuery.Data.Iface1.OnIface1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Iface1.OnIface1 {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Iface1.OnIface1 {
           var _iface2: TestQuery.Data.Iface1.OnIface1.Iface2? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, context)
+              0 -> _iface2 = Iface2.obj(true).nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -120,26 +120,25 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.Iface1.OnIface1,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("iface2")
-          Iface2.obj(true).nullable().toJson(writer, value.iface2, context)
+          Iface2.obj(true).nullable().serializeData(writer, value.iface2, context)
         }
 
-        private object Iface2 : ApolloAdapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
+        private object Iface2 : DataAdapter<TestQuery.Data.Iface1.OnIface1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun fromJson(reader: JsonReader,
-              context: ApolloAdapter.DataDeserializeContext):
-              TestQuery.Data.Iface1.OnIface1.Iface2 {
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext): TestQuery.Data.Iface1.OnIface1.Iface2 {
             var __typename: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+                0 -> __typename = StringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -149,13 +148,13 @@ public object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.fromJson(reader,
+            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.deserializeData(reader,
                 context)
 
             var _onImpl2: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2? = null
             if (possibleTypes("Impl2").evaluate(context.falseBooleanVariables, __typename, context, null)) {
               reader.rewind()
-              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.fromJson(reader,
+              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.deserializeData(reader,
                   context)
             }
 
@@ -166,34 +165,34 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
             `value`: TestQuery.Data.Iface1.OnIface1.Iface2,
-            context: ApolloAdapter.DataSerializeContext,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringApolloAdapter.toJson(writer, value.__typename, context)
+            StringDataAdapter.serializeData(writer, value.__typename, context)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.toJson(writer,
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnIface2.serializeData(writer,
                 value.onIface2, context)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.toJson(writer,
+              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnIface1.Iface2.OnImpl2.serializeData(writer,
                   value.onImpl2, context)
             }
           }
 
-          private object OnIface2 : ApolloAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2> {
+          private object OnIface2 : DataAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar1")
 
-            public override fun fromJson(reader: JsonReader,
-                context: ApolloAdapter.DataDeserializeContext):
+            public override fun deserializeData(reader: JsonReader,
+                context: DataAdapter.DeserializeDataContext):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2 {
               var _scalar1: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar1 = NullableStringApolloAdapter.fromJson(reader, context)
+                  0 -> _scalar1 = NullableStringDataAdapter.deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -203,27 +202,27 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            public override fun serializeData(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnIface1.Iface2.OnIface2,
-              context: ApolloAdapter.DataSerializeContext,
+              context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("scalar1")
-              NullableStringApolloAdapter.toJson(writer, value.scalar1, context)
+              NullableStringDataAdapter.serializeData(writer, value.scalar1, context)
             }
           }
 
-          private object OnImpl2 : ApolloAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
+          private object OnImpl2 : DataAdapter<TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar2")
 
-            public override fun fromJson(reader: JsonReader,
-                context: ApolloAdapter.DataDeserializeContext):
+            public override fun deserializeData(reader: JsonReader,
+                context: DataAdapter.DeserializeDataContext):
                 TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2 {
               var _scalar2: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar2 = NullableStringApolloAdapter.fromJson(reader, context)
+                  0 -> _scalar2 = NullableStringDataAdapter.deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -233,28 +232,28 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            public override fun serializeData(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnIface1.Iface2.OnImpl2,
-              context: ApolloAdapter.DataSerializeContext,
+              context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("scalar2")
-              NullableStringApolloAdapter.toJson(writer, value.scalar2, context)
+              NullableStringDataAdapter.serializeData(writer, value.scalar2, context)
             }
           }
         }
       }
 
-      private object OnImpl1 : ApolloAdapter<TestQuery.Data.Iface1.OnImpl1> {
+      private object OnImpl1 : DataAdapter<TestQuery.Data.Iface1.OnImpl1> {
         public val RESPONSE_NAMES: List<String> = listOf("iface2")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Iface1.OnImpl1 {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Iface1.OnImpl1 {
           var _iface2: TestQuery.Data.Iface1.OnImpl1.Iface2? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _iface2 = Iface2.obj(true).nullable().fromJson(reader, context)
+              0 -> _iface2 = Iface2.obj(true).nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -264,25 +263,25 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.Iface1.OnImpl1,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("iface2")
-          Iface2.obj(true).nullable().toJson(writer, value.iface2, context)
+          Iface2.obj(true).nullable().serializeData(writer, value.iface2, context)
         }
 
-        private object Iface2 : ApolloAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
+        private object Iface2 : DataAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2> {
           public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-          public override fun fromJson(reader: JsonReader,
-              context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Iface1.OnImpl1.Iface2 {
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext): TestQuery.Data.Iface1.OnImpl1.Iface2 {
             var __typename: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+                0 -> __typename = StringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -292,13 +291,13 @@ public object TestQuery_ResponseAdapter {
             }
 
             reader.rewind()
-            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.fromJson(reader,
+            val _onIface2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.deserializeData(reader,
                 context)
 
             var _onImpl2: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2? = null
             if (possibleTypes("Impl2").evaluate(context.falseBooleanVariables, __typename, context, null)) {
               reader.rewind()
-              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.fromJson(reader,
+              _onImpl2 = com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.deserializeData(reader,
                   context)
             }
 
@@ -309,34 +308,34 @@ public object TestQuery_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
             `value`: TestQuery.Data.Iface1.OnImpl1.Iface2,
-            context: ApolloAdapter.DataSerializeContext,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("__typename")
-            StringApolloAdapter.toJson(writer, value.__typename, context)
+            StringDataAdapter.serializeData(writer, value.__typename, context)
 
-            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.toJson(writer,
+            com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnIface2.serializeData(writer,
                 value.onIface2, context)
 
             if (value.onImpl2 != null) {
-              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.toJson(writer,
+              com.example.nested_field_with_multiple_fieldsets.adapter.TestQuery_ResponseAdapter.Data.Iface1.OnImpl1.Iface2.OnImpl2.serializeData(writer,
                   value.onImpl2, context)
             }
           }
 
-          private object OnIface2 : ApolloAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2> {
+          private object OnIface2 : DataAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar3")
 
-            public override fun fromJson(reader: JsonReader,
-                context: ApolloAdapter.DataDeserializeContext):
+            public override fun deserializeData(reader: JsonReader,
+                context: DataAdapter.DeserializeDataContext):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2 {
               var _scalar3: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar3 = NullableStringApolloAdapter.fromJson(reader, context)
+                  0 -> _scalar3 = NullableStringDataAdapter.deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -346,27 +345,27 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            public override fun serializeData(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnImpl1.Iface2.OnIface2,
-              context: ApolloAdapter.DataSerializeContext,
+              context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("scalar3")
-              NullableStringApolloAdapter.toJson(writer, value.scalar3, context)
+              NullableStringDataAdapter.serializeData(writer, value.scalar3, context)
             }
           }
 
-          private object OnImpl2 : ApolloAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
+          private object OnImpl2 : DataAdapter<TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2> {
             public val RESPONSE_NAMES: List<String> = listOf("scalar4")
 
-            public override fun fromJson(reader: JsonReader,
-                context: ApolloAdapter.DataDeserializeContext):
+            public override fun deserializeData(reader: JsonReader,
+                context: DataAdapter.DeserializeDataContext):
                 TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2 {
               var _scalar4: String? = null
 
               while(true) {
                 when (reader.selectName(RESPONSE_NAMES)) {
-                  0 -> _scalar4 = NullableStringApolloAdapter.fromJson(reader, context)
+                  0 -> _scalar4 = NullableStringDataAdapter.deserializeData(reader, context)
                   else -> break
                 }
               }
@@ -376,13 +375,13 @@ public object TestQuery_ResponseAdapter {
               )
             }
 
-            public override fun toJson(
+            public override fun serializeData(
               writer: JsonWriter,
               `value`: TestQuery.Data.Iface1.OnImpl1.Iface2.OnImpl2,
-              context: ApolloAdapter.DataSerializeContext,
+              context: DataAdapter.SerializeDataContext,
             ): Unit {
               writer.name("scalar4")
-              NullableStringApolloAdapter.toJson(writer, value.scalar4, context)
+              NullableStringDataAdapter.serializeData(writer, value.scalar4, context)
             }
           }
         }

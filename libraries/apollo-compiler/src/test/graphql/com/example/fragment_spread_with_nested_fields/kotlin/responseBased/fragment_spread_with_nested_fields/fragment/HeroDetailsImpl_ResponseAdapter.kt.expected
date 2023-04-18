@@ -5,9 +5,9 @@
 //
 package com.example.fragment_spread_with_nested_fields.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableIntApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableIntDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -19,18 +19,18 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object Data : ApolloAdapter<HeroDetailsImpl.Data> {
+  public object Data : DataAdapter<HeroDetailsImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("name", "friendsConnection")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        HeroDetailsImpl.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): HeroDetailsImpl.Data {
       var _name: String? = null
       var _friendsConnection: HeroDetailsImpl.Data.FriendsConnection? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _name = StringApolloAdapter.fromJson(reader, context)
-          1 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, context)
+          0 -> _name = StringDataAdapter.deserializeData(reader, context)
+          1 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
       }
@@ -41,30 +41,30 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: HeroDetailsImpl.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("name")
-      StringApolloAdapter.toJson(writer, value.name, context)
+      StringDataAdapter.serializeData(writer, value.name, context)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, value.friendsConnection, context)
+      FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
     }
 
-    private object FriendsConnection : ApolloAdapter<HeroDetailsImpl.Data.FriendsConnection> {
+    private object FriendsConnection : DataAdapter<HeroDetailsImpl.Data.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): HeroDetailsImpl.Data.FriendsConnection {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): HeroDetailsImpl.Data.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.Data.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntApolloAdapter.fromJson(reader, context)
-            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader, context)
+            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -75,29 +75,29 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: HeroDetailsImpl.Data.FriendsConnection,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntApolloAdapter.toJson(writer, value.totalCount, context)
+        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
 
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, value.edges, context)
+        Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
       }
 
-      private object Edge : ApolloAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge> {
+      private object Edge : DataAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             HeroDetailsImpl.Data.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.Data.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, context)
+              0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -107,26 +107,26 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: HeroDetailsImpl.Data.FriendsConnection.Edge,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, value.node, context)
+          Node.obj().nullable().serializeData(writer, value.node, context)
         }
 
-        private object Node : ApolloAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node> {
+        private object Node : DataAdapter<HeroDetailsImpl.Data.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              context: ApolloAdapter.DataDeserializeContext):
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext):
               HeroDetailsImpl.Data.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringApolloAdapter.fromJson(reader, context)
+                0 -> _name = StringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -136,13 +136,13 @@ public object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
             `value`: HeroDetailsImpl.Data.FriendsConnection.Edge.Node,
-            context: ApolloAdapter.DataSerializeContext,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringApolloAdapter.toJson(writer, value.name, context)
+            StringDataAdapter.serializeData(writer, value.name, context)
           }
         }
       }

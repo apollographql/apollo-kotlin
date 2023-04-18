@@ -5,9 +5,9 @@
 //
 package com.example.input_object_variable_and_argument.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.DoubleApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.DoubleDataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -23,15 +23,15 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     if (value.episode is Optional.Present) {
       writer.name("episode")
-      Episode_ResponseAdapter.nullable().present().toJson(writer, value.episode,
+      Episode_ResponseAdapter.nullable().present().serializeData(writer, value.episode,
           serializeDataContext)
     }
     writer.name("stars")
-    IntApolloAdapter.toJson(writer, value.stars, serializeDataContext)
+    IntDataAdapter.serializeData(writer, value.stars, serializeDataContext)
     writer.name("greenValue")
-    DoubleApolloAdapter.toJson(writer, value.greenValue, serializeDataContext)
+    DoubleDataAdapter.serializeData(writer, value.greenValue, serializeDataContext)
   }
 }

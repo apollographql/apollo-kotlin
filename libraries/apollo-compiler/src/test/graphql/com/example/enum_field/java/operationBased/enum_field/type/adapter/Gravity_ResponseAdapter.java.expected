@@ -5,26 +5,26 @@
 //
 package com.example.enum_field.type.adapter;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enum_field.type.Gravity;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Gravity_ResponseAdapter implements ApolloAdapter<Gravity> {
+public enum Gravity_ResponseAdapter implements DataAdapter<Gravity> {
   INSTANCE;
 
   @Override
-  public Gravity fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
-      IOException {
+  public Gravity deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
+      throws IOException {
     String rawValue = reader.nextString();
     return Gravity.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, Gravity value, ApolloAdapter.DataSerializeContext context)
-      throws IOException {
+  public void serializeData(JsonWriter writer, Gravity value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

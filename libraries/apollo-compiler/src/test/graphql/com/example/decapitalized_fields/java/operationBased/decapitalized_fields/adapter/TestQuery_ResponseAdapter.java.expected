@@ -5,11 +5,11 @@
 //
 package com.example.decapitalized_fields.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.decapitalized_fields.TestQuery;
@@ -21,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements ApolloAdapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Horse");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.Horse _Horse = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Horse = new NullableAdapter<>(new ObjectAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).fromJson(reader, context); break;
+          case 0: _Horse = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -45,38 +45,38 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("Horse");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).toJson(writer, value.horse, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Horse>(Horse.INSTANCE, true)).serializeData(writer, value.horse, context);
     }
   }
 
-  public enum Horse implements ApolloAdapter<TestQuery.Horse> {
+  public enum Horse implements DataAdapter<TestQuery.Horse> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "Donkey");
 
     @Override
-    public TestQuery.Horse fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Horse deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
       String _Donkey = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 1: _Donkey = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _Donkey = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      TestQuery.OnHorse _onHorse = com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.fromJson(reader, context);
+      TestQuery.OnHorse _onHorse = com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.deserializeData(reader, context);
 
       reader.rewind();
-      HorseFragment _horseFragment = com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.INSTANCE.fromJson(reader, context);
+      HorseFragment _horseFragment = com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.INSTANCE.deserializeData(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -89,34 +89,34 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Horse value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Horse value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       writer.name("Donkey");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.donkey, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.donkey, context);
 
-      com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.toJson(writer, value.onHorse, context);
+      com.example.decapitalized_fields.adapter.TestQuery_ResponseAdapter.OnHorse.INSTANCE.serializeData(writer, value.onHorse, context);
 
-      com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.INSTANCE.toJson(writer, value.horseFragment, context);
+      com.example.decapitalized_fields.fragment.HorseFragmentImpl_ResponseAdapter.HorseFragment.INSTANCE.serializeData(writer, value.horseFragment, context);
     }
   }
 
-  public enum OnHorse implements ApolloAdapter<TestQuery.OnHorse> {
+  public enum OnHorse implements DataAdapter<TestQuery.OnHorse> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
     @Override
-    public TestQuery.OnHorse fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestQuery.OnHorse deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.Cow _Cow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Cow = new NullableAdapter<>(new ObjectAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _Cow = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -127,27 +127,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.OnHorse value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.OnHorse value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("Cow");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).toJson(writer, value.cow, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Cow>(Cow.INSTANCE, false)).serializeData(writer, value.cow, context);
     }
   }
 
-  public enum Cow implements ApolloAdapter<TestQuery.Cow> {
+  public enum Cow implements DataAdapter<TestQuery.Cow> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
     @Override
-    public TestQuery.Cow fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Cow deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _Moo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Moo = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _Moo = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -158,10 +158,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Cow value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Cow value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("Moo");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.moo, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.moo, context);
     }
   }
 }

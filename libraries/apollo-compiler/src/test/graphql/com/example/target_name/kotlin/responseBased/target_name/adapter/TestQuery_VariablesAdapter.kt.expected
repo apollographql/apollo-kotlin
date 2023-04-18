@@ -5,8 +5,8 @@
 //
 package com.example.target_name.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableAnyApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableAnyDataAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -24,19 +24,19 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     if (value.input is Optional.Present) {
       writer.name("input")
-      renamedInput_InputAdapter.obj().nullable().present().toJson(writer, value.input,
+      renamedInput_InputAdapter.obj().nullable().present().serializeData(writer, value.input,
           serializeDataContext)
     }
     if (value.scalar is Optional.Present) {
       writer.name("scalar")
-      NullableAnyApolloAdapter.present().toJson(writer, value.scalar, serializeDataContext)
+      NullableAnyDataAdapter.present().serializeData(writer, value.scalar, serializeDataContext)
     }
     if (value.`enum` is Optional.Present) {
       writer.name("enum")
-      renamedEnum_ResponseAdapter.nullable().present().toJson(writer, value.`enum`,
+      renamedEnum_ResponseAdapter.nullable().present().serializeData(writer, value.`enum`,
           serializeDataContext)
     }
   }

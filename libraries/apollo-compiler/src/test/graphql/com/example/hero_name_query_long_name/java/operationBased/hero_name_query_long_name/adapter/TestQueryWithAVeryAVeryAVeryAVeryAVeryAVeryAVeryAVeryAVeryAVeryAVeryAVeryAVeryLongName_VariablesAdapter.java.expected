@@ -5,9 +5,9 @@
 //
 package com.example.hero_name_query_long_name.adapter;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -23,10 +23,10 @@ public enum TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVery
   public void serializeVariables(JsonWriter writer,
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     if (value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName instanceof Optional.Present) {
       writer.name("episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.episodeAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, serializeDataContext);
     }
   }
 }

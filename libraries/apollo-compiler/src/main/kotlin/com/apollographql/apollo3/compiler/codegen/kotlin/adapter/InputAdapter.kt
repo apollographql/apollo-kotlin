@@ -4,8 +4,8 @@
 package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -28,7 +28,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
     adaptedTypeName: TypeName,
 ): TypeSpec {
   return TypeSpec.objectBuilder(adapterName)
-      .addSuperinterface(KotlinSymbols.ApolloAdapter.parameterizedBy(adaptedTypeName))
+      .addSuperinterface(KotlinSymbols.DataAdapter.parameterizedBy(adaptedTypeName))
       .addFunction(notImplementedFromResponseFunSpec(adaptedTypeName))
       .addFunction(writeToResponseFunSpec(context, adaptedTypeName))
       .apply {
@@ -45,10 +45,10 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(fromJson)
+private fun notImplementedFromResponseFunSpec(adaptedTypeName: TypeName) = FunSpec.builder(deserializeData)
     .addModifiers(KModifier.OVERRIDE)
     .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-    .addParameter(Identifier.context, KotlinSymbols.DataDeserializeContext)
+    .addParameter(Identifier.context, KotlinSymbols.DeserializeDataContext)
     .returns(adaptedTypeName)
     .addCode("throw %T(%S)", ClassName("kotlin", "IllegalStateException"), "Input type used in output position")
     .build()
@@ -58,11 +58,11 @@ private fun List<NamedType>.writeToResponseFunSpec(
     context: KotlinContext,
     adaptedTypeName: TypeName,
 ): FunSpec {
-  return FunSpec.builder(toJson)
+  return FunSpec.builder(serializeData)
       .addModifiers(KModifier.OVERRIDE)
       .addParameter(writer, KotlinSymbols.JsonWriter)
       .addParameter(value, adaptedTypeName)
-      .addParameter(Identifier.context, KotlinSymbols.DataSerializeContext)
+      .addParameter(Identifier.context, KotlinSymbols.SerializeDataContext)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
@@ -85,7 +85,7 @@ private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBloc
   }
   builder.addStatement("$writer.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.$toJson($writer, $value.%N, ${Identifier.context})",
+      "%L.$serializeData($writer, $value.%N, ${Identifier.context})",
       adapterInitializer,
       propertyName,
   )

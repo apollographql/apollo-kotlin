@@ -5,8 +5,8 @@
 //
 package com.example.union_fragment.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -27,8 +27,7 @@ public class StarshipImpl() : Fragment<Starship> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): ApolloAdapter<Starship> =
-      StarshipImpl_ResponseAdapter.Starship.obj()
+  public override fun adapter(): DataAdapter<Starship> = StarshipImpl_ResponseAdapter.Starship.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

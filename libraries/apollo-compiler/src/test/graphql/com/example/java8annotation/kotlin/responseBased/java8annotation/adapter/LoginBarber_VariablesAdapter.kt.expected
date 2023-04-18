@@ -5,7 +5,7 @@
 //
 package com.example.java8annotation.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -19,8 +19,8 @@ public object LoginBarber_VariablesAdapter : VariablesAdapter<LoginBarber> {
     `value`: LoginBarber,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("input")
-    Login_InputAdapter.obj().toJson(writer, value.input, serializeDataContext)
+    Login_InputAdapter.obj().serializeData(writer, value.input, serializeDataContext)
   }
 }

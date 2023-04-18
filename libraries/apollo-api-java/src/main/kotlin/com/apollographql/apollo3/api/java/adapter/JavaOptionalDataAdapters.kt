@@ -1,34 +1,32 @@
-@file:JvmName("GuavaOptionalAdapters")
+@file:JvmName("JavaOptionalDataAdapters")
 
 package com.apollographql.apollo3.api.java.adapter
-
 
 import com.apollographql.apollo3.api.AnyDataAdapter
 import com.apollographql.apollo3.api.BooleanDataAdapter
 import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
-import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.DoubleDataAdapter
 import com.apollographql.apollo3.api.IntDataAdapter
 import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
-import com.google.common.base.Optional
+import java.util.Optional
 
 /**
- * An adapter for Guava's [Optional]. `null` is deserialized as [Optional.absent].
+ * An adapter for Java's [Optional]. `null` is deserialized as [Optional.empty].
  */
-class GuavaOptionalDataAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional<T>> {
+class JavaOptionalDataAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional<T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
-      Optional.absent()
+      Optional.empty()
     } else {
       Optional.of(wrappedAdapter.deserializeData(reader, context))
     }
   }
 
-  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: SerializeDataContext) {
+  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: DataAdapter.SerializeDataContext) {
     if (!value.isPresent) {
       writer.nullValue()
     } else {
@@ -41,16 +39,16 @@ class GuavaOptionalDataAdapter<T : Any>(private val wrappedAdapter: DataAdapter<
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val GuavaOptionalStringDataAdapter = GuavaOptionalDataAdapter(StringDataAdapter)
+val JavaOptionalStringDataAdapter = JavaOptionalDataAdapter(StringDataAdapter)
 
 @JvmField
-val GuavaOptionalDoubleDataAdapter = GuavaOptionalDataAdapter(DoubleDataAdapter)
+val JavaOptionalDoubleDataAdapter = JavaOptionalDataAdapter(DoubleDataAdapter)
 
 @JvmField
-val GuavaOptionalIntDataAdapter = GuavaOptionalDataAdapter(IntDataAdapter)
+val JavaOptionalIntDataAdapter = JavaOptionalDataAdapter(IntDataAdapter)
 
 @JvmField
-val GuavaOptionalBooleanDataAdapter = GuavaOptionalDataAdapter(BooleanDataAdapter)
+val JavaOptionalBooleanDataAdapter = JavaOptionalDataAdapter(BooleanDataAdapter)
 
 @JvmField
-val GuavaOptionalAnyDataAdapter = GuavaOptionalDataAdapter(AnyDataAdapter)
+val JavaOptionalAnyDataAdapter = JavaOptionalDataAdapter(AnyDataAdapter)

@@ -5,12 +5,12 @@
 //
 package com.example.mutation_create_review.type
 
+import com.apollographql.apollo3.api.AdapterToDataAdapter
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderProperty
 import com.apollographql.apollo3.api.BuilderScope
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.list
 import com.apollographql.apollo3.api.nullable
@@ -38,7 +38,7 @@ internal class ReviewBuilder(
   scalarAdapters: ScalarAdapters,
 ) : ObjectBuilder<ReviewMap>(scalarAdapters) {
   public var commentary: String? by
-      BuilderProperty(ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable())
+      BuilderProperty(AdapterToDataAdapter(com.example.MyStringAdapter()).nullable())
 
   public var listOfListOfCustom: List<List<java.util.Date>>? by
       BuilderProperty(scalarAdapters.responseAdapterFor<java.util.Date>(Date.type).list().list().nullable())
@@ -49,7 +49,7 @@ internal class ReviewBuilder(
   public var listOfListOfObject: List<List<CharacterMap>>? by __fields
 
   public var listOfListOfString: List<List<String>>? by
-      BuilderProperty(ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable())
+      BuilderProperty(AdapterToDataAdapter(com.example.MyStringAdapter()).list().list().nullable())
 
   public var stars: Int by __fields
 

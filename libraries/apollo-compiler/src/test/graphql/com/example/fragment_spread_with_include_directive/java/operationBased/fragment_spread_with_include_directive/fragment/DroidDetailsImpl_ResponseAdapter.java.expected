@@ -5,8 +5,8 @@
 //
 package com.example.fragment_spread_with_include_directive.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -16,20 +16,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements ApolloAdapter<com.example.fragment_spread_with_include_directive.fragment.DroidDetails> {
+  public enum DroidDetails implements DataAdapter<com.example.fragment_spread_with_include_directive.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
 
     @Override
-    public com.example.fragment_spread_with_include_directive.fragment.DroidDetails fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.fragment_spread_with_include_directive.fragment.DroidDetails deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _primaryFunction = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -40,11 +40,11 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.fragment_spread_with_include_directive.fragment.DroidDetails value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("primaryFunction");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.primaryFunction, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context);
     }
   }
 }

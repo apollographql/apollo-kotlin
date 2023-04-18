@@ -5,9 +5,9 @@
 //
 package com.example.java_android_annotations.type.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.NullableIntApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.NullableIntDataAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -16,24 +16,25 @@ import com.example.java_android_annotations.type.MyInput
 import kotlin.IllegalStateException
 import kotlin.Unit
 
-public object MyInput_InputAdapter : ApolloAdapter<MyInput> {
-  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-      MyInput = throw IllegalStateException("Input type used in output position")
+public object MyInput_InputAdapter : DataAdapter<MyInput> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): MyInput = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
     `value`: MyInput,
-    context: ApolloAdapter.DataSerializeContext,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntApolloAdapter.present().toJson(writer, value.nullableInt, context)
+      NullableIntDataAdapter.present().serializeData(writer, value.nullableInt, context)
     }
     writer.name("nonNullableInt")
-    IntApolloAdapter.toJson(writer, value.nonNullableInt, context)
+    IntDataAdapter.serializeData(writer, value.nonNullableInt, context)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntApolloAdapter.present().toJson(writer, value.nonNullableIntWithDefault, context)
+      IntDataAdapter.present().serializeData(writer, value.nonNullableIntWithDefault, context)
     }
   }
 }

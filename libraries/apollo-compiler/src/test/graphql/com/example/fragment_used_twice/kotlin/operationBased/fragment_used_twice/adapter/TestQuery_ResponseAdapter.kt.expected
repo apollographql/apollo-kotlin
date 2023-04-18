@@ -5,8 +5,8 @@
 //
 package com.example.fragment_used_twice.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, context)
+          0 -> _hero = Hero.obj(true).nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -39,25 +39,25 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().toJson(writer, value.hero, context)
+      Hero.obj(true).nullable().serializeData(writer, value.hero, context)
     }
 
-    private object Hero : ApolloAdapter<TestQuery.Data.Hero> {
+    private object Hero : DataAdapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Hero {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Hero {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -67,13 +67,13 @@ public object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+        val _heroDetails = com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.deserializeData(reader,
             context)
 
         var _humanDetails: HumanDetails? = null
         if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _humanDetails = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+          _humanDetails = com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeData(reader,
               context)
         }
 
@@ -84,19 +84,19 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.Hero,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, value.__typename, context)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
-        com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+        com.example.fragment_used_twice.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.serializeData(writer,
             value.heroDetails, context)
 
         if (value.humanDetails != null) {
-          com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+          com.example.fragment_used_twice.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeData(writer,
               value.humanDetails, context)
         }
       }

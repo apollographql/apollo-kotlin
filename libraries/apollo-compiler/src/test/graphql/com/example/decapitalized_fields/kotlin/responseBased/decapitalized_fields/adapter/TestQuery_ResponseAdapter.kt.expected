@@ -5,9 +5,9 @@
 //
 package com.example.decapitalized_fields.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -18,16 +18,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("Horse")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _Horse: TestQuery.Data.Horse? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _Horse = Horse.obj().nullable().fromJson(reader, context)
+          0 -> _Horse = Horse.obj().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -37,29 +37,29 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("Horse")
-      Horse.obj().nullable().toJson(writer, value.horse, context)
+      Horse.obj().nullable().serializeData(writer, value.horse, context)
     }
 
-    private object Horse : ApolloAdapter<TestQuery.Data.Horse> {
+    private object Horse : DataAdapter<TestQuery.Data.Horse> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "Donkey", "Cow")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Horse {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Horse {
         var __typename: String? = null
         var _Donkey: String? = null
         var _Cow: TestQuery.Data.Horse.Cow? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
-            1 -> _Donkey = NullableStringApolloAdapter.fromJson(reader, context)
-            2 -> _Cow = Cow.obj().nullable().fromJson(reader, context)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _Donkey = NullableStringDataAdapter.deserializeData(reader, context)
+            2 -> _Cow = Cow.obj().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -71,31 +71,31 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.Horse,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, value.__typename, context)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("Donkey")
-        NullableStringApolloAdapter.toJson(writer, value.donkey, context)
+        NullableStringDataAdapter.serializeData(writer, value.donkey, context)
 
         writer.name("Cow")
-        Cow.obj().nullable().toJson(writer, value.cow, context)
+        Cow.obj().nullable().serializeData(writer, value.cow, context)
       }
 
-      private object Cow : ApolloAdapter<TestQuery.Data.Horse.Cow> {
+      private object Cow : DataAdapter<TestQuery.Data.Horse.Cow> {
         public val RESPONSE_NAMES: List<String> = listOf("Moo")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.Horse.Cow {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.Horse.Cow {
           var _Moo: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _Moo = NullableStringApolloAdapter.fromJson(reader, context)
+              0 -> _Moo = NullableStringDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -105,13 +105,13 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: TestQuery.Data.Horse.Cow,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("Moo")
-          NullableStringApolloAdapter.toJson(writer, value.moo, context)
+          NullableStringDataAdapter.serializeData(writer, value.moo, context)
         }
       }
     }

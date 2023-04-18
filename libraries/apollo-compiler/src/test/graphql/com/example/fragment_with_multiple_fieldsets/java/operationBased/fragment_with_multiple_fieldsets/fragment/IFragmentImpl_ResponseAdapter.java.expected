@@ -5,13 +5,13 @@
 //
 package com.example.fragment_with_multiple_fieldsets.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -21,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IFragmentImpl_ResponseAdapter {
-  public enum IFragment implements ApolloAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
+  public enum IFragment implements DataAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.fragment_with_multiple_fieldsets.fragment.IFragment fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.fragment_with_multiple_fieldsets.fragment.IFragment deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -43,7 +43,7 @@ public class IFragmentImpl_ResponseAdapter {
       com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA _onA = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("A")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.OnA.INSTANCE.fromJson(reader, context);
+        _onA = com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.OnA.INSTANCE.deserializeData(reader, context);
       }
 
       return new com.example.fragment_with_multiple_fieldsets.fragment.IFragment(
@@ -53,32 +53,32 @@ public class IFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.onA != null) {
-        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.OnA.INSTANCE.toJson(writer, value.onA, context);
+        com.example.fragment_with_multiple_fieldsets.fragment.IFragmentImpl_ResponseAdapter.OnA.INSTANCE.serializeData(writer, value.onA, context);
       }
     }
   }
 
-  public enum OnA implements ApolloAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
+  public enum OnA implements DataAdapter<com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldA");
 
     @Override
-    public com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _fieldA = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _fieldA = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _fieldA = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -89,11 +89,11 @@ public class IFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.fragment_with_multiple_fieldsets.fragment.IFragment.OnA value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("fieldA");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.fieldA, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.fieldA, context);
     }
   }
 }

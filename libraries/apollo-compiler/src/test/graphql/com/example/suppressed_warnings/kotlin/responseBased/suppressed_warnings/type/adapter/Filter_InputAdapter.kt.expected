@@ -6,8 +6,8 @@
 package com.example.suppressed_warnings.type.adapter
 
 import com.apollographql.apollo3.annotations.ApolloRequiresOptIn
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,26 +20,27 @@ import kotlin.Unit
 
 @Suppress("DEPRECATION")
 @OptIn(ApolloRequiresOptIn::class)
-public object Filter_InputAdapter : ApolloAdapter<Filter> {
-  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-      Filter = throw IllegalStateException("Input type used in output position")
+public object Filter_InputAdapter : DataAdapter<Filter> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): Filter = throw
+      IllegalStateException("Input type used in output position")
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
     `value`: Filter,
-    context: ApolloAdapter.DataSerializeContext,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     if (value.name is Optional.Present) {
       writer.name("name")
-      NullableStringApolloAdapter.present().toJson(writer, value.name, context)
+      NullableStringDataAdapter.present().serializeData(writer, value.name, context)
     }
     if (value.deprecated is Optional.Present) {
       writer.name("deprecated")
-      NullableStringApolloAdapter.present().toJson(writer, value.deprecated, context)
+      NullableStringDataAdapter.present().serializeData(writer, value.deprecated, context)
     }
     if (value.experimental is Optional.Present) {
       writer.name("experimental")
-      NullableStringApolloAdapter.present().toJson(writer, value.experimental, context)
+      NullableStringDataAdapter.present().serializeData(writer, value.experimental, context)
     }
   }
 }

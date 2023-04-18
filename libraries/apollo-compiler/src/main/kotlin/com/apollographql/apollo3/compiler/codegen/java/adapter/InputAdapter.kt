@@ -4,8 +4,8 @@
 package com.apollographql.apollo3.compiler.codegen.java.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.java.JavaClassNames
@@ -33,7 +33,7 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
   return TypeSpec.enumBuilder(adapterName)
       .addModifiers(Modifier.PUBLIC)
       .addEnumConstant("INSTANCE")
-      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.ApolloAdapter, adaptedTypeName))
+      .addSuperinterface(ParameterizedTypeName.get(JavaClassNames.DataAdapter, adaptedTypeName))
       .addMethod(notImplementedFromResponseMethodSpec(adaptedTypeName))
       .addMethod(writeToResponseMethodSpec(context, adaptedTypeName))
       .apply {
@@ -44,12 +44,12 @@ internal fun List<NamedType>.inputAdapterTypeSpec(
       .build()
 }
 
-private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(fromJson)
+private fun notImplementedFromResponseMethodSpec(adaptedTypeName: TypeName) = MethodSpec.methodBuilder(deserializeData)
     .addModifiers(Modifier.PUBLIC)
     .addException(JavaClassNames.IOException)
     .addAnnotation(JavaClassNames.Override)
     .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-    .addParameter(JavaClassNames.DataDeserializeContext, Identifier.context)
+    .addParameter(JavaClassNames.DeserializeDataContext, Identifier.context)
     .returns(adaptedTypeName)
     .addCode("throw new $T($S);\n", JavaClassNames.IllegalStateException, "Input type used in output position")
     .build()
@@ -59,13 +59,13 @@ private fun List<NamedType>.writeToResponseMethodSpec(
     context: JavaContext,
     adaptedTypeName: TypeName,
 ): MethodSpec {
-  return MethodSpec.methodBuilder(toJson)
+  return MethodSpec.methodBuilder(serializeData)
       .addModifiers(Modifier.PUBLIC)
       .addException(JavaClassNames.IOException)
       .addAnnotation(JavaClassNames.Override)
       .addParameter(JavaClassNames.JsonWriter, writer)
       .addParameter(adaptedTypeName, value)
-      .addParameter(JavaClassNames.DataSerializeContext, Identifier.context)
+      .addParameter(JavaClassNames.SerializeDataContext, Identifier.context)
       .addCode(writeToResponseCodeBlock(context))
       .build()
 }
@@ -87,7 +87,7 @@ private fun NamedType.writeToResponseCodeBlock(context: JavaContext): CodeBlock 
     builder.beginOptionalControlFlow(propertyName, context.nullableFieldStyle)
   }
   builder.add("$writer.name($S);\n", graphQlName)
-  builder.addStatement("$L.${Identifier.toJson}($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
+  builder.addStatement("$L.${Identifier.serializeData}($writer, $value.$propertyName, ${Identifier.context})", adapterInitializer)
   if (type.isOptional()) {
     builder.endControlFlow()
   }

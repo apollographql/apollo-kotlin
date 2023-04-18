@@ -5,9 +5,9 @@
 //
 package com.example.fragments_same_type_condition.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -17,20 +17,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetails1Impl_ResponseAdapter {
-  public enum DroidDetails1 implements ApolloAdapter<com.example.fragments_same_type_condition.fragment.DroidDetails1> {
+  public enum DroidDetails1 implements DataAdapter<com.example.fragments_same_type_condition.fragment.DroidDetails1> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.fragments_same_type_condition.fragment.DroidDetails1 fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.fragments_same_type_condition.fragment.DroidDetails1 deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -43,11 +43,11 @@ public class DroidDetails1Impl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.fragments_same_type_condition.fragment.DroidDetails1 value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

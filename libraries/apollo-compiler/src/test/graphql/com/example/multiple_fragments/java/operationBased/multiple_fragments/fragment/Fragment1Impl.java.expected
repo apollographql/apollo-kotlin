@@ -5,10 +5,10 @@
 //
 package com.example.multiple_fragments.fragment;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.multiple_fragments.fragment.selections.fragment1Selections;
@@ -66,8 +66,8 @@ public class Fragment1Impl implements Fragment<Fragment1> {
   }
 
   @Override
-  public ApolloAdapter<Fragment1> adapter() {
-    return new ObjectAdapter<Fragment1>(Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE, false);
+  public DataAdapter<Fragment1> adapter() {
+    return new ObjectDataAdapter<Fragment1>(Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE, false);
   }
 
   @Override

@@ -5,14 +5,14 @@
 //
 package com.example.mutation_create_review.type.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.AdapterToDataAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
-import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.mutation_create_review.type.ColorInput;
@@ -22,99 +22,99 @@ import java.lang.IllegalStateException;
 import java.lang.Override;
 import java.util.Date;
 
-public enum ReviewInput_InputAdapter implements ApolloAdapter<ReviewInput> {
+public enum ReviewInput_InputAdapter implements DataAdapter<ReviewInput> {
   INSTANCE;
 
   @Override
-  public ReviewInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+  public ReviewInput deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
       throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ReviewInput value,
-      ApolloAdapter.DataSerializeContext context) throws IOException {
+  public void serializeData(JsonWriter writer, ReviewInput value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     writer.name("stars");
-    Adapters.IntApolloAdapter.toJson(writer, value.stars, context);
+    DataAdapters.IntDataAdapter.serializeData(writer, value.stars, context);
     if (value.nullableIntFieldWithDefaultValue instanceof Optional.Present) {
       writer.name("nullableIntFieldWithDefaultValue");
-      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, value.nullableIntFieldWithDefaultValue, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableIntDataAdapter).serializeData(writer, value.nullableIntFieldWithDefaultValue, context);
     }
     if (value.commentary instanceof Optional.Present) {
       writer.name("commentary");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, value.commentary, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.commentary, context);
     }
     writer.name("favoriteColor");
-    new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).toJson(writer, value.favoriteColor, context);
+    new ObjectDataAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false).serializeData(writer, value.favoriteColor, context);
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.enumWithDefaultValue, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.enumWithDefaultValue, context);
     }
     if (value.nonNullableEnumWithDefaultValue instanceof Optional.Present) {
       writer.name("nonNullableEnumWithDefaultValue");
-      new ApolloOptionalAdapter<>(Episode_ResponseAdapter.INSTANCE).toJson(writer, value.nonNullableEnumWithDefaultValue, context);
+      new ApolloOptionalDataAdapter<>(Episode_ResponseAdapter.INSTANCE).serializeData(writer, value.nonNullableEnumWithDefaultValue, context);
     }
     if (value.nullableEnum instanceof Optional.Present) {
       writer.name("nullableEnum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.nullableEnum, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.nullableEnum, context);
     }
     if (value.listOfCustomScalar instanceof Optional.Present) {
       writer.name("listOfCustomScalar");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))))).toJson(writer, value.listOfCustomScalar, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))))).serializeData(writer, value.listOfCustomScalar, context);
     }
     if (value.customScalar instanceof Optional.Present) {
       writer.name("customScalar");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))).toJson(writer, value.customScalar, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))).serializeData(writer, value.customScalar, context);
     }
     if (value.listOfEnums instanceof Optional.Present) {
       writer.name("listOfEnums");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, value.listOfEnums, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)))).serializeData(writer, value.listOfEnums, context);
     }
     if (value.listOfInt instanceof Optional.Present) {
       writer.name("listOfInt");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(Adapters.NullableIntApolloAdapter))).toJson(writer, value.listOfInt, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(DataAdapters.NullableIntDataAdapter))).serializeData(writer, value.listOfInt, context);
     }
     if (value.listOfString instanceof Optional.Present) {
       writer.name("listOfString");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))))).toJson(writer, value.listOfString, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))))).serializeData(writer, value.listOfString, context);
     }
     writer.name("listOfStringNonOptional");
-    new ListAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, value.listOfStringNonOptional, context);
+    new ListDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.listOfStringNonOptional, context);
     if (value.listOfInputTypes instanceof Optional.Present) {
       writer.name("listOfInputTypes");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, value.listOfInputTypes, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).serializeData(writer, value.listOfInputTypes, context);
     }
     if (value.booleanWithDefaultValue instanceof Optional.Present) {
       writer.name("booleanWithDefaultValue");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, value.booleanWithDefaultValue, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableBooleanDataAdapter).serializeData(writer, value.booleanWithDefaultValue, context);
     }
     if (value.booleanNonOptional instanceof Optional.Present) {
       writer.name("booleanNonOptional");
-      new ApolloOptionalAdapter<>(Adapters.NullableBooleanApolloAdapter).toJson(writer, value.booleanNonOptional, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableBooleanDataAdapter).serializeData(writer, value.booleanNonOptional, context);
     }
     if (value.listOfListOfString instanceof Optional.Present) {
       writer.name("listOfListOfString");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))))).toJson(writer, value.listOfListOfString, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new ListDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))))).serializeData(writer, value.listOfListOfString, context);
     }
     if (value.listOfListOfEnum instanceof Optional.Present) {
       writer.name("listOfListOfEnum");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(Episode_ResponseAdapter.INSTANCE)))).toJson(writer, value.listOfListOfEnum, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new ListDataAdapter<>(Episode_ResponseAdapter.INSTANCE)))).serializeData(writer, value.listOfListOfEnum, context);
     }
     if (value.listOfListOfCustom instanceof Optional.Present) {
       writer.name("listOfListOfCustom");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))))).toJson(writer, value.listOfListOfCustom, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new ListDataAdapter<>((context.scalarAdapters.<Date>responseAdapterFor(com.example.mutation_create_review.type.Date.type)))))).serializeData(writer, value.listOfListOfCustom, context);
     }
     if (value.listOfListOfObject instanceof Optional.Present) {
       writer.name("listOfListOfObject");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ListAdapter<>(new ListAdapter<>(new ObjectAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).toJson(writer, value.listOfListOfObject, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ListDataAdapter<>(new ListDataAdapter<>(new ObjectDataAdapter<ColorInput>(ColorInput_InputAdapter.INSTANCE, false))))).serializeData(writer, value.listOfListOfObject, context);
     }
     if (value.CapitalizedField instanceof Optional.Present) {
       writer.name("CapitalizedField");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ScalarAdapterToApolloAdapter<>(new com.example.MyStringAdapter()))).toJson(writer, value.CapitalizedField, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter()))).serializeData(writer, value.CapitalizedField, context);
     }
     if (value.CapitalizedInt instanceof Optional.Present) {
       writer.name("CapitalizedInt");
-      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, value.CapitalizedInt, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableIntDataAdapter).serializeData(writer, value.CapitalizedInt, context);
     }
   }
 }

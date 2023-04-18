@@ -5,11 +5,11 @@
 //
 package com.example.mutation_create_review_semantic_naming.type.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -19,37 +19,37 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum ColorInput_InputAdapter implements ApolloAdapter<ColorInput> {
+public enum ColorInput_InputAdapter implements DataAdapter<ColorInput> {
   INSTANCE;
 
   @Override
-  public ColorInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
-      IOException {
+  public ColorInput deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
+      throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, ColorInput value,
-      ApolloAdapter.DataSerializeContext context) throws IOException {
+  public void serializeData(JsonWriter writer, ColorInput value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     if (value.red instanceof Optional.Present) {
       writer.name("red");
-      new ApolloOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, value.red, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.IntDataAdapter).serializeData(writer, value.red, context);
     }
     if (value.green instanceof Optional.Present) {
       writer.name("green");
-      new ApolloOptionalAdapter<>(Adapters.NullableDoubleApolloAdapter).toJson(writer, value.green, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableDoubleDataAdapter).serializeData(writer, value.green, context);
     }
     if (value.blue instanceof Optional.Present) {
       writer.name("blue");
-      new ApolloOptionalAdapter<>(Adapters.DoubleApolloAdapter).toJson(writer, value.blue, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.DoubleDataAdapter).serializeData(writer, value.blue, context);
     }
     if (value.enumWithDefaultValue instanceof Optional.Present) {
       writer.name("enumWithDefaultValue");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.enumWithDefaultValue, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.enumWithDefaultValue, context);
     }
     if (value.reviewRefInput instanceof Optional.Present) {
       writer.name("reviewRefInput");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<ReviewRefInput>(ReviewRefInput_InputAdapter.INSTANCE, false))).toJson(writer, value.reviewRefInput, context);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<ReviewRefInput>(ReviewRefInput_InputAdapter.INSTANCE, false))).serializeData(writer, value.reviewRefInput, context);
     }
   }
 }

@@ -5,9 +5,9 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -21,12 +21,12 @@ public object GetUser_VariablesAdapter : VariablesAdapter<GetUser> {
     `value`: GetUser,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("organizationId")
-    StringApolloAdapter.toJson(writer, value.organizationId, serializeDataContext)
+    StringDataAdapter.serializeData(writer, value.organizationId, serializeDataContext)
     writer.name("query")
-    UserQuery_InputAdapter.obj().toJson(writer, value.query, serializeDataContext)
+    UserQuery_InputAdapter.obj().serializeData(writer, value.query, serializeDataContext)
     writer.name("size")
-    IntApolloAdapter.toJson(writer, value.size, serializeDataContext)
+    IntDataAdapter.serializeData(writer, value.size, serializeDataContext)
   }
 }

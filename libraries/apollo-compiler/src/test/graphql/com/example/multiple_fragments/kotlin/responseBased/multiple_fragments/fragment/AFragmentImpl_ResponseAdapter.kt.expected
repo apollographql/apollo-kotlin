@@ -5,9 +5,9 @@
 //
 package com.example.multiple_fragments.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -18,16 +18,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object AFragmentImpl_ResponseAdapter {
-  public object Data : ApolloAdapter<AFragmentImpl.Data> {
+  public object Data : DataAdapter<AFragmentImpl.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        AFragmentImpl.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): AFragmentImpl.Data {
       var _node: AFragmentImpl.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj().nullable().fromJson(reader, context)
+          0 -> _node = Node.obj().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -37,35 +37,35 @@ public object AFragmentImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: AFragmentImpl.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("node")
-      Node.obj().nullable().toJson(writer, value.node, context)
+      Node.obj().nullable().serializeData(writer, value.node, context)
     }
 
-    private object Node : ApolloAdapter<AFragmentImpl.Data.Node> {
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): AFragmentImpl.Data.Node {
+    private object Node : DataAdapter<AFragmentImpl.Data.Node> {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): AFragmentImpl.Data.Node {
         val __typename = reader.readTypename()
         return when(__typename) {
           "ANode",
-          -> ANodeNode.fromJson(reader, context, __typename)
+          -> ANodeNode.deserializeData(reader, context, __typename)
           else
-          -> OtherNode.fromJson(reader, context, __typename)
+          -> OtherNode.deserializeData(reader, context, __typename)
         }
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: AFragmentImpl.Data.Node,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         when(value) {
-          is AFragmentImpl.Data.ANodeNode -> ANodeNode.toJson(writer, value, context)
-          is AFragmentImpl.Data.OtherNode -> OtherNode.toJson(writer, value, context)
+          is AFragmentImpl.Data.ANodeNode -> ANodeNode.serializeData(writer, value, context)
+          is AFragmentImpl.Data.OtherNode -> OtherNode.serializeData(writer, value, context)
         }
       }
     }
@@ -73,9 +73,9 @@ public object AFragmentImpl_ResponseAdapter {
     public object ANodeNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "field1", "field2")
 
-      public fun fromJson(
+      public fun deserializeData(
         reader: JsonReader,
-        context: ApolloAdapter.DataDeserializeContext,
+        context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): AFragmentImpl.Data.ANodeNode {
         var __typename: String? = typename
@@ -84,9 +84,9 @@ public object AFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
-            1 -> _field1 = NullableStringApolloAdapter.fromJson(reader, context)
-            2 -> _field2 = NullableStringApolloAdapter.fromJson(reader, context)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _field1 = NullableStringDataAdapter.deserializeData(reader, context)
+            2 -> _field2 = NullableStringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -98,35 +98,35 @@ public object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeData(
         writer: JsonWriter,
         `value`: AFragmentImpl.Data.ANodeNode,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, value.__typename, context)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("field1")
-        NullableStringApolloAdapter.toJson(writer, value.field1, context)
+        NullableStringDataAdapter.serializeData(writer, value.field1, context)
 
         writer.name("field2")
-        NullableStringApolloAdapter.toJson(writer, value.field2, context)
+        NullableStringDataAdapter.serializeData(writer, value.field2, context)
       }
     }
 
     public object OtherNode {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public fun fromJson(
+      public fun deserializeData(
         reader: JsonReader,
-        context: ApolloAdapter.DataDeserializeContext,
+        context: DataAdapter.DeserializeDataContext,
         typename: String,
       ): AFragmentImpl.Data.OtherNode {
         var __typename: String? = typename
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -136,13 +136,13 @@ public object AFragmentImpl_ResponseAdapter {
         )
       }
 
-      public fun toJson(
+      public fun serializeData(
         writer: JsonWriter,
         `value`: AFragmentImpl.Data.OtherNode,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringApolloAdapter.toJson(writer, value.__typename, context)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
       }
     }
   }
