@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.runtime.java.network.http.internal;
 
-import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext;
 import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpBody;
@@ -230,7 +230,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      AnyApolloAdapter.serializeData(writer, o, new DataSerializeContext(ScalarAdapters.Empty));
+      AnyApolloAdapter.serializeData(writer, o, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
