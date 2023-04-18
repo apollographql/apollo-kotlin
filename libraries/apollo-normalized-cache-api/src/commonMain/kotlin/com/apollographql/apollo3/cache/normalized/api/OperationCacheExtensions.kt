@@ -83,7 +83,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
   )
   return adapter().deserializeData(
       reader,
-      ApolloAdapter.DataDeserializeContext(
+      ApolloAdapter.DeserializeDataContext(
           scalarAdapters = scalarAdapters,
           falseBooleanVariables = booleanVariables(scalarAdapters),
           mergedDeferredFragmentIds = null,

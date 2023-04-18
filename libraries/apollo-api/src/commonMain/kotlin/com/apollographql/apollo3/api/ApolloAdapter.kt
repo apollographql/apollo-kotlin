@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext
 import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext
+import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
@@ -19,7 +19,7 @@ import kotlin.jvm.JvmField
  */
 interface ApolloAdapter<T> {
   @Throws(IOException::class)
-  fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T
+  fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T
 
   @Throws(IOException::class)
   fun serializeData(writer: JsonWriter, value: T, context: DataSerializeContext)
@@ -29,7 +29,7 @@ interface ApolloAdapter<T> {
       val scalarAdapters: ScalarAdapters,
   )
 
-  class DataDeserializeContext(
+  class DeserializeDataContext(
       @JvmField
       val scalarAdapters: ScalarAdapters,
 
@@ -54,5 +54,5 @@ fun <T> ApolloAdapter<T>.toJson(writer: JsonWriter, scalarAdapters: ScalarAdapte
 }
 
 fun <T> ApolloAdapter<T>.fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
-  return deserializeData(reader, DataDeserializeContext(scalarAdapters = scalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+  return deserializeData(reader, DeserializeDataContext(scalarAdapters = scalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
 }
