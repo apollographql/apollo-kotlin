@@ -2,7 +2,7 @@ package test;
 
 import annotations.jsr305.MyQuery;
 import annotations.jsr305.type.MyInput;
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;

@@ -2,8 +2,8 @@
 
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
-import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
+import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.MapJsonReader
@@ -18,13 +18,13 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSuppressWildcards
 
 /**
- * This file contains a list of [ApolloAdapter] for standard types
+ * This file contains a list of [DataAdapter] for standard types
  *
  * They are mostly used from the generated code but could be useful in any other situations that requires adapting from
  * GraphQL to Kotlin.
  * In particular, [AnyApolloAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
-class ListAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<List<@JvmSuppressWildcards T>> {
+class ListAdapter<T>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<List<@JvmSuppressWildcards T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
@@ -44,7 +44,7 @@ class ListAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapt
   }
 }
 
-class NullableAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<@JvmSuppressWildcards T?> {
+class NullableAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<@JvmSuppressWildcards T?> {
   init {
     check(wrappedAdapter !is NullableAdapter<*>) {
       "The adapter is already nullable"
@@ -70,7 +70,7 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : A
 }
 
 @Deprecated("Use PresentAdapter instead")
-class OptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional.Present<@JvmSuppressWildcards T>> {
+class OptionalAdapter<T>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.deserializeData(reader, context))
   }
@@ -85,7 +85,7 @@ class OptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloA
  *
  * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
-class PresentAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional.Present<@JvmSuppressWildcards T>> {
+class PresentAdapter<T>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional.Present<@JvmSuppressWildcards T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Optional.Present<T> {
     return Optional.Present(wrappedAdapter.deserializeData(reader, context))
   }
@@ -100,7 +100,7 @@ class PresentAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAd
  * This adapter is used to handle nullable fields when they are represented as [Optional].
  * `null` is deserialized as [Optional.Absent].
  */
-class ApolloOptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<@JvmSuppressWildcards T>> {
+class ApolloOptionalDataAdapter<T>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional<@JvmSuppressWildcards T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -120,7 +120,7 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : A
 }
 
 @JvmField
-val StringApolloAdapter = object : ApolloAdapter<String> {
+val StringDataAdapter = object : DataAdapter<String> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): String {
     return reader.nextString()!!
   }
@@ -131,7 +131,7 @@ val StringApolloAdapter = object : ApolloAdapter<String> {
 }
 
 @JvmField
-val IntApolloAdapter = object : ApolloAdapter<Int> {
+val IntDataAdapter = object : DataAdapter<Int> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Int {
     return reader.nextInt()
   }
@@ -142,7 +142,7 @@ val IntApolloAdapter = object : ApolloAdapter<Int> {
 }
 
 @JvmField
-val DoubleApolloAdapter = object : ApolloAdapter<Double> {
+val DoubleDataAdapter = object : DataAdapter<Double> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Double {
     return reader.nextDouble()
   }
@@ -153,11 +153,11 @@ val DoubleApolloAdapter = object : ApolloAdapter<Double> {
 }
 
 /**
- * An [ApolloAdapter] that converts to/from a [Float]
+ * A [DataAdapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
 @JvmField
-val FloatApolloAdapter = object : ApolloAdapter<Float> {
+val FloatDataAdapter = object : DataAdapter<Float> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Float {
     return reader.nextDouble().toFloat()
   }
@@ -168,13 +168,13 @@ val FloatApolloAdapter = object : ApolloAdapter<Float> {
 }
 
 /**
- * An [ApolloAdapter] that converts to/from a [Long]
+ * A [DataAdapter] that converts to/from a [Long]
  * Longs are not part of the GraphQL spec but this can be used in custom scalars
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
  */
 @JvmField
-val LongApolloAdapter = object : ApolloAdapter<Long> {
+val LongDataAdapter = object : DataAdapter<Long> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Long {
     return reader.nextLong()
   }
@@ -185,7 +185,7 @@ val LongApolloAdapter = object : ApolloAdapter<Long> {
 }
 
 @JvmField
-val BooleanApolloAdapter = object : ApolloAdapter<Boolean> {
+val BooleanDataAdapter = object : DataAdapter<Boolean> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Boolean {
     return reader.nextBoolean()
   }
@@ -196,7 +196,7 @@ val BooleanApolloAdapter = object : ApolloAdapter<Boolean> {
 }
 
 @JvmField
-val AnyApolloAdapter = object : ApolloAdapter<Any> {
+val AnyDataAdapter = object : DataAdapter<Any> {
   fun fromJson(reader: JsonReader): Any {
     return reader.readAny()!!
   }
@@ -214,7 +214,7 @@ val AnyApolloAdapter = object : ApolloAdapter<Any> {
   }
 }
 
-internal class PassThroughAdapter<T> : ApolloAdapter<T> {
+internal class PassThroughAdapter<T> : DataAdapter<T> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
     check(reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
@@ -233,7 +233,7 @@ internal class PassThroughAdapter<T> : ApolloAdapter<T> {
   }
 }
 
-class ScalarAdapterToApolloAdapter<T>(private val wrappedAdapter: Adapter<T>) : ApolloAdapter<T> {
+class AdapterToDataAdapter<T>(private val wrappedAdapter: Adapter<T>) : DataAdapter<T> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
     return wrappedAdapter.fromJson(reader)
   }
@@ -244,7 +244,7 @@ class ScalarAdapterToApolloAdapter<T>(private val wrappedAdapter: Adapter<T>) : 
 }
 
 @JvmField
-val UploadApolloAdapter = object : ApolloAdapter<Upload> {
+val UploadDataAdapter = object : DataAdapter<Upload> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Upload {
     error("File Upload used in output position")
   }
@@ -325,7 +325,7 @@ val DoubleAdapter = object : Adapter<Double> {
 }
 
 /**
- * An [ApolloAdapter] that converts to/from a [Float]
+ * A [DataAdapter] that converts to/from a [Float]
  * Floats are not part of the GraphQL spec but this can be used in custom scalars
  */
 @JvmField
@@ -340,7 +340,7 @@ val FloatAdapter = object : Adapter<Float> {
 }
 
 /**
- * An [ApolloAdapter] that converts to/from a [Long]
+ * A [DataAdapter] that converts to/from a [Long]
  * Longs are not part of the GraphQL spec but this can be used in custom scalars
  *
  * If the Json number does not fit in a [Long], an exception will be thrown
@@ -390,9 +390,9 @@ val UploadAdapter = object : Adapter<Upload> {
 }
 
 class ObjectAdapter<T>(
-    private val wrappedAdapter: ApolloAdapter<T>,
+    private val wrappedAdapter: DataAdapter<T>,
     private val buffered: Boolean,
-) : ApolloAdapter<@JvmSuppressWildcards T> {
+) : DataAdapter<@JvmSuppressWildcards T> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T {
     val actualReader = if (buffered) {
       reader.buffer()
@@ -428,25 +428,25 @@ class ObjectAdapter<T>(
 }
 
 @JvmName("-nullable")
-fun <T : Any> ApolloAdapter<T>.nullable() = NullableAdapter(this)
+fun <T : Any> DataAdapter<T>.nullable() = NullableAdapter(this)
 
 @JvmName("-list")
-fun <T> ApolloAdapter<T>.list() = ListAdapter(this)
+fun <T> DataAdapter<T>.list() = ListAdapter(this)
 
 @JvmName("-obj")
-fun <T> ApolloAdapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
+fun <T> DataAdapter<T>.obj(buffered: Boolean = false) = ObjectAdapter(this, buffered)
 
 @JvmName("-optional")
 @Deprecated("Use present instead", ReplaceWith("present()"))
-fun <T> ApolloAdapter<T>.optional() = PresentAdapter(this)
+fun <T> DataAdapter<T>.optional() = PresentAdapter(this)
 
 @JvmName("-present")
-fun <T> ApolloAdapter<T>.present() = PresentAdapter(this)
+fun <T> DataAdapter<T>.present() = PresentAdapter(this)
 
 
 @JvmName("-toJson")
 @JvmOverloads
-fun <T> ApolloAdapter<T>.toJsonString(
+fun <T> DataAdapter<T>.toJsonString(
     value: T,
     context: SerializeDataContext = SerializeDataContext(scalarAdapters = ScalarAdapters.Empty),
     indent: String? = null,

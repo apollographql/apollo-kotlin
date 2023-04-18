@@ -1,6 +1,6 @@
 package test;
 
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;

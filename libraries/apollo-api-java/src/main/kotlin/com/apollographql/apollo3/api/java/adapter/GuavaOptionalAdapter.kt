@@ -4,10 +4,10 @@ package com.apollographql.apollo3.api.java.adapter
 
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
-import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.BooleanApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
+import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.DoubleApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
 import com.apollographql.apollo3.api.StringApolloAdapter
@@ -18,7 +18,7 @@ import com.google.common.base.Optional
 /**
  * An adapter for Guava's [Optional]. `null` is deserialized as [Optional.absent].
  */
-class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<T>> {
+class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional<T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()

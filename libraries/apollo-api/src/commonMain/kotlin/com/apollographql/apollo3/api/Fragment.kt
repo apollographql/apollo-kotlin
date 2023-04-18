@@ -13,7 +13,7 @@ interface Fragment<D : Fragment.Data> : Executable<D> {
   @Throws(IOException::class)
   override fun serializeVariables(writer: JsonWriter, context: SerializeVariablesContext)
 
-  override fun adapter(): ApolloAdapter<D>
+  override fun adapter(): DataAdapter<D>
 
   override fun rootField(): CompiledField
 

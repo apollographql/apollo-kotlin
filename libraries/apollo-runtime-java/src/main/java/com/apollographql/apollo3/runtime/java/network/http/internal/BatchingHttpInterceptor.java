@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.runtime.java.network.http.internal;
 
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
-import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext;
 import com.apollographql.apollo3.api.ExecutionOptions;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpBody;

@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api.internal
 
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
 import com.apollographql.apollo3.api.Error
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.json.JsonReader

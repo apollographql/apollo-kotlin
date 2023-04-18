@@ -4,16 +4,16 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
 /**
- * A wrapper around a Map<String, [ApolloAdapter]> used to retrieve scalar adapters at runtime
+ * A wrapper around a Map<String, [DataAdapter]> used to retrieve scalar adapters at runtime
  */
 class ScalarAdapters private constructor(
-    scalarAdapters: Map<String, ApolloAdapter<*>>,
+    scalarAdapters: Map<String, DataAdapter<*>>,
     private val unsafe: Boolean,
 ) : ExecutionContext.Element {
 
-  private val adaptersMap: Map<String, ApolloAdapter<*>> = scalarAdapters
+  private val adaptersMap: Map<String, DataAdapter<*>> = scalarAdapters
 
-  fun <T : Any> responseAdapterFor(scalar: ScalarType): ApolloAdapter<T> {
+  fun <T : Any> responseAdapterFor(scalar: ScalarType): DataAdapter<T> {
     @Suppress("UNCHECKED_CAST")
     return when {
       adaptersMap[scalar.name] != null -> {
@@ -56,7 +56,7 @@ class ScalarAdapters private constructor(
 
       unsafe -> PassThroughAdapter()
       else -> error("Can't map GraphQL type: `${scalar.name}` to: `${scalar.className}`. Did you forget to add a ScalarAdapter?")
-    } as ApolloAdapter<T>
+    } as DataAdapter<T>
   }
 
   override val key: ExecutionContext.Key<*>
@@ -81,7 +81,7 @@ class ScalarAdapters private constructor(
   fun newBuilder() = Builder().addAll(this)
 
   class Builder {
-    private val adaptersMap: MutableMap<String, ApolloAdapter<*>> = mutableMapOf()
+    private val adaptersMap: MutableMap<String, DataAdapter<*>> = mutableMapOf()
     private var unsafe = false
 
     fun <T> add(

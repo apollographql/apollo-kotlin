@@ -2,7 +2,7 @@ package test;
 
 import annotations.android.MyQuery;
 import annotations.android.type.MyInput;
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;

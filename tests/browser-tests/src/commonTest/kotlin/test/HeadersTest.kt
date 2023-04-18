@@ -1,8 +1,8 @@
 package test
 
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Subscription
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -46,7 +46,7 @@ class NothingSubscription : Subscription<Nothing> {
     return ""
   }
 
-  override fun adapter(): ApolloAdapter<Nothing> {
+  override fun adapter(): DataAdapter<Nothing> {
     TODO("Not yet implemented")
   }
 

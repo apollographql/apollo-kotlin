@@ -2,8 +2,8 @@ package test;
 
 import batching.GetLaunch2Query;
 import batching.GetLaunchQuery;
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.ApolloResponse;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.http.HttpHeader;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;

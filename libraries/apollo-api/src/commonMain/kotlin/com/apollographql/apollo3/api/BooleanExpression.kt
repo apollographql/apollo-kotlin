@@ -4,7 +4,7 @@ package com.apollographql.apollo3.api
 
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
 import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
 

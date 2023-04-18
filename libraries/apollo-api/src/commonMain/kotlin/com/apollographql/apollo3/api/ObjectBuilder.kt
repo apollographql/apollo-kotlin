@@ -40,12 +40,12 @@ val GlobalBuilder = object : BuilderScope {
  * A property delegate that stores the given property as it would be serialized in a Json
  * This is needed in Data Builders because the serializer only work from Json
  */
-class BuilderProperty<T>(val adapter: ApolloAdapter<T>) {
+class BuilderProperty<T>(val adapter: DataAdapter<T>) {
   operator fun getValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>): T {
     // XXX: remove this cast as MapJsonReader can tak any value
     @Suppress("UNCHECKED_CAST")
     val data = thisRef.__fields[property.name] as Map<String, Any?>
-    return adapter.deserializeData(MapJsonReader(data), ApolloAdapter.DeserializeDataContext(scalarAdapters = ScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+    return adapter.deserializeData(MapJsonReader(data), DataAdapter.DeserializeDataContext(scalarAdapters = ScalarAdapters.Empty, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
   }
 
   operator fun setValue(thisRef: ObjectBuilder<*>, property: kotlin.reflect.KProperty<*>, value: T) {
@@ -55,7 +55,7 @@ class BuilderProperty<T>(val adapter: ApolloAdapter<T>) {
   }
 }
 
-fun <T> adaptValue(adapter: ApolloAdapter<T>, value: T): Any? {
+fun <T> adaptValue(adapter: DataAdapter<T>, value: T): Any? {
   return MapJsonWriter().apply {
     adapter.toJson(this, ScalarAdapters.Empty, value)
   }.root()
