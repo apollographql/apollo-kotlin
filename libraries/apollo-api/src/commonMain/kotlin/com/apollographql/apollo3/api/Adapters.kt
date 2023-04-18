@@ -35,10 +35,10 @@ class ListAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapt
     return list
   }
 
-  override fun toJson(writer: JsonWriter, value: List<T>, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: List<T>, context: DataSerializeContext) {
     writer.beginArray()
     value.forEach {
-      wrappedAdapter.toJson(writer, it, context)
+      wrappedAdapter.serializeData(writer, it, context)
     }
     writer.endArray()
   }
@@ -60,11 +60,11 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : A
     }
   }
 
-  override fun toJson(writer: JsonWriter, value: T?, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: T?, context: DataSerializeContext) {
     if (value == null) {
       writer.nullValue()
     } else {
-      wrappedAdapter.toJson(writer, value, context)
+      wrappedAdapter.serializeData(writer, value, context)
     }
   }
 }
@@ -75,8 +75,8 @@ class OptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloA
     return Optional.Present(wrappedAdapter.deserializeData(reader, context))
   }
 
-  override fun toJson(writer: JsonWriter, value: Optional.Present<T>, context: DataSerializeContext) {
-    wrappedAdapter.toJson(writer, value.value, context)
+  override fun serializeData(writer: JsonWriter, value: Optional.Present<T>, context: DataSerializeContext) {
+    wrappedAdapter.serializeData(writer, value.value, context)
   }
 }
 
@@ -90,8 +90,8 @@ class PresentAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAd
     return Optional.Present(wrappedAdapter.deserializeData(reader, context))
   }
 
-  override fun toJson(writer: JsonWriter, value: Optional.Present<T>, context: DataSerializeContext) {
-    wrappedAdapter.toJson(writer, value.value, context)
+  override fun serializeData(writer: JsonWriter, value: Optional.Present<T>, context: DataSerializeContext) {
+    wrappedAdapter.serializeData(writer, value.value, context)
   }
 }
 
@@ -110,9 +110,9 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : A
     }
   }
 
-  override fun toJson(writer: JsonWriter, value: Optional<T>, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: DataSerializeContext) {
     if (value is Optional.Present) {
-      wrappedAdapter.toJson(writer, value.value, context)
+      wrappedAdapter.serializeData(writer, value.value, context)
     } else {
       writer.nullValue()
     }
@@ -125,7 +125,7 @@ val StringApolloAdapter = object : ApolloAdapter<String> {
     return reader.nextString()!!
   }
 
-  override fun toJson(writer: JsonWriter, value: String, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: String, context: DataSerializeContext) {
     writer.value(value)
   }
 }
@@ -136,7 +136,7 @@ val IntApolloAdapter = object : ApolloAdapter<Int> {
     return reader.nextInt()
   }
 
-  override fun toJson(writer: JsonWriter, value: Int, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Int, context: DataSerializeContext) {
     writer.value(value)
   }
 }
@@ -147,7 +147,7 @@ val DoubleApolloAdapter = object : ApolloAdapter<Double> {
     return reader.nextDouble()
   }
 
-  override fun toJson(writer: JsonWriter, value: Double, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Double, context: DataSerializeContext) {
     writer.value(value)
   }
 }
@@ -162,7 +162,7 @@ val FloatApolloAdapter = object : ApolloAdapter<Float> {
     return reader.nextDouble().toFloat()
   }
 
-  override fun toJson(writer: JsonWriter, value: Float, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Float, context: DataSerializeContext) {
     writer.value(value.toDouble())
   }
 }
@@ -179,7 +179,7 @@ val LongApolloAdapter = object : ApolloAdapter<Long> {
     return reader.nextLong()
   }
 
-  override fun toJson(writer: JsonWriter, value: Long, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Long, context: DataSerializeContext) {
     writer.value(value)
   }
 }
@@ -190,7 +190,7 @@ val BooleanApolloAdapter = object : ApolloAdapter<Boolean> {
     return reader.nextBoolean()
   }
 
-  override fun toJson(writer: JsonWriter, value: Boolean, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Boolean, context: DataSerializeContext) {
     writer.value(value)
   }
 }
@@ -209,7 +209,7 @@ val AnyApolloAdapter = object : ApolloAdapter<Any> {
     return fromJson(reader)
   }
 
-  override fun toJson(writer: JsonWriter, value: Any, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Any, context: DataSerializeContext) {
     toJson(writer, value)
   }
 }
@@ -224,7 +224,7 @@ internal class PassThroughAdapter<T> : ApolloAdapter<T> {
     return reader.nextValue() as T
   }
 
-  override fun toJson(writer: JsonWriter, value: T, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: T, context: DataSerializeContext) {
     check(writer is MapJsonWriter) {
       "UnsafeAdapter only supports MapJsonWriter"
     }
@@ -238,7 +238,7 @@ class ScalarAdapterToApolloAdapter<T>(private val wrappedAdapter: Adapter<T>) : 
     return wrappedAdapter.fromJson(reader)
   }
 
-  override fun toJson(writer: JsonWriter, value: T, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: T, context: DataSerializeContext) {
     wrappedAdapter.toJson(writer, value)
   }
 }
@@ -249,7 +249,7 @@ val UploadApolloAdapter = object : ApolloAdapter<Upload> {
     error("File Upload used in output position")
   }
 
-  override fun toJson(writer: JsonWriter, value: Upload, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Upload, context: DataSerializeContext) {
     writer.value(value)
   }
 }
@@ -405,14 +405,14 @@ class ObjectAdapter<T>(
     }
   }
 
-  override fun toJson(writer: JsonWriter, value: T, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: T, context: DataSerializeContext) {
     if (buffered && writer !is MapJsonWriter) {
       /**
        * Convert to a Map first
        */
       val mapWriter = MapJsonWriter()
       mapWriter.beginObject()
-      wrappedAdapter.toJson(mapWriter, value, context)
+      wrappedAdapter.serializeData(mapWriter, value, context)
       mapWriter.endObject()
 
       /**
@@ -421,7 +421,7 @@ class ObjectAdapter<T>(
       writer.writeAny(mapWriter.root()!!)
     } else {
       writer.beginObject()
-      wrappedAdapter.toJson(writer, value, context)
+      wrappedAdapter.serializeData(writer, value, context)
       writer.endObject()
     }
   }
@@ -451,7 +451,7 @@ fun <T> ApolloAdapter<T>.toJsonString(
     context: DataSerializeContext = DataSerializeContext(scalarAdapters = ScalarAdapters.Empty),
     indent: String? = null,
 ): String = buildJsonString(indent) {
-  this@toJsonString.toJson(this, value, context)
+  this@toJsonString.serializeData(this, value, context)
 }
 
 @JvmName("-toJson")

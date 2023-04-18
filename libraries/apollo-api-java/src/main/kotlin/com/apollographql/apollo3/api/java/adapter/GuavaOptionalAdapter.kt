@@ -28,11 +28,11 @@ class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>
     }
   }
 
-  override fun toJson(writer: JsonWriter, value: Optional<T>, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: DataSerializeContext) {
     if (!value.isPresent) {
       writer.nullValue()
     } else {
-      wrappedAdapter.toJson(writer, value.get(), context)
+      wrappedAdapter.serializeData(writer, value.get(), context)
     }
   }
 }

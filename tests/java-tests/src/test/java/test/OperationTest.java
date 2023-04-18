@@ -18,7 +18,7 @@ public class OperationTest {
     GetRandomQuery.Data data = GetRandomQuery.Data.builder().random(42).build();
 
     Buffer buffer = new Buffer();
-    query.adapter().toJson(new BufferedSinkJsonWriter(buffer), data, new ApolloAdapter.DataSerializeContext(ScalarAdapters.Empty));
+    query.adapter().serializeData(new BufferedSinkJsonWriter(buffer), data, new ApolloAdapter.DataSerializeContext(ScalarAdapters.Empty));
     String json = buffer.readUtf8();
 
     // We don't want to test indentation here so we replace whitespace
