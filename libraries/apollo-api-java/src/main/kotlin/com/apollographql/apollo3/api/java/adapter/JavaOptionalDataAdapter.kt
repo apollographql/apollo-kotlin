@@ -2,13 +2,13 @@
 
 package com.apollographql.apollo3.api.java.adapter
 
-import com.apollographql.apollo3.api.AnyApolloAdapter
-import com.apollographql.apollo3.api.BooleanApolloAdapter
+import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.BooleanDataAdapter
 import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext
-import com.apollographql.apollo3.api.DoubleApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DoubleDataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import java.util.Optional
@@ -16,7 +16,7 @@ import java.util.Optional
 /**
  * An adapter for Java's [Optional]. `null` is deserialized as [Optional.empty].
  */
-class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional<T>> {
+class JavaOptionalDataAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<Optional<T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
@@ -39,16 +39,16 @@ class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: DataAdapter<T>) :
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val JavaOptionalStringApolloAdapter = JavaOptionalAdapter(StringApolloAdapter)
+val JavaOptionalStringDataAdapter = JavaOptionalDataAdapter(StringDataAdapter)
 
 @JvmField
-val JavaOptionalDoubleApolloAdapter = JavaOptionalAdapter(DoubleApolloAdapter)
+val JavaOptionalDoubleDataAdapter = JavaOptionalDataAdapter(DoubleDataAdapter)
 
 @JvmField
-val JavaOptionalIntApolloAdapter = JavaOptionalAdapter(IntApolloAdapter)
+val JavaOptionalIntDataAdapter = JavaOptionalDataAdapter(IntDataAdapter)
 
 @JvmField
-val JavaOptionalBooleanApolloAdapter = JavaOptionalAdapter(BooleanApolloAdapter)
+val JavaOptionalBooleanDataAdapter = JavaOptionalDataAdapter(BooleanDataAdapter)
 
 @JvmField
-val JavaOptionalAnyApolloAdapter = JavaOptionalAdapter(AnyApolloAdapter)
+val JavaOptionalAnyDataAdapter = JavaOptionalDataAdapter(AnyDataAdapter)
