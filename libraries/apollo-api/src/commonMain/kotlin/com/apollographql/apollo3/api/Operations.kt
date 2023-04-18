@@ -72,7 +72,7 @@ fun <D : Operation.Data> Operation<D>.parseJsonResponse(
   return ResponseParser.parse(
       jsonReader,
       this,
-      ApolloAdapter.DeserializeDataContext(
+      DataAdapter.DeserializeDataContext(
           scalarAdapters = scalarAdapters,
           falseBooleanVariables = variables,
           mergedDeferredFragmentIds = mergedDeferredFragmentIds,

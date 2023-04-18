@@ -327,7 +327,7 @@ open class DefaultFakeResolver(types: List<CompiledNamedType>) : FakeResolver {
 }
 
 fun <T> buildData(
-    adapter: ApolloAdapter<T>,
+    adapter: DataAdapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
     map: Map<String, Any?>,
@@ -336,14 +336,14 @@ fun <T> buildData(
 ): T {
   return adapter.obj(false).deserializeData(
       MapJsonReader(buildFakeObject(selections, typename, map, resolver, scalarAdapters)),
-      ApolloAdapter.DeserializeDataContext(scalarAdapters = ScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
+      DataAdapter.DeserializeDataContext(scalarAdapters = ScalarAdapters.PassThrough, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null)
   )
 }
 
 fun <T, Builder : ObjectBuilder<*>> buildData(
     builderFactory: BuilderFactory<Builder>,
     block: (Builder.() -> Unit),
-    adapter: ApolloAdapter<T>,
+    adapter: DataAdapter<T>,
     selections: List<CompiledSelection>,
     typename: String,
     resolver: FakeResolver,

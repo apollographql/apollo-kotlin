@@ -4,7 +4,7 @@ import com.apollographql.apollo3.annotations.ApolloExperimental
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.buildJsonString
 
-private fun Operation.Data.adapter(): ApolloAdapter<Operation.Data> {
+private fun Operation.Data.adapter(): DataAdapter<Operation.Data> {
   val name = this::class.java.name
 
   val operationQualifiedName = name.removeSuffix("${'$'}Data")

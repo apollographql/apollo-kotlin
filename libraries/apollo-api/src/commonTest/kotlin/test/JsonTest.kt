@@ -1,7 +1,7 @@
 package test
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
-import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext
+import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.LongApolloAdapter
 import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.MapJsonWriter

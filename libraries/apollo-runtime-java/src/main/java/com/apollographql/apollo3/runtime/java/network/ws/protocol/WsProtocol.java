@@ -1,9 +1,9 @@
 package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
-import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext;
 import com.apollographql.apollo3.api.ApolloRequest;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.BufferedSinkJsonWriter;

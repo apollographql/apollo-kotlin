@@ -1,7 +1,7 @@
 package test;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
