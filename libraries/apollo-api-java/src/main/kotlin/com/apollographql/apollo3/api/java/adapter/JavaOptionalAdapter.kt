@@ -26,7 +26,7 @@ class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>)
     }
   }
 
-  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: ApolloAdapter.DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: ApolloAdapter.SerializeDataContext) {
     if (!value.isPresent) {
       writer.nullValue()
     } else {

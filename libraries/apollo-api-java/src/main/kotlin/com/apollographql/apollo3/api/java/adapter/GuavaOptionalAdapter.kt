@@ -5,8 +5,8 @@ package com.apollographql.apollo3.api.java.adapter
 
 import com.apollographql.apollo3.api.AnyApolloAdapter
 import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext
 import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
+import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.BooleanApolloAdapter
 import com.apollographql.apollo3.api.DoubleApolloAdapter
 import com.apollographql.apollo3.api.IntApolloAdapter
@@ -28,7 +28,7 @@ class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>
     }
   }
 
-  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: DataSerializeContext) {
+  override fun serializeData(writer: JsonWriter, value: Optional<T>, context: SerializeDataContext) {
     if (!value.isPresent) {
       writer.nullValue()
     } else {

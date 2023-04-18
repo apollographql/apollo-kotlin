@@ -1,7 +1,7 @@
 package com.apollographql.apollo3.api
 
-import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext
 import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext
+import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import okio.IOException
@@ -22,9 +22,9 @@ interface ApolloAdapter<T> {
   fun deserializeData(reader: JsonReader, context: DeserializeDataContext): T
 
   @Throws(IOException::class)
-  fun serializeData(writer: JsonWriter, value: T, context: DataSerializeContext)
+  fun serializeData(writer: JsonWriter, value: T, context: SerializeDataContext)
 
-  class DataSerializeContext(
+  class SerializeDataContext(
       @JvmField
       val scalarAdapters: ScalarAdapters,
   )
@@ -50,7 +50,7 @@ interface ApolloAdapter<T> {
 }
 
 fun <T> ApolloAdapter<T>.toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T) {
-  serializeData(writer, value, DataSerializeContext(scalarAdapters))
+  serializeData(writer, value, SerializeDataContext(scalarAdapters))
 }
 
 fun <T> ApolloAdapter<T>.fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {

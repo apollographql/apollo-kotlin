@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext;
 import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
+import com.apollographql.apollo3.api.ApolloAdapter.SerializeDataContext;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.ScalarAdapters;
@@ -90,7 +90,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new DataSerializeContext(ScalarAdapters.Empty));
+      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readUtf8();
@@ -100,7 +100,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new DataSerializeContext(ScalarAdapters.Empty));
+      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
