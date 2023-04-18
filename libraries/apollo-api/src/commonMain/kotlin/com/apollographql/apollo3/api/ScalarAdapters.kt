@@ -54,7 +54,7 @@ class ScalarAdapters private constructor(
         AnyDataAdapter
       }
 
-      unsafe -> PassThroughAdapter()
+      unsafe -> PassThroughDataAdapter()
       else -> error("Can't map GraphQL type: `${scalar.name}` to: `${scalar.className}`. Did you forget to add a ScalarAdapter?")
     } as DataAdapter<T>
   }

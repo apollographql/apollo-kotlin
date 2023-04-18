@@ -3,35 +3,35 @@ public class com/apollographql/apollo3/api/java/Assertions {
 	public static fun checkNotNull (Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 }
 
-public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter : com/apollographql/apollo3/api/ApolloAdapter {
-	public fun <init> (Lcom/apollographql/apollo3/api/ApolloAdapter;)V
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Lcom/google/common/base/Optional;
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Ljava/lang/Object;
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/google/common/base/Optional;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
-}
-
 public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapters {
-	public static final field GuavaOptionalAnyApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter;
-	public static final field GuavaOptionalBooleanApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter;
-	public static final field GuavaOptionalDoubleApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter;
-	public static final field GuavaOptionalIntApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter;
-	public static final field GuavaOptionalStringApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalAdapter;
+	public static final field GuavaOptionalAnyDataAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalDataAdapter;
+	public static final field GuavaOptionalBooleanDataAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalDataAdapter;
+	public static final field GuavaOptionalDoubleDataAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalDataAdapter;
+	public static final field GuavaOptionalIntDataAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalDataAdapter;
+	public static final field GuavaOptionalStringDataAdapter Lcom/apollographql/apollo3/api/java/adapter/GuavaOptionalDataAdapter;
 }
 
-public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter : com/apollographql/apollo3/api/ApolloAdapter {
-	public fun <init> (Lcom/apollographql/apollo3/api/ApolloAdapter;)V
-	public synthetic fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Ljava/lang/Object;
-	public fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ApolloAdapter$DataDeserializeContext;)Ljava/util/Optional;
-	public synthetic fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
-	public fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/util/Optional;Lcom/apollographql/apollo3/api/ApolloAdapter$DataSerializeContext;)V
+public final class com/apollographql/apollo3/api/java/adapter/GuavaOptionalDataAdapter : com/apollographql/apollo3/api/DataAdapter {
+	public fun <init> (Lcom/apollographql/apollo3/api/DataAdapter;)V
+	public fun deserializeData (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/DataAdapter$DeserializeDataContext;)Lcom/google/common/base/Optional;
+	public synthetic fun deserializeData (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/DataAdapter$DeserializeDataContext;)Ljava/lang/Object;
+	public fun serializeData (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/google/common/base/Optional;Lcom/apollographql/apollo3/api/DataAdapter$SerializeDataContext;)V
+	public synthetic fun serializeData (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/DataAdapter$SerializeDataContext;)V
 }
 
 public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalAdapters {
-	public static final field JavaOptionalAnyApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter;
-	public static final field JavaOptionalBooleanApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter;
-	public static final field JavaOptionalDoubleApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter;
-	public static final field JavaOptionalIntApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter;
-	public static final field JavaOptionalStringApolloAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalAdapter;
+	public static final field JavaOptionalAnyDataAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalDataAdapter;
+	public static final field JavaOptionalBooleanDataAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalDataAdapter;
+	public static final field JavaOptionalDoubleDataAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalDataAdapter;
+	public static final field JavaOptionalIntDataAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalDataAdapter;
+	public static final field JavaOptionalStringDataAdapter Lcom/apollographql/apollo3/api/java/adapter/JavaOptionalDataAdapter;
+}
+
+public final class com/apollographql/apollo3/api/java/adapter/JavaOptionalDataAdapter : com/apollographql/apollo3/api/DataAdapter {
+	public fun <init> (Lcom/apollographql/apollo3/api/DataAdapter;)V
+	public synthetic fun deserializeData (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/DataAdapter$DeserializeDataContext;)Ljava/lang/Object;
+	public fun deserializeData (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/DataAdapter$DeserializeDataContext;)Ljava/util/Optional;
+	public synthetic fun serializeData (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;Lcom/apollographql/apollo3/api/DataAdapter$SerializeDataContext;)V
+	public fun serializeData (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/util/Optional;Lcom/apollographql/apollo3/api/DataAdapter$SerializeDataContext;)V
 }
 
