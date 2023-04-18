@@ -2,7 +2,7 @@ package test;
 
 import annotations.jsr305.MyQuery;
 import annotations.jsr305.type.MyInput;
-import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext;
+import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;
@@ -133,7 +133,7 @@ public class Jsr305AnnotationsTest {
         "          }\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ null,
@@ -166,7 +166,7 @@ public class Jsr305AnnotationsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ 0,

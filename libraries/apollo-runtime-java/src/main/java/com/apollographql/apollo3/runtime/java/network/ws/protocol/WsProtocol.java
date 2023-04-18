@@ -1,8 +1,8 @@
 package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
 import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext;
 import com.apollographql.apollo3.api.ApolloAdapter.DataSerializeContext;
+import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.Operation;
 import com.apollographql.apollo3.api.ScalarAdapters;
@@ -109,7 +109,7 @@ public abstract class WsProtocol {
   private static Map<String, Object> toMessageMap(String messageJson) {
     try {
       //noinspection unchecked
-      return (Map<String, Object>) Adapters.AnyApolloAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+      return (Map<String, Object>) Adapters.AnyApolloAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     } catch (Exception e) {
       return null;
     }

@@ -1,6 +1,6 @@
 package test;
 
-import com.apollographql.apollo3.api.ApolloAdapter.DataDeserializeContext;
+import com.apollographql.apollo3.api.ApolloAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter.SerializeVariablesContext;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
@@ -142,7 +142,7 @@ public class GuavaOptionalsTest {
         "      }");
     ;
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
@@ -179,7 +179,7 @@ public class GuavaOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.of(0),
@@ -222,7 +222,7 @@ public class GuavaOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
