@@ -23,35 +23,35 @@ class ScalarAdapters private constructor(
        * Below are shortcuts to save the users a call to `registerScalarAdapter`
        */
       scalar.className == "com.apollographql.apollo3.api.Upload" -> {
-        UploadApolloAdapter
+        UploadDataAdapter
       }
 
       scalar.className in listOf("kotlin.String", "java.lang.String") -> {
-        StringApolloAdapter
+        StringDataAdapter
       }
 
       scalar.className in listOf("kotlin.Boolean", "java.lang.Boolean") -> {
-        BooleanApolloAdapter
+        BooleanDataAdapter
       }
 
       scalar.className in listOf("kotlin.Int", "java.lang.Int") -> {
-        IntApolloAdapter
+        IntDataAdapter
       }
 
       scalar.className in listOf("kotlin.Double", "java.lang.Double") -> {
-        DoubleApolloAdapter
+        DoubleDataAdapter
       }
 
       scalar.className in listOf("kotlin.Long", "java.lang.Long") -> {
-        LongApolloAdapter
+        LongDataAdapter
       }
 
       scalar.className in listOf("kotlin.Float", "java.lang.Float") -> {
-        FloatApolloAdapter
+        FloatDataAdapter
       }
 
       scalar.className in listOf("kotlin.Any", "java.lang.Object") -> {
-        AnyApolloAdapter
+        AnyDataAdapter
       }
 
       unsafe -> PassThroughAdapter()
@@ -88,7 +88,7 @@ class ScalarAdapters private constructor(
         scalarType: ScalarType,
         adapter: Adapter<T>,
     ) = apply {
-      adaptersMap[scalarType.name] = ScalarAdapterToApolloAdapter(adapter)
+      adaptersMap[scalarType.name] = AdapterToDataAdapter(adapter)
     }
 
     fun addAll(scalarAdapters: ScalarAdapters) = apply {

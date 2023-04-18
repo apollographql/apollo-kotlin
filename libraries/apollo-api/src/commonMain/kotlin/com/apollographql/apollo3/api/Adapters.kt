@@ -22,7 +22,7 @@ import kotlin.jvm.JvmSuppressWildcards
  *
  * They are mostly used from the generated code but could be useful in any other situations that requires adapting from
  * GraphQL to Kotlin.
- * In particular, [AnyApolloAdapter] can be used to read/write a Kotlin representation from/to Json.
+ * In particular, [AnyDataAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
 class ListAdapter<T>(private val wrappedAdapter: DataAdapter<T>) : DataAdapter<List<@JvmSuppressWildcards T>> {
   override fun deserializeData(reader: JsonReader, context: DeserializeDataContext): List<T> {
@@ -258,37 +258,37 @@ val UploadDataAdapter = object : DataAdapter<Upload> {
  * Global instances of nullable adapters for built-in scalar types
  */
 @JvmField
-val NullableStringApolloAdapter = StringApolloAdapter.nullable()
+val NullableStringDataAdapter = StringDataAdapter.nullable()
 
 @JvmField
-val NullableDoubleApolloAdapter = DoubleApolloAdapter.nullable()
+val NullableDoubleDataAdapter = DoubleDataAdapter.nullable()
 
 @JvmField
-val NullableIntApolloAdapter = IntApolloAdapter.nullable()
+val NullableIntDataAdapter = IntDataAdapter.nullable()
 
 @JvmField
-val NullableBooleanApolloAdapter = BooleanApolloAdapter.nullable()
+val NullableBooleanDataAdapter = BooleanDataAdapter.nullable()
 
 @JvmField
-val NullableAnyApolloAdapter = AnyApolloAdapter.nullable()
+val NullableAnyDataAdapter = AnyDataAdapter.nullable()
 
 /*
  * Global instances of optional adapters for built-in scalar types
  */
 @JvmField
-val ApolloOptionalStringApolloAdapter = ApolloOptionalAdapter(StringApolloAdapter)
+val ApolloOptionalStringDataAdapter = ApolloOptionalDataAdapter(StringDataAdapter)
 
 @JvmField
-val ApolloOptionalDoubleApolloAdapter = ApolloOptionalAdapter(DoubleApolloAdapter)
+val ApolloOptionalDoubleDataAdapter = ApolloOptionalDataAdapter(DoubleDataAdapter)
 
 @JvmField
-val ApolloOptionalIntApolloAdapter = ApolloOptionalAdapter(IntApolloAdapter)
+val ApolloOptionalIntDataAdapter = ApolloOptionalDataAdapter(IntDataAdapter)
 
 @JvmField
-val ApolloOptionalBooleanApolloAdapter = ApolloOptionalAdapter(BooleanApolloAdapter)
+val ApolloOptionalBooleanDataAdapter = ApolloOptionalDataAdapter(BooleanDataAdapter)
 
 @JvmField
-val ApolloOptionalAnyApolloAdapter = ApolloOptionalAdapter(AnyApolloAdapter)
+val ApolloOptionalAnyDataAdapter = ApolloOptionalDataAdapter(AnyDataAdapter)
 
 
 @JvmField

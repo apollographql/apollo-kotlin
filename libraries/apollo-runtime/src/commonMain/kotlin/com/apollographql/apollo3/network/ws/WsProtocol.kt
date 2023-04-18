@@ -1,6 +1,6 @@
 package com.apollographql.apollo3.network.ws
 
-import com.apollographql.apollo3.api.AnyApolloAdapter
+import com.apollographql.apollo3.api.AnyDataAdapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.Operation
 import com.apollographql.apollo3.api.ScalarAdapters
@@ -97,7 +97,7 @@ abstract class WsProtocol(
    */
   @Suppress("UNCHECKED_CAST")
   protected fun String.toMessageMap(): Map<String, Any?>? = try {
-    AnyApolloAdapter.fromJson(
+    AnyDataAdapter.fromJson(
         BufferedSourceJsonReader(Buffer().writeUtf8(this)),
         ScalarAdapters.Empty
     ) as? Map<String, Any?>
