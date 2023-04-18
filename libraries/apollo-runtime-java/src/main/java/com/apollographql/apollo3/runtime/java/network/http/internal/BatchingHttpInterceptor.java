@@ -230,7 +230,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      AnyApolloAdapter.toJson(writer, o, new DataSerializeContext(ScalarAdapters.Empty));
+      AnyApolloAdapter.serializeData(writer, o, new DataSerializeContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();

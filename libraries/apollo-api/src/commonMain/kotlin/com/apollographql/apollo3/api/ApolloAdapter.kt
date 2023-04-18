@@ -22,7 +22,7 @@ interface ApolloAdapter<T> {
   fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T
 
   @Throws(IOException::class)
-  fun toJson(writer: JsonWriter, value: T, context: DataSerializeContext)
+  fun serializeData(writer: JsonWriter, value: T, context: DataSerializeContext)
 
   class DataSerializeContext(
       @JvmField
@@ -50,7 +50,7 @@ interface ApolloAdapter<T> {
 }
 
 fun <T> ApolloAdapter<T>.toJson(writer: JsonWriter, scalarAdapters: ScalarAdapters, value: T) {
-  toJson(writer, value, DataSerializeContext(scalarAdapters))
+  serializeData(writer, value, DataSerializeContext(scalarAdapters))
 }
 
 fun <T> ApolloAdapter<T>.fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {

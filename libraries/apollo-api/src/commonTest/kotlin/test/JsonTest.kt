@@ -13,7 +13,7 @@ class JsonTest {
   @Test
   fun longAdapterWritesNumbers() {
     val json = buildJsonString {
-      LongApolloAdapter.toJson(this, Long.MAX_VALUE, DataSerializeContext(ScalarAdapters.Empty))
+      LongApolloAdapter.serializeData(this, Long.MAX_VALUE, DataSerializeContext(ScalarAdapters.Empty))
     }
     assertEquals("9223372036854775807", json)
   }
@@ -24,7 +24,7 @@ class JsonTest {
     mapWriter.value(Long.MAX_VALUE)
 
     val json = buildJsonString {
-      AnyApolloAdapter.toJson(this, mapWriter.root()!!, DataSerializeContext(ScalarAdapters.Empty))
+      AnyApolloAdapter.serializeData(this, mapWriter.root()!!, DataSerializeContext(ScalarAdapters.Empty))
     }
     assertEquals("9223372036854775807", json)
   }

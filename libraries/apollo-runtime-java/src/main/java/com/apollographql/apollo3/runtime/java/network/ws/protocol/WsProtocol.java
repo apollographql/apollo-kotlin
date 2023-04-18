@@ -90,7 +90,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyApolloAdapter.toJson(writer, messageMap, new DataSerializeContext(ScalarAdapters.Empty));
+      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new DataSerializeContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readUtf8();
@@ -100,7 +100,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyApolloAdapter.toJson(writer, messageMap, new DataSerializeContext(ScalarAdapters.Empty));
+      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new DataSerializeContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
