@@ -36,7 +36,7 @@ internal object RecordWeigher {
       is String -> field.commonAsUtf8ToByteArray().size
       is Boolean -> SIZE_OF_BOOLEAN
       is Int -> SIZE_OF_INT
-      is Long -> SIZE_OF_LONG // Might happen with LongApolloAdapter
+      is Long -> SIZE_OF_LONG // Might happen with LongDataAdapter
       is Double -> SIZE_OF_DOUBLE
       is List<*> -> {
         SIZE_OF_ARRAY_OVERHEAD + field.sumOf { weighField(it) }

@@ -90,7 +90,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
+      Adapters.AnyDataAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readUtf8();
@@ -100,7 +100,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyApolloAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
+      Adapters.AnyDataAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
@@ -109,7 +109,7 @@ public abstract class WsProtocol {
   private static Map<String, Object> toMessageMap(String messageJson) {
     try {
       //noinspection unchecked
-      return (Map<String, Object>) Adapters.AnyApolloAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+      return (Map<String, Object>) Adapters.AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     } catch (Exception e) {
       return null;
     }

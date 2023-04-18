@@ -1,5 +1,6 @@
 package com.apollographql.apollo3.cache.normalized.api
 
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Executable
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.Operation
@@ -82,7 +83,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
   )
   return adapter().deserializeData(
       reader,
-      ApolloAdapter.DeserializeDataContext(
+      DataAdapter.DeserializeDataContext(
           scalarAdapters = scalarAdapters,
           falseBooleanVariables = booleanVariables(scalarAdapters),
           mergedDeferredFragmentIds = null,

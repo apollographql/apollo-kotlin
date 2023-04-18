@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static com.apollographql.apollo3.api.Adapters.AnyApolloAdapter;
+import static com.apollographql.apollo3.api.Adapters.AnyDataAdapter;
 
 public class BatchingHttpInterceptor implements HttpInterceptor {
   private final long batchIntervalMillis;
@@ -185,7 +185,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
 
           Object fromJson;
           try {
-            fromJson = AnyApolloAdapter.deserializeData(new BufferedSourceJsonReader(responseBody), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+            fromJson = AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(responseBody), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
           } catch (IOException e) {
             throw new ApolloNetworkException("failed to parse batched response JSON", e);
           }
@@ -230,7 +230,7 @@ public class BatchingHttpInterceptor implements HttpInterceptor {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      AnyApolloAdapter.serializeData(writer, o, new SerializeDataContext(ScalarAdapters.Empty));
+      AnyDataAdapter.serializeData(writer, o, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
