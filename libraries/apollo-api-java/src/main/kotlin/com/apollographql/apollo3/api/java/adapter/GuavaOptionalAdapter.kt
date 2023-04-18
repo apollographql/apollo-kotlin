@@ -19,12 +19,12 @@ import com.google.common.base.Optional
  * An adapter for Guava's [Optional]. `null` is deserialized as [Optional.absent].
  */
 class GuavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<T>> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Optional<T> {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       Optional.absent()
     } else {
-      Optional.of(wrappedAdapter.fromJson(reader, context))
+      Optional.of(wrappedAdapter.deserializeData(reader, context))
     }
   }
 

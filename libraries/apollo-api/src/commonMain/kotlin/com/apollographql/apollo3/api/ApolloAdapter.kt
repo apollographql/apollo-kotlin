@@ -19,7 +19,7 @@ import kotlin.jvm.JvmField
  */
 interface ApolloAdapter<T> {
   @Throws(IOException::class)
-  fun fromJson(reader: JsonReader, context: DataDeserializeContext): T
+  fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T
 
   @Throws(IOException::class)
   fun toJson(writer: JsonWriter, value: T, context: DataSerializeContext)
@@ -54,5 +54,5 @@ fun <T> ApolloAdapter<T>.toJson(writer: JsonWriter, scalarAdapters: ScalarAdapte
 }
 
 fun <T> ApolloAdapter<T>.fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters): T {
-  return fromJson(reader, DataDeserializeContext(scalarAdapters = scalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
+  return deserializeData(reader, DataDeserializeContext(scalarAdapters = scalarAdapters, falseBooleanVariables = emptySet(), mergedDeferredFragmentIds = null))
 }

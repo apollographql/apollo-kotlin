@@ -121,7 +121,7 @@ private fun <D : Executable.Data> Executable<D>.readInternal(
   val reader = MapJsonReader(
       root = map,
   )
-  return adapter().fromJson(
+  return adapter().deserializeData(
       reader,
       ApolloAdapter.DataDeserializeContext(
           scalarAdapters = scalarAdapters,

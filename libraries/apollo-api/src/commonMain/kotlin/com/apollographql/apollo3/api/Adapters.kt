@@ -25,11 +25,11 @@ import kotlin.jvm.JvmSuppressWildcards
  * In particular, [AnyApolloAdapter] can be used to read/write a Kotlin representation from/to Json.
  */
 class ListAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<List<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): List<T> {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): List<T> {
     reader.beginArray()
     val list = mutableListOf<T>()
     while (reader.hasNext()) {
-      list.add(wrappedAdapter.fromJson(reader, context))
+      list.add(wrappedAdapter.deserializeData(reader, context))
     }
     reader.endArray()
     return list
@@ -51,12 +51,12 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : A
     }
   }
 
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): T? {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T? {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       null
     } else {
-      wrappedAdapter.fromJson(reader, context)
+      wrappedAdapter.deserializeData(reader, context)
     }
   }
 
@@ -71,8 +71,8 @@ class NullableAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : A
 
 @Deprecated("Use PresentAdapter instead")
 class OptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional.Present<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Optional.Present<T> {
-    return Optional.Present(wrappedAdapter.fromJson(reader, context))
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.deserializeData(reader, context))
   }
 
   override fun toJson(writer: JsonWriter, value: Optional.Present<T>, context: DataSerializeContext) {
@@ -86,8 +86,8 @@ class OptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloA
  * This adapter is used to handle optional arguments in operations and optional fields in Input objects.
  */
 class PresentAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional.Present<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Optional.Present<T> {
-    return Optional.Present(wrappedAdapter.fromJson(reader, context))
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Optional.Present<T> {
+    return Optional.Present(wrappedAdapter.deserializeData(reader, context))
   }
 
   override fun toJson(writer: JsonWriter, value: Optional.Present<T>, context: DataSerializeContext) {
@@ -101,12 +101,12 @@ class PresentAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAd
  * `null` is deserialized as [Optional.Absent].
  */
 class ApolloOptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<@JvmSuppressWildcards T>> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Optional<T> {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       Optional.Absent
     } else {
-      Optional.Present(wrappedAdapter.fromJson(reader, context))
+      Optional.Present(wrappedAdapter.deserializeData(reader, context))
     }
   }
 
@@ -121,7 +121,7 @@ class ApolloOptionalAdapter<T>(private val wrappedAdapter: ApolloAdapter<T>) : A
 
 @JvmField
 val StringApolloAdapter = object : ApolloAdapter<String> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): String {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): String {
     return reader.nextString()!!
   }
 
@@ -132,7 +132,7 @@ val StringApolloAdapter = object : ApolloAdapter<String> {
 
 @JvmField
 val IntApolloAdapter = object : ApolloAdapter<Int> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Int {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Int {
     return reader.nextInt()
   }
 
@@ -143,7 +143,7 @@ val IntApolloAdapter = object : ApolloAdapter<Int> {
 
 @JvmField
 val DoubleApolloAdapter = object : ApolloAdapter<Double> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Double {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Double {
     return reader.nextDouble()
   }
 
@@ -158,7 +158,7 @@ val DoubleApolloAdapter = object : ApolloAdapter<Double> {
  */
 @JvmField
 val FloatApolloAdapter = object : ApolloAdapter<Float> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Float {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Float {
     return reader.nextDouble().toFloat()
   }
 
@@ -175,7 +175,7 @@ val FloatApolloAdapter = object : ApolloAdapter<Float> {
  */
 @JvmField
 val LongApolloAdapter = object : ApolloAdapter<Long> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Long {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Long {
     return reader.nextLong()
   }
 
@@ -186,7 +186,7 @@ val LongApolloAdapter = object : ApolloAdapter<Long> {
 
 @JvmField
 val BooleanApolloAdapter = object : ApolloAdapter<Boolean> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Boolean {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Boolean {
     return reader.nextBoolean()
   }
 
@@ -205,7 +205,7 @@ val AnyApolloAdapter = object : ApolloAdapter<Any> {
     writer.writeAny(value)
   }
 
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Any {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Any {
     return fromJson(reader)
   }
 
@@ -215,7 +215,7 @@ val AnyApolloAdapter = object : ApolloAdapter<Any> {
 }
 
 internal class PassThroughAdapter<T> : ApolloAdapter<T> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): T {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T {
     check(reader is MapJsonReader) {
       "UnsafeAdapter only supports MapJsonReader"
     }
@@ -234,7 +234,7 @@ internal class PassThroughAdapter<T> : ApolloAdapter<T> {
 }
 
 class ScalarAdapterToApolloAdapter<T>(private val wrappedAdapter: Adapter<T>) : ApolloAdapter<T> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): T {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T {
     return wrappedAdapter.fromJson(reader)
   }
 
@@ -245,7 +245,7 @@ class ScalarAdapterToApolloAdapter<T>(private val wrappedAdapter: Adapter<T>) : 
 
 @JvmField
 val UploadApolloAdapter = object : ApolloAdapter<Upload> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Upload {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Upload {
     error("File Upload used in output position")
   }
 
@@ -393,14 +393,14 @@ class ObjectAdapter<T>(
     private val wrappedAdapter: ApolloAdapter<T>,
     private val buffered: Boolean,
 ) : ApolloAdapter<@JvmSuppressWildcards T> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): T {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): T {
     val actualReader = if (buffered) {
       reader.buffer()
     } else {
       reader
     }
     actualReader.beginObject()
-    return wrappedAdapter.fromJson(actualReader, context).also {
+    return wrappedAdapter.deserializeData(actualReader, context).also {
       actualReader.endObject()
     }
   }
