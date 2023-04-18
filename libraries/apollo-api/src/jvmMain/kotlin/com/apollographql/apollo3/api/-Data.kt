@@ -18,7 +18,7 @@ private fun Operation.Data.adapter(): DataAdapter<Operation.Data> {
   val field = clazz.getDeclaredField("INSTANCE")
 
   @Suppress("UNCHECKED_CAST")
-  val adapter = field.get(null) as ApolloAdapter<Operation.Data>
+  val adapter = field.get(null) as DataAdapter<Operation.Data>
 
   return adapter.obj()
 }
