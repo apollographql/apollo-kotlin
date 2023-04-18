@@ -141,7 +141,7 @@ public class ApolloOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),
@@ -178,7 +178,7 @@ public class ApolloOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.present(0),
@@ -221,7 +221,7 @@ public class ApolloOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.absent(),

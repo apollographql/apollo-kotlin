@@ -30,7 +30,7 @@ internal object ResponseParser {
       while (jsonReader.hasNext()) {
         @Suppress("UNCHECKED_CAST")
         when (jsonReader.nextName()) {
-          "data" -> data = operation.adapter().nullable().fromJson(jsonReader, dataDeserializeContext)
+          "data" -> data = operation.adapter().nullable().deserializeData(jsonReader, dataDeserializeContext)
           "errors" -> errors = jsonReader.readErrors()
           "extensions" -> extensions = jsonReader.readAny() as? Map<String, Any?>
           else -> jsonReader.skipValue()

@@ -17,12 +17,12 @@ import java.util.Optional
  * An adapter for Java's [Optional]. `null` is deserialized as [Optional.empty].
  */
 class JavaOptionalAdapter<T : Any>(private val wrappedAdapter: ApolloAdapter<T>) : ApolloAdapter<Optional<T>> {
-  override fun fromJson(reader: JsonReader, context: DataDeserializeContext): Optional<T> {
+  override fun deserializeData(reader: JsonReader, context: DataDeserializeContext): Optional<T> {
     return if (reader.peek() == JsonReader.Token.NULL) {
       reader.skipValue()
       Optional.empty()
     } else {
-      Optional.of(wrappedAdapter.fromJson(reader, context))
+      Optional.of(wrappedAdapter.deserializeData(reader, context))
     }
   }
 

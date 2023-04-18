@@ -141,7 +141,7 @@ public class JavaOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     JsonReader jsonReader = new BufferedSourceJsonReader(buffer);
-    MyQuery.Data actualData = query.adapter().fromJson(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    MyQuery.Data actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.empty(),
@@ -178,7 +178,7 @@ public class JavaOptionalsTest {
         "          \"myInterface\": null\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.of(0),
@@ -221,7 +221,7 @@ public class JavaOptionalsTest {
         "          }\n" +
         "      }");
     jsonReader = new BufferedSourceJsonReader(buffer);
-    actualData = query.adapter().fromJson(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    actualData = query.adapter().deserializeData(jsonReader, new DataDeserializeContext(ScalarAdapters.Empty, new HashSet<>(), null));
     Assert.assertEquals(
         new MyQuery.Data(
             /* nullableInt = */ Optional.empty(),
