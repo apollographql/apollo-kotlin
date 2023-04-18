@@ -1,7 +1,7 @@
 [versions]
 android-plugin = "7.4.0"
 android-plugin-min = "3.4.2"
-android-sdkversion-compile = "31"
+android-sdkversion-compile = "33"
 android-sdkversion-min = "15"
 android-sdkversion-compose-min = "21"
 android-sdkversion-target = "30"

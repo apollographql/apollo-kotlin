@@ -68,16 +68,26 @@ dependencies {
 
 configure<com.android.build.gradle.LibraryExtension> {
   namespace = "com.apollographql.apollo3.benchmark"
-  compileSdkVersion(golatac.version("android.sdkversion.compile").toInt())
+  compileSdk = golatac.version("android.sdkversion.compile").toInt()
 
   defaultConfig {
-    minSdkVersion(golatac.version("android.sdkversion.min"))
-    targetSdkVersion(golatac.version("android.sdkversion.target"))
+    minSdk = golatac.version("android.sdkversion.min").toInt()
     testInstrumentationRunner = "androidx.benchmark.junit4.AndroidBenchmarkRunner"
   }
 
   @Suppress("UnstableApiUsage")
   useLibrary("android.test.base")
+
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+  }
+}
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(11))
+  }
 }
 
 configure<com.apollographql.apollo3.gradle.api.ApolloExtension> {
