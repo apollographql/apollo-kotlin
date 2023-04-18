@@ -6,6 +6,8 @@ on:
     paths-ignore:
       - 'docs/**'
       - '*.md'
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
 jobs:
   deploy:

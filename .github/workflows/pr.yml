@@ -5,6 +5,8 @@ on:
     paths-ignore:
       - 'docs/**'
       - '*.md'
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
 # Cancel any current or previous job from the same PR
 concurrency:
@@ -27,8 +29,6 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew ciTestsGradle
-        env:
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -53,8 +53,6 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew ciTestsNoGradle --stacktrace
-        env:
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -79,8 +77,6 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew -p tests ciBuild
-        env:
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Collect Diagnostics
         if: always()
         run: ./scripts/collect-diagnostics.main.kts
@@ -139,8 +135,6 @@ jobs:
       # Run tests
       - name: Run Tests
         run: ./gradlew :intellij-plugin:check
-        env:
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result

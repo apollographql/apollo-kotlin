@@ -3,6 +3,8 @@ name: defer-router-tests
 on:
   schedule:
     - cron: '0 3 * * *'
+env:
+  GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
 
 jobs:
   defer-with-router-tests:
