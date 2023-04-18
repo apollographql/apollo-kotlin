@@ -21,6 +21,7 @@ listOf(pluginManagement.repositories, dependencyResolutionManagement.repositorie
         includeModule("me.champeau.gradle", "japicmp-gradle-plugin")
         includeModule("com.gradle.publish", "plugin-publish-plugin")
         includeModule("com.github.ben-manes", "gradle-versions-plugin")
+        includeModule("com.gradle", "gradle-enterprise-gradle-plugin")
 
         // For org.jetbrains.intellij
         includeModule("org.jetbrains.intellij", "org.jetbrains.intellij.gradle.plugin")
