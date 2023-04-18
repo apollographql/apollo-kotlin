@@ -5,10 +5,10 @@
 //
 package com.example.root_query_fragment_with_nested_fragments.fragment;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.root_query_fragment_with_nested_fragments.fragment.selections.QueryFragmentSelections;
@@ -66,8 +66,8 @@ public class QueryFragmentImpl implements Fragment<QueryFragment> {
   }
 
   @Override
-  public ApolloAdapter<QueryFragment> adapter() {
-    return new ObjectAdapter<QueryFragment>(QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE, false);
+  public DataAdapter<QueryFragment> adapter() {
+    return new ObjectDataAdapter<QueryFragment>(QueryFragmentImpl_ResponseAdapter.QueryFragment.INSTANCE, false);
   }
 
   @Override

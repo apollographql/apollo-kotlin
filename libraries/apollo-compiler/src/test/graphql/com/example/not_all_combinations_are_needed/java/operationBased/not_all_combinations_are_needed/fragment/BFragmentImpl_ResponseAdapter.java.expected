@@ -5,8 +5,8 @@
 //
 package com.example.not_all_combinations_are_needed.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -16,20 +16,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BFragmentImpl_ResponseAdapter {
-  public enum BFragment implements ApolloAdapter<com.example.not_all_combinations_are_needed.fragment.BFragment> {
+  public enum BFragment implements DataAdapter<com.example.not_all_combinations_are_needed.fragment.BFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("fieldB1");
 
     @Override
-    public com.example.not_all_combinations_are_needed.fragment.BFragment fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.not_all_combinations_are_needed.fragment.BFragment deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _fieldB1 = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _fieldB1 = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _fieldB1 = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -40,11 +40,11 @@ public class BFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.not_all_combinations_are_needed.fragment.BFragment value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("fieldB1");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.fieldB1, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.fieldB1, context);
     }
   }
 }

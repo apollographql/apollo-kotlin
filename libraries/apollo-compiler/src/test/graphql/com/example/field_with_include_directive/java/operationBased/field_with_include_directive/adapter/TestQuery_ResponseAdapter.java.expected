@@ -5,10 +5,10 @@
 //
 package com.example.field_with_include_directive.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.field_with_include_directive.TestQuery;
@@ -20,20 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements ApolloAdapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _hero = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -44,29 +44,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).toJson(writer, value.hero, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Hero>(Hero.INSTANCE, false)).serializeData(writer, value.hero, context);
     }
   }
 
-  public enum Hero implements ApolloAdapter<TestQuery.Hero> {
+  public enum Hero implements DataAdapter<TestQuery.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "friendsConnection");
 
     @Override
-    public TestQuery.Hero fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Hero deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
       TestQuery.FriendsConnection _friendsConnection = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
-          case 1: _friendsConnection = new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _name = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 1: _friendsConnection = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -78,30 +78,30 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Hero value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Hero value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("friendsConnection");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).toJson(writer, value.friendsConnection, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.FriendsConnection>(FriendsConnection.INSTANCE, false)).serializeData(writer, value.friendsConnection, context);
     }
   }
 
-  public enum FriendsConnection implements ApolloAdapter<TestQuery.FriendsConnection> {
+  public enum FriendsConnection implements DataAdapter<TestQuery.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount");
 
     @Override
-    public TestQuery.FriendsConnection fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestQuery.FriendsConnection deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _totalCount = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntApolloAdapter.fromJson(reader, context); break;
+          case 0: _totalCount = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -112,10 +112,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.FriendsConnection value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.FriendsConnection value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntApolloAdapter.toJson(writer, value.totalCount, context);
+      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.totalCount, context);
     }
   }
 }

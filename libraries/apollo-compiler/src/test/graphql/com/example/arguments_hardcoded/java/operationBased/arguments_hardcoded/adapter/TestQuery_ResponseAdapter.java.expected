@@ -5,12 +5,12 @@
 //
 package com.example.arguments_hardcoded.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.arguments_hardcoded.TestQuery;
@@ -22,22 +22,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements ApolloAdapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("reviews", "testNullableArguments");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       List<TestQuery.Review> _reviews = null;
       Integer _testNullableArguments = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _reviews = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).fromJson(reader, context); break;
-          case 1: _testNullableArguments = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 0: _reviews = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Review>(Review.INSTANCE, false)))).deserializeData(reader, context); break;
+          case 1: _testNullableArguments = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -51,32 +51,32 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("reviews");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<TestQuery.Review>(Review.INSTANCE, false)))).toJson(writer, value.reviews, context);
+      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Review>(Review.INSTANCE, false)))).serializeData(writer, value.reviews, context);
 
       writer.name("testNullableArguments");
-      Adapters.IntApolloAdapter.toJson(writer, value.testNullableArguments, context);
+      DataAdapters.IntDataAdapter.serializeData(writer, value.testNullableArguments, context);
     }
   }
 
-  public enum Review implements ApolloAdapter<TestQuery.Review> {
+  public enum Review implements DataAdapter<TestQuery.Review> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("stars", "commentary");
 
     @Override
-    public TestQuery.Review fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestQuery.Review deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _stars = null;
       String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _stars = Adapters.IntApolloAdapter.fromJson(reader, context); break;
-          case 1: _commentary = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _stars = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
+          case 1: _commentary = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -90,13 +90,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Review value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Review value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("stars");
-      Adapters.IntApolloAdapter.toJson(writer, value.stars, context);
+      DataAdapters.IntDataAdapter.serializeData(writer, value.stars, context);
 
       writer.name("commentary");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.commentary, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.commentary, context);
     }
   }
 }

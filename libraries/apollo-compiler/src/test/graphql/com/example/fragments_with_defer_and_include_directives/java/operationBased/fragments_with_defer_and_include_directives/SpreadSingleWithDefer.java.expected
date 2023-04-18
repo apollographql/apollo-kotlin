@@ -5,9 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Query;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -107,8 +107,8 @@ public class SpreadSingleWithDefer implements Query<SpreadSingleWithDefer.Data> 
   }
 
   @Override
-  public ApolloAdapter<Data> adapter() {
-    return new ObjectAdapter<Data>(SpreadSingleWithDefer_ResponseAdapter.Data.INSTANCE, false);
+  public DataAdapter<Data> adapter() {
+    return new ObjectDataAdapter<Data>(SpreadSingleWithDefer_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

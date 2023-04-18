@@ -5,8 +5,8 @@
 //
 package com.example.operationbased2_ex8.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -28,7 +28,7 @@ public class AnimalFragmentImpl() : Fragment<AnimalFragment> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): ApolloAdapter<AnimalFragment> =
+  public override fun adapter(): DataAdapter<AnimalFragment> =
       AnimalFragmentImpl_ResponseAdapter.AnimalFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

@@ -166,13 +166,13 @@ internal class KotlinResolver(
       // Don't hardcode the adapter when the scalar is mapped to a user-defined type
       val scalarWithoutCustomMapping = type is IrScalarType && !scalarMapping.containsKey(type.name)
       return when {
-        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringApolloAdapter)
-        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanApolloAdapter)
-        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringApolloAdapter)
-        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntApolloAdapter)
-        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleApolloAdapter)
+        type is IrScalarType && type.name == "ID" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringDataAdapter)
+        type is IrScalarType && type.name == "Boolean" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableBooleanDataAdapter)
+        type is IrScalarType && type.name == "String" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableStringDataAdapter)
+        type is IrScalarType && type.name == "Int" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableIntDataAdapter)
+        type is IrScalarType && type.name == "Float" && scalarWithoutCustomMapping -> CodeBlock.of("%M", KotlinSymbols.NullableDoubleDataAdapter)
         type is IrScalarType && resolveScalarTarget(type.name) == null -> {
-          CodeBlock.of("%M", KotlinSymbols.NullableAnyApolloAdapter)
+          CodeBlock.of("%M", KotlinSymbols.NullableAnyDataAdapter)
         }
 
         else -> {
@@ -225,7 +225,7 @@ internal class KotlinResolver(
     return when (val adapterInitializer = scalarMapping[type.name]?.adapterInitializer) {
       is ExpressionAdapterInitializer -> {
         CodeBlock.of("%T(%L)",
-            KotlinSymbols.ScalarAdapterToApolloAdapter,
+            KotlinSymbols.AdapterToDataAdapter,
             adapterInitializer.expression
         )
       }
@@ -241,15 +241,15 @@ internal class KotlinResolver(
 
       else -> {
         when (type.name) {
-          "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanApolloAdapter)
-          "ID" -> CodeBlock.of("%M", KotlinSymbols.StringApolloAdapter)
-          "String" -> CodeBlock.of("%M", KotlinSymbols.StringApolloAdapter)
-          "Int" -> CodeBlock.of("%M", KotlinSymbols.IntApolloAdapter)
-          "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleApolloAdapter)
+          "Boolean" -> CodeBlock.of("%M", KotlinSymbols.BooleanDataAdapter)
+          "ID" -> CodeBlock.of("%M", KotlinSymbols.StringDataAdapter)
+          "String" -> CodeBlock.of("%M", KotlinSymbols.StringDataAdapter)
+          "Int" -> CodeBlock.of("%M", KotlinSymbols.IntDataAdapter)
+          "Float" -> CodeBlock.of("%M", KotlinSymbols.DoubleDataAdapter)
           else -> {
             val target = resolveScalarTarget(type.name)
             if (target == null) {
-              CodeBlock.of("%M", KotlinSymbols.AnyApolloAdapter)
+              CodeBlock.of("%M", KotlinSymbols.AnyDataAdapter)
             } else {
               CodeBlock.of(
                   "$scalarAdapters.responseAdapterFor<%T>(%L)",

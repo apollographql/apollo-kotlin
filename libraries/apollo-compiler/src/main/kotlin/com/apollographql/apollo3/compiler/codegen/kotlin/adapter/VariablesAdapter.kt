@@ -5,9 +5,9 @@ package com.apollographql.apollo3.compiler.codegen.kotlin.adapter
 
 import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.scalarAdapters
+import com.apollographql.apollo3.compiler.codegen.Identifier.serializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeDataContext
 import com.apollographql.apollo3.compiler.codegen.Identifier.serializeVariables
-import com.apollographql.apollo3.compiler.codegen.Identifier.toJson
 import com.apollographql.apollo3.compiler.codegen.Identifier.value
 import com.apollographql.apollo3.compiler.codegen.Identifier.writer
 import com.apollographql.apollo3.compiler.codegen.kotlin.KotlinContext
@@ -61,7 +61,7 @@ private fun List<NamedType>.serializeVariablesFunSpec(
 
 private fun List<NamedType>.writeToResponseCodeBlock(context: KotlinContext): CodeBlock {
   val builder = CodeBlock.builder()
-  builder.addStatement("val $serializeDataContext = %T(${Identifier.context}.$scalarAdapters)", KotlinSymbols.DataSerializeContext)
+  builder.addStatement("val $serializeDataContext = %T(${Identifier.context}.$scalarAdapters)", KotlinSymbols.SerializeDataContext)
   forEach {
     builder.add(it.writeToResponseCodeBlock(context))
   }
@@ -78,7 +78,7 @@ private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBloc
   }
   builder.addStatement("$writer.name(%S)", graphQlName)
   builder.addStatement(
-      "%L.$toJson($writer, $value.%N, $serializeDataContext)",
+      "%L.$serializeData($writer, $value.%N, $serializeDataContext)",
       adapterInitializer,
       propertyName,
   )
@@ -88,8 +88,8 @@ private fun NamedType.writeToResponseCodeBlock(context: KotlinContext): CodeBloc
       builder.beginControlFlow("else if (${Identifier.context}.withDefaultBooleanValues)")
       builder.addStatement("$writer.name(%S)", graphQlName)
       builder.addStatement(
-          "%M.$toJson($writer, %L, $serializeDataContext)",
-          KotlinSymbols.BooleanApolloAdapter,
+          "%M.$serializeData($writer, %L, $serializeDataContext)",
+          KotlinSymbols.BooleanDataAdapter,
           defaultValue.value,
       )
 

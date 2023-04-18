@@ -5,9 +5,9 @@
 //
 package com.example.target_name.type.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -16,21 +16,21 @@ import java.io.IOException;
 import java.lang.IllegalStateException;
 import java.lang.Override;
 
-public enum renamedInput_InputAdapter implements ApolloAdapter<renamedInput> {
+public enum renamedInput_InputAdapter implements DataAdapter<renamedInput> {
   INSTANCE;
 
   @Override
-  public renamedInput fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
+  public renamedInput deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
       throws IOException {
     throw new IllegalStateException("Input type used in output position");
   }
 
   @Override
-  public void toJson(JsonWriter writer, renamedInput value,
-      ApolloAdapter.DataSerializeContext context) throws IOException {
+  public void serializeData(JsonWriter writer, renamedInput value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     if (value.field instanceof Optional.Present) {
       writer.name("field");
-      new ApolloOptionalAdapter<>(Adapters.NullableStringApolloAdapter).toJson(writer, value.field, context);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableStringDataAdapter).serializeData(writer, value.field, context);
     }
   }
 }

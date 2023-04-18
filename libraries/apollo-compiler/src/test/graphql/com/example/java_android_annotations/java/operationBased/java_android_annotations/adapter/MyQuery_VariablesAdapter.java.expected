@@ -5,11 +5,11 @@
 //
 package com.example.java_android_annotations.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -25,26 +25,26 @@ public enum MyQuery_VariablesAdapter implements VariablesAdapter<MyQuery> {
   @Override
   public void serializeVariables(JsonWriter writer, MyQuery value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     if (value.nullableInt instanceof Optional.Present) {
       writer.name("nullableInt");
-      new ApolloOptionalAdapter<>(Adapters.NullableIntApolloAdapter).toJson(writer, value.nullableInt, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(DataAdapters.NullableIntDataAdapter).serializeData(writer, value.nullableInt, serializeDataContext);
     }
     writer.name("nonNullableInt");
-    Adapters.IntApolloAdapter.toJson(writer, value.nonNullableInt, serializeDataContext);
+    DataAdapters.IntDataAdapter.serializeData(writer, value.nonNullableInt, serializeDataContext);
     if (value.nonNullableIntWithDefault instanceof Optional.Present) {
       writer.name("nonNullableIntWithDefault");
-      new ApolloOptionalAdapter<>(Adapters.IntApolloAdapter).toJson(writer, value.nonNullableIntWithDefault, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(DataAdapters.IntDataAdapter).serializeData(writer, value.nonNullableIntWithDefault, serializeDataContext);
     }
     if (value.nullableInput instanceof Optional.Present) {
       writer.name("nullableInput");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).toJson(writer, value.nullableInput, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false))).serializeData(writer, value.nullableInput, serializeDataContext);
     }
     writer.name("nonNullableInput");
-    new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).toJson(writer, value.nonNullableInput, serializeDataContext);
+    new ObjectDataAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false).serializeData(writer, value.nonNullableInput, serializeDataContext);
     if (value.nonNullableInputWithDefault instanceof Optional.Present) {
       writer.name("nonNullableInputWithDefault");
-      new ApolloOptionalAdapter<>(new ObjectAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).toJson(writer, value.nonNullableInputWithDefault, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(new ObjectDataAdapter<MyInput>(MyInput_InputAdapter.INSTANCE, false)).serializeData(writer, value.nonNullableInputWithDefault, serializeDataContext);
     }
   }
 }

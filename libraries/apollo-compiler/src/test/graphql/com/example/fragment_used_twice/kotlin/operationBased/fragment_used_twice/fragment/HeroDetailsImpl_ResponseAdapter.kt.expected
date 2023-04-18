@@ -5,8 +5,8 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.String
@@ -14,24 +14,25 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails : ApolloAdapter<com.example.fragment_used_twice.fragment.HeroDetails> {
+  public object HeroDetails : DataAdapter<com.example.fragment_used_twice.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext):
         com.example.fragment_used_twice.fragment.HeroDetails {
       var __typename: String? = null
       var _name: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
-          1 -> _name = StringApolloAdapter.fromJson(reader, context)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          1 -> _name = StringDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
 
       reader.rewind()
-      val _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.fromJson(reader,
+      val _characterDetails = com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.deserializeData(reader,
           context)
 
       return com.example.fragment_used_twice.fragment.HeroDetails(
@@ -41,18 +42,18 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: com.example.fragment_used_twice.fragment.HeroDetails,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, value.__typename, context)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
       writer.name("name")
-      StringApolloAdapter.toJson(writer, value.name, context)
+      StringDataAdapter.serializeData(writer, value.name, context)
 
-      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.toJson(writer,
+      com.example.fragment_used_twice.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.serializeData(writer,
           value.characterDetails, context)
     }
   }

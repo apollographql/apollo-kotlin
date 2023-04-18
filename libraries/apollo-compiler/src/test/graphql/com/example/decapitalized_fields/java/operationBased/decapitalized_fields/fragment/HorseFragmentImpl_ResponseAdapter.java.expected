@@ -5,10 +5,10 @@
 //
 package com.example.decapitalized_fields.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -18,20 +18,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HorseFragmentImpl_ResponseAdapter {
-  public enum HorseFragment implements ApolloAdapter<com.example.decapitalized_fields.fragment.HorseFragment> {
+  public enum HorseFragment implements DataAdapter<com.example.decapitalized_fields.fragment.HorseFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Cow");
 
     @Override
-    public com.example.decapitalized_fields.fragment.HorseFragment fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.decapitalized_fields.fragment.HorseFragment deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       com.example.decapitalized_fields.fragment.HorseFragment.Cow _Cow = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Cow = new NullableAdapter<>(new ObjectAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _Cow = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -42,28 +42,28 @@ public class HorseFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.decapitalized_fields.fragment.HorseFragment value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("Cow");
-      new NullableAdapter<>(new ObjectAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).toJson(writer, value.cow, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow>(Cow.INSTANCE, false)).serializeData(writer, value.cow, context);
     }
   }
 
-  public enum Cow implements ApolloAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
+  public enum Cow implements DataAdapter<com.example.decapitalized_fields.fragment.HorseFragment.Cow> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("Moo");
 
     @Override
-    public com.example.decapitalized_fields.fragment.HorseFragment.Cow fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.decapitalized_fields.fragment.HorseFragment.Cow deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _Moo = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _Moo = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _Moo = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -74,11 +74,11 @@ public class HorseFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.decapitalized_fields.fragment.HorseFragment.Cow value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("Moo");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.moo, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.moo, context);
     }
   }
 }

@@ -5,12 +5,12 @@
 //
 package com.example.named_fragment_delegate.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -21,14 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HumanDetailsImpl_ResponseAdapter {
-  public enum HumanDetails implements ApolloAdapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
+  public enum HumanDetails implements DataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "profileLink", "friendsConnection");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
       Object _profileLink = null;
       com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection _friendsConnection = null;
@@ -36,9 +36,9 @@ public class HumanDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 1: _profileLink = Adapters.AnyApolloAdapter.fromJson(reader, context); break;
-          case 2: _friendsConnection = new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _profileLink = DataAdapters.AnyDataAdapter.deserializeData(reader, context); break;
+          case 2: _friendsConnection = new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -55,34 +55,34 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.named_fragment_delegate.fragment.HumanDetails value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("profileLink");
-      Adapters.AnyApolloAdapter.toJson(writer, value.profileLink, context);
+      DataAdapters.AnyDataAdapter.serializeData(writer, value.profileLink, context);
 
       writer.name("friendsConnection");
-      new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, value.friendsConnection, context);
+      new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).serializeData(writer, value.friendsConnection, context);
     }
   }
 
-  public enum FriendsConnection implements ApolloAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
+  public enum FriendsConnection implements DataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("edges");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       List<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, context); break;
+          case 0: _edges = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -93,28 +93,28 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.named_fragment_delegate.fragment.HumanDetails.FriendsConnection value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("edges");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, value.edges, context);
+      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge>(Edge.INSTANCE, false)))).serializeData(writer, value.edges, context);
     }
   }
 
-  public enum Edge implements ApolloAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> {
+  public enum Edge implements DataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails.Edge fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails.Edge deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       com.example.named_fragment_delegate.fragment.HumanDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _node = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -125,28 +125,28 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.named_fragment_delegate.fragment.HumanDetails.Edge value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).toJson(writer, value.node, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node>(Node.INSTANCE, false)).serializeData(writer, value.node, context);
     }
   }
 
-  public enum Node implements ApolloAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node> {
+  public enum Node implements DataAdapter<com.example.named_fragment_delegate.fragment.HumanDetails.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.HumanDetails.Node fromJson(
-        JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.named_fragment_delegate.fragment.HumanDetails.Node deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -159,11 +159,11 @@ public class HumanDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.named_fragment_delegate.fragment.HumanDetails.Node value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

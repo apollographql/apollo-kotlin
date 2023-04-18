@@ -5,23 +5,23 @@
 //
 package com.example.target_name.type.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.target_name.type.renamedEnum
 import kotlin.Unit
 
-public object renamedEnum_ResponseAdapter : ApolloAdapter<renamedEnum> {
-  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-      renamedEnum {
+public object renamedEnum_ResponseAdapter : DataAdapter<renamedEnum> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): renamedEnum {
     val rawValue = reader.nextString()!!
     return renamedEnum.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
     `value`: renamedEnum,
-    context: ApolloAdapter.DataSerializeContext,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.value(value.rawValue)
   }

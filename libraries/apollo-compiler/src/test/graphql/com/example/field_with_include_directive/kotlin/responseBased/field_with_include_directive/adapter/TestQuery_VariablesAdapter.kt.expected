@@ -5,8 +5,8 @@
 //
 package com.example.field_with_include_directive.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.BooleanApolloAdapter
+import com.apollographql.apollo3.api.BooleanDataAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.field_with_include_directive.TestQuery
@@ -18,10 +18,10 @@ public object TestQuery_VariablesAdapter : VariablesAdapter<TestQuery> {
     `value`: TestQuery,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("includeName")
-    BooleanApolloAdapter.toJson(writer, value.includeName, serializeDataContext)
+    BooleanDataAdapter.serializeData(writer, value.includeName, serializeDataContext)
     writer.name("skipFriends")
-    BooleanApolloAdapter.toJson(writer, value.skipFriends, serializeDataContext)
+    BooleanDataAdapter.serializeData(writer, value.skipFriends, serializeDataContext)
   }
 }

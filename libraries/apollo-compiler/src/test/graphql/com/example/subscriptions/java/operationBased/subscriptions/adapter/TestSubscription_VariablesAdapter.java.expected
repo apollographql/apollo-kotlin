@@ -5,8 +5,8 @@
 //
 package com.example.subscriptions.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.subscriptions.TestSubscription;
@@ -19,8 +19,8 @@ public enum TestSubscription_VariablesAdapter implements VariablesAdapter<TestSu
   @Override
   public void serializeVariables(JsonWriter writer, TestSubscription value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     writer.name("repo");
-    Adapters.StringApolloAdapter.toJson(writer, value.repo, serializeDataContext);
+    DataAdapters.StringDataAdapter.serializeData(writer, value.repo, serializeDataContext);
   }
 }

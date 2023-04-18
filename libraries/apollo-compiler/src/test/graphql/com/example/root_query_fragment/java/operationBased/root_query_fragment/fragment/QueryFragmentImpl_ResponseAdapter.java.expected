@@ -5,11 +5,11 @@
 //
 package com.example.root_query_fragment.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -19,22 +19,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueryFragmentImpl_ResponseAdapter {
-  public enum QueryFragment implements ApolloAdapter<com.example.root_query_fragment.fragment.QueryFragment> {
+  public enum QueryFragment implements DataAdapter<com.example.root_query_fragment.fragment.QueryFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "hero");
 
     @Override
-    public com.example.root_query_fragment.fragment.QueryFragment fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.root_query_fragment.fragment.QueryFragment deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
       com.example.root_query_fragment.fragment.QueryFragment.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 1: _hero = new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _hero = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -48,31 +48,31 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.root_query_fragment.fragment.QueryFragment value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).toJson(writer, value.hero, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero>(Hero.INSTANCE, false)).serializeData(writer, value.hero, context);
     }
   }
 
-  public enum Hero implements ApolloAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
+  public enum Hero implements DataAdapter<com.example.root_query_fragment.fragment.QueryFragment.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.root_query_fragment.fragment.QueryFragment.Hero fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.root_query_fragment.fragment.QueryFragment.Hero deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -85,11 +85,11 @@ public class QueryFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.root_query_fragment.fragment.QueryFragment.Hero value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

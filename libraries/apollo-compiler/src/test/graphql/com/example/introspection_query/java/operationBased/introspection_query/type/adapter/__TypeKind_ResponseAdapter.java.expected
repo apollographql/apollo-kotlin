@@ -5,26 +5,26 @@
 //
 package com.example.introspection_query.type.adapter;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.introspection_query.type.__TypeKind;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum __TypeKind_ResponseAdapter implements ApolloAdapter<__TypeKind> {
+public enum __TypeKind_ResponseAdapter implements DataAdapter<__TypeKind> {
   INSTANCE;
 
   @Override
-  public __TypeKind fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
-      IOException {
+  public __TypeKind deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
+      throws IOException {
     String rawValue = reader.nextString();
     return __TypeKind.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, __TypeKind value,
-      ApolloAdapter.DataSerializeContext context) throws IOException {
+  public void serializeData(JsonWriter writer, __TypeKind value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

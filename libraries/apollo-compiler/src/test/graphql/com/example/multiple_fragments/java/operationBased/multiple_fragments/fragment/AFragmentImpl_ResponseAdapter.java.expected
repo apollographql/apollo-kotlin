@@ -5,15 +5,15 @@
 //
 package com.example.multiple_fragments.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -23,20 +23,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AFragmentImpl_ResponseAdapter {
-  public enum AFragment implements ApolloAdapter<com.example.multiple_fragments.fragment.AFragment> {
+  public enum AFragment implements DataAdapter<com.example.multiple_fragments.fragment.AFragment> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public com.example.multiple_fragments.fragment.AFragment fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.multiple_fragments.fragment.AFragment deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       com.example.multiple_fragments.fragment.AFragment.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).fromJson(reader, context); break;
+          case 0: _node = new NullableDataAdapter<>(new ObjectDataAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -47,27 +47,28 @@ public class AFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, com.example.multiple_fragments.fragment.AFragment value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.multiple_fragments.fragment.AFragment value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).toJson(writer, value.node, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<com.example.multiple_fragments.fragment.AFragment.Node>(Node.INSTANCE, true)).serializeData(writer, value.node, context);
     }
   }
 
-  public enum Node implements ApolloAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
+  public enum Node implements DataAdapter<com.example.multiple_fragments.fragment.AFragment.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public com.example.multiple_fragments.fragment.AFragment.Node fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.multiple_fragments.fragment.AFragment.Node deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -76,13 +77,13 @@ public class AFragmentImpl_ResponseAdapter {
       Fragment1 _fragment1 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.fromJson(reader, context);
+        _fragment1 = com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.deserializeData(reader, context);
       }
 
       Fragment2 _fragment2 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ANode")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.fromJson(reader, context);
+        _fragment2 = com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.deserializeData(reader, context);
       }
 
       return new com.example.multiple_fragments.fragment.AFragment.Node(
@@ -93,18 +94,18 @@ public class AFragmentImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.multiple_fragments.fragment.AFragment.Node value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.fragment1 != null) {
-        com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.toJson(writer, value.fragment1, context);
+        com.example.multiple_fragments.fragment.Fragment1Impl_ResponseAdapter.Fragment1.INSTANCE.serializeData(writer, value.fragment1, context);
       }
 
       if (value.fragment2 != null) {
-        com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.toJson(writer, value.fragment2, context);
+        com.example.multiple_fragments.fragment.Fragment2Impl_ResponseAdapter.Fragment2.INSTANCE.serializeData(writer, value.fragment2, context);
       }
     }
   }

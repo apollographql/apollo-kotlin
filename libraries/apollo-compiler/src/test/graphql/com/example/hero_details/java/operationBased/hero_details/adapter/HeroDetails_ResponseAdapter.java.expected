@@ -5,12 +5,12 @@
 //
 package com.example.hero_details.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_details.HeroDetails;
@@ -24,20 +24,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HeroDetails_ResponseAdapter {
-  public enum Data implements ApolloAdapter<HeroDetails.Data> {
+  public enum Data implements DataAdapter<HeroDetails.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public HeroDetails.Data fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public HeroDetails.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       HeroDetails.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<HeroDetails.Hero>(Hero.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _hero = new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Hero>(Hero.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -48,21 +48,21 @@ public class HeroDetails_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, HeroDetails.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, HeroDetails.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<HeroDetails.Hero>(Hero.INSTANCE, false)).toJson(writer, value.hero, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Hero>(Hero.INSTANCE, false)).serializeData(writer, value.hero, context);
     }
   }
 
-  public enum Hero implements ApolloAdapter<HeroDetails.Hero> {
+  public enum Hero implements DataAdapter<HeroDetails.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("type", "name", "friendsConnection");
 
     @Override
-    public HeroDetails.Hero fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public HeroDetails.Hero deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Hero_type _type = null;
       String _name = null;
       HeroDetails.FriendsConnection _friendsConnection = null;
@@ -70,9 +70,9 @@ public class HeroDetails_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _type = Hero_type_ResponseAdapter.INSTANCE.fromJson(reader, context); break;
-          case 1: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 2: _friendsConnection = new ObjectAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).fromJson(reader, context); break;
+          case 0: _type = Hero_type_ResponseAdapter.INSTANCE.deserializeData(reader, context); break;
+          case 1: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 2: _friendsConnection = new ObjectDataAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -89,35 +89,35 @@ public class HeroDetails_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, HeroDetails.Hero value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, HeroDetails.Hero value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("type");
-      Hero_type_ResponseAdapter.INSTANCE.toJson(writer, value.type, context);
+      Hero_type_ResponseAdapter.INSTANCE.serializeData(writer, value.type, context);
 
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("friendsConnection");
-      new ObjectAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).toJson(writer, value.friendsConnection, context);
+      new ObjectDataAdapter<HeroDetails.FriendsConnection>(FriendsConnection.INSTANCE, false).serializeData(writer, value.friendsConnection, context);
     }
   }
 
-  public enum FriendsConnection implements ApolloAdapter<HeroDetails.FriendsConnection> {
+  public enum FriendsConnection implements DataAdapter<HeroDetails.FriendsConnection> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("totalCount", "edges");
 
     @Override
-    public HeroDetails.FriendsConnection fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public HeroDetails.FriendsConnection deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _totalCount = null;
       List<HeroDetails.Edge> _edges = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _totalCount = Adapters.NullableIntApolloAdapter.fromJson(reader, context); break;
-          case 1: _edges = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).fromJson(reader, context); break;
+          case 0: _totalCount = DataAdapters.NullableIntDataAdapter.deserializeData(reader, context); break;
+          case 1: _edges = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -129,30 +129,30 @@ public class HeroDetails_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, HeroDetails.FriendsConnection value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, HeroDetails.FriendsConnection value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("totalCount");
-      Adapters.NullableIntApolloAdapter.toJson(writer, value.totalCount, context);
+      DataAdapters.NullableIntDataAdapter.serializeData(writer, value.totalCount, context);
 
       writer.name("edges");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).toJson(writer, value.edges, context);
+      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Edge>(Edge.INSTANCE, false)))).serializeData(writer, value.edges, context);
     }
   }
 
-  public enum Edge implements ApolloAdapter<HeroDetails.Edge> {
+  public enum Edge implements DataAdapter<HeroDetails.Edge> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("node");
 
     @Override
-    public HeroDetails.Edge fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public HeroDetails.Edge deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       HeroDetails.Node _node = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _node = new NullableAdapter<>(new ObjectAdapter<HeroDetails.Node>(Node.INSTANCE, false)).fromJson(reader, context); break;
+          case 0: _node = new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Node>(Node.INSTANCE, false)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -163,27 +163,27 @@ public class HeroDetails_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, HeroDetails.Edge value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, HeroDetails.Edge value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("node");
-      new NullableAdapter<>(new ObjectAdapter<HeroDetails.Node>(Node.INSTANCE, false)).toJson(writer, value.node, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<HeroDetails.Node>(Node.INSTANCE, false)).serializeData(writer, value.node, context);
     }
   }
 
-  public enum Node implements ApolloAdapter<HeroDetails.Node> {
+  public enum Node implements DataAdapter<HeroDetails.Node> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public HeroDetails.Node fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public HeroDetails.Node deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -196,10 +196,10 @@ public class HeroDetails_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, HeroDetails.Node value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, HeroDetails.Node value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

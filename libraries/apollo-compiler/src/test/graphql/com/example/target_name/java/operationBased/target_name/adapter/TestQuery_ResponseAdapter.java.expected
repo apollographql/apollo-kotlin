@@ -5,15 +5,15 @@
 //
 package com.example.target_name.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.target_name.TestQuery;
@@ -26,14 +26,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements ApolloAdapter<TestQuery.Data> {
+  public enum Data implements DataAdapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("object", "interface", "union", "scalar", "enum");
 
     @Override
-    public TestQuery.Data fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestQuery.Object _object = null;
       TestQuery.Interface _interface = null;
       TestQuery.Union _union = null;
@@ -43,11 +43,11 @@ public class TestQuery_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _object = new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).fromJson(reader, context); break;
-          case 1: _interface = new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).fromJson(reader, context); break;
-          case 2: _union = new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).fromJson(reader, context); break;
-          case 3: _scalar = Adapters.NullableAnyApolloAdapter.fromJson(reader, context); break;
-          case 4: _enum = new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).fromJson(reader, context); break;
+          case 0: _object = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, false)).deserializeData(reader, context); break;
+          case 1: _interface = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).deserializeData(reader, context); break;
+          case 2: _union = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Union>(Union.INSTANCE, true)).deserializeData(reader, context); break;
+          case 3: _scalar = DataAdapters.NullableAnyDataAdapter.deserializeData(reader, context); break;
+          case 4: _enum = new NullableDataAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -62,39 +62,39 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("object");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Object>(Object.INSTANCE, false)).toJson(writer, value.object, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Object>(Object.INSTANCE, false)).serializeData(writer, value.object, context);
 
       writer.name("interface");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).toJson(writer, value.interface_, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Interface>(Interface.INSTANCE, false)).serializeData(writer, value.interface_, context);
 
       writer.name("union");
-      new NullableAdapter<>(new ObjectAdapter<TestQuery.Union>(Union.INSTANCE, true)).toJson(writer, value.union, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.Union>(Union.INSTANCE, true)).serializeData(writer, value.union, context);
 
       writer.name("scalar");
-      Adapters.NullableAnyApolloAdapter.toJson(writer, value.scalar, context);
+      DataAdapters.NullableAnyDataAdapter.serializeData(writer, value.scalar, context);
 
       writer.name("enum");
-      new NullableAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).toJson(writer, value.enum_, context);
+      new NullableDataAdapter<>(renamedEnum_ResponseAdapter.INSTANCE).serializeData(writer, value.enum_, context);
     }
   }
 
-  public enum Object implements ApolloAdapter<TestQuery.Object> {
+  public enum Object implements DataAdapter<TestQuery.Object> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.Object fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestQuery.Object deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _field = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _field = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -105,27 +105,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Object value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Object value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("field");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.field, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.field, context);
     }
   }
 
-  public enum Interface implements ApolloAdapter<TestQuery.Interface> {
+  public enum Interface implements DataAdapter<TestQuery.Interface> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.Interface fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestQuery.Interface deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _field = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _field = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -136,27 +136,27 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Interface value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Interface value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("field");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.field, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.field, context);
     }
   }
 
-  public enum Union implements ApolloAdapter<TestQuery.Union> {
+  public enum Union implements DataAdapter<TestQuery.Union> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestQuery.Union fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context)
-        throws IOException {
+    public TestQuery.Union deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -165,7 +165,7 @@ public class TestQuery_ResponseAdapter {
       TestQuery.OnReservedObject _onReservedObject = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("ReservedObject")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.fromJson(reader, context);
+        _onReservedObject = com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.deserializeData(reader, context);
       }
 
       return new TestQuery.Union(
@@ -175,31 +175,31 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.Union value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.Union value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.onReservedObject != null) {
-        com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.toJson(writer, value.onReservedObject, context);
+        com.example.target_name.adapter.TestQuery_ResponseAdapter.OnReservedObject.INSTANCE.serializeData(writer, value.onReservedObject, context);
       }
     }
   }
 
-  public enum OnReservedObject implements ApolloAdapter<TestQuery.OnReservedObject> {
+  public enum OnReservedObject implements DataAdapter<TestQuery.OnReservedObject> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("field");
 
     @Override
-    public TestQuery.OnReservedObject fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestQuery.OnReservedObject deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _field = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _field = Adapters.NullableStringApolloAdapter.fromJson(reader, context); break;
+          case 0: _field = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -210,10 +210,10 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestQuery.OnReservedObject value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestQuery.OnReservedObject value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("field");
-      Adapters.NullableStringApolloAdapter.toJson(writer, value.field, context);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.field, context);
     }
   }
 }

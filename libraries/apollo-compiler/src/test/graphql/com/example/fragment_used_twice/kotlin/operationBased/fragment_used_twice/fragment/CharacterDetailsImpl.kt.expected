@@ -5,8 +5,8 @@
 //
 package com.example.fragment_used_twice.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -28,7 +28,7 @@ public class CharacterDetailsImpl() : Fragment<CharacterDetails> {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): ApolloAdapter<CharacterDetails> =
+  public override fun adapter(): DataAdapter<CharacterDetails> =
       CharacterDetailsImpl_ResponseAdapter.CharacterDetails.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

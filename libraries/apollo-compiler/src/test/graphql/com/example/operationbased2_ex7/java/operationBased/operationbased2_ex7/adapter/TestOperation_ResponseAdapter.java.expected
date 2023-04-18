@@ -5,15 +5,15 @@
 //
 package com.example.operationbased2_ex7.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BPossibleTypes;
 import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.operationbased2_ex7.TestOperation;
@@ -25,20 +25,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestOperation_ResponseAdapter {
-  public enum Data implements ApolloAdapter<TestOperation.Data> {
+  public enum Data implements DataAdapter<TestOperation.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("animal");
 
     @Override
-    public TestOperation.Data fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestOperation.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       TestOperation.Animal _animal = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _animal = new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).fromJson(reader, context); break;
+          case 0: _animal = new NullableDataAdapter<>(new ObjectDataAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -49,33 +49,33 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestOperation.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestOperation.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("animal");
-      new NullableAdapter<>(new ObjectAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).toJson(writer, value.animal, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<TestOperation.Animal>(Animal.INSTANCE, true)).serializeData(writer, value.animal, context);
     }
   }
 
-  public enum Animal implements ApolloAdapter<TestOperation.Animal> {
+  public enum Animal implements DataAdapter<TestOperation.Animal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public TestOperation.Animal fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestOperation.Animal deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
 
       reader.rewind();
-      TestOperation.OnAnimal _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.fromJson(reader, context);
+      TestOperation.OnAnimal _onAnimal = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.deserializeData(reader, context);
 
       Assertions.checkFieldNotMissing(__typename, "__typename");
 
@@ -86,31 +86,31 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestOperation.Animal value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestOperation.Animal value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
-      com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.toJson(writer, value.onAnimal, context);
+      com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnAnimal.INSTANCE.serializeData(writer, value.onAnimal, context);
     }
   }
 
-  public enum OnAnimal implements ApolloAdapter<TestOperation.OnAnimal> {
+  public enum OnAnimal implements DataAdapter<TestOperation.OnAnimal> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename", "species");
 
     @Override
-    public TestOperation.OnAnimal fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestOperation.OnAnimal deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
       String _species = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 1: _species = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _species = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -119,13 +119,13 @@ public class TestOperation_ResponseAdapter {
       TestOperation.OnWarmBlooded _onWarmBlooded = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Lion","Cat","Panther")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.fromJson(reader, context);
+        _onWarmBlooded = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.deserializeData(reader, context);
       }
 
       TestOperation.OnPet _onPet = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Cat","Turtle")), context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind();
-        _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.fromJson(reader, context);
+        _onPet = com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.deserializeData(reader, context);
       }
 
       Assertions.checkFieldNotMissing(_species, "species");
@@ -139,38 +139,38 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestOperation.OnAnimal value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestOperation.OnAnimal value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       writer.name("species");
-      Adapters.StringApolloAdapter.toJson(writer, value.species, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.species, context);
 
       if (value.onWarmBlooded != null) {
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.toJson(writer, value.onWarmBlooded, context);
+        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnWarmBlooded.INSTANCE.serializeData(writer, value.onWarmBlooded, context);
       }
 
       if (value.onPet != null) {
-        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.toJson(writer, value.onPet, context);
+        com.example.operationbased2_ex7.adapter.TestOperation_ResponseAdapter.OnPet.INSTANCE.serializeData(writer, value.onPet, context);
       }
     }
   }
 
-  public enum OnWarmBlooded implements ApolloAdapter<TestOperation.OnWarmBlooded> {
+  public enum OnWarmBlooded implements DataAdapter<TestOperation.OnWarmBlooded> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("temperature");
 
     @Override
-    public TestOperation.OnWarmBlooded fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestOperation.OnWarmBlooded deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       Integer _temperature = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _temperature = Adapters.IntApolloAdapter.fromJson(reader, context); break;
+          case 0: _temperature = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -183,27 +183,27 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestOperation.OnWarmBlooded value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestOperation.OnWarmBlooded value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("temperature");
-      Adapters.IntApolloAdapter.toJson(writer, value.temperature, context);
+      DataAdapters.IntDataAdapter.serializeData(writer, value.temperature, context);
     }
   }
 
-  public enum OnPet implements ApolloAdapter<TestOperation.OnPet> {
+  public enum OnPet implements DataAdapter<TestOperation.OnPet> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public TestOperation.OnPet fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public TestOperation.OnPet deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -216,10 +216,10 @@ public class TestOperation_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, TestOperation.OnPet value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, TestOperation.OnPet value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

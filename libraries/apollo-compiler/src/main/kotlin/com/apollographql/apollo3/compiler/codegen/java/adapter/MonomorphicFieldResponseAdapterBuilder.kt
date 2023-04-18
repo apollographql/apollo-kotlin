@@ -45,7 +45,7 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   private fun typeSpec(): TypeSpec {
     return TypeSpec.enumBuilder(adapterName)
         .addSuperinterface(
-            ParameterizedTypeName.get(JavaClassNames.ApolloAdapter, context.resolver.resolveModel(model.id))
+            ParameterizedTypeName.get(JavaClassNames.DataAdapter, context.resolver.resolveModel(model.id))
         )
         .apply {
           addModifiers(if (public) Modifier.PUBLIC else Modifier.PRIVATE)
@@ -64,25 +64,25 @@ internal class MonomorphicFieldResponseAdapterBuilder(
   }
 
   private fun readFromResponseMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(Identifier.fromJson)
+    return MethodSpec.methodBuilder(Identifier.deserializeData)
         .addModifiers(Modifier.PUBLIC)
         .returns(adaptedClassName)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonReader, Identifier.reader)
-        .addParameter(JavaClassNames.DataDeserializeContext, Identifier.context)
+        .addParameter(JavaClassNames.DeserializeDataContext, Identifier.context)
         .addAnnotation(JavaClassNames.Override)
         .addCode(readFromResponseCodeBlock(model, context, false))
         .build()
   }
 
   private fun writeToResponseMethodSpec(): MethodSpec {
-    return MethodSpec.methodBuilder(Identifier.toJson)
+    return MethodSpec.methodBuilder(Identifier.serializeData)
         .addModifiers(Modifier.PUBLIC)
         .addAnnotation(JavaClassNames.Override)
         .addException(JavaClassNames.IOException)
         .addParameter(JavaClassNames.JsonWriter, Identifier.writer)
         .addParameter(adaptedClassName, Identifier.value)
-        .addParameter(JavaClassNames.DataSerializeContext, Identifier.context)
+        .addParameter(JavaClassNames.SerializeDataContext, Identifier.context)
         .addCode(writeToResponseCodeBlock(model, context))
         .build()
   }

@@ -77,7 +77,7 @@ internal class ImplementationAdapterBuilder(
         .apply {
           if (!addTypenameArgument) {
             addSuperinterface(
-                KotlinSymbols.ApolloAdapter.parameterizedBy(
+                KotlinSymbols.DataAdapter.parameterizedBy(
                     context.resolver.resolveModel(model.id)
                 )
             )
@@ -92,10 +92,10 @@ internal class ImplementationAdapterBuilder(
   }
 
   private fun readFromResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.fromJson)
+    return FunSpec.builder(Identifier.deserializeData)
         .returns(adaptedClassName)
         .addParameter(Identifier.reader, KotlinSymbols.JsonReader)
-        .addParameter(Identifier.context, KotlinSymbols.DataDeserializeContext)
+        .addParameter(Identifier.context, KotlinSymbols.DeserializeDataContext)
         .apply {
           if (addTypenameArgument) {
             addParameter(
@@ -113,10 +113,10 @@ internal class ImplementationAdapterBuilder(
   }
 
   private fun writeToResponseFunSpec(): FunSpec {
-    return FunSpec.builder(Identifier.toJson)
+    return FunSpec.builder(Identifier.serializeData)
         .addParameter(Identifier.writer, KotlinSymbols.JsonWriter)
         .addParameter(Identifier.value, adaptedClassName)
-        .addParameter(Identifier.context, KotlinSymbols.DataSerializeContext)
+        .addParameter(Identifier.context, KotlinSymbols.SerializeDataContext)
         .addCode(writeToResponseCodeBlock(model, context))
         .apply {
           if (!addTypenameArgument) {

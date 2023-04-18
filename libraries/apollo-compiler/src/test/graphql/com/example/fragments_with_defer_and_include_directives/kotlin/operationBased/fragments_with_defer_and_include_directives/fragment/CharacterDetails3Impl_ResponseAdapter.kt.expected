@@ -5,8 +5,8 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
-import com.apollographql.apollo3.api.AnyApolloAdapter
-import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.AnyDataAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import kotlin.Any
@@ -16,17 +16,18 @@ import kotlin.collections.List
 
 public object CharacterDetails3Impl_ResponseAdapter {
   public object CharacterDetails3 :
-      ApolloAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3>
+      DataAdapter<com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3>
       {
     public val RESPONSE_NAMES: List<String> = listOf("birthDate")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext):
         com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3 {
       var _birthDate: Any? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _birthDate = AnyApolloAdapter.fromJson(reader, context)
+          0 -> _birthDate = AnyDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
@@ -36,13 +37,13 @@ public object CharacterDetails3Impl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("birthDate")
-      AnyApolloAdapter.toJson(writer, value.birthDate, context)
+      AnyDataAdapter.serializeData(writer, value.birthDate, context)
     }
   }
 }

@@ -5,8 +5,8 @@
 //
 package com.example.root_query_fragment.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.root_query_fragment.TestQuery
@@ -15,22 +15,22 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringApolloAdapter.fromJson(reader, context)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
 
       reader.rewind()
-      val _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
+      val _queryFragment = com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.deserializeData(reader,
           context)
 
       return TestQuery.Data(
@@ -39,15 +39,15 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringApolloAdapter.toJson(writer, value.__typename, context)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
-      com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
+      com.example.root_query_fragment.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.serializeData(writer,
           value.queryFragment, context)
     }
   }

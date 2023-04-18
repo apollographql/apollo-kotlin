@@ -5,23 +5,23 @@
 //
 package com.example.input_object_type.type.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.input_object_type.type.Episode
 import kotlin.Unit
 
-public object Episode_ResponseAdapter : ApolloAdapter<Episode> {
-  public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-      Episode {
+public object Episode_ResponseAdapter : DataAdapter<Episode> {
+  public override fun deserializeData(reader: JsonReader,
+      context: DataAdapter.DeserializeDataContext): Episode {
     val rawValue = reader.nextString()!!
     return Episode.safeValueOf(rawValue)
   }
 
-  public override fun toJson(
+  public override fun serializeData(
     writer: JsonWriter,
     `value`: Episode,
-    context: ApolloAdapter.DataSerializeContext,
+    context: DataAdapter.SerializeDataContext,
   ): Unit {
     writer.value(value.rawValue)
   }

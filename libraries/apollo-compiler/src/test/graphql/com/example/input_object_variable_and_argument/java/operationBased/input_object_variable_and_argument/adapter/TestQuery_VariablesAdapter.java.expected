@@ -5,10 +5,10 @@
 //
 package com.example.input_object_variable_and_argument.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -23,14 +23,14 @@ public enum TestQuery_VariablesAdapter implements VariablesAdapter<TestQuery> {
   @Override
   public void serializeVariables(JsonWriter writer, TestQuery value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     if (value.episode instanceof Optional.Present) {
       writer.name("episode");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, value.episode, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.episode, serializeDataContext);
     }
     writer.name("stars");
-    Adapters.IntApolloAdapter.toJson(writer, value.stars, serializeDataContext);
+    DataAdapters.IntDataAdapter.serializeData(writer, value.stars, serializeDataContext);
     writer.name("greenValue");
-    Adapters.DoubleApolloAdapter.toJson(writer, value.greenValue, serializeDataContext);
+    DataAdapters.DoubleDataAdapter.serializeData(writer, value.greenValue, serializeDataContext);
   }
 }

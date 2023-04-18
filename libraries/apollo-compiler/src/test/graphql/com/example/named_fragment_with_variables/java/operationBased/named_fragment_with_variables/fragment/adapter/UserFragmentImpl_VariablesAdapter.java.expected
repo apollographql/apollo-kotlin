@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl;
@@ -19,8 +19,8 @@ public enum UserFragmentImpl_VariablesAdapter implements VariablesAdapter<UserFr
   @Override
   public void serializeVariables(JsonWriter writer, UserFragmentImpl value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     writer.name("size");
-    Adapters.IntApolloAdapter.toJson(writer, value.size, serializeDataContext);
+    DataAdapters.IntDataAdapter.serializeData(writer, value.size, serializeDataContext);
   }
 }

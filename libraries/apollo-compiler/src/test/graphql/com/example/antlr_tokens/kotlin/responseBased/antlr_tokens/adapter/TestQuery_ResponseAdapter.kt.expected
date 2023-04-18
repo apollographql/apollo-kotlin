@@ -5,8 +5,8 @@
 //
 package com.example.antlr_tokens.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -17,16 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("typeWithGraphQLKeywords")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _typeWithGraphQLKeywords: TestQuery.Data.TypeWithGraphQLKeywords? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().fromJson(reader,
+          0 -> _typeWithGraphQLKeywords = TypeWithGraphQLKeywords.obj().nullable().deserializeData(reader,
               context)
           else -> break
         }
@@ -37,30 +37,30 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("typeWithGraphQLKeywords")
-      TypeWithGraphQLKeywords.obj().nullable().toJson(writer, value.typeWithGraphQLKeywords,
+      TypeWithGraphQLKeywords.obj().nullable().serializeData(writer, value.typeWithGraphQLKeywords,
           context)
     }
 
-    private object TypeWithGraphQLKeywords : ApolloAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
+    private object TypeWithGraphQLKeywords : DataAdapter<TestQuery.Data.TypeWithGraphQLKeywords> {
       public val RESPONSE_NAMES: List<String> = listOf("on", "null", "alias")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.TypeWithGraphQLKeywords {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.TypeWithGraphQLKeywords {
         var _on: String? = null
         var _null: String? = null
         var _alias: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _on = NullableStringApolloAdapter.fromJson(reader, context)
-            1 -> _null = NullableStringApolloAdapter.fromJson(reader, context)
-            2 -> _alias = NullableStringApolloAdapter.fromJson(reader, context)
+            0 -> _on = NullableStringDataAdapter.deserializeData(reader, context)
+            1 -> _null = NullableStringDataAdapter.deserializeData(reader, context)
+            2 -> _alias = NullableStringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -72,19 +72,19 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.TypeWithGraphQLKeywords,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("on")
-        NullableStringApolloAdapter.toJson(writer, value.on, context)
+        NullableStringDataAdapter.serializeData(writer, value.on, context)
 
         writer.name("null")
-        NullableStringApolloAdapter.toJson(writer, value.`null`, context)
+        NullableStringDataAdapter.serializeData(writer, value.`null`, context)
 
         writer.name("alias")
-        NullableStringApolloAdapter.toJson(writer, value.alias, context)
+        NullableStringDataAdapter.serializeData(writer, value.alias, context)
       }
     }
   }

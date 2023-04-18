@@ -5,7 +5,7 @@ import com.apollographql.apollo3.compiler.codegen.Identifier
 import com.apollographql.apollo3.compiler.codegen.Identifier.RESPONSE_NAMES
 import com.apollographql.apollo3.compiler.codegen.Identifier.__path
 import com.apollographql.apollo3.compiler.codegen.Identifier.__typename
-import com.apollographql.apollo3.compiler.codegen.Identifier.fromJson
+import com.apollographql.apollo3.compiler.codegen.Identifier.deserializeData
 import com.apollographql.apollo3.compiler.codegen.Identifier.getPath
 import com.apollographql.apollo3.compiler.codegen.Identifier.reader
 import com.apollographql.apollo3.compiler.codegen.Identifier.typename
@@ -73,7 +73,7 @@ internal fun readFromResponseCodeBlock(
         .add(
             regularProperties.mapIndexed { index, property ->
               CodeBlock.of(
-                  "%L·->·%N·=·%L.$fromJson($reader, ${Identifier.context})",
+                  "%L·->·%N·=·%L.$deserializeData($reader, ${Identifier.context})",
                   index,
                   context.layout.variableName(property.info.responseName),
                   context.resolver.adapterInitializer(property.info.type, property.requiresBuffering)
@@ -143,7 +143,7 @@ internal fun readFromResponseCodeBlock(
         }
         .add(
             CodeBlock.of(
-                "%L·=·%L.$fromJson($reader, ${Identifier.context})\n",
+                "%L·=·%L.$deserializeData($reader, ${Identifier.context})\n",
                 context.layout.variableName(property.info.responseName),
                 context.resolver.resolveModelAdapter(property.info.type.modelPath()),
             )
@@ -219,7 +219,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
     val adapterInitializer = context.resolver.adapterInitializer(info.type, requiresBuffering)
     builder.addStatement("${writer}.name(%S)", info.responseName)
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $value.%N, ${Identifier.context})",
+        "%L.${Identifier.serializeData}($writer, $value.%N, ${Identifier.context})",
         adapterInitializer,
         propertyName,
     )
@@ -233,7 +233,7 @@ private fun IrProperty.writeToResponseCodeBlock(context: KotlinContext): CodeBlo
       builder.beginControlFlow("if·($value.%N·!=·null)", propertyName)
     }
     builder.addStatement(
-        "%L.${Identifier.toJson}($writer, $value.%N, ${Identifier.context})",
+        "%L.${Identifier.serializeData}($writer, $value.%N, ${Identifier.context})",
         adapterInitializer,
         propertyName,
     )

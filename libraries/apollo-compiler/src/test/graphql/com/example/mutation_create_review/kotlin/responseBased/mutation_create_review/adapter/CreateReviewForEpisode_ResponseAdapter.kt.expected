@@ -5,9 +5,9 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.ScalarAdapterToApolloAdapter
+import com.apollographql.apollo3.api.AdapterToDataAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.list
@@ -23,16 +23,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object CreateReviewForEpisode_ResponseAdapter {
-  public object Data : ApolloAdapter<CreateReviewForEpisode.Data> {
+  public object Data : DataAdapter<CreateReviewForEpisode.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        CreateReviewForEpisode.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): CreateReviewForEpisode.Data {
       var _createReview: CreateReviewForEpisode.Data.CreateReview? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, context)
+          0 -> _createReview = CreateReview.obj().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -42,21 +42,21 @@ internal object CreateReviewForEpisode_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: CreateReviewForEpisode.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("createReview")
-      CreateReview.obj().nullable().toJson(writer, value.createReview, context)
+      CreateReview.obj().nullable().serializeData(writer, value.createReview, context)
     }
 
-    private object CreateReview : ApolloAdapter<CreateReviewForEpisode.Data.CreateReview> {
+    private object CreateReview : DataAdapter<CreateReviewForEpisode.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary", "listOfListOfString",
           "listOfListOfEnum", "listOfListOfCustom", "listOfListOfObject")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): CreateReviewForEpisode.Data.CreateReview {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): CreateReviewForEpisode.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
         var _listOfListOfString: List<List<String>>? = null
@@ -66,16 +66,16 @@ internal object CreateReviewForEpisode_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntApolloAdapter.fromJson(reader, context)
-            1 -> _commentary = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().fromJson(reader,
+            0 -> _stars = IntDataAdapter.deserializeData(reader, context)
+            1 -> _commentary = AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().deserializeData(reader,
                 context)
-            2 -> _listOfListOfString = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable().fromJson(reader,
+            2 -> _listOfListOfString = AdapterToDataAdapter(com.example.MyStringAdapter()).list().list().nullable().deserializeData(reader,
                 context)
-            3 -> _listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().fromJson(reader,
+            3 -> _listOfListOfEnum = Episode_ResponseAdapter.list().list().nullable().deserializeData(reader,
                 context)
-            4 -> _listOfListOfCustom = context.scalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).list().list().nullable().fromJson(reader,
+            4 -> _listOfListOfCustom = context.scalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).list().list().nullable().deserializeData(reader,
                 context)
-            5 -> _listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().fromJson(reader,
+            5 -> _listOfListOfObject = ListOfListOfObject.obj().list().list().nullable().deserializeData(reader,
                 context)
             else -> break
           }
@@ -91,47 +91,47 @@ internal object CreateReviewForEpisode_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: CreateReviewForEpisode.Data.CreateReview,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("stars")
-        IntApolloAdapter.toJson(writer, value.stars, context)
+        IntDataAdapter.serializeData(writer, value.stars, context)
 
         writer.name("commentary")
-        ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).nullable().toJson(writer,
+        AdapterToDataAdapter(com.example.MyStringAdapter()).nullable().serializeData(writer,
             value.commentary, context)
 
         writer.name("listOfListOfString")
-        ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).list().list().nullable().toJson(writer,
+        AdapterToDataAdapter(com.example.MyStringAdapter()).list().list().nullable().serializeData(writer,
             value.listOfListOfString, context)
 
         writer.name("listOfListOfEnum")
-        Episode_ResponseAdapter.list().list().nullable().toJson(writer, value.listOfListOfEnum,
-            context)
+        Episode_ResponseAdapter.list().list().nullable().serializeData(writer,
+            value.listOfListOfEnum, context)
 
         writer.name("listOfListOfCustom")
-        context.scalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).list().list().nullable().toJson(writer,
+        context.scalarAdapters.responseAdapterFor<Date>(com.example.mutation_create_review.type.Date.type).list().list().nullable().serializeData(writer,
             value.listOfListOfCustom, context)
 
         writer.name("listOfListOfObject")
-        ListOfListOfObject.obj().list().list().nullable().toJson(writer, value.listOfListOfObject,
-            context)
+        ListOfListOfObject.obj().list().list().nullable().serializeData(writer,
+            value.listOfListOfObject, context)
       }
 
       private object ListOfListOfObject :
-          ApolloAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
+          DataAdapter<CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject> {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
-        public override fun fromJson(reader: JsonReader,
-            context: ApolloAdapter.DataDeserializeContext):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).fromJson(reader,
+              0 -> _name = AdapterToDataAdapter(com.example.MyStringAdapter()).deserializeData(reader,
                   context)
               else -> break
             }
@@ -142,13 +142,13 @@ internal object CreateReviewForEpisode_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
           `value`: CreateReviewForEpisode.Data.CreateReview.ListOfListOfObject,
-          context: ApolloAdapter.DataSerializeContext,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("name")
-          ScalarAdapterToApolloAdapter(com.example.MyStringAdapter()).toJson(writer, value.name,
+          AdapterToDataAdapter(com.example.MyStringAdapter()).serializeData(writer, value.name,
               context)
         }
       }

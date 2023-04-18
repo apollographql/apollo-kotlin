@@ -5,26 +5,26 @@
 //
 package com.example.hero_with_review.type.adapter;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_with_review.type.Episode;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Episode_ResponseAdapter implements ApolloAdapter<Episode> {
+public enum Episode_ResponseAdapter implements DataAdapter<Episode> {
   INSTANCE;
 
   @Override
-  public Episode fromJson(JsonReader reader, ApolloAdapter.DataDeserializeContext context) throws
-      IOException {
+  public Episode deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context)
+      throws IOException {
     String rawValue = reader.nextString();
     return Episode.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, Episode value, ApolloAdapter.DataSerializeContext context)
-      throws IOException {
+  public void serializeData(JsonWriter writer, Episode value,
+      DataAdapter.SerializeDataContext context) throws IOException {
     writer.value(value.rawValue);
   }
 }

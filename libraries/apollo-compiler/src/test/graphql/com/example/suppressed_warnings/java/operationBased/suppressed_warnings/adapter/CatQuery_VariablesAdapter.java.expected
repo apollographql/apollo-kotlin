@@ -5,10 +5,10 @@
 //
 package com.example.suppressed_warnings.adapter;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
-import com.apollographql.apollo3.api.ApolloOptionalAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ApolloOptionalDataAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
@@ -24,10 +24,10 @@ public enum CatQuery_VariablesAdapter implements VariablesAdapter<CatQuery> {
   @Override
   public void serializeVariables(JsonWriter writer, CatQuery value,
       VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    ApolloAdapter.DataSerializeContext serializeDataContext = new ApolloAdapter.DataSerializeContext(context.scalarAdapters);
+    DataAdapter.SerializeDataContext serializeDataContext = new DataAdapter.SerializeDataContext(context.scalarAdapters);
     if (value.filter instanceof Optional.Present) {
       writer.name("filter");
-      new ApolloOptionalAdapter<>(new NullableAdapter<>(new ObjectAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).toJson(writer, value.filter, serializeDataContext);
+      new ApolloOptionalDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<Filter>(Filter_InputAdapter.INSTANCE, false))).serializeData(writer, value.filter, serializeDataContext);
     }
   }
 }

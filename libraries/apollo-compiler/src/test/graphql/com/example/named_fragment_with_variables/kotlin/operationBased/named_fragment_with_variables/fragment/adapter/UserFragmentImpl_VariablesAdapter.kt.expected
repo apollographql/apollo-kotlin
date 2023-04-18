@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.fragment.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_with_variables.fragment.UserFragmentImpl
@@ -18,8 +18,8 @@ public object UserFragmentImpl_VariablesAdapter : VariablesAdapter<UserFragmentI
     `value`: UserFragmentImpl,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("size")
-    IntApolloAdapter.toJson(writer, value.size, serializeDataContext)
+    IntDataAdapter.serializeData(writer, value.size, serializeDataContext)
   }
 }

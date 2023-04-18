@@ -5,7 +5,7 @@
 //
 package com.example.mutation_create_review.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -20,10 +20,10 @@ internal object CreateReviewForEpisode_VariablesAdapter : VariablesAdapter<Creat
     `value`: CreateReviewForEpisode,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("ep")
-    Episode_ResponseAdapter.toJson(writer, value.ep, serializeDataContext)
+    Episode_ResponseAdapter.serializeData(writer, value.ep, serializeDataContext)
     writer.name("review")
-    ReviewInput_InputAdapter.obj().toJson(writer, value.review, serializeDataContext)
+    ReviewInput_InputAdapter.obj().serializeData(writer, value.review, serializeDataContext)
   }
 }

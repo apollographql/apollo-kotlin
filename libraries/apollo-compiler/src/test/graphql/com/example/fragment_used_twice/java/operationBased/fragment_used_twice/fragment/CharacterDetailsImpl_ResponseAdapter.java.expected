@@ -5,9 +5,9 @@
 //
 package com.example.fragment_used_twice.fragment;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -18,22 +18,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CharacterDetailsImpl_ResponseAdapter {
-  public enum CharacterDetails implements ApolloAdapter<com.example.fragment_used_twice.fragment.CharacterDetails> {
+  public enum CharacterDetails implements DataAdapter<com.example.fragment_used_twice.fragment.CharacterDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "birthDate");
 
     @Override
-    public com.example.fragment_used_twice.fragment.CharacterDetails fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public com.example.fragment_used_twice.fragment.CharacterDetails deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
       Object _birthDate = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringApolloAdapter.fromJson(reader, context); break;
-          case 1: _birthDate = Adapters.AnyApolloAdapter.fromJson(reader, context); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _birthDate = DataAdapters.AnyDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -48,14 +48,14 @@ public class CharacterDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer,
+    public void serializeData(JsonWriter writer,
         com.example.fragment_used_twice.fragment.CharacterDetails value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringApolloAdapter.toJson(writer, value.name, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("birthDate");
-      Adapters.AnyApolloAdapter.toJson(writer, value.birthDate, context);
+      DataAdapters.AnyDataAdapter.serializeData(writer, value.birthDate, context);
     }
   }
 }

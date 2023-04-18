@@ -5,10 +5,10 @@
 //
 package com.example.simple_union.fragment;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_union.fragment.selections.DogFragmentSelections;
@@ -66,8 +66,8 @@ public class DogFragmentImpl implements Fragment<DogFragment> {
   }
 
   @Override
-  public ApolloAdapter<DogFragment> adapter() {
-    return new ObjectAdapter<DogFragment>(DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE, false);
+  public DataAdapter<DogFragment> adapter() {
+    return new ObjectDataAdapter<DogFragment>(DogFragmentImpl_ResponseAdapter.DogFragment.INSTANCE, false);
   }
 
   @Override

@@ -50,7 +50,7 @@ internal fun adapterFunSpec(
 
   return FunSpec.builder("adapter")
       .addModifiers(KModifier.OVERRIDE)
-      .returns(KotlinSymbols.ApolloAdapter.parameterizedBy(resolver.resolveIrType(type)))
+      .returns(KotlinSymbols.DataAdapter.parameterizedBy(resolver.resolveIrType(type)))
       .addCode(
           CodeBlock.of(
               "return·%L",

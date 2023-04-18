@@ -6,8 +6,8 @@
 package com.example.nested_conditional_inline
 
 import com.apollographql.apollo3.annotations.ApolloAdaptableWith
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.api.Query
 import com.apollographql.apollo3.api.VariablesAdapter
@@ -36,7 +36,7 @@ public data class TestQuery(
     TestQuery_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
-  public override fun adapter(): ApolloAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
+  public override fun adapter(): DataAdapter<Data> = TestQuery_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",

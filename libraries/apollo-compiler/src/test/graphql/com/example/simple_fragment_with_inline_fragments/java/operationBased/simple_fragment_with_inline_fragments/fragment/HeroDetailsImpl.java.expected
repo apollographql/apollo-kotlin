@@ -5,10 +5,10 @@
 //
 package com.example.simple_fragment_with_inline_fragments.fragment;
 
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.CompiledField;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.simple_fragment_with_inline_fragments.fragment.selections.HeroDetailsSelections;
@@ -66,8 +66,8 @@ public class HeroDetailsImpl implements Fragment<HeroDetails> {
   }
 
   @Override
-  public ApolloAdapter<HeroDetails> adapter() {
-    return new ObjectAdapter<HeroDetails>(HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE, false);
+  public DataAdapter<HeroDetails> adapter() {
+    return new ObjectDataAdapter<HeroDetails>(HeroDetailsImpl_ResponseAdapter.HeroDetails.INSTANCE, false);
   }
 
   @Override

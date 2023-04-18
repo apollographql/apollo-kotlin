@@ -5,8 +5,6 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter;
 
-import com.apollographql.apollo3.api.Adapters;
-import com.apollographql.apollo3.api.ApolloAdapter;
 import com.apollographql.apollo3.api.Assertions;
 import com.apollographql.apollo3.api.BLabel;
 import com.apollographql.apollo3.api.BPossibleTypes;
@@ -14,8 +12,10 @@ import com.apollographql.apollo3.api.BTerm;
 import com.apollographql.apollo3.api.BVariable;
 import com.apollographql.apollo3.api.BooleanExpression;
 import com.apollographql.apollo3.api.BooleanExpressions;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.fragments_with_defer_and_include_directives.SpreadMultipleWithDeferWithIf;
@@ -29,20 +29,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
-  public enum Data implements ApolloAdapter<SpreadMultipleWithDeferWithIf.Data> {
+  public enum Data implements DataAdapter<SpreadMultipleWithDeferWithIf.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("hero");
 
     @Override
-    public SpreadMultipleWithDeferWithIf.Data fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public SpreadMultipleWithDeferWithIf.Data deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       SpreadMultipleWithDeferWithIf.Hero _hero = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _hero = new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).fromJson(reader, context); break;
+          case 0: _hero = new NullableDataAdapter<>(new ObjectDataAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -53,28 +53,28 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, SpreadMultipleWithDeferWithIf.Data value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, SpreadMultipleWithDeferWithIf.Data value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("hero");
-      new NullableAdapter<>(new ObjectAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).toJson(writer, value.hero, context);
+      new NullableDataAdapter<>(new ObjectDataAdapter<SpreadMultipleWithDeferWithIf.Hero>(Hero.INSTANCE, true)).serializeData(writer, value.hero, context);
     }
   }
 
-  public enum Hero implements ApolloAdapter<SpreadMultipleWithDeferWithIf.Hero> {
+  public enum Hero implements DataAdapter<SpreadMultipleWithDeferWithIf.Hero> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("__typename");
 
     @Override
-    public SpreadMultipleWithDeferWithIf.Hero fromJson(JsonReader reader,
-        ApolloAdapter.DataDeserializeContext context) throws IOException {
+    public SpreadMultipleWithDeferWithIf.Hero deserializeData(JsonReader reader,
+        DataAdapter.DeserializeDataContext context) throws IOException {
       String __typename = null;
 
       List<Object> __path = reader.getPath();
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: __typename = Adapters.StringApolloAdapter.fromJson(reader, context); break;
+          case 0: __typename = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -83,19 +83,19 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
       CharacterDetails _characterDetails = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.fromJson(reader, context);
+        _characterDetails = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.deserializeData(reader, context);
       }
 
       CharacterDetails2 _characterDetails2 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Element<BTerm>(new BLabel("c_second"))), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.fromJson(reader, context);
+        _characterDetails2 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.deserializeData(reader, context);
       }
 
       CharacterDetails3 _characterDetails3 = null;
       if (BooleanExpressions.evaluate(new BooleanExpression.And<BTerm>(new BooleanExpression.Element<BTerm>(new BPossibleTypes("Droid")),new BooleanExpression.Or<BTerm>(new BooleanExpression.Not<BTerm>(new BooleanExpression.Element<BTerm>(new BVariable("cond"))),new BooleanExpression.Element<BTerm>(new BLabel("c_third")))), context.falseBooleanVariables, __typename, context, __path)) {
         reader.rewind();
-        _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.fromJson(reader, context);
+        _characterDetails3 = com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.deserializeData(reader, context);
       }
 
       return new SpreadMultipleWithDeferWithIf.Hero(
@@ -107,21 +107,21 @@ public class SpreadMultipleWithDeferWithIf_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, SpreadMultipleWithDeferWithIf.Hero value,
-        ApolloAdapter.DataSerializeContext context) throws IOException {
+    public void serializeData(JsonWriter writer, SpreadMultipleWithDeferWithIf.Hero value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("__typename");
-      Adapters.StringApolloAdapter.toJson(writer, value.__typename, context);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.__typename, context);
 
       if (value.characterDetails != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.toJson(writer, value.characterDetails, context);
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetailsImpl_ResponseAdapter.CharacterDetails.INSTANCE.serializeData(writer, value.characterDetails, context);
       }
 
       if (value.characterDetails2 != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.toJson(writer, value.characterDetails2, context);
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails2Impl_ResponseAdapter.CharacterDetails2.INSTANCE.serializeData(writer, value.characterDetails2, context);
       }
 
       if (value.characterDetails3 != null) {
-        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.toJson(writer, value.characterDetails3, context);
+        com.example.fragments_with_defer_and_include_directives.fragment.CharacterDetails3Impl_ResponseAdapter.CharacterDetails3.INSTANCE.serializeData(writer, value.characterDetails3, context);
       }
     }
   }

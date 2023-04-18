@@ -5,8 +5,8 @@
 //
 package com.example.subscriptions.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.StringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.subscriptions.TestSubscription
@@ -18,8 +18,8 @@ public object TestSubscription_VariablesAdapter : VariablesAdapter<TestSubscript
     `value`: TestSubscription,
     context: VariablesAdapter.SerializeVariablesContext,
   ): Unit {
-    val serializeDataContext = ApolloAdapter.DataSerializeContext(context.scalarAdapters)
+    val serializeDataContext = DataAdapter.SerializeDataContext(context.scalarAdapters)
     writer.name("repo")
-    StringApolloAdapter.toJson(writer, value.repo, serializeDataContext)
+    StringDataAdapter.serializeData(writer, value.repo, serializeDataContext)
   }
 }

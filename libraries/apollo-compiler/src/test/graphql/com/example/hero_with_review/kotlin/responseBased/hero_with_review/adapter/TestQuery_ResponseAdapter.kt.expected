@@ -5,9 +5,9 @@
 //
 package com.example.hero_with_review.adapter
 
-import com.apollographql.apollo3.api.ApolloAdapter
-import com.apollographql.apollo3.api.IntApolloAdapter
-import com.apollographql.apollo3.api.NullableStringApolloAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -19,16 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : ApolloAdapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("createReview")
 
-    public override fun fromJson(reader: JsonReader, context: ApolloAdapter.DataDeserializeContext):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _createReview: TestQuery.Data.CreateReview? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _createReview = CreateReview.obj().nullable().fromJson(reader, context)
+          0 -> _createReview = CreateReview.obj().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -38,27 +38,27 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
       `value`: TestQuery.Data,
-      context: ApolloAdapter.DataSerializeContext,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("createReview")
-      CreateReview.obj().nullable().toJson(writer, value.createReview, context)
+      CreateReview.obj().nullable().serializeData(writer, value.createReview, context)
     }
 
-    private object CreateReview : ApolloAdapter<TestQuery.Data.CreateReview> {
+    private object CreateReview : DataAdapter<TestQuery.Data.CreateReview> {
       public val RESPONSE_NAMES: List<String> = listOf("stars", "commentary")
 
-      public override fun fromJson(reader: JsonReader,
-          context: ApolloAdapter.DataDeserializeContext): TestQuery.Data.CreateReview {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.CreateReview {
         var _stars: Int? = null
         var _commentary: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _stars = IntApolloAdapter.fromJson(reader, context)
-            1 -> _commentary = NullableStringApolloAdapter.fromJson(reader, context)
+            0 -> _stars = IntDataAdapter.deserializeData(reader, context)
+            1 -> _commentary = NullableStringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -69,16 +69,16 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
         `value`: TestQuery.Data.CreateReview,
-        context: ApolloAdapter.DataSerializeContext,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("stars")
-        IntApolloAdapter.toJson(writer, value.stars, context)
+        IntDataAdapter.serializeData(writer, value.stars, context)
 
         writer.name("commentary")
-        NullableStringApolloAdapter.toJson(writer, value.commentary, context)
+        NullableStringDataAdapter.serializeData(writer, value.commentary, context)
       }
     }
   }

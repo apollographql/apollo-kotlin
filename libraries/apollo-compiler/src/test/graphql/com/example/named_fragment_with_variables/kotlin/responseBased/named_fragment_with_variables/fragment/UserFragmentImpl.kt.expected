@@ -5,8 +5,8 @@
 //
 package com.example.named_fragment_with_variables.fragment
 
-import com.apollographql.apollo3.api.ApolloAdapter
 import com.apollographql.apollo3.api.CompiledField
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.Fragment
 import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -26,7 +26,7 @@ public data class UserFragmentImpl(
     UserFragmentImpl_VariablesAdapter.serializeVariables(writer, this, context)
   }
 
-  public override fun adapter(): ApolloAdapter<Data> = UserFragmentImpl_ResponseAdapter.Data.obj()
+  public override fun adapter(): DataAdapter<Data> = UserFragmentImpl_ResponseAdapter.Data.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
     name = "data",
