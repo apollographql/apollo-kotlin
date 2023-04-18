@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static com.apollographql.apollo3.api.Adapters.AnyDataAdapter;
+import static com.apollographql.apollo3.api.DataAdapters.AnyDataAdapter;
 
 public class BatchingHttpInterceptor implements HttpInterceptor {
   private final long batchIntervalMillis;

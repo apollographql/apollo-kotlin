@@ -1,6 +1,5 @@
 package com.apollographql.apollo3.runtime.java.network.ws.protocol;
 
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.ApolloRequest;
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
 import com.apollographql.apollo3.api.DataAdapter.SerializeDataContext;
@@ -16,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
+
+import static com.apollographql.apollo3.api.DataAdapters.AnyDataAdapter;
 
 public abstract class WsProtocol {
   protected WebSocketConnection webSocketConnection;
@@ -90,7 +91,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyDataAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
+      AnyDataAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readUtf8();
@@ -100,7 +101,7 @@ public abstract class WsProtocol {
     Buffer buffer = new Buffer();
     BufferedSinkJsonWriter writer = new BufferedSinkJsonWriter(buffer);
     try {
-      Adapters.AnyDataAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
+      AnyDataAdapter.serializeData(writer, messageMap, new SerializeDataContext(ScalarAdapters.Empty));
     } catch (IOException ignored) {
     }
     return buffer.readByteString();
@@ -109,7 +110,7 @@ public abstract class WsProtocol {
   private static Map<String, Object> toMessageMap(String messageJson) {
     try {
       //noinspection unchecked
-      return (Map<String, Object>) Adapters.AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+      return (Map<String, Object>) AnyDataAdapter.deserializeData(new BufferedSourceJsonReader(new Buffer().writeUtf8(messageJson)), new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     } catch (Exception e) {
       return null;
     }

@@ -2,7 +2,7 @@ package test;
 
 import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.DataAdapter.DeserializeDataContext;
-import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
 import com.apollographql.apollo3.api.ScalarAdapters;
 import com.apollographql.apollo3.api.json.BufferedSourceJsonReader;
 import okio.Okio;
@@ -28,7 +28,7 @@ public class AdapterTest {
   public void nullString() {
     String json = "null";
     BufferedSourceJsonReader jsonReader = new BufferedSourceJsonReader(Okio.buffer(Okio.source(new ByteArrayInputStream(json.getBytes()))));
-    String result = new NullableAdapter<>(Adapters.StringDataAdapter).deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
+    String result = new NullableDataAdapter<>(Adapters.StringDataAdapter).deserializeData(jsonReader, new DeserializeDataContext(ScalarAdapters.Empty, new HashSet<>(), null));
     assertThat(result).isEqualTo(null);
   }
 
