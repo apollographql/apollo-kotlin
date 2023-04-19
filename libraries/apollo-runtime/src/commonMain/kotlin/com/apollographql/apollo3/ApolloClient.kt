@@ -1,5 +1,7 @@
 package com.apollographql.apollo3
 
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince
+import com.apollographql.apollo3.annotations.ApolloDeprecatedSince.Version.v4_0_0
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.ApolloRequest
 import com.apollographql.apollo3.api.ApolloResponse
@@ -174,6 +176,11 @@ private constructor(
           }
         }
   }
+
+  @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters"))
+  @ApolloDeprecatedSince(v4_0_0)
+  val customScalarAdapters: ScalarAdapters
+    get() = scalarAdapters
 
   /**
    * A Builder used to create instances of [ApolloClient]
@@ -390,6 +397,12 @@ private constructor(
       scalarAdaptersBuilder.addAll(scalarAdapters)
     }
 
+    @Deprecated("Use scalarAdapters instead", ReplaceWith("scalarAdapters(customScalarAdapters)"))
+    @ApolloDeprecatedSince(v4_0_0)
+    fun customScalarAdapters(customScalarAdapters: ScalarAdapters) = apply {
+      scalarAdapters(customScalarAdapters)
+    }
+
     /**
      * Registers the given [adapter]
      *
@@ -400,6 +413,12 @@ private constructor(
      */
     fun <T> addScalarAdapter(scalarType: ScalarType, adapter: Adapter<T>) = apply {
       scalarAdaptersBuilder.add(scalarType, adapter)
+    }
+
+    @Deprecated("Use addScalarAdapter instead", ReplaceWith("addScalarAdapter(customScalarType, customScalarAdapter)"))
+    @ApolloDeprecatedSince(v4_0_0)
+    fun <T> addCustomScalarAdapter(customScalarType: ScalarType, customScalarAdapter: Adapter<T>) = apply {
+      addScalarAdapter(customScalarType, customScalarAdapter)
     }
 
     fun addInterceptor(interceptor: ApolloInterceptor) = apply {
