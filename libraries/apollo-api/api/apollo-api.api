@@ -1,6 +1,6 @@
 public abstract interface class com/apollographql/apollo3/api/Adapter {
-	public abstract fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;)Ljava/lang/Object;
-	public abstract fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Ljava/lang/Object;)V
+	public abstract fun fromJson (Lcom/apollographql/apollo3/api/json/JsonReader;Lcom/apollographql/apollo3/api/ScalarAdapters;)Ljava/lang/Object;
+	public abstract fun toJson (Lcom/apollographql/apollo3/api/json/JsonWriter;Lcom/apollographql/apollo3/api/ScalarAdapters;Ljava/lang/Object;)V
 }
 
 public final class com/apollographql/apollo3/api/AdapterToDataAdapter : com/apollographql/apollo3/api/DataAdapter {

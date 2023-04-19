@@ -21,33 +21,33 @@ import kotlin.jvm.JvmOverloads
 
 @JvmField
 val StringAdapter = object : Adapter<String> {
-  override fun fromJson(reader: JsonReader): String {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): String {
     return reader.nextString()!!
   }
 
-  override fun toJson(writer: JsonWriter, value: String) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: String) {
     writer.value(value)
   }
 }
 
 @JvmField
 val IntAdapter = object : Adapter<Int> {
-  override fun fromJson(reader: JsonReader): Int {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Int {
     return reader.nextInt()
   }
 
-  override fun toJson(writer: JsonWriter, value: Int) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Int) {
     writer.value(value)
   }
 }
 
 @JvmField
 val DoubleAdapter = object : Adapter<Double> {
-  override fun fromJson(reader: JsonReader): Double {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Double {
     return reader.nextDouble()
   }
 
-  override fun toJson(writer: JsonWriter, value: Double) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Double) {
     writer.value(value)
   }
 }
@@ -58,11 +58,11 @@ val DoubleAdapter = object : Adapter<Double> {
  */
 @JvmField
 val FloatAdapter = object : Adapter<Float> {
-  override fun fromJson(reader: JsonReader): Float {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Float {
     return reader.nextDouble().toFloat()
   }
 
-  override fun toJson(writer: JsonWriter, value: Float) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Float) {
     writer.value(value.toDouble())
   }
 }
@@ -75,44 +75,44 @@ val FloatAdapter = object : Adapter<Float> {
  */
 @JvmField
 val LongAdapter = object : Adapter<Long> {
-  override fun fromJson(reader: JsonReader): Long {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Long {
     return reader.nextLong()
   }
 
-  override fun toJson(writer: JsonWriter, value: Long) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Long) {
     writer.value(value)
   }
 }
 
 @JvmField
 val BooleanAdapter = object : Adapter<Boolean> {
-  override fun fromJson(reader: JsonReader): Boolean {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Boolean {
     return reader.nextBoolean()
   }
 
-  override fun toJson(writer: JsonWriter, value: Boolean) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Boolean) {
     writer.value(value)
   }
 }
 
 @JvmField
 val AnyAdapter = object : Adapter<Any> {
-  override fun fromJson(reader: JsonReader): Any {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Any {
     return reader.readAny()!!
   }
 
-  override fun toJson(writer: JsonWriter, value: Any) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Any) {
     writer.writeAny(value)
   }
 }
 
 @JvmField
 val UploadAdapter = object : Adapter<Upload> {
-  override fun fromJson(reader: JsonReader): Upload {
+  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Upload {
     error("File Upload used in output position")
   }
 
-  override fun toJson(writer: JsonWriter, value: Upload) {
+  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Upload) {
     writer.value(value)
   }
 }
@@ -124,5 +124,5 @@ fun <T> Adapter<T>.toJsonString(
     value: T,
     indent: String? = null,
 ): String = buildJsonString(indent) {
-  this@toJsonString.toJson(this, value)
+  this@toJsonString.toJson(this, ScalarAdapters.Empty, value)
 }
