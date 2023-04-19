@@ -3,6 +3,9 @@ package com.apollographql.apollo3.api
 import com.apollographql.apollo3.annotations.ApolloExperimental
 import kotlin.jvm.JvmField
 
+@Deprecated("Use ScalarAdapters instead", ReplaceWith("ScalarAdapters"))
+typealias CustomScalarAdapters = ScalarAdapters
+
 /**
  * A wrapper around a Map<String, [DataAdapter]> used to retrieve scalar adapters at runtime
  */
