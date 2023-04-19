@@ -6,7 +6,7 @@
 package com.example.java_apollo_optionals.type.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.Optional
@@ -18,23 +18,23 @@ import kotlin.IllegalStateException
 import kotlin.Unit
 
 public object MyInput_InputAdapter : Adapter<MyInput> {
-  public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+  public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
       MyInput = throw IllegalStateException("Input type used in output position")
 
   public override fun toJson(
     writer: JsonWriter,
-    scalarAdapters: ScalarAdapters,
+    customScalarAdapters: CustomScalarAdapters,
     `value`: MyInput,
   ): Unit {
     if (value.nullableInt is Optional.Present) {
       writer.name("nullableInt")
-      NullableIntAdapter.optional().toJson(writer, scalarAdapters, value.nullableInt)
+      NullableIntAdapter.optional().toJson(writer, customScalarAdapters, value.nullableInt)
     }
     writer.name("nonNullableInt")
-    IntAdapter.toJson(writer, scalarAdapters, value.nonNullableInt)
+    IntAdapter.toJson(writer, customScalarAdapters, value.nonNullableInt)
     if (value.nonNullableIntWithDefault is Optional.Present) {
       writer.name("nonNullableIntWithDefault")
-      IntAdapter.optional().toJson(writer, scalarAdapters, value.nonNullableIntWithDefault)
+      IntAdapter.optional().toJson(writer, customScalarAdapters, value.nonNullableIntWithDefault)
     }
   }
 }

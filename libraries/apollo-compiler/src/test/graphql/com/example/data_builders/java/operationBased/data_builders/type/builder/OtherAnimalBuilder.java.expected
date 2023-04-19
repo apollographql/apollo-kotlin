@@ -5,19 +5,19 @@
 //
 package com.example.data_builders.type.builder;
 
-import com.apollographql.apollo3.api.ScalarAdapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import java.lang.Object;
 import java.lang.String;
 import java.util.HashMap;
 import java.util.Map;
 
 public class OtherAnimalBuilder {
-  ScalarAdapters scalarAdapters;
+  CustomScalarAdapters customScalarAdapters;
 
   Map<String, Object> __fields = new HashMap<>();
 
-  public OtherAnimalBuilder(String __typename, ScalarAdapters scalarAdapters) {
-    this.scalarAdapters = scalarAdapters;
+  public OtherAnimalBuilder(String __typename, CustomScalarAdapters customScalarAdapters) {
+    this.customScalarAdapters = customScalarAdapters;
     __fields.put("__typename", __typename);
   }
 

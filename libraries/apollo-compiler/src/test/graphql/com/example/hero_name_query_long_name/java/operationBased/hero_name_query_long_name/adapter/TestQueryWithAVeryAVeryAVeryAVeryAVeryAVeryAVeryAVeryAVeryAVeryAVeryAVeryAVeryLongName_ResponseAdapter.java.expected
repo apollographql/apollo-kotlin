@@ -5,11 +5,12 @@
 //
 package com.example.hero_name_query_long_name.adapter;
 
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.hero_name_query_long_name.TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName;
@@ -20,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data> {
+  public enum Data implements Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("heroAVeryAVeryAVeryAVeryAVeryAVeryAV");
 
     @Override
-    public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableDataAdapter<>(new ObjectDataAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _heroAVeryAVeryAVeryAVeryAVeryAVeryAV = new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -44,28 +45,28 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.Data value)
+        throws IOException {
       writer.name("heroAVeryAVeryAVeryAVeryAVeryAVeryAV");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).serializeData(writer, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV>(HeroAVeryAVeryAVeryAVeryAVeryAVeryAV.INSTANCE, false)).toJson(writer, customScalarAdapters, value.heroAVeryAVeryAVeryAVeryAVeryAVeryAV);
     }
   }
 
-  public enum HeroAVeryAVeryAVeryAVeryAVeryAVeryAV implements DataAdapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> {
+  public enum HeroAVeryAVeryAVeryAVeryAVeryAVeryAV implements Adapter<TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
 
     @Override
-    public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 0: _nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -78,11 +79,11 @@ public class TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVer
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQueryWithAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName.HeroAVeryAVeryAVeryAVeryAVeryAVeryAV value)
+        throws IOException {
       writer.name("nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName");
-      DataAdapters.StringDataAdapter.serializeData(writer, value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName, context);
+      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.nameAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryAVeryLongName);
     }
   }
 }

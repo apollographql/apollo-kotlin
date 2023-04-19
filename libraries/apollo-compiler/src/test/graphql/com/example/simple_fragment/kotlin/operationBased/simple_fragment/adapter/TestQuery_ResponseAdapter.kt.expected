@@ -5,8 +5,9 @@
 //
 package com.example.simple_fragment.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -20,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object TestQuery_ResponseAdapter {
-  public object Data : DataAdapter<TestQuery.Data> {
+  public object Data : Adapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestQuery.Data {
       var _hero: TestQuery.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().deserializeData(reader, context)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,25 +40,25 @@ internal object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().serializeData(writer, value.hero, context)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object Hero : DataAdapter<TestQuery.Data.Hero> {
+    private object Hero : Adapter<TestQuery.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestQuery.Data.Hero {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestQuery.Data.Hero {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -67,14 +68,14 @@ internal object TestQuery_ResponseAdapter {
         }
 
         reader.rewind()
-        val _heroDetails = com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.deserializeData(reader,
-            context)
+        val _heroDetails = com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.fromJson(reader,
+            customScalarAdapters)
 
         var _humanDetails: HumanDetails? = null
-        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
+        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
-          _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeData(reader,
-              context)
+          _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
+              customScalarAdapters)
         }
 
         return TestQuery.Data.Hero(
@@ -84,20 +85,20 @@ internal object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.Hero,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
-        com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.serializeData(writer,
-            value.heroDetails, context)
+        com.example.simple_fragment.fragment.HeroDetailsImpl_ResponseAdapter.HeroDetails.toJson(writer,
+            customScalarAdapters, value.heroDetails)
 
         if (value.humanDetails != null) {
-          com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeData(writer,
-              value.humanDetails, context)
+          com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
+              customScalarAdapters, value.humanDetails)
         }
       }
     }

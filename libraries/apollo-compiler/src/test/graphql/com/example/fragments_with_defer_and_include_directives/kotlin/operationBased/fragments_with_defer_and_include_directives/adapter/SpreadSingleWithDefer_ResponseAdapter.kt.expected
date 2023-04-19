@@ -5,8 +5,9 @@
 //
 package com.example.fragments_with_defer_and_include_directives.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.and
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
@@ -22,16 +23,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object SpreadSingleWithDefer_ResponseAdapter {
-  public object Data : DataAdapter<SpreadSingleWithDefer.Data> {
+  public object Data : Adapter<SpreadSingleWithDefer.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("hero")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): SpreadSingleWithDefer.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        SpreadSingleWithDefer.Data {
       var _hero: SpreadSingleWithDefer.Data.Hero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _hero = Hero.obj(true).nullable().deserializeData(reader, context)
+          0 -> _hero = Hero.obj(true).nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -41,26 +42,26 @@ public object SpreadSingleWithDefer_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: SpreadSingleWithDefer.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("hero")
-      Hero.obj(true).nullable().serializeData(writer, value.hero, context)
+      Hero.obj(true).nullable().toJson(writer, customScalarAdapters, value.hero)
     }
 
-    private object Hero : DataAdapter<SpreadSingleWithDefer.Data.Hero> {
+    private object Hero : Adapter<SpreadSingleWithDefer.Data.Hero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): SpreadSingleWithDefer.Data.Hero {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          SpreadSingleWithDefer.Data.Hero {
         var __typename: String? = null
 
         val __path = reader.getPath()
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -70,10 +71,10 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         }
 
         var _droidDetails: DroidDetails? = null
-        if (and(possibleTypes("Droid"),label()).evaluate(context.falseBooleanVariables, __typename, context, __path)) {
+        if (and(possibleTypes("Droid"),label()).evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, __path)) {
           reader.rewind()
-          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.deserializeData(reader,
-              context)
+          _droidDetails = com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.fromJson(reader,
+              customScalarAdapters)
         }
 
         return SpreadSingleWithDefer.Data.Hero(
@@ -82,17 +83,17 @@ public object SpreadSingleWithDefer_ResponseAdapter {
         )
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: SpreadSingleWithDefer.Data.Hero,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         if (value.droidDetails != null) {
-          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.serializeData(writer,
-              value.droidDetails, context)
+          com.example.fragments_with_defer_and_include_directives.fragment.DroidDetailsImpl_ResponseAdapter.DroidDetails.toJson(writer,
+              customScalarAdapters, value.droidDetails)
         }
       }
     }

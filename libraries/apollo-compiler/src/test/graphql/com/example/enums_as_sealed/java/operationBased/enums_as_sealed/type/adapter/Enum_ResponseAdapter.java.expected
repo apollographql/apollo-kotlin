@@ -5,25 +5,26 @@
 //
 package com.example.enums_as_sealed.type.adapter;
 
-import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.enums_as_sealed.type.Enum;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Enum_ResponseAdapter implements DataAdapter<Enum> {
+public enum Enum_ResponseAdapter implements Adapter<Enum> {
   INSTANCE;
 
   @Override
-  public Enum deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context) throws
+  public Enum fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
       IOException {
     String rawValue = reader.nextString();
     return Enum.safeValueOf(rawValue);
   }
 
   @Override
-  public void serializeData(JsonWriter writer, Enum value, DataAdapter.SerializeDataContext context)
+  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Enum value)
       throws IOException {
     writer.value(value.rawValue);
   }

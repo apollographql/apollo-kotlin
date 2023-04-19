@@ -5,10 +5,10 @@
 //
 package com.example.fragments_with_defer_and_include_directives.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_defer_and_include_directives.fragment.selections.CharacterDetailsSelections
@@ -24,11 +24,11 @@ public class CharacterDetailsImpl() : Fragment<CharacterDetails> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      context: VariablesAdapter.SerializeVariablesContext): Unit {
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): DataAdapter<CharacterDetails> =
+  public override fun adapter(): Adapter<CharacterDetails> =
       CharacterDetailsImpl_ResponseAdapter.CharacterDetails.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

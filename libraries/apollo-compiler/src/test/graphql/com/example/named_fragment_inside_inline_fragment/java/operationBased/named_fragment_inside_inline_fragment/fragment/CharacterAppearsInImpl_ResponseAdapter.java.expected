@@ -5,10 +5,11 @@
 //
 package com.example.named_fragment_inside_inline_fragment.fragment;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ListDataAdapter;
-import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ListAdapter;
+import com.apollographql.apollo3.api.NullableAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_inside_inline_fragment.type.Episode;
@@ -20,20 +21,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CharacterAppearsInImpl_ResponseAdapter {
-  public enum CharacterAppearsIn implements DataAdapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
+  public enum CharacterAppearsIn implements Adapter<com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("appearsIn");
 
     @Override
-    public com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       List<Episode> _appearsIn = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _appearsIn = new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).deserializeData(reader, context); break;
+          case 0: _appearsIn = new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,11 +47,11 @@ public class CharacterAppearsInImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.named_fragment_inside_inline_fragment.fragment.CharacterAppearsIn value) throws
+        IOException {
       writer.name("appearsIn");
-      new ListDataAdapter<>(new NullableDataAdapter<>(Episode_ResponseAdapter.INSTANCE)).serializeData(writer, value.appearsIn, context);
+      new ListAdapter<>(new NullableAdapter<>(Episode_ResponseAdapter.INSTANCE)).toJson(writer, customScalarAdapters, value.appearsIn);
     }
   }
 }
