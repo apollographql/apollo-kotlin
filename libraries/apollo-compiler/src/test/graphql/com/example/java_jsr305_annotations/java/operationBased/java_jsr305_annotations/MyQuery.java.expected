@@ -5,12 +5,12 @@
 //
 package com.example.java_jsr305_annotations;
 
+import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.Optional;
 import com.apollographql.apollo3.api.Query;
-import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.java_jsr305_annotations.adapter.MyQuery_ResponseAdapter;
 import com.example.java_jsr305_annotations.adapter.MyQuery_VariablesAdapter;
@@ -163,14 +163,14 @@ public class MyQuery implements Query<MyQuery.Data> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer,
-      VariablesAdapter.SerializeVariablesContext context) throws IOException {
-    MyQuery_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
+  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
+      throws IOException {
+    MyQuery_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
   }
 
   @Override
-  public DataAdapter<Data> adapter() {
-    return new ObjectDataAdapter<Data>(MyQuery_ResponseAdapter.Data.INSTANCE, false);
+  public Adapter<Data> adapter() {
+    return new ObjectAdapter<Data>(MyQuery_ResponseAdapter.Data.INSTANCE, false);
   }
 
   @Override

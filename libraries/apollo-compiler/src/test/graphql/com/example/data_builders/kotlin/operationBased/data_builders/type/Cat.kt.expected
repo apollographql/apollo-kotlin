@@ -7,9 +7,9 @@ package com.example.data_builders.type
 
 import com.apollographql.apollo3.api.BuilderFactory
 import com.apollographql.apollo3.api.BuilderScope
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
-import com.apollographql.apollo3.api.ScalarAdapters
 import kotlin.Any
 import kotlin.String
 import kotlin.Unit
@@ -20,14 +20,14 @@ public class Cat {
     public val type: ObjectType =
         ObjectType.Builder(name = "Cat").interfaces(listOf(Node.type)).build()
 
-    public override fun newBuilder(scalarAdapters: ScalarAdapters): CatBuilder =
-        CatBuilder(scalarAdapters)
+    public override fun newBuilder(customScalarAdapters: CustomScalarAdapters): CatBuilder =
+        CatBuilder(customScalarAdapters)
   }
 }
 
 public class CatBuilder(
-  scalarAdapters: ScalarAdapters,
-) : ObjectBuilder<CatMap>(scalarAdapters) {
+  customScalarAdapters: CustomScalarAdapters,
+) : ObjectBuilder<CatMap>(customScalarAdapters) {
   public var id: String by __fields
 
   public var meow: String by __fields
@@ -43,4 +43,4 @@ public class CatMap(
 ) : NodeMap, AnimalMap, Map<String, Any?> by __fields
 
 public fun BuilderScope.buildCat(block: CatBuilder.() -> Unit): CatMap =
-    CatBuilder(scalarAdapters).apply(block).build()
+    CatBuilder(customScalarAdapters).apply(block).build()

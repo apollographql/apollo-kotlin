@@ -5,12 +5,12 @@
 //
 package com.example.input_object_type.adapter;
 
-import com.apollographql.apollo3.api.AdapterToDataAdapter;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
-import com.apollographql.apollo3.api.NullableDataAdapter;
-import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.NullableAdapter;
+import com.apollographql.apollo3.api.ObjectAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.input_object_type.TestQuery;
@@ -22,20 +22,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestQuery_ResponseAdapter {
-  public enum Data implements DataAdapter<TestQuery.Data> {
+  public enum Data implements Adapter<TestQuery.Data> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("createReview");
 
     @Override
-    public TestQuery.Data deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.Data fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters)
+        throws IOException {
       TestQuery.CreateReview _createReview = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _createReview = new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.CreateReview>(CreateReview.INSTANCE, false)).deserializeData(reader, context); break;
+          case 0: _createReview = new NullableAdapter<>(new ObjectAdapter<TestQuery.CreateReview>(CreateReview.INSTANCE, false)).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -46,29 +46,29 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.Data value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.Data value) throws IOException {
       writer.name("createReview");
-      new NullableDataAdapter<>(new ObjectDataAdapter<TestQuery.CreateReview>(CreateReview.INSTANCE, false)).serializeData(writer, value.createReview, context);
+      new NullableAdapter<>(new ObjectAdapter<TestQuery.CreateReview>(CreateReview.INSTANCE, false)).toJson(writer, customScalarAdapters, value.createReview);
     }
   }
 
-  public enum CreateReview implements DataAdapter<TestQuery.CreateReview> {
+  public enum CreateReview implements Adapter<TestQuery.CreateReview> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("stars", "commentary");
 
     @Override
-    public TestQuery.CreateReview deserializeData(JsonReader reader,
-        DataAdapter.DeserializeDataContext context) throws IOException {
+    public TestQuery.CreateReview fromJson(JsonReader reader,
+        CustomScalarAdapters customScalarAdapters) throws IOException {
       Integer _stars = null;
       String _commentary = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _stars = DataAdapters.IntDataAdapter.deserializeData(reader, context); break;
-          case 1: _commentary = new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter())).deserializeData(reader, context); break;
+          case 0: _stars = Adapters.IntAdapter.fromJson(reader, customScalarAdapters); break;
+          case 1: _commentary = new NullableAdapter<>(new com.example.MyStringAdapter()).fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -82,13 +82,13 @@ public class TestQuery_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer, TestQuery.CreateReview value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        TestQuery.CreateReview value) throws IOException {
       writer.name("stars");
-      DataAdapters.IntDataAdapter.serializeData(writer, value.stars, context);
+      Adapters.IntAdapter.toJson(writer, customScalarAdapters, value.stars);
 
       writer.name("commentary");
-      new NullableDataAdapter<>(new AdapterToDataAdapter<>(new com.example.MyStringAdapter())).serializeData(writer, value.commentary, context);
+      new NullableAdapter<>(new com.example.MyStringAdapter()).toJson(writer, customScalarAdapters, value.commentary);
     }
   }
 }

@@ -6,7 +6,7 @@
 package com.example.operationbased2_ex8.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.IntAdapter
 import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.evaluate
@@ -24,15 +24,15 @@ public object AnimalFragmentImpl_ResponseAdapter {
   public object AnimalFragment : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("species", "parent")
 
-    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
         com.example.operationbased2_ex8.fragment.AnimalFragment {
       var _species: String? = null
       var _parent: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
-          1 -> _parent = Parent.obj(true).fromJson(reader, scalarAdapters)
+          0 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+          1 -> _parent = Parent.obj(true).fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -45,43 +45,43 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      scalarAdapters: ScalarAdapters,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.operationbased2_ex8.fragment.AnimalFragment,
     ): Unit {
       writer.name("species")
-      StringAdapter.toJson(writer, scalarAdapters, value.species)
+      StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
       writer.name("parent")
-      Parent.obj(true).toJson(writer, scalarAdapters, value.parent)
+      Parent.obj(true).toJson(writer, customScalarAdapters, value.parent)
     }
 
     private object Parent : Adapter<com.example.operationbased2_ex8.fragment.AnimalFragment.Parent>
         {
-      public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
           com.example.operationbased2_ex8.fragment.AnimalFragment.Parent {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Lion",
-          -> LionParent.fromJson(reader, scalarAdapters, __typename)
+          -> LionParent.fromJson(reader, customScalarAdapters, __typename)
           "Cat",
-          -> CatParent.fromJson(reader, scalarAdapters, __typename)
+          -> CatParent.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherParent.fromJson(reader, scalarAdapters, __typename)
+          -> OtherParent.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
       public override fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent,
       ): Unit {
         when(value) {
           is com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent ->
-              LionParent.toJson(writer, scalarAdapters, value)
+              LionParent.toJson(writer, customScalarAdapters, value)
           is com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent ->
-              CatParent.toJson(writer, scalarAdapters, value)
+              CatParent.toJson(writer, customScalarAdapters, value)
           is com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent ->
-              OtherParent.toJson(writer, scalarAdapters, value)
+              OtherParent.toJson(writer, customScalarAdapters, value)
         }
       }
 
@@ -90,13 +90,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> = listOf("temperature")
 
         public override fun fromJson(reader: JsonReader,
-            scalarAdapters: ScalarAdapters):
+            customScalarAdapters: CustomScalarAdapters):
             com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion {
           var _temperature: Int? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _temperature = IntAdapter.fromJson(reader, scalarAdapters)
+              0 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -108,11 +108,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion,
         ): Unit {
           writer.name("temperature")
-          IntAdapter.toJson(writer, scalarAdapters, value.temperature)
+          IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
         }
       }
 
@@ -121,13 +121,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
         public val RESPONSE_NAMES: List<String> = listOf("name")
 
         public override fun fromJson(reader: JsonReader,
-            scalarAdapters: ScalarAdapters):
+            customScalarAdapters: CustomScalarAdapters):
             com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat {
           var _name: String? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _name = StringAdapter.fromJson(reader, scalarAdapters)
+              0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
               else -> break
             }
           }
@@ -139,11 +139,11 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         public override fun toJson(
           writer: JsonWriter,
-          scalarAdapters: ScalarAdapters,
+          customScalarAdapters: CustomScalarAdapters,
           `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat,
         ): Unit {
           writer.name("name")
-          StringAdapter.toJson(writer, scalarAdapters, value.name)
+          StringAdapter.toJson(writer, customScalarAdapters, value.name)
         }
       }
     }
@@ -153,7 +153,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent {
         var __typename: String? = typename
@@ -161,8 +161,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -173,13 +173,13 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         reader.rewind()
         val _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
-            scalarAdapters)
+            customScalarAdapters)
 
         var _onCat: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat? = null
-        if (possibleTypes("Cat").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
-              scalarAdapters)
+              customScalarAdapters)
         }
 
         return com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent(
@@ -192,21 +192,21 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.LionParent,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, scalarAdapters, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
-            scalarAdapters, value.onLion)
+            customScalarAdapters, value.onLion)
 
         if (value.onCat != null) {
           com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
-              scalarAdapters, value.onCat)
+              customScalarAdapters, value.onCat)
         }
       }
     }
@@ -216,7 +216,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent {
         var __typename: String? = typename
@@ -224,8 +224,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -235,15 +235,15 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
 
         var _onLion: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion? = null
-        if (possibleTypes("Lion").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Lion").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
-              scalarAdapters)
+              customScalarAdapters)
         }
 
         reader.rewind()
         val _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
-            scalarAdapters)
+            customScalarAdapters)
 
         return com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent(
           __typename = __typename,
@@ -255,22 +255,22 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.CatParent,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, scalarAdapters, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         if (value.onLion != null) {
           com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
-              scalarAdapters, value.onLion)
+              customScalarAdapters, value.onLion)
         }
 
         com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
-            scalarAdapters, value.onCat)
+            customScalarAdapters, value.onCat)
       }
     }
 
@@ -279,7 +279,7 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun fromJson(
         reader: JsonReader,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent {
         var __typename: String? = typename
@@ -287,8 +287,8 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, scalarAdapters)
-            1 -> _species = StringAdapter.fromJson(reader, scalarAdapters)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -298,17 +298,17 @@ public object AnimalFragmentImpl_ResponseAdapter {
         }
 
         var _onLion: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnLion? = null
-        if (possibleTypes("Lion").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Lion").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onLion = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.fromJson(reader,
-              scalarAdapters)
+              customScalarAdapters)
         }
 
         var _onCat: com.example.operationbased2_ex8.fragment.AnimalFragment.Parent.OnCat? = null
-        if (possibleTypes("Cat").evaluate(scalarAdapters.adapterContext.variables(), __typename, scalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Cat").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
           reader.rewind()
           _onCat = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.fromJson(reader,
-              scalarAdapters)
+              customScalarAdapters)
         }
 
         return com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent(
@@ -321,23 +321,23 @@ public object AnimalFragmentImpl_ResponseAdapter {
 
       public fun toJson(
         writer: JsonWriter,
-        scalarAdapters: ScalarAdapters,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: com.example.operationbased2_ex8.fragment.AnimalFragment.OtherParent,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, scalarAdapters, value.__typename)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringAdapter.toJson(writer, scalarAdapters, value.species)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         if (value.onLion != null) {
           com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnLion.toJson(writer,
-              scalarAdapters, value.onLion)
+              customScalarAdapters, value.onLion)
         }
 
         if (value.onCat != null) {
           com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.Parent.OnCat.toJson(writer,
-              scalarAdapters, value.onCat)
+              customScalarAdapters, value.onCat)
         }
       }
     }

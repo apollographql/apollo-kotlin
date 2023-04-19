@@ -5,10 +5,10 @@
 //
 package com.example.fragments_with_type_condition.fragment
 
+import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
 import com.apollographql.apollo3.api.Fragment
-import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
 import com.example.fragments_with_type_condition.fragment.selections.HumanDetailsSelections
@@ -24,11 +24,11 @@ public class HumanDetailsImpl() : Fragment<HumanDetails> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      context: VariablesAdapter.SerializeVariablesContext): Unit {
+      customScalarAdapters: CustomScalarAdapters): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): DataAdapter<HumanDetails> =
+  public override fun adapter(): Adapter<HumanDetails> =
       HumanDetailsImpl_ResponseAdapter.HumanDetails.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(

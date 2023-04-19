@@ -5,8 +5,9 @@
 //
 package com.example.named_fragment_without_implementation.fragment;
 
-import com.apollographql.apollo3.api.DataAdapter;
-import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.Adapter;
+import com.apollographql.apollo3.api.Adapters;
+import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -16,20 +17,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements DataAdapter<com.example.named_fragment_without_implementation.fragment.DroidDetails> {
+  public enum DroidDetails implements Adapter<com.example.named_fragment_without_implementation.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("primaryFunction");
 
     @Override
-    public com.example.named_fragment_without_implementation.fragment.DroidDetails deserializeData(
-        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
+    public com.example.named_fragment_without_implementation.fragment.DroidDetails fromJson(
+        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
       String _primaryFunction = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _primaryFunction = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 0: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
           default: break loop;
         }
       }
@@ -40,11 +41,11 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void serializeData(JsonWriter writer,
-        com.example.named_fragment_without_implementation.fragment.DroidDetails value,
-        DataAdapter.SerializeDataContext context) throws IOException {
+    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
+        com.example.named_fragment_without_implementation.fragment.DroidDetails value) throws
+        IOException {
       writer.name("primaryFunction");
-      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context);
+      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
     }
   }
 }

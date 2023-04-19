@@ -5,12 +5,12 @@
 //
 package com.example.mutation_create_review.type
 
-import com.apollographql.apollo3.api.ScalarAdapters
+import com.apollographql.apollo3.api.CustomScalarAdapters
 
 /**
- * A [ScalarAdapters] instance containing all the adapters known at build time
+ * A [CustomScalarAdapters] instance containing all the adapters known at build time
  */
-internal val __ScalarAdapters: ScalarAdapters = ScalarAdapters.Builder()
+internal val __CustomScalarAdapters: CustomScalarAdapters = CustomScalarAdapters.Builder()
       .add(URL.type, com.example.UrlAdapter)
       .add(GraphQLString.type, com.example.MyStringAdapter())
       .build()

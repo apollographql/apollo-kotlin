@@ -5,9 +5,10 @@
 //
 package com.example.operationbased2_ex7.adapter
 
-import com.apollographql.apollo3.api.DataAdapter
-import com.apollographql.apollo3.api.IntDataAdapter
-import com.apollographql.apollo3.api.StringDataAdapter
+import com.apollographql.apollo3.api.Adapter
+import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.IntAdapter
+import com.apollographql.apollo3.api.StringAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -20,16 +21,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : DataAdapter<TestOperation.Data> {
+  public object Data : Adapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun deserializeData(reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext): TestOperation.Data {
+    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+        TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj().nullable().deserializeData(reader, context)
+          0 -> _animal = Animal.obj().nullable().fromJson(reader, customScalarAdapters)
           else -> break
         }
       }
@@ -39,45 +40,46 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun serializeData(
+    public override fun toJson(
       writer: JsonWriter,
+      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
-      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("animal")
-      Animal.obj().nullable().serializeData(writer, value.animal, context)
+      Animal.obj().nullable().toJson(writer, customScalarAdapters, value.animal)
     }
 
-    private object Animal : DataAdapter<TestOperation.Data.Animal> {
-      public override fun deserializeData(reader: JsonReader,
-          context: DataAdapter.DeserializeDataContext): TestOperation.Data.Animal {
+    private object Animal : Adapter<TestOperation.Data.Animal> {
+      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+          TestOperation.Data.Animal {
         val __typename = reader.readTypename()
         return when(__typename) {
           "Cat",
-          -> PetWarmBloodedAnimal.deserializeData(reader, context, __typename)
+          -> PetWarmBloodedAnimal.fromJson(reader, customScalarAdapters, __typename)
           "Lion",
           "Panther",
-          -> OtherWarmBloodedAnimal.deserializeData(reader, context, __typename)
+          -> OtherWarmBloodedAnimal.fromJson(reader, customScalarAdapters, __typename)
           "Turtle",
-          -> OtherPetAnimal.deserializeData(reader, context, __typename)
+          -> OtherPetAnimal.fromJson(reader, customScalarAdapters, __typename)
           else
-          -> OtherAnimal.deserializeData(reader, context, __typename)
+          -> OtherAnimal.fromJson(reader, customScalarAdapters, __typename)
         }
       }
 
-      public override fun serializeData(
+      public override fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Animal,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         when(value) {
-          is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.serializeData(writer,
-              value, context)
-          is TestOperation.Data.OtherWarmBloodedAnimal ->
-              OtherWarmBloodedAnimal.serializeData(writer, value, context)
-          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.serializeData(writer, value,
-              context)
-          is TestOperation.Data.OtherAnimal -> OtherAnimal.serializeData(writer, value, context)
+          is TestOperation.Data.PetWarmBloodedAnimal -> PetWarmBloodedAnimal.toJson(writer,
+              customScalarAdapters, value)
+          is TestOperation.Data.OtherWarmBloodedAnimal -> OtherWarmBloodedAnimal.toJson(writer,
+              customScalarAdapters, value)
+          is TestOperation.Data.OtherPetAnimal -> OtherPetAnimal.toJson(writer,
+              customScalarAdapters, value)
+          is TestOperation.Data.OtherAnimal -> OtherAnimal.toJson(writer, customScalarAdapters,
+              value)
         }
       }
     }
@@ -86,9 +88,9 @@ public object TestOperation_ResponseAdapter {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "temperature",
           "name")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.PetWarmBloodedAnimal {
         var __typename: String? = typename
@@ -98,10 +100,10 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _temperature = IntDataAdapter.deserializeData(reader, context)
-            3 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
+            3 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -114,31 +116,31 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.PetWarmBloodedAnimal,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("temperature")
-        IntDataAdapter.serializeData(writer, value.temperature, context)
+        IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
 
     public object OtherAnimal {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherAnimal {
         var __typename: String? = typename
@@ -146,8 +148,8 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -158,25 +160,25 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherAnimal,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
       }
     }
 
     public object OtherWarmBloodedAnimal {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "temperature")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherWarmBloodedAnimal {
         var __typename: String? = typename
@@ -185,9 +187,9 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _temperature = IntDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _temperature = IntAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -199,28 +201,28 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherWarmBloodedAnimal,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("temperature")
-        IntDataAdapter.serializeData(writer, value.temperature, context)
+        IntAdapter.toJson(writer, customScalarAdapters, value.temperature)
       }
     }
 
     public object OtherPetAnimal {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "species", "name")
 
-      public fun deserializeData(
+      public fun fromJson(
         reader: JsonReader,
-        context: DataAdapter.DeserializeDataContext,
+        customScalarAdapters: CustomScalarAdapters,
         typename: String,
       ): TestOperation.Data.OtherPetAnimal {
         var __typename: String? = typename
@@ -229,9 +231,9 @@ public object TestOperation_ResponseAdapter {
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
-            1 -> _species = StringDataAdapter.deserializeData(reader, context)
-            2 -> _name = StringDataAdapter.deserializeData(reader, context)
+            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            1 -> _species = StringAdapter.fromJson(reader, customScalarAdapters)
+            2 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
             else -> break
           }
         }
@@ -243,19 +245,19 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public fun serializeData(
+      public fun toJson(
         writer: JsonWriter,
+        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.OtherPetAnimal,
-        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringDataAdapter.serializeData(writer, value.__typename, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
 
         writer.name("species")
-        StringDataAdapter.serializeData(writer, value.species, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.species)
 
         writer.name("name")
-        StringDataAdapter.serializeData(writer, value.name, context)
+        StringAdapter.toJson(writer, customScalarAdapters, value.name)
       }
     }
   }
