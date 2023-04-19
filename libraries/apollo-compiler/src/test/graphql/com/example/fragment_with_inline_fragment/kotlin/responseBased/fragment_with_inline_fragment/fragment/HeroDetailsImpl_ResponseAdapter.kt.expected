@@ -5,11 +5,10 @@
 //
 package com.example.fragment_with_inline_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableIntAdapter
-import com.apollographql.apollo3.api.NullableStringAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableIntDataAdapter
+import com.apollographql.apollo3.api.NullableStringDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.readTypename
@@ -22,29 +21,29 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object HeroDetailsImpl_ResponseAdapter {
-  public object Data : Adapter<HeroDetailsImpl.Data> {
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        HeroDetailsImpl.Data {
+  public object Data : DataAdapter<HeroDetailsImpl.Data> {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): HeroDetailsImpl.Data {
       val __typename = reader.readTypename()
       return when(__typename) {
         "Human",
-        -> HumanData.fromJson(reader, customScalarAdapters, __typename)
+        -> HumanData.deserializeData(reader, context, __typename)
         "Droid",
-        -> DroidData.fromJson(reader, customScalarAdapters, __typename)
+        -> DroidData.deserializeData(reader, context, __typename)
         else
-        -> OtherData.fromJson(reader, customScalarAdapters, __typename)
+        -> OtherData.deserializeData(reader, context, __typename)
       }
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: HeroDetailsImpl.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       when(value) {
-        is HeroDetailsImpl.HumanData -> HumanData.toJson(writer, customScalarAdapters, value)
-        is HeroDetailsImpl.DroidData -> DroidData.toJson(writer, customScalarAdapters, value)
-        is HeroDetailsImpl.OtherData -> OtherData.toJson(writer, customScalarAdapters, value)
+        is HeroDetailsImpl.HumanData -> HumanData.serializeData(writer, value, context)
+        is HeroDetailsImpl.DroidData -> DroidData.serializeData(writer, value, context)
+        is HeroDetailsImpl.OtherData -> OtherData.serializeData(writer, value, context)
       }
     }
   }
@@ -52,9 +51,9 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object HumanData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
-    public fun fromJson(
+    public fun deserializeData(
       reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
+      context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.HumanData {
       var __typename: String? = typename
@@ -63,9 +62,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          1 -> _name = StringDataAdapter.deserializeData(reader, context)
+          2 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
       }
@@ -77,34 +76,34 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun toJson(
+    public fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: HeroDetailsImpl.HumanData,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringDataAdapter.serializeData(writer, value.name, context)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+      FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
     }
 
-    private object FriendsConnection : Adapter<HeroDetailsImpl.HumanData.FriendsConnection> {
+    private object FriendsConnection : DataAdapter<HeroDetailsImpl.HumanData.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext):
           HeroDetailsImpl.HumanData.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.HumanData.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -115,29 +114,29 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: HeroDetailsImpl.HumanData.FriendsConnection,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
 
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
       }
 
-      private object Edge : Adapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge> {
+      private object Edge : DataAdapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             HeroDetailsImpl.HumanData.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -147,26 +146,26 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          Node.obj().nullable().serializeData(writer, value.node, context)
         }
 
-        private object Node : Adapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node> {
+        private object Node : DataAdapter<HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext):
               HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -176,13 +175,13 @@ public object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: HeroDetailsImpl.HumanData.FriendsConnection.Edge.Node,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
+            StringDataAdapter.serializeData(writer, value.name, context)
           }
         }
       }
@@ -193,9 +192,9 @@ public object HeroDetailsImpl_ResponseAdapter {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "primaryFunction",
         "friendsConnection")
 
-    public fun fromJson(
+    public fun deserializeData(
       reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
+      context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.DroidData {
       var __typename: String? = typename
@@ -205,10 +204,10 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _primaryFunction = NullableStringAdapter.fromJson(reader, customScalarAdapters)
-          3 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          1 -> _name = StringDataAdapter.deserializeData(reader, context)
+          2 -> _primaryFunction = NullableStringDataAdapter.deserializeData(reader, context)
+          3 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
       }
@@ -221,37 +220,37 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun toJson(
+    public fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: HeroDetailsImpl.DroidData,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringDataAdapter.serializeData(writer, value.name, context)
 
       writer.name("primaryFunction")
-      NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction)
+      NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+      FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
     }
 
-    private object FriendsConnection : Adapter<HeroDetailsImpl.DroidData.FriendsConnection> {
+    private object FriendsConnection : DataAdapter<HeroDetailsImpl.DroidData.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext):
           HeroDetailsImpl.DroidData.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.DroidData.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -262,29 +261,29 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: HeroDetailsImpl.DroidData.FriendsConnection,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
 
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
       }
 
-      private object Edge : Adapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge> {
+      private object Edge : DataAdapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             HeroDetailsImpl.DroidData.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -294,26 +293,26 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          Node.obj().nullable().serializeData(writer, value.node, context)
         }
 
-        private object Node : Adapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node> {
+        private object Node : DataAdapter<HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext):
               HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -323,13 +322,13 @@ public object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: HeroDetailsImpl.DroidData.FriendsConnection.Edge.Node,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
+            StringDataAdapter.serializeData(writer, value.name, context)
           }
         }
       }
@@ -339,9 +338,9 @@ public object HeroDetailsImpl_ResponseAdapter {
   public object OtherData {
     public val RESPONSE_NAMES: List<String> = listOf("__typename", "name", "friendsConnection")
 
-    public fun fromJson(
+    public fun deserializeData(
       reader: JsonReader,
-      customScalarAdapters: CustomScalarAdapters,
+      context: DataAdapter.DeserializeDataContext,
       typename: String,
     ): HeroDetailsImpl.OtherData {
       var __typename: String? = typename
@@ -350,9 +349,9 @@ public object HeroDetailsImpl_ResponseAdapter {
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-          1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
-          2 -> _friendsConnection = FriendsConnection.obj().fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+          1 -> _name = StringDataAdapter.deserializeData(reader, context)
+          2 -> _friendsConnection = FriendsConnection.obj().deserializeData(reader, context)
           else -> break
         }
       }
@@ -364,34 +363,34 @@ public object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public fun toJson(
+    public fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: HeroDetailsImpl.OtherData,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
       writer.name("name")
-      StringAdapter.toJson(writer, customScalarAdapters, value.name)
+      StringDataAdapter.serializeData(writer, value.name, context)
 
       writer.name("friendsConnection")
-      FriendsConnection.obj().toJson(writer, customScalarAdapters, value.friendsConnection)
+      FriendsConnection.obj().serializeData(writer, value.friendsConnection, context)
     }
 
-    private object FriendsConnection : Adapter<HeroDetailsImpl.OtherData.FriendsConnection> {
+    private object FriendsConnection : DataAdapter<HeroDetailsImpl.OtherData.FriendsConnection> {
       public val RESPONSE_NAMES: List<String> = listOf("totalCount", "edges")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext):
           HeroDetailsImpl.OtherData.FriendsConnection {
         var _totalCount: Int? = null
         var _edges: List<HeroDetailsImpl.OtherData.FriendsConnection.Edge?>? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _totalCount = NullableIntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _edges = Edge.obj().nullable().list().nullable().fromJson(reader,
-                customScalarAdapters)
+            0 -> _totalCount = NullableIntDataAdapter.deserializeData(reader, context)
+            1 -> _edges = Edge.obj().nullable().list().nullable().deserializeData(reader, context)
             else -> break
           }
         }
@@ -402,29 +401,29 @@ public object HeroDetailsImpl_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: HeroDetailsImpl.OtherData.FriendsConnection,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("totalCount")
-        NullableIntAdapter.toJson(writer, customScalarAdapters, value.totalCount)
+        NullableIntDataAdapter.serializeData(writer, value.totalCount, context)
 
         writer.name("edges")
-        Edge.obj().nullable().list().nullable().toJson(writer, customScalarAdapters, value.edges)
+        Edge.obj().nullable().list().nullable().serializeData(writer, value.edges, context)
       }
 
-      private object Edge : Adapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge> {
+      private object Edge : DataAdapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge> {
         public val RESPONSE_NAMES: List<String> = listOf("node")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters):
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext):
             HeroDetailsImpl.OtherData.FriendsConnection.Edge {
           var _node: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _node = Node.obj().nullable().fromJson(reader, customScalarAdapters)
+              0 -> _node = Node.obj().nullable().deserializeData(reader, context)
               else -> break
             }
           }
@@ -434,26 +433,26 @@ public object HeroDetailsImpl_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("node")
-          Node.obj().nullable().toJson(writer, customScalarAdapters, value.node)
+          Node.obj().nullable().serializeData(writer, value.node, context)
         }
 
-        private object Node : Adapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node> {
+        private object Node : DataAdapter<HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node> {
           public val RESPONSE_NAMES: List<String> = listOf("name")
 
-          public override fun fromJson(reader: JsonReader,
-              customScalarAdapters: CustomScalarAdapters):
+          public override fun deserializeData(reader: JsonReader,
+              context: DataAdapter.DeserializeDataContext):
               HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node {
             var _name: String? = null
 
             while(true) {
               when (reader.selectName(RESPONSE_NAMES)) {
-                0 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+                0 -> _name = StringDataAdapter.deserializeData(reader, context)
                 else -> break
               }
             }
@@ -463,13 +462,13 @@ public object HeroDetailsImpl_ResponseAdapter {
             )
           }
 
-          public override fun toJson(
+          public override fun serializeData(
             writer: JsonWriter,
-            customScalarAdapters: CustomScalarAdapters,
             `value`: HeroDetailsImpl.OtherData.FriendsConnection.Edge.Node,
+            context: DataAdapter.SerializeDataContext,
           ): Unit {
             writer.name("name")
-            StringAdapter.toJson(writer, customScalarAdapters, value.name)
+            StringDataAdapter.serializeData(writer, value.name, context)
           }
         }
       }

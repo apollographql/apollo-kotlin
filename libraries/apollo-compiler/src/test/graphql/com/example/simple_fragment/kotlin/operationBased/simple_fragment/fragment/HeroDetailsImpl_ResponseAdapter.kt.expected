@@ -5,9 +5,8 @@
 //
 package com.example.simple_fragment.fragment
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -17,16 +16,17 @@ import kotlin.Unit
 import kotlin.collections.List
 
 internal object HeroDetailsImpl_ResponseAdapter {
-  public object HeroDetails : Adapter<com.example.simple_fragment.fragment.HeroDetails> {
+  public object HeroDetails : DataAdapter<com.example.simple_fragment.fragment.HeroDetails> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext):
         com.example.simple_fragment.fragment.HeroDetails {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
@@ -36,10 +36,10 @@ internal object HeroDetailsImpl_ResponseAdapter {
       }
 
       var _humanDetails: HumanDetails? = null
-      if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+      if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
         reader.rewind()
-        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.fromJson(reader,
-            customScalarAdapters)
+        _humanDetails = com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.deserializeData(reader,
+            context)
       }
 
       return com.example.simple_fragment.fragment.HeroDetails(
@@ -48,17 +48,17 @@ internal object HeroDetailsImpl_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: com.example.simple_fragment.fragment.HeroDetails,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
       if (value.humanDetails != null) {
-        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.toJson(writer,
-            customScalarAdapters, value.humanDetails)
+        com.example.simple_fragment.fragment.HumanDetailsImpl_ResponseAdapter.HumanDetails.serializeData(writer,
+            value.humanDetails, context)
       }
     }
   }

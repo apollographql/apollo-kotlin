@@ -5,10 +5,9 @@
 //
 package com.example.subscriptions.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.IntAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.IntDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -20,16 +19,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestSubscription_ResponseAdapter {
-  public object Data : Adapter<TestSubscription.Data> {
+  public object Data : DataAdapter<TestSubscription.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("commentAdded")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestSubscription.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestSubscription.Data {
       var _commentAdded: TestSubscription.Data.CommentAdded? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _commentAdded = CommentAdded.obj().nullable().fromJson(reader, customScalarAdapters)
+          0 -> _commentAdded = CommentAdded.obj().nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -39,27 +38,27 @@ public object TestSubscription_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestSubscription.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("commentAdded")
-      CommentAdded.obj().nullable().toJson(writer, customScalarAdapters, value.commentAdded)
+      CommentAdded.obj().nullable().serializeData(writer, value.commentAdded, context)
     }
 
-    private object CommentAdded : Adapter<TestSubscription.Data.CommentAdded> {
+    private object CommentAdded : DataAdapter<TestSubscription.Data.CommentAdded> {
       public val RESPONSE_NAMES: List<String> = listOf("id", "content")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestSubscription.Data.CommentAdded {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestSubscription.Data.CommentAdded {
         var _id: Int? = null
         var _content: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> _id = IntAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _content = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> _id = IntDataAdapter.deserializeData(reader, context)
+            1 -> _content = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -70,16 +69,16 @@ public object TestSubscription_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestSubscription.Data.CommentAdded,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("id")
-        IntAdapter.toJson(writer, customScalarAdapters, value.id)
+        IntDataAdapter.serializeData(writer, value.id, context)
 
         writer.name("content")
-        StringAdapter.toJson(writer, customScalarAdapters, value.content)
+        StringDataAdapter.serializeData(writer, value.content, context)
       }
     }
   }

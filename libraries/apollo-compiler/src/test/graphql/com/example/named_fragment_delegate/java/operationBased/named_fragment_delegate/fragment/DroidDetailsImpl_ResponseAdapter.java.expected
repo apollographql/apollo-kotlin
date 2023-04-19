@@ -5,13 +5,12 @@
 //
 package com.example.named_fragment_delegate.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.Adapters;
 import com.apollographql.apollo3.api.Assertions;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
-import com.apollographql.apollo3.api.ListAdapter;
-import com.apollographql.apollo3.api.NullableAdapter;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.DataAdapter;
+import com.apollographql.apollo3.api.DataAdapters;
+import com.apollographql.apollo3.api.ListDataAdapter;
+import com.apollographql.apollo3.api.NullableDataAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import java.io.IOException;
@@ -21,14 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DroidDetailsImpl_ResponseAdapter {
-  public enum DroidDetails implements Adapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
+  public enum DroidDetails implements DataAdapter<com.example.named_fragment_delegate.fragment.DroidDetails> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name", "primaryFunction", "friends");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.DroidDetails fromJson(JsonReader reader,
-        CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.DroidDetails deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
       String _primaryFunction = null;
       List<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> _friends = null;
@@ -36,9 +35,9 @@ public class DroidDetailsImpl_ResponseAdapter {
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 1: _primaryFunction = Adapters.NullableStringAdapter.fromJson(reader, customScalarAdapters); break;
-          case 2: _friends = new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).fromJson(reader, customScalarAdapters); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
+          case 1: _primaryFunction = DataAdapters.NullableStringDataAdapter.deserializeData(reader, context); break;
+          case 2: _friends = new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -53,33 +52,34 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.DroidDetails value) throws IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.DroidDetails value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
 
       writer.name("primaryFunction");
-      Adapters.NullableStringAdapter.toJson(writer, customScalarAdapters, value.primaryFunction);
+      DataAdapters.NullableStringDataAdapter.serializeData(writer, value.primaryFunction, context);
 
       writer.name("friends");
-      new NullableAdapter<>(new ListAdapter<>(new NullableAdapter<>(new ObjectAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).toJson(writer, customScalarAdapters, value.friends);
+      new NullableDataAdapter<>(new ListDataAdapter<>(new NullableDataAdapter<>(new ObjectDataAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend>(Friend.INSTANCE, false)))).serializeData(writer, value.friends, context);
     }
   }
 
-  public enum Friend implements Adapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
+  public enum Friend implements DataAdapter<com.example.named_fragment_delegate.fragment.DroidDetails.Friend> {
     INSTANCE;
 
     private static final List<String> RESPONSE_NAMES = Arrays.asList("name");
 
     @Override
-    public com.example.named_fragment_delegate.fragment.DroidDetails.Friend fromJson(
-        JsonReader reader, CustomScalarAdapters customScalarAdapters) throws IOException {
+    public com.example.named_fragment_delegate.fragment.DroidDetails.Friend deserializeData(
+        JsonReader reader, DataAdapter.DeserializeDataContext context) throws IOException {
       String _name = null;
 
       loop:
       while(true) {
         switch (reader.selectName(RESPONSE_NAMES)) {
-          case 0: _name = Adapters.StringAdapter.fromJson(reader, customScalarAdapters); break;
+          case 0: _name = DataAdapters.StringDataAdapter.deserializeData(reader, context); break;
           default: break loop;
         }
       }
@@ -92,10 +92,11 @@ public class DroidDetailsImpl_ResponseAdapter {
     }
 
     @Override
-    public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters,
-        com.example.named_fragment_delegate.fragment.DroidDetails.Friend value) throws IOException {
+    public void serializeData(JsonWriter writer,
+        com.example.named_fragment_delegate.fragment.DroidDetails.Friend value,
+        DataAdapter.SerializeDataContext context) throws IOException {
       writer.name("name");
-      Adapters.StringAdapter.toJson(writer, customScalarAdapters, value.name);
+      DataAdapters.StringDataAdapter.serializeData(writer, value.name, context);
     }
   }
 }

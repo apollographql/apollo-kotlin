@@ -5,12 +5,12 @@
 //
 package com.example.data_builders.fragment
 
-import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.CompiledField
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.DataAdapter
 import com.apollographql.apollo3.api.DefaultFakeResolver
 import com.apollographql.apollo3.api.FakeResolver
 import com.apollographql.apollo3.api.Fragment
+import com.apollographql.apollo3.api.VariablesAdapter
 import com.apollographql.apollo3.api.buildData
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.obj
@@ -18,7 +18,7 @@ import com.example.data_builders.fragment.selections.DogFragmentSelections
 import com.example.data_builders.schema.__Schema
 import com.example.data_builders.type.Dog
 import com.example.data_builders.type.DogBuilder
-import com.example.data_builders.type.__CustomScalarAdapters
+import com.example.data_builders.type.__ScalarAdapters
 import kotlin.Any
 import kotlin.Boolean
 import kotlin.Int
@@ -30,11 +30,11 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
   public override fun hashCode(): Int = this::class.hashCode()
 
   public override fun serializeVariables(writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters): Unit {
+      context: VariablesAdapter.SerializeVariablesContext): Unit {
     // This fragment doesn't have any variable
   }
 
-  public override fun adapter(): Adapter<DogFragment> =
+  public override fun adapter(): DataAdapter<DogFragment> =
       DogFragmentImpl_ResponseAdapter.DogFragment.obj()
 
   public override fun rootField(): CompiledField = CompiledField.Builder(
@@ -53,7 +53,7 @@ public class DogFragmentImpl() : Fragment<DogFragment> {
       DogFragmentSelections.__root,
       "Dog",
       resolver,
-      __CustomScalarAdapters,
+      __ScalarAdapters,
     )
   }
 }

@@ -6,9 +6,9 @@
 package com.example.simple_fragment.schema;
 
 import com.apollographql.apollo3.api.CompiledNamedType;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
 import com.apollographql.apollo3.api.ObjectType;
 import com.apollographql.apollo3.api.PossibleTypes;
+import com.apollographql.apollo3.api.ScalarAdapters;
 import com.example.simple_fragment.type.Character;
 import com.example.simple_fragment.type.Droid;
 import com.example.simple_fragment.type.Human;
@@ -22,7 +22,7 @@ import java.util.List;
  * A Schema object containing all the composite types and a possibleTypes helper function
  */
 public class __Schema {
-  public static CustomScalarAdapters customScalarAdapters = new CustomScalarAdapters.Builder()
+  public static ScalarAdapters scalarAdapters = new ScalarAdapters.Builder()
     .build();
 
   public static List<CompiledNamedType> types = Arrays.asList(

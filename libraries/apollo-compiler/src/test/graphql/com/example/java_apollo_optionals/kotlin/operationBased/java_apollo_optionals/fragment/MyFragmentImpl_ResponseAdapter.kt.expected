@@ -6,7 +6,7 @@
 package com.example.java_apollo_optionals.fragment
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.NullableIntAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -19,13 +19,13 @@ public object MyFragmentImpl_ResponseAdapter {
   public object MyFragment : Adapter<com.example.java_apollo_optionals.fragment.MyFragment> {
     public val RESPONSE_NAMES: List<String> = listOf("nullableInt")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
+    public override fun fromJson(reader: JsonReader, scalarAdapters: ScalarAdapters):
         com.example.java_apollo_optionals.fragment.MyFragment {
       var _nullableInt: Int? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, customScalarAdapters)
+          0 -> _nullableInt = NullableIntAdapter.fromJson(reader, scalarAdapters)
           else -> break
         }
       }
@@ -37,11 +37,11 @@ public object MyFragmentImpl_ResponseAdapter {
 
     public override fun toJson(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
+      scalarAdapters: ScalarAdapters,
       `value`: com.example.java_apollo_optionals.fragment.MyFragment,
     ): Unit {
       writer.name("nullableInt")
-      NullableIntAdapter.toJson(writer, customScalarAdapters, value.nullableInt)
+      NullableIntAdapter.toJson(writer, scalarAdapters, value.nullableInt)
     }
   }
 }

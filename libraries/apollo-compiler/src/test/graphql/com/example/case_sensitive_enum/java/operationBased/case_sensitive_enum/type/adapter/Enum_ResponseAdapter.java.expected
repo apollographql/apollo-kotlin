@@ -5,26 +5,25 @@
 //
 package com.example.case_sensitive_enum.type.adapter;
 
-import com.apollographql.apollo3.api.Adapter;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.json.JsonReader;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.case_sensitive_enum.type.Enum;
 import java.io.IOException;
 import java.lang.Override;
 
-public enum Enum_ResponseAdapter implements Adapter<Enum> {
+public enum Enum_ResponseAdapter implements DataAdapter<Enum> {
   INSTANCE;
 
   @Override
-  public Enum fromJson(JsonReader reader, CustomScalarAdapters customScalarAdapters) throws
+  public Enum deserializeData(JsonReader reader, DataAdapter.DeserializeDataContext context) throws
       IOException {
     String rawValue = reader.nextString();
     return Enum.safeValueOf(rawValue);
   }
 
   @Override
-  public void toJson(JsonWriter writer, CustomScalarAdapters customScalarAdapters, Enum value)
+  public void serializeData(JsonWriter writer, Enum value, DataAdapter.SerializeDataContext context)
       throws IOException {
     writer.value(value.rawValue);
   }

@@ -5,10 +5,9 @@
 //
 package com.example.inline_fragment_for_non_optional_field.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.NullableDoubleAdapter
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.NullableDoubleDataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestQuery_ResponseAdapter {
-  public object Data : Adapter<TestQuery.Data> {
+  public object Data : DataAdapter<TestQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("nonOptionalHero")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestQuery.Data {
       var _nonOptionalHero: TestQuery.Data.NonOptionalHero? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _nonOptionalHero = NonOptionalHero.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _nonOptionalHero = NonOptionalHero.obj(true).deserializeData(reader, context)
           else -> break
         }
       }
@@ -40,27 +39,27 @@ public object TestQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestQuery.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("nonOptionalHero")
-      NonOptionalHero.obj(true).toJson(writer, customScalarAdapters, value.nonOptionalHero)
+      NonOptionalHero.obj(true).serializeData(writer, value.nonOptionalHero, context)
     }
 
-    private object NonOptionalHero : Adapter<TestQuery.Data.NonOptionalHero> {
+    private object NonOptionalHero : DataAdapter<TestQuery.Data.NonOptionalHero> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "name")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestQuery.Data.NonOptionalHero {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestQuery.Data.NonOptionalHero {
         var __typename: String? = null
         var _name: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _name = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _name = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -70,10 +69,10 @@ public object TestQuery_ResponseAdapter {
         }
 
         var _onHuman: TestQuery.Data.NonOptionalHero.OnHuman? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.fromJson(reader,
-              customScalarAdapters)
+          _onHuman = com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.deserializeData(reader,
+              context)
         }
 
         return TestQuery.Data.NonOptionalHero(
@@ -83,33 +82,33 @@ public object TestQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestQuery.Data.NonOptionalHero,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("name")
-        StringAdapter.toJson(writer, customScalarAdapters, value.name)
+        StringDataAdapter.serializeData(writer, value.name, context)
 
         if (value.onHuman != null) {
-          com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.toJson(writer,
-              customScalarAdapters, value.onHuman)
+          com.example.inline_fragment_for_non_optional_field.adapter.TestQuery_ResponseAdapter.Data.NonOptionalHero.OnHuman.serializeData(writer,
+              value.onHuman, context)
         }
       }
 
-      private object OnHuman : Adapter<TestQuery.Data.NonOptionalHero.OnHuman> {
+      private object OnHuman : DataAdapter<TestQuery.Data.NonOptionalHero.OnHuman> {
         public val RESPONSE_NAMES: List<String> = listOf("height")
 
-        public override fun fromJson(reader: JsonReader,
-            customScalarAdapters: CustomScalarAdapters): TestQuery.Data.NonOptionalHero.OnHuman {
+        public override fun deserializeData(reader: JsonReader,
+            context: DataAdapter.DeserializeDataContext): TestQuery.Data.NonOptionalHero.OnHuman {
           var _height: Double? = null
 
           while(true) {
             when (reader.selectName(RESPONSE_NAMES)) {
-              0 -> _height = NullableDoubleAdapter.fromJson(reader, customScalarAdapters)
+              0 -> _height = NullableDoubleDataAdapter.deserializeData(reader, context)
               else -> break
             }
           }
@@ -119,13 +118,13 @@ public object TestQuery_ResponseAdapter {
           )
         }
 
-        public override fun toJson(
+        public override fun serializeData(
           writer: JsonWriter,
-          customScalarAdapters: CustomScalarAdapters,
           `value`: TestQuery.Data.NonOptionalHero.OnHuman,
+          context: DataAdapter.SerializeDataContext,
         ): Unit {
           writer.name("height")
-          NullableDoubleAdapter.toJson(writer, customScalarAdapters, value.height)
+          NullableDoubleDataAdapter.serializeData(writer, value.height, context)
         }
       }
     }

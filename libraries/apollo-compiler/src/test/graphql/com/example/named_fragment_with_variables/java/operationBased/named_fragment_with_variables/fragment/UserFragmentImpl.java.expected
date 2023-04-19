@@ -5,11 +5,11 @@
 //
 package com.example.named_fragment_with_variables.fragment;
 
-import com.apollographql.apollo3.api.Adapter;
 import com.apollographql.apollo3.api.CompiledField;
-import com.apollographql.apollo3.api.CustomScalarAdapters;
+import com.apollographql.apollo3.api.DataAdapter;
 import com.apollographql.apollo3.api.Fragment;
-import com.apollographql.apollo3.api.ObjectAdapter;
+import com.apollographql.apollo3.api.ObjectDataAdapter;
+import com.apollographql.apollo3.api.VariablesAdapter;
 import com.apollographql.apollo3.api.json.JsonWriter;
 import com.example.named_fragment_with_variables.fragment.adapter.UserFragmentImpl_VariablesAdapter;
 import com.example.named_fragment_with_variables.fragment.selections.UserFragmentSelections;
@@ -68,14 +68,14 @@ public class UserFragmentImpl implements Fragment<UserFragment> {
   }
 
   @Override
-  public void serializeVariables(JsonWriter writer, CustomScalarAdapters customScalarAdapters)
-      throws IOException {
-    UserFragmentImpl_VariablesAdapter.INSTANCE.toJson(writer, customScalarAdapters, this);
+  public void serializeVariables(JsonWriter writer,
+      VariablesAdapter.SerializeVariablesContext context) throws IOException {
+    UserFragmentImpl_VariablesAdapter.INSTANCE.serializeVariables(writer, this, context);
   }
 
   @Override
-  public Adapter<UserFragment> adapter() {
-    return new ObjectAdapter<UserFragment>(UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE, false);
+  public DataAdapter<UserFragment> adapter() {
+    return new ObjectDataAdapter<UserFragment>(UserFragmentImpl_ResponseAdapter.UserFragment.INSTANCE, false);
   }
 
   @Override

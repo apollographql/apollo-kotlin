@@ -5,9 +5,8 @@
 //
 package com.example.operationbased2_ex8.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.nullable
@@ -18,16 +17,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object TestOperation_ResponseAdapter {
-  public object Data : Adapter<TestOperation.Data> {
+  public object Data : DataAdapter<TestOperation.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("animal")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        TestOperation.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): TestOperation.Data {
       var _animal: TestOperation.Data.Animal? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _animal = Animal.obj(true).nullable().fromJson(reader, customScalarAdapters)
+          0 -> _animal = Animal.obj(true).nullable().deserializeData(reader, context)
           else -> break
         }
       }
@@ -37,32 +36,32 @@ public object TestOperation_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: TestOperation.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("animal")
-      Animal.obj(true).nullable().toJson(writer, customScalarAdapters, value.animal)
+      Animal.obj(true).nullable().serializeData(writer, value.animal, context)
     }
 
-    private object Animal : Adapter<TestOperation.Data.Animal> {
+    private object Animal : DataAdapter<TestOperation.Data.Animal> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          TestOperation.Data.Animal {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): TestOperation.Data.Animal {
         var __typename: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
 
         reader.rewind()
-        val _animalFragment = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.fromJson(reader,
-            customScalarAdapters)
+        val _animalFragment = com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.deserializeData(reader,
+            context)
 
         return TestOperation.Data.Animal(
           __typename = __typename!!,
@@ -70,16 +69,16 @@ public object TestOperation_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: TestOperation.Data.Animal,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
-        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.toJson(writer,
-            customScalarAdapters, value.animalFragment)
+        com.example.operationbased2_ex8.fragment.AnimalFragmentImpl_ResponseAdapter.AnimalFragment.serializeData(writer,
+            value.animalFragment, context)
       }
     }
   }

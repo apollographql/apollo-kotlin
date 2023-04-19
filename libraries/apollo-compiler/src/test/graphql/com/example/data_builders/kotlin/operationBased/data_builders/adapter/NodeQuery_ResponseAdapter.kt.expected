@@ -5,9 +5,8 @@
 //
 package com.example.data_builders.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.evaluate
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
@@ -21,16 +20,16 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object NodeQuery_ResponseAdapter {
-  public object Data : Adapter<NodeQuery.Data> {
+  public object Data : DataAdapter<NodeQuery.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("node")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        NodeQuery.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): NodeQuery.Data {
       var _node: NodeQuery.Data.Node? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> _node = Node.obj(true).fromJson(reader, customScalarAdapters)
+          0 -> _node = Node.obj(true).deserializeData(reader, context)
           else -> break
         }
       }
@@ -40,27 +39,27 @@ public object NodeQuery_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: NodeQuery.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("node")
-      Node.obj(true).toJson(writer, customScalarAdapters, value.node)
+      Node.obj(true).serializeData(writer, value.node, context)
     }
 
-    private object Node : Adapter<NodeQuery.Data.Node> {
+    private object Node : DataAdapter<NodeQuery.Data.Node> {
       public val RESPONSE_NAMES: List<String> = listOf("__typename", "id")
 
-      public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-          NodeQuery.Data.Node {
+      public override fun deserializeData(reader: JsonReader,
+          context: DataAdapter.DeserializeDataContext): NodeQuery.Data.Node {
         var __typename: String? = null
         var _id: String? = null
 
         while(true) {
           when (reader.selectName(RESPONSE_NAMES)) {
-            0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
-            1 -> _id = StringAdapter.fromJson(reader, customScalarAdapters)
+            0 -> __typename = StringDataAdapter.deserializeData(reader, context)
+            1 -> _id = StringDataAdapter.deserializeData(reader, context)
             else -> break
           }
         }
@@ -70,17 +69,17 @@ public object NodeQuery_ResponseAdapter {
         }
 
         var _humanFragment: HumanFragment? = null
-        if (possibleTypes("Human").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Human").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.fromJson(reader,
-              customScalarAdapters)
+          _humanFragment = com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.deserializeData(reader,
+              context)
         }
 
         var _droidFragment: DroidFragment? = null
-        if (possibleTypes("Droid").evaluate(customScalarAdapters.adapterContext.variables(), __typename, customScalarAdapters.adapterContext, null)) {
+        if (possibleTypes("Droid").evaluate(context.falseBooleanVariables, __typename, context, null)) {
           reader.rewind()
-          _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.fromJson(reader,
-              customScalarAdapters)
+          _droidFragment = com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.deserializeData(reader,
+              context)
         }
 
         return NodeQuery.Data.Node(
@@ -91,25 +90,25 @@ public object NodeQuery_ResponseAdapter {
         )
       }
 
-      public override fun toJson(
+      public override fun serializeData(
         writer: JsonWriter,
-        customScalarAdapters: CustomScalarAdapters,
         `value`: NodeQuery.Data.Node,
+        context: DataAdapter.SerializeDataContext,
       ): Unit {
         writer.name("__typename")
-        StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+        StringDataAdapter.serializeData(writer, value.__typename, context)
 
         writer.name("id")
-        StringAdapter.toJson(writer, customScalarAdapters, value.id)
+        StringDataAdapter.serializeData(writer, value.id, context)
 
         if (value.humanFragment != null) {
-          com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.toJson(writer,
-              customScalarAdapters, value.humanFragment)
+          com.example.data_builders.fragment.HumanFragmentImpl_ResponseAdapter.HumanFragment.serializeData(writer,
+              value.humanFragment, context)
         }
 
         if (value.droidFragment != null) {
-          com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.toJson(writer,
-              customScalarAdapters, value.droidFragment)
+          com.example.data_builders.fragment.DroidFragmentImpl_ResponseAdapter.DroidFragment.serializeData(writer,
+              value.droidFragment, context)
         }
       }
     }

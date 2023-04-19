@@ -5,9 +5,8 @@
 //
 package com.example.named_fragment_with_variables.adapter
 
-import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.CustomScalarAdapters
-import com.apollographql.apollo3.api.StringAdapter
+import com.apollographql.apollo3.api.DataAdapter
+import com.apollographql.apollo3.api.StringDataAdapter
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.example.named_fragment_with_variables.GetUser
@@ -16,23 +15,23 @@ import kotlin.Unit
 import kotlin.collections.List
 
 public object GetUser_ResponseAdapter {
-  public object Data : Adapter<GetUser.Data> {
+  public object Data : DataAdapter<GetUser.Data> {
     public val RESPONSE_NAMES: List<String> = listOf("__typename")
 
-    public override fun fromJson(reader: JsonReader, customScalarAdapters: CustomScalarAdapters):
-        GetUser.Data {
+    public override fun deserializeData(reader: JsonReader,
+        context: DataAdapter.DeserializeDataContext): GetUser.Data {
       var __typename: String? = null
 
       while(true) {
         when (reader.selectName(RESPONSE_NAMES)) {
-          0 -> __typename = StringAdapter.fromJson(reader, customScalarAdapters)
+          0 -> __typename = StringDataAdapter.deserializeData(reader, context)
           else -> break
         }
       }
 
       reader.rewind()
-      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.fromJson(reader,
-          customScalarAdapters)
+      val _queryFragment = com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.deserializeData(reader,
+          context)
 
       return GetUser.Data(
         __typename = __typename!!,
@@ -40,16 +39,16 @@ public object GetUser_ResponseAdapter {
       )
     }
 
-    public override fun toJson(
+    public override fun serializeData(
       writer: JsonWriter,
-      customScalarAdapters: CustomScalarAdapters,
       `value`: GetUser.Data,
+      context: DataAdapter.SerializeDataContext,
     ): Unit {
       writer.name("__typename")
-      StringAdapter.toJson(writer, customScalarAdapters, value.__typename)
+      StringDataAdapter.serializeData(writer, value.__typename, context)
 
-      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.toJson(writer,
-          customScalarAdapters, value.queryFragment)
+      com.example.named_fragment_with_variables.fragment.QueryFragmentImpl_ResponseAdapter.QueryFragment.serializeData(writer,
+          value.queryFragment, context)
     }
   }
 }

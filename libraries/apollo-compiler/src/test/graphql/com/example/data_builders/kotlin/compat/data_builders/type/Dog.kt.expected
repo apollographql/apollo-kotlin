@@ -6,7 +6,7 @@
 package com.example.data_builders.type
 
 import com.apollographql.apollo3.api.BuilderScope
-import com.apollographql.apollo3.api.CustomScalarAdapters
+import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.ObjectBuilder
 import com.apollographql.apollo3.api.ObjectType
 import kotlin.Any
@@ -22,8 +22,8 @@ public class Dog {
 }
 
 public class DogBuilder(
-  customScalarAdapters: CustomScalarAdapters,
-) : ObjectBuilder(customScalarAdapters) {
+  scalarAdapters: ScalarAdapters,
+) : ObjectBuilder(scalarAdapters) {
   public var id: String by __fields
 
   public var woof: String by __fields
@@ -36,7 +36,7 @@ public class DogMap(
 ) : NodeMap, AnimalMap, Map<String, Any?> by __fields
 
 public fun BuilderScope.buildDog(block: DogBuilder.() -> Unit): DogMap {
-  val builder = DogBuilder(customScalarAdapters)
+  val builder = DogBuilder(scalarAdapters)
   builder.__typename = "Dog"
   builder.block()
   return builder.build()
