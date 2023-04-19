@@ -3,7 +3,6 @@ package test
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Adapter
 import com.apollographql.apollo3.api.AnyAdapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import com.apollographql.apollo3.api.json.writeObject
@@ -133,14 +132,14 @@ class CustomScalarTest {
     """.trimIndent())
 
     val customTypeAdapter = object : Adapter<Address> {
-      override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Address {
+      override fun fromJson(reader: JsonReader): Address {
         @Suppress("UNCHECKED_CAST")
-        val map = AnyAdapter.fromJson(reader, ScalarAdapters.Empty) as Map<String, Any?>
+        val map = AnyAdapter.fromJson(reader) as Map<String, Any?>
 
         return Address(map.get("street") as String, map.get("number") as Int)
       }
 
-      override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Address) {
+      override fun toJson(writer: JsonWriter, value: Address) {
         writer.writeObject {
           name("street")
           value(value.street)

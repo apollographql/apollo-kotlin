@@ -1,7 +1,6 @@
 package com.apollographql.apollo3.adapter
 
 import com.apollographql.apollo3.api.Adapter
-import com.apollographql.apollo3.api.ScalarAdapters
 import com.apollographql.apollo3.api.json.JsonReader
 import com.apollographql.apollo3.api.json.JsonWriter
 import java.time.Instant
@@ -19,11 +18,11 @@ import java.util.Date
  * It requires Android Gradle plugin 4.0 or newer and [core library desugaring](https://developer.android.com/studio/write/java8-support#library-desugaring).
  */
 object DateAdapter : Adapter<Date> {
-  override fun fromJson(reader: JsonReader, customScalarAdapters: ScalarAdapters): Date {
+  override fun fromJson(reader: JsonReader): Date {
     return Date(OffsetDateTime.parse(reader.nextString()!!).toInstant().toEpochMilli())
   }
 
-  override fun toJson(writer: JsonWriter, customScalarAdapters: ScalarAdapters, value: Date) {
+  override fun toJson(writer: JsonWriter, value: Date) {
     writer.value(Instant.ofEpochMilli(value.time).toString())
   }
 }
